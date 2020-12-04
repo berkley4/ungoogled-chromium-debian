@@ -16,8 +16,8 @@ fixes/gpu-timeout.patch
 fixes/missing-includes.patch
 #fixes/pointer-required.patch
 #fixes/lambda-expression.patch
-fixes/widevine-enable-version-string.patch
-fixes/widevine-locations.patch
+#fixes/widevine-enable-version-string.patch
+#fixes/widevine-locations.patch
 fixes/nullptr-dereference.patch
 fixes/multiple-destruction.patch
 

@@ -92,7 +92,7 @@ defines+=is_debug=false \
 defines+=use_gio=true \
          use_pulseaudio=true \
          link_pulseaudio=true \
-         enable_widevine=true \
+         enable_widevine=false \
          v8_enable_backtrace=true \
          use_system_zlib=true \
          use_system_lcms2=true \
