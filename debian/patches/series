@@ -19,7 +19,7 @@ fixes/nullptr-dereference.patch
 fixes/multiple-destruction.patch
 
 disable/glmark.patch
-disable/openh264.patch
+#disable/openh264.patch
 disable/buildbot.patch
 disable/installer.patch
 disable/font-tests.patch

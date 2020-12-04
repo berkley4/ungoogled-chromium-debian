@@ -104,8 +104,6 @@ Files-Excluded:
  third_party/ffmpeg/compat
  third_party/ffmpeg/config*
  third_party/ffmpeg/chromium
- third_party/openh264/src
- third_party/openh264/BUILD.gn
  third_party/expat/src
  third_party/unrar
  third_party/perfetto/ui/src/gen
@@ -2941,6 +2939,11 @@ License: BSD-3-clause
 Files: third_party/npapi/bindings/nphostapi.h
 Copyright: Copyright (c) 2010 The Chromium Authors. All rights reserved.
 License: BSD-3-clause
+
+Files: third_party/openh264/*
+Copyright: Copyright (c) 2013, Cisco Systems
+           All rights reserved.
+License: BSD-2-Clause
 
 Files: third_party/openmax/omx_stub.cc
 Copyright: Copyright (c) 2009 The Chromium Authors. All rights reserved.
