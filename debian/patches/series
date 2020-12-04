@@ -5,7 +5,7 @@ debianization/master-preferences.patch
 gn/libcxx.patch
 
 fixes/mojo.patch
-fixes/inspector.patch
+#fixes/inspector.patch
 fixes/gpu-timeout.patch
 #fixes/not-constexpr.patch
 #fixes/sequence-point.patch
