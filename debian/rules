@@ -98,7 +98,7 @@ defines+=use_gio=true \
          use_system_lcms2=true \
          use_system_libjpeg=true \
          use_system_freetype=true \
-         use_system_harfbuzz=true \
+         use_system_harfbuzz=false \
          use_system_libopenjpeg2=true \
          concurrent_links=1 \
          proprietary_codecs=true \

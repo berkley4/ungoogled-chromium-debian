@@ -20,7 +20,6 @@ third_party/libxslt/BUILD.gn
 third_party/openh264/BUILD.gn
 third_party/freetype/BUILD.gn
 third_party/fontconfig/BUILD.gn
-third_party/harfbuzz-ng/harfbuzz.gni
 third_party/yasm/yasm_assemble.gni
 
 third_party/libjpeg.gni

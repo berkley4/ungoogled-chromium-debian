@@ -104,8 +104,6 @@ Files-Excluded:
  third_party/ffmpeg/compat
  third_party/ffmpeg/config*
  third_party/ffmpeg/chromium
- third_party/harfbuzz-ng/src
- third_party/harfbuzz-ng/harfbuzz.gni
  third_party/openh264/src
  third_party/openh264/BUILD.gn
  third_party/expat/src
@@ -2743,6 +2741,22 @@ License: BSD-3-clause
 Files: third_party/ffmpeg/*
 Copyright: FFMPEG developers.
 License: GPL-2+
+
+Files: third_party/harfbuzz-ng/*
+Copyright: 2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020  Google, Inc.
+           2018,2019,2020  Ebrahim Byagowi
+           2019,2020  Facebook, Inc.
+           2012  Mozilla Foundation
+           2011  Codethink Limited
+           2008,2010  Nokia Corporation and/or its subsidiary(-ies)
+           2009  Keith Stribley
+           2009  Martin Hosken and SIL International
+           2007  Chris Wilson
+           2006  Behdad Esfahbod
+           2005  David Turner
+           2004,2007,2008,2009,2010  Red Hat, Inc.
+           1998-2004  David Turner and Werner Lemberg
+License: MIT
 
 Files: third_party/hunspell/google/bdict.hgthird_party/hunspell/google/bdict_reader.cc third_party/hunspell/google/bdict_reader.h third_party/hunspell/google/bdict_writer.cc third_party/hunspell/google/bdict_writer.h third_party/hunspell/google/hunspell_tests.cc
 Copyright: Copyright: 2008 Google Inc. All Rights Reserved:
