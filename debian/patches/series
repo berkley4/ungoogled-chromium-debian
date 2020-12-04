@@ -49,7 +49,7 @@ system/ffmpeg.patch
 system/jsoncpp.patch
 system/harfbuzz.patch
 system/openjpeg.patch
-system/convertutf.patch
+#system/convertutf.patch
 system/clang-format.patch
 
 bullseye/ffmpeg43.patch

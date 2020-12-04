@@ -146,7 +146,6 @@ Files-Excluded:
  third_party/pdfium/third_party/libpng16
  third_party/pdfium/third_party/libopenjpeg20
  third_party/breakpad/breakpad/src/client/mac
- third_party/breakpad/breakpad/src/common/convert_UTF.*
  third_party/boringssl/src/crypto/cipher_extra/test
  third_party/dom_distiller_js/dist/js/domdistiller_wrapped.js
  third_party/devtools-frontend/src/test
@@ -2733,6 +2732,10 @@ Copyright: 2010, 2012 Google Inc
            2012, Zoltan Horvath, Adobe Systems Incorporated
            2006-2011, the V8 project authors
 License: BSD-3-clause
+
+Files: third_party/breakpad/breakpad/src/common/convert_UTF.*
+Copyright: Copyright © 1991-2015 Unicode, Inc. All rights reserved. Distributed under the Terms of Use in http://www.unicode.org/copyright.html.
+Licence: Unicode Copyright
 
 Files: third_party/cld_3/*
 Copyright: Copyright (c) 2006-2008 The Chromium Authors. All rights reserved. Use of this source code is governed by a BSD-style license that can be found in the LICENSE file.:
