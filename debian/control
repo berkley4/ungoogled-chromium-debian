@@ -47,7 +47,6 @@ Build-Depends:
  libgbm-dev,
  libxss-dev,
  libelf-dev,
- libvpx-dev (>= 1.7.0),
  libpci-dev,
  libcap-dev,
  libdrm-dev,

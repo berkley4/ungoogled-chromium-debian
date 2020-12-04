@@ -67,7 +67,6 @@ Files-Excluded:
  third_party/flac
  third_party/llvm
  third_party/webgl
- third_party/libvpx
  third_party/libdrm
  third_party/snappy
  third_party/libxslt
@@ -2875,6 +2874,10 @@ License: BSD-3-clause
 
 Files: third_party/libevent/test/regress.gen.hgthird_party/libevent/test/test-eof.c third_party/libevent/test/test-init.c third_party/libevent/test/test-time.c third_party/libevent/test/test-weof.c third_party/libevent/test/test.sh
 Copyright: UNKNOWN:
+License: BSD-3-clause
+
+Files: third_party/libvpx/*
+Copyright: Copyright (c) 2010, The WebM Project authors. All rights reserved. 
 License: BSD-3-clause
 
 Files: third_party/lzma_sdk/7zCrc.cgthird_party/lzma_sdk/7zCrc.h third_party/lzma_sdk/Alloc.c third_party/lzma_sdk/Alloc.h third_party/lzma_sdk/Types.h

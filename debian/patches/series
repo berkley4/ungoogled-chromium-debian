@@ -38,7 +38,7 @@ warnings/null-destination.patch
 warnings/gcc-diagnostic.patch
 warnings/int-in-bool-context.patch
 
-system/vpx.patch
+#system/vpx.patch
 system/icu.patch
 system/jpeg.patch
 system/node.patch
