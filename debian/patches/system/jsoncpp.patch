@@ -1,19 +1,13 @@
-description: use system jsoncpp
-author: Michael Gilbert <mgilbert@debian.org>
-
 --- a/third_party/jsoncpp/BUILD.gn
 +++ b/third_party/jsoncpp/BUILD.gn
-@@ -3,52 +3,14 @@
+@@ -3,49 +3,15 @@
  # found in the LICENSE file.
  
  import("//testing/libfuzzer/fuzzer_test.gni")
 +import("//build/config/linux/pkg_config.gni")
  
 -config("jsoncpp_config") {
--  include_dirs = [
--    "source/include",
--    "generated",
--  ]
+-  include_dirs = [ "source/include" ]
 -
 -  # TODO(crbug.com/983223): Update JsonCpp BUILD.gn to remove deprecated
 -  # declaration flag.
@@ -28,15 +22,15 @@ author: Michael Gilbert <mgilbert@debian.org>
  
 -source_set("jsoncpp") {
 -  sources = [
--    "generated/version.h",
+-    "source/include/json/allocator.h",
 -    "source/include/json/assertions.h",
--    "source/include/json/autolink.h",
 -    "source/include/json/config.h",
--    "source/include/json/features.h",
 -    "source/include/json/forwards.h",
 -    "source/include/json/json.h",
+-    "source/include/json/json_features.h",
 -    "source/include/json/reader.h",
 -    "source/include/json/value.h",
+-    "source/include/json/version.h",
 -    "source/include/json/writer.h",
 -    "source/src/lib_json/json_reader.cpp",
 -    "source/src/lib_json/json_tool.h",
@@ -46,7 +40,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 -
 +group("jsoncpp") {
    public_configs = [ ":jsoncpp_config" ]
--
+ 
 -  defines = [
 -    "JSON_USE_EXCEPTION=0",
 -    "JSON_USE_NULLREF=0",

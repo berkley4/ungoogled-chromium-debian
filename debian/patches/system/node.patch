@@ -3,7 +3,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/third_party/devtools-frontend/src/scripts/devtools_paths.py
 +++ b/third_party/devtools-frontend/src/scripts/devtools_paths.py
-@@ -37,13 +37,7 @@ def third_party_path():
+@@ -37,13 +37,7 @@
  
  # This points to the node binary downloaded as part of the checkout.
  def node_path():

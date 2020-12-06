@@ -3,7 +3,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/base/supports_user_data.cc
 +++ b/base/supports_user_data.cc
-@@ -42,6 +42,10 @@ void SupportsUserData::SetUserData(const
+@@ -42,6 +42,10 @@
  
  void SupportsUserData::RemoveUserData(const void* key) {
    DCHECK(sequence_checker_.CalledOnValidSequence());

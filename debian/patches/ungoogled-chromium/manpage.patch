@@ -23,7 +23,7 @@ forwarded: http://code.google.com/p/chromium/issues/detail?id=73591
  See the Google Chrome help center for help on using the browser.
  .IP
  <https://support.google.com/chrome/>
-@@ -17,9 +23,28 @@ See the Google Chrome help center for he
+@@ -17,9 +23,28 @@
  This manpage only describes invocation, environment, and arguments.
  
  .SH OPTIONS
@@ -52,7 +52,7 @@ forwarded: http://code.google.com/p/chromium/issues/detail?id=73591
  .TP
  \fB\-\-user\-data\-dir\fR=\fIDIR\fR
  Specifies the directory that user data (your "profile") is kept in.
-@@ -114,6 +139,7 @@ as
+@@ -114,6 +139,7 @@
  See the GTK documentation for more:
  .IP
  <http://library.gnome.org/devel/gtk/stable/gtk-running.html>
@@ -60,7 +60,7 @@ forwarded: http://code.google.com/p/chromium/issues/detail?id=73591
  <http://library.gnome.org/devel/gtk/stable/gtk-x11.html>
  
  .SH ENVIRONMENT
-@@ -159,12 +185,29 @@ Default directory for cache data.  (Why?
+@@ -159,12 +185,29 @@
  <http://standards.freedesktop.org/basedir-spec/latest/> .)
  
  .SH BUGS

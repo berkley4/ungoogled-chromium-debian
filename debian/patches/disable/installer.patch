@@ -3,7 +3,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -70,8 +70,6 @@ group("gn_all") {
+@@ -71,8 +71,6 @@
      "//base:base_perftests",
      "//base:base_unittests",
      "//base/util:base_util_unittests",
@@ -14,7 +14,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      "//net:net_unittests",
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -5586,7 +5586,6 @@ source_set("active_use_util") {
+@@ -6175,7 +6175,6 @@
    deps = [
      "//base",
      "//chrome/common:constants",
