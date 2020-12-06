@@ -53,3 +53,12 @@ ungoogled-chromium/clang.patch
 ungoogled-chromium/manpage.patch
 ungoogled-chromium/safebrowsing.patch
 ungoogled-chromium/explicit-python.patch
+
+disable-android-md5sum.patch
+fix-third-party-node-path.patch
+fix-openscreen-missing-include.patch
+fix-no-ozone-cursor-factory.patch
+fix-mirroring-headers.patch
+fix-building-without-ozone.patch
+fix-chromium-87-webcodecs-deps.patch
+silence-angle-warnings.patch

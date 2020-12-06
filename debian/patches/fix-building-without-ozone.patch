@@ -1,0 +1,28 @@
+From 2d5eb2f61bdd374eb43398a4727b840c29f5679d Mon Sep 17 00:00:00 2001
+From: Stephan Hartmann <stha09@googlemail.com>
+Date: Fri, 30 Oct 2020 07:19:48 +0000
+Subject: [PATCH] drop dep on //ui/ozone for building without ozone
+
+Building with use_x11=true and use_ozone=false fails, because
+it includes unneeded //ui/ozone dependency.
+
+Change-Id: Ia35af9adec1d530bd77db251435f6e0a0261d333
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/2506446
+Reviewed-by: Maksim Sisov (GMT+2) <msisov@igalia.com>
+Commit-Queue: Maksim Sisov (GMT+2) <msisov@igalia.com>
+Cr-Commit-Position: refs/heads/master@{#822553}
+---
+
+--- a/chrome/browser/BUILD.gn
++++ b/chrome/browser/BUILD.gn
+@@ -5102,7 +5102,9 @@
+       "chrome_browser_main_extra_parts_ozone.cc",
+       "chrome_browser_main_extra_parts_ozone.h",
+     ]
+-    deps += [ "//ui/ozone" ]
++    if (use_ozone) {
++      deps += [ "//ui/ozone" ]
++    }
+   }
+ 
+   if (enable_background_mode) {

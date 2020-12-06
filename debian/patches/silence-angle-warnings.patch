@@ -1,0 +1,11 @@
+--- a/third_party/angle/BUILD.gn	2020-12-01 23:24:58.174794161 +0000
++++ b/third_party/angle/BUILD.gn	2020-12-01 23:25:30.026853210 +0000
+@@ -154,8 +154,6 @@
+       "-Wredundant-parens",
+       "-Wreturn-std-move-in-c++11",
+       "-Wshadow-field",
+-      "-Wsuggest-destructor-override",
+-      "-Wsuggest-override",
+       "-Wtautological-type-limit-compare",
+       "-Wundefined-reinterpret-cast",
+       "-Wunneeded-internal-declaration",
