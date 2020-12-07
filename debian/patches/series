@@ -61,4 +61,5 @@ fix-no-ozone-cursor-factory.patch
 fix-mirroring-headers.patch
 fix-building-without-ozone.patch
 fix-chromium-87-webcodecs-deps.patch
+fix-third-party-zlib-headers.patch
 silence-angle-warnings.patch
