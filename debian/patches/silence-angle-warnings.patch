@@ -1,5 +1,5 @@
---- a/third_party/angle/BUILD.gn	2020-12-01 23:24:58.174794161 +0000
-+++ b/third_party/angle/BUILD.gn	2020-12-01 23:25:30.026853210 +0000
+--- a/third_party/angle/BUILD.gn
++++ b/third_party/angle/BUILD.gn
 @@ -154,8 +154,6 @@
        "-Wredundant-parens",
        "-Wreturn-std-move-in-c++11",
@@ -9,3 +9,13 @@
        "-Wtautological-type-limit-compare",
        "-Wundefined-reinterpret-cast",
        "-Wunneeded-internal-declaration",
+--- a/third_party/angle/src/libANGLE/MemoryProgramCache.cpp
++++ b/third_party/angle/src/libANGLE/MemoryProgramCache.cpp
+@@ -21,7 +21,6 @@
+ #include "libANGLE/renderer/ProgramImpl.h"
+ #include "platform/PlatformMethods.h"
+ 
+-#define USE_SYSTEM_ZLIB
+ #include "compression_utils_portable.h"
+ 
+ namespace gl
