@@ -63,3 +63,4 @@ fix-building-without-ozone.patch
 fix-chromium-87-webcodecs-deps.patch
 fix-third-party-zlib-headers.patch
 silence-angle-warnings.patch
+chromium-87-ServiceWorkerContainerHost-crash.patch
