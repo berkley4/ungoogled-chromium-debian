@@ -1,0 +1,154 @@
+--- a/gpu/config/gpu_control_list.cc
++++ b/gpu/config/gpu_control_list.cc
+@@ -17,7 +17,7 @@
+ #include "base/values.h"
+ #include "build/build_config.h"
+ #include "gpu/config/gpu_util.h"
+-#include "third_party/re2/src/re2/re2.h"
++#include <re2/re2.h>
+ 
+ namespace gpu {
+ namespace {
+--- a/content/browser/sms/sms_parser.cc
++++ b/content/browser/sms/sms_parser.cc
+@@ -9,7 +9,7 @@
+ 
+ #include "base/optional.h"
+ #include "net/base/url_util.h"
+-#include "third_party/re2/src/re2/re2.h"
++#include <re2/re2.h>
+ #include "url/gurl.h"
+ #include "url/origin.h"
+ 
+--- a/components/policy/core/browser/url_util.cc
++++ b/components/policy/core/browser/url_util.cc
+@@ -18,7 +18,7 @@
+ #include "net/base/escape.h"
+ #include "net/base/filename_util.h"
+ #include "net/base/url_util.h"
+-#include "third_party/re2/src/re2/re2.h"
++#include <re2/re2.h>
+ #include "url/gurl.h"
+ 
+ using url_matcher::URLMatcher;
+--- a/third_party/leveldatabase/env_chromium.cc
++++ b/third_party/leveldatabase/env_chromium.cc
+@@ -39,7 +39,7 @@
+ #include "third_party/leveldatabase/leveldb_chrome.h"
+ #include "third_party/leveldatabase/leveldb_features.h"
+ #include "third_party/leveldatabase/src/include/leveldb/options.h"
+-#include "third_party/re2/src/re2/re2.h"
++#include <re2/re2.h>
+ 
+ using base::FilePath;
+ using base::trace_event::MemoryAllocatorDump;
+--- a/gpu/command_buffer/service/program_manager.cc
++++ b/gpu/command_buffer/service/program_manager.cc
+@@ -30,7 +30,7 @@
+ #include "gpu/command_buffer/service/program_cache.h"
+ #include "gpu/command_buffer/service/shader_manager.h"
+ #include "gpu/config/gpu_preferences.h"
+-#include "third_party/re2/src/re2/re2.h"
++#include <re2/re2.h>
+ #include "ui/gl/gl_version_info.h"
+ #include "ui/gl/progress_reporter.h"
+ 
+--- a/extensions/browser/api/web_request/form_data_parser.cc
++++ b/extensions/browser/api/web_request/form_data_parser.cc
+@@ -16,7 +16,7 @@
+ #include "base/values.h"
+ #include "net/base/escape.h"
+ #include "net/http/http_request_headers.h"
+-#include "third_party/re2/src/re2/re2.h"
++#include <re2/re2.h>
+ 
+ using base::DictionaryValue;
+ using base::ListValue;
+--- a/chrome/browser/sharing/sharing_fcm_handler.cc
++++ b/chrome/browser/sharing/sharing_fcm_handler.cc
+@@ -19,7 +19,7 @@
+ #include "chrome/browser/sharing/sharing_utils.h"
+ #include "components/gcm_driver/gcm_driver.h"
+ #include "components/sync_device_info/device_info_tracker.h"
+-#include "third_party/re2/src/re2/re2.h"
++#include <re2/re2.h>
+ 
+ namespace {
+ 
+--- a/chrome/browser/sharing/click_to_call/click_to_call_utils.cc
++++ b/chrome/browser/sharing/click_to_call/click_to_call_utils.cc
+@@ -18,7 +18,7 @@
+ #include "chrome/common/pref_names.h"
+ #include "components/prefs/pref_service.h"
+ #include "content/public/browser/browser_context.h"
+-#include "third_party/re2/src/re2/re2.h"
++#include <re2/re2.h>
+ #include "url/url_constants.h"
+ #include "url/url_util.h"
+ 
+--- a/extensions/common/image_util.cc
++++ b/extensions/common/image_util.cc
+@@ -20,7 +20,7 @@
+ #include "base/strings/stringprintf.h"
+ #include "base/time/time.h"
+ #include "base/timer/elapsed_timer.h"
+-#include "third_party/re2/src/re2/re2.h"
++#include <re2/re2.h>
+ #include "third_party/skia/include/core/SkBitmap.h"
+ #include "third_party/skia/include/core/SkCanvas.h"
+ #include "third_party/skia/include/core/SkColor.h"
+--- a/extensions/common/stack_frame.cc
++++ b/extensions/common/stack_frame.cc
+@@ -7,7 +7,7 @@
+ #include <string>
+ 
+ #include "base/strings/utf_string_conversions.h"
+-#include "third_party/re2/src/re2/re2.h"
++#include <re2/re2.h>
+ 
+ namespace extensions {
+ 
+--- a/components/autofill/core/browser/data_model/autofill_structured_address_utils.h
++++ b/components/autofill/core/browser/data_model/autofill_structured_address_utils.h
+@@ -18,7 +18,7 @@
+ #include "components/autofill/core/browser/autofill_type.h"
+ #include "components/autofill/core/browser/data_model/autofill_structured_address_constants.h"
+ #include "components/autofill/core/browser/field_types.h"
+-#include "third_party/re2/src/re2/re2.h"
++#include <re2/re2.h>
+ 
+ namespace autofill {
+ namespace structured_address {
+--- a/components/feedback/redaction_tool.cc
++++ b/components/feedback/redaction_tool.cc
+@@ -15,7 +15,7 @@
+ #include "base/threading/thread_restrictions.h"
+ #include "content/public/browser/browser_thread.h"
+ #include "net/base/ip_address.h"
+-#include "third_party/re2/src/re2/re2.h"
++#include <re2/re2.h>
+ 
+ using re2::RE2;
+ 
+--- a/chrome/browser/extensions/api/developer_private/developer_private_api.cc
++++ b/chrome/browser/extensions/api/developer_private/developer_private_api.cc
+@@ -101,7 +101,7 @@
+ #include "storage/browser/file_system/file_system_operation.h"
+ #include "storage/browser/file_system/file_system_operation_runner.h"
+ #include "storage/browser/file_system/isolated_context.h"
+-#include "third_party/re2/src/re2/re2.h"
++#include <re2/re2.h>
+ #include "ui/base/l10n/l10n_util.h"
+ #include "url/origin.h"
+ 
+--- a/chrome/browser/ui/views/accessibility/caption_bubble.cc
++++ b/chrome/browser/ui/views/accessibility/caption_bubble.cc
+@@ -18,7 +18,7 @@
+ #include "chrome/browser/ui/views/frame/browser_view.h"
+ #include "chrome/grit/generated_resources.h"
+ #include "components/vector_icons/vector_icons.h"
+-#include "third_party/re2/src/re2/re2.h"
++#include <re2/re2.h>
+ #include "ui/accessibility/ax_enums.mojom.h"
+ #include "ui/accessibility/ax_node_data.h"
+ #include "ui/base/hit_test.h"
