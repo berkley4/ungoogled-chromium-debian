@@ -40,7 +40,7 @@ Build-Depends:
  libgl1-mesa-dev,
  libglu1-mesa-dev,
  libegl1-mesa-dev,
- libgles2-mesa-dev,
+ libgles-dev,
  mesa-common-dev,
  libxt-dev,
  libre2-dev,
