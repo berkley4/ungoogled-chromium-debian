@@ -49,7 +49,7 @@ system/clang-format.patch
 inox-patchset/chromium-skia-harmony.patch
 inox-patchset/fix-cfi-failures-with-unbundled-libxml.patch
 
-ungoogled-chromium/clang.patch
+#ungoogled-chromium/clang.patch
 ungoogled-chromium/manpage.patch
 ungoogled-chromium/safebrowsing.patch
 ungoogled-chromium/explicit-python.patch
