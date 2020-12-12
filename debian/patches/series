@@ -66,3 +66,4 @@ silence-angle-warnings.patch
 chromium-87-ServiceWorkerContainerHost-crash.patch
 fix-re2-headers.patch
 subpixel-anti-aliasing-in-FreeType-2.8.1.patch
+fix-another-re2-header.patch
