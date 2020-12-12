@@ -152,3 +152,14 @@
  #include "ui/accessibility/ax_enums.mojom.h"
  #include "ui/accessibility/ax_node_data.h"
  #include "ui/base/hit_test.h"
+--- a/chrome/browser/sharing/click_to_call/phone_number_regex.cc
++++ b/chrome/browser/sharing/click_to_call/phone_number_regex.cc
+@@ -13,7 +13,7 @@
+ #include "base/task/thread_pool.h"
+ #include "base/time/time.h"
+ #include "chrome/browser/sharing/click_to_call/feature.h"
+-#include "third_party/re2/src/re2/re2.h"
++#include <re2/re2.h>
+ 
+ namespace {
+ 
