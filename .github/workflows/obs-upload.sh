@@ -129,6 +129,11 @@ generate_obs()
     <service name="download_url">
         <param name="url">https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${CHROMIUM_VERSION}.tar.xz.hashes</param>
     </service>
+    <!-- Remove for builds that don't need a newer TypeScript -->
+    <service name="download_url">
+        <param name="url">https://github.com/microsoft/TypeScript/archive/refs/tags/v4.4.3.tar.gz</param>
+        <param name="filename">TypeScript-4.4.3.tar.gz</param>
+    </service>
     <service name="recompress">
         <param name="compression">xz</param>
         <param name="file">*.obscpio</param>
@@ -145,6 +150,11 @@ mv ungoogled-chromium-debian-* debian
 mkdir ../download_cache
 ln -s ../SOURCES/chromium-*.tar.xz ../download_cache
 ln -s ../SOURCES/chromium-*.tar.xz.hashes ../download_cache
+
+# Remove for builds that don't need a newer TypeScript
+tar -xf ../SOURCES/TypeScript-*.tar.gz
+mv TypeScript-* TypeScript
+sed -i "s;%TYPESCRIPT%;$(pwd)/TypeScript/bin/tsc;" debian/extras/node_modules.py
 
 debian/scripts/setup debian
 debian/scripts/setup local-src
