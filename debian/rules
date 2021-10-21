@@ -18,13 +18,6 @@ RELEASE  := focal
 AUTHOR   := ungoogled-chromium Maintainers <github@null.invalid>
 DATETIME := $(shell date -R)
 
-# Assign the clang toolchain to use
-LLVM_VERSION ?= 11
-export AR    := llvm-ar-$(LLVM_VERSION)
-export NM    := llvm-nm-$(LLVM_VERSION)
-export CC    := clang-$(LLVM_VERSION)
-export CXX   := clang++-$(LLVM_VERSION)
-
 # Setup compiler and linkers flags
 export DEB_CXXFLAGS_MAINT_STRIP := -g -flto=auto -ffat-lto-objects
 export CXXFLAGS                 := $(shell dpkg-buildflags --get CXXFLAGS) \
@@ -48,8 +41,6 @@ GN_FLAGS := $(shell tr "\n" " " < $(UC_DIR)/flags.gn | sed 's/"/\\"/g')
 
 # Add our downstream Debian flags
 GN_FLAGS += \
-        custom_toolchain=\"//build/toolchain/linux/unbundle:default\" \
-        host_toolchain=\"//build/toolchain/linux/unbundle:default\" \
         use_custom_libcxx=false \
         is_official_build=true \
         is_debug=false \
@@ -109,7 +100,9 @@ download:
 setup: changelog control download
 	test ! -d $(RT_DIR)/.git || git clean -xfd -e debian/changelog -e debian/control -e debian/download_cache/
 	$(UL_DIR)/downloads.py unpack -i $(UC_DIR)/downloads.ini -c $(DL_CACHE) $(RT_DIR)
+	sed -e '/^buildtools/d' -e '/^third_party\/llvm/d' -e '/^chrome\/build\/pgo_profiles/d' -i $(UC_DIR)/pruning.list
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list
+	build/src/tools/clang/scripts/update.py
 	for lib in $(subst libevent,,$(subst libjpeg,libjpeg_turbo,$(SYS_LIBS))); do find "third_party/$$lib" -type f ! -path "third_party/$$lib/chromium/*" ! -path "third_party/$$lib/google/*" ! -name "*.gn" ! -name "*.gni" ! -name "*.isolate" -delete; done
 	cd third_party/node/linux; tar -xf $(DL_CACHE)/node-$(NODE_VERSION)-linux-x64.tar.xz; mv node-$(NODE_VERSION)-linux-x64 node-linux-x64
 	cd third_party/node/linux; tar -xf $(DL_CACHE)/node-$(NODE_VERSION)-linux-arm64.tar.xz; mv node-$(NODE_VERSION)-linux-arm64 node-linux-arm64
