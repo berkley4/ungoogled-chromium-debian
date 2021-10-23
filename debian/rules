@@ -58,7 +58,9 @@ GN_FLAGS += \
         enable_vr=false \
         use_kerberos=false \
         use_x11=false \
-        thin_lto_enable_optimizations=true
+        thin_lto_enable_optimizations=true \
+        v8_enable_pointer_compression=true \
+        v8_enable_zone_compression=true
 
 # Currently omitted from base (focal): icu, harfbuzz-ng, ffmpeg, openh264, libvpx, libpng
 SYS_LIBS :=         \
