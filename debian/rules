@@ -54,7 +54,7 @@ GN_FLAGS += \
         link_pulseaudio=true \
         use_vaapi=true
 
-# Currently omitted from base (focal): icu, harfbuzz-ng, ffmpeg, openh264, libvpx
+# Currently omitted from base (focal): icu, harfbuzz-ng, ffmpeg, openh264, libvpx, libpng
 SYS_LIBS :=         \
         flac        \
         fontconfig  \
@@ -63,7 +63,6 @@ SYS_LIBS :=         \
         libdrm      \
         libevent    \
         libjpeg     \
-        libpng      \
         libwebp     \
         libxml      \
         libxslt     \
@@ -77,7 +76,6 @@ GN_FLAGS +=                           \
         perfetto_use_system_zlib=true \
         use_system_lcms2=true         \
         use_system_libopenjpeg2=true  \
-        use_system_libpng=true        \
         use_system_zlib=true
 
 %:
