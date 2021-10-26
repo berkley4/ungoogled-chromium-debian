@@ -1,0 +1,92 @@
+From: csagan5 <32685696+csagan5@users.noreply.github.com>
+Date: Sat, 28 Apr 2018 08:30:26 +0200
+Subject: Reduce HTTP headers in DoH requests to bare minimum
+
+---
+ net/base/load_flags_list.h              | 9 +++++++++
+ net/dns/dns_transaction.cc              | 2 +-
+ net/url_request/url_request_http_job.cc | 8 +++++++-
+ 3 files changed, 17 insertions(+), 2 deletions(-)
+
+diff --git a/net/base/load_flags_list.h b/net/base/load_flags_list.h
+--- a/net/base/load_flags_list.h
++++ b/net/base/load_flags_list.h
+@@ -101,3 +101,12 @@ LOAD_FLAG(RESTRICTED_PREFETCH, 1 << 15)
+ // is considered privileged, and therefore this flag must only be set from a
+ // trusted process.
+ LOAD_FLAG(CAN_USE_RESTRICTED_PREFETCH, 1 << 16)
++
++
++
++
++// This load will not send Accept-Language or User-Agent headers, and not
++// advertise brotli encoding.
++// Used to comply with IETF (draft) DNS-over-HTTPS:
++// "Implementors SHOULD NOT set non-essential HTTP headers in DoH client requests."
++LOAD_FLAG(MINIMAL_HEADERS, 1 << 19)
+diff --git a/net/dns/dns_transaction.cc b/net/dns/dns_transaction.cc
+--- a/net/dns/dns_transaction.cc
++++ b/net/dns/dns_transaction.cc
+@@ -413,7 +413,7 @@ class DnsHTTPAttempt : public DnsAttempt, public URLRequest::Delegate {
+     // Disable secure DNS for any DoH server hostname lookups to avoid deadlock.
+     request_->SetSecureDnsPolicy(SecureDnsPolicy::kDisable);
+     request_->SetLoadFlags(request_->load_flags() | LOAD_DISABLE_CACHE |
+-                           LOAD_BYPASS_PROXY);
++                           LOAD_MINIMAL_HEADERS | LOAD_BYPASS_PROXY);
+     request_->set_allow_credentials(false);
+     request_->set_isolation_info(isolation_info);
+   }
+diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_request_http_job.cc
+--- a/net/url_request/url_request_http_job.cc
++++ b/net/url_request/url_request_http_job.cc
+@@ -299,6 +299,7 @@ void URLRequestHttpJob::Start() {
+   // plugin could set a referrer although sending the referrer is inhibited.
+   request_info_.extra_headers.RemoveHeader(HttpRequestHeaders::kReferer);
+ 
++  if (!(request_info_.load_flags & LOAD_MINIMAL_HEADERS)) {
+   // Our consumer should have made sure that this is a safe referrer (e.g. via
+   // URLRequestJob::ComputeReferrerForPolicy).
+   if (referrer.is_valid()) {
+@@ -306,11 +307,14 @@ void URLRequestHttpJob::Start() {
+     request_info_.extra_headers.SetHeader(HttpRequestHeaders::kReferer,
+                                           referer_value);
+   }
++  }
+ 
++  if (!(request_info_.load_flags & LOAD_MINIMAL_HEADERS)) {
+   request_info_.extra_headers.SetHeaderIfMissing(
+       HttpRequestHeaders::kUserAgent,
+       http_user_agent_settings_ ?
+           http_user_agent_settings_->GetUserAgent() : std::string());
++  }
+ 
+   AddExtraHeaders();
+   AddCookieHeaderAndStart();
+@@ -525,6 +529,7 @@ void URLRequestHttpJob::AddExtraHeaders() {
+       if (request_->Supports(SourceStream::SourceType::TYPE_DEFLATE)) {
+         advertised_encoding_names.push_back("deflate");
+       }
++      if (!(request_info_.load_flags & LOAD_MINIMAL_HEADERS)) {
+       // Advertise "br" encoding only if transferred data is opaque to proxy.
+       if (request()->context()->enable_brotli() &&
+           request_->Supports(SourceStream::SourceType::TYPE_BROTLI)) {
+@@ -533,6 +538,7 @@ void URLRequestHttpJob::AddExtraHeaders() {
+           advertised_encoding_names.push_back("br");
+         }
+       }
++      } // minimal headers
+       if (!advertised_encoding_names.empty()) {
+         // Tell the server what compression formats are supported.
+         request_info_.extra_headers.SetHeader(
+@@ -542,7 +548,7 @@ void URLRequestHttpJob::AddExtraHeaders() {
+     }
+   }
+ 
+-  if (http_user_agent_settings_) {
++  if (!(request_info_.load_flags & LOAD_MINIMAL_HEADERS) && http_user_agent_settings_) {
+     // Only add default Accept-Language if the request didn't have it
+     // specified.
+     std::string accept_language =
+-- 
+2.17.1
+

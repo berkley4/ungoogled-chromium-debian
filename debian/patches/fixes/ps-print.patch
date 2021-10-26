@@ -1,0 +1,23 @@
+description: add postscript (ps) printing capability
+author: Salvatore Bonaccorso
+
+--- a/ui/gtk/printing/print_dialog_gtk.cc
++++ b/ui/gtk/printing/print_dialog_gtk.cc
+@@ -250,7 +250,7 @@
+     // The resolution attribute (case-insensitive) has decent coverage
+     // in the CUPS PPD API (Resolution, SetResolution, JCLResolution,
+     // CNRes_PGP). See
+-    // https://chromium.googlesource.com/chromiumos/third_party/cups/+/49a182a4c42d/cups/mark.c#266
++    // https://chromium.9oo91esource.qjz9zk/chromiumos/third_party/cups/+/49a182a4c42d/cups/mark.c#266
+     // for more information.
+     //
+     // Many PPDs use pdftopdf directly to generate the print data and pdftopdf
+@@ -393,7 +393,7 @@
+   GtkPrintCapabilities cap = static_cast<GtkPrintCapabilities>(
+       GTK_PRINT_CAPABILITY_GENERATE_PDF | GTK_PRINT_CAPABILITY_PAGE_SET |
+       GTK_PRINT_CAPABILITY_COPIES | GTK_PRINT_CAPABILITY_COLLATE |
+-      GTK_PRINT_CAPABILITY_REVERSE);
++      GTK_PRINT_CAPABILITY_REVERSE | GTK_PRINT_CAPABILITY_GENERATE_PS);
+   gtk_print_unix_dialog_set_manual_capabilities(GTK_PRINT_UNIX_DIALOG(dialog_),
+                                                 cap);
+   gtk_print_unix_dialog_set_embed_page_setup(GTK_PRINT_UNIX_DIALOG(dialog_),

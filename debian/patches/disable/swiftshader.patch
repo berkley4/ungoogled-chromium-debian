@@ -1,0 +1,42 @@
+description: avoid building the swiftshader library
+author: Michael Gilbert <mgilbert@debian.org>
+
+--- a/BUILD.gn
++++ b/BUILD.gn
+@@ -512,7 +512,7 @@ group("gn_all") {
+     ]
+   }
+ 
+-  if ((is_win || is_mac || is_linux || is_chromeos || is_fuchsia) &&
++  if (false &&
+       (target_cpu == "x86" || target_cpu == "x64")) {
+     deps += [ "//third_party/swiftshader" ]
+   }
+--- a/third_party/angle/gni/angle.gni
++++ b/third_party/angle/gni/angle.gni
+@@ -123,7 +123,7 @@ declare_args() {
+       (ozone_platform_gbm || !is_linux || (angle_use_x11 && !is_chromeos)) &&
+       !is_fuchsia && !angle_is_winuwp && !is_ggp && !is_win_arm64
+ 
+-  angle_enable_vulkan =
++  angle_enable_vulkan = false &&
+       angle_has_build &&
+       !(is_android && build_with_chromium && is_official_build) &&
+       ((is_win && !angle_is_winuwp) ||
+@@ -408,7 +408,6 @@ if (angle_standalone || build_with_chromium) {
+                       "$angle_root:angle_common",
+                       "$angle_root:includes",
+                       "$angle_root/src/tests:angle_test_expectations",
+-                      "$angle_root/third_party/rapidjson:rapidjson",
+                       "$angle_root/util:angle_test_utils",
+                       "//testing/gmock",
+                       "//testing/gtest",
+--- a/gpu/vulkan/features.gni
++++ b/gpu/vulkan/features.gni
+@@ -13,5 +13,5 @@ declare_args() {
+   # Enable swiftshader vulkan. Disabling it can save build time, however
+   # --use-vulkan=swiftshader and some tests which use swiftshader vulkan will
+   # not work.
+-  enable_swiftshader_vulkan = true
++  enable_swiftshader_vulkan = false
+ }

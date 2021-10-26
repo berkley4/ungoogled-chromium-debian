@@ -1,0 +1,133 @@
+description: Disable ANGLE perftests
+author: Michel Le Bihan <michel@lebihan.pl>
+
+--- a/chrome/test/BUILD.gn
++++ b/chrome/test/BUILD.gn
+@@ -4115,10 +4115,6 @@
+       data_deps += [ "//third_party/dawn/src/tests:dawn_perf_tests" ]
+     }
+ 
+-    if (!is_chromeos_lacros) {
+-      data_deps += [ "//third_party/angle/src/tests:angle_perftests" ]
+-    }
+-
+     if (!is_android && !is_fuchsia) {
+       data_deps += [
+         "//chrome/test:load_library_perf_tests",
+--- a/third_party/angle/BUILD.gn
++++ b/third_party/angle/BUILD.gn
+@@ -47,7 +47,7 @@
+   angle_force_context_check_every_call = false
+ 
+   # Indicate if the rapidJSON library is available to build with in third_party/.
+-  angle_has_rapidjson = angle_has_build
++  angle_has_rapidjson = false
+ }
+ 
+ if (angle_build_all) {
+--- a/third_party/angle/build_overrides/angle.gni
++++ b/third_party/angle/build_overrides/angle.gni
+@@ -6,7 +6,7 @@
+ angle_root = "//"
+ 
+ # True if ANGLE can access build/, testing/ and other Chrome folders.
+-angle_has_build = true
++angle_has_build = false
+ 
+ # Overrides for ANGLE's dependencies
+ angle_abseil_cpp_dir = "//third_party/abseil-cpp"
+--- a/third_party/angle/src/tests/BUILD.gn
++++ b/third_party/angle/src/tests/BUILD.gn
+@@ -12,8 +12,7 @@
+   build_angle_deqp_tests = false
+   build_angle_gles1_conform_tests = false
+   build_angle_trace_perf_tests = false
+-  build_angle_perftests =
+-      is_win || is_linux || is_chromeos || is_android || is_apple || is_fuchsia
++  build_angle_perftests = false
+ }
+ 
+ if (is_android) {
+@@ -177,7 +176,6 @@
+ 
+   deps = [
+     ":angle_test_expectations",
+-    "$angle_root:angle_json_serializer",
+     "$angle_root:libANGLE",
+     "$angle_root:libEGL_static",
+     "$angle_root:libGLESv2_static",
+@@ -315,48 +313,7 @@
+   }
+ }
+ 
+-template("angle_perftests_common") {
+-  assert(defined(invoker.test_utils))
+-
+-  angle_source_set(target_name) {
+-    testonly = true
+-    if (is_ios) {
+-      # shared libraries are hidden inside ios_framework_bundle, but we include headers from them
+-      check_includes = false
+-    }
+-    sources = [
+-      "../third_party/trace_event/trace_event.h",
+-      "perf_tests/ANGLEPerfTest.cpp",
+-      "perf_tests/ANGLEPerfTest.h",
+-      "perf_tests/ANGLEPerfTestArgs.cpp",
+-      "perf_tests/ANGLEPerfTestArgs.h",
+-      "perf_tests/DrawCallPerfParams.cpp",
+-      "perf_tests/DrawCallPerfParams.h",
+-      "perf_tests/third_party/perf/perf_result_reporter.cc",
+-      "perf_tests/third_party/perf/perf_result_reporter.h",
+-      "perf_tests/third_party/perf/perf_test.cc",
+-      "perf_tests/third_party/perf/perf_test.h",
+-      "test_utils/runner/HistogramWriter.h",
+-      "test_utils/runner/TestSuite.h",
+-    ]
+-    public_deps = [
+-      "$angle_root/src/tests:angle_test_expectations",
+-      "$angle_root/third_party/rapidjson:rapidjson",
+-      "${invoker.test_utils}",
+-    ]
+-    public_configs += [ "${angle_root}:libANGLE_config" ]
+-  }
+-}
+-
+-angle_perftests_common("angle_perftests_shared") {
+-  test_utils = ":angle_common_test_utils_shared"
+-}
+-
+-angle_perftests_common("angle_perftests_static") {
+-  test_utils = ":angle_common_test_utils_static"
+-}
+-
+-if (is_win || is_linux || is_chromeos || is_android || is_apple) {
++if (false) {
+   import("angle_perftests.gni")
+ 
+   # This test suite is for perf tests that use ANGLE's internals in some direct way.
+@@ -1534,12 +1491,11 @@
+   testonly = true
+   deps = [
+     ":angle_end2end_tests",
+-    ":angle_perftests",
+     ":angle_system_info_test",
+     ":angle_unittests",
+     "capture_replay_tests",
+   ]
+-  if (!is_fuchsia) {
++  if (false) {
+     deps += [
+       ":angle_white_box_perftests",
+       ":angle_white_box_tests",
+--- a/third_party/angle/gni/angle.gni
++++ b/third_party/angle/gni/angle.gni
+@@ -206,7 +206,7 @@
+   # TODO(jdarpinian): Support enabling CGL and EAGL at the same time using the soft linking code. Also support disabling both for Metal-only builds.
+   angle_enable_cgl = angle_enable_gl && !angle_enable_eagl && is_apple
+ 
+-  angle_has_histograms = angle_has_build
++  angle_has_histograms = false
+ }
+ 
+ if (!defined(angle_zlib_compression_utils_dir)) {

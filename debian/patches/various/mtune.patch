@@ -1,0 +1,11 @@
+--- a/build/config/compiler/BUILD.gn	2021-05-19 06:38:44.504582887 +0100
++++ b/build/config/compiler/BUILD.gn	2021-05-22 22:36:56.907722674 +0100
+@@ -821,6 +821,7 @@
+       cflags += [
+         "-m64",
+         "-march=$x64_arch",
++        "-mtune=$x64_arch",
+         "-msse3",
+       ]
+       ldflags += [ "-m64" ]
+ 

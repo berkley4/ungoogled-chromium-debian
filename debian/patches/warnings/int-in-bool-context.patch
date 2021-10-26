@@ -1,0 +1,98 @@
+description: fix int-in-bool-context gcc warnings
+author: Michael Gilbert <mgilbert@debian.org>
+
+--- a/third_party/webrtc/modules/video_processing/video_denoiser.cc
++++ b/third_party/webrtc/modules/video_processing/video_denoiser.cc
+@@ -180,7 +180,7 @@ void VideoDenoiser::CopySrcOnMOB(const uint8_t* y_src,
+       // artifacts.
+       if (mb_filter_decision_[mb_index] != FILTER_BLOCK ||
+           IsTrailingBlock(moving_edge_, mb_row, mb_col) ||
+-          (x_density_[mb_col] * y_density_[mb_row] &&
++          (x_density_[mb_col] * y_density_[mb_row] != 0 &&
+            moving_object_[mb_row * mb_cols_ + mb_col])) {
+         // Copy y source.
+         libyuv::CopyPlane(mb_src, stride_src, mb_dst, stride_dst, 16, 16);
+--- a/gpu/command_buffer/service/gles2_cmd_decoder.cc
++++ b/gpu/command_buffer/service/gles2_cmd_decoder.cc
+@@ -16439,7 +16439,8 @@ bool GLES2DecoderImpl::GetUniformSetup(G
+   }
+   uint32_t checked_size = 0;
+   if (!SizedResult<T>::ComputeSize(num_elements).AssignIfValid(&checked_size)) {
+-    return error::kOutOfBounds;
++    *error = error::kOutOfBounds;
++    return false;
+   }
+   result = GetSharedMemoryAs<SizedResult<T>*>(shm_id, shm_offset, checked_size);
+   if (!result) {
+--- a/content/browser/renderer_host/render_widget_host_view_base.cc
++++ b/content/browser/renderer_host/render_widget_host_view_base.cc
+@@ -325,15 +325,16 @@ void RenderWidgetHostViewBase::SetBackgr
+   if (default_background_color_ == color)
+     return;
+ 
+-  bool opaque = default_background_color_
+-                    ? SkColorGetA(*default_background_color_)
+-                    : SK_AlphaOPAQUE;
++  bool opaque_background = true;
++  if (default_background_color_)
++    opaque_background = (SkColorGetA(*default_background_color_) == SK_AlphaOPAQUE);
+   default_background_color_ = color;
+   UpdateBackgroundColor();
+-  if (opaque != (SkColorGetA(color) == SK_AlphaOPAQUE)) {
++
++  bool opaque_foreground = (SkColorGetA(color) == SK_AlphaOPAQUE);
++  if (opaque_background != opaque_foreground) {
+     if (host()->owner_delegate()) {
+-      host()->owner_delegate()->SetBackgroundOpaque(SkColorGetA(color) ==
+-                                                    SK_AlphaOPAQUE);
++      host()->owner_delegate()->SetBackgroundOpaque(opaque_foreground);
+     }
+   }
+ }
+--- a/third_party/blink/renderer/core/html/parser/html_tree_builder.cc
++++ b/third_party/blink/renderer/core/html/parser/html_tree_builder.cc
+@@ -1071,7 +1071,7 @@ void HTMLTreeBuilder::ProcessStartTagFor
+   }
+   if (token->GetName() == html_names::kColTag) {
+     ProcessFakeStartTag(html_names::kColgroupTag);
+-    DCHECK(kInColumnGroupMode);
++    DCHECK_EQ(GetInsertionMode(), kInColumnGroupMode);
+     ProcessStartTag(token);
+     return;
+   }
+--- a/extensions/browser/api/socket/tcp_socket.cc
++++ b/extensions/browser/api/socket/tcp_socket.cc
+@@ -210,7 +210,7 @@ void TCPSocket::SetKeepAlive(bool enable
+                              int delay,
+                              SetKeepAliveCallback callback) {
+   if (!client_socket_) {
+-    std::move(callback).Run(net::ERR_FAILED);
++    std::move(callback).Run(false);
+     return;
+   }
+   client_socket_->SetKeepAlive(enable, delay, std::move(callback));
+@@ -218,7 +218,7 @@ void TCPSocket::SetKeepAlive(bool enable
+ 
+ void TCPSocket::SetNoDelay(bool no_delay, SetNoDelayCallback callback) {
+   if (!client_socket_) {
+-    std::move(callback).Run(net::ERR_FAILED);
++    std::move(callback).Run(false);
+     return;
+   }
+   client_socket_->SetNoDelay(no_delay, std::move(callback));
+--- a/chrome/renderer/searchbox/searchbox.cc
++++ b/chrome/renderer/searchbox/searchbox.cc
+@@ -268,11 +268,11 @@ void SearchBox::Paste(const base::string
+ }
+ 
+ void SearchBox::StartCapturingKeyStrokes() {
+-  embedded_search_service_->FocusOmnibox(page_seq_no_, OMNIBOX_FOCUS_INVISIBLE);
++  embedded_search_service_->FocusOmnibox(page_seq_no_, true);
+ }
+ 
+ void SearchBox::StopCapturingKeyStrokes() {
+-  embedded_search_service_->FocusOmnibox(page_seq_no_, OMNIBOX_FOCUS_NONE);
++  embedded_search_service_->FocusOmnibox(page_seq_no_, false);
+ }
+ 
+ void SearchBox::UndoAllMostVisitedDeletions() {

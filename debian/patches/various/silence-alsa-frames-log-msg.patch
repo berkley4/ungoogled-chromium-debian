@@ -1,0 +1,13 @@
+--- a/media/audio/alsa/alsa_output.cc
++++ b/media/audio/alsa/alsa_output.cc
+@@ -654,8 +654,8 @@
+     return 0;
+   }
+   if (static_cast<uint32_t>(available_frames) > alsa_buffer_frames_ * 2) {
+-    LOG(ERROR) << "ALSA returned " << available_frames << " of "
+-               << alsa_buffer_frames_ << " frames available.";
++    // LOG(ERROR) << "ALSA returned " << available_frames << " of "
++    //           << alsa_buffer_frames_ << " frames available.";
+     return alsa_buffer_frames_;
+   }
+ 

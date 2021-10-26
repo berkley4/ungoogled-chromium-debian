@@ -1,0 +1,37 @@
+description: disable building font tests
+author: Michael Gilbert <mgilbert@debian.org>
+
+--- a/skia/BUILD.gn
++++ b/skia/BUILD.gn
+@@ -874,7 +874,7 @@ group("test_fonts_resources") {
+   if (is_apple) {
+     deps += [ ":test_fonts_bundle_data" ]
+     data_deps += [ ":test_fonts_bundle_data" ]
+-  } else {
++  } else if (false) {
+     deps += [ "//third_party/test_fonts" ]
+     data_deps += [ "//third_party/test_fonts" ]
+   }
+--- a/base/test/BUILD.gn
++++ b/base/test/BUILD.gn
+@@ -197,10 +197,6 @@ static_library("test_support") {
+   if (is_linux || is_chromeos) {
+     sources += [ "test_file_util_linux.cc" ]
+     public_deps += [ ":fontconfig_util_linux" ]
+-    data_deps += [ "//third_party/test_fonts" ]
+-    if (current_toolchain == host_toolchain) {
+-      data_deps += [ ":do_generate_fontconfig_caches" ]
+-    }
+   }
+ 
+   if (is_mac) {
+@@ -442,9 +438,6 @@ if (is_linux || is_chromeos) {
+       testonly = true
+       tool = ":generate_fontconfig_caches"
+ 
+-      # The copied test fonts are inputs to generate_fontconfig_caches, so must
+-      # be listed in deps, not data_deps (https://crbug.com/919422).
+-      deps = [ "//third_party/test_fonts" ]
+       args = []
+       outputs = [ "$root_out_dir/fontconfig_caches/fb5c91b2895aa445d23aebf7f9e2189c-le64.cache-7" ]
+     }
