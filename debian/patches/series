@@ -49,7 +49,6 @@ warnings/null-destination.patch
 warnings/int-in-bool-context.patch
 warnings/unused-but.patch
 
-system/icu.patch
 system/jpeg.patch
 system/node.patch
 system/nspr.patch
