@@ -113,13 +113,14 @@ setup: changelog control download
 	tools/clang/scripts/update.py
 	for lib in $(subst libevent,,$(subst libjpeg,libjpeg_turbo,$(SYS_LIBS))); do find "third_party/$$lib" -type f ! -path "third_party/$$lib/chromium/*" ! -path "third_party/$$lib/google/*" ! -name "*.gn" ! -name "*.gni" ! -name "*.isolate" -delete; done
 	for a in arm64 x64; do test -d third_party/node/linux/node-linux-$$a || tar -C third_party/node/linux -xf $(DL_CACHE)/node-$(NODE_VERSION)-linux-$$a.tar.xz --transform=s/^node-$(NODE_VERSION)-linux-$$a/node-linux-$$a/; done
+	test -d $(DB_DIR)/patches/core && test -d $(DB_DIR)/patches/extra || cp -a $(UP_DIR)/core $(UP_DIR)/extra $(DB_DIR)/patches/
+	test -n "$$(grep '^core\|^extra' $(DB_DIR)/patches/series)" || cat $(UP_DIR)/series >>$(DB_DIR)/patches/series
 
 $(GN):
 	# Switch to distribution GN once generate-ninja has widespread availability
 	tools/gn/bootstrap/bootstrap.py -j $(JOBS) --skip-generate-buildfiles
 
 override_dh_auto_configure:
-	$(UL_DIR)/patches.py apply $(RT_DIR) $(UP_DIR)
 	$(UL_DIR)/domain_substitution.py apply -r $(UC_DIR)/domain_regex.list -f $(UC_DIR)/domain_substitution.list -c $(DS_CACHE) $(RT_DIR)
 	cp $(SH_DIR)/jsoncpp.gn build/linux/unbundle
 	build/linux/unbundle/replace_gn_files.py --system-libraries $(SYS_LIBS)
@@ -133,7 +134,6 @@ override_dh_prep:
 	for file in `find -name "*.gn.orig" -o -name "*.gni.orig"`; do mv $$file $${file%.orig}; done
 	rm -f build/linux/unbundle/jsoncpp.gn
 	$(UL_DIR)/domain_substitution.py revert -c $(DS_CACHE) $(RT_DIR)
-	for patch in `tac $(UP_DIR)/series`; do printf "Info: Reverting %s...\n" $$patch; patch -RNp1 -i $(UP_DIR)/$$patch; done
 	dh_prep
 
 override_dh_fixperms:
