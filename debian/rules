@@ -92,6 +92,9 @@ GN_FLAGS +=                           \
 changelog:
 	sed -e "s;@@VERSION@@;$(VERSION);g" -e "s;@@RELEASE@@;$(RELEASE);g" -e "s;@@AUTHOR@@;$(AUTHOR);g" -e "s;@@DATETIME@@;$(DATETIME);g" < $(DB_DIR)/changelog.in > $(DB_DIR)/changelog
 
+gitclean:
+	test ! -d $(RT_DIR)/.git || git clean -xfd -e debian/changelog -e debian/control -e debian/download_cache/
+
 control:
 	sed -e "s;@@AUTHOR@@;$(AUTHOR);g" < $(DB_DIR)/control.in > $(DB_DIR)/control
 
@@ -104,7 +107,6 @@ download:
 	cd $(DL_CACHE); sha256sum --ignore-missing -c node-$(NODE_VERSION).sha256sum
 
 setup: changelog control download
-	test ! -d $(RT_DIR)/.git || git clean -xfd -e debian/changelog -e debian/control -e debian/download_cache/
 	$(UL_DIR)/downloads.py unpack -i $(UC_DIR)/downloads.ini -c $(DL_CACHE) $(RT_DIR)
 	sed -e '/^buildtools/d' -e '/^third_party\/llvm/d' -e '/^chrome\/build\/pgo_profiles/d' -i $(UC_DIR)/pruning.list
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list
