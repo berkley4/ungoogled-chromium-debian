@@ -46,7 +46,6 @@ warnings/multichar.patch
 warnings/deprecated.patch
 warnings/gcc-diagnostic.patch
 warnings/null-destination.patch
-warnings/int-in-bool-context.patch
 warnings/unused-but.patch
 
 system/jpeg.patch
