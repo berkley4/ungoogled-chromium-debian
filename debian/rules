@@ -99,21 +99,21 @@ control:
 	sed -e "s;@@AUTHOR@@;$(AUTHOR);g" < $(DB_DIR)/control.in > $(DB_DIR)/control
 
 download:
-	mkdir -p $(DL_CACHE)
-	$(UL_DIR)/downloads.py retrieve -i $(UC_DIR)/downloads.ini -c $(DL_CACHE)
+	test -d $(DL_CACHE) || mkdir -p $(DL_CACHE)
+	test -d build || $(UL_DIR)/downloads.py retrieve -i $(UC_DIR)/downloads.ini -c $(DL_CACHE)
 	test -f $(DL_CACHE)/node-$(NODE_VERSION)-linux-x64.tar.xz || curl "https://nodejs.org/dist/$(NODE_VERSION)/node-$(NODE_VERSION)-linux-x64.tar.xz" -o $(DL_CACHE)/node-$(NODE_VERSION)-linux-x64.tar.xz
 	test -f $(DL_CACHE)/node-$(NODE_VERSION)-linux-arm64.tar.xz || curl "https://nodejs.org/dist/$(NODE_VERSION)/node-$(NODE_VERSION)-linux-arm64.tar.xz" -o $(DL_CACHE)/node-$(NODE_VERSION)-linux-arm64.tar.xz
 	test -f $(DL_CACHE)/node-$(NODE_VERSION).sha256sum || curl "https://nodejs.org/dist/$(NODE_VERSION)/SHASUMS256.txt" -o $(DL_CACHE)/node-$(NODE_VERSION).sha256sum
-	cd $(DL_CACHE); sha256sum --ignore-missing -c node-$(NODE_VERSION).sha256sum
+	test -d third_party/node/linux/node-linux-x64 || { cd $(DL_CACHE); sha256sum --ignore-missing -c node-$(NODE_VERSION).sha256sum; }
 
 setup: changelog control download
-	$(UL_DIR)/downloads.py unpack -i $(UC_DIR)/downloads.ini -c $(DL_CACHE) $(RT_DIR)
+	test -d build || $(UL_DIR)/downloads.py unpack -i $(UC_DIR)/downloads.ini -c $(DL_CACHE) $(RT_DIR)
 	sed -e '/^buildtools/d' -e '/^third_party\/llvm/d' -e '/^chrome\/build\/pgo_profiles/d' -i $(UC_DIR)/pruning.list
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list
 	tools/clang/scripts/update.py
 	for lib in $(subst libevent,,$(subst libjpeg,libjpeg_turbo,$(SYS_LIBS))); do find "third_party/$$lib" -type f ! -path "third_party/$$lib/chromium/*" ! -path "third_party/$$lib/google/*" ! -name "*.gn" ! -name "*.gni" ! -name "*.isolate" -delete; done
-	tar -C third_party/node/linux -xf $(DL_CACHE)/node-$(NODE_VERSION)-linux-x64.tar.xz --transform=s/^node-$(NODE_VERSION)-linux-x64/node-linux-x64/
-	tar -C third_party/node/linux -xf $(DL_CACHE)/node-$(NODE_VERSION)-linux-arm64.tar.xz --transform=s/^node-$(NODE_VERSION)-linux-arm64/node-linux-arm64/
+	test -d third_party/node/linux/node-linux-x64 || tar -C third_party/node/linux -xf $(DL_CACHE)/node-$(NODE_VERSION)-linux-x64.tar.xz --transform=s/^node-$(NODE_VERSION)-linux-x64/node-linux-x64/
+	test -d third_party/node/linux/node-linux-arm64 || tar -C third_party/node/linux -xf $(DL_CACHE)/node-$(NODE_VERSION)-linux-arm64.tar.xz --transform=s/^node-$(NODE_VERSION)-linux-arm64/node-linux-arm64/
 
 $(GN):
 	# Switch to distribution GN once generate-ninja has widespread availability
