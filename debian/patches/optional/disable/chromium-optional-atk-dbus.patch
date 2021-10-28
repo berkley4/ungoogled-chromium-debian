@@ -1,0 +1,282 @@
+--- a/build/config/ui.gni
++++ b/build/config/ui.gni
+@@ -37,8 +37,10 @@
+ 
+ assert(!use_glib || (is_linux && !is_chromecast))
+ 
+-use_atk = is_linux && !is_chromecast && use_glib &&
+-          current_toolchain == default_toolchain
++declare_args() {
++  use_atk = is_linux && !is_chromecast && use_glib &&
++            current_toolchain == default_toolchain
++}
+ 
+ # Whether using Xvfb to provide a display server for a test might be
+ # necessary.
+--- a/chrome/browser/chrome_browser_main_linux.cc
++++ b/chrome/browser/chrome_browser_main_linux.cc
+@@ -84,7 +84,7 @@
+ }
+ 
+ void ChromeBrowserMainPartsLinux::PostCreateMainMessageLoop() {
+-#if !BUILDFLAG(IS_CHROMEOS_ASH)
++#if !BUILDFLAG(IS_CHROMEOS_ASH) && defined(USE_DBUS)
+   bluez::BluezDBusManager::Initialize(nullptr /* system_bus */);
+ #endif
+ 
+@@ -110,7 +110,7 @@
+ #endif
+ 
+ void ChromeBrowserMainPartsLinux::PostDestroyThreads() {
+-#if !BUILDFLAG(IS_CHROMEOS_ASH)
++#if !BUILDFLAG(IS_CHROMEOS_ASH) && defined(USE_DBUS)
+   bluez::BluezDBusManager::Shutdown();
+   bluez::BluezDBusThreadManager::Shutdown();
+ #endif
+--- a/chrome/browser/metrics/bluetooth_available_utility.cc
++++ b/chrome/browser/metrics/bluetooth_available_utility.cc
+@@ -13,7 +13,7 @@
+ #include "device/bluetooth/bluetooth_adapter.h"
+ #include "device/bluetooth/bluetooth_adapter_factory.h"
+ 
+-#if defined(OS_LINUX) || defined(OS_CHROMEOS)
++#if defined(OS_LINUX) && defined(USE_DBUS) || defined(OS_CHROMEOS)
+ #include "device/bluetooth/dbus/bluez_dbus_manager.h"
+ #endif  // defined(OS_LINUX) || defined(OS_CHROMEOS)
+ 
+@@ -55,7 +55,7 @@
+     return;
+   }
+ 
+-#if defined(OS_LINUX) || defined(OS_CHROMEOS)
++#if defined(OS_LINUX) && defined(USE_DBUS)
+   // This is for tests that have not initialized bluez or dbus thread manager.
+   // Outside of tests these are initialized earlier during browser startup.
+   if (!bluez::BluezDBusManager::IsInitialized())
+--- a/chrome/browser/platform_util_linux.cc
++++ b/chrome/browser/platform_util_linux.cc
+@@ -24,14 +24,18 @@
+ // complain as Chromecast doesn't use (or depend on) //components/dbus.
+ // TODO(crbug.com/1215474): Eliminate //chrome being visible in the GN structure
+ // on Chromecast and remove the nogncheck below.
++#if defined(USE_DBUS)
+ #include "components/dbus/thread_linux/dbus_thread_linux.h"  // nogncheck
++#endif
+ #include "content/public/browser/browser_thread.h"
+ #include "content/public/browser/notification_observer.h"
+ #include "content/public/browser/notification_registrar.h"
+ #include "content/public/browser/notification_service.h"
++#if defined(USE_DBUS)
+ #include "dbus/bus.h"
+ #include "dbus/message.h"
+ #include "dbus/object_proxy.h"
++#endif
+ #include "third_party/abseil-cpp/absl/types/optional.h"
+ #include "url/gurl.h"
+ 
+@@ -41,6 +45,7 @@
+ 
+ namespace {
+ 
++#if defined(USE_DBUS)
+ const char kMethodListActivatableNames[] = "ListActivatableNames";
+ const char kMethodNameHasOwner[] = "NameHasOwner";
+ 
+@@ -287,6 +292,7 @@
+ 
+   base::WeakPtrFactory<ShowItemHelper> weak_ptr_factory_{this};
+ };
++#endif
+ 
+ void RunCommand(const std::string& command,
+                 const base::FilePath& working_directory,
+@@ -353,8 +359,10 @@
+ }  // namespace internal
+ 
+ void ShowItemInFolder(Profile* profile, const base::FilePath& full_path) {
++#if defined(USE_DBUS)
+   DCHECK_CURRENTLY_ON(BrowserThread::UI);
+   ShowItemHelper::GetInstance().ShowItemInFolder(profile, full_path);
++#endif
+ }
+ 
+ void OpenExternal(Profile* profile, const GURL& url) {
+--- a/device/bluetooth/bluetooth_adapter_factory.cc
++++ b/device/bluetooth/bluetooth_adapter_factory.cc
+@@ -46,7 +46,7 @@
+   // instance even on platforms that would otherwise not support it.
+   if (Get()->adapter_)
+     return true;
+-#if defined(OS_ANDROID) || defined(OS_WIN) || defined(OS_LINUX) || \
++#if defined(OS_ANDROID) || defined(OS_WIN) || defined(OS_LINUX) && defined(USE_DBUS) || \
+     defined(OS_CHROMEOS) || defined(OS_MAC)
+   return true;
+ #else
+@@ -69,7 +69,7 @@
+   return base::win::GetVersion() >= base::win::Version::WIN10;
+ #elif defined(OS_MAC)
+   return true;
+-#elif (defined(OS_LINUX) || defined(OS_CHROMEOS))
++#elif (defined(OS_LINUX) && defined(USE_DBUS) || defined(OS_CHROMEOS))
+   return true;
+ #else
+   return false;
+--- a/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc
++++ b/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc
+@@ -1338,7 +1338,7 @@
+ // TODO: Ideally this should be handled by our feature system, so that this
+ // code doesn't even compile on OSes it isn't being used on, but currently this
+ // is not possible.
+-#if !defined(OS_WIN)
++#if !defined(OS_WIN) && (!defined(OS_LINUX) || defined(USE_DBUS))
+   base::WeakPtr<device::BluetoothLocalGattService> service =
+       device::BluetoothLocalGattService::Create(
+           event_router_->adapter(),
+@@ -1367,6 +1367,7 @@
+ }
+ 
+ void BluetoothLowEnergyCreateCharacteristicFunction::DoWork() {
++#if !defined(OS_LINUX) || defined(USE_DBUS)
+   device::BluetoothLocalGattService* service =
+       event_router_->adapter()->GetGattService(params_->service_id);
+   if (!service) {
+@@ -1387,6 +1388,9 @@
+ 
+   Respond(ArgumentList(apibtle::CreateCharacteristic::Results::Create(
+       characteristic->GetIdentifier())));
++#else
++  Respond(Error(kErrorPlatformNotSupported));
++#endif
+ }
+ 
+ // createDescriptor:
+@@ -1403,6 +1407,7 @@
+ }
+ 
+ void BluetoothLowEnergyCreateDescriptorFunction::DoWork() {
++#if !defined(OS_LINUX) || defined(USE_DBUS)
+   device::BluetoothLocalGattCharacteristic* characteristic =
+       event_router_->GetLocalCharacteristic(params_->characteristic_id);
+   if (!characteristic) {
+@@ -1418,6 +1423,9 @@
+ 
+   Respond(ArgumentList(
+       apibtle::CreateDescriptor::Results::Create(descriptor->GetIdentifier())));
++#else
++  Respond(Error(kErrorPlatformNotSupported));
++#endif
+ }
+ 
+ // registerService:
+--- a/services/device/battery/battery_status_manager_default.cc
++++ b/services/device/battery/battery_status_manager_default.cc
+@@ -22,11 +22,10 @@
+  private:
+   // BatteryStatusManager:
+   bool StartListeningBatteryChange() override {
+-    NOTIMPLEMENTED();
+     return false;
+   }
+ 
+-  void StopListeningBatteryChange() override { NOTIMPLEMENTED(); }
++  void StopListeningBatteryChange() override { }
+ 
+   DISALLOW_COPY_AND_ASSIGN(BatteryStatusManagerDefault);
+ };
+--- a/services/device/wake_lock/power_save_blocker/BUILD.gn
++++ b/services/device/wake_lock/power_save_blocker/BUILD.gn
+@@ -94,6 +94,9 @@
+     visibility = [ ":power_save_blocker" ]
+     sources = java_sources_needing_jni
+   }
++  if (!is_chromeos && use_x11 && !use_dbus) {
++    sources += [ "power_save_blocker_ozone.cc" ]
++  }
+ 
+   android_library("java") {
+     # Conceptually, this should be visible only to //services/device:java.
+--- a/ui/gtk/BUILD.gn
++++ b/ui/gtk/BUILD.gn
+@@ -69,8 +69,6 @@
+     "select_file_dialog_impl_gtk.cc",
+     "select_file_dialog_impl_gtk.h",
+     "select_file_dialog_impl_kde.cc",
+-    "select_file_dialog_impl_portal.cc",
+-    "select_file_dialog_impl_portal.h",
+     "settings_provider.h",
+     "settings_provider_gtk.cc",
+     "settings_provider_gtk.h",
+@@ -90,8 +88,6 @@
+   deps = [
+     ":gtk_stubs",
+     "//base",
+-    "//components/dbus/thread_linux",
+-    "//dbus",
+     "//skia",
+ 
+     # GTK pulls pangoft2, which requires HarfBuzz symbols. When linking
+--- a/ui/gtk/select_file_dialog_impl.cc
++++ b/ui/gtk/select_file_dialog_impl.cc
+@@ -12,7 +12,9 @@
+ #include "base/no_destructor.h"
+ #include "base/notreached.h"
+ #include "base/threading/thread_restrictions.h"
++#if defined(USE_DBUS)
+ #include "ui/gtk/select_file_dialog_impl_portal.h"
++#endif
+ 
+ namespace {
+ 
+@@ -34,12 +36,16 @@
+ 
+ // static
+ void SelectFileDialogImpl::Initialize() {
++#if defined(USE_DBUS)
+   SelectFileDialogImplPortal::StartAvailabilityTestInBackground();
++#endif
+ }
+ 
+ // static
+ void SelectFileDialogImpl::Shutdown() {
++#if defined(USE_DBUS)
+   SelectFileDialogImplPortal::DestroyPortalConnection();
++#endif
+ }
+ 
+ // static
+@@ -50,12 +56,14 @@
+     // Start out assumimg we are going to use GTK.
+     dialog_choice_ = kGtk;
+ 
++#if defined(USE_DBUS)
+     // Check to see if the portal is available.
+     if (SelectFileDialogImplPortal::IsPortalAvailable()) {
+       dialog_choice_ = kPortal;
+     } else {
+       // Make sure to kill the portal connection.
+       SelectFileDialogImplPortal::DestroyPortalConnection();
++#endif
+ 
+       // Check to see if KDE is the desktop environment.
+       std::unique_ptr<base::Environment> env(base::Environment::Create());
+@@ -73,16 +81,20 @@
+           }
+         }
+       }
++#if defined(USE_DBUS)
+     }
++#endif
+   }
+ 
+   switch (dialog_choice_) {
+     case kGtk:
+       return SelectFileDialogImpl::NewSelectFileDialogImplGTK(
+           listener, std::move(policy));
++#if defined(USE_DBUS)
+     case kPortal:
+       return SelectFileDialogImpl::NewSelectFileDialogImplPortal(
+           listener, std::move(policy));
++#endif
+     case kKde: {
+       std::unique_ptr<base::Environment> env(base::Environment::Create());
+       base::nix::DesktopEnvironment desktop =
