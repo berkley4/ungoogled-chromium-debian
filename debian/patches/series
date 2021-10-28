@@ -87,3 +87,4 @@ various/init-stack-vars-zero.patch
 various/mtune.patch
 various/custom-x64-arch.patch
 various/silence-alsa-frames-log-msg.patch
+various/chromium-fix-build-without-avx2.patch
