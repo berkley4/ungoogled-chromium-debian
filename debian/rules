@@ -124,7 +124,7 @@ $(GN):
 
 override_dh_auto_configure:
 	sed -e '/tools\/clang\/scripts\/update.py/d' -i $(UC_DIR)/domain_substitution.list
-	$(UL_DIR)/domain_substitution.py apply -r $(UC_DIR)/domain_regex.list -f $(UC_DIR)/domain_substitution.list -c $(DS_CACHE) $(RT_DIR)
+	if [ -f $(DS_CACHE) ]; then printf '%s\n' "$(DS_CACHE) exists, aborting."; else $(UL_DIR)/domain_substitution.py apply -r $(UC_DIR)/domain_regex.list -f $(UC_DIR)/domain_substitution.list -c $(DS_CACHE) $(RT_DIR); fi
 	cp $(SH_DIR)/jsoncpp.gn build/linux/unbundle
 	build/linux/unbundle/replace_gn_files.py --system-libraries $(SYS_LIBS)
 
