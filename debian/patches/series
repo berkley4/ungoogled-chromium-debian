@@ -86,6 +86,7 @@ bromite/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
 various/init-stack-vars-zero.patch
 various/silence-alsa-frames-log-msg.patch
 various/chromium-fix-build-without-avx2.patch
+various/system-node-fix.patch
 
 
 ## upstream ungoogled chromium patches are below ##
