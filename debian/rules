@@ -56,7 +56,6 @@ GN_FLAGS += \
         enable_swiftshader=false \
         enable_vr=false \
         use_kerberos=false \
-        use_x11=false \
         v8_enable_pointer_compression=true \
         v8_enable_zone_compression=true
 
