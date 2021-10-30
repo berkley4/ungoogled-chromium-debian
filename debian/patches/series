@@ -87,6 +87,7 @@ various/init-stack-vars-zero.patch
 various/silence-alsa-frames-log-msg.patch
 various/chromium-fix-build-without-avx2.patch
 various/system-node-fix.patch
+various/fix-missing-quiche-stddef-header.patch
 
 
 ## upstream ungoogled chromium patches are below ##
