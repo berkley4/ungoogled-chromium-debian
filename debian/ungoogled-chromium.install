@@ -10,7 +10,7 @@ out/Release/v8_context_snapshot.bin                                            u
 out/Release/icudtl.dat                                                         usr/lib/chromium
 out/Release/resources.pak                                                      usr/lib/chromium
 out/Release/locales/*.pak                                                      usr/lib/chromium/locales
-out/Release/swiftshader/lib*.so                                                usr/lib/chromium/swiftshader
+#out/Release/swiftshader/lib*.so                                                usr/lib/chromium/swiftshader
 debian/submodules/chromium-launcher/chromium                                   usr/bin
 debian/chromium-flags.conf                                                     etc
 chrome/installer/linux/common/desktop.template                              => usr/share/applications/chromium.desktop
