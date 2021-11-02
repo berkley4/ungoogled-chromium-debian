@@ -48,7 +48,6 @@ warnings/null-destination.patch
 warnings/unused-but.patch
 
 system/jpeg.patch
-system/node.patch
 system/nspr.patch
 system/zlib.patch
 system/event.patch
@@ -85,7 +84,7 @@ bromite/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
 various/init-stack-vars-zero.patch
 various/silence-alsa-frames-log-msg.patch
 various/chromium-fix-build-without-avx2.patch
-various/system-node-fix.patch
+various/system-node.patch
 various/fix-missing-quiche-stddef-header.patch
 
 #optional/custom-x64-arch.patch
