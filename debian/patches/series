@@ -89,6 +89,11 @@ various/chromium-fix-build-without-avx2.patch
 various/system-node-fix.patch
 various/fix-missing-quiche-stddef-header.patch
 
+#optional/custom-x64-arch.patch
+#optional/mtune.patch
+#optional/disable/catapult.patch
+#optional/disable/chromium-optional-atk-dbus.patch
+
 
 ## upstream ungoogled chromium patches are below ##
 
