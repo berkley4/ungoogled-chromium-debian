@@ -131,6 +131,9 @@ override_dh_prep:
 	git submodule foreach git reset --hard
 	dh_prep
 
+override_dh_auto_install:
+	chmod 4755 out/Release/chrome_sandbox
+
 override_dh_fixperms:
 	dh_fixperms --exclude chrome_sandbox
 
