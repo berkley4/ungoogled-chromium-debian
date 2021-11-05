@@ -7,6 +7,7 @@
 # License: GPLv2 or later
 
 APPNAME=chromium
+BINNAME=chrome
 
 GDB=/usr/bin/gdb
 LIBDIR=/usr/lib/$APPNAME
@@ -112,18 +113,18 @@ if [ $want_debug -eq 1 ] ; then
   echo "#                PATH=$PATH"
   echo "#            GTK_PATH=$GTK_PATH"
   echo "#      CHROMIUM_FLAGS=$CHROMIUM_FLAGS"
-  echo "$GDB $LIBDIR/$APPNAME -x $tmpfile"
-  $GDB "$LIBDIR/$APPNAME" -x $tmpfile
+  echo "$GDB $LIBDIR/$BINNAME -x $tmpfile"
+  $GDB "$LIBDIR/$BINNAME" -x $tmpfile
   if [ $want_temp_profile -eq 1 ] ; then
     rm -rf $TEMP_PROFILE
   fi
   exit $?
 else
   if [ $want_temp_profile -eq 0 ] ; then
-    exec $LIBDIR/$APPNAME $CHROMIUM_FLAGS "$@"
+    exec $LIBDIR/$BINNAME $CHROMIUM_FLAGS "$@"
   else
     # we can't exec here as we need to clean-up the temporary profile
-    $LIBDIR/$APPNAME $CHROMIUM_FLAGS "$@"
+    $LIBDIR/$BINNAME $CHROMIUM_FLAGS "$@"
     rm -rf $TEMP_PROFILE
   fi
 fi
