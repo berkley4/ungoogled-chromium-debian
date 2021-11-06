@@ -100,6 +100,7 @@ download:
 
 setup: changelog control download
 	git submodule foreach git reset --hard
+	patch -p1 < $(SH_DIR)/no-exit-if-pruned.patch
 	test -d build || $(UL_DIR)/downloads.py unpack -i $(UC_DIR)/downloads.ini -c $(DL_CACHE) $(RT_DIR)
 	tools/clang/scripts/update.py
 	sed -e '/^buildtools/d' -e '/^third_party\/llvm/d' -e '/^chrome\/build\/pgo_profiles/d' -i $(UC_DIR)/pruning.list

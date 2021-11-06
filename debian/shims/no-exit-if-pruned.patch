@@ -1,0 +1,10 @@
+--- a/submodules/ungoogled-chromium/utils/prune_binaries.py
++++ b/submodules/ungoogled-chromium/utils/prune_binaries.py
+@@ -49,7 +49,6 @@
+         get_logger().error('%d files could not be pruned.', len(unremovable_files))
+         get_logger().debug('Files could not be pruned:\n%s',
+                            '\n'.join(f for f in unremovable_files))
+-        sys.exit(1)
+ 
+ 
+ def main():
