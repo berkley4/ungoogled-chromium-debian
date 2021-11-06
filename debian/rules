@@ -99,6 +99,7 @@ download:
 	test -d build || $(UL_DIR)/downloads.py retrieve -i $(UC_DIR)/downloads.ini -c $(DL_CACHE)
 
 setup: changelog control download
+	git submodule foreach git reset --hard
 	test -d build || $(UL_DIR)/downloads.py unpack -i $(UC_DIR)/downloads.ini -c $(DL_CACHE) $(RT_DIR)
 	tools/clang/scripts/update.py
 	sed -e '/^buildtools/d' -e '/^third_party\/llvm/d' -e '/^chrome\/build\/pgo_profiles/d' -i $(UC_DIR)/pruning.list
@@ -107,7 +108,7 @@ setup: changelog control download
 	test -d $(DB_DIR)/patches/core && test -d $(DB_DIR)/patches/extra || cp -a $(UP_DIR)/core $(UP_DIR)/extra $(DB_DIR)/patches/
 	test -n "$$(grep '^core\|^extra' $(DB_DIR)/patches/series)" || cat $(UP_DIR)/series >>$(DB_DIR)/patches/series
 	sed 's@^\(chrome_pgo_phase=\)[01]@\12@' -i $(UC_DIR)/flags.gn
-	test -n "$$(grep ^pgo_data_path $(UC_DIR)/flags.gn)" || sed "$$ a pgo_data_path=\"$$(realpath chrome/build/pgo_profiles/$$(cat chrome/build/linux.pgo.txt))\"" -i $(UC_DIR)/flags.gn
+	sed "$$ a pgo_data_path=\"$$(realpath chrome/build/pgo_profiles/$$(cat chrome/build/linux.pgo.txt))\"" -i $(UC_DIR)/flags.gn
 
 $(GN):
 	# Switch to distribution GN once generate-ninja has widespread availability
