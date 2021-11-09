@@ -5,7 +5,6 @@
 ### debian patches are below ###
 ################################
 
-use-package-optimizations.patch
 shim-fix-for-official-builds.patch
 perfetto-system-zlib.patch
 pdfium-system-tiff.patch
