@@ -1,5 +1,5 @@
 #!/usr/bin/dh-exec
-out/Release/chrome_sandbox                                                     usr/lib/chromium
+out/Release/chrome_sandbox                                                  => usr/lib/chromium/chrome-sandbox
 out/Release/chrome                                                             usr/lib/chromium
 out/Release/chromedriver                                                       usr/lib/chromium
 out/Release/libEGL.so                                                          usr/lib/chromium
