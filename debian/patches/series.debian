@@ -93,6 +93,7 @@ various/chromium-fix-build-without-avx2.patch
 various/system-node.patch
 various/fix-missing-quiche-stddef-header.patch
 various/ozone-x11-fix-VA-API.patch
+various/chromium-95-xfce-maximize.patch
 
 #optional/custom-x64-arch.patch
 #optional/mtune.patch
