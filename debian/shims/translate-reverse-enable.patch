@@ -1,0 +1,32 @@
+--- a/chrome/browser/spellchecker/spellcheck_hunspell_dictionary.cc
++++ b/chrome/browser/spellchecker/spellcheck_hunspell_dictionary.cc
+@@ -279,7 +279,7 @@
+   DCHECK(!bdict_file.empty());
+ 
+   static const char kDownloadServerUrl[] =
+-      "trk:173:https://redirector.gvt1.com/edgedl/chrome/dict/";
++      "https://redirector.gvt1.com/edgedl/chrome/dict/";
+ 
+   return GURL(std::string(kDownloadServerUrl) +
+               base::ToLowerASCII(bdict_file));
+--- a/components/translate/core/browser/translate_url_fetcher.cc
++++ b/components/translate/core/browser/translate_url_fetcher.cc
+@@ -99,7 +99,6 @@
+   if (!extra_request_header_.empty())
+     resource_request->headers.AddHeaderFromString(extra_request_header_);
+ 
+-  fprintf(stderr, "translator: fetching something from %s\n", url_.spec().c_str());
+   simple_loader_ =
+       variations::CreateSimpleURLLoaderWithVariationsHeaderUnknownSignedIn(
+           std::move(resource_request),
+--- a/components/translate/core/common/translate_util.cc
++++ b/components/translate/core/common/translate_util.cc
+@@ -20,7 +20,7 @@
+ 
+ }  // namespace
+ 
+-const char kSecurityOrigin[] = "trk:220:https://translate.googleapis.com/";
++const char kSecurityOrigin[] = "https://translate.googleapis.com/";
+ 
+ const base::Feature kTranslateSubFrames{"TranslateSubFrames",
+                                         base::FEATURE_DISABLED_BY_DEFAULT};

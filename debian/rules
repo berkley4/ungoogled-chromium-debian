@@ -107,6 +107,11 @@ setup: changelog control download
 	test -d $(DB_DIR)/patches/core && test -d $(DB_DIR)/patches/extra || cp -a $(UP_DIR)/core $(UP_DIR)/extra $(DB_DIR)/patches/
 	cat $(UP_DIR)/series $(DB_DIR)/patches/series.debian > $(DB_DIR)/patches/series
 
+setup_translate: setup
+	sed -e '/\/translate_manager_browsertest\.cc/d' -e '/\/translate_script\.cc/d' -e '/\/translate_util\.cc/d' -i $(UC_DIR)/domain_substitution.list
+	test -f $(DB_DIR)/patches/translate-reverse-enable.patch || cp -a $(SH_DIR)/translate-reverse-enable.patch $(DB_DIR)/patches/
+	test -n "$$(grep ^translate-reverse-enable\.patch $(DB_DIR)/patches/series)" || sed '$$ a \\ntranslate-reverse-enable.patch' -i  $(DB_DIR)/patches/series
+
 $(GN):
 	# Switch to distribution GN once generate-ninja has widespread availability
 	tools/gn/bootstrap/bootstrap.py -j $(JOBS) --skip-generate-buildfiles
