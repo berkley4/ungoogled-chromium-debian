@@ -44,7 +44,8 @@ Build-Depends:
  libevent-dev,
  liblcms2-dev,
  libopenjp2-7-dev,
- libjsoncpp-dev
+ libjsoncpp-dev,
+ libpipewire-0.3-dev
 
 Package: ungoogled-chromium
 Architecture: any
