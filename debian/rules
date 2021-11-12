@@ -40,7 +40,6 @@ GN_FLAGS += \
         is_official_build=true \
         symbol_level=1 \
         blink_enable_generated_code_formatting=false \
-        is_cfi=true \
         use_sysroot=false \
         use_gnome_keyring=false \
         ffmpeg_branding=\"ChromeOS\" \
