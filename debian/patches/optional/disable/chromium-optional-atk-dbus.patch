@@ -1,3 +1,8 @@
+description: add use_atk=false and use_dbus=false to GN_FLAGS in debian/rules
+author: KISS Community
+
+---
+
 --- a/build/config/ui.gni
 +++ b/build/config/ui.gni
 @@ -37,8 +37,10 @@
