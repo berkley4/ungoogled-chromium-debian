@@ -92,6 +92,7 @@ various/silence-alsa-frames-log-msg.patch
 various/chromium-fix-build-without-avx2.patch
 various/system-node.patch
 various/fix-missing-quiche-stddef-header.patch
+various/ozone-x11-fix-VA-API.patch
 
 #optional/custom-x64-arch.patch
 #optional/mtune.patch
