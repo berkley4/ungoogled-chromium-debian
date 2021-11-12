@@ -27,17 +27,16 @@ usage () {
 
 @PRINT_DIST@
 
-nosse2="\
-The hardware on this system lacks support for the sse2 instruction set.
+nosse3="\
+The hardware on this system lacks support for the sse3 instruction set.
 The upstream chromium project no longer supports this configuration.
-For more information, please read and possibly provide input to their
-bug tracking system at http://crbug.com/348761."
+For more information, please go to https://crbug.com/1123353."
 
 case `uname -m` in
     i386|i586|i686|x86_64)
-        # Check whether this system supports sse2
-        if ! grep -q sse2 /proc/cpuinfo; then
-            xmessage "$nosse2"
+        # Check whether this system supports sse3
+        if ! grep -q sse3 /proc/cpuinfo; then
+            xmessage "$nosse3"
             exit 1
         fi
         ;;
