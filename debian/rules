@@ -2,8 +2,8 @@
 
 RT_DIR   := $(CURDIR)
 DB_DIR   := $(RT_DIR)/debian
+DU_DIR   := $(DB_DIR)/devutils
 SH_DIR   := $(DB_DIR)/shims
-CL_DIR   := $(DB_DIR)/submodules/chromium-launcher
 UC_DIR   := $(DB_DIR)/submodules/ungoogled-chromium
 UL_DIR   := $(UC_DIR)/utils
 UP_DIR   := $(UC_DIR)/patches
@@ -127,7 +127,6 @@ override_dh_auto_configure:
 override_dh_auto_build: $(GN)
 	$(GN) gen $(OUT_DIR) --args="$(GN_FLAGS)" --fail-on-unused-args
 	ninja -j $(JOBS) -C $(OUT_DIR) chrome chrome_sandbox chromedriver
-	$(MAKE) -C $(CL_DIR) CFLAGS="$(CFLAGS) -g -pie -fPIE" CHROMIUM_BINARY=/usr/lib/chromium/chrome chromium
 
 override_dh_prep:
 	for file in `find -name "*.gn.orig" -o -name "*.gni.orig"`; do mv $$file $${file%.orig}; done
@@ -138,12 +137,12 @@ override_dh_prep:
 
 override_dh_auto_install:
 	chmod 4755 out/Release/chrome_sandbox
+	$(DU_DIR)/update_launcher.sh < $(DB_DIR)/chromium > $(DB_DIR)/ungoogled-chromium/usr/bin/chromium
 
 override_dh_fixperms:
 	dh_fixperms --exclude chrome_sandbox
 
 override_dh_auto_clean:
 	rm -rf out
-	$(MAKE) -C $(CL_DIR) clean
 	find -name "*.pyc" -delete
 	dh_auto_clean
