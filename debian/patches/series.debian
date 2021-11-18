@@ -53,6 +53,7 @@ warnings/gcc-diagnostic.patch
 warnings/null-destination.patch
 warnings/unused-but.patch
 
+#system/icu.patch
 system/jpeg.patch
 system/nspr.patch
 system/zlib.patch
