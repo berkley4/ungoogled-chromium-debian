@@ -90,11 +90,11 @@ bromite/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
 
 various/init-stack-vars-zero.patch
 various/silence-alsa-frames-log-msg.patch
-various/chromium-fix-build-without-avx2.patch
-various/system-node.patch
-various/fix-missing-quiche-stddef-header.patch
-various/ozone-x11-fix-VA-API.patch
-various/chromium-95-xfce-maximize.patch
+various/fixes/chromium-fix-build-without-avx2.patch
+various/fixes/fix-missing-quiche-stddef-header.patch
+various/fixes/ozone-x11-fix-VA-API.patch
+various/fixes/chromium-95-xfce-maximize.patch
+various/system/system-node.patch
 
 #optional/custom-x64-arch.patch
 #optional/mtune.patch
