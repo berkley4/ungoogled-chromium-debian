@@ -3,7 +3,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/third_party/pdfium/BUILD.gn
 +++ b/third_party/pdfium/BUILD.gn
-@@ -18,7 +18,7 @@ group("freetype_common") {
+@@ -18,7 +18,7 @@
  config("pdfium_common_config") {
    cflags = []
    ldflags = []
@@ -14,7 +14,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      "PNG_USE_READ_MACROS",
 --- a/third_party/pdfium/core/fpdfapi/render/BUILD.gn
 +++ b/third_party/pdfium/core/fpdfapi/render/BUILD.gn
-@@ -46,6 +46,7 @@ source_set("render") {
+@@ -46,6 +46,7 @@
    ]
    configs += [ "../../../:pdfium_strict_config" ]
    deps = [

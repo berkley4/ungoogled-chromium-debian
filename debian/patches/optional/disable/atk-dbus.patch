@@ -175,7 +175,7 @@ author: KISS Community
  // registerService:
 --- a/services/device/battery/battery_status_manager_default.cc
 +++ b/services/device/battery/battery_status_manager_default.cc
-@@ -22,11 +22,10 @@
+@@ -27,11 +27,10 @@
   private:
    // BatteryStatusManager:
    bool StartListeningBatteryChange() override {
@@ -185,9 +185,9 @@ author: KISS Community
  
 -  void StopListeningBatteryChange() override { NOTIMPLEMENTED(); }
 +  void StopListeningBatteryChange() override { }
- 
-   DISALLOW_COPY_AND_ASSIGN(BatteryStatusManagerDefault);
  };
+ 
+ }  // namespace
 --- a/services/device/wake_lock/power_save_blocker/BUILD.gn
 +++ b/services/device/wake_lock/power_save_blocker/BUILD.gn
 @@ -94,6 +94,9 @@

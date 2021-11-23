@@ -3,7 +3,7 @@ author: Michael Gilbert
 
 --- a/base/location.cc
 +++ b/base/location.cc
-@@ -151,7 +151,7 @@ NOINLINE Location Location::Current(cons
+@@ -159,7 +159,7 @@
  #else
  // static
  NOINLINE Location Location::Current() {

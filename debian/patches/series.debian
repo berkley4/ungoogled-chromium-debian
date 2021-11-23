@@ -43,15 +43,12 @@ disable/angle-perftests.patch
 disable/web-ui-tests.patch
 disable/ozone-unittests.patch
 disable/devtools-unittests.patch
-disable/ios.patch
 disable/libaom-arm.patch
 
 warnings/restrict.patch
 warnings/multichar.patch
 warnings/deprecated.patch
-warnings/gcc-diagnostic.patch
 warnings/null-destination.patch
-warnings/unused-but.patch
 
 #system/icu.patch
 system/jpeg.patch
@@ -90,13 +87,17 @@ bromite/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
 
 various/init-stack-vars-zero.patch
 various/silence-alsa-frames-log-msg.patch
-various/fixes/chromium-fix-build-without-avx2.patch
+various/fixes/commandline-include.patch
+various/fixes/coupondb-include.patch
+various/fixes/drm-render-node-path-finder-include.patch
 various/fixes/fix-missing-quiche-stddef-header.patch
-various/fixes/ozone-x11-fix-VA-API.patch
-various/fixes/chromium-95-xfce-maximize.patch
-various/system/system-node.patch
+various/fixes/restricted-cookie-manager-tuple.patch
+various/fixes/xfce-maximize.patch
+various/system/node.patch
+various/system/unbundle-fix-visibility-of-build-config-freetype.patch
 
 #optional/custom-x64-arch.patch
 #optional/mtune.patch
 #optional/disable/catapult.patch
 #optional/disable/chromium-optional-atk-dbus.patch
+#optional/system/unicode-fix-missing-headers.patch

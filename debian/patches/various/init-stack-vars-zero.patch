@@ -1,6 +1,6 @@
---- a/build/config/compiler/BUILD.gn	2021-05-19 06:38:44.504582887 +0100
-+++ b/build/config/compiler/BUILD.gn	2021-05-22 22:36:56.907722674 +0100
-@@ -2563,7 +2564,9 @@
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -2487,7 +2487,9 @@
  config("default_init_stack_vars") {
    cflags = []
    if (init_stack_vars && is_clang && !is_nacl && !using_sanitizer) {

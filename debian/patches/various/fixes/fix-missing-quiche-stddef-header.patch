@@ -1,7 +1,7 @@
 --- a/net/third_party/quiche/src/http2/adapter/window_manager.h
 +++ b/net/third_party/quiche/src/http2/adapter/window_manager.h
-@@ -2,6 +2,7 @@
- #define QUICHE_HTTP2_ADAPTER_WINDOW_MANAGER_H_
+@@ -4,6 +4,7 @@
+ #include <stddef.h>
  
  #include <functional>
 +#include <stddef.h>

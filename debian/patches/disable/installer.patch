@@ -3,10 +3,10 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -77,8 +77,6 @@ group("gn_all") {
+@@ -79,8 +79,6 @@
+     ":gn_visibility",
      "//base:base_perftests",
      "//base:base_unittests",
-     "//base/util:base_util_unittests",
 -    "//chrome/installer",
 -    "//chrome/updater",
      "//codelabs",
@@ -14,7 +14,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      "//components/gwp_asan:gwp_asan_unittests",
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -6743,7 +6743,6 @@ source_set("active_use_util") {
+@@ -7070,7 +7070,6 @@
    deps = [
      "//base",
      "//chrome/common:constants",

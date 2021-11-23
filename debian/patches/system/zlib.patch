@@ -3,7 +3,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/courgette/BUILD.gn
 +++ b/courgette/BUILD.gn
-@@ -58,7 +58,6 @@ static_library("courgette_lib") {
+@@ -58,7 +58,6 @@
  
    deps = [
      "//base",
@@ -11,7 +11,7 @@ author: Michael Gilbert <mgilbert@debian.org>
    ]
  
    public_deps = [
-@@ -79,7 +78,6 @@ source_set("courgette_common") {
+@@ -79,7 +78,6 @@
    ]
    deps = [
      "//base",
@@ -32,7 +32,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  #else
 --- a/third_party/perfetto/gn/BUILD.gn
 +++ b/third_party/perfetto/gn/BUILD.gn
-@@ -381,7 +381,6 @@ if (enable_perfetto_zlib) {
+@@ -386,7 +386,6 @@
        public_configs = [ "//buildtools:zlib_config" ]
        public_deps = [ "//buildtools:zlib" ]
      } else {

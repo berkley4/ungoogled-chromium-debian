@@ -12,9 +12,9 @@ Change-Id: I69e71049157c03b74d78bc5edb7a60bf39cdda8b
 
 --- a/ui/platform_window/x11/x11_window.cc
 +++ b/ui/platform_window/x11/x11_window.cc
-@@ -673,6 +673,13 @@
-   // save this one for later too.
-   should_maximize_after_map_ = !window_mapped_in_client_;
+@@ -683,6 +683,13 @@
+   if (CanSetDecorationInsets())
+     SetDecorationInsets(nullptr);
  
 +  // Some WMs keep respecting the frame extents even if the window is maximised.
 +  // Remove the insets when maximising.  The extents will be set again when the

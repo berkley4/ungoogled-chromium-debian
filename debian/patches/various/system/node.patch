@@ -11,10 +11,10 @@ author: Michael Gilbert <mgilbert@debian.org>
 +    "noEmitOnError": false,
      "pretty": true,
  
-     "incremental": true,
+     "forceConsistentCasingInFileNames": true,
 --- a/third_party/devtools-frontend/src/scripts/devtools_paths.py
 +++ b/third_party/devtools-frontend/src/scripts/devtools_paths.py
-@@ -37,13 +37,7 @@ def third_party_path():
+@@ -38,13 +38,7 @@
  
  # This points to the node binary downloaded as part of the checkout.
  def node_path():
@@ -31,7 +31,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  def devtools_root_path():
 --- a/third_party/lottie/minify_lottie.py
 +++ b/third_party/lottie/minify_lottie.py
-@@ -12,16 +12,14 @@ _SRC_PATH = os.path.normpath(os.path.join(_HERE_PATH, '..', '..'))
+@@ -12,16 +12,14 @@
  
  sys.path.append(os.path.join(_SRC_PATH, 'third_party', 'node'))
  import node
@@ -68,5 +68,5 @@ author: Michael Gilbert <mgilbert@debian.org>
 -  }[platform.system()])
 +  return '/usr/bin/nodejs'
  
+ 
  def RunNode(cmd_parts, stdout=None):
-   cmd = [GetBinaryPath()] + cmd_parts

@@ -1,8 +1,8 @@
---- a/build/config/x64.gni	2019-12-09 21:51:06.000000000 +0000
-+++ b/build/config/x64.gni	2021-10-21 13:36:04.293334447 +0100
+--- a/build/config/x64.gni
++++ b/build/config/x64.gni
 @@ -18,7 +18,7 @@
  
-   if ((is_posix && !(is_mac || is_ios)) || is_fuchsia) {
+   if ((is_posix && !is_apple) || is_fuchsia) {
      if (x64_arch == "") {
 -      x64_arch = "x86-64"
 +      x64_arch = "x86-64"

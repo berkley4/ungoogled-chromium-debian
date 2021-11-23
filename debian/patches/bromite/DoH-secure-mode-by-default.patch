@@ -6,10 +6,9 @@ Subject: DoH secure mode by default
  .../browser/net/stub_resolver_config_reader.cc  | 17 +----------------
  1 file changed, 1 insertion(+), 16 deletions(-)
 
-diff --git a/chrome/browser/net/stub_resolver_config_reader.cc b/chrome/browser/net/stub_resolver_config_reader.cc
 --- a/chrome/browser/net/stub_resolver_config_reader.cc
 +++ b/chrome/browser/net/stub_resolver_config_reader.cc
-@@ -154,7 +154,7 @@ StubResolverConfigReader::StubResolverConfigReader(PrefService* local_state,
+@@ -154,7 +154,7 @@
        if (entries.count("dns-over-https@1")) {
          // The user has "Enabled" selected.
          local_state_->SetString(prefs::kDnsOverHttpsMode,
@@ -18,7 +17,7 @@ diff --git a/chrome/browser/net/stub_resolver_config_reader.cc b/chrome/browser/
        } else if (entries.count("dns-over-https@2")) {
          // The user has "Disabled" selected.
          local_state_->SetString(prefs::kDnsOverHttpsMode,
-@@ -334,22 +334,7 @@ SecureDnsConfig StubResolverConfigReader::GetAndUpdateConfiguration(
+@@ -334,22 +334,7 @@
      check_parental_controls = false;
    }
  
@@ -41,6 +40,3 @@ diff --git a/chrome/browser/net/stub_resolver_config_reader.cc b/chrome/browser/
      parental_controls_checked_ = true;
    }
  
--- 
-2.17.1
-

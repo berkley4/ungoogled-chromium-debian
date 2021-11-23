@@ -3,7 +3,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/tools/flags/list_flags.py
 +++ b/tools/flags/list_flags.py
-@@ -21,7 +21,6 @@ sys.path.append(PYJSON5_PATH)
+@@ -21,7 +21,6 @@
  sys.path.append(DEPOT_TOOLS_PATH)
  
  import json5
@@ -11,7 +11,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  
  
  def load_metadata():
-@@ -55,35 +54,6 @@ def keep_never_expires(flags):
+@@ -55,35 +54,6 @@
    return [f for f in flags if f['expiry_milestone'] == -1]
  
  

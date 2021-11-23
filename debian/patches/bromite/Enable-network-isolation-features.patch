@@ -10,11 +10,10 @@ PartitionNelAndReportingByNetworkIsolationKey
  net/base/features.cc | 14 +++++++-------
  1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/net/base/features.cc b/net/base/features.cc
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -93,30 +93,30 @@ const base::Feature kNetworkQualityEstimator{"NetworkQualityEstimator",
-                                              base::FEATURE_DISABLED_BY_DEFAULT};
+@@ -96,30 +96,30 @@
+     "SplitCacheByIncludeCredentials", base::FEATURE_DISABLED_BY_DEFAULT};
  
  const base::Feature kSplitCacheByNetworkIsolationKey{
 -    "SplitCacheByNetworkIsolationKey", base::FEATURE_DISABLED_BY_DEFAULT};
@@ -51,6 +50,3 @@ diff --git a/net/base/features.cc b/net/base/features.cc
  
  const base::Feature kExpectCTPruning{"ExpectCTPruning",
                                       base::FEATURE_ENABLED_BY_DEFAULT};
--- 
-2.17.1
-

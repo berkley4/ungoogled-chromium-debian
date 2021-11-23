@@ -1,6 +1,6 @@
 --- a/third_party/libaom/options.gni
 +++ b/third_party/libaom/options.gni
-@@ -4,7 +4,7 @@ import("//build/config/gclient_args.gni")
+@@ -4,7 +4,7 @@
  
  declare_args() {
    # Enable encoding and decoding AV1 video files.

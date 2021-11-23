@@ -1,6 +1,6 @@
 --- a/build/linux/strip_binary.gni
 +++ b/build/linux/strip_binary.gni
-@@ -20,7 +20,7 @@ template("strip_binary") {
+@@ -20,7 +20,7 @@
                             "testonly",
                           ])
    action("${target_name}") {

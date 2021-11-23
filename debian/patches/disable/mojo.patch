@@ -3,7 +3,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -1087,8 +1087,6 @@
+@@ -1100,8 +1100,6 @@
        ":layout_test_data_mojo_bindings",
        ":layout_test_data_mojo_bindings_lite",
        "//content/shell:content_shell",
@@ -12,7 +12,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        "//device/bluetooth/public/mojom:fake_bluetooth_interfaces_js_data_deps",
        "//device/vr/public/mojom:vr_service_js_data_deps",
        "//media/capture/mojom:image_capture_js_data_deps",
-@@ -1122,8 +1120,6 @@
+@@ -1135,8 +1133,6 @@
          "//third_party/breakpad:symupload",
          "//tools/android/forwarder2",
        ]
@@ -23,7 +23,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      if (!is_win && !is_android) {
 --- a/content/browser/BUILD.gn
 +++ b/content/browser/BUILD.gn
-@@ -3036,7 +3036,6 @@
+@@ -3098,7 +3098,6 @@
    visibility = [
      "//content/public/test/android/*",
      "//content/test/*",
@@ -33,7 +33,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      public_deps = [ ":browser" ]
 --- a/content/renderer/BUILD.gn
 +++ b/content/renderer/BUILD.gn
-@@ -556,7 +556,6 @@
+@@ -577,7 +577,6 @@
  group("for_content_tests") {
    visibility = [
      "//content/test/*",
@@ -65,7 +65,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  class ShellMainDelegate : public ContentMainDelegate {
   public:
    explicit ShellMainDelegate(bool is_content_browsertests = false);
-@@ -54,13 +50,6 @@
+@@ -58,13 +54,6 @@
    // content_browsertests should not set the kRunWebTests command line flag, so
    // |is_content_browsertests_| and |web_test_runner_| are mututally exclusive.
    bool is_content_browsertests_;
@@ -157,7 +157,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  }
 --- a/third_party/blink/tools/BUILD.gn
 +++ b/third_party/blink/tools/BUILD.gn
-@@ -71,8 +71,6 @@
+@@ -73,8 +73,6 @@
    data_deps = [
      "//:layout_test_data_mojo_bindings",
      "//:layout_test_data_mojo_bindings_lite",

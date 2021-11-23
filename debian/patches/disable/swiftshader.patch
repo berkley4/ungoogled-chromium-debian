@@ -3,7 +3,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -512,7 +512,7 @@ group("gn_all") {
+@@ -515,7 +515,7 @@
      ]
    }
  
@@ -14,7 +14,7 @@ author: Michael Gilbert <mgilbert@debian.org>
    }
 --- a/third_party/angle/gni/angle.gni
 +++ b/third_party/angle/gni/angle.gni
-@@ -123,7 +123,7 @@ declare_args() {
+@@ -138,7 +138,7 @@
        (ozone_platform_gbm || !is_linux || (angle_use_x11 && !is_chromeos)) &&
        !is_fuchsia && !angle_is_winuwp && !is_ggp && !is_win_arm64
  
@@ -23,7 +23,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        angle_has_build &&
        !(is_android && build_with_chromium && is_official_build) &&
        ((is_win && !angle_is_winuwp) ||
-@@ -408,7 +408,6 @@ if (angle_standalone || build_with_chromium) {
+@@ -429,7 +429,6 @@
                        "$angle_root:angle_common",
                        "$angle_root:includes",
                        "$angle_root/src/tests:angle_test_expectations",
@@ -33,7 +33,7 @@ author: Michael Gilbert <mgilbert@debian.org>
                        "//testing/gtest",
 --- a/gpu/vulkan/features.gni
 +++ b/gpu/vulkan/features.gni
-@@ -13,5 +13,5 @@ declare_args() {
+@@ -13,5 +13,5 @@
    # Enable swiftshader vulkan. Disabling it can save build time, however
    # --use-vulkan=swiftshader and some tests which use swiftshader vulkan will
    # not work.

@@ -3,7 +3,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/chrome/browser/resource_coordinator/tab_ranker/pairwise_inference.cc
 +++ b/chrome/browser/resource_coordinator/tab_ranker/pairwise_inference.cc
-@@ -1980,7 +1980,7 @@ void Inference(const float* __restrict f
+@@ -1980,7 +1980,7 @@
  
    // dnn/hiddenlayer_0/hiddenlayer_0/Relu
    Relu<float>(2,  // rank

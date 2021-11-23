@@ -8,10 +8,9 @@ as long as the test is retained and still passes.
  components/favicon/core/favicon_database.cc | 10 ++++++----
  1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/components/favicon/core/favicon_database.cc b/components/favicon/core/favicon_database.cc
 --- a/components/favicon/core/favicon_database.cc
 +++ b/components/favicon/core/favicon_database.cc
-@@ -506,6 +506,7 @@ FaviconBitmapID FaviconDatabase::AddFaviconBitmap(
+@@ -506,6 +506,7 @@
      base::Time time,
      const gfx::Size& pixel_size) {
    DCHECK(icon_id);
@@ -19,7 +18,7 @@ diff --git a/components/favicon/core/favicon_database.cc b/components/favicon/co
  
    sql::Statement statement(db_.GetCachedStatement(
        SQL_FROM_HERE,
-@@ -558,8 +559,8 @@ bool FaviconDatabase::SetFaviconBitmap(
+@@ -558,8 +559,8 @@
    } else {
      statement.BindNull(0);
    }
@@ -30,7 +29,7 @@ diff --git a/components/favicon/core/favicon_database.cc b/components/favicon/co
    statement.BindInt64(3, bitmap_id);
  
    return statement.Run();
-@@ -568,7 +569,7 @@ bool FaviconDatabase::SetFaviconBitmap(
+@@ -568,7 +569,7 @@
  bool FaviconDatabase::SetFaviconBitmapLastUpdateTime(FaviconBitmapID bitmap_id,
                                                       base::Time time) {
    DCHECK(bitmap_id);
@@ -39,7 +38,7 @@ diff --git a/components/favicon/core/favicon_database.cc b/components/favicon/co
    // If it is ON_DEMAND, reset last_requested to 0 and thus silently change the
    // type to ON_VISIT.
    sql::Statement statement(
-@@ -578,7 +579,8 @@ bool FaviconDatabase::SetFaviconBitmapLastUpdateTime(FaviconBitmapID bitmap_id,
+@@ -578,7 +579,8 @@
    statement.BindInt64(0, time.ToDeltaSinceWindowsEpoch().InMicroseconds());
    statement.BindInt64(1, 0);
    statement.BindInt64(2, bitmap_id);
@@ -49,6 +48,3 @@ diff --git a/components/favicon/core/favicon_database.cc b/components/favicon/co
  }
  
  bool FaviconDatabase::SetFaviconsOutOfDateBetween(base::Time begin,
--- 
-2.17.1
-

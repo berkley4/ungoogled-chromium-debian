@@ -6,10 +6,9 @@ Subject: Hardening against incognito mode detection
  storage/browser/quota/quota_settings.cc | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/storage/browser/quota/quota_settings.cc b/storage/browser/quota/quota_settings.cc
 --- a/storage/browser/quota/quota_settings.cc
 +++ b/storage/browser/quota/quota_settings.cc
-@@ -29,7 +29,7 @@ const int64_t kMBytes = 1024 * 1024;
+@@ -29,7 +29,7 @@
  const int kRandomizedPercentage = 10;
  const double kDefaultPerHostRatio = 0.75;
  const double kIncognitoQuotaRatioLowerBound = 0.15;
@@ -18,6 +17,3 @@ diff --git a/storage/browser/quota/quota_settings.cc b/storage/browser/quota/quo
  
  // Skews |value| by +/- |percent|.
  int64_t RandomizeByPercent(int64_t value, int percent) {
--- 
-2.17.1
-

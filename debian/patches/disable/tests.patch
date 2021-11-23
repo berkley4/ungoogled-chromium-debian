@@ -1,6 +1,6 @@
 --- a/media/BUILD.gn
 +++ b/media/BUILD.gn
-@@ -163,7 +163,6 @@ test("media_unittests") {
+@@ -164,7 +164,6 @@
      "//media/device_monitors:unit_tests",
      "//media/filters:unit_tests",
      "//media/formats:unit_tests",
@@ -10,7 +10,7 @@
      "//media/muxers:unit_tests",
 --- a/media/gpu/BUILD.gn
 +++ b/media/gpu/BUILD.gn
-@@ -474,66 +474,6 @@ static_library("test_support") {
+@@ -470,66 +470,6 @@
    ]
  }
  
@@ -28,7 +28,7 @@
 -    "//ui/gl:test_support",
 -  ]
 -  sources = [ "h264_decoder_unittest.cc" ]
--  if (proprietary_codecs && enable_platform_hevc) {
+-  if (enable_platform_hevc_decoding) {
 -    sources += [ "h265_decoder_unittest.cc" ]
 -  }
 -  if (is_chromeos_ash && (use_v4l2_codec || use_vaapi)) {
