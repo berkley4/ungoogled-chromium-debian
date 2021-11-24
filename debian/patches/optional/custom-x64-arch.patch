@@ -5,7 +5,7 @@
    if ((is_posix && !is_apple) || is_fuchsia) {
      if (x64_arch == "") {
 -      x64_arch = "x86-64"
-+      x64_arch = "x86-64"
++      x64_arch = "x86-64-v2"
      }
    }
  }

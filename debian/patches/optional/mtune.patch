@@ -4,7 +4,7 @@
        cflags += [
          "-m64",
          "-march=$x64_arch",
-+        "-mtune=$x64_arch",
++        "-mtune=generic",
          "-msse3",
        ]
        ldflags += [ "-m64" ]
