@@ -1,61 +1,62 @@
 # ungoogled-chromium-debian
 
-This repository contains files to build Debian packages of
-[ungoogled-chromium](//github.com/Eloston/ungoogled-chromium).
+This is my fork of the unified branch of [ungoogle-chromium-debian](https://github.com/ungoogled-software/ungoogled-chromium-debian).
 
-These are the new unified packaging files which are designed to be built
-directly from the git repository and serve as a single set of packaging
-files for all Debian or Ubuntu releases newer than the currently oldest
-supported release, `Focal`.
+There are debs in the release section, but these probably only work for
+debian/devuan unstable (and possibly it's equivalents), since they are 
+built in a debian unstable chroot.
 
-Even so we will only be supporting a subset of the available distributions.
-These are currently:
-- Debian Bullseye
-- Debian Sid
-- Ubuntu Focal
-- Ubuntu Impish
+The main features and changes are as follows :-
 
-The only guarantee we will make for support longevity is as follows:
-- Debian stable releases will be supported at least until the next stable release is available.
-- Ubuntu LTS releases will be supported at least until the next LTS release is available.
-- Ubuntu regular releases will be supported until their normal EOL with Ubuntu upstream.
 
-The actual time we decide to drop support for a release after these windows
-have elapsed will depend on what we have to gain from doing so. Examples of
-reasons we may drop a release include: upgrading to a newer toolchain and
-reintroduction of system libraries.
+<<<< Performance improvements >>>>
 
-## Getting OBS packages
+Built with -march=x86-64-v2 - Nehalem/Jaguar era (circa 2009) onwards
+Profile Guided Optimisation (PGO) - smaller, faster binaries
+Upstream optimisation - levels vary per target (versus debian's -O2 everywhere default)
+V8 pointer compression - memory usage/speed improvement (see [here](https://v8.dev/blog/pointer-compression))
 
-Use the following instructions to setup your system for our OBS repositories. Make sure to use the one for the correct distribution release for your installation.
-- Debian Bullseye
-  ```sh
-  # echo 'deb http://download.opensuse.org/repositories/home:/ungoogled_chromium/Debian_Bullseye/ /' | sudo tee /etc/apt/sources.list.d/home-ungoogled_chromium.list > /dev/null
-  # curl -s 'https://download.opensuse.org/repositories/home:/ungoogled_chromium/Debian_Bullseye/Release.key' | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home-ungoogled_chromium.gpg > /dev/null
-  # sudo apt update
-  # sudo apt install -y ungoogled-chromium
-  ```
-- Debian Sid
-  ```sh
-  # echo 'deb http://download.opensuse.org/repositories/home:/ungoogled_chromium/Debian_Sid/ /' | sudo tee /etc/apt/sources.list.d/home-ungoogled_chromium.list > /dev/null
-  # curl -s 'https://download.opensuse.org/repositories/home:/ungoogled_chromium/Debian_Sid/Release.key' | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home-ungoogled_chromium.gpg > /dev/null
-  # sudo apt update
-  # sudo apt install -y ungoogled-chromium
-  ```
-- Ubuntu Focal
-  ```sh
-  # echo 'deb http://download.opensuse.org/repositories/home:/ungoogled_chromium/Ubuntu_Focal/ /' | sudo tee /etc/apt/sources.list.d/home-ungoogled_chromium.list > /dev/null
-  # curl -s 'https://download.opensuse.org/repositories/home:/ungoogled_chromium/Ubuntu_Focal/Release.key' | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home-ungoogled_chromium.gpg > /dev/null
-  # sudo apt update
-  # sudo apt install -y ungoogled-chromium
-  ```
-- Ubuntu Impish
-  ```sh
-  # echo 'deb http://download.opensuse.org/repositories/home:/ungoogled_chromium/Ubuntu_Impish/ /' | sudo tee /etc/apt/sources.list.d/home-ungoogled_chromium.list > /dev/null
-  # curl -s 'https://download.opensuse.org/repositories/home:/ungoogled_chromium/Ubuntu_Impish/Release.key' | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home-ungoogled_chromium.gpg > /dev/null
-  # sudo apt update
-  # sudo apt install -y ungoogled-chromium
-  ```
+
+<<<< Security/Privacy improvements >>>>
+
+Control Flow Integrity (CFI) - a central pillar of chromium security
+Extra bromite patches
+  These include the following security-related clang options (originating from vanadium) :-
+    -fwrapv - disables unsafe optimisations (see [here](https://gitlab.e.foundation/e/apps/browser/-/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch)).
+    -ftrivial-auto-var-init=zero - improves security (see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html))
+
+
+<<<< Other features >>>>
+
+Enabled pipewire - for wayland
+Vulkan support - opt-in via runtime switches (see further below)
+Google translate - optional build support
+Shell script launcher - perhaps slightly more secure
+Bundled libpng - avoids an upstream debian bug (see [here](https://github.com/ungoogled-software/ungoogled-chromium-debian/issues/169))
+Upstream debian patches - a few hard to maintain and otherwise dubious patches have been dropped
+
+
+<<<< Build system >>>>
+
+Built with upstream google clang/llvm binaries (auto-downloaded during build setup)
+A bit more robust in general eg rebuilds should be faster and less error prone
+Upstream ungoogled patches are merged in with the debian patches during build setup
+Several fixes and improvements
+
+
+
+Vulkan can be enabled via the following runtime flags :-
+
+--use-vulkan
+--enable-features=vulkan
+--disable-vulkan-fallback-to-gl-for-testing
+
+
+To build with google translate enabled, instead of running debian/rules setup, run the following :-
+
+debian/rules setup_translate
+
+
 
 ## Building a binary package
 
@@ -64,7 +65,7 @@ Use the following instructions to setup your system for our OBS repositories. Ma
 sudo apt install -y devscripts equivs
 
 # Clone repository and switch to it (optional if are already in it)
-git clone https://github.com/ungoogled-software/ungoogled-chromium-debian.git
+git clone -b unified_pgo_hardened https://github.com/berkley4/ungoogled-chromium-debian.git
 cd ungoogled-chromium-debian
 
 # Initiate the submodules (optional if they are already initiated)
