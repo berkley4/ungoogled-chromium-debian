@@ -12,6 +12,7 @@ The main features and changes are as follows :-
 <<<< Performance improvements >>>>
 
 Built with -march=x86-64-v2 - Nehalem/Jaguar era (circa 2009) onwards
+Built with -fno-plt - speed improvement
 Profile Guided Optimisation (PGO) - smaller, faster binaries
 Upstream optimisation - levels vary per target (versus debian's -O2 everywhere default)
 V8 pointer compression - memory usage/speed improvement (see [here](https://v8.dev/blog/pointer-compression))
