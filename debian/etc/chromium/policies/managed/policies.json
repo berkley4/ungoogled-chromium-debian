@@ -1,0 +1,9 @@
+{
+  "BackgroundModeEnabled": false,
+  "CloudPrintProxyEnabled": false,
+  "EnableMediaRouter": false,
+  "DefaultWebBluetoothGuardSetting": 2,
+  "DefaultWebUsbGuardSetting": 2,
+  "NativeMessagingUserLevelHosts": false,
+  "WPADQuickCheckEnabled": false
+}
