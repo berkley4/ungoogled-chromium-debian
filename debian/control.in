@@ -6,6 +6,7 @@ Homepage: https://github.com/Eloston/ungoogled-chromium
 Standards-Version: 4.5.0
 Build-Depends:
  debhelper (>= 12),
+ dwz (>= 0.14),
  dh-exec,
  lsb-release,
  apt,
