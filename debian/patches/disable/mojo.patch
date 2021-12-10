@@ -33,7 +33,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      public_deps = [ ":browser" ]
 --- a/content/renderer/BUILD.gn
 +++ b/content/renderer/BUILD.gn
-@@ -577,7 +577,6 @@
+@@ -579,7 +579,6 @@
  group("for_content_tests") {
    visibility = [
      "//content/test/*",
