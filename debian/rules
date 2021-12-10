@@ -18,6 +18,9 @@ RELEASE  := focal
 AUTHOR   := ungoogled-chromium Maintainers <github@null.invalid>
 DATETIME := $(shell date -R)
 
+# Assign the clang toolchain to use
+export PATH := $(RT_DIR)/third_party/llvm-build/Release+Asserts/bin:$(PATH)
+
 # Setup compiler and linkers flags
 export DEB_BUILD_MAINT_OPTIONS  := optimize=-lto
 export DEB_CXXFLAGS_MAINT_STRIP := -g
