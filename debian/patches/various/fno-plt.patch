@@ -1,14 +1,13 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -431,7 +431,10 @@
-   # ---------------------------------
-   if (is_linux || is_chromeos || is_android || is_fuchsia) {
-     asmflags += [ "-fPIC" ]
--    cflags += [ "-fPIC" ]
-+    cflags += [
-+      "-fPIC",
-+      "-fno-plt",
-+    ]
+@@ -434,6 +434,10 @@
+     cflags += [ "-fPIC" ]
      ldflags += [ "-fPIC" ]
  
++    if (current_cpu == "x64") {
++      cflags += [ "-fno-plt" ]
++    }
++
      if (!is_clang) {
+       # Use pipes for communicating between sub-processes. Faster.
+       # (This flag doesn't do anything with Clang.)

@@ -2,9 +2,9 @@
 
 This is my fork of the unified branch of [ungoogle-chromium-debian](https://github.com/ungoogled-software/ungoogled-chromium-debian).
 
-There are debs in the release section, but these probably only work for
-debian/devuan unstable (and possibly it's equivalents), since they are 
-built in a debian unstable chroot.
+There are debs in the release section. From 96.0.4664.93 onwards these 
+are built in a debian stable chroot, so should work on that, Ubuntu Focal 
+and newer.
 
 The main features and changes are as follows :-
 
@@ -24,6 +24,7 @@ ___Security/Privacy improvements___
 - Extra bromite patches, which include the following clang options :-
     - -fwrapv - disables unsafe optimisations (see [here](https://gitlab.e.foundation/e/apps/browser/-/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch)).
     - -ftrivial-auto-var-init=zero - improves security (see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html))
+- An example policy file is included in the repo (can be edited and enabled at build time)
 
 
 ___Other features___
