@@ -3,15 +3,6 @@ author: Salvatore Bonaccorso
 
 --- a/ui/gtk/printing/print_dialog_gtk.cc
 +++ b/ui/gtk/printing/print_dialog_gtk.cc
-@@ -253,7 +253,7 @@
-     // The resolution attribute (case-insensitive) has decent coverage
-     // in the CUPS PPD API (Resolution, SetResolution, JCLResolution,
-     // CNRes_PGP). See
--    // https://chromium.googlesource.com/chromiumos/third_party/cups/+/49a182a4c42d/cups/mark.c#266
-+    // https://chromium.9oo91esource.qjz9zk/chromiumos/third_party/cups/+/49a182a4c42d/cups/mark.c#266
-     // for more information.
-     //
-     // Many PPDs use pdftopdf directly to generate the print data and pdftopdf
 @@ -396,7 +396,7 @@
    GtkPrintCapabilities cap = static_cast<GtkPrintCapabilities>(
        GTK_PRINT_CAPABILITY_GENERATE_PDF | GTK_PRINT_CAPABILITY_PAGE_SET |
