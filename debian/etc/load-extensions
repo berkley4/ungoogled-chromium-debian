@@ -1,0 +1,3 @@
+# Uncomment to load all of the extensions installed to /usr/share/chromium/extensions
+
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --load-extension=`ls -dm /usr/share/chromium/extensions/* 2>/dev/null | tr -d '\n'`"

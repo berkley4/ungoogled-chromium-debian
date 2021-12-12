@@ -1,0 +1,7 @@
+# Disable weak cyphers
+# Note: the values below are examples (likely to be out of date) and you 
+#       should research which to disable
+#
+# Warning: could break some sites (with weak security) which are still using anything you disable
+
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --cipher-suite-blacklist=0x000a,0x009c,0x009d,0x002f,0x0035"

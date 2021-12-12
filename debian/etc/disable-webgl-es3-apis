@@ -1,0 +1,3 @@
+# Uncomment to disable OpenGL ES 3 APIs. This in turn will disable WebGL2.
+
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-es3-apis"

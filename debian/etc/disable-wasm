@@ -1,0 +1,5 @@
+# Uncomment to disable websssembly (wasm)
+# Note: could be a potential security risk. Is used by the ublock
+#       extention, but is not essential for it to run.
+
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --js-flags=--noexpose_wasm"

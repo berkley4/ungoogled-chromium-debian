@@ -1,0 +1,4 @@
+# Uncomment to enable strict isolation for more security
+
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --strict-extension-isolation"
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --strict-origin-isolation"

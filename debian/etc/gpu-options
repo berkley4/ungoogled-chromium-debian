@@ -1,0 +1,35 @@
+## Refer to chrome://gpu/ to see if there are any problems
+## Note: the uncommented flags will probably work for most users
+
+# desktop is the default, but try egl if you enable vulkan
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-angle=gl"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-gl=angle"
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-gl=desktop"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-gl=egl"
+
+
+# Uncomment if you're on x11 (ie not wayland)
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --ozone-platform=x11"
+
+
+# Uncomment when troubleshooting problems or attempting to increase performance
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-gpu"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-accelerated-2d-canvas"	## might help with eg google streetview on very old GPUs
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-gpu-driver-bug-workarounds"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --ignore-gpu-blocklist"
+
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-gpu-rasterization"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-native-gpu-memory-buffers"
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-oop-rasterization"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-software-rasterizer"
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-zero-copy"
+
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --num-raster-threads=2"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --ui-disable-partial-swap"
+
+
+# Uncomment the first three to enable vulkan (experimental)
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-vulkan"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=vulkan"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-vulkan-fallback-to-gl-for-testing"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-vulkan-surface"
