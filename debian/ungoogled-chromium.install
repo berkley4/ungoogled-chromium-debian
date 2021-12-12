@@ -18,7 +18,6 @@ debian/etc/cypher-suit-blacklist                                               e
 debian/etc/disable-hw-decoding-encoding                                        etc/chromium.d
 debian/etc/disable-setuid-sandbox                                              etc/chromium.d
 debian/etc/disable-wasm                                                        etc/chromium.d
-debian/etc/disable-webgl-es3-apis                                              etc/chromium.d
 debian/etc/google-api-keys                                                     etc/chromium.d
 debian/etc/gpu-options                                                         etc/chromium.d
 debian/etc/load-extensions                                                     etc/chromium.d

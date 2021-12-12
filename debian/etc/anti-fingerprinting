@@ -3,3 +3,7 @@
 
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --fingerprinting-canvas-image-data-noise"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --fingerprinting-canvas-measuretext-noise"
+
+# Uncomment to disable OpenGL ES 3 APIs. This in turn will disable WebGL2.
+# Supposed to help prevent gpu info exposure
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-es3-apis"
