@@ -1,0 +1,11 @@
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -438,6 +438,8 @@
+       cflags += [ "-fno-plt" ]
+     }
+ 
++    cflags += [ "-fstack-clash-protection" ]
++
+     if (!is_clang) {
+       # Use pipes for communicating between sub-processes. Faster.
+       # (This flag doesn't do anything with Clang.)
