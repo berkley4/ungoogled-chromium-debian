@@ -20,7 +20,8 @@ ___Performance improvements___
 
 ___Security/Privacy improvements___
 
-- Control Flow Integrity (CFI) - a central pillar of chromium security
+- Built with Control Flow Integrity (CFI) enabled
+- Built with -fstack-clash-protection (see [here](https://discourse.nixos.org/t/userland-hardening-with-gcc-fstack-clash-protection/1854))
 - Extra bromite patches, which include the following clang options :-
     - -fwrapv - disables unsafe optimisations (see [here](https://gitlab.e.foundation/e/apps/browser/-/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch)).
     - -ftrivial-auto-var-init=zero - improves security (see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html))
@@ -53,7 +54,7 @@ The following are optional features :-
 
 ___Enable Vulkan___
 
-Vulkan can be enabled via the following runtime flags :-
+Vulkan can be enabled via uncommenting the following runtime flags in /etc/chromium.d/gpu-options :-
 
 --use-vulkan
 --enable-features=vulkan
@@ -67,7 +68,7 @@ To build with google translate enabled, instead of running debian/rules setup, r
 debian/rules setup_translate
 
 
-Enable with the following runtime flags :-
+Enable with the following runtime flag :-
 
 --translate-script-url=https://translate.googleapis.com/translate_a/element.js
 
