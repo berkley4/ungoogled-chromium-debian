@@ -138,7 +138,6 @@ override_dh_prep:
 	for file in `find -name "*.gn.orig" -o -name "*.gni.orig"`; do mv $$file $${file%.orig}; done
 	rm -f build/linux/unbundle/jsoncpp.gn
 	$(UL_DIR)/domain_substitution.py revert -c $(DS_CACHE) $(RT_DIR)
-	git submodule foreach git reset --hard
 	dh_prep
 
 override_dh_auto_install:
