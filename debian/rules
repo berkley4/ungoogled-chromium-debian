@@ -19,7 +19,8 @@ AUTHOR   := ungoogled-chromium Maintainers <github@null.invalid>
 DATETIME := $(shell date -R)
 
 # Assign the clang toolchain to use
-export PATH := $(RT_DIR)/third_party/llvm-build/Release+Asserts/bin:$(PATH)
+LLVM_DIR    := $(RT_DIR)/third_party/llvm-build/Release+Asserts/bin
+export PATH := $(LLVM_DIR):$(PATH)
 
 # Setup compiler and linkers flags
 export DEB_BUILD_MAINT_OPTIONS  := optimize=-lto
@@ -103,7 +104,7 @@ setup: changelog control download
 	git submodule foreach git reset --hard
 	patch -p1 < $(SH_DIR)/no-exit-if-pruned.patch
 	test -d build || $(UL_DIR)/downloads.py unpack -i $(UC_DIR)/downloads.ini -c $(DL_CACHE) $(RT_DIR)
-	tools/clang/scripts/update.py
+	test -d $(LLVM_DIR) || tools/clang/scripts/update.py
 	sed -e '/^buildtools/d' -e '/^third_party\/llvm/d' -e '/^chrome\/build\/pgo_profiles/d' -i $(UC_DIR)/pruning.list
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list
 	for lib in $(subst libevent,,$(subst libjpeg,libjpeg_turbo,$(SYS_LIBS))); do find "third_party/$$lib" -type f ! -path "third_party/$$lib/chromium/*" ! -path "third_party/$$lib/google/*" ! -name "*.gn" ! -name "*.gni" ! -name "*.isolate" -delete; done
