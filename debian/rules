@@ -119,6 +119,8 @@ setup_translate: setup
 	test -n "$$(grep ^translate-reverse-enable\.patch $(DB_DIR)/patches/series)" || sed '$$ a \\ntranslate-reverse-enable.patch' -i  $(DB_DIR)/patches/series
 
 $(GN):
+	# Prevent permissions error which seems to occur occassionally
+	test $$(stat -c %a tools/gn/bootstrap/bootstrap.py) -eq 0700 || chmod 0700 tools/gn/bootstrap/bootstrap.py
 	# Switch to distribution GN once generate-ninja has widespread availability
 	tools/gn/bootstrap/bootstrap.py -j $(JOBS) --skip-generate-buildfiles
 
