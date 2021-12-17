@@ -67,7 +67,6 @@ bromite/Battery-API-return-nothing.patch
 bromite/Disable-DRM-media-origin-IDs-preprovisioning.patch
 bromite/Disable-feeds-support-by-default.patch
 bromite/Disable-metrics-on-all-I-O-threads.patch
-bromite/Disable-seed-based-field-trials.patch
 bromite/Disable-some-signed-exchange-features.patch
 bromite/DoH-secure-mode-by-default.patch
 bromite/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch
