@@ -109,7 +109,7 @@ setup: changelog control download
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list
 	for lib in $(subst libevent,,$(subst libjpeg,libjpeg_turbo,$(SYS_LIBS))); do find "third_party/$$lib" -type f ! -path "third_party/$$lib/chromium/*" ! -path "third_party/$$lib/google/*" ! -name "*.gn" ! -name "*.gni" ! -name "*.isolate" -delete; done
 	test -d $(DB_DIR)/patches/core && test -d $(DB_DIR)/patches/extra || cp -a $(UP_DIR)/core $(UP_DIR)/extra $(DB_DIR)/patches/
-	cat $(UP_DIR)/series $(DB_DIR)/patches/series.debian > $(DB_DIR)/patches/series
+	test -f $(DB_DIR)/patches/series || cat $(UP_DIR)/series $(DB_DIR)/patches/series.debian > $(DB_DIR)/patches/series
 	# Remove third_party/libwebp/BUILD.gn from domain_substitution.list to avoid a bizarre hash mismatch error
 	sed -e '/^third_party\/libwebp\/BUILD\.gn/d' -i $(UC_DIR)/domain_substitution.list
 
