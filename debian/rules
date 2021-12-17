@@ -125,8 +125,7 @@ $(GN):
 	tools/gn/bootstrap/bootstrap.py -j $(JOBS) --skip-generate-buildfiles
 
 override_dh_auto_configure:
-	sed 's@^\(chrome_pgo_phase=\)[01]@\12@' -i $(UC_DIR)/flags.gn
-	test -n "$$(grep ^pgo_data_path $(UC_DIR)/flags.gn)" || sed "$$ a pgo_data_path=\"$$(realpath chrome/build/pgo_profiles/$$(cat chrome/build/linux.pgo.txt))\"" -i $(UC_DIR)/flags.gn
+	test -n "$$(grep ^pgo_data_path $(UC_DIR)/flags.gn)" || sed -e 's@^\(chrome_pgo_phase=\).*@\12@' -e "$$ a pgo_data_path=\"$$(realpath chrome/build/pgo_profiles/$$(cat chrome/build/linux.pgo.txt))\"" -i $(UC_DIR)/flags.gn
 	sed -e '/tools\/clang\/scripts\/update.py/d' -i $(UC_DIR)/domain_substitution.list
 	test -f $(DS_CACHE) && printf '%s\n' "$(DS_CACHE) exists, aborting." || $(UL_DIR)/domain_substitution.py apply -r $(UC_DIR)/domain_regex.list -f $(UC_DIR)/domain_substitution.list -c $(DS_CACHE) $(RT_DIR)
 	cp $(SH_DIR)/jsoncpp.gn build/linux/unbundle
