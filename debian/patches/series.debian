@@ -93,6 +93,11 @@ various/fixes/drm-render-node-path-finder-include.patch
 various/fixes/fix-missing-quiche-stddef-header.patch
 various/fixes/restricted-cookie-manager-tuple.patch
 various/fixes/xfce-maximize.patch
+various/fixes/Call-NotifyObserversAboutShutdown-in-RWHVA-Destroy.patch
+various/fixes/Take-local-copy-of-UMP-local-sources-to-iterate.patch
+various/fixes/Add-checks-in-DataPipeReady.patch
+various/fixes/Convert-DCHECK-to-CHECK-in-Bookmark-Manager.patch
+
 various/system/node.patch
 various/system/unbundle-fix-visibility-of-build-config-freetype.patch
 

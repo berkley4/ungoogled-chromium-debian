@@ -1,0 +1,42 @@
+From 7c66fad9cd7633ed04890e84cc0c13b26b5cce1c Mon Sep 17 00:00:00 2001
+From: Nasko Oskov <nasko@chromium.org>
+Date: Fri, 10 Dec 2021 02:10:34 +0000
+Subject: [PATCH] Convert DCHECK to CHECK in Bookmark Manager
+
+This CL converts a DCHECK into a more stringent CHECK to ensure we crash
+the browser process instead of hitting a use-after-free condition.
+
+Bug: 1249426
+Change-Id: I919bfc4dcd11b8acccf217f5000fe7f1fbec7e6c
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/3323662
+Reviewed-by: John Lee <johntlee@chromium.org>
+Reviewed-by: Scott Violet <sky@chromium.org>
+Commit-Queue: Nasko Oskov <nasko@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#950388}
+---
+
+--- a/chrome/browser/extensions/api/bookmark_manager_private/bookmark_manager_private_api.cc
++++ b/chrome/browser/extensions/api/bookmark_manager_private/bookmark_manager_private_api.cc
+@@ -475,17 +475,18 @@
+ 
+   content::WebContents* web_contents = GetSenderWebContents();
+   size_t drop_index;
+-  if (params->index)
++  if (params->index) {
+     drop_index = static_cast<size_t>(*params->index);
+-  else
++    CHECK(drop_index >= 0 && drop_index <= drop_parent->children().size());
++  } else {
+     drop_index = drop_parent->children().size();
++  }
+ 
+   BookmarkManagerPrivateDragEventRouter* router =
+       BookmarkManagerPrivateDragEventRouter::FromWebContents(web_contents);
+ 
+-  DCHECK(router);
+   const BookmarkNodeData* drag_data = router->GetBookmarkNodeData();
+-  DCHECK_NE(nullptr, drag_data) << "Somehow we're dropping null bookmark data";
++  CHECK_NE(nullptr, drag_data) << "Somehow we're dropping null bookmark data";
+   const bool copy = false;
+   chrome::DropBookmarks(
+       GetProfile(), *drag_data, drop_parent, drop_index, copy);

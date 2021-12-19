@@ -1,0 +1,67 @@
+From 4ea822925bbc6a6e508820e236a6a46efee78040 Mon Sep 17 00:00:00 2001
+From: W. James MacLean <wjmaclean@chromium.org>
+Date: Mon, 13 Dec 2021 21:31:34 +0000
+Subject: [PATCH] Call NotifyObserversAboutShutdown() in RWHVA::Destroy().
+
+In the associated bug, we are hitting a crash due to access a virtual
+function after the derived class' destructor has been called, meaning
+virtual function table is in an invalid state. This CL fixes that by
+moving the code that initiates this call to a point just before the
+derived class' destructor.
+
+(cherry picked from commit 3fcc9061b26bc4ba1498f134ccdeaacaff8b3de5)
+
+Bug: 1155297
+Change-Id: I7b5ecbed8925474593428f8d76605ba6164aea90
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/3318816
+Reviewed-by: Alex Moshchuk <alexmos@chromium.org>
+Commit-Queue: James Maclean <wjmaclean@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#949157}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/3330580
+Commit-Queue: Alex Moshchuk <alexmos@chromium.org>
+Cr-Commit-Position: refs/branch-heads/4664@{#1294}
+Cr-Branched-From: 24dc4ee75e01a29d390d43c9c264372a169273a7-refs/heads/main@{#929512}
+---
+
+--- a/content/browser/renderer_host/render_widget_host_view_android.cc
++++ b/content/browser/renderer_host/render_widget_host_view_android.cc
+@@ -1157,6 +1157,9 @@
+   for (auto& observer : destruction_observers_)
+     observer.RenderWidgetHostViewDestroyed(this);
+   destruction_observers_.Clear();
++  // Call this before the derived class is destroyed so that virtual function
++  // calls back into `this` still work.
++  NotifyObserversAboutShutdown();
+   RenderWidgetHostViewBase::Destroy();
+   delete this;
+ }
+--- a/content/browser/renderer_host/render_widget_host_view_aura.cc
++++ b/content/browser/renderer_host/render_widget_host_view_aura.cc
+@@ -765,6 +765,10 @@
+   // destructor is invoked directly from here. So all destruction/cleanup code
+   // should happen there, not here.
+   in_shutdown_ = true;
++  // Call this here in case any observers need access to `this` before we
++  // destruct the derived class.
++  NotifyObserversAboutShutdown();
++
+   if (window_)
+     delete window_;
+   else
+--- a/content/test/test_render_view_host.cc
++++ b/content/test/test_render_view_host.cc
+@@ -146,7 +146,13 @@
+   delete this;
+ }
+ 
+-void TestRenderWidgetHostView::Destroy() { delete this; }
++void TestRenderWidgetHostView::Destroy() {
++  // Call this here in case any observers need access to the `this` before
++  // this derived class runs its destructor.
++  NotifyObserversAboutShutdown();
++
++  delete this;
++}
+ 
+ gfx::Rect TestRenderWidgetHostView::GetViewBounds() {
+   return gfx::Rect();
