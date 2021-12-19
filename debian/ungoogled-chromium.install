@@ -12,18 +12,18 @@ out/Release/resources.pak                                                      u
 out/Release/locales/*.pak                                                      usr/lib/chromium/locales
 #out/Release/swiftshader/lib*.so                                                usr/lib/chromium/swiftshader
 debian/chromium                                                                usr/bin
-debian/etc/chromium-flags.conf                                                 etc/chromium.d
-debian/etc/anti-fingerprinting                                                 etc/chromium.d
-debian/etc/cypher-suit-blacklist                                               etc/chromium.d
-debian/etc/disable-hw-decoding-encoding                                        etc/chromium.d
-debian/etc/disable-setuid-sandbox                                              etc/chromium.d
-debian/etc/disable-wasm                                                        etc/chromium.d
-debian/etc/google-api-keys                                                     etc/chromium.d
-debian/etc/gpu-options                                                         etc/chromium.d
-debian/etc/load-extensions                                                     etc/chromium.d
-debian/etc/no-ipv6-probe                                                       etc/chromium.d
-debian/etc/strict-isolation                                                    etc/chromium.d
-debian/etc/README                                                              etc/chromium.d
+debian/etc/chromium.d/chromium-flags.conf                                      etc/chromium.d
+debian/etc/chromium.d/anti-fingerprinting                                      etc/chromium.d
+debian/etc/chromium.d/cypher-suit-blacklist                                    etc/chromium.d
+debian/etc/chromium.d/disable-hw-decoding-encoding                             etc/chromium.d
+debian/etc/chromium.d/disable-setuid-sandbox                                   etc/chromium.d
+debian/etc/chromium.d/disable-wasm                                             etc/chromium.d
+debian/etc/chromium.d/google-api-keys                                          etc/chromium.d
+debian/etc/chromium.d/gpu-options                                              etc/chromium.d
+debian/etc/chromium.d/load-extensions                                          etc/chromium.d
+debian/etc/chromium.d/no-ipv6-probe                                            etc/chromium.d
+debian/etc/chromium.d/strict-isolation                                         etc/chromium.d
+debian/etc/chromium.d/README                                                   etc/chromium.d
 #debian/etc/chromium/policies/managed/policies.json                             etc/chromium/policies/managed
 chrome/installer/linux/common/desktop.template                              => usr/share/applications/chromium.desktop
 chrome/app/resources/manpage.1.in                                           => usr/share/man/man1/chromium.1
