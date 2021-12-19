@@ -2,30 +2,31 @@
 
 This is my fork of the unified branch of [ungoogle-chromium-debian](https://github.com/ungoogled-software/ungoogled-chromium-debian).
 
-There are debs in the release section. From 96.0.4664.93 onwards these 
-are built in a debian stable chroot, so should work on that, Ubuntu Focal 
-and newer.
+There are debs in the release section which are built with -march=x86-64-v2 -mtune=x86-64-v3. These should run on 
+cpus from the Nehalem/Jaguar era (circa 2009) onwards, and are optimised for Haswell/Excavator (circa 2015).
+
+From 96.0.4664.93 onwards the debs are built in a debian stable chroot, so should work on that, Ubuntu Focal and newer.
+
 
 The main features and changes are as follows :-
 
 
 ___Performance improvements___
 
-- Built with -march=x86-64-v2 - Nehalem/Jaguar era (circa 2009) onwards
-- Built with -fno-plt - speed improvement
 - Profile Guided Optimisation (PGO) - smaller, faster binaries
 - Upstream optimisation - levels vary per target (versus debian's -O2 everywhere default)
 - V8 pointer compression - memory usage/speed improvement (see [here](https://v8.dev/blog/pointer-compression))
+- Built with -fno-plt - speed improvement
 
 
 ___Security/Privacy improvements___
 
 - Built with Control Flow Integrity (CFI) enabled
-- Built with -fstack-clash-protection (see [here](https://discourse.nixos.org/t/userland-hardening-with-gcc-fstack-clash-protection/1854))
 - Extra bromite patches, which include the following clang options :-
     - -fwrapv - disables unsafe optimisations (see [here](https://gitlab.e.foundation/e/apps/browser/-/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch)).
     - -ftrivial-auto-var-init=zero - improves security (see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html))
 - An example policy file is included in the repo (can be edited and enabled at build time)
+- There are some security/privacy releated runtime flags installed to /etc/chromium.d (strict isolation is enabled by default).
 
 
 ___Other features___
@@ -97,5 +98,5 @@ sudo mk-build-deps -i debian/control
 rm ungoogled-chromium-build-deps_*
 
 # Build the package
-dpkg-buildpackage -b -uc
+JOBS=4 dpkg-buildpackage -b -uc
 ```
