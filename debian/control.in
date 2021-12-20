@@ -49,13 +49,127 @@ Build-Depends:
  libpipewire-0.3-dev
 
 Package: ungoogled-chromium
-Architecture: any
-Multi-Arch: foreign
-Provides: www-browser, gnome-www-browser, chromium, chromium-browser, ungoogled-chromium-l10n, ungoogled-chromium-shell, ungoogled-chromium-driver, ungoogled-chromium-common, ungoogled-chromium-sandbox
-Replaces: chromium, chromium-browser, ungoogled-chromium-l10n, ungoogled-chromium-shell, ungoogled-chromium-driver, ungoogled-chromium-common, ungoogled-chromium-sandbox
-Conflicts: chromium, chromium-browser, ungoogled-chromium-l10n, ungoogled-chromium-shell, ungoogled-chromium-driver, ungoogled-chromium-common, ungoogled-chromium-sandbox
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Architecture: i386 amd64 arm64 armhf
+Built-Using: ${Built-Using}
+Depends:
+ ${misc:Depends},
+ ${shlibs:Depends},
+ ungoogled-chromium-common (= ${binary:Version}),
+Recommends:
+ ungoogled-chromium-sandbox,
+Suggests:
+ ungoogled-chromium-l10n,
+ ungoogled-chromium-shell,
+ ungoogled-chromium-driver,
+Provides:
+ www-browser,
+ gnome-www-browser,
+Breaks:
+ chromium-lwn4chrome (<= 1.0-2),
+ chromium-tt-rss-notifier (<= 0.5.2-2),
+ chromium,
+ chromium-browser,
+Conflicts:
+ libnettle4,
+ libsecret-1-0 (<< 0.18),
+ libgl1-mesa-swx11,
+Replaces:
+ chromium,
+ chromium-browser,
 Description: web browser
  Web browser that aims to build a safer, faster, and more stable internet
  browsing experience.
+ .
+ This package contains the web browser component.
 
+Package: ungoogled-chromium-l10n
+Architecture: all
+Section: localization
+Depends:
+ ${misc:Depends},
+ ungoogled-chromium (>= ${source:Version}),
+ ungoogled-chromium (<< ${source:Version}.1~),
+Breaks:
+ chromium-l10n,
+Conflicts:
+ chromium-l10n,
+Description: web browser - language packs
+ Web browser that aims to build a safer, faster, and more stable internet
+ browsing experience.
+ .
+ This package contains language packages for:
+ am, ar, bg, bn, ca, cs, da, de, el, en-GB, es-419, es, et, fi, fil, fr, gu, he,
+ hi, hr, hu, id, it, ja, kn, ko, lt, lv, ml, mr, nb, nl, pl, pt-BR, pt-PT,
+ ro, ru, sk, sl, sr, sv, sw, ta, te, th, tr, uk, vi, zh-CN, zh-TW
+
+Package: ungoogled-chromium-driver
+Architecture: i386 amd64 arm64 armhf
+Depends:
+ ${misc:Depends},
+ ${shlibs:Depends},
+ ungoogled-chromium (= ${binary:Version}),
+Breaks:
+ chromium-driver,
+ chromium,
+Replaces:
+ chromedriver,
+Conflicts:
+ chromium-driver,
+Description: web browser - WebDriver support
+ Web browser that aims to build a safer, faster, and more stable internet
+ browsing experience.
+ .
+ This package provides a bridge between the browser component and the selenium
+ automatic webdriver.
+ .
+ See http://code.google.com/p/selenium/wiki/ChromeDriver for details.
+
+Package: ungoogled-chromium-common
+Architecture: i386 amd64 arm64 armhf
+Depends:
+ ${misc:Depends},
+ ${shlibs:Depends},
+ x11-utils,
+ xdg-utils,
+Recommends:
+ upower,
+ libu2f-udev,
+ libva1,
+ libgl1-mesa-dri,
+ ungoogled-chromium-sandbox,
+ fonts-liberation,
+ notification-daemon,
+ system-config-printer,
+Breaks:
+ ungoogled-chromium (<< 60.0.3112.72-1),
+ chromium-common,
+ chromium,
+Replaces:
+ ungoogled-chromium (<< 60.0.3112.72-1),
+Conflicts:
+ chromium-common,
+Description: web browser - common resources used by ungoogled-chromium packages
+ Web browser that aims to build a safer, faster, and more stable internet
+ browsing experience.
+ .
+ This package contains resources that are in common to different
+ ungoogled-chromium packages.
+
+Package: ungoogled-chromium-sandbox
+Architecture: i386 amd64 arm64 armhf
+Depends:
+ ${misc:Depends},
+ ${shlibs:Depends},
+Breaks:
+ ungoogled-chromium (<< ${binary:Version}),
+ chromium-sandbox,
+ chromium,
+Replaces:
+ ungoogled-chromium (<< ${binary:Version}),
+Conflicts:
+ chromium-sandbox,
+Description: web browser - setuid security sandbox for ungoogled-chromium
+ Web browser that aims to build a safer, faster, and more stable internet
+ browsing experience.
+ .
+ This package contains the setuid chromium sandbox.
