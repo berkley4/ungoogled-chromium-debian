@@ -10,8 +10,6 @@ out/Release/resources/en-US.pak                                                u
 
 chrome/installer/linux/common/desktop.template                              => usr/share/applications/chromium.desktop
 
-debian/chromium                                                                usr/bin
-
 debian/etc/chromium.d/chromium-flags.conf                                      etc/chromium.d
 debian/etc/chromium.d/anti-fingerprinting                                      etc/chromium.d
 debian/etc/chromium.d/cypher-suit-blacklist                                    etc/chromium.d
@@ -24,5 +22,7 @@ debian/etc/chromium.d/load-extensions                                          e
 debian/etc/chromium.d/no-ipv6-probe                                            etc/chromium.d
 debian/etc/chromium.d/strict-isolation                                         etc/chromium.d
 debian/etc/chromium.d/README                                                   etc/chromium.d
+
+debian/shim/chromium                                                           usr/bin
 
 debian/usr/share/drirc.d/10-chromium.conf                                      usr/share/drirc.d
