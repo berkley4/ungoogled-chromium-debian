@@ -2,7 +2,7 @@
 
 This is my fork of the unified branch of [ungoogle-chromium-debian](https://github.com/ungoogled-software/ungoogled-chromium-debian).
 
-There are debs in the release section which are built with -march=x86-64-v2 -mtune=x86-64-v3. These should run on 
+There are debs in the release section which are built with -march=x86-64-v2. These should run on 
 cpus from the Nehalem/Jaguar era (circa 2009) onwards, and are optimised for Haswell/Excavator (circa 2015).
 
 From 96.0.4664.93 onwards the debs are built in a debian stable chroot, so should work on that, Ubuntu Focal and newer.
@@ -26,7 +26,7 @@ ___Security/Privacy improvements___
     - -fwrapv - disables unsafe optimisations (see [here](https://gitlab.e.foundation/e/apps/browser/-/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch)).
     - -ftrivial-auto-var-init=zero - improves security (see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html))
 - An example policy file is included in the repo (can be edited and enabled at build time)
-- There are some security/privacy releated runtime flags installed to /etc/chromium.d (strict isolation is enabled by default).
+- Some security/privacy themed flag files are installed to /etc/chromium.d (strict isolation is enabled by default)
 
 
 ___Other features___
@@ -37,6 +37,7 @@ ___Other features___
 - Shell script launcher - perhaps slightly more secure
 - Bundled libpng - avoids an upstream debian bug (see [here](https://github.com/ungoogled-software/ungoogled-chromium-debian/issues/169))
 - Upstream debian patches - a few hard to maintain and otherwise dubious patches have been dropped
+- Separate deb packages for chromium's components (eg chromedriver, sandbox).
 
 
 ___Build system___
@@ -60,6 +61,9 @@ Vulkan can be enabled via uncommenting the following runtime flags in /etc/chrom
 --use-vulkan
 --enable-features=vulkan
 --disable-vulkan-fallback-to-gl-for-testing
+
+In addition, it appears that the environment variable VK_ICD_FILENAMES needs to be set, eg :-
+VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/intel_icd.x86_64.json chromium
 
 
 ___Google Translate___
