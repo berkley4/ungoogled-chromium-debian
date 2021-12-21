@@ -1,1 +1,3 @@
+#!/usr/bin/dh-exec
+
 out/Release/chrome_sandbox                                                  => usr/lib/chromium/chrome-sandbox

@@ -1,3 +1,5 @@
+#!/usr/bin/dh-exec
+
 out/Release/chrome                                                             usr/lib/chromium
 out/Release/chrome_crashpad_handler                                            usr/lib/chromium
 

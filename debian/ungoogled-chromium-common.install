@@ -1,3 +1,5 @@
+#!/usr/bin/dh-exec
+
 out/Release/v8_context_snapshot.bin                                            usr/lib/chromium
 out/Release/icudtl.dat                                                         usr/lib/chromium
 out/Release/libEGL.so                                                          usr/lib/chromium
