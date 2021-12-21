@@ -8,9 +8,11 @@ out/Release/resources.pak                                                      u
 out/Release/xdg-mime                                                           usr/lib/chromium
 out/Release/xdg-settings                                                       usr/lib/chromium
 
-out/Release/resources/en-US.pak                                                usr/lib/chromium/locales
+out/Release/locales/en-US.pak                                                  usr/lib/chromium/locales
 
 chrome/installer/linux/common/desktop.template                              => usr/share/applications/chromium.desktop
+
+#debian/etc/chromium/policies/managed/policies.json                             etc/chromium/policies/managed
 
 debian/etc/chromium.d/chromium-flags.conf                                      etc/chromium.d
 debian/etc/chromium.d/anti-fingerprinting                                      etc/chromium.d
@@ -25,6 +27,6 @@ debian/etc/chromium.d/no-ipv6-probe                                            e
 debian/etc/chromium.d/strict-isolation                                         etc/chromium.d
 debian/etc/chromium.d/README                                                   etc/chromium.d
 
-debian/shim/chromium                                                           usr/bin
+debian/shims/chromium                                                          usr/bin
 
 debian/usr/share/drirc.d/10-chromium.conf                                      usr/share/drirc.d

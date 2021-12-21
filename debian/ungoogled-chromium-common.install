@@ -12,7 +12,9 @@ out/Release/libGLESv2.so                                                       u
 #out/Release/vk_swiftshader_icd.json                                            usr/lib/chromium
 
 chrome/app/resources/manpage.1.in                                           => usr/share/man/man1/chromium.1
+
 chrome/installer/linux/common/chromium-browser/chromium-browser.appdata.xml => usr/share/metainfo/chromium.appdata.xml
+
 chrome/app/theme/default_100_percent/chromium/product_logo_16.png           => usr/share/icons/hicolor/16x16/apps/chromium.png
 chrome/app/theme/chromium/product_logo_24.png                               => usr/share/icons/hicolor/24x24/apps/chromium.png
 chrome/app/theme/default_100_percent/chromium/product_logo_32.png           => usr/share/icons/hicolor/32x32/apps/chromium.png
