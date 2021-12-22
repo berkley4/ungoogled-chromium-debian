@@ -59,7 +59,6 @@ Recommends:
  ungoogled-chromium-sandbox,
 Suggests:
  ungoogled-chromium-l10n,
- ungoogled-chromium-shell,
  ungoogled-chromium-driver,
 Provides:
  www-browser,
