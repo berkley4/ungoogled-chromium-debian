@@ -123,6 +123,24 @@ Description: web browser - WebDriver support
  See http://code.google.com/p/selenium/wiki/ChromeDriver for details.
 
 Package: ungoogled-chromium-common
+Architecture: all
+Depends:
+ ${misc:Depends},
+ ungoogled-chromium (>= ${source:Version}),
+ ungoogled-chromium (<< ${source:Version}.1~),
+Breaks:
+ ungoogled-chromium (<< 60.0.3112.72-1),
+ chromium-common,
+ chromium,
+Replaces:
+ ungoogled-chromium (<< 60.0.3112.72-1),
+Conflicts:
+ chromium-common,
+Description: web browser - common resources used by ungoogled-chromium packages
+ Web browser that aims to build a safer, faster, and more stable internet
+ browsing experience.
+
+Package: ungoogled-chromium-libraries
 Architecture: i386 amd64 arm64 armhf
 Depends:
  ${misc:Depends},
@@ -146,7 +164,7 @@ Replaces:
  ungoogled-chromium (<< 60.0.3112.72-1),
 Conflicts:
  chromium-common,
-Description: web browser - common resources used by ungoogled-chromium packages
+Description: web browser - EGL, GLES and Vulkan libraries for ungoogled-chromium
  Web browser that aims to build a safer, faster, and more stable internet
  browsing experience.
  .

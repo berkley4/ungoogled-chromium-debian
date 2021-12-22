@@ -29,7 +29,7 @@ ___Security/Privacy improvements___
 - Some security/privacy themed flag files are installed to /etc/chromium.d (strict isolation is enabled by default)
 
 
-___Other features___
+___Other features/changes___
 
 - Enabled pipewire - for wayland
 - Vulkan support - opt-in via runtime switches (see further below)
@@ -37,7 +37,8 @@ ___Other features___
 - Shell script launcher - perhaps slightly more secure
 - Bundled libpng - avoids an upstream debian bug (see [here](https://github.com/ungoogled-software/ungoogled-chromium-debian/issues/169))
 - Upstream debian patches - a few hard to maintain and otherwise dubious patches have been dropped
-- Separate deb packages for chromium's components (eg chromedriver, sandbox).
+- Separate deb packages for chromium's components (eg chromedriver, sandbox)
+- New libraries package for libEGL.so, libGLESv2.so, etc (which don't seem to be needed by everyone)
 
 
 ___Build system___
