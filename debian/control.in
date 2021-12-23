@@ -50,16 +50,15 @@ Build-Depends:
 
 Package: ungoogled-chromium
 Architecture: i386 amd64 arm64 armhf
-Built-Using: ${Built-Using}
 Depends:
  ${misc:Depends},
  ${shlibs:Depends},
- ungoogled-chromium-common (= ${binary:Version}),
 Recommends:
  ungoogled-chromium-sandbox,
 Suggests:
  ungoogled-chromium-l10n,
  ungoogled-chromium-driver,
+ ungoogled-chromium-libraries,
 Provides:
  www-browser,
  gnome-www-browser,
@@ -122,24 +121,6 @@ Description: web browser - WebDriver support
  .
  See http://code.google.com/p/selenium/wiki/ChromeDriver for details.
 
-Package: ungoogled-chromium-common
-Architecture: all
-Depends:
- ${misc:Depends},
- ungoogled-chromium (>= ${source:Version}),
- ungoogled-chromium (<< ${source:Version}.1~),
-Breaks:
- ungoogled-chromium (<< 60.0.3112.72-1),
- chromium-common,
- chromium,
-Replaces:
- ungoogled-chromium (<< 60.0.3112.72-1),
-Conflicts:
- chromium-common,
-Description: web browser - common resources used by ungoogled-chromium packages
- Web browser that aims to build a safer, faster, and more stable internet
- browsing experience.
-
 Package: ungoogled-chromium-libraries
 Architecture: i386 amd64 arm64 armhf
 Depends:
@@ -157,11 +138,11 @@ Recommends:
  notification-daemon,
  system-config-printer,
 Breaks:
- ungoogled-chromium (<< 60.0.3112.72-1),
+ ungoogled-chromium (<< ${binary:Version}),
  chromium-common,
  chromium,
 Replaces:
- ungoogled-chromium (<< 60.0.3112.72-1),
+ ungoogled-chromium (<< ${binary:Version}),
 Conflicts:
  chromium-common,
 Description: web browser - EGL, GLES and Vulkan libraries for ungoogled-chromium

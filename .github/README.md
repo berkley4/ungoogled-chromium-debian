@@ -38,7 +38,8 @@ ___Other features/changes___
 - Bundled libpng - avoids an upstream debian bug (see [here](https://github.com/ungoogled-software/ungoogled-chromium-debian/issues/169))
 - Upstream debian patches - a few hard to maintain and otherwise dubious patches have been dropped
 - Separate deb packages for chromium's components (eg chromedriver, sandbox)
-- New libraries package for libEGL.so, libGLESv2.so, etc (which don't seem to be needed by everyone)
+- Dropped ungoogled-chromium-common - its contents split between a new libraries package and the main one
+- The new ungoogled-chromium-libraries package for libEGL.so, libGLESv2.so, etc (likely not needed by everyone)
 
 
 ___Build system___

@@ -1,19 +1,29 @@
 #!/usr/bin/dh-exec
 
+debian/shims/chromium                                                          usr/bin
+
 out/Release/chrome                                                             usr/lib/chromium
 out/Release/chrome_crashpad_handler                                            usr/lib/chromium
-
 out/Release/chrome_*_percent.pak                                               usr/lib/chromium
 out/Release/resources.pak                                                      usr/lib/chromium
 out/Release/xdg-mime                                                           usr/lib/chromium
 out/Release/xdg-settings                                                       usr/lib/chromium
-
 out/Release/locales/en-US.pak                                                  usr/lib/chromium/locales
 
 chrome/installer/linux/common/desktop.template                              => usr/share/applications/chromium.desktop
+debian/usr/share/drirc.d/10-chromium.conf                                      usr/share/drirc.d
+chrome/app/resources/manpage.1.in                                           => usr/share/man/man1/chromium.1
+chrome/installer/linux/common/chromium-browser/chromium-browser.appdata.xml => usr/share/metainfo/chromium.appdata.xml
+
+chrome/app/theme/default_100_percent/chromium/product_logo_16.png           => usr/share/icons/hicolor/16x16/apps/chromium.png
+chrome/app/theme/chromium/product_logo_24.png                               => usr/share/icons/hicolor/24x24/apps/chromium.png
+chrome/app/theme/default_100_percent/chromium/product_logo_32.png           => usr/share/icons/hicolor/32x32/apps/chromium.png
+chrome/app/theme/chromium/product_logo_48.png                               => usr/share/icons/hicolor/48x48/apps/chromium.png
+chrome/app/theme/chromium/product_logo_64.png                               => usr/share/icons/hicolor/64x64/apps/chromium.png
+chrome/app/theme/chromium/product_logo_128.png                              => usr/share/icons/hicolor/128x128/apps/chromium.png
+chrome/app/theme/chromium/product_logo_256.png                              => usr/share/icons/hicolor/256x256/apps/chromium.png
 
 #debian/etc/chromium/policies/managed/policies.json                             etc/chromium/policies/managed
-
 debian/etc/chromium.d/chromium-flags.conf                                      etc/chromium.d
 debian/etc/chromium.d/anti-fingerprinting                                      etc/chromium.d
 debian/etc/chromium.d/cypher-suit-blacklist                                    etc/chromium.d
@@ -26,7 +36,3 @@ debian/etc/chromium.d/load-extensions                                          e
 debian/etc/chromium.d/no-ipv6-probe                                            etc/chromium.d
 debian/etc/chromium.d/strict-isolation                                         etc/chromium.d
 debian/etc/chromium.d/README                                                   etc/chromium.d
-
-debian/shims/chromium                                                          usr/bin
-
-debian/usr/share/drirc.d/10-chromium.conf                                      usr/share/drirc.d
