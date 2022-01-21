@@ -5,7 +5,9 @@ debian/shims/chromium                                                          u
 out/Release/chrome                                                             usr/lib/chromium
 out/Release/chrome_crashpad_handler                                            usr/lib/chromium
 out/Release/chrome_*_percent.pak                                               usr/lib/chromium
+out/Release/icudtl.dat                                                         usr/lib/chromium
 out/Release/resources.pak                                                      usr/lib/chromium
+out/Release/v8_context_snapshot.bin                                            usr/lib/chromium
 out/Release/xdg-mime                                                           usr/lib/chromium
 out/Release/xdg-settings                                                       usr/lib/chromium
 out/Release/locales/en-US.pak                                                  usr/lib/chromium/locales
