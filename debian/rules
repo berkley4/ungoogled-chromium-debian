@@ -10,7 +10,6 @@ UP_DIR   := $(UC_DIR)/patches
 DL_CACHE := $(DB_DIR)/download_cache
 DS_CACHE := $(DB_DIR)/domsubcache.tar.gz
 OUT_DIR  := out/Release
-GN       := $(OUT_DIR)/gn
 
 # Changelog and control template variables
 VERSION  := $(file < $(UC_DIR)/chromium_version.txt)-1
@@ -118,12 +117,6 @@ setup_translate: setup
 	test -f $(DB_DIR)/patches/translate-reverse-enable.patch || cp -a $(SH_DIR)/translate-reverse-enable.patch $(DB_DIR)/patches/
 	test -n "$$(grep ^translate-reverse-enable\.patch $(DB_DIR)/patches/series)" || sed '$$ a \\ntranslate-reverse-enable.patch' -i  $(DB_DIR)/patches/series
 
-$(GN):
-	# Prevent permissions error which seems to occur occassionally
-	test $$(stat -c %a tools/gn/bootstrap/bootstrap.py) -eq 0700 || chmod 0700 tools/gn/bootstrap/bootstrap.py
-	# Switch to distribution GN once generate-ninja has widespread availability
-	tools/gn/bootstrap/bootstrap.py -j $(JOBS) --skip-generate-buildfiles
-
 override_dh_auto_configure:
 	test -n "$$(grep ^pgo_data_path $(UC_DIR)/flags.gn)" || sed -e 's@^\(chrome_pgo_phase=\).*@\12@' -e "$$ a pgo_data_path=\"$$(realpath chrome/build/pgo_profiles/$$(cat chrome/build/linux.pgo.txt))\"" -i $(UC_DIR)/flags.gn
 	sed -e '/tools\/clang\/scripts\/update.py/d' -i $(UC_DIR)/domain_substitution.list
@@ -131,8 +124,8 @@ override_dh_auto_configure:
 	cp $(SH_DIR)/jsoncpp.gn build/linux/unbundle
 	build/linux/unbundle/replace_gn_files.py --system-libraries $(SYS_LIBS)
 
-override_dh_auto_build: $(GN)
-	$(GN) gen $(OUT_DIR) --args="$(GN_FLAGS)" --fail-on-unused-args
+override_dh_auto_build:
+	gn gen $(OUT_DIR) --args="$(GN_FLAGS)" --fail-on-unused-args
 	ninja -j $(JOBS) -C $(OUT_DIR) chrome chrome_sandbox chromedriver
 
 override_dh_prep:
