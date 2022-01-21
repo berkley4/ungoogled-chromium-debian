@@ -7,7 +7,6 @@ SH_DIR   := $(DB_DIR)/shims
 UC_DIR   := $(DB_DIR)/submodules/ungoogled-chromium
 UL_DIR   := $(UC_DIR)/utils
 UP_DIR   := $(UC_DIR)/patches
-DL_CACHE := $(DB_DIR)/download_cache
 DS_CACHE := $(DB_DIR)/domsubcache.tar.gz
 OUT_DIR  := out/Release
 
@@ -90,21 +89,19 @@ changelog:
 	sed -e "s;@@VERSION@@;$(VERSION);g" -e "s;@@RELEASE@@;$(RELEASE);g" -e "s;@@AUTHOR@@;$(AUTHOR);g" -e "s;@@DATETIME@@;$(DATETIME);g" < $(DB_DIR)/changelog.in > $(DB_DIR)/changelog
 
 gitclean:
-	test ! -d $(RT_DIR)/.git || git clean -xfd -e debian/changelog -e debian/control -e debian/download_cache/
+	test ! -d $(RT_DIR)/.git || git clean -xfd -e debian/changelog -e debian/control
+
+gitsubreset:
+	git submodule foreach git reset --hard
+	patch -p1 < $(SH_DIR)/no-exit-if-pruned.patch
 
 control:
 	sed -e "s;@@AUTHOR@@;$(AUTHOR);g" < $(DB_DIR)/control.in > $(DB_DIR)/control
 
-download:
-	test -d $(DL_CACHE) || mkdir -p $(DL_CACHE)
-	test -d build || $(UL_DIR)/downloads.py retrieve -i $(UC_DIR)/downloads.ini -c $(DL_CACHE)
-
-setup: changelog control download
-	git submodule foreach git reset --hard
-	patch -p1 < $(SH_DIR)/no-exit-if-pruned.patch
-	test -d build || $(UL_DIR)/downloads.py unpack -i $(UC_DIR)/downloads.ini -c $(DL_CACHE) $(RT_DIR)
+setup: changelog control
+	test -d $(RT_DIR)/chrome/build/pgo_profiles || tools/update_pgo_profiles.py --target linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles
 	test -d $(LLVM_DIR) || tools/clang/scripts/update.py
-	sed -e '/^buildtools/d' -e '/^third_party\/llvm/d' -e '/^chrome\/build\/pgo_profiles/d' -i $(UC_DIR)/pruning.list
+	sed -e '/^buildtools/d' -e '/^chrome\/build\/pgo_profiles/d' -e '/^third_party\/depot_tools/d' -e '/^third_party\/llvm/d' -e '/^tools\/clang/d' -i $(UC_DIR)/pruning.list
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list
 	for lib in $(subst libevent,,$(subst libjpeg,libjpeg_turbo,$(SYS_LIBS))); do find "third_party/$$lib" -type f ! -path "third_party/$$lib/chromium/*" ! -path "third_party/$$lib/google/*" ! -name "*.gn" ! -name "*.gni" ! -name "*.isolate" -delete; done
 	test -d $(DB_DIR)/patches/core && test -d $(DB_DIR)/patches/extra || cp -a $(UP_DIR)/core $(UP_DIR)/extra $(DB_DIR)/patches/
