@@ -12,7 +12,6 @@ system-jsoncpp.patch
 template-correction.patch
 unexpire-accelerated-video-decode-flag.patch
 sql-virtual-cursor.patch
-skia-disable-ftcolor.patch
 
 debianization/master-preferences.patch
 
@@ -23,7 +22,6 @@ fixes/missing-includes.patch
 fixes/widevine-enable-version-string.patch
 fixes/widevine-locations.patch
 fixes/nullptr-dereference.patch
-fixes/multiple-destruction.patch
 fixes/nomerge.patch
 fixes/ps-print.patch
 
@@ -37,6 +35,7 @@ disable/buildbot.patch
 disable/installer.patch
 disable/font-tests.patch
 disable/swiftshader.patch
+disable/swiftshader-2.patch
 disable/driver-chrome-path.patch
 disable/widevine-cdm-cu.patch
 disable/angle-perftests.patch
@@ -91,13 +90,11 @@ various/fixes/commandline-include.patch
 various/fixes/coupondb-include.patch
 various/fixes/drm-render-node-path-finder-include.patch
 various/fixes/fix-missing-quiche-stddef-header.patch
+various/fixes/InkDropHost-crash.patch
 various/fixes/restricted-cookie-manager-tuple.patch
 various/fixes/xfce-maximize.patch
-various/fixes/Call-NotifyObserversAboutShutdown-in-RWHVA-Destroy.patch
-various/fixes/Take-local-copy-of-UMP-local-sources-to-iterate.patch
-various/fixes/Add-checks-in-DataPipeReady.patch
-various/fixes/Convert-DCHECK-to-CHECK-in-Bookmark-Manager.patch
 various/system/node.patch
+various/system/skia-freetype-api.patch
 various/system/unbundle-fix-visibility-of-build-config-freetype.patch
 
 #optional/custom-x64-arch.patch

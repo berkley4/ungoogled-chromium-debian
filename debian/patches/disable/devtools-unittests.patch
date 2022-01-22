@@ -218,3 +218,72 @@
      "../../../../panels/timeline/components:bundle",
      "../../../../ui/components/helpers:bundle",
    ]
+--- a/third_party/devtools-frontend/src/front_end/ui/components/docs/text_prompt/BUILD.gn
++++ b/third_party/devtools-frontend/src/front_end/ui/components/docs/text_prompt/BUILD.gn
+@@ -10,7 +10,6 @@
+   sources = [ "basic.ts" ]
+ 
+   deps = [
+-    "../../../../../test/unittests/front_end/helpers",
+     "../../../../ui/components/text_prompt:bundle",
+   ]
+ }
+--- a/third_party/devtools-frontend/src/front_end/ui/components/docs/input/BUILD.gn
++++ b/third_party/devtools-frontend/src/front_end/ui/components/docs/input/BUILD.gn
+@@ -10,7 +10,6 @@
+   sources = [ "basic.ts" ]
+ 
+   deps = [
+-    "../../../../../test/unittests/front_end/helpers",
+     "../../input:bundle",
+   ]
+ }
+--- a/third_party/devtools-frontend/src/front_end/ui/components/docs/button/BUILD.gn
++++ b/third_party/devtools-frontend/src/front_end/ui/components/docs/button/BUILD.gn
+@@ -10,7 +10,6 @@
+   sources = [ "basic.ts" ]
+ 
+   deps = [
+-    "../../../../../test/unittests/front_end/helpers",
+     "../../buttons:bundle",
+   ]
+ }
+--- a/third_party/devtools-frontend/src/front_end/ui/components/docs/text_editor/BUILD.gn
++++ b/third_party/devtools-frontend/src/front_end/ui/components/docs/text_editor/BUILD.gn
+@@ -10,7 +10,6 @@
+   sources = [ "basic.ts" ]
+ 
+   deps = [
+-    "../../../../../test/unittests/front_end/helpers",
+     "../../../../ui/components/helpers:bundle",
+     "../../../../ui/components/text_editor:bundle",
+   ]
+--- a/third_party/devtools-frontend/src/front_end/models/bindings/BUILD.gn
++++ b/third_party/devtools-frontend/src/front_end/models/bindings/BUILD.gn
+@@ -49,7 +49,6 @@
+ 
+   visibility = [
+     ":*",
+-    "../../../test/unittests/front_end/helpers/*",
+     "../../../test/unittests/front_end/models/bindings/*",
+     "../../../test/unittests/front_end/models/formatter/*",
+     "../../entrypoints/main/*",
+--- a/third_party/devtools-frontend/src/front_end/models/workspace/BUILD.gn
++++ b/third_party/devtools-frontend/src/front_end/models/workspace/BUILD.gn
+@@ -29,7 +29,6 @@
+ 
+   visibility = [
+     ":*",
+-    "../../../test/unittests/front_end/helpers/*",
+     "../../../test/unittests/front_end/models/formatter/*",
+     "../../entrypoints/main/*",
+     "../../legacy_test_runner/*",
+--- a/third_party/devtools-frontend/src/test/unittests/front_end/panels/help/BUILD.gn
++++ b/third_party/devtools-frontend/src/test/unittests/front_end/panels/help/BUILD.gn
+@@ -13,6 +13,5 @@
+     "../../../../../front_end/core/platform:bundle",
+     "../../../../../front_end/panels/help:bundle",
+     "../../../../../front_end/ui/legacy:bundle",
+-    "../../../../../test/unittests/front_end/helpers",
+   ]
+ }
