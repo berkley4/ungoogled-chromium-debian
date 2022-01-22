@@ -82,27 +82,57 @@ Enable with the following runtime flag :-
 
 - - - -
 
-
-## Building a binary package
+## Prepare ungoogled-chromium-debian packaging
 
 ```sh
 # Install initial packages
 sudo apt install -y devscripts equivs
 
-# Clone repository and switch to it (optional if are already in it)
-git clone -b unified_pgo_hardened https://github.com/berkley4/ungoogled-chromium-debian.git
-cd ungoogled-chromium-debian
+# Clone ungoogled-chromium-debian
+git clone -b extended_stable https://github.com/berkley4/ungoogled-chromium-debian.git
 
-# Initiate the submodules (optional if they are already initiated)
+# Update submodes
+cd debian
 git submodule update --init --recursive
+cd ..
+```
+
+## Cloning and preparing the chromium repo
+
+```sh
+# Clone depot_tools and put it in your PATH
+git clone https://chromium.googlesource.com/chromium/tools/depot_tools
+export PATH=$PATH:/path/to/depot_tools
+
+# Clone the chromium repository
+mkdir build
+cd build
+fetch --nohooks chromium --target_os=linux
+
+# Fetch the tags and checkout the desired chromium version
+git fetch origin --tags
+git checkout 96.0.1234.567
+
+# Prepare the tree for building
+gclient sync --force --nohooks --with_branch_heads
+gclient runhooks
+cd ..
+```
+
+
+## Building the binary packages
+
+```sh
+# Copy over the debian directory into your source tree
+cd build/src
+cp -a ../../debian .
 
 # Prepare the local source
-debian/rules setup
+VERSION=96.0.1234.567 debian/rules setup
 
-# Install missing packages
-sudo mk-build-deps -i debian/control
-rm ungoogled-chromium-build-deps_*
+# Optional: apply and refresh patches
+while quilt push; do quilt refresh; done
 
 # Build the package
-JOBS=4 dpkg-buildpackage -b -uc
+JOBS=4 VERSION=96.0.1234.567 dpkg-buildpackage -b -uc
 ```
