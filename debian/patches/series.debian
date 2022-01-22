@@ -97,7 +97,6 @@ various/fixes/Call-NotifyObserversAboutShutdown-in-RWHVA-Destroy.patch
 various/fixes/Take-local-copy-of-UMP-local-sources-to-iterate.patch
 various/fixes/Add-checks-in-DataPipeReady.patch
 various/fixes/Convert-DCHECK-to-CHECK-in-Bookmark-Manager.patch
-
 various/system/node.patch
 various/system/unbundle-fix-visibility-of-build-config-freetype.patch
 
@@ -105,4 +104,5 @@ various/system/unbundle-fix-visibility-of-build-config-freetype.patch
 #optional/mtune.patch
 #optional/disable/catapult.patch
 #optional/disable/atk-dbus.patch
+#optional/disable/fix-disable-ozone-wayland.patch
 #optional/system/unicode-fix-missing-headers.patch
