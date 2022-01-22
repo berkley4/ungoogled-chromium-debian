@@ -14,15 +14,6 @@ author: Michael Gilbert <mgilbert@debian.org>
    }
 --- a/third_party/angle/gni/angle.gni
 +++ b/third_party/angle/gni/angle.gni
-@@ -138,7 +138,7 @@
-       (ozone_platform_gbm || !is_linux || (angle_use_x11 && !is_chromeos)) &&
-       !is_fuchsia && !angle_is_winuwp && !is_ggp && !is_win_arm64
- 
--  angle_enable_vulkan =
-+  angle_enable_vulkan = false &&
-       angle_has_build &&
-       !(is_android && build_with_chromium && is_official_build) &&
-       ((is_win && !angle_is_winuwp) ||
 @@ -429,7 +429,6 @@
                        "$angle_root:angle_common",
                        "$angle_root:includes",
