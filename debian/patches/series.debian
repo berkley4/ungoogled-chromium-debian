@@ -105,4 +105,5 @@ various/system/unbundle-fix-visibility-of-build-config-freetype.patch
 #optional/disable/catapult.patch
 #optional/disable/atk-dbus.patch
 #optional/disable/fix-disable-ozone-wayland.patch
+#optional/system/icu-types.patch
 #optional/system/unicode-fix-missing-headers.patch
