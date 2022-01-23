@@ -95,6 +95,7 @@ gitclean:
 gitsubreset:
 	git submodule foreach git reset --hard
 	patch -p1 < $(SH_DIR)/no-exit-if-pruned.patch
+	[ -z $$VER ] || echo $$VER > $(UC_DIR)/chromium_version.txt
 
 control:
 	sed -e "s;@@AUTHOR@@;$(AUTHOR);g" < $(DB_DIR)/control.in > $(DB_DIR)/control
