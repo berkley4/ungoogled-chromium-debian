@@ -12,7 +12,7 @@ OUT_DIR  := out/Release
 
 # Changelog and control template variables
 VERSION  := $(file < $(UC_DIR)/chromium_version.txt)-1
-RELEASE  := focal
+RELEASE  := stable
 AUTHOR   := ungoogled-chromium Maintainers <github@null.invalid>
 DATETIME := $(shell date -R)
 
@@ -120,7 +120,7 @@ setup: changelog control pgo_setup tools_setup
 setup_translate: setup
 	sed -e '/\/translate_manager_browsertest\.cc/d' -e '/\/translate_script\.cc/d' -e '/\/translate_util\.cc/d' -i $(UC_DIR)/domain_substitution.list
 	test -f $(DB_DIR)/patches/translate-reverse-enable.patch || cp -a $(SH_DIR)/translate-reverse-enable.patch $(DB_DIR)/patches/
-	test -n "$$(grep ^translate-reverse-enable\.patch $(DB_DIR)/patches/series)" || sed '$$ a \\ntranslate-reverse-enable.patch' -i  $(DB_DIR)/patches/series
+	test -n "$$(grep ^translate-reverse-enable\.patch $(DB_DIR)/patches/series)" || sed '$$ a \\ntranslate-reverse-enable.patch' -i $(DB_DIR)/patches/series
 
 override_dh_auto_configure:
 	test -f $(DS_CACHE) && printf '%s\n' "$(DS_CACHE) exists, aborting." || $(UL_DIR)/domain_substitution.py apply -r $(UC_DIR)/domain_regex.list -f $(UC_DIR)/domain_substitution.list -c $(DS_CACHE) $(RT_DIR)
