@@ -6,3 +6,4 @@
 
 # WebAssembly Dynamic Tiering
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-blink-features=WebAssemblyDynamicTiering"
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-webassembly-tiering"
