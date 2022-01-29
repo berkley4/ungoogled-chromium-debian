@@ -2,10 +2,29 @@
 
 This is my fork of the unified branch of [ungoogle-chromium-debian](https://github.com/ungoogled-software/ungoogled-chromium-debian).
 
-There are debs in the release section which are built with -march=[x86-64-v2](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels) --mtune=generic.
+There are debs in the release section which are built with -march=x86-64-v2 --mtune=generic (refer [here](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels) for more info about x86-64-v2).
 These should run on cpus from the Nehalem/Jaguar era (circa 2009) onwards.
 
 From 96.0.4664.93 onwards the debs are built in a debian stable chroot, so should work on that, Ubuntu Focal and newer.
+
+
+# Installation
+
+Only ungoogled-chromium_*.deb is mandatory. The other debs are
+
+* *-sandbox_*   : suid sandbox, recommended (see the [Sandbox](https://github.com/berkley4/ungoogled-chromium-debian/blob/extended_stable/.github/README.md#sandbox) section below).
+* *-l10n_*      : language localisation, needed if you want a non US English UI.
+* *-libraries_* : contains files such as libEGL.so, libGLESv2.so (likely not needed by everyone).
+* *-driver_*    : chromedriver, not normally needed.
+* *-dbgsym_*    : not normally needed (unless you are debugging things like crashes).
+
+For example, to install the main and sandbox packages, run the following :-
+
+```sh
+dpkg -i ungoogled-chromium_*.deb ungoogled-chromium_sandbox_*.deb
+```
+
+- - - -
 
 
 The main features and changes are as follows :-
@@ -50,7 +69,6 @@ ___Build system___
 - The Extended Stable branch is built with a chromium git tree (google supplies no release tarballs for this branch)
 - Several fixes and improvements
 
-
 - - - -
 
 
@@ -80,6 +98,37 @@ debian/rules setup_translate
 
 
 Uncomment the runtime flag in /etc/chromium.d/google-translate to enable.
+
+
+- - - -
+
+
+# Sandbox
+
+By default, chromium sandboxing on linux relies on using kernel unprivileged user namespaces. An alternative is via
+the sandbox package which uses a suid helper binary. The pros and cons of unprivileged user namespaces can be read
+about via the links [here](https://github.com/a13xp0p0v/kconfig-hardened-check#questions-and-answers).
+
+The relevant sysctl (at least on debian) is kernel.unprivileged_userns_clone. Check its value by running :-
+
+```sh
+cat /proc/sys/kernel/unprivileged_userns_clone
+```
+
+Normally it's value is 1 (ie enabled). If you wish to disable it (and install the sandbox package)
+do the following (as root) :-
+
+```sh
+sysctl -w kernel.unprivileged_userns_clone=0
+```
+
+To make this permanent across reboots :-
+
+```sh
+touch /etc/systctl.d/userns
+chmod 0644 /etc/systctl.d/userns
+echo "kernel.unprivileged_userns_clone = 0" > /etc/systctl.d/userns
+```
 
 
 - - - -
