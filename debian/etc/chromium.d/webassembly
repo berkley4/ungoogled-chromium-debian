@@ -2,8 +2,8 @@
 #       the ublock extention, but is not essential for it to run.
 
 # Uncomment to disable websssembly (wasm)
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --js-flags=--noexpose_wasm"
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --js-flags=--noexpose_wasm"
 
 # WebAssembly Dynamic Tiering
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-blink-features=WebAssemblyDynamicTiering"
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-webassembly-tiering"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-blink-features=WebAssemblyDynamicTiering"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-webassembly-tiering"
