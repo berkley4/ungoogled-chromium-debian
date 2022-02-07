@@ -2,9 +2,9 @@
 
 out/Release/libEGL.so                                                          usr/lib/chromium
 out/Release/libGLESv2.so                                                       usr/lib/chromium
-#out/Release/libVkICD_mock_icd.so                                               usr/lib/chromium
+out/Release/libVkICD_mock_icd.so                                               usr/lib/chromium
 #out/Release/libVkLayer_khronos_validation.so                                   usr/lib/chromium
-#out/Release/libvulkan.so.1                                                     usr/lib/chromium
+out/Release/libvulkan.so.1                                                     usr/lib/chromium
 #out/Release/swiftshader/*.so                                                   usr/lib/chromium/swiftshader
 #out/Release/libvk_swiftshader.so                                               usr/lib/chromium
 #out/Release/vk_swiftshader_icd.json                                            usr/lib/chromium
