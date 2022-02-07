@@ -79,6 +79,7 @@ bromite/Disable-text-fragments-by-default.patch
 bromite/Make-all-favicon-requests-on-demand.patch
 bromite/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
 
+upstream/libdrm.patch
 upstream/quiche-include.patch
 upstream/restrict.patch
 upstream/sequence-point.patch
