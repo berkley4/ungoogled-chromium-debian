@@ -94,7 +94,6 @@ various/fixes/InkDropHost-crash.patch
 various/fixes/restricted-cookie-manager-tuple.patch
 various/fixes/xfce-maximize.patch
 various/system/node.patch
-various/system/skia-freetype-api.patch
 various/system/unbundle-fix-visibility-of-build-config-freetype.patch
 
 #optional/custom-x64-arch.patch
