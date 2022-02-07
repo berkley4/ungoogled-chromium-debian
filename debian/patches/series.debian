@@ -83,6 +83,8 @@ bromite/Disable-text-fragments-by-default.patch
 bromite/Make-all-favicon-requests-on-demand.patch
 bromite/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
 
+upstream/quiche-include.patch
+
 various/fno-plt.patch
 various/init-stack-vars-zero.patch
 various/silence-alsa-frames-log-msg.patch
