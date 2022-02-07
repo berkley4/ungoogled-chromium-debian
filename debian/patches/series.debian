@@ -18,7 +18,6 @@ debianization/master-preferences.patch
 gn/libcxx.patch
 
 fixes/clang-and-gcc11.patch
-fixes/sequence-point.patch
 fixes/missing-includes.patch
 fixes/widevine-enable-version-string.patch
 fixes/widevine-locations.patch
@@ -83,6 +82,7 @@ bromite/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
 
 upstream/quiche-include.patch
 upstream/restrict.patch
+upstream/sequence-point.patch
 
 various/fno-plt.patch
 various/init-stack-vars-zero.patch
