@@ -24,13 +24,11 @@ fixes/widevine-locations.patch
 fixes/nomerge.patch
 fixes/ps-print.patch
 
-disable/mojo.patch
 disable/tests.patch
 disable/glmark.patch
 disable/owners.patch
 disable/android.patch
 disable/fuzzers.patch
-disable/buildbot.patch
 disable/installer.patch
 disable/font-tests.patch
 disable/swiftshader.patch
@@ -38,7 +36,6 @@ disable/swiftshader-2.patch
 disable/driver-chrome-path.patch
 disable/widevine-cdm-cu.patch
 disable/angle-perftests.patch
-disable/web-ui-tests.patch
 disable/ozone-unittests.patch
 disable/devtools-unittests.patch
 disable/libaom-arm.patch
