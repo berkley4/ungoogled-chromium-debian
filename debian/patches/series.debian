@@ -47,7 +47,6 @@ disable/libaom-arm.patch
 warnings/restrict.patch
 warnings/multichar.patch
 warnings/deprecated.patch
-warnings/null-destination.patch
 
 #system/icu.patch
 system/jpeg.patch
