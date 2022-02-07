@@ -22,7 +22,6 @@ fixes/sequence-point.patch
 fixes/missing-includes.patch
 fixes/widevine-enable-version-string.patch
 fixes/widevine-locations.patch
-fixes/nullptr-dereference.patch
 fixes/nomerge.patch
 fixes/ps-print.patch
 
