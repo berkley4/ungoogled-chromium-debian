@@ -17,6 +17,7 @@ debianization/master-preferences.patch
 
 gn/libcxx.patch
 
+fixes/clang-and-gcc11.patch
 fixes/sequence-point.patch
 fixes/missing-includes.patch
 fixes/widevine-enable-version-string.patch
