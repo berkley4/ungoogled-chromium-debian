@@ -44,7 +44,6 @@ disable/ozone-unittests.patch
 disable/devtools-unittests.patch
 disable/libaom-arm.patch
 
-warnings/restrict.patch
 warnings/multichar.patch
 warnings/deprecated.patch
 
@@ -83,6 +82,7 @@ bromite/Make-all-favicon-requests-on-demand.patch
 bromite/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
 
 upstream/quiche-include.patch
+upstream/restrict.patch
 
 various/fno-plt.patch
 various/init-stack-vars-zero.patch
