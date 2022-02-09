@@ -87,6 +87,5 @@ various/system/node.patch
 #optional/mtune.patch
 #optional/disable/catapult.patch
 #optional/disable/atk-dbus.patch
-#optional/disable/fix-disable-ozone-wayland.patch
 #optional/system/icu-types.patch
 #optional/system/unicode-fix-missing-headers.patch
