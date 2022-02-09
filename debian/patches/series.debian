@@ -15,8 +15,6 @@ sql-virtual-cursor.patch
 
 debianization/master-preferences.patch
 
-gn/libcxx.patch
-
 bullseye/nomerge.patch
 
 fixes/clang-and-gcc11.patch
