@@ -16,7 +16,6 @@ debianization/master-preferences.patch
 
 bullseye/nomerge.patch
 
-fixes/missing-includes.patch
 fixes/widevine-enable-version-string.patch
 fixes/widevine-locations.patch
 fixes/ps-print.patch
@@ -33,7 +32,6 @@ disable/swiftshader-2.patch
 disable/driver-chrome-path.patch
 disable/widevine-cdm-cu.patch
 disable/angle-perftests.patch
-disable/ozone-unittests.patch
 disable/devtools-unittests.patch
 disable/libaom-arm.patch
 
