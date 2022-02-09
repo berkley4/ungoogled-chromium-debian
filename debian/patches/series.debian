@@ -10,7 +10,6 @@ perfetto-system-zlib.patch
 pdfium-system-tiff.patch
 system-jsoncpp.patch
 template-correction.patch
-unexpire-accelerated-video-decode-flag.patch
 sql-virtual-cursor.patch
 
 debianization/master-preferences.patch
