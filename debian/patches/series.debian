@@ -16,7 +16,6 @@ debianization/master-preferences.patch
 
 bullseye/nomerge.patch
 
-fixes/clang-and-gcc11.patch
 fixes/missing-includes.patch
 fixes/widevine-enable-version-string.patch
 fixes/widevine-locations.patch
