@@ -100,6 +100,18 @@ debian/rules setup_translate
 Uncomment the runtime flag in /etc/chromium.d/google-translate to enable.
 
 
+___Profile Guided Optimisation (PGO)___
+
+To build with PGO, instead of running debian/rules setup, run the following :-
+
+debian/rules setup_pgo
+
+
+If you want both google translate and PGO enabled, run the following :-
+
+debian/rules setup_pgo_translate
+
+
 - - - -
 
 
@@ -163,31 +175,42 @@ fetch --nohooks chromium --target_os=linux
 # Fetch the tags and checkout the desired chromium version
 cd src
 git fetch origin --tags
-git checkout 999.0.1234.567
+git checkout tags/999.0.1234.567
 
 # Prepare the tree for building
-cd ..
 gclient sync -D --force --nohooks --with_branch_heads
 gclient runhooks
 ```
 
 
-## Cleaning/Resetting an existing chromium git repo (skip if clone has just been made)
+## Resetting/updating an existing repo (skip if clone/prep has just been done)
 
 ```sh
-# Perform a hard reset to HEAD
+# If needed, revert domain substitution
+./debian/submodules/ungoogled-chromium/utils/domain_substitution.py revert \
+-c path_to_parent/build/src/debian/domsubcache.tar.gz path_to_parent/build/src
+
+# If needed, unapply patches
 cd build/src
+quilt pop -a
+
+# Clean and hard reset
+git clean -dfx
 git reset --hard HEAD
 
-# Clean untracked files (a result of the unbundling process)
-cd third_party
-rm -rf flac fontconfig/src freetype/src icu jsoncpp/source libdrm/src libjpeg_turbo re2/src snappy/src
-
-# Check to see if there are any more untracked files
-cd ..
+# Check to see if there are any more untracked files (delete them if there are any)
 git status
 
-# cd ..
+# Update and checkout the desired chromium version
+git rebase-update
+
+# If updating to a new version
+git fetch origin --tags
+
+# Checkout desired version
+git checkout tags/999.0.1234.567
+
+# Prepare the tree for building
 gclient sync -D --force --nohooks --with_branch_heads
 gclient runhooks
 ```
@@ -196,11 +219,10 @@ gclient runhooks
 ## Building the binary packages
 
 ```sh
-# Copy over the debian directory into your source tree
-cd src
+# Copy over the debian directory into your source tree (build/src)
 cp -a ../../ungoogled-chromium-debian/debian .
 
-# Prepare the local source
+# Prepare the source
 VERSION=999.0.1234.567 debian/rules gitsubreset
 debian/rules setup
 
