@@ -59,7 +59,7 @@ GN_FLAGS += \
         v8_enable_zone_compression=true \
         sample_profile_is_accurate=true
 
-# Currently omitted from base (focal): icu, harfbuzz-ng, ffmpeg, openh264, libvpx, libpng
+# Currently omitted from base (stable): icu, harfbuzz-ng, ffmpeg, openh264, libvpx, libpng
 SYS_LIBS :=         \
         flac        \
         fontconfig  \
