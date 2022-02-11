@@ -56,8 +56,7 @@ GN_FLAGS += \
         angle_enable_vulkan=true \
         rtc_use_pipewire=true \
         v8_enable_pointer_compression=true \
-        v8_enable_zone_compression=true \
-        sample_profile_is_accurate=true
+        v8_enable_zone_compression=true
 
 # Currently omitted from base (stable): icu, harfbuzz-ng, ffmpeg, openh264, libvpx, libpng
 SYS_LIBS :=         \
@@ -94,7 +93,7 @@ control:
 
 pgo_configure:
 	test -d $(RT_DIR)/chrome/build/pgo_profiles || tools/update_pgo_profiles.py --target linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles
-	test -n "$$(grep ^pgo_data_path $(UC_DIR)/flags.gn)" || sed -e 's@^\(chrome_pgo_phase=\).*@\12@' -e "$$ a pgo_data_path=\"$$(realpath chrome/build/pgo_profiles/$$(cat chrome/build/linux.pgo.txt))\"" -i $(UC_DIR)/flags.gn
+	test -n "$$(grep ^pgo_data_path $(UC_DIR)/flags.gn)" || sed -e 's@^\(chrome_pgo_phase=\).*@\12@' -e "$$ a sample_profile_is_accurate=true" -e "$$ a pgo_data_path=\"$$(realpath chrome/build/pgo_profiles/$$(cat chrome/build/linux.pgo.txt))\"" -i $(UC_DIR)/flags.gn
 	sed -e '/^chrome\/build\/pgo_profiles/d' -i  $(UC_DIR)/pruning.list
 
 translate_configure:
