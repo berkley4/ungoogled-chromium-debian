@@ -51,7 +51,7 @@ ___Security/Privacy improvements___
 ___Other features/changes___
 
 - Enabled pipewire - for wayland
-- ~~Vulkan support - opt-in via runtime switches (see further below)~~
+- Vulkan support - opt-in via runtime switches (see further below)
 - Shell script launcher - perhaps slightly more secure
 - Bundled libpng - avoids an upstream debian bug (see [here](https://github.com/ungoogled-software/ungoogled-chromium-debian/issues/169))
 - Upstream debian patches - a few hard to maintain and otherwise dubious patches have been dropped
@@ -76,9 +76,8 @@ The following are optional features :-
 
 
 ___Enable Vulkan___
-[currently disabled]
 
-~~Vulkan can be enabled via uncommenting the following runtime flags in /etc/chromium.d/gpu-options~~ :-
+Vulkan can be enabled via uncommenting the following runtime flags in /etc/chromium.d/gpu-options :-
 
 --use-vulkan
 --enable-features=vulkan
@@ -224,7 +223,7 @@ cp -a ../../ungoogled-chromium-debian/debian .
 
 # Prepare the source
 VERSION=999.0.1234.567 debian/rules gitsubreset
-debian/rules setup
+debian/rules setup_pgo
 
 # Optional: apply and refresh patches
 while quilt push; do quilt refresh; done
