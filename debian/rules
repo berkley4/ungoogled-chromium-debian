@@ -38,7 +38,6 @@ GN_FLAGS := $(shell tr "\n" " " < $(UC_DIR)/flags.gn | sed 's/"/\\"/g')
 
 # Add our downstream Debian flags
 GN_FLAGS += \
-        use_custom_libcxx=false \
         is_official_build=true \
         symbol_level=1 \
         blink_enable_generated_code_formatting=false \
@@ -50,6 +49,7 @@ GN_FLAGS += \
         use_vaapi=true \
         enable_swiftshader=false \
         enable_vr=false \
+        use_cfi_cast=true \
         use_dawn=false \
         use_kerberos=false \
         use_text_section_splitting=true \
@@ -58,7 +58,7 @@ GN_FLAGS += \
         v8_enable_pointer_compression=true \
         v8_enable_zone_compression=true
 
-# Currently omitted from base (stable): icu, harfbuzz-ng, ffmpeg, openh264, libvpx, libpng
+# Currently omitted from base (stable): icu, harfbuzz-ng, ffmpeg, openh264, libvpx, libpng, re2
 SYS_LIBS :=         \
         flac        \
         fontconfig  \
@@ -71,7 +71,6 @@ SYS_LIBS :=         \
         libxml      \
         libxslt     \
         opus        \
-        re2         \
         snappy      \
         zlib
 
