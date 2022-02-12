@@ -58,12 +58,12 @@ GN_FLAGS += \
         v8_enable_pointer_compression=true \
         v8_enable_zone_compression=true
 
-# Currently omitted from base (stable): icu, harfbuzz-ng, ffmpeg, openh264, libvpx, libpng, re2
+# Currently omitted from base (stable): harfbuzz-ng, icu, ffmpeg, jsoncpp,
+#                                       libpng, libvpx, openh264, re2, snappy
 SYS_LIBS :=         \
         flac        \
         fontconfig  \
         freetype    \
-        jsoncpp     \
         libdrm      \
         libevent    \
         libjpeg     \
@@ -71,7 +71,6 @@ SYS_LIBS :=         \
         libxml      \
         libxslt     \
         opus        \
-        snappy      \
         zlib
 
 # Add extra flags for system libs
@@ -123,7 +122,7 @@ setup_pgo_translate: pgo_configure translate_configure setup
 
 override_dh_auto_configure:
 	test -f $(DS_CACHE) && printf '%s\n' "$(DS_CACHE) exists, aborting." || $(UL_DIR)/domain_substitution.py apply -r $(UC_DIR)/domain_regex.list -f $(UC_DIR)/domain_substitution.list -c $(DS_CACHE) $(RT_DIR)
-	cp $(SH_DIR)/jsoncpp.gn build/linux/unbundle
+	#cp $(SH_DIR)/jsoncpp.gn build/linux/unbundle
 	build/linux/unbundle/replace_gn_files.py --system-libraries $(SYS_LIBS)
 
 override_dh_auto_build:
@@ -132,7 +131,7 @@ override_dh_auto_build:
 
 override_dh_prep:
 	for file in `find -name "*.gn.orig" -o -name "*.gni.orig"`; do mv $$file $${file%.orig}; done
-	rm -f build/linux/unbundle/jsoncpp.gn
+	#rm -f build/linux/unbundle/jsoncpp.gn
 	test ! -f $(DS_CACHE) || $(UL_DIR)/domain_substitution.py revert -c $(DS_CACHE) $(RT_DIR)
 	dh_prep
 
