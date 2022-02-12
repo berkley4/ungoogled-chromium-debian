@@ -29,7 +29,7 @@ chrome/app/theme/chromium/product_logo_256.png                              => u
 debian/etc/chromium.d/chromium-flags.conf                                      etc/chromium.d
 debian/etc/chromium.d/anti-fingerprinting                                      etc/chromium.d
 debian/etc/chromium.d/cypher-suit-blacklist                                    etc/chromium.d
-debian/etc/chromium.d/disable-hw-decoding-encoding                             etc/chromium.d
+debian/etc/chromium.d/hw-decoding-encoding                                     etc/chromium.d
 debian/etc/chromium.d/disable-setuid-sandbox                                   etc/chromium.d
 debian/etc/chromium.d/google-api-keys                                          etc/chromium.d
 debian/etc/chromium.d/gpu-options                                              etc/chromium.d
