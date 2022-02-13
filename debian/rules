@@ -38,23 +38,23 @@ GN_FLAGS := $(shell tr "\n" " " < $(UC_DIR)/flags.gn | sed 's/"/\\"/g')
 
 # Add our downstream Debian flags
 GN_FLAGS += \
+        blink_enable_generated_code_formatting=false \
         is_official_build=true \
         symbol_level=1 \
-        blink_enable_generated_code_formatting=false \
-        use_sysroot=false \
-        use_gnome_keyring=false \
         ffmpeg_branding=\"ChromeOS\" \
         proprietary_codecs=true \
-        link_pulseaudio=true \
-        use_vaapi=true \
+        angle_enable_vulkan=true \
         enable_swiftshader=false \
         enable_vr=false \
+        link_pulseaudio=true \
+        rtc_use_pipewire=true \
         use_cfi_cast=true \
         use_dawn=false \
+        use_gnome_keyring=false \
         use_kerberos=false \
+        use_sysroot=false \
         use_text_section_splitting=true \
-        angle_enable_vulkan=true \
-        rtc_use_pipewire=true \
+        use_vaapi=true \
         v8_enable_pointer_compression=true \
         v8_enable_zone_compression=true
 
