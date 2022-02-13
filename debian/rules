@@ -102,7 +102,6 @@ translate_configure:
 setup: changelog control
 	[ -z $$VER ] || echo $$VER > $(UC_DIR)/chromium_version.txt
 	if ! patch -R -p1 -s -f --dry-run < $(SH_DIR)/no-exit-if-pruned.patch; then patch -p1 < $(SH_DIR)/no-exit-if-pruned.patch; fi
-	test -d $(LLVM_DIR) || tools/clang/scripts/update.py
 	sed -e '/^buildtools/d' -e '/^third_party\/depot_tools/d' -e '/^third_party\/llvm/d' -e '/^tools\/clang/d' -i $(UC_DIR)/pruning.list
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list
 	for lib in $(subst libevent,,$(subst libjpeg,libjpeg_turbo,$(SYS_LIBS))); do find "third_party/$$lib" -type f ! -path "third_party/$$lib/chromium/*" ! -path "third_party/$$lib/google/*" ! -name "*.gn" ! -name "*.gni" ! -name "*.isolate" -delete; done
