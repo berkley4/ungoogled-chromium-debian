@@ -8,7 +8,7 @@
 shim-fix-for-official-builds.patch
 perfetto-system-zlib.patch
 pdfium-system-tiff.patch
-system-jsoncpp.patch
+#system-jsoncpp.patch
 template-correction.patch
 sql-virtual-cursor.patch
 
