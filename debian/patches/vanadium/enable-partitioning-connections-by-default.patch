@@ -1,23 +1,18 @@
-From: csagan5 <32685696+csagan5@users.noreply.github.com>
-Date: Thu, 10 Dec 2020 21:52:35 +0100
-Subject: Enable network isolation features
+From b4d30fad00062e5da2f5bcf8f0539f1f9047e6ad Mon Sep 17 00:00:00 2001
+From: Daniel Micay <danielmicay@gmail.com>
+Date: Mon, 8 Mar 2021 16:53:47 -0500
+Subject: [PATCH] enable partitioning connections by default
 
-Enable SplitCacheByNetworkIsolationKey, kSplitHostCacheByNetworkIsolationKey,
-kPartitionConnectionsByNetworkIsolationKey, kPartitionHttpServerPropertiesByNetworkIsolationKey,
-kPartitionSSLSessionsByNetworkIsolationKey, PartitionExpectCTStateByNetworkIsolationKey,
-PartitionNelAndReportingByNetworkIsolationKey
 ---
- net/base/features.cc | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ net/base/features.cc | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
+diff --git a/net/base/features.cc b/net/base/features.cc
+index 96afc8142aa8e..de573f8f2aafc 100644
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -96,30 +96,30 @@
-     "SplitCacheByIncludeCredentials", base::FEATURE_DISABLED_BY_DEFAULT};
- 
- const base::Feature kSplitCacheByNetworkIsolationKey{
--    "SplitCacheByNetworkIsolationKey", base::FEATURE_DISABLED_BY_DEFAULT};
-+    "SplitCacheByNetworkIsolationKey", base::FEATURE_ENABLED_BY_DEFAULT};
+@@ -102,27 +102,27 @@ const base::Feature kSplitCacheByNetworkIsolationKey{
+     "SplitCacheByNetworkIsolationKey", base::FEATURE_ENABLED_BY_DEFAULT};
  
  const base::Feature kSplitHostCacheByNetworkIsolationKey{
 -    "SplitHostCacheByNetworkIsolationKey", base::FEATURE_DISABLED_BY_DEFAULT};
