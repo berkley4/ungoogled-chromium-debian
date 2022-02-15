@@ -46,9 +46,10 @@ system/openjpeg.patch
 system/opus.patch
 system/eu-strip.patch
 
-inox-patchset/fix-cfi-failures-with-unbundled-libxml.patch
-
-fedora/enable-hardware-accelerated-mjpeg.patch
+upstream/libdrm.patch
+upstream/quiche-include.patch
+upstream/restrict.patch
+upstream/sequence-point.patch
 
 bromite/Battery-API-return-nothing.patch
 bromite/Disable-DRM-media-origin-IDs-preprovisioning.patch
@@ -71,16 +72,13 @@ bromite/AudioBuffer-AnalyserNode-fp-mitigations.patch
 bromite/Make-all-favicon-requests-on-demand.patch
 bromite/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
 
-upstream/libdrm.patch
-upstream/quiche-include.patch
-upstream/restrict.patch
-upstream/sequence-point.patch
-
 various/fno-plt.patch
 various/init-stack-vars-zero.patch
 various/silence-alsa-frames-log-msg.patch
+various/fedora/enable-hardware-accelerated-mjpeg.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/xfce-maximize.patch
+various/inox-patchset/fix-cfi-failures-with-unbundled-libxml.patch
 various/system/node.patch
 
 #optional/custom-x64-arch.patch
