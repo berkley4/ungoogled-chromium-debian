@@ -76,6 +76,7 @@ vanadium/disable-autofill-server-communication-by-default.patch
 vanadium/stub-out-the-battery-status-API.patch
 vanadium/disable-appending-variations-header.patch
 
+various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
 various/fno-plt.patch
 various/init-stack-vars-zero.patch
 various/silence-alsa-frames-log-msg.patch

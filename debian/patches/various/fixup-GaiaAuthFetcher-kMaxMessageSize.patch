@@ -1,0 +1,14 @@
+description: disable-gaia.patch lacks this hunk (compared to bromite/vanadium)
+
+--- a/google_apis/gaia/gaia_auth_fetcher.cc
++++ b/google_apis/gaia/gaia_auth_fetcher.cc
+@@ -40,7 +40,9 @@
+ 
+ namespace {
+ 
++#if 0
+ const size_t kMaxMessageSize = 1024 * 1024;  // 1MB
++#endif
+ 
+ constexpr char kBadAuthenticationError[] = "BadAuthentication";
+ constexpr char kBadAuthenticationShortError[] = "badauth";
