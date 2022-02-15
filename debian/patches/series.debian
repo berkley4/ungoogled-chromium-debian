@@ -81,6 +81,10 @@ various/fno-plt.patch
 various/init-stack-vars-zero.patch
 various/silence-alsa-frames-log-msg.patch
 various/fedora/enable-hardware-accelerated-mjpeg.patch
+various/fixes/downgrade-duplicate-peer-error-to-dvlog.patch
+various/fixes/EnumTable-crash.patch
+various/fixes/use-FT_Done_MM_Var-in-CFX_Font-AdjustMMParams.patch
+various/fixes/WaylandFrameManager-check.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/xfce-maximize.patch
 various/inox-patchset/fix-cfi-failures-with-unbundled-libxml.patch
