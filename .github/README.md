@@ -40,8 +40,8 @@ ___Performance improvements___
 
 ___Security/Privacy improvements___
 
-- Control Flow Integrity (CFI) is always kept enabled (unlike upstream debian)
-- Extra bromite patches, which include the following clang options :-
+- Bad Cast Checking in addition to regular Control Flow Integrity (see [here](https://clang.llvm.org/docs/ControlFlowIntegrity.html#bad-cast-checking) for details)
+- Extra Bromite and Vanadium patches, which include the following clang options :-
     - -fwrapv - disables unsafe optimisations (see [here](https://gitlab.e.foundation/e/apps/browser/-/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch))
     - -ftrivial-auto-var-init=zero - improves security (see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html))
 - An example policy file is included in the repo (can be edited and enabled at build time)
@@ -170,6 +170,7 @@ export PATH=$PATH:/path/to/depot_tools
 mkdir build
 cd build
 fetch --nohooks chromium --target_os=linux
+gclient config https://chromium.googlesource.com/chromium/src.git
 
 # Fetch the tags and checkout the desired chromium version
 cd src
@@ -177,6 +178,7 @@ git fetch origin --tags
 git checkout tags/999.0.1234.567
 
 # Prepare the tree for building
+cd ..
 gclient sync -D --force --nohooks --with_branch_heads
 gclient runhooks
 ```
@@ -210,6 +212,7 @@ git fetch origin --tags
 git checkout tags/999.0.1234.567
 
 # Prepare the tree for building
+cd ..
 gclient sync -D --force --nohooks --with_branch_heads
 gclient runhooks
 ```
