@@ -92,7 +92,7 @@ control:
 pgo_configure:
 	test -d $(RT_DIR)/chrome/build/pgo_profiles || tools/update_pgo_profiles.py --target linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles
 	test -n "$$(grep ^pgo_data_path $(UC_DIR)/flags.gn)" || sed -e 's@^\(chrome_pgo_phase=\).*@\12@' -e "$$ a sample_profile_is_accurate=true" -e "$$ a pgo_data_path=\"$$(realpath chrome/build/pgo_profiles/$$(cat chrome/build/linux.pgo.txt))\"" -i $(UC_DIR)/flags.gn
-	sed -e '/^chrome\/build\/pgo_profiles/d' -i  $(UC_DIR)/pruning.list
+	sed -e '/^chrome\/build\/pgo_profiles/d' -i $(UC_DIR)/pruning.list
 
 translate_configure:
 	test -f $(DB_DIR)/patches/translate-reverse-enable.patch || cp -a $(SH_DIR)/translate-reverse-enable.patch $(DB_DIR)/patches/
@@ -101,7 +101,7 @@ translate_configure:
 
 setup: changelog control
 	[ -z $$VER ] || echo $$VER > $(UC_DIR)/chromium_version.txt
-	if ! patch -R -p1 -s -f --dry-run < $(SH_DIR)/no-exit-if-pruned.patch; then patch -p1 < $(SH_DIR)/no-exit-if-pruned.patch; fi
+	if ! patch -R -p1 -s -f --dry-run < $(SH_DIR)/no-exit-if-pruned.patch 2>/dev/null; then patch -p1 < $(SH_DIR)/no-exit-if-pruned.patch; fi
 	sed -e '/^buildtools/d' -e '/^third_party\/depot_tools/d' -e '/^third_party\/llvm/d' -e '/^tools\/clang/d' -i $(UC_DIR)/pruning.list
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list
 	for lib in $(subst libevent,,$(subst libjpeg,libjpeg_turbo,$(SYS_LIBS))); do find "third_party/$$lib" -type f ! -path "third_party/$$lib/chromium/*" ! -path "third_party/$$lib/google/*" ! -name "*.gn" ! -name "*.gni" ! -name "*.isolate" -delete; done
