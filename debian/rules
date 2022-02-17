@@ -58,8 +58,8 @@ GN_FLAGS += \
         v8_enable_pointer_compression=true \
         v8_enable_zone_compression=true
 
-# Currently omitted from base (stable): harfbuzz-ng, icu, ffmpeg, jsoncpp,
-#                                       libpng, libvpx, openh264, re2, snappy
+# Currently omitted from base (stable)
+# harfbuzz-ng, icu, ffmpeg, jsoncpp, libpng, libvpx, openh264, re2, snappy
 SYS_LIBS :=         \
         flac        \
         fontconfig  \
