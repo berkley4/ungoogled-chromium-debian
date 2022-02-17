@@ -80,6 +80,7 @@ various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
 various/fno-plt.patch
 various/init-stack-vars-zero.patch
 various/silence-alsa-frames-log-msg.patch
+various/addenda/Prevent-UAF-in-aura-Window-CleanupGestureState.patch
 various/fedora/enable-hardware-accelerated-mjpeg.patch
 various/fixes/downgrade-duplicate-peer-error-to-dvlog.patch
 various/fixes/EnumTable-crash.patch
