@@ -20,10 +20,6 @@ DATETIME := $(shell date -R)
 LLVM_DIR    := $(RT_DIR)/third_party/llvm-build/Release+Asserts/bin
 export PATH := $(LLVM_DIR):$(PATH)
 
-# Setup compiler and linkers flags
-export DEB_BUILD_MAINT_OPTIONS  := optimize=-lto
-export DEB_CXXFLAGS_MAINT_STRIP := -g
-
 # Use parallel jobs if requested
 JOBS := 1
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
