@@ -23,14 +23,3 @@ author: Michael Gilbert <mgilbert@debian.org>
  #include "base/time/time.h"
  #include "base/trace_event/base_tracing.h"
  #include "build/build_config.h"
---- a/tools/gn/build/gen.py
-+++ b/tools/gn/build/gen.py
-@@ -399,6 +399,8 @@
-       if not options.no_static_libstdcpp:
-         ldflags.append('-static-libstdc++')
- 
-+      libs.append('-levent')
-+
-       if platform.is_mingw() or platform.is_msys():
-         cflags.remove('-std=c++17')
-         cflags.extend([

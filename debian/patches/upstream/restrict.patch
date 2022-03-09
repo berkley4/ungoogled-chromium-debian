@@ -1,0 +1,43 @@
+From 498543c0339890c988b35b615f3889dc7f2da652 Mon Sep 17 00:00:00 2001
+From: Steinar H. Gunderson <sesse@chromium.org>
+Date: Wed, 19 Jan 2022 14:12:02 +0000
+Subject: [PATCH] Fix __restrict violation in pairwise_inference.cc.
+
+relu() has its input and output defined as __restrict, which means
+that the compiler is allowed to assume they don't alias. However,
+it's called with the same buffer for input and output, violating
+this property and potentially triggering undefined behavior.
+This triggers the -Wrestrict warning in GCC.
+
+This patch is inspired by a patch in the Debian Chromium package,
+originally by Michael Gilbert <mgilbert@debian.org> (but that patch
+was faulty and broke the actual inference).
+
+Original patch:
+https://salsa.debian.org/chromium-team/chromium/-/blob/master/debian/patches/warnings/restrict.patch
+
+Change-Id: I9c7c2fbc999bf83937bb21e96da29c5c84743c46
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/3398487
+Reviewed-by: Guoxing Zhao <charleszhao@chromium.org>
+Commit-Queue: Steinar H Gunderson <sesse@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#960932}
+---
+
+diff --git a/chrome/browser/resource_coordinator/tab_ranker/pairwise_inference.cc b/chrome/browser/resource_coordinator/tab_ranker/pairwise_inference.cc
+index ea8c5d5..69dbe205 100644
+--- a/chrome/browser/resource_coordinator/tab_ranker/pairwise_inference.cc
++++ b/chrome/browser/resource_coordinator/tab_ranker/pairwise_inference.cc
+@@ -1980,11 +1980,11 @@
+ 
+   // dnn/hiddenlayer_0/hiddenlayer_0/Relu
+   Relu<float>(2,  // rank
+-              fixed->shape0, fixed->alloc1, fixed->alloc1);
++              fixed->shape0, fixed->alloc1, fixed->alloc0);
+ 
+   // dnn/logits/MatMul_merged_with_dnn/logits/BiasAdd
+   FullyConnected<float>(
+-      fixed->shape0, fixed->alloc1, dnn_logits_kernel__3__cf__3_shape,
++      fixed->shape0, fixed->alloc0, dnn_logits_kernel__3__cf__3_shape,
+       dnn_logits_kernel__3__cf__3.values, dnn_logits_bias__2__cf__2_shape,
+       dnn_logits_bias__2__cf__2.values, prediction);
+ }

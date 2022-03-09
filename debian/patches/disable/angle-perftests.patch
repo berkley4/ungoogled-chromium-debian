@@ -34,17 +34,6 @@ author: Michel Le Bihan <michel@lebihan.pl>
  }
  
  if (!defined(angle_zlib_compression_utils_dir)) {
---- a/third_party/angle/build_overrides/angle.gni
-+++ b/third_party/angle/build_overrides/angle.gni
-@@ -6,7 +6,7 @@
- angle_root = "//"
- 
- # True if ANGLE can access build/, testing/ and other Chrome folders.
--angle_has_build = true
-+angle_has_build = false
- 
- # Overrides for ANGLE's dependencies
- angle_abseil_cpp_dir = "//third_party/abseil-cpp"
 --- a/third_party/angle/src/tests/BUILD.gn
 +++ b/third_party/angle/src/tests/BUILD.gn
 @@ -12,8 +12,7 @@

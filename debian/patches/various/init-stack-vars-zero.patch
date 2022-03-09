@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2493,7 +2493,9 @@
+@@ -2491,7 +2491,9 @@
  config("default_init_stack_vars") {
    cflags = []
    if (init_stack_vars && is_clang && !is_nacl && !using_sanitizer) {
