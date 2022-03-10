@@ -58,7 +58,7 @@ bromite/Hardening-against-incognito-mode-detection.patch
 bromite/Replace-DoH-probe-domain-with-RIPE-domain.patch
 bromite/Block-gateway-attacks-via-websockets.patch
 bromite/AudioBuffer-AnalyserNode-fp-mitigations.patch
-#bromite/Disable-text-fragments-by-default.patch
+bromite/Disable-text-fragments-by-default.patch
 bromite/Make-all-favicon-requests-on-demand.patch
 bromite/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
 
