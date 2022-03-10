@@ -12,7 +12,7 @@ From 96.0.4664.93 onwards the debs are built in a debian stable chroot, so shoul
 
 Only ungoogled-chromium_*.deb is mandatory. The other debs are
 
-* *-sandbox_*   : suid sandbox, recommended (see the [Sandbox](https://github.com/berkley4/ungoogled-chromium-debian/blob/extended_stable/.github/README.md#sandbox) section below).
+* *-sandbox_*   : suid sandbox, recommended (see the [Sandbox](https://github.com/berkley4/ungoogled-chromium-debian/blob/stable/.github/README.md#sandbox) section below).
 * *-l10n_*      : language localisation, needed if you want a non US English UI.
 * *-libraries_* : contains files such as libEGL.so, libGLESv2.so (likely not needed by everyone).
 * *-driver_*    : chromedriver, not normally needed.
@@ -66,7 +66,7 @@ ___Build system___
 - Built with upstream google clang/llvm binaries (auto-downloaded during build setup)
 - A bit more robust in general eg rebuilds should be faster and less error prone
 - All patching is handled by debian - ungoogled patches are merged with the debian patches during build setup
-- The Extended Stable branch is built with a chromium git tree (google supplies no release tarballs for this branch)
+- Built with a chromium git tree instead of tarball releases
 - Several fixes and improvements
 
 - - - -
@@ -76,7 +76,6 @@ The following are optional features :-
 
 
 ___Enable Vulkan___
-[currently disabled]
 
 ~~Vulkan can be enabled via uncommenting the following runtime flags in /etc/chromium.d/gpu-options~~ :-
 
@@ -152,7 +151,7 @@ echo "kernel.unprivileged_userns_clone = 0" > /etc/systctl.d/userns
 sudo apt install -y devscripts equivs
 
 # Clone ungoogled-chromium-debian
-git clone -b extended_stable https://github.com/berkley4/ungoogled-chromium-debian.git
+git clone -b <stable|extended_stable> https://github.com/berkley4/ungoogled-chromium-debian.git
 
 # Update submodes
 cd debian
