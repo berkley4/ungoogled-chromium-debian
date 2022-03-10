@@ -21,16 +21,13 @@ fixes/widevine-locations.patch
 fixes/ps-print.patch
 
 disable/tests.patch
-disable/glmark.patch
 disable/owners.patch
 disable/android.patch
 disable/fuzzers.patch
-disable/installer.patch
 disable/font-tests.patch
 disable/swiftshader.patch
 disable/swiftshader-2.patch
 disable/driver-chrome-path.patch
-disable/widevine-cdm-cu.patch
 disable/angle-perftests.patch
 disable/devtools-unittests.patch
 disable/libaom-arm.patch
@@ -47,9 +44,6 @@ system/opus.patch
 system/eu-strip.patch
 
 upstream/libdrm.patch
-upstream/quiche-include.patch
-upstream/restrict.patch
-upstream/sequence-point.patch
 
 bromite/Disable-metrics-on-all-I-O-threads.patch
 bromite/Disable-some-signed-exchange-features.patch
