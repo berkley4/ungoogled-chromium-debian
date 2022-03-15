@@ -82,7 +82,6 @@ various/fixes/WaylandFrameManager-check.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/xfce-maximize.patch
 various/inox-patchset/fix-cfi-failures-with-unbundled-libxml.patch
-various/system/node.patch
 
 #optional/custom-x64-arch.patch
 #optional/mtune.patch
