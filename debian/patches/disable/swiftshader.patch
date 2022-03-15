@@ -3,7 +3,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -515,7 +515,7 @@
+@@ -518,7 +518,7 @@
      ]
    }
  
@@ -14,7 +14,7 @@ author: Michael Gilbert <mgilbert@debian.org>
    }
 --- a/third_party/angle/gni/angle.gni
 +++ b/third_party/angle/gni/angle.gni
-@@ -429,7 +429,6 @@
+@@ -436,7 +436,6 @@
                        "$angle_root:angle_common",
                        "$angle_root:includes",
                        "$angle_root/src/tests:angle_test_expectations",

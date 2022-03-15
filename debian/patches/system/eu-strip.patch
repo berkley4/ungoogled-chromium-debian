@@ -7,5 +7,5 @@
 -    eu_strip_binary = "//buildtools/third_party/eu-strip/bin/eu-strip"
 +    eu_strip_binary = "/usr/bin/eu-strip"
      script = "//build/linux/strip_binary.py"
-     inputs = [
-       invoker.binary_input,
+ 
+     if (defined(invoker.stripped_binary_output)) {

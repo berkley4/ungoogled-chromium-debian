@@ -8,7 +8,7 @@ Subject: DoH secure mode by default
 
 --- a/chrome/browser/net/stub_resolver_config_reader.cc
 +++ b/chrome/browser/net/stub_resolver_config_reader.cc
-@@ -154,7 +154,7 @@
+@@ -155,7 +155,7 @@
        if (entries.count("dns-over-https@1")) {
          // The user has "Enabled" selected.
          local_state_->SetString(prefs::kDnsOverHttpsMode,
@@ -17,7 +17,7 @@ Subject: DoH secure mode by default
        } else if (entries.count("dns-over-https@2")) {
          // The user has "Disabled" selected.
          local_state_->SetString(prefs::kDnsOverHttpsMode,
-@@ -334,22 +334,7 @@
+@@ -335,22 +335,7 @@
      check_parental_controls = false;
    }
  

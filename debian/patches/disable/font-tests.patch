@@ -3,7 +3,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/skia/BUILD.gn
 +++ b/skia/BUILD.gn
-@@ -863,7 +863,7 @@ group("test_fonts_resources") {
+@@ -861,7 +861,7 @@
    if (is_apple) {
      deps += [ ":test_fonts_bundle_data" ]
      data_deps += [ ":test_fonts_bundle_data" ]
@@ -14,7 +14,7 @@ author: Michael Gilbert <mgilbert@debian.org>
    }
 --- a/third_party/test_fonts/fontconfig/BUILD.gn
 +++ b/third_party/test_fonts/fontconfig/BUILD.gn
-@@ -8,9 +8,7 @@ if (is_linux || is_chromeos) {
+@@ -8,9 +8,7 @@
    group("test_support") {
      testonly = true
      public_deps = [ ":fontconfig_util_linux" ]

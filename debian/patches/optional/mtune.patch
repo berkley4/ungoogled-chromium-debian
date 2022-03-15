@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -880,6 +880,7 @@
+@@ -891,6 +891,7 @@
        cflags += [
          "-m64",
          "-march=$x64_arch",

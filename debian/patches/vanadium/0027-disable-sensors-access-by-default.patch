@@ -1,6 +1,7 @@
+From f8c5f0b30a1fde0756db2230f8bf97feb38df578 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Sun, 16 Jun 2019 15:57:29 -0400
-Subject: disable sensors access site setting by default
+Subject: [PATCH] disable sensors access by default
 
 ---
  .../content_settings/core/browser/content_settings_registry.cc  | 2 +-

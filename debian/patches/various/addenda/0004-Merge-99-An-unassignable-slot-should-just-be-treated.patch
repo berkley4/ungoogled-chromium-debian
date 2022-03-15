@@ -1,0 +1,166 @@
+From 48cc4c5351d1e5291838394a4e4f5ae37e60a0a7 Mon Sep 17 00:00:00 2001
+From: Aaron Leventhal <aleventhal@google.com>
+Date: Mon, 7 Mar 2022 20:47:36 +0000
+Subject: [PATCH] Merge 99: An unassignable slot should just be treated like a
+ normal DOM node
+
+A <slot> that is not in a shadow root should be treated like any other
+element. Almost any code that just checks for a slot element without
+using ToHTMLSlotElementIfSupportsAssignmentOrNull()is probably
+incorrect.
+
+This seems to help improve performance in issue 1281936, but it's not
+clear why. However, it is more correct code and we should land it
+whether it improves performance at all. We should not be unnecessarily
+truncating subtrees that use a <slot> element
+
+(cherry picked from commit 3ff4325989fdbac29152e3e1a57d496416ac2559)
+
+(cherry picked from commit 44a09bfa6ec89d7f1fa42ad62fc28767003839a1)
+
+Bug: 1281936
+Change-Id: Icb954d8706c3dafc0aaa1fca8d4f3fb9d8c2b44d
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/3472410
+Reviewed-by: Daniel Libby <dlibby@microsoft.com>
+Reviewed-by: Joey Arhar <jarhar@chromium.org>
+Reviewed-by: Mason Freed <masonf@chromium.org>
+Commit-Queue: Aaron Leventhal <aleventhal@chromium.org>
+Cr-Original-Original-Commit-Position: refs/heads/main@{#973886}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/3484983
+Auto-Submit: Aaron Leventhal <aleventhal@chromium.org>
+Cr-Original-Commit-Position: refs/branch-heads/4896@{#46}
+Cr-Original-Branched-From: 1f63ff4bc27570761b35ffbc7f938f6586f7bee8-refs/heads/main@{#972766}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/3507497
+Reviewed-by: Abigail Klein <abigailbklein@google.com>
+Commit-Queue: Abigail Klein <abigailbklein@google.com>
+Cr-Commit-Position: refs/branch-heads/4844@{#998}
+Cr-Branched-From: 007241ce2e6c8e5a7b306cc36c730cd07cd38825-refs/heads/main@{#961656}
+---
+ .../slot-creation-crash-expected-blink.txt    |  1 +
+ .../modules/accessibility/ax_node_object.cc   |  3 ++-
+ .../modules/accessibility/ax_object.cc        | 10 ++++++----
+ .../accessibility/ax_object_cache_impl.cc     | 19 +++++++++++++------
+ 4 files changed, 22 insertions(+), 11 deletions(-)
+
+--- a/content/test/data/accessibility/regression/slot-creation-crash-expected-blink.txt
++++ b/content/test/data/accessibility/regression/slot-creation-crash-expected-blink.txt
+@@ -3,6 +3,7 @@
+ ++++genericContainer ignored htmlTag='body'
+ ++++++genericContainer htmlTag='div'
+ ++++++++genericContainer ignored invisible htmlTag='junk'
++++++++++++genericContainer ignored invisible htmlTag='slot'
+ ++++++++paragraph htmlTag='p'
+ ++++++++++staticText name='paragraph'
+ ++++++++++++inlineTextBox name='paragraph'
+--- a/third_party/blink/renderer/modules/accessibility/ax_node_object.cc
++++ b/third_party/blink/renderer/modules/accessibility/ax_node_object.cc
+@@ -85,6 +85,7 @@
+ #include "third_party/blink/renderer/core/html/html_map_element.h"
+ #include "third_party/blink/renderer/core/html/html_meter_element.h"
+ #include "third_party/blink/renderer/core/html/html_plugin_element.h"
++#include "third_party/blink/renderer/core/html/html_slot_element.h"
+ #include "third_party/blink/renderer/core/html/html_table_caption_element.h"
+ #include "third_party/blink/renderer/core/html/html_table_cell_element.h"
+ #include "third_party/blink/renderer/core/html/html_table_element.h"
+@@ -964,7 +965,7 @@
+ 
+   if (IsA<HTMLSummaryElement>(*GetNode())) {
+     ContainerNode* parent = LayoutTreeBuilderTraversal::Parent(*GetNode());
+-    if (IsA<HTMLSlotElement>(parent))
++    if (ToHTMLSlotElementIfSupportsAssignmentOrNull(parent))
+       parent = LayoutTreeBuilderTraversal::Parent(*parent);
+     if (parent && IsA<HTMLDetailsElement>(parent))
+       return ax::mojom::blink::Role::kDisclosureTriangle;
+--- a/third_party/blink/renderer/modules/accessibility/ax_object.cc
++++ b/third_party/blink/renderer/modules/accessibility/ax_object.cc
+@@ -2905,8 +2905,10 @@
+   // Also children of <label> elements, for accname calculation purposes.
+   // This checks to see whether this is a child of one of those.
+   if (Node* parent_node = LayoutTreeBuilderTraversal::Parent(*node)) {
+-    if (parent_node->IsCustomElement() || IsA<HTMLSlotElement>(parent_node))
++    if (parent_node->IsCustomElement() ||
++        ToHTMLSlotElementIfSupportsAssignmentOrNull(parent_node)) {
+       return true;
++    }
+     // <span>s are ignored because they are considered uninteresting. Do not add
+     // them back inside labels.
+     if (IsA<HTMLLabelElement>(parent_node) && !IsA<HTMLSpanElement>(node))
+@@ -2968,7 +2970,7 @@
+   // information with their original location in the DOM. Therefore, we need to
+   // ensure that in the accessibility tree no remnant information from the
+   // unflattened DOM tree remains, such as the cached parent.
+-  if (IsA<HTMLSlotElement>(element))
++  if (ToHTMLSlotElementIfSupportsAssignmentOrNull(element))
+     return true;
+ 
+   // Include all pseudo element content. Any anonymous subtree is included
+@@ -4935,8 +4937,8 @@
+ 
+   // TODO(crbug.com/1209216): Figure out why removing this causes a
+   // use-after-poison and possibly replace it with a better check.
+-  HTMLSlotElement* slot = DynamicTo<HTMLSlotElement>(node);
+-  if (slot && slot->SupportsAssignment())
++  HTMLSlotElement* slot = ToHTMLSlotElementIfSupportsAssignmentOrNull(node);
++  if (slot)
+     return;
+ 
+   if (Node* map = GetMapForImage(node))
+--- a/third_party/blink/renderer/modules/accessibility/ax_object_cache_impl.cc
++++ b/third_party/blink/renderer/modules/accessibility/ax_object_cache_impl.cc
+@@ -348,8 +348,9 @@
+ 
+   // Outside of AXMenuList descendants, all other non-slot user agent shadow
+   // nodes are relevant.
+-  const HTMLSlotElement* slot_element = DynamicTo<HTMLSlotElement>(node);
+-  if (!slot_element || !slot_element->SupportsAssignment())
++  const HTMLSlotElement* slot_element =
++      ToHTMLSlotElementIfSupportsAssignmentOrNull(node);
++  if (!slot_element)
+     return true;
+ 
+   // Slots are relevant if they have content.
+@@ -412,8 +413,10 @@
+   if (node->IsPseudoElement())
+     return AXObjectCacheImpl::IsRelevantPseudoElement(*node);
+ 
+-  if (const HTMLSlotElement* slot = DynamicTo<HTMLSlotElement>(node))
++  if (const HTMLSlotElement* slot =
++          ToHTMLSlotElementIfSupportsAssignmentOrNull(node)) {
+     return AXObjectCacheImpl::IsRelevantSlotElement(*slot);
++  }
+ 
+   // <optgroup> is irrelevant inside of a <select> menulist.
+   if (auto* opt_group = DynamicTo<HTMLOptGroupElement>(node)) {
+@@ -507,8 +510,10 @@
+   if (node->IsPseudoElement())
+     return AXObjectCacheImpl::IsRelevantPseudoElement(*node);
+ 
+-  if (const HTMLSlotElement* slot = DynamicTo<HTMLSlotElement>(node))
++  if (const HTMLSlotElement* slot =
++          ToHTMLSlotElementIfSupportsAssignmentOrNull(node)) {
+     return AXObjectCacheImpl::IsRelevantSlotElement(*slot);
++  }
+ 
+   // <optgroup> is irrelevant inside of a <select> menulist.
+   if (auto* opt_group = DynamicTo<HTMLOptGroupElement>(node)) {
+@@ -1023,8 +1028,10 @@
+   // TODO(accessibility): There should be a better way to accomplish this.
+   // Could a new function be added to the slot element?
+   const Node* parent = LayoutTreeBuilderTraversal::Parent(slot);
+-  if (const HTMLSlotElement* parent_slot = DynamicTo<HTMLSlotElement>(parent))
++  if (const HTMLSlotElement* parent_slot =
++          ToHTMLSlotElementIfSupportsAssignmentOrNull(parent)) {
+     return AXObjectCacheImpl::IsRelevantSlotElement(*parent_slot);
++  }
+ 
+   if (parent && parent->GetLayoutObject())
+     return true;
+@@ -3468,7 +3475,7 @@
+   // TODO(accessibility): The relevance check probably applies to all nodes
+   // not just slot elements.
+   if (const HTMLSlotElement* slot =
+-          DynamicTo<HTMLSlotElement>(obj->GetNode())) {
++          ToHTMLSlotElementIfSupportsAssignmentOrNull(obj->GetNode())) {
+     if (!AXObjectCacheImpl::IsRelevantSlotElement(*slot))
+       return nullptr;
+   }

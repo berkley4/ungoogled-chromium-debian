@@ -13,7 +13,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  import("//url/features.gni")
 --- a/base/BUILD.gn
 +++ b/base/BUILD.gn
-@@ -36,7 +36,6 @@
+@@ -38,7 +38,6 @@
  import("//build_overrides/build.gni")
  import("//testing/libfuzzer/fuzzer_test.gni")
  import("//testing/test.gni")
@@ -21,7 +21,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  
  if (is_mac) {
    # Used to generate fuzzer corpus :base_mach_port_rendezvous_convert_corpus.
-@@ -3484,7 +3483,7 @@
+@@ -3604,7 +3603,7 @@
      ]
    }
  

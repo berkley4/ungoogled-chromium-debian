@@ -3,9 +3,9 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/third_party/pdfium/BUILD.gn
 +++ b/third_party/pdfium/BUILD.gn
-@@ -18,7 +18,7 @@
- config("pdfium_common_config") {
+@@ -19,7 +19,7 @@
    cflags = []
+   cflags_cc = []
    ldflags = []
 -  include_dirs = [ "." ]
 +  include_dirs = [ ".", "/usr/include/openjpeg-2.3", "/usr/include/openjpeg-2.4" ]

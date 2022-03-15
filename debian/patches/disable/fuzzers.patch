@@ -3,8 +3,8 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -784,8 +784,7 @@
-     deps += [ "//ui/gtk:gtk_unittests" ]
+@@ -767,8 +767,7 @@
+     }
    }
  
 -  if (((is_linux || is_chromeos) && !is_chromecast) ||

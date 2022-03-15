@@ -1,0 +1,57 @@
+From c275369841e7cd78acfcccb62d62413d569abb50 Mon Sep 17 00:00:00 2001
+From: Ravjit <ravjit@chromium.org>
+Date: Tue, 8 Mar 2022 20:06:37 +0000
+Subject: [PATCH] Make sure CPSS On-Device doesn't crash if optimizationhints
+ kill-switch is off
+
+If the Optimizationhints kill switch is turned off from finch, trying to use CPSS On-Device will result in a fatal crash. This patch takes care of this condition.
+
+(cherry picked from commit 1b9529a2d337db9772f57ef14a1e55588f9f0a65)
+
+Bug: 1302967
+Change-Id: I09747da135ba88bc6ed8cfb0242f386edfe54f50
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/3500838
+Reviewed-by: Andy Paicu <andypaicu@chromium.org>
+Commit-Queue: Andy Paicu <andypaicu@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#977646}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/3501870
+Reviewed-by: Illia Klimov <elklm@google.com>
+Commit-Queue: Illia Klimov <elklm@google.com>
+Cr-Commit-Position: refs/branch-heads/4844@{#1013}
+Cr-Branched-From: 007241ce2e6c8e5a7b306cc36c730cd07cd38825-refs/heads/main@{#961656}
+---
+ .../prediction_based_permission_ui_selector.cc           | 3 ++-
+ .../permissions/prediction_model_handler_factory.cc      | 9 +++++++--
+ 2 files changed, 9 insertions(+), 3 deletions(-)
+
+--- a/chrome/browser/permissions/prediction_based_permission_ui_selector.cc
++++ b/chrome/browser/permissions/prediction_based_permission_ui_selector.cc
+@@ -149,7 +149,8 @@
+       prediction_source == PredictionSource::USE_ONDEVICE) {
+     permissions::PredictionModelHandler* prediction_model_handler =
+         PredictionModelHandlerFactory::GetForBrowserContext(profile_);
+-    if (prediction_model_handler->ModelAvailable()) {
++    if (prediction_model_handler &&
++        prediction_model_handler->ModelAvailable()) {
+       VLOG(1) << "[CPSS] Using locally available model";
+       permissions::PermissionUmaUtil::RecordPermissionPredictionSource(
+           permissions::PermissionPredictionSource::ON_DEVICE);
+--- a/chrome/browser/permissions/prediction_model_handler_factory.cc
++++ b/chrome/browser/permissions/prediction_model_handler_factory.cc
+@@ -38,9 +38,14 @@
+ 
+ KeyedService* PredictionModelHandlerFactory::BuildServiceInstanceFor(
+     content::BrowserContext* context) const {
++  Profile* profile = Profile::FromBrowserContext(context);
++  OptimizationGuideKeyedService* optimization_guide =
++      OptimizationGuideKeyedServiceFactory::GetForProfile(profile);
++
++  if (!optimization_guide)
++    return nullptr;
+   return new permissions::PredictionModelHandler(
+-      OptimizationGuideKeyedServiceFactory::GetForProfile(
+-          Profile::FromBrowserContext(context)),
++      optimization_guide,
+       base::ThreadPool::CreateSequencedTaskRunner(
+           {base::MayBlock(), base::TaskPriority::USER_VISIBLE}));
+ }

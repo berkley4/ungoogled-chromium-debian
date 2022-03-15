@@ -26,11 +26,9 @@ Date:   Tue Jan 25 19:14:53 2022 +0000
     Auto-Submit: Steinar H Gunderson <sesse@chromium.org>
     Cr-Commit-Position: refs/heads/main@{#963119}
 
-diff --git a/media/gpu/chromeos/BUILD.gn b/media/gpu/chromeos/BUILD.gn
-index 7cb4c3ea39a16..6fe21c15ecc1b 100644
 --- a/media/gpu/chromeos/BUILD.gn
 +++ b/media/gpu/chromeos/BUILD.gn
-@@ -25,6 +25,7 @@ source_set("chromeos") {
+@@ -25,6 +25,7 @@
  
    deps = [
      "//base",
@@ -38,8 +36,6 @@ index 7cb4c3ea39a16..6fe21c15ecc1b 100644
      "//media",
      "//media/gpu:buildflags",
      "//media/gpu:command_buffer_helper",
-diff --git a/media/gpu/chromeos/video_decoder_pipeline.cc b/media/gpu/chromeos/video_decoder_pipeline.cc
-index d2f154ea0d87c..416b9434a8d70 100644
 --- a/media/gpu/chromeos/video_decoder_pipeline.cc
 +++ b/media/gpu/chromeos/video_decoder_pipeline.cc
 @@ -28,8 +28,8 @@

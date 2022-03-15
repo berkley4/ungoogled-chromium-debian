@@ -79,10 +79,10 @@
  
 --- a/components/payments/core/currency_formatter.h
 +++ b/components/payments/core/currency_formatter.h
-@@ -9,9 +9,9 @@
+@@ -8,9 +8,9 @@
+ #include <memory>
  #include <string>
  
- #include "base/macros.h"
 -#include "third_party/icu/source/common/unicode/locid.h"
 -#include "third_party/icu/source/common/unicode/unistr.h"
 -#include "third_party/icu/source/i18n/unicode/numfmt.h"
@@ -124,7 +124,7 @@
  
 --- a/components/url_formatter/spoof_checks/idn_spoof_checker.cc
 +++ b/components/url_formatter/spoof_checks/idn_spoof_checker.cc
-@@ -16,11 +16,11 @@
+@@ -17,11 +17,11 @@
  #include "base/threading/thread_local_storage.h"
  #include "build/build_config.h"
  #include "net/base/lookup_string_in_fixed_set.h"
@@ -153,25 +153,22 @@
  #include <windows.h>
 --- a/third_party/tensorflow-text/src/tensorflow_text/core/kernels/wordpiece_tokenizer.cc
 +++ b/third_party/tensorflow-text/src/tensorflow_text/core/kernels/wordpiece_tokenizer.cc
-@@ -17,9 +17,9 @@
+@@ -17,7 +17,8 @@
  #include "absl/strings/str_cat.h"
  #include "absl/strings/str_join.h"
  #include "absl/strings/string_view.h"
--#include "third_party/icu/source/common/unicode/schriter.h"
--#include "third_party/icu/source/common/unicode/unistr.h"
 -#include "third_party/icu/source/common/unicode/utf8.h"
-+#include <unicode/schriter.h>
-+#include <unicode/unistr.h>
++
 +#include <unicode/utf8.h>
  
  namespace tensorflow {
  namespace text {
 --- a/ui/base/l10n/formatter.h
 +++ b/ui/base/l10n/formatter.h
-@@ -13,9 +13,9 @@
+@@ -12,9 +12,9 @@
+ 
  #include "base/component_export.h"
  #include "base/lazy_instance.h"
- #include "base/macros.h"
 -#include "third_party/icu/source/common/unicode/unistr.h"
 -#include "third_party/icu/source/i18n/unicode/msgfmt.h"
 -#include "third_party/icu/source/i18n/unicode/plurrule.h"

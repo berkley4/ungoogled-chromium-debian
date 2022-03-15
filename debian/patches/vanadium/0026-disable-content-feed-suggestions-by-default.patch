@@ -1,4 +1,4 @@
-From 6af50570c9a759c661862aa73e24875c7acf9f07 Mon Sep 17 00:00:00 2001
+From 75d128a9b9c1cb9b1050a94a2cda0df63e6a7978 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Sun, 22 Mar 2020 01:23:48 -0400
 Subject: [PATCH] disable content feed suggestions by default
@@ -8,11 +8,9 @@ Subject: [PATCH] disable content feed suggestions by default
  components/feed/feed_feature_list.cc                          | 4 ++--
  2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CachedFeatureFlags.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CachedFeatureFlags.java
-index af111e7a4a0f7..d7ee9cb1f838d 100644
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CachedFeatureFlags.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CachedFeatureFlags.java
-@@ -81,7 +81,7 @@ public class CachedFeatureFlags {
+@@ -82,7 +82,7 @@
                      .put(ChromeFeatureList.TAB_TO_GTS_ANIMATION, true)
                      .put(ChromeFeatureList.TEST_DEFAULT_DISABLED, false)
                      .put(ChromeFeatureList.TEST_DEFAULT_ENABLED, true)
@@ -21,8 +19,6 @@ index af111e7a4a0f7..d7ee9cb1f838d 100644
                      .put(ChromeFeatureList.THEME_REFACTOR_ANDROID, true)
                      .put(ChromeFeatureList.USE_CHIME_ANDROID_SDK, false)
                      .put(ChromeFeatureList.CCT_INCOGNITO_AVAILABLE_TO_THIRD_PARTY, false)
-diff --git a/components/feed/feed_feature_list.cc b/components/feed/feed_feature_list.cc
-index 3c9f81ff70276..d6570f84a5be9 100644
 --- a/components/feed/feed_feature_list.cc
 +++ b/components/feed/feed_feature_list.cc
 @@ -12,12 +12,12 @@

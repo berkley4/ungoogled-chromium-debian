@@ -1,8 +1,6 @@
-diff --git a/build/config/ui.gni b/build/config/ui.gni
-index 55478b0..b7eaf79 100644
 --- a/build/config/ui.gni
 +++ b/build/config/ui.gni
-@@ -37,8 +37,10 @@ declare_args() {
+@@ -41,8 +41,10 @@
  
  assert(!use_glib || (is_linux && !is_chromecast))
  
@@ -15,11 +13,9 @@ index 55478b0..b7eaf79 100644
  
  # Whether using Xvfb to provide a display server for a test might be
  # necessary.
-diff --git a/chrome/browser/chrome_browser_main_linux.cc b/chrome/browser/chrome_browser_main_linux.cc
-index 073e6ed..c716431 100644
 --- a/chrome/browser/chrome_browser_main_linux.cc
 +++ b/chrome/browser/chrome_browser_main_linux.cc
-@@ -89,7 +89,7 @@ void ChromeBrowserMainPartsLinux::PostCreateMainMessageLoop() {
+@@ -60,7 +60,7 @@
  #if BUILDFLAG(IS_CHROMEOS_ASH) || BUILDFLAG(IS_CHROMEOS_LACROS)
    // No-op: Ash and Lacros Bluetooth DBusManager initialization depend on
    // FeatureList, and is done elsewhere.
@@ -28,7 +24,7 @@ index 073e6ed..c716431 100644
    bluez::BluezDBusManager::Initialize(nullptr /* system_bus */);
  #endif  // BUILDFLAG(IS_CHROMEOS_ASH) || BUILDFLAG(IS_CHROMEOS_LACROS)
  
-@@ -117,7 +117,7 @@ void ChromeBrowserMainPartsLinux::PostBrowserStart() {
+@@ -124,7 +124,7 @@
  void ChromeBrowserMainPartsLinux::PostDestroyThreads() {
  #if BUILDFLAG(IS_CHROMEOS_ASH) || BUILDFLAG(IS_CHROMEOS_LACROS)
    // No-op; per PostBrowserStart() comment, this is done elsewhere.
@@ -37,33 +33,29 @@ index 073e6ed..c716431 100644
    bluez::BluezDBusManager::Shutdown();
    bluez::BluezDBusThreadManager::Shutdown();
  #endif  // BUILDFLAG(IS_CHROMEOS_ASH) || BUILDFLAG(IS_CHROMEOS_LACROS)
-diff --git a/chrome/browser/metrics/bluetooth_available_utility.cc b/chrome/browser/metrics/bluetooth_available_utility.cc
-index a08be4c..55f3824 100644
 --- a/chrome/browser/metrics/bluetooth_available_utility.cc
 +++ b/chrome/browser/metrics/bluetooth_available_utility.cc
 @@ -13,7 +13,7 @@
  #include "device/bluetooth/bluetooth_adapter.h"
  #include "device/bluetooth/bluetooth_adapter_factory.h"
  
--#if defined(OS_LINUX) || defined(OS_CHROMEOS)
-+#if defined(OS_LINUX) && defined(USE_DBUS) || defined(OS_CHROMEOS)
+-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
++#if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX) && defined(USE_DBUS)
  #include "device/bluetooth/dbus/bluez_dbus_manager.h"
- #endif  // defined(OS_LINUX) || defined(OS_CHROMEOS)
+ #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
  
-@@ -55,7 +55,7 @@ void ReportBluetoothAvailability() {
+@@ -55,7 +55,7 @@
      return;
    }
  
--#if defined(OS_LINUX) || defined(OS_CHROMEOS)
-+#if defined(OS_LINUX) && defined(USE_DBUS)
+-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
++#if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX) && defined(USE_DBUS)
    // This is for tests that have not initialized bluez or dbus thread manager.
    // Outside of tests these are initialized earlier during browser startup.
    if (!bluez::BluezDBusManager::IsInitialized())
-diff --git a/chrome/browser/platform_util_linux.cc b/chrome/browser/platform_util_linux.cc
-index 4052389..20d2bf5 100644
 --- a/chrome/browser/platform_util_linux.cc
 +++ b/chrome/browser/platform_util_linux.cc
-@@ -24,14 +24,18 @@
+@@ -25,14 +25,18 @@
  // complain as Chromecast doesn't use (or depend on) //components/dbus.
  // TODO(crbug.com/1215474): Eliminate //chrome being visible in the GN structure
  // on Chromecast and remove the nogncheck below.
@@ -82,7 +74,7 @@ index 4052389..20d2bf5 100644
  #include "third_party/abseil-cpp/absl/types/optional.h"
  #include "url/gurl.h"
  
-@@ -41,6 +45,7 @@ namespace platform_util {
+@@ -42,6 +46,7 @@
  
  namespace {
  
@@ -90,7 +82,7 @@ index 4052389..20d2bf5 100644
  const char kMethodListActivatableNames[] = "ListActivatableNames";
  const char kMethodNameHasOwner[] = "NameHasOwner";
  
-@@ -287,6 +292,7 @@ class ShowItemHelper : public content::NotificationObserver {
+@@ -288,6 +293,7 @@
  
    base::WeakPtrFactory<ShowItemHelper> weak_ptr_factory_{this};
  };
@@ -98,7 +90,7 @@ index 4052389..20d2bf5 100644
  
  void RunCommand(const std::string& command,
                  const base::FilePath& working_directory,
-@@ -353,8 +359,10 @@ void PlatformOpenVerifiedItem(const base::FilePath& path, OpenItemType type) {
+@@ -354,8 +360,10 @@
  }  // namespace internal
  
  void ShowItemInFolder(Profile* profile, const base::FilePath& full_path) {
@@ -109,52 +101,48 @@ index 4052389..20d2bf5 100644
  }
  
  void OpenExternal(Profile* profile, const GURL& url) {
-diff --git a/device/bluetooth/bluetooth_adapter_factory.cc b/device/bluetooth/bluetooth_adapter_factory.cc
-index c81514e..6cd96b0 100644
 --- a/device/bluetooth/bluetooth_adapter_factory.cc
 +++ b/device/bluetooth/bluetooth_adapter_factory.cc
-@@ -43,7 +43,7 @@ bool BluetoothAdapterFactory::IsBluetoothSupported() {
+@@ -43,7 +43,7 @@
    // instance even on platforms that would otherwise not support it.
    if (Get()->adapter_)
      return true;
--#if defined(OS_ANDROID) || defined(OS_WIN) || defined(OS_LINUX) || \
-+#if defined(OS_ANDROID) || defined(OS_WIN) || defined(OS_LINUX) && defined(USE_DBUS) || \
-     defined(OS_CHROMEOS) || defined(OS_MAC)
+-#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || \
++#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) && defined(USE_DBUS) || \
+     BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_MAC)
    return true;
  #else
-@@ -56,8 +56,8 @@ bool BluetoothAdapterFactory::IsLowEnergySupported() {
+@@ -56,8 +56,8 @@
      return values_for_testing_->GetLESupported();
    }
  
--#if defined(OS_ANDROID) || defined(OS_CHROMEOS) || defined(OS_LINUX) || \
--    defined(OS_MAC)
-+#if defined(OS_ANDROID) || defined(OS_CHROMEOS) || \
-+    (defined(OS_LINUX) && defined(USE_DBUS)) || defined(OS_MAC)
+-#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX) || \
+-    BUILDFLAG(IS_MAC)
++#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_CHROMEOS) || \
++    (BUILDFLAG(IS_LINUX) && defined(USE_DBUS)) || BUILDFLAG(IS_MAC)
    return true;
- #elif defined(OS_WIN)
+ #elif BUILDFLAG(IS_WIN)
    // Windows 8 supports Low Energy GATT operations but it does not support
-diff --git a/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc b/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc
-index 169712a..bc22a0b 100644
 --- a/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc
 +++ b/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc
-@@ -1338,7 +1338,7 @@ void BluetoothLowEnergyCreateServiceFunction::DoWork() {
+@@ -1338,7 +1338,7 @@
  // TODO: Ideally this should be handled by our feature system, so that this
  // code doesn't even compile on OSes it isn't being used on, but currently this
  // is not possible.
--#if !defined(OS_WIN)
-+#if !defined(OS_WIN) && (!defined(OS_LINUX) || defined(USE_DBUS))
+-#if !BUILDFLAG(IS_WIN)
++#if !BUILDFLAG(IS_WIN) && (!BUILDFLAG(IS_LINUX) || defined(USE_DBUS))
    base::WeakPtr<device::BluetoothLocalGattService> service =
        device::BluetoothLocalGattService::Create(
            event_router_->adapter(),
-@@ -1367,6 +1367,7 @@ bool BluetoothLowEnergyCreateCharacteristicFunction::ParseParams() {
+@@ -1367,6 +1367,7 @@
  }
  
  void BluetoothLowEnergyCreateCharacteristicFunction::DoWork() {
-+#if !defined(OS_LINUX) || defined(USE_DBUS)
++#if !BUILDFLAG(IS_LINUX) || defined(USE_DBUS)
    device::BluetoothLocalGattService* service =
        event_router_->adapter()->GetGattService(params_->service_id);
    if (!service) {
-@@ -1387,6 +1388,9 @@ void BluetoothLowEnergyCreateCharacteristicFunction::DoWork() {
+@@ -1387,6 +1388,9 @@
  
    Respond(ArgumentList(apibtle::CreateCharacteristic::Results::Create(
        characteristic->GetIdentifier())));
@@ -164,15 +152,15 @@ index 169712a..bc22a0b 100644
  }
  
  // createDescriptor:
-@@ -1403,6 +1407,7 @@ bool BluetoothLowEnergyCreateDescriptorFunction::ParseParams() {
+@@ -1403,6 +1407,7 @@
  }
  
  void BluetoothLowEnergyCreateDescriptorFunction::DoWork() {
-+#if !defined(OS_LINUX) || defined(USE_DBUS)
++#if !BUILDFLAG(IS_LINUX) || defined(USE_DBUS)
    device::BluetoothLocalGattCharacteristic* characteristic =
        event_router_->GetLocalCharacteristic(params_->characteristic_id);
    if (!characteristic) {
-@@ -1418,6 +1423,9 @@ void BluetoothLowEnergyCreateDescriptorFunction::DoWork() {
+@@ -1418,6 +1423,9 @@
  
    Respond(ArgumentList(
        apibtle::CreateDescriptor::Results::Create(descriptor->GetIdentifier())));
@@ -182,11 +170,9 @@ index 169712a..bc22a0b 100644
  }
  
  // registerService:
-diff --git a/services/device/battery/battery_status_manager_default.cc b/services/device/battery/battery_status_manager_default.cc
-index dd9709e..375e2f1 100644
 --- a/services/device/battery/battery_status_manager_default.cc
 +++ b/services/device/battery/battery_status_manager_default.cc
-@@ -26,11 +26,10 @@ class BatteryStatusManagerDefault : public BatteryStatusManager {
+@@ -26,11 +26,10 @@
   private:
    // BatteryStatusManager:
    bool StartListeningBatteryChange() override {
@@ -199,11 +185,9 @@ index dd9709e..375e2f1 100644
  };
  
  }  // namespace
-diff --git a/services/device/wake_lock/power_save_blocker/BUILD.gn b/services/device/wake_lock/power_save_blocker/BUILD.gn
-index 1637134..059e94a 100644
 --- a/services/device/wake_lock/power_save_blocker/BUILD.gn
 +++ b/services/device/wake_lock/power_save_blocker/BUILD.gn
-@@ -86,6 +86,9 @@ if (is_android) {
+@@ -86,6 +86,9 @@
      visibility = [ ":power_save_blocker" ]
      sources = java_sources_needing_jni
    }
@@ -213,20 +197,18 @@ index 1637134..059e94a 100644
  
    android_library("java") {
      # Conceptually, this should be visible only to //services/device:java.
-diff --git a/ui/gtk/BUILD.gn b/ui/gtk/BUILD.gn
-index db29cdc..6026dfb 100644
 --- a/ui/gtk/BUILD.gn
 +++ b/ui/gtk/BUILD.gn
-@@ -69,8 +69,6 @@ component("gtk") {
+@@ -99,8 +99,6 @@
      "select_file_dialog_impl_gtk.cc",
      "select_file_dialog_impl_gtk.h",
      "select_file_dialog_impl_kde.cc",
 -    "select_file_dialog_impl_portal.cc",
 -    "select_file_dialog_impl_portal.h",
      "settings_provider.h",
-     "settings_provider_gtk.cc",
-     "settings_provider_gtk.h",
-@@ -90,8 +88,6 @@ component("gtk") {
+     "settings_provider_gsettings.cc",
+     "settings_provider_gsettings.h",
+@@ -118,8 +116,6 @@
    deps = [
      ":gtk_stubs",
      "//base",
@@ -235,8 +217,6 @@ index db29cdc..6026dfb 100644
      "//skia",
  
      # GTK pulls pangoft2, which requires HarfBuzz symbols. When linking
-diff --git a/ui/gtk/select_file_dialog_impl.cc b/ui/gtk/select_file_dialog_impl.cc
-index 884edef..6e02e8f 100644
 --- a/ui/gtk/select_file_dialog_impl.cc
 +++ b/ui/gtk/select_file_dialog_impl.cc
 @@ -12,7 +12,9 @@
@@ -249,7 +229,7 @@ index 884edef..6e02e8f 100644
  
  namespace {
  
-@@ -34,12 +36,16 @@ base::FilePath* SelectFileDialogImpl::last_opened_path_ = nullptr;
+@@ -34,12 +36,16 @@
  
  // static
  void SelectFileDialogImpl::Initialize() {
@@ -266,7 +246,7 @@ index 884edef..6e02e8f 100644
  }
  
  // static
-@@ -50,12 +56,14 @@ ui::SelectFileDialog* SelectFileDialogImpl::Create(
+@@ -50,12 +56,14 @@
      // Start out assumimg we are going to use GTK.
      dialog_choice_ = kGtk;
  
@@ -281,7 +261,7 @@ index 884edef..6e02e8f 100644
  
        // Check to see if KDE is the desktop environment.
        std::unique_ptr<base::Environment> env(base::Environment::Create());
-@@ -73,16 +81,20 @@ ui::SelectFileDialog* SelectFileDialogImpl::Create(
+@@ -73,16 +81,20 @@
            }
          }
        }

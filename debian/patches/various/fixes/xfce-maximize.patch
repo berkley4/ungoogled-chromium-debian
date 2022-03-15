@@ -12,7 +12,7 @@ Change-Id: I69e71049157c03b74d78bc5edb7a60bf39cdda8b
 
 --- a/ui/platform_window/x11/x11_window.cc
 +++ b/ui/platform_window/x11/x11_window.cc
-@@ -683,6 +683,13 @@
+@@ -682,6 +682,13 @@
    if (CanSetDecorationInsets())
      SetDecorationInsets(nullptr);
  
