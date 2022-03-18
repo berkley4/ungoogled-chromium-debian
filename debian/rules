@@ -99,6 +99,8 @@ translate_configure:
 
 setup: changelog control
 	[ -z $$VER ] || echo $$VER > $(UC_DIR)/chromium_version.txt
+	# Remove some default flags from submodules/ungoogled-chromium/flags.gn
+	sed -e '/^enable_hangout_services_extension/d' -e '/^enable_service_discovery/d' -e '/^exclude_unwind_tables/d' -e '/^google_api_key/d' -e '/^google_default_client_id/d' -e '/^google_default_client_secret/d' -i $(UC_DIR)/flags.gn
 	if ! patch -R -p1 -s -f --dry-run < $(SH_DIR)/no-exit-if-pruned.patch 2>/dev/null; then patch -p1 < $(SH_DIR)/no-exit-if-pruned.patch; fi
 	sed -e '/^buildtools/d' -e '/^third_party\/depot_tools/d' -e '/^third_party\/llvm/d' -e '/^tools\/clang/d' -i $(UC_DIR)/pruning.list
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list
