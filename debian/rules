@@ -53,7 +53,6 @@ GN_FLAGS += \
         use_kerberos=false \
         use_sysroot=false \
         use_text_section_splitting=true \
-        use_vaapi=true \
         v8_enable_pointer_compression=true \
         v8_enable_zone_compression=true
 
