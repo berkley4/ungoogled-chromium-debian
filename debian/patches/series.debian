@@ -83,17 +83,6 @@ various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
 various/fno-plt.patch
 various/init-stack-vars-zero.patch
 various/silence-alsa-frames-log-msg.patch
-various/addenda/0001-M99-Use-checked-arithmetic-for-data-pipe-buffer-acco.patch
-various/addenda/0002-Merge-Using-legacy-JSON-parser-option-for-policy-loa.patch
-various/addenda/0003-M99-Don-t-use-a-deleted-RenderFrameHost.patch
-various/addenda/0004-Merge-99-An-unassignable-slot-should-just-be-treated.patch
-various/addenda/0005-Fix-UAF-in-apps-page.patch
-various/addenda/0006-Fix-letterSpacing-wordSpacing-for-Canvas.Style.patch
-various/addenda/0007-M99-media-base-Create-separate-size-validator-helper.patch
-various/addenda/0008-M99-Use-WeakPtr-and-unique_ptr-for-ownership-in-Thre.patch
-various/addenda/0009-Merge-M99-Change-DropHelper-OnDrop-to-call-GetDropCa.patch
-various/addenda/0011-Make-sure-CPSS-On-Device-doesn-t-crash-if-optimizati.patch
-various/addenda/0012-M99-Do-not-expose-inner-WebContents-on-scripting-get.patch
 various/fedora/enable-hardware-accelerated-mjpeg.patch
 various/fixes/EnumTable-crash.patch
 various/fixes/use-FT_Done_MM_Var-in-CFX_Font-AdjustMMParams.patch
