@@ -77,7 +77,7 @@ The following are optional features :-
 
 ___Enable Vulkan___
 
-~~Vulkan can be enabled via uncommenting the following runtime flags in /etc/chromium.d/gpu-options~~ :-
+Vulkan can be enabled via uncommenting the following runtime flags in /etc/chromium.d/gpu-options :-
 
 --use-vulkan
 --enable-features=vulkan
