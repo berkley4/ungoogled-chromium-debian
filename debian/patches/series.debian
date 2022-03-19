@@ -83,6 +83,7 @@ various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
 various/fno-plt.patch
 various/init-stack-vars-zero.patch
 various/silence-alsa-frames-log-msg.patch
+various/addenda/0001-M99-Store-TCPConnectedSocketOptionsPtr-as-class-memb.patch
 various/fedora/enable-hardware-accelerated-mjpeg.patch
 various/fixes/EnumTable-crash.patch
 various/fixes/use-FT_Done_MM_Var-in-CFX_Font-AdjustMMParams.patch
