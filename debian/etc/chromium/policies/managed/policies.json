@@ -1,9 +1,22 @@
 {
+  "AudioCaptureAllowed": false,
   "BackgroundModeEnabled": false,
+  "BrowserNetworkTimeQueriesEnabled": false,
   "CloudPrintProxyEnabled": false,
-  "EnableMediaRouter": false,
+  "CrossOriginWebAssemblyModuleSharingEnabled": false,
+  "DefaultSearchProviderContextMenuAccessAllowed": false,
   "DefaultWebBluetoothGuardSetting": 2,
   "DefaultWebUsbGuardSetting": 2,
+  "DnsOverHttpsMode": "off",
+  "EnableMediaRouter": false,
   "NativeMessagingUserLevelHosts": false,
+  "NetworkPredictionOptions": 2,
+  "PromotionalTabsEnabled": false,
+  "RemoteDebuggingAllowed": false,
+  "SandboxExternalProtocolBlocked": false,
+  "ScreenCaptureAllowed": false,
+  "SearchSuggestEnabled": false,
+  "SyncDisabled": true,
+  "VideoCaptureAllowed": false,
   "WPADQuickCheckEnabled": false
 }
