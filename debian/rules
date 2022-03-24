@@ -99,14 +99,14 @@ translate_configure:
 
 setup: changelog control
 	[ -z $$VER ] || echo $$VER > $(UC_DIR)/chromium_version.txt
-	# Remove some default flags from submodules/ungoogled-chromium/flags.gn
-	sed -e '/^enable_hangout_services_extension/d' -e '/^enable_service_discovery/d' -e '/^exclude_unwind_tables/d' -e '/^google_api_key/d' -e '/^google_default_client_id/d' -e '/^google_default_client_secret/d' -i $(UC_DIR)/flags.gn
 	if ! patch -R -p1 -s -f --dry-run < $(SH_DIR)/no-exit-if-pruned.patch 2>/dev/null; then patch -p1 < $(SH_DIR)/no-exit-if-pruned.patch; fi
 	sed -e '/^buildtools/d' -e '/^third_party\/depot_tools/d' -e '/^third_party\/llvm/d' -e '/^tools\/clang/d' -i $(UC_DIR)/pruning.list
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list
 	for lib in $(subst libevent,,$(subst libjpeg,libjpeg_turbo,$(SYS_LIBS))); do find "third_party/$$lib" -type f ! -path "third_party/$$lib/chromium/*" ! -path "third_party/$$lib/google/*" ! -name "*.gn" ! -name "*.gni" ! -name "*.isolate" -delete; done
 	test -d $(DB_DIR)/patches/core && test -d $(DB_DIR)/patches/extra || cp -a $(UP_DIR)/core $(UP_DIR)/extra $(DB_DIR)/patches/
 	test -f $(DB_DIR)/patches/series || cat $(UP_DIR)/series $(DB_DIR)/patches/series.debian > $(DB_DIR)/patches/series
+	# Remove some default flags from submodules/ungoogled-chromium/flags.gn
+	sed -e '/^enable_hangout_services_extension/d' -e '/^exclude_unwind_tables/d' -e '/^google_api_key/d' -e '/^google_default_client_id/d' -e '/^google_default_client_secret/d' -i $(UC_DIR)/flags.gn
 	# Remove third_party/libwebp/BUILD.gn from domain_substitution.list to avoid a bizarre hash mismatch error
 	sed -e '/^third_party\/depot_tools/d' -e '/^third_party\/libwebp\/BUILD\.gn/d' -e '/^tools\/clang/d' -i $(UC_DIR)/domain_substitution.list
 
