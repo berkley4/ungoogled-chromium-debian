@@ -97,9 +97,6 @@ To build with google translate enabled, instead of running debian/rules setup, r
 debian/rules setup_translate
 
 
-Uncomment the runtime flag in /etc/chromium.d/google-translate to enable.
-
-
 ___Chromecast___
 
 To build with chromecast enabled, instead of running debian/rules setup, run the following :-

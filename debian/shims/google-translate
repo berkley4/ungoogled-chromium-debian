@@ -1,0 +1,6 @@
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --translate-script-url=https://translate.googleapis.com/translate_a/element.js"
+
+# (Taken from - https://chromium.googlesource.com/chromium/src/+/main/components/translate/core/browser/translate_ranker_impl.cc)
+# Note: translate seems to function without enabling the option below
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --translate-ranker-model-url=https://www.gstatic.com/chrome/intelligence/assist/ranker/models/translate/2017/03/translate_ranker_model_20170329.pb.bin"
+
