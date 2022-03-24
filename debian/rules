@@ -87,6 +87,9 @@ changelog:
 control:
 	sed -e "s;@@AUTHOR@@;$(AUTHOR);g" < $(DB_DIR)/control.in > $(DB_DIR)/control
 
+cast_configure:
+	sed -e 's@^\(enable_mdns=\)false@\1true@' -e 's@^\(enable_service_discovery=\)false@\1true@' -i $(UC_DIR)/flags.gn
+
 pgo_configure:
 	test -d $(RT_DIR)/chrome/build/pgo_profiles || tools/update_pgo_profiles.py --target linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles
 	test -n "$$(grep ^pgo_data_path $(UC_DIR)/flags.gn)" || sed -e 's@^\(chrome_pgo_phase=\).*@\12@' -e "$$ a sample_profile_is_accurate=true" -e "$$ a pgo_data_path=\"$$(realpath chrome/build/pgo_profiles/$$(cat chrome/build/linux.pgo.txt))\"" -i $(UC_DIR)/flags.gn
@@ -97,26 +100,27 @@ translate_configure:
 	test -n "$$(grep ^translate-reverse-enable\.patch $(DB_DIR)/patches/series.debian)" || sed '$$ a \\ntranslate-reverse-enable.patch' -i $(DB_DIR)/patches/series.debian
 	sed -e '/\/translate_manager_browsertest\.cc/d' -e '/\/translate_script\.cc/d' -e '/\/translate_util\.cc/d' -i $(UC_DIR)/domain_substitution.list
 
-setup: changelog control
+setup: changelog control pgo_configure
 	[ -z $$VER ] || echo $$VER > $(UC_DIR)/chromium_version.txt
 	if ! patch -R -p1 -s -f --dry-run < $(SH_DIR)/no-exit-if-pruned.patch 2>/dev/null; then patch -p1 < $(SH_DIR)/no-exit-if-pruned.patch; fi
 	sed -e '/^buildtools/d' -e '/^third_party\/depot_tools/d' -e '/^third_party\/llvm/d' -e '/^tools\/clang/d' -i $(UC_DIR)/pruning.list
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list
 	for lib in $(subst libevent,,$(subst libjpeg,libjpeg_turbo,$(SYS_LIBS))); do find "third_party/$$lib" -type f ! -path "third_party/$$lib/chromium/*" ! -path "third_party/$$lib/google/*" ! -name "*.gn" ! -name "*.gni" ! -name "*.isolate" -delete; done
 	test -d $(DB_DIR)/patches/core && test -d $(DB_DIR)/patches/extra || cp -a $(UP_DIR)/core $(UP_DIR)/extra $(DB_DIR)/patches/
+	test $$(grep '^enable_mdns=true\|^enable_service_discovery=true' $(UC_DIR)/flags.gn | wc -l) -eq 2 && sed -e 's@\(.*/fix-building-without-mdns-and-service-discovery\.patch\)@#\1@' -e 's@\(.*/disable-dial-repeating-discovery\.patch\)@#\1@' -i $(UP_DIR)/series && sed 's@\(.*--media-router=0"\)@#\1@' -i $(DB_DIR)/etc/chromium.d/chromium-flags.conf
 	test -f $(DB_DIR)/patches/series || cat $(UP_DIR)/series $(DB_DIR)/patches/series.debian > $(DB_DIR)/patches/series
 	# Remove some default flags from submodules/ungoogled-chromium/flags.gn
 	sed -e '/^enable_hangout_services_extension/d' -e '/^exclude_unwind_tables/d' -e '/^google_api_key/d' -e '/^google_default_client_id/d' -e '/^google_default_client_secret/d' -i $(UC_DIR)/flags.gn
 	# Remove third_party/libwebp/BUILD.gn from domain_substitution.list to avoid a bizarre hash mismatch error
 	sed -e '/^third_party\/depot_tools/d' -e '/^third_party\/libwebp\/BUILD\.gn/d' -e '/^tools\/clang/d' -i $(UC_DIR)/domain_substitution.list
 
-setup_pgo: pgo_configure setup
+setup_cast: cast_configure setup
 	:
 
 setup_translate: translate_configure setup
 	:
 
-setup_pgo_translate: pgo_configure translate_configure setup
+setup_cast_translate: cast_configure translate_configure setup
 	:
 
 override_dh_auto_configure:

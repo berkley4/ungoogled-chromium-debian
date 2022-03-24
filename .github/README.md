@@ -58,6 +58,7 @@ ___Other features/changes___
 - Separate deb packages for chromium's components (eg chromedriver, sandbox, languages)
 - Dropped ungoogled-chromium-common - its contents split between a new libraries package and the main one
 - New ungoogled-chromium-libraries package for libEGL.so, libGLESv2.so, etc (likely not needed by everyone)
+- Chromecase - optional build support
 - Google translate - optional build support
 
 
@@ -99,16 +100,16 @@ debian/rules setup_translate
 Uncomment the runtime flag in /etc/chromium.d/google-translate to enable.
 
 
-___Profile Guided Optimisation (PGO)___
+___Chromecast___
 
-To build with PGO, instead of running debian/rules setup, run the following :-
+To build with chromecast enabled, instead of running debian/rules setup, run the following :-
 
-debian/rules setup_pgo
+debian/rules setup_cast
 
 
-If you want both google translate and PGO enabled, run the following :-
+If you want both google translate and chromecast enabled, run the following :-
 
-debian/rules setup_pgo_translate
+debian/rules setup_cast_translate
 
 
 - - - -
