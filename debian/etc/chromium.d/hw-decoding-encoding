@@ -11,7 +11,7 @@
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-webrtc-hw-encoding"
 
 # Uncomment to enable VAAPI hardware decoding
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoDecoder
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoDecoder"
 
 # PLUS either enable Vulkan in /etc/chromium.d/gpu-options
 # OR uncomment the option below
