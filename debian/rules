@@ -74,6 +74,7 @@ SYS_LIBS :=         \
 # Add extra flags for system libs
 GN_FLAGS +=                           \
         perfetto_use_system_zlib=true \
+        use_system_freetype=true      \
         use_system_lcms2=true         \
         use_system_libopenjpeg2=true  \
         use_system_zlib=true
