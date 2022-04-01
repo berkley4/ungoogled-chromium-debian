@@ -120,8 +120,8 @@ setup: changelog control pgo_configure
 	test -n "$$(grep ^enable_openscreen=true $(UC_DIR)/flags.gn)" || sed "$$ a enable_openscreen=false" -i $(UC_DIR)/flags.gn
 	# Remove some default flags from submodules/ungoogled-chromium/flags.gn
 	sed -e '/^enable_hangout_services_extension/d' -e '/^exclude_unwind_tables/d' -e '/^google_api_key/d' -e '/^google_default_client_id/d' -e '/^google_default_client_secret/d' -i $(UC_DIR)/flags.gn
-	# Remove third_party/libwebp/BUILD.gn from domain_substitution.list to avoid a bizarre hash mismatch error
-	sed -e '/^third_party\/depot_tools/d' -e '/^third_party\/libwebp\/BUILD\.gn/d' -e '/^tools\/clang/d' -i $(UC_DIR)/domain_substitution.list
+	# Remove various entries from domain_substitution.list (third_party/libwebp/BUILD.gn causes a bizarre hash mismatch error)
+	sed -e '/content\/browser\/resources\/gpu\/info_view\.js/d' -e '/^third_party\/depot_tools/d' -e '/^third_party\/libwebp\/BUILD\.gn/d' -e '/^tools\/clang/d' -i $(UC_DIR)/domain_substitution.list
 
 setup_cast: cast_configure setup
 	:
