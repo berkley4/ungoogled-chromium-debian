@@ -113,8 +113,8 @@ setup: changelog control pgo_configure
 	sed -e '/^buildtools/d' -e '/^third_party\/depot_tools/d' -e '/^third_party\/llvm/d' -e '/^tools\/clang/d' -i $(UC_DIR)/pruning.list
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list
 	for lib in $(subst libevent,,$(subst libjpeg,libjpeg_turbo,$(SYS_LIBS))); do find "third_party/$$lib" -type f ! -path "third_party/$$lib/chromium/*" ! -path "third_party/$$lib/google/*" ! -name "*.gn" ! -name "*.gni" ! -name "*.isolate" -delete; done
+	cat $(UP_DIR)/series $(DB_DIR)/patches/series.debian > $(DB_DIR)/patches/series
 	test -d $(DB_DIR)/patches/core && test -d $(DB_DIR)/patches/extra || cp -a $(UP_DIR)/core $(UP_DIR)/extra $(DB_DIR)/patches/
-	test -f $(DB_DIR)/patches/series || cat $(UP_DIR)/series $(DB_DIR)/patches/series.debian > $(DB_DIR)/patches/series
 	test -f $(DB_DIR)/ungoogled-chromium.install || cp -a $(DB_DIR)/ungoogled-chromium.install.in $(DB_DIR)/ungoogled-chromium.install
 	test -f $(DB_DIR)/etc/chromium.d/chromium-flags.conf || cp -a $(SH_DIR)/chromium-flags.conf $(DB_DIR)/etc/chromium.d/
 	test -n "$$(grep ^enable_openscreen=true $(UC_DIR)/flags.gn)" || sed "$$ a enable_openscreen=false" -i $(UC_DIR)/flags.gn
