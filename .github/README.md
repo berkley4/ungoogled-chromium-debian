@@ -82,10 +82,10 @@ Vulkan can be enabled via uncommenting the following runtime flags in /etc/chrom
 
 --use-vulkan
 --enable-features=vulkan
---disable-vulkan-fallback-to-gl-for-testing
 
-In addition, it appears that the environment variable VK_ICD_FILENAMES needs to be set, eg :-
-VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/intel_icd.x86_64.json chromium
+In the past it appeared that the environment variable VK_ICD_FILENAMES needed to be set, but this 
+no longer appears to be the case.
+(eg VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/intel_icd.x86_64.json chromium)
 
 
 ___Google Translate___
