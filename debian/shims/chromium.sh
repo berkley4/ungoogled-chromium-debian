@@ -12,6 +12,10 @@
 # uncommenting the line below.
 #export LIBVA_DRIVER_NAME=i965
 
+# Uncomment the following to possibly avoid the below error message
+# InitializeSandbox() called with multiple threads in process gpu-process.
+#export MESA_GLSL_CACHE_DISABLE=true
+
 APPNAME=chromium
 BINNAME=chrome
 
