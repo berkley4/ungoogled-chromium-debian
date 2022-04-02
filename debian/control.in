@@ -27,7 +27,6 @@ Build-Depends:
  libxshmfence-dev,
  libgbm-dev,
  mesa-common-dev,
- libva-dev,
  libpulse-dev,
  libasound2-dev,
  libpci-dev,
