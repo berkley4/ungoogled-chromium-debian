@@ -1,10 +1,9 @@
 ## Refer to chrome://gpu/ to see if there are any problems
 ## Note: the uncommented flags will probably work for most users
 
-# desktop is the default, but try egl if you enable vulkan
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-angle=gl"
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-gl=angle"
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-gl=desktop"
+# experiment with options other than --use-angle=gl if you have problems
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-angle=gl"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-gl=desktop"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-gl=egl"
 
 
@@ -14,7 +13,6 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-gl=desktop"
 
 # Uncomment when troubleshooting problems or attempting to increase performance
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-gpu"
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-accelerated-2d-canvas"	## might help with eg google streetview on very old GPUs
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-gpu-driver-bug-workarounds"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --ignore-gpu-blocklist"
 
@@ -34,3 +32,7 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-zero-copy"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-vulkan"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=vulkan"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-vulkan-surface"
+
+
+# might help with eg google streetview on very old GPUs
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-accelerated-2d-canvas"
