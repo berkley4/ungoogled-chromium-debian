@@ -81,7 +81,6 @@ ___Enable Vulkan___
 Vulkan can be enabled via uncommenting the following runtime flags in /etc/chromium.d/gpu-options :-
 
 --use-vulkan
---enable-features=vulkan
 
 In the past it appeared that the environment variable VK_ICD_FILENAMES needed to be set, but this 
 no longer appears to be the case.

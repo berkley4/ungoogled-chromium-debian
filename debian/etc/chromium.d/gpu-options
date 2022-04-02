@@ -30,7 +30,6 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-zero-copy"
 
 # Uncomment the first three to enable vulkan (experimental)
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-vulkan"
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=vulkan"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-vulkan-surface"
 
 
