@@ -6,6 +6,12 @@
 #  Fabien Tassin <fta@sofaraway.org>
 # License: GPLv2 or later
 
+# Anyone with an Intel GEN8+ GPU (Broadwell onwards) who is using the
+# intel-media-va-driver (iHD) package and cannot get VAAPI to work
+# might want to try installing the i965-va-driver package and
+# uncommenting the line below.
+#export LIBVA_DRIVER_NAME=i965
+
 APPNAME=chromium
 BINNAME=chrome
 
