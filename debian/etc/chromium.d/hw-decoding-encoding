@@ -1,4 +1,4 @@
-# Note: VAAPI is not by default enabled upstream on linux due to security concerns
+# Note: VAAPI is not by default enabled upstream on linux due to past security concerns
 #
 #       A newer implementation that requires vulkan and works on
 #       both linux and chromeOS is currently in development
@@ -13,6 +13,5 @@
 # Uncomment to enable VAAPI hardware decoding
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoDecoder"
 
-# PLUS either enable Vulkan in /etc/chromium.d/gpu-options
-# OR uncomment the option below
+# The line below probably needs to also be uncommented
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=UseChromeOSDirectVideoDecoder"
