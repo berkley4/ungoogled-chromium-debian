@@ -93,6 +93,7 @@ cast_configure:
 	sed -e 's@^\(enable_mdns=\)false@\1true@' -e 's@^\(enable_service_discovery=\)false@\1true@' -i $(UC_DIR)/flags.gn
 	test -n "$$(grep ^enable_openscreen=true $(UC_DIR)/flags.gn)" || sed "$$ a enable_openscreen=true" -i $(UC_DIR)/flags.gn
 	sed -e 's@\(.*/fix-building-without-mdns-and-service-discovery\.patch\)@#\1@' -e 's@\(.*/disable-dial-repeating-discovery\.patch\)@#\1@' -i $(UP_DIR)/series
+	sed 's@^\(vanadium\/[0-9]*-disable-media-router-.*\)@#\1@' -i $(DB_DIR)/series.debian
 	sed 's@^\(.*--media-router=0"\)@#\1@' < $(SH_DIR)/chromium-flags.conf > $(DB_DIR)/etc/chromium.d/chromium-flags.conf
 
 pgo_configure:
