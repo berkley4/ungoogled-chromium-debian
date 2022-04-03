@@ -28,7 +28,7 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-zero-copy"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --ui-disable-partial-swap"
 
 
-# Uncomment the first three to enable vulkan (experimental)
+# Uncomment the first one to enable vulkan
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-vulkan"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-vulkan-surface"
 
