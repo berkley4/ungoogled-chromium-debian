@@ -98,7 +98,7 @@ cast_configure:
 
 pgo_configure:
 	test -d $(RT_DIR)/chrome/build/pgo_profiles || tools/update_pgo_profiles.py --target linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles
-	test -n "$$(grep ^pgo_data_path $(UC_DIR)/flags.gn)" || sed -e 's@^\(chrome_pgo_phase=\).*@\12@' -e "$$ a sample_profile_is_accurate=true" -e "$$ a pgo_data_path=\"$$(realpath chrome/build/pgo_profiles/$$(cat chrome/build/linux.pgo.txt))\"" -i $(UC_DIR)/flags.gn
+	test -n "$$(grep ^pgo_data_path $(UC_DIR)/flags.gn)" || sed -e "$$ a sample_profile_is_accurate=true" -e "$$ a pgo_data_path=\"$$(realpath chrome/build/pgo_profiles/$$(cat chrome/build/linux.pgo.txt))\"" -i $(UC_DIR)/flags.gn
 	sed -e '/^chrome\/build\/pgo_profiles/d' -i $(UC_DIR)/pruning.list
 
 translate_configure:
@@ -120,7 +120,7 @@ setup: changelog control pgo_configure
 	test -f $(DB_DIR)/etc/chromium.d/chromium-flags.conf || cp -a $(SH_DIR)/chromium-flags.conf $(DB_DIR)/etc/chromium.d/
 	test -n "$$(grep ^enable_openscreen=true $(UC_DIR)/flags.gn)" || sed "$$ a enable_openscreen=false" -i $(UC_DIR)/flags.gn
 	# Remove some default flags from submodules/ungoogled-chromium/flags.gn
-	sed -e '/^enable_hangout_services_extension/d' -e '/^exclude_unwind_tables/d' -e '/^google_api_key/d' -e '/^google_default_client_id/d' -e '/^google_default_client_secret/d' -i $(UC_DIR)/flags.gn
+	sed -e '/^chrome_pgo_phase/d' -e '/^enable_hangout_services_extension/d' -e '/^exclude_unwind_tables/d' -e '/^google_api_key/d' -e '/^google_default_client_id/d' -e '/^google_default_client_secret/d' -i $(UC_DIR)/flags.gn
 	# Remove various entries from domain_substitution.list (third_party/libwebp/BUILD.gn causes a bizarre hash mismatch error)
 	sed -e '/content\/browser\/resources\/gpu\/info_view\.js/d' -e '/^third_party\/depot_tools/d' -e '/^third_party\/libwebp\/BUILD\.gn/d' -e '/^tools\/clang/d' -i $(UC_DIR)/domain_substitution.list
 
