@@ -15,7 +15,7 @@ author: Olivier Tilloy <olivier.tilloy@canonical.com>
 +      }
        if (!GetComponentDirectory(&cur))
          return false;
- #if !BUILDFLAG(IS_CHROMEOS_ASH)
+       cur = cur.AppendASCII(kWidevineCdmBaseDirectory);
 --- a/third_party/widevine/cdm/BUILD.gn
 +++ b/third_party/widevine/cdm/BUILD.gn
 @@ -17,7 +17,7 @@

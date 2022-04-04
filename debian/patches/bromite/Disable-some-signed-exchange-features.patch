@@ -8,7 +8,7 @@ Subject: Disable some signed exchange features
 
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
-@@ -790,7 +790,7 @@
+@@ -825,7 +825,7 @@
  // Signed Exchange Reporting for distributors
  // https://www.chromestatus.com/feature/5687904902840320
  const base::Feature kSignedExchangeReportingForDistributors{
@@ -17,7 +17,7 @@ Subject: Disable some signed exchange features
  
  // Subresource prefetching+loading via Signed HTTP Exchange
  // https://www.chromestatus.com/feature/5126805474246656
-@@ -800,7 +800,7 @@
+@@ -835,7 +835,7 @@
  // Origin-Signed HTTP Exchanges (for WebPackage Loading)
  // https://www.chromestatus.com/feature/5745285984681984
  const base::Feature kSignedHTTPExchange{"SignedHTTPExchange",

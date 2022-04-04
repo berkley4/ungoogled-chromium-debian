@@ -25,7 +25,7 @@ Subject: Reduce HTTP headers in DoH requests to bare minimum
 +LOAD_FLAG(MINIMAL_HEADERS, 1 << 19)
 --- a/net/dns/dns_transaction.cc
 +++ b/net/dns/dns_transaction.cc
-@@ -438,7 +438,7 @@
+@@ -439,7 +439,7 @@
      // avoid deadlock and enable the use of preconfigured IP addresses.
      request_->SetSecureDnsPolicy(SecureDnsPolicy::kBootstrap);
      request_->SetLoadFlags(request_->load_flags() | LOAD_DISABLE_CACHE |
@@ -36,15 +36,15 @@ Subject: Reduce HTTP headers in DoH requests to bare minimum
    }
 --- a/net/url_request/url_request_http_job.cc
 +++ b/net/url_request/url_request_http_job.cc
-@@ -296,6 +296,7 @@
-   // plugin could set a referrer although sending the referrer is inhibited.
-   request_info_.extra_headers.RemoveHeader(HttpRequestHeaders::kReferer);
+@@ -320,6 +320,7 @@
+   // fields in the referrer.
+   GURL referrer(request_->referrer());
  
 +  if (!(request_info_.load_flags & LOAD_MINIMAL_HEADERS)) {
    // Our consumer should have made sure that this is a safe referrer (e.g. via
    // URLRequestJob::ComputeReferrerForPolicy).
    if (referrer.is_valid()) {
-@@ -303,11 +304,14 @@
+@@ -327,11 +328,14 @@
      request_info_.extra_headers.SetHeader(HttpRequestHeaders::kReferer,
                                            referer_value);
    }
@@ -58,8 +58,8 @@ Subject: Reduce HTTP headers in DoH requests to bare minimum
 +  }
  
    AddExtraHeaders();
-   AddCookieHeaderAndStart();
-@@ -555,6 +559,7 @@
+ 
+@@ -604,6 +608,7 @@
        if (request_->Supports(SourceStream::SourceType::TYPE_DEFLATE)) {
          advertised_encoding_names.push_back("deflate");
        }
@@ -67,7 +67,7 @@ Subject: Reduce HTTP headers in DoH requests to bare minimum
        // Advertise "br" encoding only if transferred data is opaque to proxy.
        if (request()->context()->enable_brotli() &&
            request_->Supports(SourceStream::SourceType::TYPE_BROTLI)) {
-@@ -563,6 +568,7 @@
+@@ -612,6 +617,7 @@
            advertised_encoding_names.push_back("br");
          }
        }
@@ -75,7 +75,7 @@ Subject: Reduce HTTP headers in DoH requests to bare minimum
        if (!advertised_encoding_names.empty()) {
          // Tell the server what compression formats are supported.
          request_info_.extra_headers.SetHeader(
-@@ -572,7 +578,7 @@
+@@ -621,7 +627,7 @@
      }
    }
  

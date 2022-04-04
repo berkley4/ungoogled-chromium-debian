@@ -3,7 +3,7 @@ author: Andres Salomon <dilinger@debian.org>
 
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -957,6 +957,7 @@
+@@ -975,6 +975,7 @@
        public_deps = [ "//ui/gl:angle_library_copy" ]
      }
  
@@ -11,7 +11,7 @@ author: Andres Salomon <dilinger@debian.org>
      # Add the SwiftShader .dylibs in the MODULE_DIR of Chromium.app
      bundle_data("swiftshader_binaries") {
        sources = [
-@@ -971,6 +972,7 @@
+@@ -989,6 +990,7 @@
          "//ui/gl:swiftshader_vk_library_copy",
        ]
      }
@@ -19,7 +19,7 @@ author: Andres Salomon <dilinger@debian.org>
    }
  
    group("angle_library") {
-@@ -979,12 +981,6 @@
+@@ -997,12 +999,6 @@
      }
    }
  
@@ -32,7 +32,7 @@ author: Andres Salomon <dilinger@debian.org>
    if (bundle_widevine_cdm) {
      bundle_data("widevine_cdm_library_binaries") {
        sources = [ "$root_out_dir/$widevine_cdm_path/libwidevinecdm.dylib" ]
-@@ -1168,7 +1164,6 @@
+@@ -1186,7 +1182,6 @@
        ":chrome_framework_resources",
        ":keystone_registration_framework",
        ":optimization_guide_library",
@@ -40,7 +40,7 @@ author: Andres Salomon <dilinger@debian.org>
        ":widevine_cdm_library",
      ]
  
-@@ -1255,9 +1250,6 @@
+@@ -1273,9 +1268,6 @@
        "$root_out_dir/chrome_crashpad_handler",
        "$root_out_dir/libEGL.dylib",
        "$root_out_dir/libGLESv2.dylib",
@@ -50,7 +50,7 @@ author: Andres Salomon <dilinger@debian.org>
        _framework_binary_path,
      ]
      if (build_with_internal_optimization_guide) {
-@@ -1294,9 +1286,6 @@
+@@ -1312,9 +1304,6 @@
          "//third_party/angle:libEGL",
          "//third_party/angle:libGLESv2",
          "//third_party/breakpad:dump_syms",
@@ -60,7 +60,7 @@ author: Andres Salomon <dilinger@debian.org>
        ]
        if (build_with_internal_optimization_guide) {
          deps += [ "//components/optimization_guide/internal:optimization_guide_internal" ]
-@@ -1320,9 +1309,6 @@
+@@ -1338,9 +1327,6 @@
          "$root_out_dir/chrome_crashpad_handler.dSYM",
          "$root_out_dir/libEGL.dylib.dSYM",
          "$root_out_dir/libGLESv2.dylib.dSYM",
@@ -70,7 +70,7 @@ author: Andres Salomon <dilinger@debian.org>
        ]
        if (build_with_internal_optimization_guide) {
          _dsyms += [ "$root_out_dir/liboptimization_guide_internal.dylib.dSYM" ]
-@@ -1334,9 +1320,6 @@
+@@ -1352,9 +1338,6 @@
          "//components/crash/core/app:chrome_crashpad_handler",
          "//third_party/angle:libEGL",
          "//third_party/angle:libGLESv2",
@@ -80,7 +80,7 @@ author: Andres Salomon <dilinger@debian.org>
        ]
        if (build_with_internal_optimization_guide) {
          deps += [ "//components/optimization_guide/internal:optimization_guide_internal" ]
-@@ -1750,12 +1733,7 @@
+@@ -1768,12 +1751,7 @@
          ":angle_gles_symbols",
          ":chrome_crashpad_symbols",
          ":chrome_symbols",
@@ -93,7 +93,7 @@ author: Andres Salomon <dilinger@debian.org>
        if (!is_chromeos) {
          deps += [ ":angle_libvulkan_symbols" ]
        }
-@@ -1787,6 +1765,7 @@
+@@ -1805,6 +1783,7 @@
  
        deps = [ "//components/crash/core/app:chrome_crashpad_handler" ]
      }
@@ -101,7 +101,7 @@ author: Andres Salomon <dilinger@debian.org>
      extract_symbols("swiftshader_egl_symbols") {
        binary = "$root_out_dir/swiftshader/libEGL.so"
  
-@@ -1797,8 +1776,6 @@
+@@ -1815,8 +1794,6 @@
          symbol_file = "$root_out_dir/swiftshader_libegl.breakpad.$current_cpu"
        }
  
@@ -110,7 +110,7 @@ author: Andres Salomon <dilinger@debian.org>
      }
      extract_symbols("swiftshader_gles_symbols") {
        binary = "$root_out_dir/swiftshader/libGLESv2.so"
-@@ -1826,6 +1803,7 @@
+@@ -1844,6 +1821,7 @@
  
        deps = [ "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan" ]
      }

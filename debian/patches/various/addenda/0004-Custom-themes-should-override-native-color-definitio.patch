@@ -1,0 +1,36 @@
+From 00311f4b18d6aa0fe5dae79152f8b33010322ac9 Mon Sep 17 00:00:00 2001
+From: Peter Kasting <pkasting@chromium.org>
+Date: Fri, 1 Apr 2022 23:04:20 +0000
+Subject: [PATCH] Custom themes should override native color definitions.
+
+(cherry picked from commit 5594b39b43584bd09df5abb446ca2a4748cf55b7)
+
+Bug: 1308357
+Change-Id: Idc4f58851f1a80c1a554cd195cffc4b13c59cdd2
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/3538822
+Commit-Queue: Peter Kasting <pkasting@chromium.org>
+Auto-Submit: Peter Kasting <pkasting@chromium.org>
+Reviewed-by: Allen Bauer <kylixrd@chromium.org>
+Commit-Queue: Allen Bauer <kylixrd@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#983408}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/3564817
+Cr-Commit-Position: refs/branch-heads/4896@{#1011}
+Cr-Branched-From: 1f63ff4bc27570761b35ffbc7f938f6586f7bee8-refs/heads/main@{#972766}
+---
+ chrome/browser/ui/color/chrome_color_mixers.cc | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+--- a/chrome/browser/ui/color/chrome_color_mixers.cc
++++ b/chrome/browser/ui/color/chrome_color_mixers.cc
+@@ -54,10 +54,9 @@
+   AddChromeColorMixer(provider, key);
+   AddOmniboxColorMixer(provider, key);
+   AddTabStripColorMixer(provider, key);
++  AddNativeChromeColorMixer(provider, key);
+ 
+   if (key.custom_theme) {
+     key.custom_theme->AddColorMixers(provider, key);
+   }
+-
+-  AddNativeChromeColorMixer(provider, key);
+ }

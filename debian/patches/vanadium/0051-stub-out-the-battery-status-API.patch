@@ -1,4 +1,4 @@
-From 618a518ea99ee4226fbf66576e5090c21f447298 Mon Sep 17 00:00:00 2001
+From 7c134152cabf7615134f9e8e340041e814be385b Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Mon, 17 Jun 2019 11:29:21 -0400
 Subject: [PATCH] stub out the battery status API
@@ -10,7 +10,7 @@ Pretend that the device is always plugged in and fully charged.
 
 --- a/third_party/blink/renderer/modules/battery/battery_manager.cc
 +++ b/third_party/blink/renderer/modules/battery/battery_manager.cc
-@@ -73,46 +73,28 @@
+@@ -84,46 +84,28 @@
  }
  
  bool BatteryManager::charging() {

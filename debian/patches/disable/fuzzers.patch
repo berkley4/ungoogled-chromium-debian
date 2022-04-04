@@ -3,7 +3,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -767,8 +767,7 @@
+@@ -766,8 +766,7 @@
      }
    }
  
