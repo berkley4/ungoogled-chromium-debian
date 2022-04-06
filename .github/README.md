@@ -152,6 +152,7 @@ git clone -b <stable|extended_stable> https://github.com/berkley4/ungoogled-chro
 
 # Update submodes
 cd debian
+git submodule foreach git reset --hard
 git submodule update --init --recursive
 cd ..
 ```
