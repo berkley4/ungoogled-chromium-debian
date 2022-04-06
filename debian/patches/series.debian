@@ -81,10 +81,6 @@ various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
 various/fno-plt.patch
 various/init-stack-vars-zero.patch
 various/silence-alsa-frames-log-msg.patch
-various/addenda/0001-Post-data-URL-bitmap-fetcher-callback-on-correct-thr.patch
-various/addenda/0002-Avoid-spawning-HangWatcher-thread-in-the-GPU-process.patch
-various/addenda/0003-M100-merge-history-don-t-handle-db-error-during-dest.patch
-various/addenda/0004-Custom-themes-should-override-native-color-definitio.patch
 various/addenda/0005-skia_renderer-Use-RectF-Intersect-in-ApplyScissor.patch
 various/fedora/enable-hardware-accelerated-mjpeg.patch
 various/fixes/EnumTable-crash.patch

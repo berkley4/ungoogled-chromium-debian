@@ -50,17 +50,17 @@ author: Andres Salomon <dilinger@debian.org>
        _framework_binary_path,
      ]
      if (build_with_internal_optimization_guide) {
-@@ -1312,9 +1304,6 @@
+@@ -1315,9 +1307,6 @@
          "//third_party/angle:libEGL",
          "//third_party/angle:libGLESv2",
-         "//third_party/breakpad:dump_syms",
+         "//third_party/breakpad:dump_syms($host_toolchain)",
 -        "//third_party/swiftshader/src/OpenGL/libEGL:swiftshader_libEGL",
 -        "//third_party/swiftshader/src/OpenGL/libGLESv2:swiftshader_libGLESv2",
 -        "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan",
        ]
        if (build_with_internal_optimization_guide) {
          deps += [ "//components/optimization_guide/internal:optimization_guide_internal" ]
-@@ -1338,9 +1327,6 @@
+@@ -1341,9 +1330,6 @@
          "$root_out_dir/chrome_crashpad_handler.dSYM",
          "$root_out_dir/libEGL.dylib.dSYM",
          "$root_out_dir/libGLESv2.dylib.dSYM",
@@ -70,7 +70,7 @@ author: Andres Salomon <dilinger@debian.org>
        ]
        if (build_with_internal_optimization_guide) {
          _dsyms += [ "$root_out_dir/liboptimization_guide_internal.dylib.dSYM" ]
-@@ -1352,9 +1338,6 @@
+@@ -1355,9 +1341,6 @@
          "//components/crash/core/app:chrome_crashpad_handler",
          "//third_party/angle:libEGL",
          "//third_party/angle:libGLESv2",
@@ -80,7 +80,7 @@ author: Andres Salomon <dilinger@debian.org>
        ]
        if (build_with_internal_optimization_guide) {
          deps += [ "//components/optimization_guide/internal:optimization_guide_internal" ]
-@@ -1768,12 +1751,7 @@
+@@ -1771,12 +1754,7 @@
          ":angle_gles_symbols",
          ":chrome_crashpad_symbols",
          ":chrome_symbols",
@@ -93,7 +93,7 @@ author: Andres Salomon <dilinger@debian.org>
        if (!is_chromeos) {
          deps += [ ":angle_libvulkan_symbols" ]
        }
-@@ -1805,6 +1783,7 @@
+@@ -1808,6 +1786,7 @@
  
        deps = [ "//components/crash/core/app:chrome_crashpad_handler" ]
      }
@@ -101,7 +101,7 @@ author: Andres Salomon <dilinger@debian.org>
      extract_symbols("swiftshader_egl_symbols") {
        binary = "$root_out_dir/swiftshader/libEGL.so"
  
-@@ -1815,8 +1794,6 @@
+@@ -1818,8 +1797,6 @@
          symbol_file = "$root_out_dir/swiftshader_libegl.breakpad.$current_cpu"
        }
  
@@ -110,7 +110,7 @@ author: Andres Salomon <dilinger@debian.org>
      }
      extract_symbols("swiftshader_gles_symbols") {
        binary = "$root_out_dir/swiftshader/libGLESv2.so"
-@@ -1844,6 +1821,7 @@
+@@ -1847,6 +1824,7 @@
  
        deps = [ "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan" ]
      }

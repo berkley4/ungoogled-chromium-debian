@@ -18,7 +18,7 @@ Revert "[Text Fragment] Unflag fragment directive removal."
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5650,6 +5650,11 @@
+@@ -5651,6 +5651,11 @@
           "CCTResizableThirdPartiesDefaultPolicy")},
  #endif
  
