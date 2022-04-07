@@ -33,7 +33,6 @@ Build-Depends:
  libxml2-dev,
  libopus-dev,
  libwebp-dev,
- libjpeg-dev,
  libxslt1-dev,
  libflac-dev,
  libminizip-dev,

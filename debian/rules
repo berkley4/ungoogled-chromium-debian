@@ -58,14 +58,13 @@ GN_FLAGS += \
         v8_enable_zone_compression=true
 
 # Currently omitted from base (stable)
-# harfbuzz-ng, icu, ffmpeg, jsoncpp, libpng, libvpx, openh264, re2, snappy
+# harfbuzz-ng, icu, ffmpeg, jsoncpp, libjpeg, libpng, libvpx, openh264, re2, snappy
 SYS_LIBS :=         \
         flac        \
         fontconfig  \
         freetype    \
         libdrm      \
         libevent    \
-        libjpeg     \
         libwebp     \
         libxml      \
         libxslt     \
