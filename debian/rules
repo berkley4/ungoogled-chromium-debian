@@ -142,7 +142,7 @@ override_dh_auto_build:
 	test ! -f out/Release/locales/en-US.pak || cp -a out/Release/locales/en-US.pak out/Release/resources/
 
 override_dh_prep:
-	for file in `find -name "*.gn.orig" -o -name "*.gni.orig"`; do mv $$file $${file%.orig}; done
+	for file in `find -type f -name "*.gn.orig" -o -type f -name "*.gni.orig"`; do mv $$file $${file%.orig}; done
 	#rm -f build/linux/unbundle/jsoncpp.gn
 	test ! -f $(DS_CACHE) || $(UL_DIR)/domain_substitution.py revert -c $(DS_CACHE) $(RT_DIR)
 	dh_prep
@@ -159,5 +159,5 @@ override_dh_fixperms:
 
 override_dh_auto_clean:
 	rm -rf out
-	find -name "*.pyc" -delete
+	find -type f -name "*.pyc" -delete
 	dh_auto_clean
