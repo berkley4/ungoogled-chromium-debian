@@ -11,7 +11,7 @@ out/Release/resources.pak                                                      u
 out/Release/v8_context_snapshot.bin                                            usr/lib/chromium
 out/Release/xdg-mime                                                           usr/lib/chromium
 out/Release/xdg-settings                                                       usr/lib/chromium
-out/Release/locales/en-US.pak                                                  usr/lib/chromium/locales
+out/Release/resources/en-US.pak                                                usr/lib/chromium/locales
 
 chrome/installer/linux/common/desktop.template                              => usr/share/applications/chromium.desktop
 debian/usr/share/drirc.d/10-chromium.conf                                      usr/share/drirc.d

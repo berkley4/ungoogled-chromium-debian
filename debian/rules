@@ -139,6 +139,7 @@ override_dh_auto_configure:
 override_dh_auto_build:
 	gn gen $(OUT_DIR) --args="$(GN_FLAGS)" --fail-on-unused-args
 	ninja -j $(JOBS) -C $(OUT_DIR) chrome chrome_sandbox chromedriver
+	test ! -f out/Release/locales/en-US.pak || cp -a out/Release/locales/en-US.pak out/Release/resources/
 
 override_dh_prep:
 	for file in `find -name "*.gn.orig" -o -name "*.gni.orig"`; do mv $$file $${file%.orig}; done
@@ -146,9 +147,12 @@ override_dh_prep:
 	test ! -f $(DS_CACHE) || $(UL_DIR)/domain_substitution.py revert -c $(DS_CACHE) $(RT_DIR)
 	dh_prep
 
-override_dh_auto_install:
+override_dh_auto_install-arch:
 	chmod 4755 out/Release/chrome_sandbox
 	$(DU_DIR)/update_launcher.sh < $(SH_DIR)/chromium.sh > $(SH_DIR)/chromium
+
+override_dh_auto_install-indep:
+	test ! -f out/Release/locales/en-US.pak || rm -f out/Release/locales/en-US.pak
 
 override_dh_fixperms:
 	dh_fixperms --exclude chrome-sandbox
