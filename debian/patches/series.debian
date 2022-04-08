@@ -14,18 +14,18 @@ sql-virtual-cursor.patch
 
 debianization/master-preferences.patch
 
-bullseye/nomerge.patch
-
 fixes/widevine-enable-version-string.patch
 fixes/widevine-locations.patch
 fixes/ps-print.patch
 
 disable/tests.patch
 disable/android.patch
+disable/installer.patch
 disable/font-tests.patch
 disable/swiftshader.patch
 disable/swiftshader-2.patch
 disable/driver-chrome-path.patch
+disable/widevine-cdm-cu.patch
 disable/angle-perftests.patch
 disable/libaom-arm.patch
 
@@ -35,6 +35,8 @@ system/event.patch
 system/openjpeg.patch
 system/opus.patch
 system/eu-strip.patch
+
+bullseye/nomerge.patch
 
 bromite/AudioBuffer-AnalyserNode-fp-mitigations.patch
 bromite/Block-gateway-attacks-via-websockets.patch
