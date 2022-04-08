@@ -21,19 +21,13 @@ fixes/widevine-locations.patch
 fixes/ps-print.patch
 
 disable/tests.patch
-disable/owners.patch
 disable/android.patch
-disable/fuzzers.patch
 disable/font-tests.patch
 disable/swiftshader.patch
 disable/swiftshader-2.patch
 disable/driver-chrome-path.patch
 disable/angle-perftests.patch
-disable/devtools-unittests.patch
 disable/libaom-arm.patch
-
-warnings/multichar.patch
-warnings/deprecated.patch
 
 #system/icu.patch
 system/zlib.patch
