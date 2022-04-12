@@ -40,6 +40,7 @@ bullseye/nomerge.patch
 
 bromite/AudioBuffer-AnalyserNode-fp-mitigations.patch
 bromite/Block-gateway-attacks-via-websockets.patch
+bromite/Disable-AsyncDNS-by-default.patch
 bromite/Disable-metrics-on-all-I-O-threads.patch
 bromite/Disable-some-signed-exchange-features.patch
 bromite/Disable-text-fragments-by-default.patch
@@ -76,7 +77,7 @@ various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
 various/fno-plt.patch
 various/init-stack-vars-zero.patch
 various/silence-alsa-frames-log-msg.patch
-various/addenda/0005-skia_renderer-Use-RectF-Intersect-in-ApplyScissor.patch
+#various/addenda/
 various/fedora/enable-hardware-accelerated-mjpeg.patch
 various/fixes/EnumTable-crash.patch
 various/fixes/InkDropHost-crash.patch

@@ -168,7 +168,7 @@ Revert "[Text Fragment] Unflag fragment directive removal."
    const int kNotFoundSample = 0;
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -2258,8 +2258,7 @@
+@@ -2259,8 +2259,7 @@
      },
      {
        name: "TextFragmentIdentifiers",
