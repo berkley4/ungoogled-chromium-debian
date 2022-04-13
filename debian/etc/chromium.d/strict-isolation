@@ -1,4 +1,6 @@
 # Uncomment to enable strict isolation for more security
+# Note: this breaks the document.domain feature of websites which itself 
+#       is in the process of being obsoleted due to security concerns.
+#       Ref - https://developer.chrome.com/blog/immutable-document-domain/
 
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --strict-extension-isolation"
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --strict-origin-isolation"
