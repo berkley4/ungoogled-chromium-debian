@@ -161,3 +161,6 @@ override_dh_auto_clean:
 	rm -rf out
 	find -type f -name "*.pyc" -delete
 	dh_auto_clean
+
+override_dh_builddeb:
+	dh_builddeb -- -z 9
