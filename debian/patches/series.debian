@@ -84,6 +84,7 @@ various/fixes/InkDropHost-crash.patch
 various/fixes/xfce-maximize.patch
 various/inox-patchset/fix-cfi-failures-with-unbundled-libxml.patch
 
+#optional/custom-thin-lto-cache-location.patch
 #optional/custom-x64-arch.patch
 #optional/mtune.patch
 #optional/disable/catapult.patch

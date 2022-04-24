@@ -1,0 +1,13 @@
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -699,9 +699,7 @@
+             [ "-Wl,-cache_path_lto," +
+               rebase_path("$root_out_dir/thinlto-cache", root_build_dir) ]
+       } else {
+-        ldflags +=
+-            [ "-Wl,--thinlto-cache-dir=" +
+-              rebase_path("$root_out_dir/thinlto-cache", root_build_dir) ]
++        ldflags += [ "-Wl,--thinlto-cache-dir=/home/user/thinlto-cache" ]
+       }
+
+       ldflags += [ "-Wl,--thinlto-cache-policy=$cache_policy" ]
