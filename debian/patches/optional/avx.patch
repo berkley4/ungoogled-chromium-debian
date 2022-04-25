@@ -1,0 +1,11 @@
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -898,7 +898,7 @@
+         "-m64",
+         "-march=$x64_arch",
+         "-mtune=generic",
+-        "-msse3",
++        "-mavx",
+       ]
+       ldflags += [ "-m64" ]
+     } else if (current_cpu == "x86") {
