@@ -159,7 +159,7 @@ override_dh_fixperms:
 
 override_dh_auto_clean:
 	rm -rf out
-	find -type f -name "*.pyc" -delete
+	find -type f -name "*.rej" -o -type f -name "*.pyc" -delete
 	dh_auto_clean
 
 override_dh_builddeb:
