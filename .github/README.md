@@ -2,10 +2,11 @@
 
 This is my fork of the unified branch of [ungoogle-chromium-debian](https://github.com/ungoogled-software/ungoogled-chromium-debian).
 
-There are debs in the release section which are built with -march=x86-64-v2 --mtune=generic (refer [here](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels) for more info about x86-64-v2).
-These should run on cpus from the Nehalem/Jaguar era (circa 2009) onwards.
+There are debs in the release section which are built with -march=x86-64-v2 --mtune=generic -mavx (refer [here](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels) for more info about x86-64-v2).
+These should run on CPUs which support AVX instructions, which should encompass the Intel Sandybridge/AMD Bulldozer era (circa 2011) onwards.
+There's also a patch which can be used by builders to enable FMA/FMA3/FMA4/AVX2 support (cat /proc/cpuinfo is your friend here).
 
-From 96.0.4664.93 onwards the debs are built in a debian stable chroot, so should work on that, Ubuntu Focal and newer.
+The debs are built in a debian stable chroot, so should work on that, Ubuntu Focal and newer.
 
 
 # Installation
