@@ -89,6 +89,7 @@ various/inox-patchset/fix-cfi-failures-with-unbundled-libxml.patch
 #optional/custom-x64-arch.patch
 #optional/mtune.patch
 #optional/avx.patch
+#optional/fma-avx2.patch
 #optional/disable/catapult.patch
 #optional/disable/atk-dbus.patch
 #optional/system/icu-types.patch
