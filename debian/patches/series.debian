@@ -78,6 +78,7 @@ various/fno-plt.patch
 various/init-stack-vars-zero.patch
 various/silence-alsa-frames-log-msg.patch
 #various/addenda/
+various/disable/ssl-ctx-set-grease.patch
 various/fedora/enable-hardware-accelerated-mjpeg.patch
 various/fixes/EnumTable-crash.patch
 various/fixes/InkDropHost-crash.patch

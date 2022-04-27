@@ -1,0 +1,11 @@
+--- a/net/socket/ssl_client_socket_impl.cc
++++ b/net/socket/ssl_client_socket_impl.cc
+@@ -312,7 +312,7 @@
+     SSL_CTX_sess_set_new_cb(ssl_ctx_.get(), NewSessionCallback);
+     SSL_CTX_set_timeout(ssl_ctx_.get(), 1 * 60 * 60 /* one hour */);
+ 
+-    SSL_CTX_set_grease_enabled(ssl_ctx_.get(), 1);
++    SSL_CTX_set_grease_enabled(ssl_ctx_.get(), 0);
+ 
+     // Deduplicate all certificates minted from the SSL_CTX in memory.
+     SSL_CTX_set0_buffer_pool(ssl_ctx_.get(), x509_util::GetBufferPool());
