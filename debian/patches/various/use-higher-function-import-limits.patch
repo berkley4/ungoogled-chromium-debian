@@ -1,0 +1,36 @@
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -670,9 +670,15 @@
+     # available disk space, 40GB and 100000 files.
+     cache_policy = "cache_size=10%:cache_size_bytes=40g:cache_size_files=100000"
+ 
+-    # TODO(gbiv): We ideally shouldn't need to specify this; ThinLTO
+-    # should be able to better manage binary size increases on its own.
+-    import_instr_limit = 5
++    # Use the larger size savings of PGO with sample_profile_is_accurate to
++    # increase speed. Hot functions will be benefit more greatly due to the
++    # import-hot-multiplier. Note that linux firefox uses a value of 10.
++    if (is_linux && is_clang && chrome_pgo_phase != 0 &&
++        sample_profile_is_accurate) {
++      import_instr_limit = 10
++    } else {
++      import_instr_limit = 5
++    }
+ 
+     if (is_win) {
+       ldflags += [
+@@ -718,6 +724,14 @@
+         }
+       }
+ 
++      # Increase the hot function import multiplier (default is 10) when building
++      # with PGO and sample_profile_is_accurate. The size savings gotten from heavy
++      # optimization of cold functions will get spent on speeding up hot ones.
++      if (is_linux && is_clang && chrome_pgo_phase != 0 &&
++          sample_profile_is_accurate) {
++        ldflags += [ "-Wl,-plugin-opt=-import-hot-multiplier=30" ]
++      }
++
+       ldflags += [ "-Wl,-mllvm,-import-instr-limit=$import_instr_limit" ]
+     }
+ 

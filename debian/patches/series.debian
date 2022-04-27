@@ -77,6 +77,7 @@ various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
 various/fno-plt.patch
 various/init-stack-vars-zero.patch
 various/silence-alsa-frames-log-msg.patch
+various/use-higher-function-import-limits.patch
 #various/addenda/
 various/disable/ssl-ctx-set-grease.patch
 various/fedora/enable-hardware-accelerated-mjpeg.patch
