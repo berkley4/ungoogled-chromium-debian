@@ -162,5 +162,8 @@ override_dh_auto_clean:
 	find -type f -name "*.rej" -o -type f -name "*.pyc" -delete
 	dh_auto_clean
 
+override_dh_dwz:
+	@echo "Skipping dwz, compiled with -fdebug-types-section instead."
+
 override_dh_builddeb:
 	dh_builddeb -- -z 9

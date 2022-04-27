@@ -1,0 +1,13 @@
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -1992,8 +1992,10 @@
+     common_optimize_on_cflags += [
+       # Put data and code in their own sections, so that unused symbols
+       # can be removed at link time with --gc-sections.
++      # Also optimize debug data with -fdebug-types-section.
+       "-fdata-sections",
+       "-ffunction-sections",
++      "-fdebug-types-section",
+     ]
+     if ((!is_nacl || is_nacl_saigo) && is_clang) {
+       # We don't care about unique section names, this makes object files a bit
