@@ -9,7 +9,7 @@ Subject: [PATCH] disable media router media remoting by default
 
 --- a/chrome/browser/profiles/profile.cc
 +++ b/chrome/browser/profiles/profile.cc
-@@ -349,7 +349,7 @@
+@@ -350,7 +350,7 @@
  
  #if !BUILDFLAG(IS_ANDROID)
    registry->RegisterBooleanPref(

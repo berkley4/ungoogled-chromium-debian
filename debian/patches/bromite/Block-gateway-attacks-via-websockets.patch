@@ -149,7 +149,7 @@ This approach is not comprehensive, see also:
        const absl::optional<ResourceRequest::RedirectInfo>& redirect_info,
 --- a/third_party/blink/renderer/modules/background_fetch/background_fetch_manager.cc
 +++ b/third_party/blink/renderer/modules/background_fetch/background_fetch_manager.cc
-@@ -102,6 +102,30 @@
+@@ -101,6 +101,30 @@
           request_url.ProtocolIsInHTTPFamily();
  }
  
@@ -180,7 +180,7 @@ This approach is not comprehensive, see also:
  scoped_refptr<BlobDataHandle> ExtractBlobHandle(
      Request* request,
      ExceptionState& exception_state) {
-@@ -223,6 +247,13 @@
+@@ -222,6 +246,13 @@
                                   exception_state);
      }
  

@@ -1,0 +1,40 @@
+commit dc2679f85db269ca9709f644c0dd0422feeb9565
+Author: Andres Salomon <dilinger@queued.net>
+Date:   Thu Apr 21 14:03:58 2022 -0400
+
+    Allow //services/data_decoder:lib to depend on system libxml_utils
+    
+    The commit a98d3feec31434887d768c28d848797b282fed2c modified data_decoder
+    to be able to see libxml errors, but only modified the visbility of
+    the bundled libxml library. In order to build against the system
+    libxml on Linux, its build file needs to grant permission for
+    data_decoder to depend on it as well.
+    
+    This commit fixes the following gn error:
+    
+    ERROR at //services/data_decoder/BUILD.gn:8:1: Dependency not allowed.
+    source_set("lib") {
+    ^------------------
+    The item //services/data_decoder:lib
+    can not depend on //third_party/libxml:libxml_utils
+    because it is not in //third_party/libxml:libxml_utils's visibility list: [
+      //third_party/libxml:xml_reader
+      //third_party/libxml:xml_writer
+      //base/test:test_support
+      //services/data_decoder:xml_parser_fuzzer_deps
+    ]
+    
+    Note that this fix should make its way to the chromium 100 beta release,
+    which will become promoted to stable soon. This issue is not present
+    in chromium 99.
+
+--- a/build/linux/unbundle/libxml.gn
++++ b/build/linux/unbundle/libxml.gn
+@@ -19,6 +19,7 @@
+     ":xml_reader",
+     ":xml_writer",
+     "//base/test:test_support",
++    "//services/data_decoder:lib",
+     "//services/data_decoder:xml_parser_fuzzer_deps",
+   ]
+   sources = [

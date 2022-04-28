@@ -9,7 +9,7 @@ Subject: [PATCH] disable autofill server communication by default
 
 --- a/components/autofill/core/common/autofill_features.cc
 +++ b/components/autofill/core/common/autofill_features.cc
-@@ -384,7 +384,7 @@
+@@ -402,7 +402,7 @@
  // "upload" resources.
  // i.e., https://other.autofill.server:port/tbproxy/af/
  const base::Feature kAutofillServerCommunication{

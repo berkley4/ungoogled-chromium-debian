@@ -36,7 +36,7 @@ Subject: Reduce HTTP headers in DoH requests to bare minimum
    }
 --- a/net/url_request/url_request_http_job.cc
 +++ b/net/url_request/url_request_http_job.cc
-@@ -320,6 +320,7 @@
+@@ -321,6 +321,7 @@
    // fields in the referrer.
    GURL referrer(request_->referrer());
  
@@ -44,7 +44,7 @@ Subject: Reduce HTTP headers in DoH requests to bare minimum
    // Our consumer should have made sure that this is a safe referrer (e.g. via
    // URLRequestJob::ComputeReferrerForPolicy).
    if (referrer.is_valid()) {
-@@ -327,11 +328,14 @@
+@@ -328,11 +329,14 @@
      request_info_.extra_headers.SetHeader(HttpRequestHeaders::kReferer,
                                            referer_value);
    }
@@ -59,7 +59,7 @@ Subject: Reduce HTTP headers in DoH requests to bare minimum
  
    AddExtraHeaders();
  
-@@ -604,6 +608,7 @@
+@@ -605,6 +609,7 @@
        if (request_->Supports(SourceStream::SourceType::TYPE_DEFLATE)) {
          advertised_encoding_names.push_back("deflate");
        }
@@ -67,7 +67,7 @@ Subject: Reduce HTTP headers in DoH requests to bare minimum
        // Advertise "br" encoding only if transferred data is opaque to proxy.
        if (request()->context()->enable_brotli() &&
            request_->Supports(SourceStream::SourceType::TYPE_BROTLI)) {
-@@ -612,6 +617,7 @@
+@@ -613,6 +618,7 @@
            advertised_encoding_names.push_back("br");
          }
        }
@@ -75,7 +75,7 @@ Subject: Reduce HTTP headers in DoH requests to bare minimum
        if (!advertised_encoding_names.empty()) {
          // Tell the server what compression formats are supported.
          request_info_.extra_headers.SetHeader(
-@@ -621,7 +627,7 @@
+@@ -622,7 +628,7 @@
      }
    }
  

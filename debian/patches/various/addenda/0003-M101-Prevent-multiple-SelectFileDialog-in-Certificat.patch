@@ -1,0 +1,94 @@
+From 8895251cd6d666674144ddeabf238df31ff48651 Mon Sep 17 00:00:00 2001
+From: Luciano Pacheco <lucmult@chromium.org>
+Date: Tue, 26 Apr 2022 04:26:36 +0000
+Subject: [PATCH] M101: Prevent multiple SelectFileDialog in
+ CertificatesHandler
+
+Similar to crrev.com/c/3546821
+
+(cherry picked from commit fdba2ff7323a543ef7a2a229ea5ff2ea9b4c79d8)
+
+Bug: 1309583
+Change-Id: Iea7d9dd06fd18d08fa79d146593a3ce41d685e58
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/3573861
+Auto-Submit: Luciano Pacheco <lucmult@chromium.org>
+Reviewed-by: Demetrios Papadopoulos <dpapad@chromium.org>
+Commit-Queue: Demetrios Papadopoulos <dpapad@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#989358}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/3581509
+Commit-Queue: Luciano Pacheco <lucmult@chromium.org>
+Cr-Commit-Position: refs/branch-heads/4951@{#1056}
+Cr-Branched-From: 27de6227ca357da0d57ae2c7b18da170c4651438-refs/heads/main@{#982481}
+---
+ .../browser/ui/webui/certificates_handler.cc  | 22 +++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
+
+--- a/chrome/browser/ui/webui/certificates_handler.cc
++++ b/chrome/browser/ui/webui/certificates_handler.cc
+@@ -287,7 +287,7 @@
+ CertificatesHandler::~CertificatesHandler() {
+   if (select_file_dialog_.get())
+     select_file_dialog_->ListenerDestroyed();
+-  select_file_dialog_ = nullptr;
++  select_file_dialog_.reset();
+ }
+ 
+ void CertificatesHandler::RegisterMessages() {
+@@ -388,6 +388,8 @@
+     default:
+       NOTREACHED();
+   }
++
++  select_file_dialog_.reset();
+ }
+ 
+ void CertificatesHandler::FileSelectionCanceled(void* params) {
+@@ -489,6 +491,10 @@
+ }
+ 
+ void CertificatesHandler::HandleExportPersonal(const base::Value::List& args) {
++  // Early return if the select file dialog is already active.
++  if (select_file_dialog_)
++    return;
++
+   CHECK_EQ(2U, args.size());
+   AssignWebUICallbackId(args);
+ 
+@@ -578,6 +584,10 @@
+ }
+ 
+ void CertificatesHandler::HandleImportPersonal(const base::Value::List& args) {
++  // Early return if the select file dialog is already active.
++  if (select_file_dialog_)
++    return;
++
+   // When the "allowed" value changes while user on the certificate manager
+   // page, the UI doesn't update without page refresh and user can still see and
+   // use import button. Because of this 'return' the button will do nothing.
+@@ -742,10 +752,14 @@
+   // away so they don't try and call back to us.
+   if (select_file_dialog_.get())
+     select_file_dialog_->ListenerDestroyed();
+-  select_file_dialog_ = nullptr;
++  select_file_dialog_.reset();
+ }
+ 
+ void CertificatesHandler::HandleImportServer(const base::Value::List& args) {
++  // Early return if the select file dialog is already active.
++  if (select_file_dialog_)
++    return;
++
+   CHECK_EQ(1U, args.size());
+   AssignWebUICallbackId(args);
+ 
+@@ -813,6 +827,10 @@
+ }
+ 
+ void CertificatesHandler::HandleImportCA(const base::Value::List& args) {
++  // Early return if the select file dialog is already active.
++  if (select_file_dialog_)
++    return;
++
+   // When the "allowed" value changes while user on the certificate manager
+   // page, the UI doesn't update without page refresh and user can still see and
+   // use import button. Because of this 'return' the button will do nothing.

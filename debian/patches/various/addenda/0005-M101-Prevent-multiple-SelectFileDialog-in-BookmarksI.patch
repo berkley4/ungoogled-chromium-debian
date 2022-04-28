@@ -1,0 +1,68 @@
+From 4ffea64feac6d45e150e158830540b09b342b708 Mon Sep 17 00:00:00 2001
+From: Luciano Pacheco <lucmult@chromium.org>
+Date: Tue, 26 Apr 2022 04:36:36 +0000
+Subject: [PATCH] M101: Prevent multiple SelectFileDialog in
+ BookmarksIOFunction
+
+Similar to crrev.com/c/3546821
+
+(cherry picked from commit 0a6b0333df2cf87955f751ab254775d052db659a)
+
+Bug: 1309583
+Change-Id: I61c852d2dc44720d4a47677a2725dc58c7b9627d
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/3577755
+Auto-Submit: Luciano Pacheco <lucmult@chromium.org>
+Reviewed-by: Ben Wells <benwells@chromium.org>
+Commit-Queue: Ben Wells <benwells@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#991345}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/3586522
+Commit-Queue: Luciano Pacheco <lucmult@chromium.org>
+Cr-Commit-Position: refs/branch-heads/4951@{#1058}
+Cr-Branched-From: 27de6227ca357da0d57ae2c7b18da170c4651438-refs/heads/main@{#982481}
+---
+ chrome/browser/extensions/api/bookmarks/bookmarks_api.cc | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+--- a/chrome/browser/extensions/api/bookmarks/bookmarks_api.cc
++++ b/chrome/browser/extensions/api/bookmarks/bookmarks_api.cc
+@@ -723,6 +723,10 @@
+   if (!dispatcher())
+     return;  // Extension was unloaded.
+ 
++  // Early return if the select file dialog is already active.
++  if (select_file_dialog_)
++    return;
++
+   DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
+ 
+   // Balanced in one of the three callbacks of SelectFileDialog:
+@@ -748,11 +752,13 @@
+ }
+ 
+ void BookmarksIOFunction::FileSelectionCanceled(void* params) {
++  select_file_dialog_.reset();
+   Release();  // Balanced in BookmarksIOFunction::SelectFile()
+ }
+ 
+ void BookmarksIOFunction::MultiFilesSelected(
+     const std::vector<base::FilePath>& files, void* params) {
++  select_file_dialog_.reset();
+   Release();  // Balanced in BookmarsIOFunction::SelectFile()
+   NOTREACHED() << "Should not be able to select multiple files";
+ }
+@@ -784,6 +790,7 @@
+ 
+   importer::LogImporterUseToMetrics("BookmarksAPI",
+                                     importer::TYPE_BOOKMARKS_FILE);
++  select_file_dialog_.reset();
+   Release();  // Balanced in BookmarksIOFunction::SelectFile()
+ }
+ 
+@@ -810,6 +817,7 @@
+                                            int index,
+                                            void* params) {
+   bookmark_html_writer::WriteBookmarks(GetProfile(), path, nullptr);
++  select_file_dialog_.reset();
+   Release();  // Balanced in BookmarksIOFunction::SelectFile()
+ }
+ 

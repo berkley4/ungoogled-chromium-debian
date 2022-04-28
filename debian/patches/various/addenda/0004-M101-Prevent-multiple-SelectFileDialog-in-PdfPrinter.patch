@@ -1,0 +1,51 @@
+From ec78aae1ce08da6e442d6e14f52c238da5e97cb8 Mon Sep 17 00:00:00 2001
+From: Luciano Pacheco <lucmult@chromium.org>
+Date: Tue, 26 Apr 2022 04:35:56 +0000
+Subject: [PATCH] M101: Prevent multiple SelectFileDialog in PdfPrinterHandler
+
+Similar to crrev.com/c/3546821
+
+(cherry picked from commit 2396213c6d55dfad52a49362206ab354bcad9e0c)
+
+Bug: 1309583
+Change-Id: I05d1a1411f823acb58f5b28a40da92b010e48f96
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/3573961
+Auto-Submit: Luciano Pacheco <lucmult@chromium.org>
+Reviewed-by: Lei Zhang <thestig@chromium.org>
+Commit-Queue: Lei Zhang <thestig@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#989251}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/3585111
+Commit-Queue: Luciano Pacheco <lucmult@chromium.org>
+Cr-Commit-Position: refs/branch-heads/4951@{#1057}
+Cr-Branched-From: 27de6227ca357da0d57ae2c7b18da170c4651438-refs/heads/main@{#982481}
+---
+ .../browser/ui/webui/print_preview/pdf_printer_handler.cc   | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+--- a/chrome/browser/ui/webui/print_preview/pdf_printer_handler.cc
++++ b/chrome/browser/ui/webui/print_preview/pdf_printer_handler.cc
+@@ -311,11 +311,13 @@
+   download_prefs->SetSaveFilePath(path.DirName());
+   sticky_settings_->SaveInPrefs(profile_->GetPrefs());
+   print_to_pdf_path_ = path;
++  select_file_dialog_.reset();
+   PostPrintToPdfTask();
+ }
+ 
+ void PdfPrinterHandler::FileSelectionCanceled(void* params) {
+   std::move(print_callback_).Run(base::Value("PDFPrintCanceled"));
++  select_file_dialog_.reset();
+ }
+ 
+ void PdfPrinterHandler::SetPdfSavedClosureForTesting(
+@@ -476,6 +478,10 @@
+ 
+ void PdfPrinterHandler::OnDirectorySelected(const base::FilePath& filename,
+                                             const base::FilePath& directory) {
++  // Early return if the select file dialog is already active.
++  if (select_file_dialog_)
++    return;
++
+   base::FilePath path = directory.Append(filename);
+ 
+   // Prompts the user to select the file.

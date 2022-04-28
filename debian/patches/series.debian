@@ -18,6 +18,8 @@ fixes/widevine-enable-version-string.patch
 fixes/widevine-locations.patch
 fixes/ps-print.patch
 
+upstream/libxml.patch
+
 disable/tests.patch
 disable/android.patch
 disable/installer.patch
@@ -44,6 +46,7 @@ bromite/Disable-AsyncDNS-by-default.patch
 bromite/Disable-metrics-on-all-I-O-threads.patch
 bromite/Disable-some-signed-exchange-features.patch
 bromite/Disable-text-fragments-by-default.patch
+bromite/Disable-TLS-resumption.patch
 bromite/DoH-secure-mode-by-default.patch
 bromite/Hardening-against-incognito-mode-detection.patch
 bromite/Make-all-favicon-requests-on-demand.patch
@@ -79,13 +82,19 @@ various/init-stack-vars-zero.patch
 various/silence-alsa-frames-log-msg.patch
 various/use-clang-to-optimize-debug-info.patch
 various/use-higher-function-import-limits.patch
-#various/addenda/
+various/wayland-egl.patch
+various/addenda/0001-M101-tabdrag-properly-close-dragged-window-when-tabs.patch
+various/addenda/0002-M101-Prevent-multiple-SelectFileDialog-in-MediaGalle.patch
+various/addenda/0003-M101-Prevent-multiple-SelectFileDialog-in-Certificat.patch
+various/addenda/0004-M101-Prevent-multiple-SelectFileDialog-in-PdfPrinter.patch
+various/addenda/0005-M101-Prevent-multiple-SelectFileDialog-in-BookmarksI.patch
+various/addenda/0006-M101-Prevent-multiple-SelectFileDialog-in-PasswordMa.patch
+various/addenda/0007-Account-for-UVs-in-Wayland-buffer-damage.patch
 various/disable/ssl-ctx-set-grease.patch
 various/fedora/enable-hardware-accelerated-mjpeg.patch
 various/fixes/EnumTable-crash.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/xfce-maximize.patch
-various/inox-patchset/fix-cfi-failures-with-unbundled-libxml.patch
 
 #optional/custom-thin-lto-cache-location.patch
 #optional/custom-x64-arch.patch

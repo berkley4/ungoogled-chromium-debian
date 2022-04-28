@@ -8,12 +8,12 @@ Subject: [PATCH] disable autofill assistant by default
  components/autofill_assistant/browser/features.cc             | 4 ++--
  2 files changed, 3 insertions(+), 3 deletions(-)
 
---- a/chrome/android/features/autofill_assistant/public/java/src/org/chromium/chrome/browser/autofill_assistant/AutofillAssistantPreferencesUtil.java
-+++ b/chrome/android/features/autofill_assistant/public/java/src/org/chromium/chrome/browser/autofill_assistant/AutofillAssistantPreferencesUtil.java
+--- a/components/autofill_assistant/android/public/java/src/org/chromium/components/autofill_assistant/AutofillAssistantPreferencesUtil.java
++++ b/components/autofill_assistant/android/public/java/src/org/chromium/components/autofill_assistant/AutofillAssistantPreferencesUtil.java
 @@ -32,7 +32,7 @@
  
      /** Checks whether the Autofill Assistant switch preference in settings is on. */
-     static boolean isAutofillAssistantSwitchOn() {
+     public static boolean isAutofillAssistantSwitchOn() {
 -        return getAssistantEnabledPreference(true);
 +        return getAssistantEnabledPreference(false);
      }
@@ -30,7 +30,7 @@ Subject: [PATCH] disable autofill assistant by default
  
  // Controls whether to enable Autofill Assistant's way of annotating DOM. If
  // enabled will create an |AnnotateDomModelService|.
-@@ -86,7 +86,7 @@
+@@ -103,7 +103,7 @@
      base::FEATURE_DISABLED_BY_DEFAULT};
  
  const base::Feature kAutofillAssistantProactiveHelp{

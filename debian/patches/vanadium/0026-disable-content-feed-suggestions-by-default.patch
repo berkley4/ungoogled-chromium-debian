@@ -10,7 +10,7 @@ Subject: [PATCH] disable content feed suggestions by default
 
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CachedFeatureFlags.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CachedFeatureFlags.java
-@@ -82,7 +82,7 @@
+@@ -83,7 +83,7 @@
                      .put(ChromeFeatureList.TAB_TO_GTS_ANIMATION, true)
                      .put(ChromeFeatureList.TEST_DEFAULT_DISABLED, false)
                      .put(ChromeFeatureList.TEST_DEFAULT_ENABLED, true)

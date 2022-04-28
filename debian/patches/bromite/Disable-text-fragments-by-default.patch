@@ -18,9 +18,9 @@ Revert "[Text Fragment] Unflag fragment directive removal."
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5651,6 +5651,11 @@
-          "CCTResizableThirdPartiesDefaultPolicy")},
- #endif
+@@ -5558,6 +5558,11 @@
+      flag_descriptions::kEnableWebAuthenticationPasskeysUIExperimentDescription,
+      kOsDesktop, FEATURE_VALUE_TYPE(device::kWebAuthPasskeysUIExperiment)},
  
 +    {"enable-text-fragment-anchor",
 +     flag_descriptions::kEnableTextFragmentAnchorName,
@@ -28,11 +28,11 @@ Revert "[Text Fragment] Unflag fragment directive removal."
 +     FEATURE_VALUE_TYPE(blink::features::kTextFragmentAnchor)},
 +
  #if BUILDFLAG(IS_CHROMEOS_ASH)
-     {"enforce-system-aec", flag_descriptions::kCrOSEnforceSystemAecName,
-      flag_descriptions::kCrOSEnforceSystemAecDescription, kOsCrOS,
+     {"enable-web-authentication-chromeos-authenticator",
+      flag_descriptions::kEnableWebAuthenticationChromeOSAuthenticatorName,
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -2431,6 +2431,11 @@
+@@ -2486,6 +2486,11 @@
      "expiry_milestone": 90
    },
    {
@@ -46,7 +46,7 @@ Revert "[Text Fragment] Unflag fragment directive removal."
      "expiry_milestone": 130
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -1281,6 +1281,10 @@
+@@ -1271,6 +1271,10 @@
      "Enable the restricted web APIs for dev trial. This will be replaced with "
      "permission policies to control the capabilities afterwards.";
  
@@ -59,7 +59,7 @@ Revert "[Text Fragment] Unflag fragment directive removal."
  const char kEnableUseZoomForDsfDescription[] =
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -723,6 +723,9 @@
+@@ -713,6 +713,9 @@
  extern const char kEnableRestrictedWebApisName[];
  extern const char kEnableRestrictedWebApisDescription[];
  
@@ -71,7 +71,7 @@ Revert "[Text Fragment] Unflag fragment directive removal."
  extern const char kEnableUseZoomForDsfChoiceDefault[];
 --- a/chrome/browser/ui/prefs/prefs_tab_helper.cc
 +++ b/chrome/browser/ui/prefs/prefs_tab_helper.cc
-@@ -356,7 +356,7 @@
+@@ -355,7 +355,7 @@
        prefs::kEnableReferrers,
        !base::FeatureList::IsEnabled(features::kNoReferrers));
    registry->RegisterBooleanPref(prefs::kEnableEncryptedMedia, true);
@@ -82,7 +82,7 @@ Revert "[Text Fragment] Unflag fragment directive removal."
    registry->RegisterBooleanPref(browser_ui::prefs::kWebKitForceEnableZoom,
 --- a/content/child/runtime_features.cc
 +++ b/content/child/runtime_features.cc
-@@ -288,7 +288,7 @@
+@@ -278,7 +278,7 @@
       features::kSignedExchangeSubresourcePrefetch},
      {wf::EnableSkipTouchEventFilter, blink::features::kSkipTouchEventFilter},
      {wf::EnableSubresourceWebBundles, features::kSubresourceWebBundles},
@@ -93,7 +93,7 @@ Revert "[Text Fragment] Unflag fragment directive removal."
       blink::features::kCssSelectorFragmentAnchor},
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -439,7 +439,7 @@
+@@ -462,7 +462,7 @@
  
  // Enable text snippets in URL fragments. https://crbug.com/919204.
  const base::Feature kTextFragmentAnchor{"TextFragmentAnchor",
@@ -104,7 +104,7 @@ Revert "[Text Fragment] Unflag fragment directive removal."
  const base::Feature kCssSelectorFragmentAnchor{
 --- a/third_party/blink/renderer/core/dom/document.cc
 +++ b/third_party/blink/renderer/core/dom/document.cc
-@@ -4053,9 +4053,14 @@
+@@ -4110,9 +4110,14 @@
    TRACE_EVENT1("navigation", "Document::SetURL", "url",
                 new_url.GetString().Utf8());
  
@@ -168,7 +168,7 @@ Revert "[Text Fragment] Unflag fragment directive removal."
    const int kNotFoundSample = 0;
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -2259,8 +2259,7 @@
+@@ -2297,8 +2297,7 @@
      },
      {
        name: "TextFragmentIdentifiers",

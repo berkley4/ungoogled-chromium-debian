@@ -3,7 +3,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -80,8 +80,6 @@
+@@ -81,8 +81,6 @@
      ":gn_visibility",
      "//base:base_perftests",
      "//base:base_unittests",
@@ -14,7 +14,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      "//components/gwp_asan:gwp_asan_unittests",
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -7350,7 +7350,6 @@
+@@ -7391,7 +7391,6 @@
    deps = [
      "//base",
      "//chrome/common:constants",

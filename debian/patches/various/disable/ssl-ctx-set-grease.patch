@@ -1,6 +1,6 @@
 --- a/net/socket/ssl_client_socket_impl.cc
 +++ b/net/socket/ssl_client_socket_impl.cc
-@@ -312,7 +312,7 @@
+@@ -311,7 +311,7 @@
      SSL_CTX_sess_set_new_cb(ssl_ctx_.get(), NewSessionCallback);
      SSL_CTX_set_timeout(ssl_ctx_.get(), 1 * 60 * 60 /* one hour */);
  
