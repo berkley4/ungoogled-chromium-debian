@@ -33,33 +33,35 @@ The main features and changes are as follows :-
 
 ___Performance improvements___
 
-- Profile Guided Optimisation (PGO) - smaller, faster binaries
-- Upstream optimisation - levels vary per target (versus debian's -O2 everywhere default)
+- Profile Guided Optimisation (PGO) - a smaller and faster chrome binary with cold functions heavily optimised for size
 - V8 pointer compression - memory usage/speed improvement (see [here](https://v8.dev/blog/pointer-compression))
+- Upstream optimisation - levels vary per target (versus debian's -O2 everywhere default)
+- Built with -march=[x86-64-v2](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels) (versus the default x86-64) and -mavx to enable AVX instructions
 - Built with -fno-plt - speed improvement
-
+- Build with -ftrivial-auto-var-init set to zero instead of pattern - speed improvement
+- Built with higher function import limits to further optimise hot functions
 
 ___Security/Privacy improvements___
 
 - Bad Cast Checking in addition to regular Control Flow Integrity (see [here](https://clang.llvm.org/docs/ControlFlowIntegrity.html#bad-cast-checking) for details)
-- Extra Bromite and Vanadium patches, which include the following clang options :-
-    - -fwrapv - disables unsafe optimisations (see [here](https://gitlab.e.foundation/e/apps/browser/-/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch))
+- Extra Bromite and Vanadium patches, the later of which includes the following clang options :-
+    - -fstack-protector-strong - as opposed to chromium's default of -fstack-protector
     - -ftrivial-auto-var-init=zero - improves security (see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html))
+    - -fwrapv - disables unsafe optimisations (see [here](https://gitlab.e.foundation/e/apps/browser/-/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch))
 - An example policy file is included in the repo (can be edited and enabled at build time)
 - Some security/privacy themed flag files are installed to /etc/chromium.d (strict isolation is enabled by default)
 
 
 ___Other features/changes___
 
-- Enabled pipewire - for wayland
+- Enabled pipewire
 - Vulkan support - opt-in via runtime switches (see further below)
-- Shell script launcher - perhaps slightly more secure
 - Bundled libpng - avoids an upstream debian bug (see [here](https://github.com/ungoogled-software/ungoogled-chromium-debian/issues/169))
 - Upstream debian patches - a few hard to maintain and otherwise dubious patches have been dropped
 - Separate deb packages for chromium's components (eg chromedriver, sandbox, languages)
 - Dropped ungoogled-chromium-common - its contents split between a new libraries package and the main one
 - New ungoogled-chromium-libraries package for libEGL.so, libGLESv2.so, etc (likely not needed by everyone)
-- Chromecase - optional build support
+- Chromecast - optional build support (untested and experimental)
 - Google translate - optional build support
 
 
@@ -69,7 +71,8 @@ ___Build system___
 - A bit more robust in general eg rebuilds should be faster and less error prone
 - All patching is handled by debian - ungoogled patches are merged with the debian patches during build setup
 - Built with a chromium git tree instead of tarball releases
-- Several fixes and improvements
+- Debug optimisation is now handled by building with -fdebug-types-section versus using dwz post build
+- Several other fixes and improvements
 
 - - - -
 
