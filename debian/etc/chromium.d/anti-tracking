@@ -1,6 +1,10 @@
-# Uncomment to enable anti-fingerprinting mitigations
-# Note: this will probably make you stand out even more from the crowd.
+# Uncomment to enable anti-tracking mitigations
+# Note: this could potentially make you stand out even more from the crowd.
 
+# Uncomment to disable TLS resumption for all HTTPS and QUIC connections
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-tls-resumption"
+
+# Uncomment to mitigate against canvas-based fingerprinting
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --fingerprinting-canvas-image-data-noise"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --fingerprinting-canvas-measuretext-noise"
 
