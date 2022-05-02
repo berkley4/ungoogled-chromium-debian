@@ -79,7 +79,7 @@ various/fno-plt.patch
 various/init-stack-vars-zero.patch
 various/silence-alsa-frames-log-msg.patch
 various/use-clang-to-optimize-debug-info.patch
-various/use-higher-function-import-limits.patch
+various/use-higher-hot-function-import-multiplier.patch
 various/wayland-egl.patch
 various/addenda/0001-M101-tabdrag-properly-close-dragged-window-when-tabs.patch
 various/addenda/0002-M101-Prevent-multiple-SelectFileDialog-in-MediaGalle.patch
