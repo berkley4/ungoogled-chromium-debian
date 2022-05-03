@@ -81,13 +81,7 @@ various/silence-alsa-frames-log-msg.patch
 various/use-clang-to-optimize-debug-info.patch
 various/use-higher-hot-function-import-multiplier.patch
 various/wayland-egl.patch
-various/addenda/0001-M101-tabdrag-properly-close-dragged-window-when-tabs.patch
-various/addenda/0002-M101-Prevent-multiple-SelectFileDialog-in-MediaGalle.patch
-various/addenda/0003-M101-Prevent-multiple-SelectFileDialog-in-Certificat.patch
-various/addenda/0004-M101-Prevent-multiple-SelectFileDialog-in-PdfPrinter.patch
-various/addenda/0005-M101-Prevent-multiple-SelectFileDialog-in-BookmarksI.patch
-various/addenda/0006-M101-Prevent-multiple-SelectFileDialog-in-PasswordMa.patch
-various/addenda/0007-Account-for-UVs-in-Wayland-buffer-damage.patch
+#various/addenda/
 various/disable/ssl-ctx-set-grease.patch
 various/fedora/enable-hardware-accelerated-mjpeg.patch
 various/fixes/EnumTable-crash.patch
