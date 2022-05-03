@@ -56,7 +56,7 @@
 -#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
 +#if (BUILDFLAG(IS_LINUX) && defined(USE_DBUS)) || BUILDFLAG(IS_CHROMEOS)
    bool is_initialized;
-
+ 
    if (base::FeatureList::IsEnabled(floss::features::kFlossEnabled)) {
 @@ -81,7 +81,7 @@
    // startup.
