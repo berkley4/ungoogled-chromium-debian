@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -919,7 +919,7 @@
+@@ -916,7 +916,7 @@
          "-m64",
          "-march=$x64_arch",
          "-mtune=generic",
