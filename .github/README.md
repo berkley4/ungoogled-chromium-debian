@@ -39,7 +39,7 @@ ___Performance improvements___
 - Built with -march=[x86-64-v2](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels) (versus the default x86-64) and -mavx to enable AVX instructions
 - Built with -fno-plt - speed improvement
 - Build with -ftrivial-auto-var-init set to zero instead of pattern - speed improvement
-- Built with higher function import limits to further optimise hot functions
+- Built with a higher hot function import multiplier to further optimise frequently used functions
 
 ___Security/Privacy improvements___
 
