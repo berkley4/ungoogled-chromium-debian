@@ -38,7 +38,6 @@ GN_FLAGS += \
         blink_enable_generated_code_formatting=false \
         blink_symbol_level=0 \
         symbol_level=0 \
-        v8_symbol_level=0 \
         ffmpeg_branding=\"ChromeOS\" \
         proprietary_codecs=true \
         angle_enable_swiftshader=false \
