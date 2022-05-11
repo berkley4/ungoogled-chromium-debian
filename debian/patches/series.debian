@@ -48,6 +48,7 @@ bromite/Disable-TLS-resumption.patch
 bromite/DoH-secure-mode-by-default.patch
 bromite/Hardening-against-incognito-mode-detection.patch
 bromite/Make-all-favicon-requests-on-demand.patch
+bromite/Partition-DNS-requests-by-top-frame-NIK.patch
 bromite/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
 bromite/Replace-DoH-probe-domain-with-RIPE-domain.patch
 
