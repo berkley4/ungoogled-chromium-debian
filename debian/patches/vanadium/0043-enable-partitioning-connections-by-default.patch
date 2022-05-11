@@ -9,7 +9,7 @@ Subject: [PATCH] enable partitioning connections by default
 
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -111,31 +111,31 @@
+@@ -117,31 +117,31 @@
      "SplitCacheByNetworkIsolationKey", base::FEATURE_ENABLED_BY_DEFAULT};
  
  const base::Feature kSplitHostCacheByNetworkIsolationKey{

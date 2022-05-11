@@ -21,7 +21,7 @@ Replace known good hostname
  
 --- a/net/dns/dns_transaction.cc
 +++ b/net/dns/dns_transaction.cc
-@@ -887,7 +887,7 @@
+@@ -894,7 +894,7 @@
  
  // ----------------------------------------------------------------------------
  

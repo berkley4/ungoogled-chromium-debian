@@ -25,7 +25,7 @@ Subject: Reduce HTTP headers in DoH requests to bare minimum
 +LOAD_FLAG(MINIMAL_HEADERS, 1 << 19)
 --- a/net/dns/dns_transaction.cc
 +++ b/net/dns/dns_transaction.cc
-@@ -439,7 +439,7 @@
+@@ -440,7 +440,7 @@
      // avoid deadlock and enable the use of preconfigured IP addresses.
      request_->SetSecureDnsPolicy(SecureDnsPolicy::kBootstrap);
      request_->SetLoadFlags(request_->load_flags() | LOAD_DISABLE_CACHE |
@@ -33,7 +33,7 @@ Subject: Reduce HTTP headers in DoH requests to bare minimum
 +                           LOAD_MINIMAL_HEADERS | LOAD_BYPASS_PROXY);
      request_->set_allow_credentials(false);
      request_->set_isolation_info(isolation_info);
-   }
+     if (base::FeatureList::IsEnabled(net::features::kLogSplitDnsByNetworkIsolationKey)) {
 --- a/net/url_request/url_request_http_job.cc
 +++ b/net/url_request/url_request_http_job.cc
 @@ -321,6 +321,7 @@

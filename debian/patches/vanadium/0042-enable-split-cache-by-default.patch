@@ -9,7 +9,7 @@ Subject: [PATCH] enable split cache by default
 
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -108,7 +108,7 @@
+@@ -114,7 +114,7 @@
      "SplitCacheByIncludeCredentials", base::FEATURE_DISABLED_BY_DEFAULT};
  
  const base::Feature kSplitCacheByNetworkIsolationKey{
