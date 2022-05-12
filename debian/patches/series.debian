@@ -94,6 +94,7 @@ various/fixes/xfce-maximize.patch
 #optional/mtune.patch
 #optional/avx.patch
 #optional/fma-avx2.patch
+#optional/import-instr-limit.patch
 #optional/disable/catapult.patch
 #optional/disable/atk-dbus.patch
 #optional/system/icu-types.patch
