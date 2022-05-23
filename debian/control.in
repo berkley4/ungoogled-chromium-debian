@@ -45,6 +45,7 @@ Architecture: i386 amd64 arm64 armhf
 Depends:
  ${misc:Depends},
  ${shlibs:Depends},
+ libgtk-3-0,
 Recommends:
  ungoogled-chromium-sandbox,
 Suggests:
