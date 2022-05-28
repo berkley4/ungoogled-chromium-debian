@@ -10,7 +10,7 @@ This feature is detrimental to privacy, see also:
 
 --- a/chrome/common/chrome_features.cc
 +++ b/chrome/common/chrome_features.cc
-@@ -101,12 +101,8 @@
+@@ -95,12 +95,8 @@
  
  // Enables the built-in DNS resolver.
  const base::Feature kAsyncDns {

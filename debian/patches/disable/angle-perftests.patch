@@ -3,7 +3,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
 
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -4656,10 +4656,6 @@
+@@ -4764,10 +4764,6 @@
        data_deps += [ "//third_party/dawn/src/dawn/tests:dawn_perf_tests" ]
      }
  
@@ -11,7 +11,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
 -      data_deps += [ "//third_party/angle/src/tests:angle_perftests" ]
 -    }
 -
-     if (!is_android && !is_fuchsia) {
+     if (!is_android && !is_chromeos_lacros) {
        data_deps += [
          "//chrome/test:load_library_perf_tests",
 --- a/third_party/angle/gni/angle.gni
@@ -25,7 +25,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
  }
  
  declare_args() {
-@@ -242,7 +242,7 @@
+@@ -243,7 +243,7 @@
        is_apple &&
        (angle_enable_glsl || angle_enable_metal || use_fuzzing_engine)
  

@@ -43,7 +43,7 @@ This approach is not comprehensive, see also:
  }  // namespace blink
 --- a/third_party/blink/renderer/core/execution_context/execution_context.h
 +++ b/third_party/blink/renderer/core/execution_context/execution_context.h
-@@ -373,6 +373,7 @@
+@@ -374,6 +374,7 @@
        const String& message = g_empty_string,
        const String& source_file = g_empty_string) const {}
  
@@ -63,7 +63,7 @@ This approach is not comprehensive, see also:
  
 --- a/third_party/blink/renderer/core/loader/frame_fetch_context.cc
 +++ b/third_party/blink/renderer/core/loader/frame_fetch_context.cc
-@@ -558,6 +558,26 @@
+@@ -546,6 +546,26 @@
    return should_block_request;
  }
  
@@ -92,7 +92,7 @@ This approach is not comprehensive, see also:
      const ResourceLoaderOptions& options,
 --- a/third_party/blink/renderer/core/loader/frame_fetch_context.h
 +++ b/third_party/blink/renderer/core/loader/frame_fetch_context.h
-@@ -178,6 +178,7 @@
+@@ -171,6 +171,7 @@
    bool ShouldBlockWebSocketByMixedContentCheck(const KURL&) const override;
    std::unique_ptr<WebSocketHandshakeThrottle> CreateWebSocketHandshakeThrottle()
        override;

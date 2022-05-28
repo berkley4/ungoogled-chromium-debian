@@ -1,7 +1,7 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -897,6 +897,11 @@
-         "-march=$x64_arch",
+@@ -905,6 +905,11 @@
+         "-march=x86-64-v2",
          "-mtune=generic",
          "-mavx",
 +        "-mavx2",

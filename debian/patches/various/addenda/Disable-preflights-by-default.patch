@@ -1,0 +1,38 @@
+From 40fc3ac9ff362b204ad4bbdc2a5824d42e943716 Mon Sep 17 00:00:00 2001
+From: Mike West <mkwst@chromium.org>
+Date: Fri, 27 May 2022 08:41:13 +0000
+Subject: [PATCH] [Private Network Access] Disable preflights by default.
+
+> Merging to M102 from ToT.
+
+Anecdotal reports suggest that in some environments failed preflights
+are leading to failed requests. This patch disables the feature while
+we continue to investigate.
+
+(cherry picked from commit dd306fb4c706648443386963945650cb344a0b61)
+
+Bug: 1274149, 1329248
+Change-Id: Id07fb24398627407ce98c4c6d424cf97242217bd
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/3669044
+Commit-Queue: Mike West <mkwst@chromium.org>
+Reviewed-by: Nasko Oskov <nasko@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1007517}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/3670156
+Auto-Submit: Mike West <mkwst@chromium.org>
+Reviewed-by: Jochen Eisinger <jochen@chromium.org>
+Commit-Queue: Jochen Eisinger <jochen@chromium.org>
+Cr-Commit-Position: refs/branch-heads/5005@{#1036}
+Cr-Branched-From: 5b4d9450fee01f821b6400e947b3839727643a71-refs/heads/main@{#992738}
+---
+
+--- a/content/public/common/content_features.cc
++++ b/content/public/common/content_features.cc
+@@ -715,7 +715,7 @@
+ // Enables sending CORS preflight requests ahead of private network requests.
+ // See: https://wicg.github.io/private-network-access/#cors-preflight
+ const base::Feature kPrivateNetworkAccessSendPreflights = {
+-    "PrivateNetworkAccessSendPreflights", base::FEATURE_ENABLED_BY_DEFAULT};
++    "PrivateNetworkAccessSendPreflights", base::FEATURE_DISABLED_BY_DEFAULT};
+ 
+ // Enable the ProactivelySwapBrowsingInstance experiment. A browsing instance
+ // represents a set of frames that can script each other. Currently, Chrome does

@@ -38,7 +38,7 @@ See also:
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -7563,6 +7563,18 @@
+@@ -7578,6 +7578,18 @@
          FEATURE_VALUE_TYPE(features::kUIDebugTools),
      },
  #endif
@@ -59,9 +59,9 @@ See also:
       flag_descriptions::kSplitCacheByNetworkIsolationKeyDescription,
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -2449,6 +2449,15 @@
- const char kWebOTPCrossDeviceDescription[] =
-     "Enable the WebOTP API to work across devices";
+@@ -2382,6 +2382,15 @@
+ const char kSmoothScrollingDescription[] =
+     "Animate smoothly when scrolling page content.";
  
 +const char kSplitDnsByNetworkIsolationKeyName[] = "DNS Requests Partitioning";
 +const char kSplitDnsByNetworkIsolationKeyDescription[] =
@@ -77,9 +77,9 @@ See also:
      "Partitions the HTTP Cache by (top-level site, current-frame site) to "
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -1394,6 +1394,12 @@
- extern const char kWebOTPCrossDeviceName[];
- extern const char kWebOTPCrossDeviceDescription[];
+@@ -1346,6 +1346,12 @@
+ extern const char kSmoothScrollingName[];
+ extern const char kSmoothScrollingDescription[];
  
 +extern const char kSplitDnsByNetworkIsolationKeyName[];
 +extern const char kSplitDnsByNetworkIsolationKeyDescription[];
@@ -92,7 +92,7 @@ See also:
  
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -104,6 +104,12 @@
+@@ -124,6 +124,12 @@
  const base::Feature kNetworkQualityEstimator{"NetworkQualityEstimator",
                                               base::FEATURE_DISABLED_BY_DEFAULT};
  
@@ -107,7 +107,7 @@ See also:
  
 --- a/net/base/features.h
 +++ b/net/base/features.h
-@@ -168,6 +168,12 @@
+@@ -187,6 +187,12 @@
  // quality estimator (NQE).
  NET_EXPORT extern const base::Feature kNetworkQualityEstimator;
  
@@ -296,7 +296,7 @@ See also:
  #include "net/base/idempotency.h"
  #include "net/base/io_buffer.h"
  #include "net/base/ip_address.h"
-@@ -442,6 +443,12 @@
+@@ -452,6 +453,12 @@
                             LOAD_BYPASS_PROXY);
      request_->set_allow_credentials(false);
      request_->set_isolation_info(isolation_info);
@@ -309,7 +309,7 @@ See also:
    }
  
    DnsHTTPAttempt(const DnsHTTPAttempt&) = delete;
-@@ -1012,6 +1019,8 @@
+@@ -1022,6 +1029,8 @@
          session_.get(), doh_server_index, formatted_probe_hostname_,
          dns_protocol::kTypeA, nullptr /* opt_rdata */,
          &probe_stats->probe_attempts, context_->url_request_context(),
@@ -318,7 +318,7 @@ See also:
          context_->isolation_info(), RequestPriority::DEFAULT_PRIORITY);
  
      DnsAttempt* probe_attempt = probe_stats->probe_attempts.back().get();
-@@ -1105,7 +1114,8 @@
+@@ -1114,7 +1123,8 @@
                       bool secure,
                       SecureDnsMode secure_dns_mode,
                       ResolveContext* resolve_context,
@@ -328,7 +328,7 @@ See also:
        : session_(session),
          hostname_(std::move(hostname)),
          qtype_(qtype),
-@@ -1119,7 +1129,8 @@
+@@ -1127,7 +1137,8 @@
          attempts_count_(0),
          had_tcp_retry_(false),
          resolve_context_(resolve_context->AsSafeRef()),
@@ -337,8 +337,8 @@ See also:
 +        network_isolation_key_(network_isolation_key) {
      DCHECK(session_.get());
      DCHECK(!hostname_.empty());
-     DCHECK(!callback_.is_null());
-@@ -1367,6 +1378,8 @@
+     DCHECK(!IsIPLiteral(hostname_));
+@@ -1374,6 +1385,8 @@
      ConstructDnsHTTPAttempt(
          session_.get(), doh_server_index, qnames_.front(), qtype_, opt_rdata_,
          &attempts_, resolve_context_->url_request_context(),
@@ -347,7 +347,7 @@ See also:
          resolve_context_->isolation_info(), request_priority_);
      ++attempts_count_;
      int rv = attempts_.back()->Start(base::BindOnce(
-@@ -1693,6 +1706,8 @@
+@@ -1708,6 +1721,8 @@
    base::SafeRef<ResolveContext> resolve_context_;
    RequestPriority request_priority_;
  
@@ -356,7 +356,7 @@ See also:
    THREAD_CHECKER(thread_checker_);
  };
  
-@@ -1714,11 +1729,12 @@
+@@ -1728,10 +1743,12 @@
        bool secure,
        SecureDnsMode secure_dns_mode,
        ResolveContext* resolve_context,
@@ -364,9 +364,9 @@ See also:
 +      bool fast_timeout,
 +      const NetworkIsolationKey& network_isolation_key) override {
      return std::make_unique<DnsTransactionImpl>(
-         session_.get(), std::move(hostname), qtype, std::move(callback),
-         net_log, opt_rdata_.get(), secure, secure_dns_mode, resolve_context,
--        fast_timeout);
+         session_.get(), std::move(hostname), qtype, net_log, opt_rdata_.get(),
+-        secure, secure_dns_mode, resolve_context, fast_timeout);
++        secure, secure_dns_mode, resolve_context,
 +        fast_timeout, network_isolation_key);
    }
  
@@ -381,7 +381,7 @@ See also:
  #include "net/dns/public/secure_dns_mode.h"
  #include "net/dns/record_rdata.h"
  #include "third_party/abseil-cpp/absl/types/optional.h"
-@@ -119,7 +120,8 @@
+@@ -117,7 +118,8 @@
        bool secure,
        SecureDnsMode secure_dns_mode,
        ResolveContext* resolve_context,
@@ -393,7 +393,7 @@ See also:
    // resolvers.
 --- a/net/dns/host_resolver_manager.cc
 +++ b/net/dns/host_resolver_manager.cc
-@@ -1302,7 +1302,8 @@
+@@ -1256,7 +1256,8 @@
            Delegate* delegate,
            const NetLogWithSource& job_net_log,
            const base::TickClock* tick_clock,
@@ -403,7 +403,7 @@ See also:
        : client_(client),
          host_(std::move(host)),
          resolve_context_(resolve_context->AsSafeRef()),
-@@ -1312,7 +1313,8 @@
+@@ -1266,7 +1267,8 @@
          net_log_(job_net_log),
          tick_clock_(tick_clock),
          task_start_time_(tick_clock_->NowTicks()),
@@ -413,17 +413,17 @@ See also:
      DCHECK(client_);
      DCHECK(delegate_);
  
-@@ -1443,7 +1445,8 @@
-                            base::Unretained(this), tick_clock_->NowTicks(),
-                            dns_query_type, request_port),
-             net_log_, secure_, secure_dns_mode_, &*resolve_context_,
+@@ -1483,7 +1485,8 @@
+             std::move(transaction_hostname),
+             DnsQueryTypeToQtype(transaction_info.type), net_log_, secure_,
+             secure_dns_mode_, &*resolve_context_,
 -            fallback_available_ /* fast_timeout */);
 +            fallback_available_ /* fast_timeout */,
 +            network_isolation_key_);
-     trans->SetRequestPriority(delegate_->priority());
-     return trans;
-   }
-@@ -1978,6 +1981,8 @@
+     transaction_info.transaction->SetRequestPriority(delegate_->priority());
+ 
+     auto transaction_info_it =
+@@ -2105,6 +2108,8 @@
    // task completes unsuccessfully. Used as a signal that underlying
    // transactions should timeout more quickly.
    bool fallback_available_;
@@ -432,7 +432,7 @@ See also:
  };
  
  //-----------------------------------------------------------------------------
-@@ -2544,7 +2549,8 @@
+@@ -2673,7 +2678,8 @@
      dns_task_ = std::make_unique<DnsTask>(
          resolver_->dns_client_.get(), key_.host, key_.query_types,
          &*key_.resolve_context, secure, key_.secure_dns_mode, this, net_log_,
@@ -442,7 +442,7 @@ See also:
      dns_task_->StartNextTransaction();
      // Schedule a second transaction, if needed. DoH queries can bypass the
      // dispatcher and start all of their transactions immediately.
-@@ -2820,6 +2826,13 @@
+@@ -2965,6 +2971,13 @@
      net_log_.EndEventWithNetErrorCode(
          NetLogEventType::HOST_RESOLVER_MANAGER_JOB, results.error());
  

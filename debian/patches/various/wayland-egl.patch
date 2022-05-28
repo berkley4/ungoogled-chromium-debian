@@ -1,6 +1,6 @@
 --- a/ui/gl/gl_image_native_pixmap.cc
 +++ b/ui/gl/gl_image_native_pixmap.cc
-@@ -318,6 +318,8 @@
+@@ -326,6 +326,8 @@
                                 std::move(scoped_fd));
    }
  

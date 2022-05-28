@@ -1,4 +1,4 @@
-From f6d16b53eee386285583f323123e7f9413f51245 Mon Sep 17 00:00:00 2001
+From f192449531c5a2617f00708d115a81fa72f8b0f2 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Thu, 4 Jul 2019 19:08:52 -0400
 Subject: [PATCH] disable media router by default
@@ -10,7 +10,7 @@ Subject: [PATCH] disable media router by default
 
 --- a/chrome/browser/media/router/media_router_feature.cc
 +++ b/chrome/browser/media/router/media_router_feature.cc
-@@ -91,7 +91,7 @@
+@@ -92,7 +92,7 @@
      pref_values.insert(std::make_pair(context, allowed));
      return allowed;
    }
@@ -21,7 +21,7 @@ Subject: [PATCH] disable media router by default
  #if !BUILDFLAG(IS_ANDROID)
 --- a/chrome/browser/profiles/profile_impl.cc
 +++ b/chrome/browser/profiles/profile_impl.cc
-@@ -417,7 +417,7 @@
+@@ -415,7 +415,7 @@
  #endif
  
    registry->RegisterBooleanPref(prefs::kForceEphemeralProfiles, false);

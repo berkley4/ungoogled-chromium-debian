@@ -1,4 +1,4 @@
-From 469369ddcaea891e4554e6c8777e1828c5d48e80 Mon Sep 17 00:00:00 2001
+From ffccab6f3ea0081ee7a815b9fdec0ae11e1694e3 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Tue, 1 Dec 2020 00:56:57 -0500
 Subject: [PATCH] disable autofill server communication by default
@@ -9,7 +9,7 @@ Subject: [PATCH] disable autofill server communication by default
 
 --- a/components/autofill/core/common/autofill_features.cc
 +++ b/components/autofill/core/common/autofill_features.cc
-@@ -402,7 +402,7 @@
+@@ -411,7 +411,7 @@
  // "upload" resources.
  // i.e., https://other.autofill.server:port/tbproxy/af/
  const base::Feature kAutofillServerCommunication{

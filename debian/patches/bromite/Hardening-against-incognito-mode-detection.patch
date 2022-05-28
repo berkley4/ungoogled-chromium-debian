@@ -8,7 +8,7 @@ Subject: Hardening against incognito mode detection
 
 --- a/storage/browser/quota/quota_settings.cc
 +++ b/storage/browser/quota/quota_settings.cc
-@@ -29,7 +29,7 @@
+@@ -28,7 +28,7 @@
  const int kRandomizedPercentage = 10;
  const double kDefaultPerHostRatio = 0.75;
  const double kIncognitoQuotaRatioLowerBound = 0.15;

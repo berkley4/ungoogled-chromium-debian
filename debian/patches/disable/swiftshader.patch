@@ -3,18 +3,18 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -500,7 +500,7 @@
+@@ -514,7 +514,7 @@
      ]
    }
  
 -  if ((is_win || is_mac || is_linux || is_chromeos || is_fuchsia) &&
 +  if (false &&
        (target_cpu == "x86" || target_cpu == "x64")) {
-     deps += [ "//third_party/swiftshader" ]
-   }
+     deps += [
+       "//third_party/swiftshader/src/Vulkan:icd_file",
 --- a/third_party/angle/gni/angle.gni
 +++ b/third_party/angle/gni/angle.gni
-@@ -448,7 +448,6 @@
+@@ -449,7 +449,6 @@
                        "$angle_root:angle_common",
                        "$angle_root:includes",
                        "$angle_root/src/tests:angle_test_expectations",

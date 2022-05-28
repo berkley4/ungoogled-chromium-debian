@@ -43,7 +43,7 @@ Truncate base latency precision to two digits
          unsigned long channelNumber,
 --- a/third_party/blink/renderer/modules/webaudio/audio_context.cc
 +++ b/third_party/blink/renderer/modules/webaudio/audio_context.cc
-@@ -462,7 +462,9 @@
+@@ -492,7 +492,9 @@
    DCHECK(IsMainThread());
    DCHECK(destination());
  
@@ -53,4 +53,4 @@ Truncate base latency precision to two digits
 +  return double(l)/100;
  }
  
- MediaElementAudioSourceNode* AudioContext::createMediaElementSource(
+ double AudioContext::outputLatency() const {
