@@ -202,7 +202,7 @@ git status
 # Set the chromium version (obviously change the one below to the desired version)
 export CHROMIUM_VER=102.0.5005.61
 
-# Update and checkout the desired chromium version (in build/src)
+# Update and checkout the desired chromium version (in build/)
 git fetch --depth 1
 git checkout tags/$CHROMIUM_VER
 
