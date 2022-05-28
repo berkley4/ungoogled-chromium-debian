@@ -151,6 +151,10 @@ echo "kernel.unprivileged_userns_clone = 0" > /etc/systctl.d/userns
 # Install initial packages
 sudo apt install -y devscripts equivs
 
+# Define QUILT_SERIES and QUILT_PATCHES, you might want to put it in your .bashrc
+export QUILT_SERIES=series
+export QUILT_PATCHES=debian/patches
+
 # Clone ungoogled-chromium-debian
 git clone [-b <stable|extended_stable>] https://github.com/berkley4/ungoogled-chromium-debian.git
 cd ungoogled-chromium-debian
@@ -159,9 +163,10 @@ cd ungoogled-chromium-debian
 cd debian
 git submodule foreach git reset --hard
 git submodule update --init --recursive
+# show the current version of ungoogled-chromium upstream
+cat submodules/ungoogled-chromium/chromium_version.txt
 cd ..
 ```
-
 
 ## Cloning the chromium git repo
 
@@ -174,14 +179,17 @@ export PATH=$PATH:/path/to/depot_tools
 cd build
 export CHROMIUM_VER=102.0.5005.61 (obviously change this to the current version)
 git clone --depth 1 -b $CHROMIUM_VER https://chromium.googlesource.com/chromium/src.git
+
+# continue with preparing the chromium git repo below
 ```
 
 ## Resetting an existing repo (do before updating & skip if clone/prep has just been done)
 
+If you want to re-compile and need to reset the build environment in (build/src), do this
 ```sh
-# If debian/domsubcache.tar.gz exists (eg a failed/aborted build), revert domain substitution
+# If build/src/debian/domsubcache.tar.gz exists (eg a failed/aborted build), revert domain substitution
 ./debian/submodules/ungoogled-chromium/utils/domain_substitution.py revert \
--c path_to_parent/build/src/debian/domsubcache.tar.gz path_to_parent/build/src
+-c ./build/src/debian/domsubcache.tar.gz ./build/src
 
 # If 'quilt applied' shows applied patches or you have just reverted domain substitution
 cd build/src
@@ -193,8 +201,9 @@ git reset --hard HEAD
 
 # Check to see if there are any more untracked files (delete them if there are any)
 git status
-```
 
+# continue with preparing the chromium git repo, or update the repo as well
+```
 
 ## Updating an existing repo (make sure you reset beforehand - see previous step)
 
@@ -205,7 +214,6 @@ export CHROMIUM_VER=102.0.5005.61
 # Update and checkout the desired chromium version (in build/)
 git fetch --depth 1
 git checkout tags/$CHROMIUM_VER
-
 ```
 
 ## Preparing the chromium git repo
@@ -219,6 +227,7 @@ gclient runhooks
 
 ```sh
 # Copy over the debian directory into your source tree (in build/src)
+cd src
 cp -a ../../debian .
 
 # Prepare the source
