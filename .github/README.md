@@ -153,8 +153,9 @@ sudo apt install -y devscripts equivs
 
 # Clone ungoogled-chromium-debian
 git clone [-b <stable|extended_stable>] https://github.com/berkley4/ungoogled-chromium-debian.git
+cd ungoogled-chromium-debian
 
-# Update submodes
+# Update submodules
 cd debian
 git submodule foreach git reset --hard
 git submodule update --init --recursive
@@ -162,22 +163,18 @@ cd ..
 ```
 
 
-## Cloning and preparing the chromium git repo
+## Cloning the chromium git repo
 
 ```sh
 # Clone depot_tools and put it in your PATH
 git clone https://chromium.googlesource.com/chromium/tools/depot_tools
 export PATH=$PATH:/path/to/depot_tools
 
-# Clone the chromium repository
+# Clone the chromium repository (creates build/src)
 cd build
 export CHROMIUM_VER=102.0.5005.61 (obviously change this to the current version)
 git clone --depth 1 -b $CHROMIUM_VER https://chromium.googlesource.com/chromium/src.git
-
-gclient sync -D --force --nohooks --no-history --shallow
-gclient runhooks
 ```
-
 
 ## Resetting an existing repo (do before updating & skip if clone/prep has just been done)
 
@@ -196,36 +193,33 @@ git reset --hard HEAD
 
 # Check to see if there are any more untracked files (delete them if there are any)
 git status
-
-# If you are NOT updating then you need to prepare the tree again
-gclient sync -D --force --nohooks --no-history --shallow
-gclient runhooks
 ```
 
 
 ## Updating an existing repo (make sure you reset beforehand - see previous step)
 
-
 ```sh
 # Set the chromium version (obviously change the one below to the desired version)
 export CHROMIUM_VER=102.0.5005.61
 
-# Update and checkout the desired chromium version
+# Update and checkout the desired chromium version (in build/src)
 git fetch --depth 1
 git checkout tags/$CHROMIUM_VER
 
-# Prepare the tree for building
-cd ..
-gclient sync -D --force --nohooks --with_branch_heads
-gclient runhooks
 ```
 
+## Preparing the chromium git repo
+```
+# Prepare the tree for building (in build/)
+gclient sync -D --force --nohooks --no-history --shallow
+gclient runhooks
+```
 
 ## Building the binary packages
 
 ```sh
-# Copy over the debian directory into your source tree (build/src)
-cp -a ../../ungoogled-chromium-debian/debian .
+# Copy over the debian directory into your source tree (in build/src)
+cp -a ../../debian .
 
 # Prepare the source
 debian/rules setup
