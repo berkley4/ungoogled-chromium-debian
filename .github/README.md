@@ -188,20 +188,20 @@ git clone --depth 1 -b $CHROMIUM_VER https://chromium.googlesource.com/chromium/
 If you want to re-compile and need to reset the build environment in (build/src), do this
 ```sh
 # If build/src/debian/domsubcache.tar.gz exists (eg a failed/aborted build), revert domain substitution
+cd src
 ./debian/submodules/ungoogled-chromium/utils/domain_substitution.py revert \
--c ./build/src/debian/domsubcache.tar.gz ./build/src
+-c ./debian/domsubcache.tar.gz ./
 
-# If 'quilt applied' shows applied patches or you have just reverted domain substitution
-cd build/src
+# If 'quilt applied' shows applied patches or you have just reverted domain substitution (in build/src)
 quilt pop -a
 
-# Clean and hard reset
+# Clean and hard reset (in build/src)
 git clean -dfx
 git reset --hard HEAD
 
 # Check to see if there are any more untracked files (delete them if there are any)
 git status
-
+cd ..
 # continue with preparing the chromium git repo, or update the repo as well
 ```
 
@@ -211,9 +211,11 @@ git status
 # Set the chromium version (obviously change the one below to the desired version)
 export CHROMIUM_VER=102.0.5005.61
 
-# Update and checkout the desired chromium version (in build/)
+# Update and checkout the desired chromium version (in build/src)
+cd src
 git fetch --depth 1
 git checkout tags/$CHROMIUM_VER
+cd ..
 ```
 
 ## Preparing the chromium git repo
