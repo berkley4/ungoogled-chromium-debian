@@ -15,9 +15,9 @@ Only ungoogled-chromium_*.deb is mandatory. The other debs are
 
 * *-sandbox_*   : suid sandbox, recommended (see the [Sandbox](https://github.com/berkley4/ungoogled-chromium-debian/blob/stable/.github/README.md#sandbox) section below).
 * *-l10n_*      : language localisation, needed if you want a non US English UI.
-* *-libraries_* : contains files such as libEGL.so, libGLESv2.so (likely not needed by everyone).
+* *-libraries_* : contains files such as libEGL.so, libGLESv2.so; might prevent (probably harmless) error messages and likely not needed by everyone.
 * *-driver_*    : chromedriver, not normally needed.
-* *-dbgsym_*    : not normally needed (unless you are debugging things like crashes).
+* *-dbgsym_*    : not normally needed (unless you need to debug).
 
 For example, to install the main and sandbox packages, run the following :-
 
@@ -36,7 +36,7 @@ ___Performance improvements___
 - Profile Guided Optimisation (PGO) - a smaller and faster chrome binary with cold functions heavily optimised for size
 - V8 pointer compression - memory usage/speed improvement (see [here](https://v8.dev/blog/pointer-compression))
 - Upstream optimisation - levels vary per target (versus debian's -O2 everywhere default)
-- Built with -march=[x86-64-v2](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels) (versus the default x86-64) and -mavx to enable AVX instructions
+- Built with -march=[x86-64-v2](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels) and -mavx to enable AVX instructions (with optional patches to enable FMA/FMA3/FMA4/AVX2)
 - Built with -fno-plt - speed improvement
 - Build with -ftrivial-auto-var-init set to zero instead of pattern - speed improvement
 - Built with a higher hot function import multiplier to further optimise frequently used functions
@@ -48,7 +48,7 @@ ___Security/Privacy improvements___
     - -fstack-protector-strong - as opposed to chromium's default of -fstack-protector
     - -ftrivial-auto-var-init=zero - improves security (see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html))
     - -fwrapv - disables unsafe optimisations (see [here](https://gitlab.e.foundation/e/apps/browser/-/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch))
-- An example policy file is included in the repo (can be edited and enabled at build time)
+- An example policy file is included in the repo (ungoogled-chromium.install.in can be edited and enabled at build time or copied into /etc/chromium/policies/managed)
 - Some security/privacy themed flag files are installed to /etc/chromium.d (strict isolation is enabled by default)
 
 
@@ -61,8 +61,8 @@ ___Other features/changes___
 - Separate deb packages for chromium's components (eg chromedriver, sandbox, languages)
 - Dropped ungoogled-chromium-common - its contents split between a new libraries package and the main one
 - New ungoogled-chromium-libraries package for libEGL.so, libGLESv2.so, etc (likely not needed by everyone)
-- Chromecast - optional build support (untested and experimental)
 - Google translate - optional build support
+- Chromecast - optional build support (untested and experimental)
 
 
 ___Build system___
@@ -152,7 +152,7 @@ echo "kernel.unprivileged_userns_clone = 0" > /etc/systctl.d/userns
 sudo apt install -y devscripts equivs
 
 # Clone ungoogled-chromium-debian
-git clone -b <stable|extended_stable> https://github.com/berkley4/ungoogled-chromium-debian.git
+git clone [-b <stable|extended_stable>] https://github.com/berkley4/ungoogled-chromium-debian.git
 
 # Update submodes
 cd debian
@@ -160,6 +160,7 @@ git submodule foreach git reset --hard
 git submodule update --init --recursive
 cd ..
 ```
+
 
 ## Cloning and preparing the chromium git repo
 
@@ -169,31 +170,23 @@ git clone https://chromium.googlesource.com/chromium/tools/depot_tools
 export PATH=$PATH:/path/to/depot_tools
 
 # Clone the chromium repository
-mkdir build
 cd build
-fetch --nohooks chromium --target_os=linux
-gclient config https://chromium.googlesource.com/chromium/src.git
+export CHROMIUM_VER=102.0.5005.61 (obviously change this to the current version)
+git clone --depth 1 -b $CHROMIUM_VER https://chromium.googlesource.com/chromium/src.git
 
-# Fetch the tags and checkout the desired chromium version
-cd src
-git fetch origin --tags
-git checkout tags/999.0.1234.567
-
-# Prepare the tree for building
-cd ..
-gclient sync -D --force --nohooks --with_branch_heads
+gclient sync -D --force --nohooks --no-history --shallow
 gclient runhooks
 ```
 
 
-## Resetting/updating an existing repo (skip if clone/prep has just been done)
+## Resetting an existing repo (do before updating & skip if clone/prep has just been done)
 
 ```sh
-# If needed, revert domain substitution
+# If debian/domsubcache.tar.gz exists (eg a failed/aborted build), revert domain substitution
 ./debian/submodules/ungoogled-chromium/utils/domain_substitution.py revert \
 -c path_to_parent/build/src/debian/domsubcache.tar.gz path_to_parent/build/src
 
-# If needed, unapply patches
+# If 'quilt applied' shows applied patches or you have just reverted domain substitution
 cd build/src
 quilt pop -a
 
@@ -204,14 +197,22 @@ git reset --hard HEAD
 # Check to see if there are any more untracked files (delete them if there are any)
 git status
 
+# If you are NOT updating then you need to prepare the tree again
+gclient sync -D --force --nohooks --no-history --shallow
+gclient runhooks
+```
+
+
+## Updating an existing repo (make sure you reset beforehand - see previous step)
+
+
+```sh
+# Set the chromium version (obviously change the one below to the desired version)
+export CHROMIUM_VER=102.0.5005.61
+
 # Update and checkout the desired chromium version
-git rebase-update
-
-# If updating to a new version
-git fetch origin --tags
-
-# Checkout desired version
-git checkout tags/999.0.1234.567
+git fetch --depth 1
+git checkout tags/$CHROMIUM_VER
 
 # Prepare the tree for building
 cd ..
@@ -227,10 +228,12 @@ gclient runhooks
 cp -a ../../ungoogled-chromium-debian/debian .
 
 # Prepare the source
-VERSION=999.0.1234.567 debian/rules gitsubreset
-debian/rules setup_pgo
+debian/rules setup
 
-# Optional: apply and refresh patches
+# To build a version of newer than upstream's (eg to build extended stable) :-
+VERSION=999.0.1234.567 debian/rules setup
+
+# Recommended: apply and refresh patches
 while quilt push; do quilt refresh; done
 
 # Build the package
