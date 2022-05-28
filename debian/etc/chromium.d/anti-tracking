@@ -11,3 +11,6 @@
 # Uncomment to disable OpenGL ES 3 APIs. This in turn will disable WebGL2.
 # Supposed to help prevent gpu info exposure
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-es3-apis"
+
+# Uncomment to limit referrer headers; 'minimal' & 'noreferrers' are more stringent
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --referrer-directive=nocrossorigin"
