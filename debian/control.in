@@ -38,7 +38,8 @@ Build-Depends:
  libevent-dev,
  liblcms2-dev,
  libopenjp2-7-dev,
- libpipewire-0.3-dev
+ libpipewire-0.3-dev,
+ libva-dev
 
 Package: ungoogled-chromium
 Architecture: i386 amd64 arm64 armhf
