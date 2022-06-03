@@ -73,9 +73,9 @@ vanadium/0046-disable-autofill-server-communication-by-default.patch
 vanadium/0047-disable-component-updater-pings-by-default.patch
 vanadium/0050-most-private-WebRTC-IP-handling-policy-by-default.patch
 vanadium/0051-stub-out-the-battery-status-API.patch
-vanadium/0077-Enable-strict-origin-isolation-by-default.patch
-vanadium/0078-disable-appending-variations-header.patch
-vanadium/0080-Disable-detailed-language-settings-by-default.patch
+vanadium/0076-Enable-strict-origin-isolation-by-default.patch
+vanadium/0077-disable-appending-variations-header.patch
+vanadium/0079-Disable-detailed-language-settings-by-default.patch
 
 various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
 various/fno-plt.patch

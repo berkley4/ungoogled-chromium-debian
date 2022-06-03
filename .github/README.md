@@ -151,81 +151,86 @@ echo "kernel.unprivileged_userns_clone = 0" > /etc/systctl.d/userns
 # Install initial packages
 sudo apt install -y devscripts equivs
 
+# Define QUILT_SERIES and QUILT_PATCHES, you might want to put it in your .bashrc
+export QUILT_SERIES=series
+export QUILT_PATCHES=debian/patches
+
 # Clone ungoogled-chromium-debian
 git clone [-b <stable|extended_stable>] https://github.com/berkley4/ungoogled-chromium-debian.git
+cd ungoogled-chromium-debian
 
-# Update submodes
+# Update submodules
 cd debian
 git submodule foreach git reset --hard
 git submodule update --init --recursive
+# show the current version of ungoogled-chromium upstream
+cat submodules/ungoogled-chromium/chromium_version.txt
 cd ..
 ```
 
-
-## Cloning and preparing the chromium git repo
+## Cloning the chromium git repo
 
 ```sh
 # Clone depot_tools and put it in your PATH
 git clone https://chromium.googlesource.com/chromium/tools/depot_tools
 export PATH=$PATH:/path/to/depot_tools
 
-# Clone the chromium repository
+# Clone the chromium repository (creates build/src)
 cd build
 export CHROMIUM_VER=102.0.5005.61 (obviously change this to the current version)
 git clone --depth 1 -b $CHROMIUM_VER https://chromium.googlesource.com/chromium/src.git
 
-gclient sync -D --force --nohooks --no-history --shallow
-gclient runhooks
+# continue with preparing the chromium git repo below
 ```
-
 
 ## Resetting an existing repo (do before updating & skip if clone/prep has just been done)
 
+If you want to re-compile and need to reset the build environment in (build/src), do this
 ```sh
-# If debian/domsubcache.tar.gz exists (eg a failed/aborted build), revert domain substitution
+# If build/src/debian/domsubcache.tar.gz exists (eg a failed/aborted build), revert domain substitution
+cd src
 ./debian/submodules/ungoogled-chromium/utils/domain_substitution.py revert \
--c path_to_parent/build/src/debian/domsubcache.tar.gz path_to_parent/build/src
+-c ./debian/domsubcache.tar.gz ./
 
-# If 'quilt applied' shows applied patches or you have just reverted domain substitution
-cd build/src
+# If 'quilt applied' shows applied patches or you have just reverted domain substitution (in build/src)
 quilt pop -a
 
-# Clean and hard reset
+# Clean and hard reset (in build/src)
 git clean -dfx
 git reset --hard HEAD
 
 # Check to see if there are any more untracked files (delete them if there are any)
 git status
-
-# If you are NOT updating then you need to prepare the tree again
-gclient sync -D --force --nohooks --no-history --shallow
-gclient runhooks
+cd ..
+# continue with preparing the chromium git repo, or update the repo as well
 ```
 
-
 ## Updating an existing repo (make sure you reset beforehand - see previous step)
-
 
 ```sh
 # Set the chromium version (obviously change the one below to the desired version)
 export CHROMIUM_VER=102.0.5005.61
 
-# Update and checkout the desired chromium version
+# Update and checkout the desired chromium version (in build/src)
+cd src
 git fetch --depth 1
 git checkout tags/$CHROMIUM_VER
-
-# Prepare the tree for building
 cd ..
-gclient sync -D --force --nohooks --with_branch_heads
-gclient runhooks
 ```
 
+## Preparing the chromium git repo
+```
+# Prepare the tree for building (in build/)
+gclient sync -D --force --nohooks --no-history --shallow
+gclient runhooks
+```
 
 ## Building the binary packages
 
 ```sh
-# Copy over the debian directory into your source tree (build/src)
-cp -a ../../ungoogled-chromium-debian/debian .
+# Copy over the debian directory into your source tree (in build/src)
+cd src
+cp -a ../../debian .
 
 # Prepare the source
 debian/rules setup
