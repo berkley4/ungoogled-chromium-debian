@@ -33,7 +33,7 @@ The main features and changes are as follows :-
 
 ___Performance improvements___
 
-- Profile Guided Optimisation (PGO) - a smaller and faster chrome binary with cold functions heavily optimised for size
+- Profile Guided Optimisation (PGO) - a smaller, faster chrome binary with cold functions heavily optimised for size
 - V8 pointer compression - memory usage/speed improvement (see [here](https://v8.dev/blog/pointer-compression))
 - Upstream optimisation - levels vary per target (versus debian's -O2 everywhere default)
 - Built with -march=[x86-64-v2](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels) and -mavx to enable AVX instructions (with optional patches to enable FMA/FMA3/FMA4/AVX2)
@@ -127,8 +127,7 @@ The relevant sysctl (at least on debian) is kernel.unprivileged_userns_clone. Ch
 cat /proc/sys/kernel/unprivileged_userns_clone
 ```
 
-Normally it's value is 1 (ie enabled). If you wish to disable it (and install the sandbox package)
-do the following (as root) :-
+Normally it's value is 1 (enabled). To disable it (ie if installing the sandbox package instead), as root run :-
 
 ```sh
 sysctl -w kernel.unprivileged_userns_clone=0
