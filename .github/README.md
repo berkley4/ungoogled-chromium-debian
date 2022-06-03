@@ -151,7 +151,7 @@ echo "kernel.unprivileged_userns_clone = 0" > /etc/systctl.d/userns
 # Install initial packages
 sudo apt install -y devscripts equivs
 
-# Define QUILT_SERIES and QUILT_PATCHES, you might want to put it in your .bashrc
+# Define QUILT_SERIES and QUILT_PATCHES, you might want to put these in your ~/.bashrc
 export QUILT_SERIES=series
 export QUILT_PATCHES=debian/patches
 
@@ -163,9 +163,10 @@ cd ungoogled-chromium-debian
 cd debian
 git submodule foreach git reset --hard
 git submodule update --init --recursive
-# show the current version of ungoogled-chromium upstream
-cat submodules/ungoogled-chromium/chromium_version.txt
 cd ..
+
+# Optional: show the current version of ungoogled-chromium upstream
+cat debian/submodules/ungoogled-chromium/chromium_version.txt
 ```
 
 ## Cloning the chromium git repo
@@ -201,21 +202,19 @@ git reset --hard HEAD
 
 # Check to see if there are any more untracked files (delete them if there are any)
 git status
-cd ..
-# continue with preparing the chromium git repo, or update the repo as well
+
+# Continue with updating and/or preparing the chromium git repo
 ```
 
 ## Updating an existing repo (make sure you reset beforehand - see previous step)
 
 ```sh
 # Set the chromium version (obviously change the one below to the desired version)
-export CHROMIUM_VER=102.0.5005.61
+export CHROMIUM_VER=999.0.1234.567
 
 # Update and checkout the desired chromium version (in build/src)
-cd src
 git fetch --depth 1
 git checkout tags/$CHROMIUM_VER
-cd ..
 ```
 
 ## Preparing the chromium git repo
@@ -229,13 +228,12 @@ gclient runhooks
 
 ```sh
 # Copy over the debian directory into your source tree (in build/src)
-cd src
 cp -a ../../debian .
 
 # Prepare the source
 debian/rules setup
 
-# To build a version of newer than upstream's (eg to build extended stable) :-
+# To build a newer version of chromium than upstream UC (eg a new point release) :-
 VERSION=999.0.1234.567 debian/rules setup
 
 # Recommended: apply and refresh patches
