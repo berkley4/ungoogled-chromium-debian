@@ -33,7 +33,6 @@ disable/widevine-cdm-cu.patch
 disable/angle-perftests.patch
 disable/libaom-arm.patch
 
-#system/icu.patch
 system/zlib.patch
 system/event.patch
 system/openjpeg.patch
@@ -102,5 +101,6 @@ various/fixes/xfce-maximize.patch
 #optional/import-instr-limit.patch
 #optional/disable/catapult.patch
 #optional/disable/atk-dbus.patch
+#optional/system/icu.patch
 #optional/system/jpeg.patch
 #optional/system/unicode-fix-missing-headers.patch
