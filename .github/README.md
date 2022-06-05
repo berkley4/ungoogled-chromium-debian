@@ -70,7 +70,7 @@ ___Build system___
 - Built with upstream google clang/llvm binaries (auto-downloaded during build setup)
 - Rebuilds should be faster and less error prone
 - All patching is handled by debian - ungoogled patches are merged with the debian patches during build setup
-- The deb releases are built with a chromium git checkout (downloading tarball releases is also supported)
+- The deb releases are built with a chromium git checkout (building from tarball releases is also supported)
 - Debug optimisation is now handled by building with -fdebug-types-section versus using dwz post build
 - Several other fixes and improvements
 
@@ -175,6 +175,9 @@ cat debian/submodules/ungoogled-chromium/chromium_version.txt
 git clone https://chromium.googlesource.com/chromium/tools/depot_tools
 export PATH=$PATH:/path/to/depot_tools
 
+# Optional: always have depot_tools in your path
+echo 'export PATH=$PATH:/path/to/depot_tools' >> ~/.bashrc
+
 # Clone the chromium repository (creates build/src)
 cd build
 export CHROMIUM_VER=102.0.5005.61 (obviously change this to the current version)
@@ -185,27 +188,26 @@ git clone --depth 1 -b $CHROMIUM_VER https://chromium.googlesource.com/chromium/
 
 ## Resetting an existing repo (do before updating & skip if clone/prep has just been done)
 
-If you want to re-compile and need to reset the build environment in (build/src), do this
+To re-compile or otherwise reset the build environment, go into build/src and do the following
 ```sh
-# If build/src/debian/domsubcache.tar.gz exists (eg a failed/aborted build), revert domain substitution
-cd src
+# If build/src/debian/domsubcache.tar.gz exists, revert domain substitution
 ./debian/submodules/ungoogled-chromium/utils/domain_substitution.py revert \
 -c ./debian/domsubcache.tar.gz ./
 
-# If 'quilt applied' shows applied patches or you have just reverted domain substitution (in build/src)
+# Unapply patches
 quilt pop -a
 
-# Clean and hard reset (in build/src)
+# Clean and hard reset
 git clean -dfx
 git reset --hard HEAD
 
-# Check to see if there are any more untracked files (delete them if there are any)
+# Check to see if there are any untracked files (delete them if there are any)
 git status
 
 # Continue with updating and/or preparing the chromium git repo
 ```
 
-## Updating an existing repo (make sure you reset beforehand - see previous step)
+## Updating an existing repo (see previous step if you have not reset)
 
 ```sh
 # Set the chromium version (obviously change the one below to the desired version)
@@ -216,13 +218,13 @@ git fetch --depth 1
 git checkout tags/$CHROMIUM_VER
 ```
 
-## Preparing the chromium git repo
+## Pull in chromium submodules and components
 ```
-# Prepare the tree for building (in build/)
+# Prepare the tree for building (in build/src)
 gclient sync -D --force --nohooks --no-history --shallow
 gclient runhooks
 
-# Copy over the debian directory into your source tree (in build/src)
+# Copy over the debian directory into your source tree
 cp -a ../../debian .
 ```
 
@@ -243,15 +245,19 @@ cp -a ../../debian .
 debian/rules tarball
 ```
 
+## Finish preparing the source
+
+```sh
+# Normally you just need to run the following
+debian/rules setup
+
+# For a version of chromium newer than upstream UC (eg a new point release) :-
+VERSION=999.0.1234.567 debian/rules setup
+```
+
 ## Building the binary packages
 
 ```sh
-# Prepare the source
-debian/rules setup
-
-# To build a newer version of chromium than upstream UC (eg a new point release) :-
-VERSION=999.0.1234.567 debian/rules setup
-
 # Recommended: apply and refresh patches
 while quilt push; do quilt refresh; done
 
