@@ -7,6 +7,7 @@ SH_DIR   := $(DB_DIR)/shims
 UC_DIR   := $(DB_DIR)/submodules/ungoogled-chromium
 UL_DIR   := $(UC_DIR)/utils
 UP_DIR   := $(UC_DIR)/patches
+DL_CACHE := $(RT_DIR)/../download_cache
 DS_CACHE := $(DB_DIR)/domsubcache.tar.gz
 OUT_DIR  := out/Release
 
@@ -86,6 +87,10 @@ changelog:
 
 control:
 	sed -e "s;@@AUTHOR@@;$(AUTHOR);g" < $(DB_DIR)/control.in > $(DB_DIR)/control
+
+tarball:
+	test -d $(DL_CACHE) || mkdir -p $(DL_CACHE)
+	test ! -f base/BUILD.gn && $(UL_DIR)/downloads.py retrieve -i $(UC_DIR)/downloads.ini -c $(DL_CACHE) && $(UL_DIR)/downloads.py unpack -i $(UC_DIR)/downloads.ini -c $(DL_CACHE) $(RT_DIR)
 
 cast_configure:
 	sed 's@^\(enable_mdns=\)false@\1true@' -i $(UC_DIR)/flags.gn

@@ -68,9 +68,9 @@ ___Other features/changes___
 ___Build system___
 
 - Built with upstream google clang/llvm binaries (auto-downloaded during build setup)
-- A bit more robust in general eg rebuilds should be faster and less error prone
+- Rebuilds should be faster and less error prone
 - All patching is handled by debian - ungoogled patches are merged with the debian patches during build setup
-- Built with a chromium git tree instead of tarball releases
+- The deb releases are built with a chromium git checkout (downloading tarball releases is also supported)
 - Debug optimisation is now handled by building with -fdebug-types-section versus using dwz post build
 - Several other fixes and improvements
 
@@ -164,11 +164,11 @@ git submodule foreach git reset --hard
 git submodule update --init --recursive
 cd ..
 
-# Optional: show the current version of ungoogled-chromium upstream
+# Optional: verify the current version of ungoogled-chromium upstream
 cat debian/submodules/ungoogled-chromium/chromium_version.txt
 ```
 
-## Cloning the chromium git repo
+## Cloning the chromium git repo (recommended method, see further below for tarball method)
 
 ```sh
 # Clone depot_tools and put it in your PATH
@@ -221,14 +221,31 @@ git checkout tags/$CHROMIUM_VER
 # Prepare the tree for building (in build/)
 gclient sync -D --force --nohooks --no-history --shallow
 gclient runhooks
+
+# Copy over the debian directory into your source tree (in build/src)
+cp -a ../../debian .
+```
+
+## Tarball download/extraction (skip if you've cloned & prepared the chromium git repo)
+
+```sh
+# Delete any previous build/tarball directory when building a new release
+rm -rf build/tarball
+
+# Make the tarball directory and navigate into it
+mkdir build/tarball
+cd build/tarball
+
+# Copy over the debian directory
+cp -a ../../debian .
+
+# Download and extract the upstream tarball
+debian/rules tarball
 ```
 
 ## Building the binary packages
 
 ```sh
-# Copy over the debian directory into your source tree (in build/src)
-cp -a ../../debian .
-
 # Prepare the source
 debian/rules setup
 
