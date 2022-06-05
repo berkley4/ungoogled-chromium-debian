@@ -95,6 +95,7 @@ cast_configure:
 	sed 's@^\(.*--media-router=0"\)@#\1@' < $(SH_DIR)/chromium-flags.conf > $(DB_DIR)/etc/chromium.d/chromium-flags.conf
 
 pgo_configure:
+	test -d $(LLVM_DIR) || tools/clang/scripts/update.py
 	test -d $(RT_DIR)/chrome/build/pgo_profiles || tools/update_pgo_profiles.py --target linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles
 	test -n "$$(grep ^pgo_data_path $(UC_DIR)/flags.gn)" || sed "$$ a pgo_data_path=\"$$(realpath chrome/build/pgo_profiles/$$(cat chrome/build/linux.pgo.txt))\"" -i $(UC_DIR)/flags.gn
 	sed -e '/^chrome\/build\/pgo_profiles/d' -i $(UC_DIR)/pruning.list
