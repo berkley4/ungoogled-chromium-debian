@@ -248,6 +248,10 @@ debian/rules tarball
 ## Finish preparing the source
 
 ```sh
+# Optional: enable (and possibly edit) any optional patches, for example :-
+for p in optional/march optional/system/jpeg; do sed "s@^#\($p\.patch\)@\1@" \
+  -i debian/patches/series.debian
+
 # Normally you just need to run the following
 debian/rules setup
 
