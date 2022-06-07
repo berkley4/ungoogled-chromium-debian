@@ -87,6 +87,9 @@ changelog:
 control:
 	sed -e "s;@@AUTHOR@@;$(AUTHOR);g" < $(DB_DIR)/control.in > $(DB_DIR)/control
 
+hardclean:
+	test -d $(OUT_DIR) && ninja -j $(JOBS) -C $(OUT_DIR) -g -t clean || printf '%s\n' "$(OUT_DIR) does not exist, nothing to do."
+
 tarball:
 	test -d $(DL_CACHE) || mkdir -p $(DL_CACHE)
 	test ! -f base/BUILD.gn && $(UL_DIR)/downloads.py retrieve -i $(UC_DIR)/downloads.ini -c $(DL_CACHE) && $(UL_DIR)/downloads.py unpack -i $(UC_DIR)/downloads.ini -c $(DL_CACHE) $(RT_DIR)
