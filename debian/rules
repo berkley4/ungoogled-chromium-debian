@@ -136,6 +136,8 @@ setup_cast_translate: cast_configure translate_configure setup
 	:
 
 override_dh_auto_configure:
+	find . -path ./out -prune -o -type f -name "*.rej" -exec rm -rf "{}" +
+	test -d $(OUT_DIR) && ninja -j $(JOBS) -C $(OUT_DIR) -t cleandead || printf '%s\n' "$(OUT_DIR) does not exist, nothing to do."
 	test -f $(DS_CACHE) && printf '%s\n' "$(DS_CACHE) exists, aborting." || $(UL_DIR)/domain_substitution.py apply -r $(UC_DIR)/domain_regex.list -f $(UC_DIR)/domain_substitution.list -c $(DS_CACHE) $(RT_DIR)
 	#cp $(SH_DIR)/jsoncpp.gn build/linux/unbundle
 	build/linux/unbundle/replace_gn_files.py --system-libraries $(SYS_LIBS)
@@ -161,13 +163,10 @@ override_dh_auto_install-indep:
 override_dh_fixperms:
 	dh_fixperms --exclude chrome-sandbox
 
-override_dh_auto_clean:
-	rm -rf out
-	find -type f -name "*.rej" -o -type f -name "*.pyc" -delete
-	dh_auto_clean
-
 override_dh_dwz:
 	@echo "Skipping dwz, compiled with -fdebug-types-section instead."
 
 override_dh_builddeb:
 	dh_builddeb -- -z 9
+
+override_dh_update_autotools_config:

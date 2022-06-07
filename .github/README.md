@@ -198,7 +198,7 @@ To re-compile or otherwise reset the build environment, go into build/src and do
 quilt pop -a
 
 # Clean and hard reset
-git clean -dfx
+git clean -dfx -e out/Release
 git reset --hard HEAD
 
 # Check to see if there are any untracked files (delete them if there are any)
@@ -228,15 +228,13 @@ gclient runhooks
 cp -a ../../debian .
 ```
 
-## Tarball download/extraction (skip if you've cloned & prepared the chromium git repo)
+## Tarball download/extraction (instead of cloning the chromium git repo)
 
 ```sh
-# Delete any previous build/tarball directory when building a new release
-rm -rf build/tarball
-
-# Make the tarball directory and navigate into it
-mkdir build/tarball
 cd build/tarball
+
+# If one has a pre-existing build/tarball directory (ie it has already been used for building)
+find . -mindepth 1 -maxdepth 1 -name out -prune -o -exec rm -rf "{}" +
 
 # Copy over the debian directory
 cp -a ../../debian .
@@ -266,5 +264,5 @@ VERSION=999.0.1234.567 debian/rules setup
 while quilt push; do quilt refresh; done
 
 # Build the package
-JOBS=4 dpkg-buildpackage -b -uc
+JOBS=4 dpkg-buildpackage -b -uc -nc
 ```
