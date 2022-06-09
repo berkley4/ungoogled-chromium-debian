@@ -36,7 +36,6 @@ GN_FLAGS := $(shell tr "\n" " " < $(UC_DIR)/flags.gn | sed 's/"/\\"/g')
 # Add our downstream Debian flags
 GN_FLAGS += \
         is_official_build=true \
-        blink_enable_generated_code_formatting=false \
         blink_symbol_level=0 \
         symbol_level=0 \
         ffmpeg_branding=\"ChromeOS\" \
