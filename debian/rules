@@ -12,7 +12,8 @@ DS_CACHE := $(DB_DIR)/domsubcache.tar.gz
 OUT_DIR  := out/Release
 
 # Changelog and control template variables
-VERSION  ?= $(file < $(UC_DIR)/chromium_version.txt)-1
+REVISION := $$(cat $(UC_DIR)/revision.txt)
+VERSION  ?= $$(cat $(UC_DIR)/chromium_version.txt)-$(REVISION)
 RELEASE  := stable
 AUTHOR   := ungoogled-chromium Maintainers <github@null.invalid>
 DATETIME := $(shell date -R)

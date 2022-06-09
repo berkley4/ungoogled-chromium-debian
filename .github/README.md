@@ -164,8 +164,9 @@ git submodule foreach git reset --hard
 git submodule update --init --recursive
 cd ..
 
-# Optional: verify the current version of ungoogled-chromium upstream
+# Optional: verify the current version and revison of ungoogled-chromium upstream
 cat debian/submodules/ungoogled-chromium/chromium_version.txt
+cat debian/submodules/ungoogled-chromium/revision.txt
 ```
 
 ## Cloning the chromium git repo (recommended method, see further below for tarball method)
@@ -253,8 +254,9 @@ for p in optional/march optional/system/jpeg; do sed "s@^#\($p\.patch\)@\1@" \
 # Normally you just need to run the following
 debian/rules setup
 
-# For a version of chromium newer than upstream UC (eg a new point release) :-
-VERSION=999.0.1234.567 debian/rules setup
+# Change version (eg create a pre-release from an yet-to-be-approved UC update pull request)
+# (note: you need to specify the version and revision as one string)
+VERSION=999.0.1234.567-1 debian/rules setup
 ```
 
 ## Building the binary packages
