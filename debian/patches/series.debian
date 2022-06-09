@@ -87,7 +87,7 @@ various/addenda/Added-some-DCHECKs-in-the-output-handling.patch
 various/addenda/Introduced-a-workaround-for-the-crash.patch
 various/addenda/Fix-x11-WindowCache-GetWindowAtPoint-in-i3.patch
 various/addenda/Disable-preflights-by-default.patch
-various/disable/ssl-ctx-set-grease.patch
+#various/disable/
 various/fedora/enable-hardware-accelerated-mjpeg.patch
 various/fixes/EnumTable-crash.patch
 various/fixes/InkDropHost-crash.patch
