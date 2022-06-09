@@ -234,9 +234,6 @@ cp -a ../../debian .
 ```sh
 cd build/tarball
 
-# If one has a pre-existing build/tarball directory (ie it has already been used for building)
-find . -mindepth 1 -maxdepth 1 -name out -prune -o -exec rm -rf "{}" +
-
 # Copy over the debian directory
 cp -a ../../debian .
 
