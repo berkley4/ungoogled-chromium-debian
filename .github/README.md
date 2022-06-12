@@ -69,7 +69,7 @@ ___Build system___
 - Predominantly uses git to obtain and update source (release tarballs are supported too)
 - Incremental builds for faster builds/rebuilds
 - Built with upstream google clang/llvm binaries
-- Patches for -march/-mtune and various other CPU instruction
+- Patches for -march/-mtune and various other CPU instructions
 - Various patches to disable components (eg dbus/atk) and enable system libraries (eg icu)
 - Ungoogled Chromium patches are merged into debian's build system with a variety of other patches
 - Debug optimisation is now handled by building with -fdebug-types-section (instead of dwz)
