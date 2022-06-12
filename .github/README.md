@@ -33,45 +33,46 @@ The main features and changes are as follows :-
 
 ___Performance improvements___
 
-- Profile Guided Optimisation (PGO) - a smaller, faster chrome binary with cold functions heavily optimised for size
+- Profile Guided Optimisation (PGO) - a smaller, faster chrome binary
 - V8 pointer compression - memory usage/speed improvement (see [here](https://v8.dev/blog/pointer-compression))
 - Upstream optimisation - levels vary per target (versus debian's -O2 everywhere default)
-- Built with -march=[x86-64-v2](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels) and -mavx to enable AVX instructions (with optional patches to enable FMA/FMA3/FMA4/AVX2)
-- Built with -fno-plt - speed improvement
-- Build with -ftrivial-auto-var-init set to zero instead of pattern - speed improvement
-- Built with a higher hot function import multiplier to further optimise frequently used functions
+- Various compiler flags aimed at improving speed :-
+    - -march=[x86-64-v2](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels) & -mavx to enable AVX instructions (optional patches to enable FMA/FMA3/FMA4/AVX2)
+    - -fno-plt (see [here](https://patchwork.ozlabs.org/project/gcc/patch/alpine.LNX.2.11.1505061730460.22867@monopod.intra.ispras.ru/))
+    - -ftrivial-auto-var-init set to zero - see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html)
+    - -Wl,-mllvm,-import-instr-limit=10 - an optional patch is used to build the release debs; details [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1591725#c32)
+    - -Wl,-mllvm,-import-hot-multiplier=60 - the release debs use 30 (as they are patched to set -import-instr-limit=10)
 
 ___Security/Privacy improvements___
 
-- Bad Cast Checking in addition to regular Control Flow Integrity (see [here](https://clang.llvm.org/docs/ControlFlowIntegrity.html#bad-cast-checking) for details)
-- Extra Bromite and Vanadium patches, the later of which includes the following clang options :-
-    - -fstack-protector-strong - as opposed to chromium's default of -fstack-protector
-    - -ftrivial-auto-var-init=zero - improves security (see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html))
-    - -fwrapv - disables unsafe optimisations (see [here](https://gitlab.e.foundation/e/apps/browser/-/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch))
-- An example policy file is included in the repo (ungoogled-chromium.install.in can be edited and enabled at build time or copied into /etc/chromium/policies/managed)
+- Bad Cast Checking in addition to regular Control Flow Integrity - see [here](https://clang.llvm.org/docs/ControlFlowIntegrity.html#bad-cast-checking)
+- Extra Bromite and Vanadium patches, the later of which includes the following clang options
+    - -fstack-protector-strong - chromium's default is the less-strict -fstack-protector)
+    - -ftrivial-auto-var-init=zero - see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html)
+    - -fwrapv - see [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1031653) and [here](https://gitlab.e.foundation/e/apps/browser/-/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch)
+- An example policy file is in the repo (install manually or edit ungoogled-chromium.install.in at build time4)
 - Some security/privacy themed flag files are installed to /etc/chromium.d (strict isolation is enabled by default)
 
 
-___Other features/changes___
+___Other features___
 
 - Enabled pipewire
-- Vulkan support - opt-in via runtime switches (see further below)
 - Bundled libpng - avoids an upstream debian bug (see [here](https://github.com/ungoogled-software/ungoogled-chromium-debian/issues/169))
-- Upstream debian patches - a few hard to maintain and otherwise dubious patches have been dropped
-- Separate deb packages for chromium's components (eg chromedriver, sandbox, languages)
-- Dropped ungoogled-chromium-common - its contents split between a new libraries package and the main one
-- New ungoogled-chromium-libraries package for libEGL.so, libGLESv2.so, etc (likely not needed by everyone)
-- Google translate - optional build support
+- The entire contents of ungoogled-chromium-common have been split between a new libraries package and the main one
+- A new ungoogled-chromium-libraries package containing eg libEGL.so, libGLESv2.so (likely not needed by everyone)
+- Google translate - optional build support via a patch to re-enable this functionality
 - Chromecast - optional build support (untested and experimental)
 
 
 ___Build system___
 
-- Built with upstream google clang/llvm binaries (auto-downloaded during build setup)
-- Rebuilds should be faster and less error prone
-- All patching is handled by debian - ungoogled patches are merged with the debian patches during build setup
-- The deb releases are built with a chromium git checkout (building from tarball releases is also supported)
-- Debug optimisation is now handled by building with -fdebug-types-section versus using dwz post build
+- Predominantly uses git to obtain and update source (release tarballs are supported too)
+- Incremental builds for faster builds/rebuilds
+- Built with upstream google clang/llvm binaries
+- Patches for -march/-mtune and various other CPU instruction
+- Various patches to disable components (eg dbus/atk) and enable system libraries (eg icu)
+- Ungoogled Chromium patches are merged into debian's build system with a variety of other patches
+- Debug optimisation is now handled by building with -fdebug-types-section (instead of dwz)
 - Several other fixes and improvements
 
 - - - -
@@ -169,7 +170,7 @@ cat debian/submodules/ungoogled-chromium/chromium_version.txt
 cat debian/submodules/ungoogled-chromium/revision.txt
 ```
 
-## Cloning the chromium git repo (recommended method, see further below for tarball method)
+## Cloning the chromium git repo (recommended, tarball method is detailed further below)
 
 ```sh
 # Clone depot_tools and put it in your PATH
@@ -187,9 +188,9 @@ git clone --depth 1 -b $CHROMIUM_VER https://chromium.googlesource.com/chromium/
 # continue with preparing the chromium git repo below
 ```
 
-## Resetting an existing repo (do before updating & skip if clone/prep has just been done)
+## Repo reset (skip if you have just cloned for the first time)
+## If re-compiling or updating, go into build/src and do the following :-
 
-To re-compile or otherwise reset the build environment, go into build/src and do the following
 ```sh
 # If build/src/debian/domsubcache.tar.gz exists, revert domain substitution
 ./debian/submodules/ungoogled-chromium/utils/domain_substitution.py revert \
@@ -202,8 +203,8 @@ quilt pop -a
 git clean -dfx -e out/Release
 git reset --hard HEAD
 
-# Check to see if there are any untracked files (delete them if there are any)
-git status
+# Optional: check for any untracked files (delete them if there are any)
+git status -u
 
 # Continue with updating and/or preparing the chromium git repo
 ```
@@ -211,18 +212,21 @@ git status
 ## Updating an existing repo (see previous step if you have not reset)
 
 ```sh
-# Set the chromium version (obviously change the one below to the desired version)
-export CHROMIUM_VER=999.0.1234.567
+# Set the chromium version (obviously change the one below) and number of jobs
+export TAG=999.0.1234.567 JOBS=4
 
 # Update and checkout the desired chromium version (in build/src)
-git fetch --depth 1
-git checkout tags/$CHROMIUM_VER
+git fetch --depth 1 --jobs=$JOBS origin tag $TAG
+git checkout tags/$TAG
 ```
 
 ## Pull in chromium submodules and components
 ```
-# Prepare the tree for building (in build/src)
-gclient sync -D --force --nohooks --no-history --shallow
+# Update the chromium submodules
+# After cloning for the first time run in build, otherwise run from build/src.
+gclient sync -D --force --nohooks --no-history --shallow --jobs=$JOBS
+
+# Download various build components
 gclient runhooks
 
 # Copy over the debian directory into your source tree
@@ -248,7 +252,7 @@ debian/rules tarball
 for p in optional/march optional/system/jpeg; do sed "s@^#\($p\.patch\)@\1@" \
   -i debian/patches/series.debian
 
-# Normally you just need to run the following
+# Normally you just need to run the following (see above for enabling translate/chromecast)
 debian/rules setup
 
 # Change version (eg create a pre-release from an yet-to-be-approved UC update pull request)
@@ -264,4 +268,10 @@ while quilt push; do quilt refresh; done
 
 # Build the package
 JOBS=4 dpkg-buildpackage -b -uc -nc
+```
+
+## Optional: clean out all built objects/configs (not routinely need)
+
+```sh
+debian/rules hardclean
 ```
