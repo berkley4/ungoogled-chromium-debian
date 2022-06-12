@@ -458,7 +458,7 @@ See also:
      if (allow_cache)
 --- a/net/socket/ssl_client_socket_impl.cc
 +++ b/net/socket/ssl_client_socket_impl.cc
-@@ -405,6 +405,12 @@
+@@ -406,6 +406,12 @@
  }
  
  void SSLClientSocketImpl::Log_ssl_session_data(const std::string& tag, SSL_SESSION* session) {

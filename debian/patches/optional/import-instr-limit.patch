@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -670,9 +670,15 @@
+@@ -658,9 +658,15 @@
      # available disk space, 40GB and 100000 files.
      cache_policy = "cache_size=10%:cache_size_bytes=40g:cache_size_files=100000"
  

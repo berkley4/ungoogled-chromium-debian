@@ -180,7 +180,7 @@ See also:
    crypto_config->set_user_agent_id(params_.user_agent_id);
 --- a/net/socket/ssl_client_socket_impl.cc
 +++ b/net/socket/ssl_client_socket_impl.cc
-@@ -404,7 +404,33 @@
+@@ -405,7 +405,33 @@
    CHECK(context_);
  }
  
@@ -214,7 +214,7 @@ See also:
    Disconnect();
  }
  
-@@ -803,6 +829,8 @@
+@@ -804,6 +830,8 @@
      }
      if (session)
        SSL_set_session(ssl_.get(), session.get());
@@ -223,7 +223,7 @@ See also:
    }
  
    transport_adapter_ = std::make_unique<SocketBIOAdapter>(
-@@ -1091,6 +1119,35 @@
+@@ -1092,6 +1120,35 @@
                      : SSLHandshakeDetails::kTLS13Full;
      }
    }
@@ -259,7 +259,7 @@ See also:
    UMA_HISTOGRAM_ENUMERATION("Net.SSLHandshakeDetails", details);
  
    // Measure TLS connections that implement the renegotiation_info extension.
-@@ -1764,6 +1821,8 @@
+@@ -1765,6 +1822,8 @@
  }
  
  bool SSLClientSocketImpl::IsCachingEnabled() const {
