@@ -19,7 +19,6 @@ fixes/widevine-locations.patch
 fixes/ps-print.patch
 
 upstream/blink-ftbfs.patch
-upstream/byteswap-constexpr.patch
 upstream/libxml.patch
 
 disable/tests.patch
@@ -98,6 +97,9 @@ various/fixes/xfce-maximize.patch
 #optional/import-instr-limit.patch
 #optional/disable/catapult.patch
 #optional/disable/atk-dbus.patch
+#optional/legacy-i386/byteswap-constexpr.patch
+#optional/legacy-i386/byteswap-constexpr2.patch
+#optional/legacy-i386/support-i386.patch
 #optional/system/icu.patch
 #optional/system/jpeg.patch
 #optional/system/unicode-fix-missing-headers.patch

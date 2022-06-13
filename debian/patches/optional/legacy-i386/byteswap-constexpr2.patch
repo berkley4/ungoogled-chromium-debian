@@ -1,0 +1,23 @@
+author: Andres Salomon <dilinger@debian.org>
+description: fix constexpr FTBFS on i386/armhf
+
+Fix a build error that was already fixed in base/sys_byteorder.h. But
+since chromium has two copies of this file, it needs to also be fixed
+here. It only shows up on 32-bit platforms.
+
+ByteSwap is being called from another function that's constexpr, so
+it also needs to be marked as constexpr. Ideally the calling code needs
+to be changed to only have one copy of sys_byteorder.h.
+
+
+--- a/base/allocator/partition_allocator/base/sys_byteorder.h
++++ b/base/allocator/partition_allocator/base/sys_byteorder.h
+@@ -31,7 +31,7 @@ inline uint16_t ByteSwap(uint16_t x) {
+ #endif
+ }
+ 
+-inline uint32_t ByteSwap(uint32_t x) {
++inline constexpr uint32_t ByteSwap(uint32_t x) {
+ #if defined(COMPILER_MSVC) && !defined(__clang__)
+   return _byteswap_ulong(x);
+ #else
