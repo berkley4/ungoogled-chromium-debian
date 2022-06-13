@@ -36,18 +36,19 @@ ___Performance improvements___
 - Profile Guided Optimisation (PGO) - a smaller, faster chrome binary
 - V8 pointer compression - memory usage/speed improvement (see [here](https://v8.dev/blog/pointer-compression))
 - Upstream optimisation - levels vary per target (versus debian's -O2 everywhere default)
-- Various compiler flags aimed at improving speed :-
-    - -march=[x86-64-v2](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels) & -mavx to enable AVX instructions (optional patches to enable FMA/FMA3/FMA4/AVX2)
-    - -fno-plt (see [here](https://patchwork.ozlabs.org/project/gcc/patch/alpine.LNX.2.11.1505061730460.22867@monopod.intra.ispras.ru/))
+- Various compiler flags aimed at improving speed
+    - -march=[x86-64-v2](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels)
+    - -mavx - enables AVX instructions (optional patches to enable FMA/FMA3/FMA4/AVX2)
+    - -fno-plt - (see [here](https://patchwork.ozlabs.org/project/gcc/patch/alpine.LNX.2.11.1505061730460.22867@monopod.intra.ispras.ru/))
     - -ftrivial-auto-var-init set to zero - see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html)
-    - -Wl,-mllvm,-import-instr-limit=10 - an optional patch is used to build the release debs; details [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1591725#c32)
-    - -Wl,-mllvm,-import-hot-multiplier=60 - the release debs use 30 (as they are patched to set -import-instr-limit=10)
+    - -Wl,-mllvm,-import-instr-limit=10 - via an optional patch (details [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1591725#c32))
+    - -Wl,-mllvm,-import-hot-multiplier=60 - the release debs use 30 (with -import-instr-limit=10)
 
 ___Security/Privacy improvements___
 
-- Bad Cast Checking in addition to regular Control Flow Integrity - see [here](https://clang.llvm.org/docs/ControlFlowIntegrity.html#bad-cast-checking)
+- Bad Cast Checking in addition to regular Control Flow Integrity (see [here](https://clang.llvm.org/docs/ControlFlowIntegrity.html#bad-cast-checking))
 - Extra Bromite and Vanadium patches, the later of which includes the following clang options
-    - -fstack-protector-strong - chromium's default is the less-strict -fstack-protector)
+    - -fstack-protector-strong - chromium's default is the less-strict -fstack-protector
     - -ftrivial-auto-var-init=zero - see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html)
     - -fwrapv - see [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1031653) and [here](https://gitlab.e.foundation/e/apps/browser/-/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch)
 - An example policy file is in the repo (install manually or edit ungoogled-chromium.install.in at build time4)
@@ -56,10 +57,9 @@ ___Security/Privacy improvements___
 
 ___Other features___
 
-- Enabled pipewire
+- The ungoogled-chromium-common package has split into the libraries and main packages
+- A new ungoogled-chromium-libraries package (likely not needed by everyone)
 - Bundled libpng - avoids an upstream debian bug (see [here](https://github.com/ungoogled-software/ungoogled-chromium-debian/issues/169))
-- The entire contents of ungoogled-chromium-common have been split between a new libraries package and the main one
-- A new ungoogled-chromium-libraries package containing eg libEGL.so, libGLESv2.so (likely not needed by everyone)
 - Google translate - optional build support via a patch to re-enable this functionality
 - Chromecast - optional build support (untested and experimental)
 
@@ -252,10 +252,10 @@ debian/rules tarball
 for p in optional/march optional/system/jpeg; do sed "s@^#\($p\.patch\)@\1@" \
   -i debian/patches/series.debian
 
-# Normally you just need to run the following (see above for enabling translate/chromecast)
+# Normally you just need to run the following (see above for enabling translate)
 debian/rules setup
 
-# Change version (eg create a pre-release from an yet-to-be-approved UC update pull request)
+# Change version (eg create a pre-release from an unmerged UC update pull request)
 # (note: you need to specify the version and revision as one string)
 VERSION=999.0.1234.567-1 debian/rules setup
 ```
