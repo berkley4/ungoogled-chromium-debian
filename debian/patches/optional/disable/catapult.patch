@@ -11,7 +11,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      ]
      if (!is_android) {
        deps += [ "//chrome/test:telemetry_perf_unittests" ]
-@@ -365,7 +364,6 @@
+@@ -380,7 +379,6 @@
        "//net/android:net_junit_tests",
        "//services:services_junit_tests",
        "//testing/android/junit:junit_unit_tests",
@@ -19,7 +19,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        "//third_party/r8:custom_d8_java",
        "//tools/android:android_tools",
        "//tools/android:memconsumer",
-@@ -979,7 +977,6 @@
+@@ -977,7 +975,6 @@
        "//third_party/dawn/src/dawn/tests:dawn_unittests",
  
        # Blocked on https://github.com/catapult-project/catapult/issues/2297
@@ -27,7 +27,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        "//tools/perf/clear_system_cache",
        "//ui/ozone/gl:ozone_gl_unittests",
      ]
-@@ -1068,7 +1065,6 @@
+@@ -1086,7 +1083,6 @@
          "//chrome:chrome",
          "//chrome/test/chromedriver",
          "//testing:test_scripts_shared",
@@ -35,7 +35,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        ]
        if (is_win) {
          data_deps += [ "//build/win:copy_cdb_to_output" ]
-@@ -1110,7 +1106,6 @@
+@@ -1128,7 +1124,6 @@
        "//third_party/blink/public:blink_devtools_inspector_resources",
        "//third_party/blink/public/mojom:mojom_platform_js_data_deps",
        "//third_party/blink/renderer/core:js_files_for_form_controls_web_tests",
@@ -43,7 +43,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        "//third_party/hyphenation-patterns:test_data",
        "//third_party/mesa_headers",
        "//tools/imagediff",
-@@ -1191,7 +1186,6 @@
+@@ -1209,7 +1204,6 @@
  
      if (is_android) {
        data += [
@@ -51,7 +51,7 @@ author: Michael Gilbert <mgilbert@debian.org>
          "//build/android/",
        ]
      }
-@@ -1479,10 +1473,6 @@
+@@ -1496,10 +1490,6 @@
        "//third_party/blink/web_tests/StaleTestExpectations",
        "//third_party/blink/web_tests/TestExpectations",
        "//third_party/blink/web_tests/VirtualTestSuites",
@@ -87,7 +87,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -9735,8 +9735,6 @@
+@@ -9916,8 +9916,6 @@
        "//chrome/test/data/password/captured_sites/",
        "//chrome/test/data/web_page_replay_go_helper_scripts/automation_helper.js",
        "//components/test/data/autofill/web_page_replay_support_files/",
@@ -96,7 +96,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      ]
  
      if (is_linux || is_chromeos || is_win) {
-@@ -9929,7 +9927,6 @@
+@@ -10132,7 +10130,6 @@
      deps = [ "//tools/perf/chrome_telemetry_build:telemetry_chrome_test" ]
  
      data = [
@@ -104,7 +104,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        "//tools/perf/run_telemetry_tests",
        "//testing/scripts/run_telemetry_as_googletest.py",
      ]
-@@ -10061,7 +10058,6 @@
+@@ -10265,7 +10262,6 @@
        "//chrome/test/data/perf",
        "//components/variations/service/generate_ui_string_overrider.py",
        "//testing/scripts",
@@ -162,7 +162,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  }
 --- a/tools/gritsettings/resource_ids.spec
 +++ b/tools/gritsettings/resource_ids.spec
-@@ -739,12 +739,6 @@
+@@ -743,12 +743,6 @@
    "content/test/web_ui_mojo_test_resources.grd": {
      "includes": [3860],
    },
@@ -177,7 +177,7 @@ author: Michael Gilbert <mgilbert@debian.org>
    # START ios/web/ section.
 --- a/content/browser/BUILD.gn
 +++ b/content/browser/BUILD.gn
-@@ -2495,7 +2495,6 @@
+@@ -2511,7 +2511,6 @@
    if (!is_android) {
      deps += [
        "//components/vector_icons",
@@ -205,7 +205,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      "//net:net_resources",
 --- a/chrome/chrome_paks.gni
 +++ b/chrome/chrome_paks.gni
-@@ -167,7 +167,6 @@
+@@ -168,7 +168,6 @@
          "$root_gen_dir/chrome/webid_resources_100_percent.pak",
          "$root_gen_dir/chrome/whats_new_resources.pak",
          "$root_gen_dir/content/browser/devtools/devtools_resources.pak",
@@ -213,7 +213,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        ]
        deps += [
          "//chrome/browser/resources:component_extension_resources",
-@@ -197,7 +196,6 @@
+@@ -198,7 +197,6 @@
          "//chrome/browser/resources/tab_search:resources",
          "//chrome/browser/resources/whats_new:resources",
          "//content/browser/devtools:devtools_resources",
@@ -223,7 +223,7 @@ author: Michael Gilbert <mgilbert@debian.org>
          sources += [
 --- a/content/shell/BUILD.gn
 +++ b/content/shell/BUILD.gn
-@@ -456,11 +456,6 @@
+@@ -459,11 +459,6 @@
      "//ui/strings",
    ]
  
@@ -317,7 +317,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  }
 --- a/third_party/webrtc/test/BUILD.gn
 +++ b/third_party/webrtc/test/BUILD.gn
-@@ -283,10 +283,6 @@
+@@ -287,10 +287,6 @@
    ]
    if (rtc_enable_protobuf) {
      sources += [ "testsupport/perf_test_histogram_writer.cc" ]
@@ -328,7 +328,7 @@ author: Michael Gilbert <mgilbert@debian.org>
    } else {
      sources += [ "testsupport/perf_test_histogram_writer_no_protobuf.cc" ]
    }
-@@ -592,7 +588,6 @@
+@@ -596,7 +592,6 @@
  
      if (rtc_enable_protobuf) {
        sources += [ "testsupport/perf_test_histogram_writer_unittest.cc" ]
@@ -348,7 +348,7 @@ author: Michael Gilbert <mgilbert@debian.org>
    data = [
 --- a/weblayer/shell/BUILD.gn
 +++ b/weblayer/shell/BUILD.gn
-@@ -186,9 +186,6 @@
+@@ -185,9 +185,6 @@
    }
    if (is_android) {
      deps += [ "//ui/android:ui_java_resources" ]
