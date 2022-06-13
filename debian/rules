@@ -87,7 +87,16 @@ changelog:
 control:
 	sed -e "s;@@AUTHOR@@;$(AUTHOR);g" < $(DB_DIR)/control.in > $(DB_DIR)/control
 
-hardclean:
+find_remove_all:
+	find . \( -path .\*/.git -o -path ./.pc -o -path ./debian -o -path ./out \) -prune -o \( -name '_gclient_*' -o -name '__pycache__' -o -name '*.orig' -o -name '*.rej' \) -exec rm -rf '{}' +
+
+find_remove_most:
+	find . \( -path .\*/.git -o -path ./.pc -o -path ./debian -o -path ./out \) -prune -o \( -name '_gclient_*' -o -name '*.orig' -o -name '*.rej' \) -exec rm -rf '{}' +
+
+find_remove_pycache:
+	find . \( -path .\*/.git -o -path ./.pc -o -path ./debian -o -path ./out \) -prune -o -type d -name '__pycache__' -exec rm -rf '{}' +
+
+hardclean: find_remove_all
 	test -d $(OUT_DIR) && ninja -j $(JOBS) -C $(OUT_DIR) -g -t clean || printf '%s\n' "$(OUT_DIR) does not exist, nothing to do."
 
 tarball:
@@ -140,8 +149,7 @@ setup_translate: translate_configure setup
 setup_cast_translate: cast_configure translate_configure setup
 	:
 
-override_dh_auto_configure:
-	find . -path ./out -prune -o -type f -name "*.rej" -exec rm -rf "{}" +
+override_dh_auto_configure: find_remove_most
 	test -d $(OUT_DIR) && ninja -j $(JOBS) -C $(OUT_DIR) -t cleandead || printf '%s\n' "$(OUT_DIR) does not exist, nothing to do."
 	test -f $(DS_CACHE) && printf '%s\n' "$(DS_CACHE) exists, aborting." || $(UL_DIR)/domain_substitution.py apply -r $(UC_DIR)/domain_regex.list -f $(UC_DIR)/domain_substitution.list -c $(DS_CACHE) $(RT_DIR)
 	#cp $(SH_DIR)/jsoncpp.gn build/linux/unbundle
@@ -152,9 +160,9 @@ override_dh_auto_build:
 	ninja -j $(JOBS) -C $(OUT_DIR) chrome chrome_sandbox chromedriver
 	test ! -f out/Release/locales/en-US.pak || cp -a out/Release/locales/en-US.pak out/Release/resources/
 
-override_dh_prep:
-	for file in $$(find -type f -name "*.gn.orig" -o -type f -name "*.gni.orig"); do mv $$file $${file%.orig}; done
+override_dh_prep: find_remove_pycache
 	#rm -f build/linux/unbundle/jsoncpp.gn
+	for file in $$(find -type f -name "*.gn.orig" -o -type f -name "*.gni.orig"); do mv $$file $${file%.orig}; done
 	test ! -f $(DS_CACHE) || $(UL_DIR)/domain_substitution.py revert -c $(DS_CACHE) $(RT_DIR)
 	dh_prep
 
