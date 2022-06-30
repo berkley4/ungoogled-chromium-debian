@@ -1,4 +1,4 @@
-From fb2511eb61cb5805f7a6de9b1df82336c0cbaded Mon Sep 17 00:00:00 2001
+From 33ce82ae4d13a08f6b01c72cfe67438bb9b01c0d Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Sun, 22 Mar 2020 01:23:48 -0400
 Subject: [PATCH] disable content feed suggestions by default
@@ -16,9 +16,9 @@ Subject: [PATCH] disable content feed suggestions by default
                      .put(ChromeFeatureList.TEST_DEFAULT_ENABLED, true)
 -                    .put(ChromeFeatureList.INTEREST_FEED_V2, true)
 +                    .put(ChromeFeatureList.INTEREST_FEED_V2, false)
-                     .put(ChromeFeatureList.THEME_REFACTOR_ANDROID, true)
                      .put(ChromeFeatureList.USE_CHIME_ANDROID_SDK, false)
                      .put(ChromeFeatureList.CCT_INCOGNITO_AVAILABLE_TO_THIRD_PARTY, false)
+                     .put(ChromeFeatureList.READ_LATER, false)
 --- a/components/feed/feed_feature_list.cc
 +++ b/components/feed/feed_feature_list.cc
 @@ -12,12 +12,12 @@

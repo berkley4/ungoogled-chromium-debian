@@ -18,8 +18,7 @@ fixes/widevine-enable-version-string.patch
 fixes/widevine-locations.patch
 fixes/ps-print.patch
 
-upstream/blink-ftbfs.patch
-upstream/libxml.patch
+#upstream/
 
 disable/tests.patch
 disable/android.patch
@@ -39,11 +38,11 @@ system/opus.patch
 system/eu-strip.patch
 
 bromite/AudioBuffer-AnalyserNode-fp-mitigations.patch
-bromite/Block-gateway-attacks-via-websockets.patch
+#bromite/Block-gateway-attacks-via-websockets.patch
 bromite/Disable-AsyncDNS-by-default.patch
 bromite/Disable-metrics-on-all-I-O-threads.patch
 bromite/Disable-some-signed-exchange-features.patch
-bromite/Disable-text-fragments-by-default.patch
+#bromite/Disable-text-fragments-by-default.patch
 bromite/Disable-TLS-resumption.patch
 bromite/DoH-secure-mode-by-default.patch
 bromite/Hardening-against-incognito-mode-detection.patch
@@ -71,9 +70,9 @@ vanadium/0046-disable-autofill-server-communication-by-default.patch
 vanadium/0047-disable-component-updater-pings-by-default.patch
 vanadium/0050-most-private-WebRTC-IP-handling-policy-by-default.patch
 vanadium/0051-stub-out-the-battery-status-API.patch
-vanadium/0076-Enable-strict-origin-isolation-by-default.patch
-vanadium/0077-disable-appending-variations-header.patch
-vanadium/0079-Disable-detailed-language-settings-by-default.patch
+vanadium/0075-Enable-strict-origin-isolation-by-default.patch
+vanadium/0076-disable-appending-variations-header.patch
+vanadium/0078-Disable-detailed-language-settings-by-default.patch
 
 various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
 various/fno-plt.patch
@@ -87,6 +86,7 @@ various/wayland-egl.patch
 various/fedora/enable-hardware-accelerated-mjpeg.patch
 various/fixes/EnumTable-crash.patch
 various/fixes/InkDropHost-crash.patch
+various/fixes/SubstringSetMatcher-packed.patch
 various/fixes/xfce-maximize.patch
 
 #optional/custom-thin-lto-cache-location.patch
@@ -97,7 +97,6 @@ various/fixes/xfce-maximize.patch
 #optional/import-instr-limit.patch
 #optional/disable/catapult.patch
 #optional/disable/atk-dbus.patch
-#optional/legacy-i386/byteswap-constexpr.patch
 #optional/legacy-i386/byteswap-constexpr2.patch
 #optional/legacy-i386/support-i386.patch
 #optional/system/icu.patch

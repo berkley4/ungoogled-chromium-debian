@@ -1,0 +1,66 @@
+From 3d274856e792a361336eb4ae1670bc9c1905f0cb Mon Sep 17 00:00:00 2001
+From: Steinar H. Gunderson <sesse@chromium.org>
+Date: Thu, 12 May 2022 16:42:40 +0200
+Subject: [PATCH] Make AhoCorasickNode 4-aligned.
+
+This should fix an issue where std::vector could allocate unaligned
+memory for AhoCorasickNode, and we'd then return a pointer to
+inline_edges, where a caller would expect the pointer to be aligned
+but it wasn't.
+
+Change-Id: Id9dff044c61f8e46062c63b8480b18ebc68c4862
+---
+
+--- a/base/substring_set_matcher/substring_set_matcher.cc
++++ b/base/substring_set_matcher/substring_set_matcher.cc
+@@ -424,7 +424,12 @@
+     edges_.inline_edges[num_edges()] = AhoCorasickEdge{label, node};
+     if (label == kFailureNodeLabel) {
+       // Make sure that kFailureNodeLabel is first.
+-      std::swap(edges_.inline_edges[0], edges_.inline_edges[num_edges()]);
++      // NOTE: We don't use std::swap here, because GCC
++      // doesn't understand that inline_edges[] is 4-aligned
++      // and gives a warning.
++      AhoCorasickEdge temp = edges_.inline_edges[0];
++      edges_.inline_edges[0] = edges_.inline_edges[num_edges()];
++      edges_.inline_edges[num_edges()] = temp;
+     }
+     --num_free_edges_;
+     return;
+--- a/base/substring_set_matcher/substring_set_matcher.h
++++ b/base/substring_set_matcher/substring_set_matcher.h
+@@ -154,8 +154,9 @@
+   static constexpr uint32_t kEmptyLabel = 0x103;
+ 
+   // A node in the trie, packed tightly together so that it occupies 12 bytes
+-  // (both on 32- and 64-bit platforms).
+-  class AhoCorasickNode {
++  // (both on 32- and 64-bit platforms), but aligned to at least 4 (see the
++  // comment on edges_).
++  class alignas(AhoCorasickEdge) AhoCorasickNode {
+    public:
+     AhoCorasickNode();
+     ~AhoCorasickNode();
+@@ -178,6 +179,10 @@
+     NodeID GetEdgeNoInline(uint32_t label) const;
+     void SetEdge(uint32_t label, NodeID node);
+     const AhoCorasickEdge* edges() const {
++      // NOTE: Returning edges_.inline_edges here is fine, because it's
++      // the first thing in the struct (see the comment on edges_).
++      DCHECK_EQ(0u, reinterpret_cast<uintptr_t>(edges_.inline_edges) %
++                        alignof(AhoCorasickEdge));
+       return edges_capacity_ == 0 ? edges_.inline_edges : edges_.edges;
+     }
+ 
+@@ -258,6 +263,11 @@
+     // in the first slot if it exists (ie., is not equal to kRootID), since we
+     // need to access that label during every single node we look at during
+     // traversal.
++    //
++    // NOTE: Keep this the first member in the struct, so that inline_edges gets
++    // 4-aligned (since the class is marked as such, despite being packed.
++    // Otherwise, edges() can return an unaligned pointer marked as aligned
++    // (the unalignedness gets lost).
+     static constexpr int kNumInlineEdges = 2;
+     union {
+       // Out-of-line edge storage, having room for edges_capacity_ elements.

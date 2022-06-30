@@ -3,7 +3,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
 
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -4764,10 +4764,6 @@
+@@ -4827,10 +4827,6 @@
        data_deps += [ "//third_party/dawn/src/dawn/tests:dawn_perf_tests" ]
      }
  
@@ -16,7 +16,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
          "//chrome/test:load_library_perf_tests",
 --- a/third_party/angle/gni/angle.gni
 +++ b/third_party/angle/gni/angle.gni
-@@ -85,7 +85,7 @@
+@@ -88,7 +88,7 @@
    }
  
    # Indicate if the rapidJSON library is available to build with in third_party/.
@@ -25,7 +25,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
  }
  
  declare_args() {
-@@ -243,7 +243,7 @@
+@@ -249,7 +249,7 @@
        is_apple &&
        (angle_enable_glsl || angle_enable_metal || use_fuzzing_engine)
  
@@ -33,7 +33,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
 +  angle_has_histograms = false
  }
  
- if (!defined(angle_zlib_compression_utils_dir)) {
+ declare_args() {
 --- a/third_party/angle/src/tests/BUILD.gn
 +++ b/third_party/angle/src/tests/BUILD.gn
 @@ -12,8 +12,7 @@
@@ -54,7 +54,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
      "$angle_root:libANGLE",
      "$angle_root:libEGL_static",
      "$angle_root:libGLESv2_static",
-@@ -340,48 +338,7 @@
+@@ -343,48 +341,7 @@
    }
  }
  
@@ -104,7 +104,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
    import("angle_perftests.gni")
  
    # This test suite is for perf tests that use ANGLE's internals in some direct way.
-@@ -1587,12 +1544,10 @@
+@@ -1606,12 +1563,10 @@
    testonly = true
    deps = [
      ":angle_end2end_tests",

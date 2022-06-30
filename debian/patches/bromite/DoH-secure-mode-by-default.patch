@@ -17,7 +17,7 @@ Subject: DoH secure mode by default
        } else if (entries.count("dns-over-https@2")) {
          // The user has "Disabled" selected.
          local_state_->SetString(prefs::kDnsOverHttpsMode,
-@@ -335,22 +335,7 @@
+@@ -338,22 +338,7 @@
      check_parental_controls = false;
    }
  

@@ -19,14 +19,14 @@ Replace known good hostname
  
  namespace {
  
---- a/net/dns/dns_transaction.cc
-+++ b/net/dns/dns_transaction.cc
-@@ -904,7 +904,7 @@
+--- a/net/dns/dns_transaction.h
++++ b/net/dns/dns_transaction.h
+@@ -29,7 +29,7 @@
+ class ResolveContext;
  
- // ----------------------------------------------------------------------------
+ // The hostname probed by CreateDohProbeRunner().
+-inline constexpr base::StringPiece kDohProbeHostname = "www.gstatic.com";
++inline constexpr base::StringPiece kDohProbeHostname = "www.ripe.net";
  
--const char kDoHProbeHostname[] = "www.gstatic.com";
-+const char kDoHProbeHostname[] = "www.ripe.net";
- 
- const net::BackoffEntry::Policy kProbeBackoffPolicy = {
-     // Apply exponential backoff rules after the first error.
+ // DnsTransaction implements a stub DNS resolver as defined in RFC 1034.
+ // The DnsTransaction takes care of retransmissions, name server fallback (or

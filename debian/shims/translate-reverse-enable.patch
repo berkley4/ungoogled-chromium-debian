@@ -1,6 +1,6 @@
 --- a/chrome/browser/spellchecker/spellcheck_hunspell_dictionary.cc
 +++ b/chrome/browser/spellchecker/spellcheck_hunspell_dictionary.cc
-@@ -280,7 +280,7 @@
+@@ -279,7 +279,7 @@
    DCHECK(!bdict_file.empty());
  
    static const char kDownloadServerUrl[] =
