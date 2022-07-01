@@ -292,3 +292,12 @@
      case kKde: {
        std::unique_ptr<base::Environment> env(base::Environment::Create());
        base::nix::DesktopEnvironment desktop =
+--- a/device/bluetooth/cast_bluetooth.gni
++++ b/device/bluetooth/cast_bluetooth.gni
+@@ -2,5 +2,5 @@
+ 
+ declare_args() {
+   force_cast_bluetooth = false
+-  use_bluez = (is_linux || is_chromeos) && !is_castos
++  use_bluez = (is_linux || is_chromeos) && !is_castos && use_dbus
+ }
