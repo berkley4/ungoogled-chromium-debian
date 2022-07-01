@@ -73,6 +73,7 @@ vanadium/0051-stub-out-the-battery-status-API.patch
 vanadium/0075-Enable-strict-origin-isolation-by-default.patch
 vanadium/0076-disable-appending-variations-header.patch
 vanadium/0078-Disable-detailed-language-settings-by-default.patch
+vanadium/0082-enable-process-isolated-sandboxed-iframes-by-default.patch
 
 various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
 various/fno-plt.patch
