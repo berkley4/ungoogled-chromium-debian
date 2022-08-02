@@ -2,27 +2,28 @@ From: csagan5 <32685696+csagan5@users.noreply.github.com>
 Date: Sat, 28 Apr 2018 08:30:26 +0200
 Subject: Reduce HTTP headers in DoH requests to bare minimum
 
+License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- net/base/load_flags_list.h              | 9 +++++++++
+ net/base/load_flags_list.h              | 6 ++++++
  net/dns/dns_transaction.cc              | 2 +-
  net/url_request/url_request_http_job.cc | 8 +++++++-
- 3 files changed, 17 insertions(+), 2 deletions(-)
+ 3 files changed, 14 insertions(+), 2 deletions(-)
 
 --- a/net/base/load_flags_list.h
 +++ b/net/base/load_flags_list.h
-@@ -110,3 +110,12 @@
- //
- // Cannot be used together with BYPASS_CACHE, ONLY_FROM_CACHE, or DISABLE_CACHE.
- LOAD_FLAG(USE_SINGLE_KEYED_CACHE, 1 << 17)
-+
-+
-+
-+
+@@ -102,6 +102,12 @@
+ // trusted process.
+ LOAD_FLAG(CAN_USE_RESTRICTED_PREFETCH, 1 << 16)
+ 
 +// This load will not send Accept-Language or User-Agent headers, and not
 +// advertise brotli encoding.
 +// Used to comply with IETF (draft) DNS-over-HTTPS:
 +// "Implementors SHOULD NOT set non-essential HTTP headers in DoH client requests."
-+LOAD_FLAG(MINIMAL_HEADERS, 1 << 18)
++LOAD_FLAG(MINIMAL_HEADERS, 1 << 19)
++
+ // True if the request should attempt to use the single-keyed cache to satisfy
+ // the request. The single-keyed cache will only be used if the "unusable" flag
+ // on the cache entry is not true. Otherwise it will fall back to the
 --- a/net/dns/dns_transaction.cc
 +++ b/net/dns/dns_transaction.cc
 @@ -447,7 +447,7 @@

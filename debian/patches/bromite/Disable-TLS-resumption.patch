@@ -21,6 +21,9 @@ Two new user configurable flags are introduced:
 
 See also:
 * https://arxiv.org/abs/1810.07304
+
+Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
+License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  chrome/browser/about_flags.cc        |  6 +++
  chrome/browser/flag_descriptions.cc  |  8 ++++

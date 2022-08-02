@@ -38,24 +38,22 @@ system/opus.patch
 system/eu-strip.patch
 
 bromite/AudioBuffer-AnalyserNode-fp-mitigations.patch
-#bromite/Block-gateway-attacks-via-websockets.patch
 bromite/Disable-AsyncDNS-by-default.patch
-bromite/Disable-metrics-on-all-I-O-threads.patch
 bromite/Disable-some-signed-exchange-features.patch
-#bromite/Disable-text-fragments-by-default.patch
+bromite/Disable-text-fragments-by-default.patch
 bromite/Disable-TLS-resumption.patch
-bromite/DoH-secure-mode-by-default.patch
 bromite/Hardening-against-incognito-mode-detection.patch
 bromite/Make-all-favicon-requests-on-demand.patch
+bromite/Partition-Blink-memory-cache.patch
 bromite/Partition-DNS-requests-by-top-frame-NIK.patch
 bromite/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
+bromite/Remove-navigator.connection-info.patch
 bromite/Replace-DoH-probe-domain-with-RIPE-domain.patch
 
 vanadium/0003-switch-to-fstack-protector-strong.patch
 vanadium/0004-enable-fwrapv-in-Clang-for-non-UBSan-builds.patch
 vanadium/0020-disable-contextual-search-by-default.patch
 vanadium/0024-disable-showing-popular-sites-by-default.patch
-vanadium/0025-disable-article-suggestions-feature-by-default.patch
 vanadium/0026-disable-content-feed-suggestions-by-default.patch
 vanadium/0027-disable-sensors-access-by-default.patch
 vanadium/0030-disable-background-sync-by-default.patch
@@ -75,11 +73,14 @@ vanadium/0076-disable-appending-variations-header.patch
 vanadium/0078-Disable-detailed-language-settings-by-default.patch
 vanadium/0082-enable-process-isolated-sandboxed-iframes-by-default.patch
 
+various/bromite-Disable-all-predictors-code.patch
+various/bromite-DoH-improvements.patch
 various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
 various/fno-plt.patch
 various/init-stack-vars-zero.patch
 various/silence-alsa-frames-log-msg.patch
 various/use-clang-to-optimize-debug-info.patch
+various/vanadium-disable-article-suggestions-feature-by-default.patch
 various/wayland-egl.patch
 #various/addenda/
 various/disable/orchestrator.patch

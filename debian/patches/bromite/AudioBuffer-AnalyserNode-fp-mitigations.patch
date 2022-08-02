@@ -3,6 +3,8 @@ Date: Sun, 25 Mar 2018 21:49:37 +0200
 Subject: AudioBuffer, AnalyserNode: fp mitigations
 
 Truncate base latency precision to two digits
+
+License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  .../blink/renderer/modules/webaudio/analyser_node.idl     | 8 ++++----
  .../blink/renderer/modules/webaudio/audio_buffer.idl      | 6 ------

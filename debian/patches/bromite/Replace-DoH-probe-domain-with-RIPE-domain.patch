@@ -3,9 +3,11 @@ Date: Sun, 27 Oct 2019 10:00:13 +0100
 Subject: Replace DoH probe domain with RIPE domain
 
 Replace known good hostname
+
+License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  chrome/browser/net/dns_probe_runner.cc | 2 +-
- net/dns/dns_transaction.cc             | 2 +-
+ net/dns/dns_transaction.h              | 2 +-
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 --- a/chrome/browser/net/dns_probe_runner.cc

@@ -2,6 +2,7 @@ From: csagan5 <32685696+csagan5@users.noreply.github.com>
 Date: Sat, 2 Nov 2019 16:22:56 +0100
 Subject: Disable some signed exchange features
 
+License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  content/public/common/content_features.cc | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)

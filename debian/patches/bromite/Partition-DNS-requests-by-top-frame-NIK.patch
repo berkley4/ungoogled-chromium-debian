@@ -19,6 +19,9 @@ any type of upstream DoH server.
 See also:
 * https://bugs.chromium.org/p/chromium/issues/detail?id=1082311
 * https://github.com/bromite/bromite/pull/1974
+
+Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
+License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  chrome/browser/about_flags.cc        | 12 ++++++++++++
  chrome/browser/flag_descriptions.cc  |  9 +++++++++
@@ -30,15 +33,15 @@ See also:
  net/base/isolation_info.proto        |  4 +++-
  net/base/network_isolation_key.cc    | 16 ++++++++++++++++
  net/base/network_isolation_key.h     | 19 +++++++++++++++----
- net/dns/dns_transaction.cc           | 24 ++++++++++++++++++++----
+ net/dns/dns_transaction.cc           | 23 +++++++++++++++++++----
  net/dns/dns_transaction.h            |  4 +++-
  net/dns/host_resolver_manager.cc     | 21 +++++++++++++++++----
  net/socket/ssl_client_socket_impl.cc |  6 ++++++
- 14 files changed, 149 insertions(+), 15 deletions(-)
+ 14 files changed, 148 insertions(+), 15 deletions(-)
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -7569,6 +7569,18 @@
+@@ -7574,6 +7574,18 @@
          FEATURE_VALUE_TYPE(features::kUIDebugTools),
      },
  #endif
@@ -59,7 +62,7 @@ See also:
       flag_descriptions::kSplitCacheByNetworkIsolationKeyDescription,
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -2419,6 +2419,15 @@
+@@ -2423,6 +2423,15 @@
  const char kSmoothScrollingDescription[] =
      "Animate smoothly when scrolling page content.";
  
@@ -77,7 +80,7 @@ See also:
      "Partitions the HTTP Cache by (top-level site, current-frame site) to "
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -1362,6 +1362,12 @@
+@@ -1365,6 +1365,12 @@
  extern const char kSmoothScrollingName[];
  extern const char kSmoothScrollingDescription[];
  
@@ -356,18 +359,16 @@ See also:
    THREAD_CHECKER(thread_checker_);
  };
  
-@@ -1723,10 +1738,12 @@
+@@ -1723,10 +1738,10 @@
        bool secure,
        SecureDnsMode secure_dns_mode,
        ResolveContext* resolve_context,
 -      bool fast_timeout) override {
-+      bool fast_timeout,
-+      const NetworkIsolationKey& network_isolation_key) override {
++      bool fast_timeout, const NetworkIsolationKey& network_isolation_key) override {
      return std::make_unique<DnsTransactionImpl>(
          session_.get(), std::move(hostname), qtype, net_log, opt_rdata_.get(),
 -        secure, secure_dns_mode, resolve_context, fast_timeout);
-+        secure, secure_dns_mode, resolve_context,
-+        fast_timeout, network_isolation_key);
++        secure, secure_dns_mode, resolve_context, fast_timeout, network_isolation_key);
    }
  
    std::unique_ptr<DnsProbeRunner> CreateDohProbeRunner(
