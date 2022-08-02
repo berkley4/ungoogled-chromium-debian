@@ -1,10 +1,17 @@
 ## Refer to chrome://gpu/ to see if there are any problems
 ## Note: the uncommented flags will probably work for most users
 
-# experiment with options other than --use-angle=gl if you have problems
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-angle=gl"
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-gl=desktop"
+
+# Pick one of --use-gl=desktop, --use-gl=egl, --use-angle=gl
+
+# Default which should work for most people
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-gl=desktop"
+
+# Requires libgles2 package [/usr/lib/x86_64-linux-gnu/libGLESv2.so.2]
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-gl=egl"
+
+# Requires ungoogled-chromium-libraries package [/usr/lib/chromium/libGLESv2.so]
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-angle=gl"
 
 
 # Uncomment if you're on x11 (ie not wayland)

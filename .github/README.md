@@ -15,7 +15,7 @@ Only ungoogled-chromium_*.deb is mandatory. The other debs are
 
 * *-sandbox_*   : suid sandbox, recommended (see the [Sandbox](https://github.com/berkley4/ungoogled-chromium-debian/blob/stable/.github/README.md#sandbox) section below).
 * *-l10n_*      : language localisation, needed if you want a non US English UI.
-* *-libraries_* : contains files such as libEGL.so, libGLESv2.so; might prevent (probably harmless) error messages and likely not needed by everyone.
+* *-libraries_* : contains files such as libEGL.so, libGLESv2.so (the latter is a prerequisite for the '--use-angle=gl' flag).
 * *-driver_*    : chromedriver, not normally needed.
 * *-dbgsym_*    : not normally needed (unless you need to debug).
 
