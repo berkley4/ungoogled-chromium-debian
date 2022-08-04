@@ -1,6 +1,6 @@
 --- a/media/BUILD.gn
 +++ b/media/BUILD.gn
-@@ -166,7 +166,6 @@
+@@ -165,7 +165,6 @@
      "//media/device_monitors:unit_tests",
      "//media/filters:unit_tests",
      "//media/formats:unit_tests",

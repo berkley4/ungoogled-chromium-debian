@@ -20,7 +20,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5603,6 +5603,11 @@
+@@ -5787,6 +5787,11 @@
           "")},
  #endif
  
@@ -34,7 +34,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       flag_descriptions::kEnableWebAuthenticationChromeOSAuthenticatorName,
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -2492,6 +2492,11 @@
+@@ -2528,6 +2528,11 @@
      "expiry_milestone": 105
    },
    {
@@ -48,7 +48,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      // This flag is used by developers to disable the "basic-card" method, to
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -1264,6 +1264,10 @@
+@@ -1279,6 +1279,10 @@
      "Enable the restricted web APIs for dev trial. This will be replaced with "
      "permission policies to control the capabilities afterwards.";
  
@@ -61,7 +61,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  const char kEnableUseZoomForDsfDescription[] =
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -701,6 +701,9 @@
+@@ -711,6 +711,9 @@
  extern const char kEnableRestrictedWebApisName[];
  extern const char kEnableRestrictedWebApisDescription[];
  
@@ -84,9 +84,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    registry->RegisterBooleanPref(browser_ui::prefs::kWebKitForceEnableZoom,
 --- a/content/child/runtime_features.cc
 +++ b/content/child/runtime_features.cc
-@@ -274,7 +274,7 @@
-      features::kSignedExchangeSubresourcePrefetch},
-     {wf::EnableSkipTouchEventFilter, blink::features::kSkipTouchEventFilter},
+@@ -277,7 +277,7 @@
+     {wf::EnableSpeculationRulesPrefetchProxy,
+      blink::features::kSpeculationRulesPrefetchProxy, kSetOnlyIfOverridden},
      {wf::EnableSubresourceWebBundles, features::kSubresourceWebBundles},
 -    {wf::EnableTextFragmentAnchor, blink::features::kTextFragmentAnchor},
 +    {wf::EnableTextFragmentAnchor, blink::features::kTextFragmentAnchor}, // will set the TextFragmentIdentifiers runtime feature
@@ -95,7 +95,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       blink::features::kCssSelectorFragmentAnchor},
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -449,7 +449,7 @@
+@@ -450,7 +450,7 @@
  
  // Enable text snippets in URL fragments. https://crbug.com/919204.
  const base::Feature kTextFragmentAnchor{"TextFragmentAnchor",
@@ -106,7 +106,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  const base::Feature kCssSelectorFragmentAnchor{
 --- a/third_party/blink/renderer/core/dom/document.cc
 +++ b/third_party/blink/renderer/core/dom/document.cc
-@@ -4166,9 +4166,14 @@
+@@ -4222,9 +4222,14 @@
    TRACE_EVENT1("navigation", "Document::SetURL", "url",
                 new_url.GetString().Utf8());
  
@@ -123,7 +123,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    UpdateBaseURL();
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -2273,8 +2273,7 @@
+@@ -2322,8 +2322,7 @@
      },
      {
        name: "TextFragmentIdentifiers",

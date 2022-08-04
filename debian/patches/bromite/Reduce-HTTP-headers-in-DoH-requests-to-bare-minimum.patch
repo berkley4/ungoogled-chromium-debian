@@ -26,7 +26,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  // on the cache entry is not true. Otherwise it will fall back to the
 --- a/net/dns/dns_transaction.cc
 +++ b/net/dns/dns_transaction.cc
-@@ -447,7 +447,7 @@
+@@ -446,7 +446,7 @@
      // avoid deadlock and enable the use of preconfigured IP addresses.
      request_->SetSecureDnsPolicy(SecureDnsPolicy::kBootstrap);
      request_->SetLoadFlags(request_->load_flags() | LOAD_DISABLE_CACHE |
@@ -37,7 +37,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      if (base::FeatureList::IsEnabled(net::features::kLogSplitDnsByNetworkIsolationKey)) {
 --- a/net/url_request/url_request_http_job.cc
 +++ b/net/url_request/url_request_http_job.cc
-@@ -325,6 +325,7 @@
+@@ -314,6 +314,7 @@
    // fields in the referrer.
    GURL referrer(request_->referrer());
  
@@ -45,7 +45,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // Our consumer should have made sure that this is a safe referrer (e.g. via
    // URLRequestJob::ComputeReferrerForPolicy).
    if (referrer.is_valid()) {
-@@ -332,11 +333,14 @@
+@@ -321,11 +322,14 @@
      request_info_.extra_headers.SetHeader(HttpRequestHeaders::kReferer,
                                            referer_value);
    }
@@ -60,7 +60,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
    AddExtraHeaders();
  
-@@ -606,6 +610,7 @@
+@@ -595,6 +599,7 @@
        if (request_->Supports(SourceStream::SourceType::TYPE_DEFLATE)) {
          advertised_encoding_names.push_back("deflate");
        }
@@ -68,7 +68,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        // Advertise "br" encoding only if transferred data is opaque to proxy.
        if (request()->context()->enable_brotli() &&
            request_->Supports(SourceStream::SourceType::TYPE_BROTLI)) {
-@@ -614,6 +619,7 @@
+@@ -603,6 +608,7 @@
            advertised_encoding_names.push_back("br");
          }
        }
@@ -76,7 +76,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        if (!advertised_encoding_names.empty()) {
          // Tell the server what compression formats are supported.
          request_info_.extra_headers.SetHeader(
-@@ -623,7 +629,7 @@
+@@ -612,7 +618,7 @@
      }
    }
  

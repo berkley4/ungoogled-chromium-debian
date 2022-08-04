@@ -74,6 +74,7 @@ vanadium/0078-Disable-detailed-language-settings-by-default.patch
 vanadium/0082-enable-process-isolated-sandboxed-iframes-by-default.patch
 
 various/bromite-Disable-all-predictors-code.patch
+various/bromite-disable-happiness-tracking.patch
 various/bromite-DoH-improvements.patch
 various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
 various/fno-plt.patch
@@ -88,7 +89,8 @@ various/fedora/enable-hardware-accelerated-mjpeg.patch
 various/fixes/audio-sandbox.patch
 various/fixes/EnumTable-crash.patch
 various/fixes/InkDropHost-crash.patch
-various/fixes/SubstringSetMatcher-packed.patch
+various/fixes/tflite-system-zlib.patch
+various/fixes/x11-ozone-fix-X11-screensaver-suspension.patch
 various/fixes/xfce-maximize.patch
 
 #optional/custom-thin-lto-cache-location.patch
@@ -96,8 +98,6 @@ various/fixes/xfce-maximize.patch
 #optional/mtune.patch
 #optional/avx.patch
 #optional/fma-avx2.patch
-#optional/import-instr-limit.patch
-#optional/use-higher-hot-function-import-multiplier.patch
 #optional/disable/catapult.patch
 #optional/disable/atk-dbus.patch
 #optional/legacy-i386/byteswap-constexpr2.patch

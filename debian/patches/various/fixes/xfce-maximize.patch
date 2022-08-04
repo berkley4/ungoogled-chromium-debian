@@ -12,7 +12,7 @@ Change-Id: I69e71049157c03b74d78bc5edb7a60bf39cdda8b
 
 --- a/ui/ozone/platform/x11/x11_window.cc
 +++ b/ui/ozone/platform/x11/x11_window.cc
-@@ -690,6 +690,13 @@
+@@ -692,6 +692,13 @@
    if (CanSetDecorationInsets())
      SetDecorationInsets(nullptr);
  

@@ -38,7 +38,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -4481,6 +4481,12 @@
+@@ -4647,6 +4647,12 @@
      {"enable-tls13-early-data", flag_descriptions::kEnableTLS13EarlyDataName,
       flag_descriptions::kEnableTLS13EarlyDataDescription, kOsAll,
       FEATURE_VALUE_TYPE(net::features::kEnableTLS13EarlyData)},
@@ -53,7 +53,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       FEATURE_VALUE_TYPE(net::features::kPostQuantumCECPQ2)},
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -951,6 +951,14 @@
+@@ -960,6 +960,14 @@
      "during the handshake when resuming a connection to a compatible TLS 1.3 "
      "server.";
  
@@ -70,7 +70,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      "This option enables high-quality, network-based voices in "
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -543,6 +543,12 @@
+@@ -552,6 +552,12 @@
  extern const char kEnableTLS13EarlyDataName[];
  extern const char kEnableTLS13EarlyDataDescription[];
  
@@ -115,7 +115,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  NET_EXPORT extern const base::Feature kEncryptedClientHello;
 --- a/net/http/http_network_session.cc
 +++ b/net/http/http_network_session.cc
-@@ -232,6 +232,7 @@
+@@ -206,6 +206,7 @@
  
    next_protos_.push_back(kProtoHTTP11);
  
@@ -172,7 +172,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  // Refcounted class that owns quic::QuicCryptoClientConfig and tracks how many
  // consumers are using it currently. When the last reference is freed, the
  // QuicCryptoClientConfigHandle informs the owning QuicStreamFactory, moves it
-@@ -2240,7 +2273,7 @@
+@@ -2228,7 +2261,7 @@
                sct_auditing_delegate_,
                HostsFromOrigins(params_.origins_to_force_quic_on),
                actual_network_isolation_key),
@@ -183,7 +183,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    crypto_config->set_user_agent_id(params_.user_agent_id);
 --- a/net/socket/ssl_client_socket_impl.cc
 +++ b/net/socket/ssl_client_socket_impl.cc
-@@ -406,7 +406,33 @@
+@@ -393,7 +393,33 @@
    CHECK(context_);
  }
  
@@ -217,7 +217,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    Disconnect();
  }
  
-@@ -801,6 +827,8 @@
+@@ -788,6 +814,8 @@
      }
      if (session)
        SSL_set_session(ssl_.get(), session.get());
@@ -226,7 +226,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    }
  
    transport_adapter_ = std::make_unique<SocketBIOAdapter>(
-@@ -1089,6 +1117,35 @@
+@@ -1076,6 +1104,35 @@
                      : SSLHandshakeDetails::kTLS13Full;
      }
    }
@@ -262,7 +262,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    UMA_HISTOGRAM_ENUMERATION("Net.SSLHandshakeDetails", details);
  
    // Measure TLS connections that implement the renegotiation_info extension.
-@@ -1762,6 +1819,8 @@
+@@ -1749,6 +1806,8 @@
  }
  
  bool SSLClientSocketImpl::IsCachingEnabled() const {
