@@ -100,6 +100,7 @@ various/fixes/xfce-maximize.patch
 #optional/fma-avx2.patch
 #optional/disable/catapult.patch
 #optional/disable/atk-dbus.patch
+#optional/disable/rtc-protobuf.patch
 #optional/legacy-i386/byteswap-constexpr2.patch
 #optional/legacy-i386/support-i386.patch
 #optional/system/icu.patch

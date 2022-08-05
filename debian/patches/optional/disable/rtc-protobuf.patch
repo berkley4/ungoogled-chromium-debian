@@ -1,0 +1,11 @@
+--- a/third_party/webrtc/webrtc.gni
++++ b/third_party/webrtc/webrtc.gni
+@@ -238,7 +238,7 @@
+ # declare_args block.
+ declare_args() {
+   # Enables the use of protocol buffers for debug recordings.
+-  rtc_enable_protobuf = !build_with_mozilla
++  rtc_enable_protobuf = false
+ 
+   # Set this to disable building with support for SCTP data channels.
+   rtc_enable_sctp = !build_with_mozilla
