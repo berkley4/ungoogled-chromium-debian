@@ -3,7 +3,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -240,7 +240,6 @@
+@@ -239,7 +239,6 @@
      deps += [
        "//google_apis/gcm:mcs_probe",
        "//media/cast:cast_unittests",
@@ -11,7 +11,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      ]
      if (!is_android) {
        deps += [ "//chrome/test:telemetry_perf_unittests" ]
-@@ -377,7 +376,6 @@
+@@ -375,7 +374,6 @@
        "//net/android:net_junit_tests",
        "//services:services_junit_tests",
        "//testing/android/junit:junit_unit_tests",
@@ -19,7 +19,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        "//third_party/r8:custom_d8_java",
        "//tools/android:android_tools",
        "//tools/android:memconsumer",
-@@ -985,7 +983,6 @@
+@@ -1001,7 +999,6 @@
        "//ui/ozone:ozone_integration_tests",
  
        # Blocked on https://github.com/catapult-project/catapult/issues/2297
@@ -27,7 +27,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        "//tools/perf/clear_system_cache",
        "//ui/ozone/gl:ozone_gl_unittests",
      ]
-@@ -1094,7 +1091,6 @@
+@@ -1110,7 +1107,6 @@
          "//chrome:chrome",
          "//chrome/test/chromedriver",
          "//testing:test_scripts_shared",
@@ -35,7 +35,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        ]
        if (is_win) {
          data_deps += [ "//build/win:copy_cdb_to_output" ]
-@@ -1136,7 +1132,6 @@
+@@ -1152,7 +1148,6 @@
        "//third_party/blink/public:blink_devtools_inspector_resources",
        "//third_party/blink/public/mojom:mojom_platform_js_data_deps",
        "//third_party/blink/renderer/core:js_files_for_form_controls_web_tests",
@@ -43,7 +43,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        "//third_party/hyphenation-patterns:test_data",
        "//third_party/mesa_headers",
        "//tools/imagediff",
-@@ -1217,7 +1212,6 @@
+@@ -1233,7 +1228,6 @@
  
      if (is_android) {
        data += [
@@ -51,7 +51,7 @@ author: Michael Gilbert <mgilbert@debian.org>
          "//build/android/",
        ]
      }
-@@ -1511,10 +1505,6 @@
+@@ -1522,10 +1516,6 @@
        "//third_party/blink/web_tests/StaleTestExpectations",
        "//third_party/blink/web_tests/TestExpectations",
        "//third_party/blink/web_tests/VirtualTestSuites",
@@ -87,7 +87,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -9954,8 +9954,6 @@
+@@ -10021,8 +10021,6 @@
        "//chrome/test/data/password/captured_sites/",
        "//chrome/test/data/web_page_replay_go_helper_scripts/automation_helper.js",
        "//components/test/data/autofill/web_page_replay_support_files/",
@@ -96,7 +96,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      ]
  
      if (is_linux || is_chromeos || is_win) {
-@@ -10168,7 +10166,6 @@
+@@ -10233,7 +10231,6 @@
      deps = [ "//tools/perf/chrome_telemetry_build:telemetry_chrome_test" ]
  
      data = [
@@ -104,14 +104,6 @@ author: Michael Gilbert <mgilbert@debian.org>
        "//tools/perf/run_telemetry_tests",
        "//testing/scripts/run_telemetry_as_googletest.py",
      ]
-@@ -10301,7 +10298,6 @@
-       "//chrome/test/data/perf",
-       "//components/variations/service/generate_ui_string_overrider.py",
-       "//testing/scripts",
--      "//third_party/catapult",
-       "//tools/perf",
-     ]
-     data_deps = [ "//testing:test_scripts_shared" ]
 --- a/tools/grit/BUILD.gn
 +++ b/tools/grit/BUILD.gn
 @@ -33,7 +33,6 @@
@@ -162,22 +154,22 @@ author: Michael Gilbert <mgilbert@debian.org>
  }
 --- a/tools/gritsettings/resource_ids.spec
 +++ b/tools/gritsettings/resource_ids.spec
-@@ -755,12 +755,6 @@
+@@ -751,12 +751,6 @@
    "content/test/web_ui_mojo_test_resources.grd": {
-     "includes": [3860],
+     "includes": [3840],
    },
 -
 -  # This file is generated during the build.
 -  "<(SHARED_INTERMEDIATE_DIR)/content/browser/tracing/tracing_resources.grd": {
 -    "META": {"sizes": {"includes": [20],}},
--    "includes": [3880],
+-    "includes": [3860],
 -  },
    # END content/ section.
  
    # START ios/web/ section.
 --- a/content/browser/BUILD.gn
 +++ b/content/browser/BUILD.gn
-@@ -2530,7 +2530,6 @@
+@@ -2542,7 +2542,6 @@
    if (!is_android) {
      deps += [
        "//components/vector_icons",
@@ -185,27 +177,9 @@ author: Michael Gilbert <mgilbert@debian.org>
      ]
      sources += [
        # Non-Android platforms that don't presently support
---- a/fuchsia/engine/BUILD.gn
-+++ b/fuchsia/engine/BUILD.gn
-@@ -27,7 +27,6 @@
-   sources = [
-     "$root_gen_dir/components/components_resources.pak",
-     "$root_gen_dir/content/app/resources/content_resources_100_percent.pak",
--    "$root_gen_dir/content/browser/tracing/tracing_resources.pak",
-     "$root_gen_dir/content/content_resources.pak",
-     "$root_gen_dir/content/dev_ui_content_resources.pak",
-     "$root_gen_dir/mojo/public/js/mojo_bindings_resources.pak",
-@@ -42,7 +41,6 @@
-     "//content:content_resources",
-     "//content:dev_ui_content_resources",
-     "//content/app/resources",
--    "//content/browser/tracing:resources",
-     "//gpu/command_buffer/service",
-     "//mojo/public/js:resources",
-     "//net:net_resources",
 --- a/chrome/chrome_paks.gni
 +++ b/chrome/chrome_paks.gni
-@@ -171,7 +171,6 @@
+@@ -168,7 +168,6 @@
          "$root_gen_dir/chrome/webui_gallery_resources.pak",
          "$root_gen_dir/chrome/whats_new_resources.pak",
          "$root_gen_dir/content/browser/devtools/devtools_resources.pak",
@@ -213,7 +187,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        ]
        deps += [
          "//chrome/browser/resources:component_extension_resources",
-@@ -204,7 +203,6 @@
+@@ -200,7 +199,6 @@
          "//chrome/browser/resources/webui_gallery:resources",
          "//chrome/browser/resources/whats_new:resources",
          "//content/browser/devtools:devtools_resources",
@@ -223,7 +197,7 @@ author: Michael Gilbert <mgilbert@debian.org>
          sources += [
 --- a/content/shell/BUILD.gn
 +++ b/content/shell/BUILD.gn
-@@ -458,11 +458,6 @@
+@@ -459,11 +459,6 @@
      "//ui/strings",
    ]
  
@@ -348,7 +322,7 @@ author: Michael Gilbert <mgilbert@debian.org>
    data = [
 --- a/weblayer/shell/BUILD.gn
 +++ b/weblayer/shell/BUILD.gn
-@@ -185,9 +185,6 @@
+@@ -183,9 +183,6 @@
    }
    if (is_android) {
      deps += [ "//ui/android:ui_java_resources" ]
