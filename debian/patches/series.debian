@@ -87,6 +87,9 @@ various/wayland-egl.patch
 various/disable/orchestrator.patch
 various/fedora/enable-hardware-accelerated-mjpeg.patch
 various/fixes/audio-sandbox.patch
+various/fixes/cross-origin-favicons-1.patch
+various/fixes/cross-origin-favicons-2.patch
+various/fixes/cross-origin-favicons-3.patch
 various/fixes/EnumTable-crash.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/tflite-system-zlib.patch
