@@ -13,6 +13,7 @@ Build-Depends:
  generate-ninja,
  ninja-build,
  pkg-config,
+ brotli,
  gperf,
  libncurses-dev,
  libcups2-dev,
@@ -39,6 +40,10 @@ Build-Depends:
  liblcms2-dev,
  libopenjp2-7-dev,
  libpipewire-0.3-dev,
+ libbrotli-dev,
+ libdouble-conversion-dev,
+ libxnvctrl-dev,
+ libwoff-dev,
  libva-dev
 
 Package: ungoogled-chromium
