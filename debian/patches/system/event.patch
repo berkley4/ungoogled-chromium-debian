@@ -3,23 +3,34 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/third_party/webrtc/rtc_base/task_queue_libevent.cc
 +++ b/third_party/webrtc/rtc_base/task_queue_libevent.cc
-@@ -27,7 +27,7 @@
- #include "absl/strings/string_view.h"
- #include "api/task_queue/queued_task.h"
- #include "api/task_queue/task_queue_base.h"
--#include "base/third_party/libevent/event.h"
+@@ -36,7 +36,7 @@
+ #include "rtc_base/synchronization/mutex.h"
+ #include "rtc_base/thread_annotations.h"
+ #include "rtc_base/time_utils.h"
+-#include "third_party/libevent/event.h"
 +#include <event.h>
- #include "rtc_base/checks.h"
- #include "rtc_base/logging.h"
- #include "rtc_base/numerics/safe_conversions.h"
+ 
+ namespace webrtc {
+ namespace {
 --- a/base/message_loop/message_pump_libevent.cc
 +++ b/base/message_loop/message_pump_libevent.cc
-@@ -16,7 +16,7 @@
- #include "base/logging.h"
- #include "base/notreached.h"
- #include "base/posix/eintr_wrapper.h"
--#include "base/third_party/libevent/event.h"
-+#include <event.h>
+@@ -20,7 +20,7 @@
  #include "base/time/time.h"
  #include "base/trace_event/base_tracing.h"
  #include "build/build_config.h"
+-#include "third_party/libevent/event.h"
++#include <event.h>
+ 
+ #if BUILDFLAG(ENABLE_MESSAGE_PUMP_EPOLL)
+ #include "base/message_loop/message_pump_epoll.h"
+--- a/base/message_loop/message_pump_libevent.h
++++ b/base/message_loop/message_pump_libevent.h
+@@ -16,7 +16,7 @@
+ #include "base/message_loop/message_pump_buildflags.h"
+ #include "base/message_loop/watchable_io_message_pump_posix.h"
+ #include "base/threading/thread_checker.h"
+-#include "third_party/libevent/event.h"
++#include <event.h>
+ 
+ // Declare structs we need from libevent.h rather than including it
+ struct event_base;

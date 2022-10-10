@@ -45,7 +45,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
          unsigned long channelNumber,
 --- a/third_party/blink/renderer/modules/webaudio/audio_context.cc
 +++ b/third_party/blink/renderer/modules/webaudio/audio_context.cc
-@@ -502,7 +502,9 @@
+@@ -497,7 +497,9 @@
    DCHECK(IsMainThread());
    DCHECK(destination());
  

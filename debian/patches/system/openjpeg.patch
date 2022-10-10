@@ -14,7 +14,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      "PNG_USE_READ_MACROS",
 --- a/third_party/pdfium/core/fpdfapi/render/BUILD.gn
 +++ b/third_party/pdfium/core/fpdfapi/render/BUILD.gn
-@@ -49,6 +49,7 @@
+@@ -47,6 +47,7 @@
      "../../../:pdfium_noshorten_config",
    ]
    deps = [
@@ -32,4 +32,4 @@ author: Michael Gilbert <mgilbert@debian.org>
 +#if 1
  #include <openjpeg.h>
  #else
- #include "third_party/libopenjpeg20/openjpeg.h"
+ #include "third_party/libopenjpeg/openjpeg.h"

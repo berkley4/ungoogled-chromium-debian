@@ -1,4 +1,4 @@
-From 49c5be91b0464209f2e1cc6a395bcc60732e1a06 Mon Sep 17 00:00:00 2001
+From 42832fae9ee08b57c31546ca1c42d246878b55be Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Fri, 27 Nov 2020 02:43:37 -0500
 Subject: [PATCH] disable autofill assistant by default
@@ -37,5 +37,5 @@ Subject: [PATCH] disable autofill assistant by default
 -    "AutofillAssistantProactiveHelp", base::FEATURE_ENABLED_BY_DEFAULT};
 +    "AutofillAssistantProactiveHelp", base::FEATURE_DISABLED_BY_DEFAULT};
  
- // Used to configure the start heuristics for
- // |kAutofillAssistantInCctTriggering| and/or
+ // Used to configure URL heuristics for upcoming new features.
+ extern const base::Feature kAutofillAssistantUrlHeuristic1{

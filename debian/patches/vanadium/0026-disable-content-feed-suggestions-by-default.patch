@@ -1,33 +1,27 @@
-From 495c3f4a3af2bd9450536a7756a263ce099bd1cf Mon Sep 17 00:00:00 2001
+From 7541ab16fdcf8c19842f2c5fb09cc017ad3fd03e Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Sun, 22 Mar 2020 01:23:48 -0400
 Subject: [PATCH] disable content feed suggestions by default
 
 ---
- .../org/chromium/chrome/browser/flags/CachedFeatureFlags.java | 2 +-
- components/feed/feed_feature_list.cc                          | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ .../org/chromium/chrome/browser/flags/CachedFeatureFlags.java   | 2 +-
+ components/feed/feed_feature_list.cc                            | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CachedFeatureFlags.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CachedFeatureFlags.java
-@@ -76,7 +76,7 @@
-                     .put(ChromeFeatureList.TAB_TO_GTS_ANIMATION, true)
-                     .put(ChromeFeatureList.TEST_DEFAULT_DISABLED, false)
-                     .put(ChromeFeatureList.TEST_DEFAULT_ENABLED, true)
+@@ -77,7 +77,7 @@
+                     .put(ChromeFeatureList.INCOGNITO_REAUTHENTICATION_FOR_ANDROID, false)
+                     .put(ChromeFeatureList.INSTANCE_SWITCHER, true)
+                     .put(ChromeFeatureList.INSTANT_START, false)
 -                    .put(ChromeFeatureList.INTEREST_FEED_V2, true)
 +                    .put(ChromeFeatureList.INTEREST_FEED_V2, false)
-                     .put(ChromeFeatureList.USE_CHIME_ANDROID_SDK, false)
-                     .put(ChromeFeatureList.CCT_INCOGNITO_AVAILABLE_TO_THIRD_PARTY, false)
-                     .put(ChromeFeatureList.READ_LATER, false)
+                     .put(ChromeFeatureList.LENS_CAMERA_ASSISTED_SEARCH, false)
+                     .put(ChromeFeatureList.NEW_WINDOW_APP_MENU, true)
+                     .put(ChromeFeatureList.OMAHA_MIN_SDK_VERSION_ANDROID, false)
 --- a/components/feed/feed_feature_list.cc
 +++ b/components/feed/feed_feature_list.cc
-@@ -12,12 +12,12 @@
- namespace feed {
- 
- const base::Feature kInterestFeedContentSuggestions{
--    "InterestFeedContentSuggestions", base::FEATURE_ENABLED_BY_DEFAULT};
-+    "InterestFeedContentSuggestions", base::FEATURE_DISABLED_BY_DEFAULT};
- // InterestFeedV2 takes precedence over InterestFeedContentSuggestions.
+@@ -21,7 +21,7 @@
  // InterestFeedV2 is cached in ChromeCachedFlags. If the default value here is
  // changed, please update the cached one's default value in CachedFeatureFlags.
  const base::Feature kInterestFeedV2{"InterestFeedV2",

@@ -1,29 +1,29 @@
 --- a/build/config/ui.gni
 +++ b/build/config/ui.gni
-@@ -41,8 +41,10 @@
+@@ -41,7 +41,9 @@
  
- assert(!use_glib || (is_linux && !is_chromecast))
+ assert(!use_glib || (is_linux && !is_castos))
  
--use_atk = is_linux && !is_chromecast && use_glib &&
--          current_toolchain == default_toolchain
+-use_atk = use_glib && current_toolchain == default_toolchain
 +declare_args() {
-+  use_atk = is_linux && !is_chromecast && use_glib &&
-+            current_toolchain == default_toolchain
++  use_atk = use_glib && current_toolchain == default_toolchain
 +}
  
  # Whether using Xvfb to provide a display server for a test might be
  # necessary.
 --- a/chrome/browser/chrome_browser_main_linux.cc
 +++ b/chrome/browser/chrome_browser_main_linux.cc
-@@ -62,9 +62,9 @@
+@@ -60,11 +60,11 @@
+ #if BUILDFLAG(IS_CHROMEOS)
+   // No-op: Ash and Lacros Bluetooth DBusManager initialization depend on
    // FeatureList, and is done elsewhere.
++#elif defined(USE_DBUS)
++  bluez::BluezDBusManager::Initialize(nullptr /* system_bus */);
  #endif  // BUILDFLAG(IS_CHROMEOS)
  
--#if !BUILDFLAG(IS_CHROMEOS)
-+#if !BUILDFLAG(IS_CHROMEOS) && defined(USE_DBUS)
-   bluez::BluezDBusManager::Initialize(nullptr /* system_bus */);
+ #if !BUILDFLAG(IS_CHROMEOS)
+-  bluez::BluezDBusManager::Initialize(nullptr /* system_bus */);
 -
-+#elif !BUILDFLAG(IS_CHROMEOS)
    // Set up crypt config. This needs to be done before anything starts the
    // network service, as the raw encryption key needs to be shared with the
    // network service for encrypted cookie storage.
@@ -52,7 +52,22 @@
  
  namespace metrics {
  
-@@ -74,7 +74,7 @@
+@@ -31,12 +31,12 @@
+   base::UmaHistogramEnumeration("Bluetooth.Availability.v2",
+                                 bluetooth_availability_);
+ 
+-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
++#if (BUILDFLAG(IS_LINUX) && defined(USE_DBUS)) || BUILDFLAG(IS_CHROMEOS)
+   base::UmaHistogramEnumeration("Bluetooth.StackName",
+                                 floss::features::IsFlossEnabled()
+                                     ? BluetoothStackName::kFloss
+                                     : BluetoothStackName::kBlueZ);
+-#endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
++#endif  // (BUILDFLAG(IS_LINUX) && defined(USE_DBUS)) || BUILDFLAG(IS_CHROMEOS)
+ #endif  // BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC) ||
+         // BUILDFLAG(IS_WIN)
+ }
+@@ -77,7 +77,7 @@
      return;
    }
  
@@ -60,19 +75,19 @@
 +#if BUILDFLAG(IS_CHROMEOS) || (BUILDFLAG(IS_LINUX) && defined(USE_DBUS))
    bool is_initialized;
  
-   if (base::FeatureList::IsEnabled(floss::features::kFlossEnabled)) {
-@@ -90,7 +90,7 @@
+   if (floss::features::IsFlossEnabled()) {
+@@ -91,7 +91,7 @@
    // startup.
    if (!is_initialized)
      return;
 -#endif  // BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX)
-+#endif  // BUILDFLAG(IS_CHROMEOS) || (BUILDFLAG(IS_LINUX && defined(USE_DBUS))
++#endif  // BUILDFLAG(IS_CHROMEOS) || (BUILDFLAG(IS_LINUX) && defined(USE_DBUS))
  
    if (!device::BluetoothAdapterFactory::Get()->IsBluetoothSupported()) {
      bluetooth_availability_ = BluetoothAvailability::BLUETOOTH_NOT_SUPPORTED;
 --- a/chrome/browser/platform_util_linux.cc
 +++ b/chrome/browser/platform_util_linux.cc
-@@ -27,11 +27,15 @@
+@@ -28,11 +28,15 @@
  // complain as Chromecast doesn't use (or depend on) //components/dbus.
  // TODO(crbug.com/1215474): Eliminate //chrome being visible in the GN structure
  // on Chromecast and remove the nogncheck below.
@@ -88,7 +103,7 @@
  #include "third_party/abseil-cpp/absl/types/optional.h"
  #include "url/gurl.h"
  
-@@ -41,6 +45,7 @@
+@@ -42,6 +46,7 @@
  
  namespace {
  
@@ -96,7 +111,7 @@
  const char kMethodListActivatableNames[] = "ListActivatableNames";
  const char kMethodNameHasOwner[] = "NameHasOwner";
  
-@@ -284,6 +289,7 @@
+@@ -285,6 +290,7 @@
    base::CallbackListSubscription browser_shutdown_subscription_;
    base::WeakPtrFactory<ShowItemHelper> weak_ptr_factory_{this};
  };
@@ -104,7 +119,7 @@
  
  void RunCommand(const std::string& command,
                  const base::FilePath& working_directory,
-@@ -350,8 +356,10 @@
+@@ -351,8 +357,10 @@
  }  // namespace internal
  
  void ShowItemInFolder(Profile* profile, const base::FilePath& full_path) {
@@ -115,6 +130,17 @@
  }
  
  void OpenExternal(Profile* profile, const GURL& url) {
+--- a/device/bluetooth/adapter.cc
++++ b/device/bluetooth/adapter.cc
+@@ -107,7 +107,7 @@
+   mojom::AdapterInfoPtr adapter_info = mojom::AdapterInfo::New();
+   adapter_info->address = adapter_->GetAddress();
+   adapter_info->name = adapter_->GetName();
+-#if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX)
++#if BUILDFLAG(IS_CHROMEOS) || (BUILDFLAG(IS_LINUX) && defined(USE_DBUS))
+   adapter_info->system_name = adapter_->GetSystemName();
+   adapter_info->floss = floss::features::IsFlossEnabled();
+ #endif
 --- a/device/bluetooth/bluetooth_adapter_factory.cc
 +++ b/device/bluetooth/bluetooth_adapter_factory.cc
 @@ -42,7 +42,7 @@
@@ -137,7 +163,7 @@
  #elif BUILDFLAG(IS_WIN)
 --- a/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc
 +++ b/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc
-@@ -1339,7 +1339,7 @@
+@@ -1337,7 +1337,7 @@
  // TODO: Ideally this should be handled by our feature system, so that this
  // code doesn't even compile on OSes it isn't being used on, but currently this
  // is not possible.
@@ -146,7 +172,7 @@
    base::WeakPtr<device::BluetoothLocalGattService> service =
        device::BluetoothLocalGattService::Create(
            event_router_->adapter(),
-@@ -1368,6 +1368,7 @@
+@@ -1366,6 +1366,7 @@
  }
  
  void BluetoothLowEnergyCreateCharacteristicFunction::DoWork() {
@@ -154,7 +180,7 @@
    device::BluetoothLocalGattService* service =
        event_router_->adapter()->GetGattService(params_->service_id);
    if (!service) {
-@@ -1388,6 +1389,9 @@
+@@ -1386,6 +1387,9 @@
  
    Respond(ArgumentList(apibtle::CreateCharacteristic::Results::Create(
        characteristic->GetIdentifier())));
@@ -164,7 +190,7 @@
  }
  
  // createDescriptor:
-@@ -1404,6 +1408,7 @@
+@@ -1402,6 +1406,7 @@
  }
  
  void BluetoothLowEnergyCreateDescriptorFunction::DoWork() {
@@ -172,7 +198,7 @@
    device::BluetoothLocalGattCharacteristic* characteristic =
        event_router_->GetLocalCharacteristic(params_->characteristic_id);
    if (!characteristic) {
-@@ -1419,6 +1424,9 @@
+@@ -1417,6 +1422,9 @@
  
    Respond(ArgumentList(
        apibtle::CreateDescriptor::Results::Create(descriptor->GetIdentifier())));
@@ -194,12 +220,25 @@
  
    android_library("java") {
      # Conceptually, this should be visible only to //services/device:java.
---- a/device/bluetooth/cast_bluetooth.gni
-+++ b/device/bluetooth/cast_bluetooth.gni
-@@ -2,5 +2,5 @@
+--- a/ui/shell_dialogs/BUILD.gn
++++ b/ui/shell_dialogs/BUILD.gn
+@@ -55,7 +55,6 @@
+       "shell_dialog_linux.h",
+     ]
+     deps += [
+-      "//components/dbus/thread_linux",
+       "//ui/linux:linux_ui",
+     ]
+     if (use_dbus) {
+@@ -64,7 +63,10 @@
+         "select_file_dialog_linux_portal.cc",
+         "select_file_dialog_linux_portal.h",
+       ]
+-      deps += [ "//dbus" ]
++      deps += [
++        "//components/dbus/thread_linux",
++        "//dbus",
++      ]
+     }
+   }
  
- declare_args() {
-   force_cast_bluetooth = false
--  use_bluez = (is_linux && !is_castos) || is_chromeos
-+  use_bluez = (is_linux && !is_castos && use_dbus) || is_chromeos
- }

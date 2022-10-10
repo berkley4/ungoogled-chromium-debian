@@ -41,7 +41,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -7830,6 +7830,18 @@
+@@ -7889,6 +7889,18 @@
          FEATURE_VALUE_TYPE(features::kUIDebugTools),
      },
  #endif
@@ -62,7 +62,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       flag_descriptions::kSplitCacheByNetworkIsolationKeyDescription,
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -2474,6 +2474,15 @@
+@@ -2585,6 +2585,15 @@
  const char kSmoothScrollingDescription[] =
      "Animate smoothly when scrolling page content.";
  
@@ -80,7 +80,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      "Partitions the HTTP Cache by (top-level site, current-frame site) to "
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -1397,6 +1397,12 @@
+@@ -1455,6 +1455,12 @@
  extern const char kSmoothScrollingName[];
  extern const char kSmoothScrollingDescription[];
  
@@ -95,7 +95,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -124,6 +124,12 @@
+@@ -125,6 +125,12 @@
  const base::Feature kNetworkQualityEstimator{"NetworkQualityEstimator",
                                               base::FEATURE_DISABLED_BY_DEFAULT};
  
@@ -110,7 +110,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/net/base/features.h
 +++ b/net/base/features.h
-@@ -187,6 +187,12 @@
+@@ -188,6 +188,12 @@
  // quality estimator (NQE).
  NET_EXPORT extern const base::Feature kNetworkQualityEstimator;
  
@@ -176,7 +176,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/net/base/isolation_info.h
 +++ b/net/base/isolation_info.h
-@@ -204,6 +204,10 @@
+@@ -202,6 +202,10 @@
    // an empty string.
    std::string Serialize() const;
  
@@ -187,7 +187,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
   private:
    IsolationInfo(RequestType request_type,
                  const absl::optional<url::Origin>& top_frame_origin,
-@@ -246,6 +250,9 @@
+@@ -244,6 +248,9 @@
    // excluded to make it easier to update on subframe redirects.
    absl::optional<std::set<SchemefulSite>> party_context_;
  
@@ -350,7 +350,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
          resolve_context_->isolation_info(), request_priority_);
      ++attempts_count_;
      int rv = attempts_.back()->Start(base::BindOnce(
-@@ -1689,6 +1702,8 @@
+@@ -1688,6 +1701,8 @@
    base::SafeRef<ResolveContext> resolve_context_;
    RequestPriority request_priority_ = DEFAULT_PRIORITY;
  
@@ -359,7 +359,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    THREAD_CHECKER(thread_checker_);
  };
  
-@@ -1709,10 +1724,10 @@
+@@ -1708,10 +1723,10 @@
        bool secure,
        SecureDnsMode secure_dns_mode,
        ResolveContext* resolve_context,
@@ -379,9 +379,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "base/time/time.h"
  #include "net/base/request_priority.h"
 +#include "net/base/network_isolation_key.h"
+ #include "net/dns/opt_record_rdata.h"
  #include "net/dns/public/secure_dns_mode.h"
  #include "net/dns/record_rdata.h"
- #include "third_party/abseil-cpp/absl/types/optional.h"
 @@ -115,7 +116,8 @@
        bool secure,
        SecureDnsMode secure_dns_mode,

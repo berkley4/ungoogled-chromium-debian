@@ -8,34 +8,34 @@
 shim-fix-for-official-builds.patch
 perfetto-system-zlib.patch
 pdfium-system-tiff.patch
+sql-virtual-cursor.patch
 ##system-jsoncpp.patch
 template-correction.patch
-sql-virtual-cursor.patch
 
 debianization/master-preferences.patch
 
+fixes/angle-wayland.patch
+fixes/fix-arm-vfpv3-d16-libaom.patch
+fixes/ps-print.patch
 fixes/widevine-enable-version-string.patch
 fixes/widevine-locations.patch
-fixes/ps-print.patch
 
 #upstream/
 
-disable/tests.patch
 disable/android.patch
-disable/installer.patch
+disable/angle-perftests.patch
+disable/driver-chrome-path.patch
 disable/font-tests.patch
 disable/swiftshader.patch
 disable/swiftshader-2.patch
-disable/driver-chrome-path.patch
+disable/tests.patch
 disable/widevine-cdm-cu.patch
-disable/angle-perftests.patch
-disable/libaom-arm.patch
 
-system/zlib.patch
+system/eu-strip.patch
 system/event.patch
 system/openjpeg.patch
 system/opus.patch
-system/eu-strip.patch
+system/zlib.patch
 
 bromite/AudioBuffer-AnalyserNode-fp-mitigations.patch
 bromite/Disable-AsyncDNS-by-default.patch
@@ -45,7 +45,7 @@ bromite/Disable-TLS-resumption.patch
 bromite/Hardening-against-incognito-mode-detection.patch
 bromite/Make-all-favicon-requests-on-demand.patch
 bromite/Partition-Blink-memory-cache.patch
-bromite/Partition-DNS-requests-by-top-frame-NIK.patch
+#bromite/Partition-DNS-requests-by-top-frame-NIK.patch
 bromite/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
 bromite/Remove-navigator.connection-info.patch
 bromite/Replace-DoH-probe-domain-with-RIPE-domain.patch
@@ -86,14 +86,12 @@ various/wayland-egl.patch
 #various/addenda/
 various/disable/orchestrator.patch
 various/fedora/enable-hardware-accelerated-mjpeg.patch
+various/fixes/angle-wayland-include-protocol.patch
 various/fixes/audio-sandbox.patch
 various/fixes/cross-origin-favicons-1.patch
-various/fixes/cross-origin-favicons-2.patch
-various/fixes/cross-origin-favicons-3.patch
 various/fixes/EnumTable-crash.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/tflite-system-zlib.patch
-various/fixes/x11-ozone-fix-X11-screensaver-suspension.patch
 various/fixes/xfce-maximize.patch
 
 #optional/custom-thin-lto-cache-location.patch

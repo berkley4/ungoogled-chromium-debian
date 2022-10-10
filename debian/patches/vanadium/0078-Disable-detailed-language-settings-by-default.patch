@@ -1,4 +1,4 @@
-From 7f04261f5d92c3eac76e4de9ae86f53260f93656 Mon Sep 17 00:00:00 2001
+From afe4094a1fcb5d33b308ab94b8104058d64abcf3 Mon Sep 17 00:00:00 2001
 From: fgei <fgei@gmail.com>
 Date: Tue, 8 Feb 2022 03:04:20 +0000
 Subject: [PATCH] Disable detailed language settings by default
@@ -9,9 +9,9 @@ Subject: [PATCH] Disable detailed language settings by default
 
 --- a/components/language/core/common/language_experiments.cc
 +++ b/components/language/core/common/language_experiments.cc
-@@ -27,7 +27,7 @@
- const base::Feature kNotifySyncOnLanguageDetermined{
-     "NotifySyncOnLanguageDetermined", base::FEATURE_ENABLED_BY_DEFAULT};
+@@ -25,7 +25,7 @@
+ const base::Feature kForceAppLanguagePrompt{"ForceAppLanguagePrompt",
+                                             base::FEATURE_DISABLED_BY_DEFAULT};
  const base::Feature kDetailedLanguageSettings{"DetailedLanguageSettings",
 -                                              base::FEATURE_ENABLED_BY_DEFAULT};
 +                                              base::FEATURE_DISABLED_BY_DEFAULT};

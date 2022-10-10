@@ -22,7 +22,7 @@
  }
 --- a/third_party/pdfium/third_party/BUILD.gn
 +++ b/third_party/pdfium/third_party/BUILD.gn
-@@ -512,59 +512,13 @@
+@@ -514,59 +514,13 @@
    }
  }
  

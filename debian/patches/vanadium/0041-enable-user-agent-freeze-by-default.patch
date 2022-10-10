@@ -1,4 +1,4 @@
-From 291ea402d02229055714077da2cd803cf28f246a Mon Sep 17 00:00:00 2001
+From 254fcf4849751bfca04094f0b05a8a6104b6d436 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Wed, 3 Mar 2021 13:42:41 -0500
 Subject: [PATCH] enable user agent freeze by default
@@ -9,7 +9,7 @@ Subject: [PATCH] enable user agent freeze by default
 
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -108,7 +108,7 @@
+@@ -169,7 +169,7 @@
  
  // Freezes the user-agent as part of https://github.com/WICG/ua-client-hints.
  const base::Feature kReduceUserAgent{"ReduceUserAgent",

@@ -3,7 +3,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
 
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -4858,10 +4858,6 @@
+@@ -4974,10 +4974,6 @@
        data_deps += [ "//third_party/dawn/src/dawn/tests:dawn_perf_tests" ]
      }
  
@@ -16,7 +16,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
          "//chrome/test:load_library_perf_tests",
 --- a/third_party/angle/gni/angle.gni
 +++ b/third_party/angle/gni/angle.gni
-@@ -88,7 +88,7 @@
+@@ -102,7 +102,7 @@
    }
  
    # Indicate if the rapidJSON library is available to build with in third_party/.
@@ -25,7 +25,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
  }
  
  declare_args() {
-@@ -249,7 +249,7 @@
+@@ -268,7 +268,7 @@
        is_apple &&
        (angle_enable_glsl || angle_enable_metal || use_fuzzing_engine)
  
@@ -36,17 +36,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
    angle_build_tests = angle_has_build
 --- a/third_party/angle/src/tests/BUILD.gn
 +++ b/third_party/angle/src/tests/BUILD.gn
-@@ -12,8 +12,7 @@
-   build_angle_deqp_tests = false
-   build_angle_gles1_conform_tests = false
-   build_angle_trace_perf_tests = false
--  build_angle_perftests =
--      is_win || is_linux || is_chromeos || is_android || is_apple || is_fuchsia
-+  build_angle_perftests = false
- }
- 
- if (is_android) {
-@@ -181,7 +180,6 @@
+@@ -184,7 +184,6 @@
  
    deps = [
      ":angle_test_expectations",
@@ -54,57 +44,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
      "$angle_root:libANGLE",
      "$angle_root:libEGL_static",
      "$angle_root:libGLESv2_static",
-@@ -343,48 +341,7 @@
-   }
- }
- 
--template("angle_perftests_common") {
--  assert(defined(invoker.test_utils))
--
--  angle_source_set(target_name) {
--    testonly = true
--    if (is_ios) {
--      # shared libraries are hidden inside ios_framework_bundle, but we include headers from them
--      check_includes = false
--    }
--    sources = [
--      "../third_party/trace_event/trace_event.h",
--      "perf_tests/ANGLEPerfTest.cpp",
--      "perf_tests/ANGLEPerfTest.h",
--      "perf_tests/ANGLEPerfTestArgs.cpp",
--      "perf_tests/ANGLEPerfTestArgs.h",
--      "perf_tests/DrawCallPerfParams.cpp",
--      "perf_tests/DrawCallPerfParams.h",
--      "perf_tests/third_party/perf/perf_result_reporter.cc",
--      "perf_tests/third_party/perf/perf_result_reporter.h",
--      "perf_tests/third_party/perf/perf_test.cc",
--      "perf_tests/third_party/perf/perf_test.h",
--      "test_utils/runner/HistogramWriter.h",
--      "test_utils/runner/TestSuite.h",
--    ]
--    public_deps = [
--      "$angle_root/src/tests:angle_test_expectations",
--      "$angle_root/third_party/rapidjson:rapidjson",
--      "${invoker.test_utils}",
--    ]
--    public_configs += [ "${angle_root}:libANGLE_config" ]
--  }
--}
--
--angle_perftests_common("angle_perftests_shared") {
--  test_utils = ":angle_common_test_utils_shared"
--}
--
--angle_perftests_common("angle_perftests_static") {
--  test_utils = ":angle_common_test_utils_static"
--}
--
--if (is_win || is_linux || is_chromeos || is_android || is_apple) {
-+if (false) {
-   import("angle_perftests.gni")
- 
-   # This test suite is for perf tests that use ANGLE's internals in some direct way.
-@@ -1623,12 +1580,10 @@
+@@ -1672,12 +1671,10 @@
    testonly = true
    deps = [
      ":angle_end2end_tests",

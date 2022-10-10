@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -896,6 +896,7 @@
+@@ -883,6 +883,7 @@
      if (current_cpu == "x64") {
        cflags += [
          "-m64",

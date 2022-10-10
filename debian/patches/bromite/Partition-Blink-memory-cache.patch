@@ -37,7 +37,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    }
 --- a/third_party/blink/renderer/core/inspector/inspector_network_agent.cc
 +++ b/third_party/blink/renderer/core/inspector/inspector_network_agent.cc
-@@ -2208,7 +2208,7 @@
+@@ -2214,7 +2214,7 @@
    Resource* cached_resource = document->Fetcher()->CachedResource(url);
    if (!cached_resource) {
      cached_resource = GetMemoryCache()->ResourceForURL(
@@ -48,7 +48,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
                               cached_resource, content, base64_encoded))
 --- a/third_party/blink/renderer/core/inspector/inspector_page_agent.cc
 +++ b/third_party/blink/renderer/core/inspector/inspector_page_agent.cc
-@@ -166,9 +166,10 @@
+@@ -167,9 +167,10 @@
    if (!document)
      return nullptr;
    Resource* cached_resource = document->Fetcher()->CachedResource(url);
@@ -121,7 +121,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      kAutomaticPrune,
 --- a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc
 +++ b/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc
-@@ -650,7 +650,8 @@
+@@ -657,7 +657,8 @@
    if (!archive_ && factory.GetType() == ResourceType::kRaw)
      return nullptr;
  
@@ -131,7 +131,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // Most off-main-thread resource fetches use Resource::kRaw and don't reach
    // this point, but off-main-thread module fetches might.
    if (IsMainThread()) {
-@@ -1094,7 +1095,9 @@
+@@ -1116,7 +1117,9 @@
          resource = nullptr;
        } else {
          resource = GetMemoryCache()->ResourceForURL(
@@ -142,7 +142,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        }
        if (resource) {
          policy = DetermineRevalidationPolicy(resource_type, params, *resource,
-@@ -1302,7 +1305,8 @@
+@@ -1324,7 +1327,8 @@
      const FetchParameters& params,
      const ResourceFactory& factory) {
    const String cache_identifier =
@@ -152,7 +152,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    if (!base::FeatureList::IsEnabled(
            blink::features::kScopeMemoryCachePerContext)) {
      DCHECK(!IsMainThread() || params.IsStaleRevalidation() ||
-@@ -2194,13 +2198,16 @@
+@@ -2211,13 +2215,16 @@
    to_be_removed.clear();
  }
  
@@ -172,18 +172,18 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
    // Requests that can be satisfied via `archive_` (i.e. MHTML) or
    // `subresource_web_bundles_` should not participate in the global caching,
-@@ -2215,7 +2222,7 @@
-       return bundle->GetCacheIdentifier();
-   }
+@@ -2229,7 +2236,7 @@
+   if (bundle)
+     return bundle->GetCacheIdentifier();
  
 -  return MemoryCache::DefaultCacheIdentifier();
 +  return origin_url;
  }
  
- void ResourceFetcher::EmulateLoadStartedForInspector(
+ absl::optional<base::UnguessableToken>
 --- a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.h
 +++ b/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.h
-@@ -248,7 +248,8 @@
+@@ -252,7 +252,8 @@
                           uint32_t inflight_keepalive_bytes);
    blink::mojom::ControllerServiceWorkerMode IsControlledByServiceWorker() const;
  
@@ -191,5 +191,5 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +  String GetCacheIdentifier(const KURL& url,
 +    scoped_refptr<const blink::SecurityOrigin> cache_identifier) const;
  
-   enum IsImageSet { kImageNotImageSet, kImageIsImageSet };
- 
+   // If `url` exists as a resource in a subresource bundle in this frame,
+   // returns its UnguessableToken; otherwise, returns absl::nullopt.

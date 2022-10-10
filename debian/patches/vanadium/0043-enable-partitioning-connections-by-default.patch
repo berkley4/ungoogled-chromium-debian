@@ -1,4 +1,4 @@
-From d16f23710d12537aab804e84e2eb891920eda4b0 Mon Sep 17 00:00:00 2001
+From fb8aec3566605c336a36632cfba875f60ac33aad Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Mon, 8 Mar 2021 16:53:47 -0500
 Subject: [PATCH] enable partitioning connections by default
@@ -9,7 +9,7 @@ Subject: [PATCH] enable partitioning connections by default
 
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -137,11 +137,11 @@
+@@ -129,11 +129,11 @@
      "SplitCacheByNetworkIsolationKey", base::FEATURE_ENABLED_BY_DEFAULT};
  
  const base::Feature kSplitHostCacheByNetworkIsolationKey{
@@ -23,7 +23,7 @@ Subject: [PATCH] enable partitioning connections by default
  
  const base::Feature kForceIsolationInfoFrameOriginToTopLevelFrame{
      "ForceIsolationInfoFrameOriginToTopLevelFrame",
-@@ -149,19 +149,19 @@
+@@ -141,19 +141,19 @@
  
  const base::Feature kPartitionHttpServerPropertiesByNetworkIsolationKey{
      "PartitionHttpServerPropertiesByNetworkIsolationKey",
@@ -45,5 +45,5 @@ Subject: [PATCH] enable partitioning connections by default
 -    base::FEATURE_DISABLED_BY_DEFAULT};
 +    base::FEATURE_ENABLED_BY_DEFAULT};
  
- const base::Feature kExpectCTPruning{"ExpectCTPruning",
-                                      base::FEATURE_ENABLED_BY_DEFAULT};
+ const base::Feature kEnableDoubleKeyNetworkAnonymizationKey{
+     "EnableDoubleKeyNetworkAnonymizationKey",

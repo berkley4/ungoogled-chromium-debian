@@ -12,7 +12,7 @@ we're on our own with bugs.
 
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -1509,9 +1509,7 @@ if (!is_ios) {
+@@ -1617,9 +1617,7 @@ if (!is_ios) {
  }
  
  # TODO(cassew): Add more OS's that don't support x86.
@@ -20,6 +20,6 @@ we're on our own with bugs.
 -    target_os != "ios" && target_os != "mac" &&
 -    (target_os != "linux" || use_libfuzzer || !build_with_chromium)
 +is_valid_x86_target = true
+ 
+ # Note: v8_target_cpu == arm allows using the V8 arm simulator on x86 for fuzzing.
  assert(
-     is_valid_x86_target || target_cpu != "x86",
-     "'target_cpu=x86' is not supported for 'target_os=$target_os'. Consider omitting 'target_cpu' (default) or using 'target_cpu=x64' instead.")

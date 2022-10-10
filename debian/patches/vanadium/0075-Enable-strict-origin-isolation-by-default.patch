@@ -1,4 +1,4 @@
-From d932da5737f08fe1fe6d1794d9e2fc995e10b70c Mon Sep 17 00:00:00 2001
+From 09fd212909c544247ae1b594ce151ec6366a70c3 Mon Sep 17 00:00:00 2001
 From: qua3k <cliffmaceyak@gmail.com>
 Date: Thu, 21 Oct 2021 00:00:00 +0000
 Subject: [PATCH] Enable strict origin isolation by default
@@ -16,7 +16,7 @@ for more detail.
 
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
-@@ -933,7 +933,7 @@
+@@ -988,7 +988,7 @@
  // Controls whether site isolation should use origins instead of scheme and
  // eTLD+1.
  const base::Feature kStrictOriginIsolation{"StrictOriginIsolation",

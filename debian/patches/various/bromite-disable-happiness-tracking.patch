@@ -9,7 +9,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/common/chrome_features.cc
 +++ b/chrome/common/chrome_features.cc
-@@ -454,8 +454,8 @@
+@@ -434,8 +434,8 @@
  
  // Enables or disables the Happiness Tracking System for Desktop Privacy Guide.
  const base::Feature kHappinessTrackingSurveysForDesktopPrivacyGuide{

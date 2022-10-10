@@ -27,9 +27,9 @@ Cr-Commit-Position: refs/heads/main@{#1033741}
 
 --- a/chrome/browser/favicon/content_favicon_driver_browsertest.cc
 +++ b/chrome/browser/favicon/content_favicon_driver_browsertest.cc
-@@ -1114,3 +1114,79 @@
-   ASSERT_TRUE(url_loader_interceptor.was_loaded(icon_url));
-   url_loader_interceptor.Reset();
+@@ -1188,3 +1188,79 @@
+   EXPECT_TRUE(url_loader_interceptor.was_loaded(icon_url));
+   EXPECT_FALSE(url_loader_interceptor.did_bypass_cache(icon_url));
  }
 +
 +// TODO(crbug.com/1300214): Different origins should not share the same cache.
