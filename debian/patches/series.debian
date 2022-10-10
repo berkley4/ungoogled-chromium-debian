@@ -94,6 +94,7 @@ various/fixes/InkDropHost-crash.patch
 various/fixes/tflite-system-zlib.patch
 various/fixes/xfce-maximize.patch
 
+#optional/custom-import-limits.patch
 #optional/custom-thin-lto-cache-location.patch
 #optional/march.patch
 #optional/mtune.patch
