@@ -107,7 +107,6 @@ tarball:
 
 cast_configure:
 	sed 's@^\(enable_mdns=\)false@\1true@' -i $(UC_DIR)/flags.gn
-	test -n "$$(grep ^enable_openscreen=true $(UC_DIR)/flags.gn)" || sed "$$ a enable_openscreen=true" -i $(UC_DIR)/flags.gn
 	sed -e 's@\(.*/fix-building-without-mdns-and-service-discovery\.patch\)@#\1@' -e 's@\(.*/disable-dial-repeating-discovery\.patch\)@#\1@' -i $(UP_DIR)/series
 	sed 's@^\(vanadium\/[0-9]*-disable-media-router-.*\)@#\1@' -i $(DB_DIR)/series.debian
 	sed 's@^\(.*--media-router=0"\)@#\1@' < $(SH_DIR)/chromium-flags.conf > $(DB_DIR)/etc/chromium.d/chromium-flags.conf
@@ -135,7 +134,6 @@ setup: changelog control pgo_configure
 	test -f $(DB_DIR)/ungoogled-chromium.install || cp -a $(DB_DIR)/ungoogled-chromium.install.in $(DB_DIR)/ungoogled-chromium.install
 	test -x $(DB_DIR)/ungoogled-chromium.install || chmod 0700 $(DB_DIR)/ungoogled-chromium.install
 	test -f $(DB_DIR)/etc/chromium.d/chromium-flags.conf || cp -a $(SH_DIR)/chromium-flags.conf $(DB_DIR)/etc/chromium.d/
-	test -n "$$(grep ^enable_openscreen=false $(UC_DIR)/flags.gn)" && test -z "$$(grep ^enable_openscreen=true $(UC_DIR)/flags.gn)" || sed "$$ a enable_openscreen=false" -i $(UC_DIR)/flags.gn
 	# Remove some default/unwanted flags from submodules/ungoogled-chromium/flags.gn
 	sed -e '/^build_with_tflite_lib/d' -e '/^chrome_pgo_phase/d' -e '/^enable_hangout_services_extension/d' -e '/^enable_nacl/d' -e '/^enable_service_discovery/d' -e '/^exclude_unwind_tables/d' -e '/^google_api_key/d' -e '/^google_default_client_id/d' -e '/^google_default_client_secret/d' -i $(UC_DIR)/flags.gn
 	# Remove various entries from domain_substitution.list (third_party/libwebp/BUILD.gn causes a bizarre hash mismatch error)
