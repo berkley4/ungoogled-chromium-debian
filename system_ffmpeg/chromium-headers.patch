@@ -1,0 +1,21 @@
+--- a/libavformat/Makefile
++++ b/libavformat/Makefile
+@@ -3,6 +3,8 @@
+ 
+ HEADERS = avformat.h                                                    \
+           avio.h                                                        \
++          internal.h                                                    \
++          os_support.h                                                  \
+           version.h                                                     \
+           version_major.h                                               \
+ 
+--- a/libavcodec/Makefile
++++ b/libavcodec/Makefile
+@@ -19,6 +19,7 @@
+           jni.h                                                         \
+           mediacodec.h                                                  \
+           packet.h                                                      \
++          packet_internal.h                                             \
+           qsv.h                                                         \
+           vdpau.h                                                       \
+           version.h                                                     \

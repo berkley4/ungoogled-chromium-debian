@@ -107,4 +107,6 @@ various/fixes/xfce-maximize.patch
 #optional/legacy-i386/support-i386.patch
 #optional/system/icu.patch
 #optional/system/jpeg.patch
+#optional/system/roll-src-third_party-ffmpeg-102.patch
+#optional/system/roll-src-third_party-ffmpeg-106.patch
 #optional/system/unicode-fix-missing-headers.patch
