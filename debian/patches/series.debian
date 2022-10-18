@@ -31,7 +31,6 @@ disable/swiftshader-2.patch
 disable/tests.patch
 disable/widevine-cdm-cu.patch
 
-system/eu-strip.patch
 system/event.patch
 system/openjpeg.patch
 system/opus.patch
