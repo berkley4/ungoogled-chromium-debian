@@ -98,7 +98,7 @@ various/fixes/xfce-maximize.patch
 #optional/march.patch
 #optional/mtune.patch
 #optional/avx.patch
-#optional/fma-avx2.patch
+#optional/avx2.patch
 #optional/disable/catapult.patch
 #optional/disable/atk-dbus.patch
 #optional/disable/rtc-protobuf.patch
