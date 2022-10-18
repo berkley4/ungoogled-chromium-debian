@@ -20,11 +20,9 @@ Date:   Mon Sep 26 23:16:29 2022 -0400
     arm_cpudetect.c needs to be included in sources for all arm boards,
     not just ones that support NEON.
 
-diff --git a/third_party/libaom/BUILD.gn b/third_party/libaom/BUILD.gn
-index efd62e9b112b9..f297b8e02f8fa 100644
 --- a/third_party/libaom/BUILD.gn
 +++ b/third_party/libaom/BUILD.gn
-@@ -201,9 +201,7 @@ if (current_cpu == "arm64" || cpu_arch_full == "arm-neon" ||
+@@ -197,9 +197,7 @@
      }
      configs += [ ":libaom_config" ]
  
@@ -35,7 +33,7 @@ index efd62e9b112b9..f297b8e02f8fa 100644
      sources += aom_dsp_common_intrin_neon
      sources += aom_av1_encoder_intrin_neon
      sources += aom_dsp_encoder_intrin_neon
-@@ -260,6 +258,10 @@ static_library("libaom") {
+@@ -256,6 +254,10 @@
        cpu_arch_full == "arm-neon-cpu-detect") {
      deps += [ ":libaom_intrinsics_neon" ]
    }
