@@ -4,7 +4,7 @@ This is my fork of the unified branch of [ungoogle-chromium-debian](https://gith
 
 There are debs in the release section which are built with -march=x86-64-v2 --mtune=generic -mavx (refer [here](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels) for more info about x86-64-v2).
 These should run on CPUs which support AVX instructions, which should encompass the Intel Sandybridge/AMD Bulldozer era (circa 2011) onwards.
-There's also a patch which can be used by builders to enable FMA/FMA3/FMA4/AVX2 support (cat /proc/cpuinfo is your friend here).
+There's also a patch which can be used by builders to enable AVX2 support (cat /proc/cpuinfo is your friend here).
 
 The debs are built in a debian stable chroot, so should work on that, Ubuntu Focal and newer.
 
@@ -38,7 +38,7 @@ ___Performance improvements___
 - Upstream optimisation - levels vary per target (versus debian's -O2 everywhere default)
 - Various compiler flags aimed at improving speed
     - -march=[x86-64-v2](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels)
-    - -mavx - enables AVX instructions (optional patches to enable FMA/FMA3/FMA4/AVX2)
+    - -mavx - enables AVX instructions (an optional patch enables AVX2)
     - -fno-plt - (see [here](https://patchwork.ozlabs.org/project/gcc/patch/alpine.LNX.2.11.1505061730460.22867@monopod.intra.ispras.ru/))
     - -ftrivial-auto-var-init set to zero - see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html)
     - -Wl,-mllvm,-import-instr-limit=10 - via an optional patch (details [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1591725#c32))
