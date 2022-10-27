@@ -61,7 +61,7 @@ ___Other features___
 - A new ungoogled-chromium-libraries package (likely not needed by everyone)
 - Bundled libpng - avoids an upstream debian bug (see [here](https://github.com/ungoogled-software/ungoogled-chromium-debian/issues/169))
 - Google translate - optional build support via a patch to re-enable this functionality
-- Chromecast - optional build support (untested and experimental)
+- Disable mDNS and service discovery - optional build support
 
 
 ___Build system___
@@ -101,16 +101,16 @@ To build with google translate enabled, instead of running debian/rules setup, r
 debian/rules setup_translate
 
 
-___Chromecast___
+___Disable mDNS and service discovery___
 
-To build with chromecast enabled, instead of running debian/rules setup, run the following :-
+To build with mdns (and service discovery) disabled, run the following :-
 
-debian/rules setup_cast
+debian/rules setup_no_mdns
 
 
-If you want both google translate and chromecast enabled, run the following :-
+If you want to both enable google translate and disable mdns, run the following :-
 
-debian/rules setup_cast_translate
+debian/rules setup_no_mdns_translate
 
 
 - - - -

@@ -106,11 +106,10 @@ tarball:
 	test -d $(DL_CACHE) || mkdir -p $(DL_CACHE)
 	test ! -f base/BUILD.gn && $(UL_DIR)/downloads.py retrieve -i $(UC_DIR)/downloads.ini -c $(DL_CACHE) && $(UL_DIR)/downloads.py unpack -i $(UC_DIR)/downloads.ini -c $(DL_CACHE) $(RT_DIR)
 
-cast_configure:
-	sed 's@^\(enable_mdns=\)false@\1true@' -i $(UC_DIR)/flags.gn
-	sed -e 's@\(.*/fix-building-without-mdns-and-service-discovery\.patch\)@#\1@' -e 's@\(.*/disable-dial-repeating-discovery\.patch\)@#\1@' -i $(UP_DIR)/series
-	sed 's@^\(vanadium\/[0-9]*-disable-media-router-.*\)@#\1@' -i $(DB_DIR)/series.debian
-	sed 's@^\(.*--media-router=0"\)@#\1@' < $(SH_DIR)/chromium-flags.conf > $(DB_DIR)/etc/chromium.d/chromium-flags.conf
+disable_mdns:
+	test -n "$$(grep ^enable_mdns= $(UC_DIR)/flags.gn)" || sed -e '$$ a enable_mdns=false' -i $(UC_DIR)/flags.gn
+	test -f $(DB_DIR)/patches/fix-building-without-mdns-and-service-discovery.patch || cp -a $(MP_DIR)/fix-building-without-mdns-and-service-discovery.patch $(DB_DIR)/patches/
+	test -n "$$(grep ^fix-building-without-mdns-and-service-discovery\.patch $(DB_DIR)/patches/series.debian)" || sed '$$ a \\nfix-building-without-mdns-and-service-discovery.patch' -i $(DB_DIR)/patches/series.debian
 
 pgo_configure:
 	test -d $(LLVM_DIR) || tools/clang/scripts/update.py
@@ -140,13 +139,13 @@ setup: changelog control pgo_configure
 	# Remove various entries from domain_substitution.list (third_party/libwebp/BUILD.gn causes a bizarre hash mismatch error)
 	sed -e '/content\/browser\/resources\/gpu\/info_view\.js/d' -e '/^third_party\/depot_tools/d' -e '/^third_party\/libwebp\/BUILD\.gn/d' -e '/^tools\/clang/d' -i $(UC_DIR)/domain_substitution.list
 
-setup_cast: cast_configure setup
+setup_no_mdns: disable_mdns setup
 	:
 
 setup_translate: translate_configure setup
 	:
 
-setup_cast_translate: cast_configure translate_configure setup
+setup_no_mdns_translate: disable_mdns translate_configure setup
 	:
 
 override_dh_auto_configure: find_remove_most
