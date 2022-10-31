@@ -153,7 +153,6 @@ setup_no_mdns_translate: disable_mdns translate_configure setup
 override_dh_auto_configure: find_remove_most
 	test -d $(OUT_DIR) && ninja -j $(JOBS) -C $(OUT_DIR) -t cleandead || printf '%s\n' "$(OUT_DIR) does not exist, nothing to do."
 	test -f $(DS_CACHE) && printf '%s\n' "$(DS_CACHE) exists, aborting." || $(UL_DIR)/domain_substitution.py apply -r $(UC_DIR)/domain_regex.list -f $(UC_DIR)/domain_substitution.list -c $(DS_CACHE) $(RT_DIR)
-	#cp $(SH_DIR)/jsoncpp.gn build/linux/unbundle
 	build/linux/unbundle/replace_gn_files.py --system-libraries $(SYS_LIBS)
 
 override_dh_auto_build:
@@ -162,7 +161,6 @@ override_dh_auto_build:
 	test ! -f out/Release/locales/en-US.pak || cp -a out/Release/locales/en-US.pak out/Release/resources/
 
 override_dh_prep: find_remove_pycache
-	#rm -f build/linux/unbundle/jsoncpp.gn
 	for file in $$(find -type f -name "*.gn.orig" -o -type f -name "*.gni.orig"); do mv $$file $${file%.orig}; done
 	test ! -f $(DS_CACHE) || $(UL_DIR)/domain_substitution.py revert -c $(DS_CACHE) $(RT_DIR)
 	dh_prep

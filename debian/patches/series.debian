@@ -9,7 +9,6 @@ shim-fix-for-official-builds.patch
 perfetto-system-zlib.patch
 pdfium-system-tiff.patch
 sql-virtual-cursor.patch
-##system-jsoncpp.patch
 template-correction.patch
 
 debianization/master-preferences.patch
