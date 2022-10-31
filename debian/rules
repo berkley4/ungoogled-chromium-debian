@@ -130,7 +130,7 @@ setup: changelog control pgo_configure
 	if ! patch -R -p1 -s -f --dry-run < $(MP_DIR)/no-exit-if-pruned.patch >/dev/null 2>&1; then patch -p1 < $(MP_DIR)/no-exit-if-pruned.patch; fi
 	sed -e '/^buildtools/d' -e '/^third_party\/depot_tools/d' -e '/^third_party\/llvm/d' -e '/^tools\/clang/d' -i $(UC_DIR)/pruning.list
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list
-	for lib in $(subst libevent,,$(subst libjpeg,libjpeg_turbo,$(SYS_LIBS))); do find "third_party/$$lib" -type f ! -path "third_party/$$lib/chromium/*" ! -path "third_party/$$lib/google/*" ! -name "*.gn" ! -name "*.gni" ! -name "*.isolate" -delete; done
+	#for lib in $(subst libevent,,$(subst libjpeg,libjpeg_turbo,$(SYS_LIBS))); do find "third_party/$$lib" -type f ! -path "third_party/$$lib/chromium/*" ! -path "third_party/$$lib/google/*" ! -name "*.gn" ! -name "*.gni" ! -name "*.isolate" -delete; done
 	cat $(UP_DIR)/series $(DB_DIR)/patches/series.debian > $(DB_DIR)/patches/series
 	test -d $(DB_DIR)/patches/core && test -d $(DB_DIR)/patches/extra || cp -a $(UP_DIR)/core $(UP_DIR)/extra $(DB_DIR)/patches/
 	test -f $(DB_DIR)/ungoogled-chromium.install || cp -a $(DB_DIR)/ungoogled-chromium.install.in $(DB_DIR)/ungoogled-chromium.install
