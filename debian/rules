@@ -61,16 +61,20 @@ GN_FLAGS += \
 
 # Currently omitted from base (stable)
 # ffmpeg, harfbuzz-ng, icu, jsoncpp, libjpeg, libpng, libvpx, openh264, re2, snappy
-SYS_LIBS :=         \
-        flac        \
-        fontconfig  \
-        freetype    \
-        libdrm      \
-        libevent    \
-        libwebp     \
-        libxml      \
-        libxslt     \
-        opus        \
+SYS_LIBS :=               \
+        brotli            \
+        double-conversion \
+        flac              \
+        fontconfig        \
+        freetype          \
+        libdrm            \
+        libevent          \
+        libwebp           \
+        libxml            \
+        libXNVCtrl        \
+        libxslt           \
+        opus              \
+        woff2             \
         zlib
 
 # Add extra flags for system libs
