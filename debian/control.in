@@ -46,7 +46,6 @@ Build-Depends:
  libbrotli-dev,
  libdouble-conversion-dev,
  libxnvctrl-dev,
- libwoff-dev,
  libva-dev
 
 Package: ungoogled-chromium

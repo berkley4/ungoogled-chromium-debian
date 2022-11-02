@@ -60,7 +60,7 @@ GN_FLAGS += \
         v8_enable_zone_compression=true
 
 # Currently omitted from base (stable)
-# ffmpeg, harfbuzz-ng, icu, jsoncpp, libjpeg, libpng, libvpx, openh264, re2, snappy
+# ffmpeg, harfbuzz-ng, icu, jsoncpp, libjpeg, libpng, libvpx, openh264, re2, snappy, woff2
 SYS_LIBS :=               \
         brotli            \
         double-conversion \
@@ -74,7 +74,6 @@ SYS_LIBS :=               \
         libXNVCtrl        \
         libxslt           \
         opus              \
-        woff2             \
         zlib
 
 # Add extra flags for system libs
