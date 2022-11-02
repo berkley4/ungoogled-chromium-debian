@@ -8,8 +8,11 @@ and disable observers
 Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- .../blink/renderer/modules/netinfo/network_information.cc  | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ .../renderer/modules/netinfo/network_information.cc |  7 ++++++-
+ .../renderer/modules/netinfo/network_information.h  |  1 +
+ .../platform/network/network_state_notifier.cc      | 13 +++++++++++++
+ .../platform/network/network_state_notifier.h       |  2 +-
+ 4 files changed, 21 insertions(+), 2 deletions(-)
 
 --- a/third_party/blink/renderer/modules/netinfo/network_information.cc
 +++ b/third_party/blink/renderer/modules/netinfo/network_information.cc
@@ -18,7 +21,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
  bool NetworkInformation::IsObserving() const {
 -  return !!connection_observer_handle_;
-+  return false;
++  return !!connection_observer_handle_ || is_fake_observing_;
  }
  
  String NetworkInformation::type() const {
@@ -34,7 +37,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  }
  
  void NetworkInformation::StartObserving() {
-+  //is_fake_observing_ = true;
++  is_fake_observing_ = true;
 +  if ((true)) return;
    if (!IsObserving() && !context_stopped_) {
      type_ = GetNetworkStateNotifier().ConnectionType();
@@ -43,8 +46,51 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  }
  
  void NetworkInformation::StopObserving() {
-+  //is_fake_observing_ = false;
++  is_fake_observing_ = false;
 +  if ((true)) return;
    if (IsObserving()) {
      DCHECK(connection_observer_handle_);
      connection_observer_handle_ = nullptr;
+--- a/third_party/blink/renderer/modules/netinfo/network_information.h
++++ b/third_party/blink/renderer/modules/netinfo/network_information.h
+@@ -118,6 +118,7 @@
+ 
+   std::unique_ptr<NetworkStateNotifier::NetworkStateObserverHandle>
+       connection_observer_handle_;
++  bool is_fake_observing_ = false;
+ };
+ 
+ }  // namespace blink
+--- a/third_party/blink/renderer/platform/network/network_state_notifier.cc
++++ b/third_party/blink/renderer/platform/network/network_state_notifier.cc
+@@ -522,6 +522,19 @@
+   return absl::nullopt;
+ }
+ 
++NetworkStateNotifier::NetworkStateNotifier() : has_override_(false) {
++  // set default data
++  SetNetworkConnectionInfoOverride(
++    /*on_line*/ true,
++    /*type*/ WebConnectionType::kWebConnectionTypeWifi,
++    /*effective_type*/ absl::nullopt,
++    /*http_rtt_msec*/ 0,
++    /*max_bandwidth_mbps*/ std::numeric_limits<double>::max());
++  SetNetworkQuality(
++    /*effective_type*/ WebEffectiveConnectionType::kType4G,
++    base::TimeDelta(), base::TimeDelta(), 10000);
++}
++
+ void NetworkStateNotifier::GetMetricsWithWebHoldback(
+     WebConnectionType* type,
+     double* downlink_max_mbps,
+--- a/third_party/blink/renderer/platform/network/network_state_notifier.h
++++ b/third_party/blink/renderer/platform/network/network_state_notifier.h
+@@ -122,7 +122,7 @@
+     scoped_refptr<base::SingleThreadTaskRunner> task_runner_;
+   };
+ 
+-  NetworkStateNotifier() : has_override_(false) {}
++  NetworkStateNotifier();
+   NetworkStateNotifier(const NetworkStateNotifier&) = delete;
+   NetworkStateNotifier& operator=(const NetworkStateNotifier&) = delete;
+ 

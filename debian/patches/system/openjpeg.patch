@@ -3,7 +3,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/third_party/pdfium/BUILD.gn
 +++ b/third_party/pdfium/BUILD.gn
-@@ -19,7 +19,7 @@
+@@ -24,7 +24,7 @@
    cflags = []
    cflags_cc = []
    ldflags = []

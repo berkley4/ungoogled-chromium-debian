@@ -1,20 +1,19 @@
-From 254fcf4849751bfca04094f0b05a8a6104b6d436 Mon Sep 17 00:00:00 2001
+From 69e8e9bc797f06ff6499fa8d5f0967243d8daff0 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Wed, 3 Mar 2021 13:42:41 -0500
 Subject: [PATCH] enable user agent freeze by default
 
 ---
- third_party/blink/common/features.cc | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../blink/renderer/platform/runtime_enabled_features.json5       | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/third_party/blink/common/features.cc
-+++ b/third_party/blink/common/features.cc
-@@ -169,7 +169,7 @@
- 
- // Freezes the user-agent as part of https://github.com/WICG/ua-client-hints.
- const base::Feature kReduceUserAgent{"ReduceUserAgent",
--                                     base::FEATURE_DISABLED_BY_DEFAULT};
-+                                     base::FEATURE_ENABLED_BY_DEFAULT};
- 
- // Enables the `sec-ch-ua-full` client hint to be sent along with the full user
- // agent string in the HTTP request headers, as well as surfacing the full user
+--- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
++++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
+@@ -2678,6 +2678,7 @@
+       // iOS not included as it should not send a reduced User-Agent string.
+       origin_trial_os: ["android", "chromeos", "fuchsia", "linux", "mac", "win"],
+       base_feature: "ReduceUserAgent",
++      base_feature_status: "enabled",
+     },
+     {
+       name: "V8IdleTasks",

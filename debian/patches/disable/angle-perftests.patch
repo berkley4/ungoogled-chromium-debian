@@ -3,7 +3,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
 
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -4974,10 +4974,6 @@
+@@ -5025,10 +5025,6 @@
        data_deps += [ "//third_party/dawn/src/dawn/tests:dawn_perf_tests" ]
      }
  
@@ -16,7 +16,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
          "//chrome/test:load_library_perf_tests",
 --- a/third_party/angle/gni/angle.gni
 +++ b/third_party/angle/gni/angle.gni
-@@ -102,7 +102,7 @@
+@@ -108,7 +108,7 @@
    }
  
    # Indicate if the rapidJSON library is available to build with in third_party/.
@@ -25,7 +25,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
  }
  
  declare_args() {
-@@ -268,7 +268,7 @@
+@@ -278,7 +278,7 @@
        is_apple &&
        (angle_enable_glsl || angle_enable_metal || use_fuzzing_engine)
  
@@ -44,7 +44,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
      "$angle_root:libANGLE",
      "$angle_root:libEGL_static",
      "$angle_root:libGLESv2_static",
-@@ -1672,12 +1671,10 @@
+@@ -1693,12 +1692,10 @@
    testonly = true
    deps = [
      ":angle_end2end_tests",

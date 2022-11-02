@@ -19,7 +19,7 @@ fixes/ps-print.patch
 fixes/widevine-enable-version-string.patch
 fixes/widevine-locations.patch
 
-#upstream/
+upstream/re-fix-tflite.patch
 
 disable/android.patch
 disable/angle-perftests.patch
@@ -43,7 +43,6 @@ bromite/Disable-TLS-resumption.patch
 bromite/Hardening-against-incognito-mode-detection.patch
 bromite/Make-all-favicon-requests-on-demand.patch
 bromite/Partition-Blink-memory-cache.patch
-#bromite/Partition-DNS-requests-by-top-frame-NIK.patch
 bromite/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
 bromite/Remove-navigator.connection-info.patch
 bromite/Replace-DoH-probe-domain-with-RIPE-domain.patch
@@ -88,9 +87,10 @@ various/fixes/angle-wayland-include-protocol.patch
 various/fixes/audio-sandbox.patch
 various/fixes/cross-origin-favicons-1.patch
 various/fixes/EnumTable-crash.patch
+various/fixes/font-rendering.patch
 various/fixes/InkDropHost-crash.patch
-various/fixes/tflite-system-zlib.patch
 various/fixes/xfce-maximize.patch
+various/system/zlib-missing-headers.patch
 
 #optional/custom-import-limits.patch
 #optional/custom-thin-lto-cache-location.patch

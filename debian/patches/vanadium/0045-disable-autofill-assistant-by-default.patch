@@ -1,4 +1,4 @@
-From 42832fae9ee08b57c31546ca1c42d246878b55be Mon Sep 17 00:00:00 2001
+From 6614725fa5d5b4fa53aeef37a0242ded7607b07b Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Fri, 27 Nov 2020 02:43:37 -0500
 Subject: [PATCH] disable autofill assistant by default
@@ -30,12 +30,12 @@ Subject: [PATCH] disable autofill assistant by default
  
  // Controls whether to enable Autofill Assistant's way of annotating DOM. If
  // enabled will create an |AnnotateDomModelService|.
-@@ -103,7 +103,7 @@
+@@ -123,7 +123,7 @@
      base::FEATURE_DISABLED_BY_DEFAULT};
  
  const base::Feature kAutofillAssistantProactiveHelp{
 -    "AutofillAssistantProactiveHelp", base::FEATURE_ENABLED_BY_DEFAULT};
 +    "AutofillAssistantProactiveHelp", base::FEATURE_DISABLED_BY_DEFAULT};
  
- // Used to configure URL heuristics for upcoming new features.
- extern const base::Feature kAutofillAssistantUrlHeuristic1{
+ // Enables assistant UI (once the feature is enabled, scripts need to use the
+ // USE_ASSISTANT_UI=true flag to use the assistant UI).

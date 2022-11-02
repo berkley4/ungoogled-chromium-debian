@@ -1,4 +1,4 @@
-From b725189a6199be5b1f5820b36203e22b5eeb3fe0 Mon Sep 17 00:00:00 2001
+From f01461ebd1fdb82c7f5763ff880439e6b865e5db Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Wed, 23 Nov 2016 09:26:51 -0500
 Subject: [PATCH] disable contextual search by default
@@ -10,7 +10,7 @@ Subject: [PATCH] disable contextual search by default
 
 --- a/chrome/android/java/src/org/chromium/chrome/browser/contextualsearch/ContextualSearchFieldTrial.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/contextualsearch/ContextualSearchFieldTrial.java
-@@ -125,7 +125,7 @@
+@@ -135,7 +135,7 @@
          // Allow disabling the feature remotely.
          if (getBooleanParam(DISABLED_PARAM)) return false;
  
@@ -21,7 +21,7 @@ Subject: [PATCH] disable contextual search by default
      /**
 --- a/chrome/browser/profiles/profile.cc
 +++ b/chrome/browser/profiles/profile.cc
-@@ -283,7 +283,7 @@
+@@ -287,7 +287,7 @@
  #if BUILDFLAG(IS_ANDROID)
    registry->RegisterStringPref(
        prefs::kContextualSearchEnabled,

@@ -1,0 +1,209 @@
+--- a/net/disk_cache/simple/simple_util.cc
++++ b/net/disk_cache/simple/simple_util.cc
+@@ -16,7 +16,7 @@
+ #include "base/threading/thread_restrictions.h"
+ #include "base/time/time.h"
+ #include "net/disk_cache/simple/simple_entry_format.h"
+-#include "third_party/zlib/zlib.h"
++#include <zlib.h>
+ 
+ namespace {
+ 
+--- a/net/filter/gzip_source_stream.cc
++++ b/net/filter/gzip_source_stream.cc
+@@ -16,7 +16,7 @@
+ #include "base/notreached.h"
+ #include "base/numerics/checked_math.h"
+ #include "net/base/io_buffer.h"
+-#include "third_party/zlib/zlib.h"
++#include <zlib.h>
+ 
+ namespace net {
+ 
+--- a/net/websockets/websocket_deflater.cc
++++ b/net/websockets/websocket_deflater.cc
+@@ -11,7 +11,7 @@
+ #include "base/check_op.h"
+ #include "base/containers/circular_deque.h"
+ #include "net/base/io_buffer.h"
+-#include "third_party/zlib/zlib.h"
++#include <zlib.h>
+ 
+ namespace net {
+ 
+--- a/net/websockets/websocket_inflater.cc
++++ b/net/websockets/websocket_inflater.cc
+@@ -9,7 +9,7 @@
+ 
+ #include "base/check_op.h"
+ #include "net/base/io_buffer.h"
+-#include "third_party/zlib/zlib.h"
++#include <zlib.h>
+ 
+ namespace net {
+ 
+--- a/net/disk_cache/simple/simple_entry_impl.cc
++++ b/net/disk_cache/simple/simple_entry_impl.cc
+@@ -36,7 +36,7 @@
+ #include "net/disk_cache/simple/simple_util.h"
+ #include "net/log/net_log.h"
+ #include "net/log/net_log_source_type.h"
+-#include "third_party/zlib/zlib.h"
++#include <zlib.h>
+ 
+ namespace disk_cache {
+ namespace {
+--- a/net/disk_cache/simple/simple_synchronous_entry.cc
++++ b/net/disk_cache/simple/simple_synchronous_entry.cc
+@@ -33,7 +33,7 @@
+ #include "net/disk_cache/simple/simple_histogram_enums.h"
+ #include "net/disk_cache/simple/simple_histogram_macros.h"
+ #include "net/disk_cache/simple/simple_util.h"
+-#include "third_party/zlib/zlib.h"
++#include <zlib.h>
+ 
+ using base::FilePath;
+ using base::Time;
+--- a/third_party/blink/renderer/modules/compression/deflate_transformer.h
++++ b/third_party/blink/renderer/modules/compression/deflate_transformer.h
+@@ -9,7 +9,7 @@
+ #include "third_party/blink/renderer/core/streams/transform_stream_transformer.h"
+ #include "third_party/blink/renderer/core/typed_arrays/dom_typed_array.h"
+ #include "third_party/blink/renderer/platform/wtf/vector.h"
+-#include "third_party/zlib/zlib.h"
++#include <zlib.h>
+ 
+ namespace blink {
+ 
+--- a/third_party/blink/renderer/modules/compression/inflate_transformer.h
++++ b/third_party/blink/renderer/modules/compression/inflate_transformer.h
+@@ -10,7 +10,7 @@
+ #include "third_party/blink/renderer/core/typed_arrays/dom_typed_array.h"
+ #include "third_party/blink/renderer/platform/heap/collection_support/heap_vector.h"
+ #include "third_party/blink/renderer/platform/wtf/vector.h"
+-#include "third_party/zlib/zlib.h"
++#include <zlib.h>
+ 
+ namespace blink {
+ 
+--- a/third_party/blink/renderer/modules/compression/zlib_partition_alloc.h
++++ b/third_party/blink/renderer/modules/compression/zlib_partition_alloc.h
+@@ -2,7 +2,7 @@
+ #define THIRD_PARTY_BLINK_RENDERER_MODULES_COMPRESSION_ZLIB_PARTITION_ALLOC_H_
+ 
+ #include "third_party/blink/renderer/platform/wtf/allocator/allocator.h"
+-#include "third_party/zlib/zlib.h"
++#include <zlib.h>
+ 
+ namespace blink {
+ 
+--- a/third_party/blink/renderer/modules/compression/deflate_transformer.cc
++++ b/third_party/blink/renderer/modules/compression/deflate_transformer.cc
+@@ -8,6 +8,8 @@
+ #include <cstring>
+ #include <limits>
+ 
++#include <zlib.h>
++
+ #include "third_party/blink/renderer/bindings/core/v8/script_promise.h"
+ #include "third_party/blink/renderer/bindings/core/v8/v8_binding_for_core.h"
+ #include "third_party/blink/renderer/bindings/core/v8/v8_typedefs.h"
+--- a/third_party/blink/renderer/modules/compression/inflate_transformer.cc
++++ b/third_party/blink/renderer/modules/compression/inflate_transformer.cc
+@@ -8,6 +8,8 @@
+ #include <cstring>
+ #include <limits>
+ 
++#include <zlib.h>
++
+ #include "third_party/blink/renderer/bindings/core/v8/script_promise.h"
+ #include "third_party/blink/renderer/bindings/core/v8/v8_binding_for_core.h"
+ #include "third_party/blink/renderer/bindings/core/v8/v8_typedefs.h"
+--- a/v8/src/snapshot/snapshot-utils.cc
++++ b/v8/src/snapshot/snapshot-utils.cc
+@@ -7,7 +7,7 @@
+ #include "src/base/sanitizer/msan.h"
+ 
+ #ifdef V8_USE_ZLIB
+-#include "third_party/zlib/zlib.h"
++#include <zlib.h>
+ #endif
+ 
+ namespace v8 {
+--- a/chrome/browser/media/webrtc/webrtc_event_log_manager_common.cc
++++ b/chrome/browser/media/webrtc/webrtc_event_log_manager_common.cc
+@@ -23,7 +23,7 @@
+ #include "content/public/browser/browser_context.h"
+ #include "content/public/browser/browser_thread.h"
+ #include "content/public/browser/render_process_host.h"
+-#include "third_party/zlib/zlib.h"
++#include <zlib.h>
+ 
+ #if BUILDFLAG(IS_CHROMEOS_ASH)
+ #include "chrome/browser/ash/profiles/profile_helper.h"
+--- a/chrome/browser/media/webrtc/webrtc_rtp_dump_writer.cc
++++ b/chrome/browser/media/webrtc/webrtc_rtp_dump_writer.cc
+@@ -12,7 +12,7 @@
+ #include "base/logging.h"
+ #include "base/task/thread_pool.h"
+ #include "content/public/browser/browser_thread.h"
+-#include "third_party/zlib/zlib.h"
++#include <zlib.h>
+ 
+ namespace {
+ 
+--- a/chrome/browser/profiling_host/profiling_process_host.cc
++++ b/chrome/browser/profiling_host/profiling_process_host.cc
+@@ -29,7 +29,7 @@
+ #include "content/public/browser/browser_task_traits.h"
+ #include "content/public/browser/browser_thread.h"
+ #include "services/network/public/cpp/shared_url_loader_factory.h"
+-#include "third_party/zlib/zlib.h"
++#include <zlib.h>
+ #include "url/gurl.h"
+ 
+ #if BUILDFLAG(IS_WIN)
+--- a/components/sync/base/unique_position.cc
++++ b/components/sync/base/unique_position.cc
+@@ -12,7 +12,7 @@
+ #include "base/strings/string_number_conversions.h"
+ #include "base/trace_event/memory_usage_estimator.h"
+ #include "components/sync/protocol/unique_position.pb.h"
+-#include "third_party/zlib/zlib.h"
++#include <zlib.h>
+ 
+ namespace syncer {
+ 
+--- a/content/browser/tracing/tracing_controller_impl_data_endpoint.cc
++++ b/content/browser/tracing/tracing_controller_impl_data_endpoint.cc
+@@ -19,7 +19,7 @@
+ #include "content/public/browser/browser_task_traits.h"
+ #include "content/public/browser/browser_thread.h"
+ #include "content/public/browser/tracing_controller.h"
+-#include "third_party/zlib/zlib.h"
++#include <zlib.h>
+ 
+ namespace content {
+ 
+--- a/gpu/command_buffer/service/memory_program_cache.cc
++++ b/gpu/command_buffer/service/memory_program_cache.cc
+@@ -23,7 +23,7 @@
+ #include "gpu/command_buffer/service/gles2_cmd_decoder.h"
+ #include "gpu/command_buffer/service/shader_manager.h"
+ #include "gpu/config/gpu_preferences.h"
+-#include "third_party/zlib/zlib.h"
++#include <zlib.h>
+ #include "ui/gl/gl_bindings.h"
+ 
+ namespace gpu {
+--- a/chrome/browser/media/webrtc/webrtc_log_uploader.cc
++++ b/chrome/browser/media/webrtc/webrtc_log_uploader.cc
+@@ -37,7 +37,7 @@
+ #include "services/network/public/cpp/simple_url_loader.h"
+ #include "services/network/public/mojom/url_loader_factory.mojom.h"
+ #include "services/network/public/mojom/url_response_head.mojom.h"
+-#include "third_party/zlib/zlib.h"
++#include <zlib.h>
+ 
+ namespace {
+ 

@@ -22,7 +22,7 @@ Date:   Mon Sep 26 23:16:29 2022 -0400
 
 --- a/third_party/libaom/BUILD.gn
 +++ b/third_party/libaom/BUILD.gn
-@@ -197,9 +197,7 @@
+@@ -201,9 +201,7 @@
      }
      configs += [ ":libaom_config" ]
  
@@ -33,7 +33,7 @@ Date:   Mon Sep 26 23:16:29 2022 -0400
      sources += aom_dsp_common_intrin_neon
      sources += aom_av1_encoder_intrin_neon
      sources += aom_dsp_encoder_intrin_neon
-@@ -256,6 +254,10 @@
+@@ -260,6 +258,10 @@
        cpu_arch_full == "arm-neon-cpu-detect") {
      deps += [ ":libaom_intrinsics_neon" ]
    }
