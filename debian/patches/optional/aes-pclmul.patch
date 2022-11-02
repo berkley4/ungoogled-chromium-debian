@@ -1,10 +1,12 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -905,6 +905,7 @@
-         "-mpclmul",
-         "-march=x86-64-v2",
-         "-mtune=generic",
-+        "-mavx",
+@@ -901,7 +901,8 @@
+     if (current_cpu == "x64") {
+       cflags += [
+         "-m64",
+-        "-msse3",
++        "-maes",
++        "-mpclmul",
        ]
        ldflags += [ "-m64" ]
      } else if (current_cpu == "x86") {

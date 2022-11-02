@@ -94,6 +94,7 @@ various/system/zlib-missing-headers.patch
 
 #optional/custom-import-limits.patch
 #optional/custom-thin-lto-cache-location.patch
+#optional/aes-pclmul.patch
 #optional/march.patch
 #optional/mtune.patch
 #optional/avx.patch
