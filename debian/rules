@@ -46,6 +46,7 @@ GN_FLAGS += \
         enable_swiftshader=false \
         enable_vr=false \
         link_pulseaudio=true \
+        rtc_disable_metrics=true \
         rtc_use_pipewire=true \
         use_cfi_cast=true \
         use_dawn=false \
