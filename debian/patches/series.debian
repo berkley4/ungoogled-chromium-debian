@@ -90,7 +90,7 @@ various/fixes/EnumTable-crash.patch
 various/fixes/font-rendering.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/xfce-maximize.patch
-various/system/zlib-missing-headers.patch
+various/system/zlib-headers.patch
 
 #optional/custom-import-limits.patch
 #optional/custom-thin-lto-cache-location.patch
