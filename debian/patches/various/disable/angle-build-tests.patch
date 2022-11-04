@@ -1,0 +1,11 @@
+--- a/third_party/angle/gni/angle.gni
++++ b/third_party/angle/gni/angle.gni
+@@ -281,7 +281,7 @@
+   angle_has_histograms = false
+ 
+   # True if we want to build the ANGLE test suites. On by default in most configs.
+-  angle_build_tests = angle_has_build
++  angle_build_tests = false
+ }
+ 
+ declare_args() {
