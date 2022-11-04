@@ -90,6 +90,7 @@ various/fixes/cross-origin-favicons-1.patch
 various/fixes/EnumTable-crash.patch
 various/fixes/font-rendering.patch
 various/fixes/InkDropHost-crash.patch
+various/fixes/scoped-file-no-close.patch
 various/fixes/xfce-maximize.patch
 various/system/zlib-headers.patch
 
