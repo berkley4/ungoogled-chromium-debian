@@ -40,13 +40,19 @@ Build-Depends:
  liblcms2-dev,
  libopenjp2-7-dev,
  libpipewire-0.3-dev,
-#libavutil-dev,
-#libavcodec-dev (>= 7:5.1),
-#libavformat-dev,
  libbrotli-dev,
  libdouble-conversion-dev,
  libxnvctrl-dev,
- libva-dev
+ libva-dev,
+#libavutil-dev,
+#libavcodec-dev (>= 7:5.1),
+#libavformat-dev,
+#libaom-dev,
+#libavif-dev,
+#libdav1d-dev,
+#libjpeg-dev,
+#libjxl-dev,
+#libopenh264-dev
 
 Package: ungoogled-chromium
 Architecture: i386 amd64 arm64 armhf

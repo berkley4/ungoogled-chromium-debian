@@ -60,7 +60,14 @@ GN_FLAGS += \
         v8_enable_zone_compression=true
 
 # Currently omitted from base (stable)
-# ffmpeg, harfbuzz-ng, icu, jsoncpp, libjpeg, libpng, libvpx, openh264, re2, snappy, woff2
+#
+# Extra work     : ffmpeg
+# Minor bug      : libpng
+# Not in stable  : libaom, libavif, libjxl, openh264
+# Stable too old : dav1d, icu
+# Compile issues : jsoncpp, re2, snappy, woff2
+# Problematic    : harfbuzz-ng, libvpx, libyuv
+#
 SYS_LIBS :=               \
         brotli            \
         double-conversion \
@@ -75,6 +82,26 @@ SYS_LIBS :=               \
         libxslt           \
         opus              \
         zlib
+
+# If enabling extra SYS_LIBS/GN_FLAGS below look, be sure to uncomment
+# the corresponding patches (look inside optional/* and various/*).
+# One can also uncomment the relevant dev libraries in debian/control.in
+
+# Enable if you are building on the same distro you intend to run under
+#SYS_LIBS += libjpeg
+
+# If your system ffmpeg has been rebuilt with patches from system_ffmpeg
+#SYS_LIBS += ffmpeg
+
+# Uncomment if you on stable and have installed the backport library
+# libaom should work but libavif might not
+#SYS_LIBS += libaom libavif
+
+# Uncomment if you are on testing/unstable (or a new enough distro)
+#SYS_LIBS += dav1d icu libaom libavif libjxl openh264
+
+# Uncoment to disable atk/dbus
+#GN_FLAGS += use_atk=false use_dbus=false
 
 # Add extra flags for system libs
 GN_FLAGS +=                           \
