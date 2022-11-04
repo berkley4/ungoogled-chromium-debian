@@ -105,8 +105,8 @@ various/system/zlib-missing-headers.patch
 #optional/legacy-i386/byteswap-constexpr2.patch
 #optional/legacy-i386/support-i386.patch
 #optional/system/icu.patch
+#optional/system/icu-headers.patch
 #optional/system/jpeg.patch
 #optional/system/roll-src-third_party-ffmpeg-102.patch
 #optional/system/roll-src-third_party-ffmpeg-106.patch
-#optional/system/unicode-fix-missing-headers.patch
 #optional/fixup-build-args-output-dependency-error.patch
