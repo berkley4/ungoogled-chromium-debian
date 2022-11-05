@@ -1,0 +1,33 @@
+--- a/net/filter/brotli_source_stream.cc
++++ b/net/filter/brotli_source_stream.cc
+@@ -10,7 +10,7 @@
+ #include "base/memory/raw_ptr.h"
+ #include "base/metrics/histogram_macros.h"
+ #include "net/base/io_buffer.h"
+-#include "third_party/brotli/include/brotli/decode.h"
++#include <brotli/decode.h>
+ 
+ namespace net {
+ 
+--- a/net/ssl/cert_compression.cc
++++ b/net/ssl/cert_compression.cc
+@@ -9,7 +9,7 @@
+ #include "third_party/boringssl/src/include/openssl/ssl.h"
+ 
+ #if !defined(NET_DISABLE_BROTLI)
+-#include "third_party/brotli/include/brotli/decode.h"
++#include <brotli/decode.h>
+ #endif
+ 
+ namespace net {
+--- a/ui/base/resource/resource_bundle.cc
++++ b/ui/base/resource/resource_bundle.cc
+@@ -31,7 +31,7 @@
+ #include "build/build_config.h"
+ #include "net/filter/gzip_header.h"
+ #include "skia/ext/image_operations.h"
+-#include "third_party/brotli/include/brotli/decode.h"
++#include <brotli/decode.h>
+ #include "third_party/skia/include/core/SkBitmap.h"
+ #include "third_party/skia/include/core/SkColor.h"
+ #include "third_party/zlib/google/compression_utils.h"

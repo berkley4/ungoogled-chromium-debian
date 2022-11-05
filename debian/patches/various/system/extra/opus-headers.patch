@@ -1,0 +1,13 @@
+--- a/third_party/webrtc/modules/audio_coding/codecs/opus/opus_inst.h
++++ b/third_party/webrtc/modules/audio_coding/codecs/opus/opus_inst.h
+@@ -16,8 +16,8 @@
+ #include "rtc_base/ignore_wundef.h"
+ 
+ RTC_PUSH_IGNORING_WUNDEF()
+-#include "third_party/opus/src/include/opus.h"
+-#include "third_party/opus/src/include/opus_multistream.h"
++#include <opus/opus.h>
++#include <opus/opus_multistream.h>
+ RTC_POP_IGNORING_WUNDEF()
+ 
+ struct WebRtcOpusEncInst {
