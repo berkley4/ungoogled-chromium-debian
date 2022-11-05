@@ -70,9 +70,6 @@ vanadium/0076-disable-appending-variations-header.patch
 vanadium/0078-Disable-detailed-language-settings-by-default.patch
 vanadium/0082-enable-process-isolated-sandboxed-iframes-by-default.patch
 
-various/bromite-Disable-all-predictors-code.patch
-various/bromite-disable-happiness-tracking.patch
-various/bromite-DoH-improvements.patch
 various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
 various/fno-plt.patch
 various/init-stack-vars-zero.patch
@@ -81,6 +78,9 @@ various/use-clang-to-optimize-debug-info.patch
 various/vanadium-disable-article-suggestions-feature-by-default.patch
 various/wayland-egl.patch
 #various/addenda/
+various/bromite/Disable-all-predictors-code.patch
+various/bromite/disable-happiness-tracking.patch
+various/bromite/DoH-improvements.patch
 various/disable/angle-build-tests.patch
 various/disable/orchestrator.patch
 various/fedora/enable-hardware-accelerated-mjpeg.patch
