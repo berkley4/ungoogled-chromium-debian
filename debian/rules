@@ -12,6 +12,9 @@ DL_CACHE := $(RT_DIR)/../download_cache
 DS_CACHE := $(DB_DIR)/domsubcache.tar.gz
 OUT_DIR  := out/Release
 
+UB_DEL_SCRIPT := build/linux/unbundle/remove_bundled_libraries.py
+UB_REP_SCRIPT := build/linux/unbundle/replace_gn_files.py
+
 # Changelog and control template variables
 REVISION := $$(cat $(UC_DIR)/revision.txt)
 VERSION  ?= $$(cat $(UC_DIR)/chromium_version.txt)-$(REVISION)
@@ -158,7 +161,9 @@ setup: changelog control pgo_configure
 	if ! patch -R -p1 -s -f --dry-run < $(MP_DIR)/no-exit-if-pruned.patch >/dev/null 2>&1; then patch -p1 < $(MP_DIR)/no-exit-if-pruned.patch; fi
 	sed -e '/^buildtools/d' -e '/^third_party\/depot_tools/d' -e '/^third_party\/llvm/d' -e '/^tools\/clang/d' -i $(UC_DIR)/pruning.list
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list
-	#for lib in $(subst libevent,,$(subst libjpeg,libjpeg_turbo,$(SYS_LIBS))); do find "third_party/$$lib" -type f ! -path "third_party/$$lib/chromium/*" ! -path "third_party/$$lib/google/*" ! -name "*.gn" ! -name "*.gni" ! -name "*.isolate" -delete; done
+	#all_libs="$$(sed -n "s@^[^-_a-zA-Z0-9]*\([-_a-zA-Z0-9]*\)[^-_a-zA-Z0-9]*third_party/.*@\1@p" $(UB_REP_SCRIPT))"; for lib in $(SYS_LIBS); do all_libs="$$(echo "$$all_libs" | sed "/^$$lib$/d")"; done
+	#keep_libs="$$(for lib in $$(echo "$$all_libs" | tr '\n' ' '); do sed -n "s@^[^-_a-zA-Z0-9]*$$lib[^-_a-zA-Z0-9].*\(third_party/[^/]*\).*@\1@p" $(UB_REP_SCRIPT); done | tr '\n' ' ')"
+	#test -x $(UB_DEL_SCRIPT) || chmod 0700 $(UB_DEL_SCRIPT) && $(UB_DEL_SCRIPT) --do-remove $$keep_libs
 	cat $(UP_DIR)/series $(DB_DIR)/patches/series.debian > $(DB_DIR)/patches/series
 	test -d $(DB_DIR)/patches/core && test -d $(DB_DIR)/patches/extra || cp -a $(UP_DIR)/core $(UP_DIR)/extra $(DB_DIR)/patches/
 	test -f $(DB_DIR)/ungoogled-chromium.install || cp -a $(DB_DIR)/ungoogled-chromium.install.in $(DB_DIR)/ungoogled-chromium.install
@@ -182,8 +187,8 @@ override_dh_auto_configure: find_remove_most
 	test -d $(OUT_DIR) && ninja -j $(JOBS) -C $(OUT_DIR) -t cleandead || printf '%s\n' "$(OUT_DIR) does not exist, nothing to do."
 	test -f $(DS_CACHE) && printf '%s\n' "$(DS_CACHE) exists, aborting." || $(UL_DIR)/domain_substitution.py apply -r $(UC_DIR)/domain_regex.list -f $(UC_DIR)/domain_substitution.list -c $(DS_CACHE) $(RT_DIR)
 	# Undo the unbundling process before re-doing it to prevent overwriting the backup files (via aborted builds)
-	build/linux/unbundle/replace_gn_files.py --undo
-	build/linux/unbundle/replace_gn_files.py --system-libraries $(SYS_LIBS)
+	$(UB_REP_SCRIPT) --undo
+	$(UB_REP_SCRIPT) --system-libraries $(SYS_LIBS)
 
 override_dh_auto_build:
 	gn gen $(OUT_DIR) --args="$(GN_FLAGS)" --fail-on-unused-args
