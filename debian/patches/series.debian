@@ -92,10 +92,10 @@ various/fixes/font-rendering.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/scoped-file-no-close.patch
 various/fixes/xfce-maximize.patch
-various/system/zlib-headers.patch
-various/system/extra/brotli-headers.patch
-various/system/extra/opus-headers.patch
-various/system/extra/zlib-headers.patch
+various/system/zlib.patch
+various/system/extra/brotli.patch
+various/system/extra/opus.patch
+various/system/extra/zlib.patch
 
 #optional/custom-import-limits.patch
 #optional/custom-thin-lto-cache-location.patch
