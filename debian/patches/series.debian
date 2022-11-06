@@ -112,5 +112,6 @@ various/system/extra/zlib.patch
 #optional/system/icu.patch
 #optional/system/icu-headers.patch
 #optional/system/jpeg.patch
+#optional/system/libaom-headers.patch
 #optional/system/roll-src-third_party-ffmpeg-102.patch
 #optional/system/roll-src-third_party-ffmpeg-106.patch

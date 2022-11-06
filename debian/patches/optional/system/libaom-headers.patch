@@ -1,0 +1,28 @@
+--- a/third_party/webrtc/modules/video_coding/codecs/av1/libaom_av1_decoder.cc	2022-06-29 09:57:05.940399754 +0100
++++ b/third_party/webrtc/modules/video_coding/codecs/av1/libaom_av1_decoder.cc	2022-11-06 07:42:14.940095173 +0000
+@@ -21,8 +21,8 @@
+ #include "common_video/include/video_frame_buffer_pool.h"
+ #include "modules/video_coding/include/video_error_codes.h"
+ #include "rtc_base/logging.h"
+-#include "third_party/libaom/source/libaom/aom/aom_decoder.h"
+-#include "third_party/libaom/source/libaom/aom/aomdx.h"
++#include <aom/aom_decoder.h>
++#include <aom/aomdx.h>
+ #include "third_party/libyuv/include/libyuv/convert.h"
+ 
+ namespace webrtc {
+--- a/third_party/webrtc/modules/video_coding/codecs/av1/libaom_av1_encoder.cc	2022-09-14 02:33:02.350576891 +0100
++++ b/third_party/webrtc/modules/video_coding/codecs/av1/libaom_av1_encoder.cc	2022-11-06 07:45:11.823772655 +0000
+@@ -32,9 +32,9 @@
+ #include "modules/video_coding/svc/scalable_video_controller_no_layering.h"
+ #include "rtc_base/checks.h"
+ #include "rtc_base/logging.h"
+-#include "third_party/libaom/source/libaom/aom/aom_codec.h"
+-#include "third_party/libaom/source/libaom/aom/aom_encoder.h"
+-#include "third_party/libaom/source/libaom/aom/aomcx.h"
++#include <aom/aom_codec.h>
++#include <aom/aom_encoder.h>
++#include <aom/aomcx.h>
+ 
+ #define SET_ENCODER_PARAM_OR_RETURN_ERROR(param_id, param_value) \
+   do {                                                           \
