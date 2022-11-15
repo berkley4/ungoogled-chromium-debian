@@ -109,6 +109,8 @@ various/system/extra/zlib.patch
 #optional/legacy-i386/byteswap-constexpr2.patch
 #optional/legacy-i386/support-i386.patch
 #optional/system/jpeg.patch
+#optional/system/unstable/dav1d.patch
+#optional/system/unstable/dav1d-no-unbundled-libavif.patch
 #optional/system/unstable/icu.patch
 #optional/system/unstable/icu-headers.patch
 #optional/system/unstable/libaom-headers.patch
