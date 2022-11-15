@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -905,6 +905,7 @@
+@@ -909,6 +909,7 @@
          "-mpclmul",
          "-march=x86-64-v2",
          "-mtune=generic",

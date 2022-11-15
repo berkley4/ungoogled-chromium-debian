@@ -132,7 +132,7 @@
  void OpenExternal(Profile* profile, const GURL& url) {
 --- a/device/bluetooth/adapter.cc
 +++ b/device/bluetooth/adapter.cc
-@@ -107,7 +107,7 @@
+@@ -109,7 +109,7 @@
    mojom::AdapterInfoPtr adapter_info = mojom::AdapterInfo::New();
    adapter_info->address = adapter_->GetAddress();
    adapter_info->name = adapter_->GetName();
@@ -163,7 +163,7 @@
  #elif BUILDFLAG(IS_WIN)
 --- a/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc
 +++ b/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc
-@@ -1337,7 +1337,7 @@
+@@ -1313,7 +1313,7 @@
  // TODO: Ideally this should be handled by our feature system, so that this
  // code doesn't even compile on OSes it isn't being used on, but currently this
  // is not possible.
@@ -172,7 +172,7 @@
    base::WeakPtr<device::BluetoothLocalGattService> service =
        device::BluetoothLocalGattService::Create(
            event_router_->adapter(),
-@@ -1366,6 +1366,7 @@
+@@ -1342,6 +1342,7 @@
  }
  
  void BluetoothLowEnergyCreateCharacteristicFunction::DoWork() {
@@ -180,7 +180,7 @@
    device::BluetoothLocalGattService* service =
        event_router_->adapter()->GetGattService(params_->service_id);
    if (!service) {
-@@ -1386,6 +1387,9 @@
+@@ -1362,6 +1363,9 @@
  
    Respond(ArgumentList(apibtle::CreateCharacteristic::Results::Create(
        characteristic->GetIdentifier())));
@@ -190,7 +190,7 @@
  }
  
  // createDescriptor:
-@@ -1402,6 +1406,7 @@
+@@ -1378,6 +1382,7 @@
  }
  
  void BluetoothLowEnergyCreateDescriptorFunction::DoWork() {
@@ -198,7 +198,7 @@
    device::BluetoothLocalGattCharacteristic* characteristic =
        event_router_->GetLocalCharacteristic(params_->characteristic_id);
    if (!characteristic) {
-@@ -1417,6 +1422,9 @@
+@@ -1393,6 +1398,9 @@
  
    Respond(ArgumentList(
        apibtle::CreateDescriptor::Results::Create(descriptor->GetIdentifier())));
@@ -210,7 +210,7 @@
  // registerService:
 --- a/services/device/wake_lock/power_save_blocker/BUILD.gn
 +++ b/services/device/wake_lock/power_save_blocker/BUILD.gn
-@@ -82,6 +82,9 @@
+@@ -77,6 +77,9 @@
      visibility = [ ":power_save_blocker" ]
      sources = java_sources_needing_jni
    }
