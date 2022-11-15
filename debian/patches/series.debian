@@ -8,7 +8,7 @@
 debianization/master-preferences.patch
 
 fixes/angle-wayland.patch
-fixes/fix-arm-vfpv3-d16-libaom.patch
+#fixes/fix-arm-vfpv3-d16-libaom.patch
 fixes/ps-print.patch
 fixes/widevine-enable-version-string.patch
 fixes/widevine-locations.patch
