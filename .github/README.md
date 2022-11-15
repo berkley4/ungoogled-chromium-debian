@@ -34,11 +34,13 @@ The main features and changes are as follows :-
 ___Performance improvements___
 
 - Profile Guided Optimisation (PGO) - a smaller, faster chrome binary
-- V8 pointer compression - memory usage/speed improvement (see [here](https://v8.dev/blog/pointer-compression))
 - Upstream optimisation - levels vary per target (versus debian's -O2 everywhere default)
 - Various compiler flags aimed at improving speed
     - -march=[x86-64-v2](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels)
-    - -mavx - enables AVX instructions (an optional patch enables AVX2)
+    - -maes - enables AES instructions
+    - -mpclmul - enables CLMUL instructions
+    - -mavx - enables AVX instructions (AVX2 is available via an optional patch)
+    - -mllvm polly -mllvm -polly-vectorizer=stripmine - enables llvm polly vectorization
     - -fno-plt - (see [here](https://patchwork.ozlabs.org/project/gcc/patch/alpine.LNX.2.11.1505061730460.22867@monopod.intra.ispras.ru/))
     - -ftrivial-auto-var-init set to zero - see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html)
     - -Wl,-mllvm,-import-instr-limit=10 - via an optional patch (details [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1591725#c32))
@@ -71,6 +73,7 @@ ___Build system___
 - Built with upstream google clang/llvm binaries
 - Patches for -march/-mtune and various other CPU instructions
 - Various patches to disable components (eg dbus/atk) and enable system libraries (eg icu)
+- Various lines in debian/rules can be uncommented to enable/disable build options or system libraries
 - Ungoogled Chromium patches are merged into debian's build system with a variety of other patches
 - Debug optimisation is now handled by building with -fdebug-types-section (instead of dwz)
 - Several other fixes and improvements
@@ -156,7 +159,7 @@ export QUILT_SERIES=series
 export QUILT_PATCHES=debian/patches
 
 # Clone ungoogled-chromium-debian
-git clone [-b <stable|extended_stable>] https://github.com/berkley4/ungoogled-chromium-debian.git
+git clone [-b <stable>] https://github.com/berkley4/ungoogled-chromium-debian.git
 cd ungoogled-chromium-debian
 
 # Update submodules
@@ -213,7 +216,7 @@ git status -u
 
 ```sh
 # Set the chromium version (obviously change the one below) and number of jobs
-export TAG=999.0.1234.567 JOBS=4
+export TAG=999.0.1234.567-1 JOBS=4
 
 # Update and checkout the desired chromium version (in build/src)
 git fetch --depth 1 --jobs=$JOBS origin tag $TAG
@@ -266,8 +269,8 @@ VERSION=999.0.1234.567-1 debian/rules setup
 # Recommended: apply and refresh patches
 while quilt push; do quilt refresh; done
 
-# Build the package
-JOBS=4 dpkg-buildpackage -b -uc -nc
+# Build the package (remove the '-nc' to rebuild after a successful build)
+JOBS=4 dpkg-buildpackage --source-option=--no-preparation -b -uc -nc
 ```
 
 ## Optional: clean out all built objects/configs (not routinely need)
