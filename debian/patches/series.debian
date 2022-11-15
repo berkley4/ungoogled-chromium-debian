@@ -5,12 +5,6 @@
 ### debian patches are below ###
 ################################
 
-shim-fix-for-official-builds.patch
-perfetto-system-zlib.patch
-pdfium-system-tiff.patch
-sql-virtual-cursor.patch
-template-correction.patch
-
 debianization/master-preferences.patch
 
 fixes/angle-wayland.patch
@@ -74,6 +68,7 @@ various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
 various/fno-plt.patch
 various/init-stack-vars-zero.patch
 various/silence-alsa-frames-log-msg.patch
+various/template-correction.patch
 various/use-clang-to-optimize-debug-info.patch
 various/vanadium-disable-article-suggestions-feature-by-default.patch
 various/wayland-egl.patch
@@ -91,7 +86,11 @@ various/fixes/EnumTable-crash.patch
 various/fixes/font-rendering.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/scoped-file-no-close.patch
+various/fixes/shim-fix-for-official-builds.patch
+various/fixes/sql-virtual-cursor.patch
 various/fixes/xfce-maximize.patch
+various/system/pdfium-system-tiff.patch
+various/system/perfetto-system-zlib.patch
 various/system/zlib.patch
 various/system/extra/brotli.patch
 various/system/extra/opus.patch
