@@ -103,6 +103,7 @@ various/system/extra/zlib.patch
 #optional/mtune.patch
 #optional/avx.patch
 #optional/avx2.patch
+#optional/llvm-polly-stripmine.patch
 #optional/disable/catapult.patch
 #optional/disable/atk-dbus.patch
 #optional/disable/rtc-protobuf.patch

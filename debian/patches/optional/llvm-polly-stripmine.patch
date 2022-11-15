@@ -1,0 +1,29 @@
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -2013,6 +2013,15 @@
+       # smaller.
+       common_optimize_on_cflags += [ "-fno-unique-section-names" ]
+     }
++    if (is_clang) {
++      # Add llmv polly vectorization
++      common_optimize_on_cflags += [
++        "-mllvm",
++        "-polly",
++        "-mllvm",
++        "-polly-vectorizer=stripmine",
++      ]
++    }
+ 
+     common_optimize_on_ldflags += [
+       # Specifically tell the linker to perform optimizations.
+@@ -2601,9 +2610,7 @@
+ config("default_init_stack_vars") {
+   cflags = []
+   if (init_stack_vars && is_clang && !is_nacl && !using_sanitizer) {
+-    cflags += [ "-ftrivial-auto-var-init=zero",
+-                "-enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang",
+-    ]
++    cflags += [ "-ftrivial-auto-var-init=zero" ]
+   }
+ }
+ 
