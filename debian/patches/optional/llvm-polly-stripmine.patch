@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2012,6 +2012,15 @@
+@@ -2034,6 +2034,15 @@
        # smaller.
        common_optimize_on_cflags += [ "-fno-unique-section-names" ]
      }
@@ -16,14 +16,3 @@
  
      common_optimize_on_ldflags += [
        # Specifically tell the linker to perform optimizations.
-@@ -2600,9 +2609,7 @@
- config("default_init_stack_vars") {
-   cflags = []
-   if (init_stack_vars && is_clang && !is_nacl && !using_sanitizer) {
--    cflags += [ "-ftrivial-auto-var-init=zero",
--                "-enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang",
--    ]
-+    cflags += [ "-ftrivial-auto-var-init=zero" ]
-   }
- }
- 

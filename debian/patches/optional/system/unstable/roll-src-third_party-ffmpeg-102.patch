@@ -77,7 +77,7 @@
  }
 --- a/media/ffmpeg/ffmpeg_common.cc
 +++ b/media/ffmpeg/ffmpeg_common.cc
-@@ -345,11 +345,10 @@
+@@ -353,11 +353,10 @@
        codec_context->sample_fmt, codec_context->codec_id);
  
    ChannelLayout channel_layout =
@@ -92,7 +92,7 @@
  
    switch (codec) {
      // For AC3/EAC3 we enable only demuxing, but not decoding, so FFmpeg does
-@@ -401,7 +400,7 @@
+@@ -409,7 +408,7 @@
                       extra_data, encryption_scheme, seek_preroll,
                       codec_context->delay);
    if (channel_layout == CHANNEL_LAYOUT_DISCRETE)
@@ -101,7 +101,7 @@
  
  #if BUILDFLAG(ENABLE_PLATFORM_AC3_EAC3_AUDIO)
    // These are bitstream formats unknown to ffmpeg, so they don't have
-@@ -470,7 +469,7 @@
+@@ -478,7 +477,7 @@
  
    // TODO(scherkus): should we set |channel_layout|? I'm not sure if FFmpeg uses
    // said information to decode.
@@ -243,7 +243,7 @@
  }
  
  // Called by FFmpeg's allocation routine to allocate a buffer. Uses
-@@ -231,7 +231,7 @@
+@@ -233,7 +233,7 @@
    // Translate unsupported into discrete layouts for discrete configurations;
    // ffmpeg does not have a labeled discrete configuration internally.
    ChannelLayout channel_layout = ChannelLayoutToChromeChannelLayout(
@@ -252,7 +252,7 @@
    if (channel_layout == CHANNEL_LAYOUT_UNSUPPORTED &&
        config_.channel_layout() == CHANNEL_LAYOUT_DISCRETE) {
      channel_layout = CHANNEL_LAYOUT_DISCRETE;
-@@ -348,11 +348,11 @@
+@@ -350,11 +350,11 @@
    // Success!
    av_sample_format_ = codec_context_->sample_fmt;
  
@@ -266,7 +266,7 @@
      ReleaseFFmpegResources();
      state_ = DecoderState::kUninitialized;
      return false;
-@@ -403,7 +403,7 @@
+@@ -405,7 +405,7 @@
    if (frame->nb_samples <= 0)
      return AVERROR(EINVAL);
  
@@ -275,7 +275,7 @@
      DLOG(ERROR) << "AVCodecContext and AVFrame disagree on channel count.";
      return AVERROR(EINVAL);
    }
-@@ -436,8 +436,7 @@
+@@ -438,8 +438,7 @@
    ChannelLayout channel_layout =
        config_.channel_layout() == CHANNEL_LAYOUT_DISCRETE
            ? CHANNEL_LAYOUT_DISCRETE

@@ -9,18 +9,21 @@ Subject: [PATCH] disable showing popular sites by default
 
 --- a/components/ntp_tiles/features.cc
 +++ b/components/ntp_tiles/features.cc
-@@ -13,12 +13,12 @@
- const char kPopularSitesFieldTrialName[] = "NTPPopularSites";
+@@ -14,14 +14,14 @@
  
- const base::Feature kPopularSitesBakedInContentFeature{
--    "NTPPopularSitesBakedInContent", base::FEATURE_ENABLED_BY_DEFAULT};
-+    "NTPPopularSitesBakedInContent", base::FEATURE_DISABLED_BY_DEFAULT};
+ BASE_FEATURE(kPopularSitesBakedInContentFeature,
+              "NTPPopularSitesBakedInContent",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             base::FEATURE_DISABLED_BY_DEFAULT);
  
- const base::Feature kNtpMostLikelyFaviconsFromServerFeature{
-     "NTPMostLikelyFaviconsFromServer", base::FEATURE_ENABLED_BY_DEFAULT};
+ BASE_FEATURE(kNtpMostLikelyFaviconsFromServerFeature,
+              "NTPMostLikelyFaviconsFromServer",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             base::FEATURE_DISABLED_BY_DEFAULT);
  
- const base::Feature kUsePopularSitesSuggestions{
--    "UsePopularSitesSuggestions", base::FEATURE_ENABLED_BY_DEFAULT};
-+    "UsePopularSitesSuggestions", base::FEATURE_DISABLED_BY_DEFAULT};
+ BASE_FEATURE(kUsePopularSitesSuggestions,
+              "UsePopularSitesSuggestions",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             base::FEATURE_DISABLED_BY_DEFAULT);
  
  }  // namespace ntp_tiles

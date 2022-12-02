@@ -16,20 +16,20 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  .../core/html/parser/html_srcset_parser.cc    |  2 +-
  .../core/inspector/inspector_network_agent.cc |  2 +-
- .../core/inspector/inspector_page_agent.cc    |  5 +++--
+ .../core/inspector/inspector_page_agent.cc    |  4 ++--
  .../renderer/core/loader/image_loader.cc      |  3 ++-
  .../platform/loader/fetch/memory_cache.cc     |  7 ++-----
  .../platform/loader/fetch/memory_cache.h      |  4 ++--
  .../platform/loader/fetch/resource_fetcher.cc | 21 ++++++++++++-------
  .../platform/loader/fetch/resource_fetcher.h  |  3 ++-
- 8 files changed, 27 insertions(+), 20 deletions(-)
+ 8 files changed, 26 insertions(+), 20 deletions(-)
 
 --- a/third_party/blink/renderer/core/html/parser/html_srcset_parser.cc
 +++ b/third_party/blink/renderer/core/html/parser/html_srcset_parser.cc
 @@ -413,7 +413,7 @@
      KURL url = document->CompleteURL(
          StripLeadingAndTrailingHTMLSpaces(image_candidates[i]->Url()));
-     if (GetMemoryCache()->ResourceForURL(
+     if (MemoryCache::Get()->ResourceForURL(
 -            url, document->Fetcher()->GetCacheIdentifier(url)) ||
 +            url, document->Fetcher()->GetCacheIdentifier(url, document->TopFrameOrigin())) ||
          url.ProtocolIsData())
@@ -37,10 +37,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    }
 --- a/third_party/blink/renderer/core/inspector/inspector_network_agent.cc
 +++ b/third_party/blink/renderer/core/inspector/inspector_network_agent.cc
-@@ -2216,7 +2216,7 @@
+@@ -2252,7 +2252,7 @@
    Resource* cached_resource = document->Fetcher()->CachedResource(url);
    if (!cached_resource) {
-     cached_resource = GetMemoryCache()->ResourceForURL(
+     cached_resource = MemoryCache::Get()->ResourceForURL(
 -        url, document->Fetcher()->GetCacheIdentifier(url));
 +        url, document->Fetcher()->GetCacheIdentifier(url, document->TopFrameOrigin()));
    }
@@ -48,25 +48,24 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
                               cached_resource, content, base64_encoded))
 --- a/third_party/blink/renderer/core/inspector/inspector_page_agent.cc
 +++ b/third_party/blink/renderer/core/inspector/inspector_page_agent.cc
-@@ -167,9 +167,10 @@
+@@ -167,9 +167,9 @@
    if (!document)
      return nullptr;
    Resource* cached_resource = document->Fetcher()->CachedResource(url);
 -  if (!cached_resource) {
 +  if (!cached_resource && document->TopFrameOrigin()) {
-     cached_resource = GetMemoryCache()->ResourceForURL(
+     cached_resource = MemoryCache::Get()->ResourceForURL(
 -        url, document->Fetcher()->GetCacheIdentifier(url));
-+        url, document->Fetcher()->GetCacheIdentifier(url,
-+          document->TopFrameOrigin()));
++        url, document->Fetcher()->GetCacheIdentifier(url, document->TopFrameOrigin()));
    }
    if (!cached_resource)
      cached_resource = loader->ResourceForURL(url);
 --- a/third_party/blink/renderer/core/loader/image_loader.cc
 +++ b/third_party/blink/renderer/core/loader/image_loader.cc
-@@ -726,7 +726,8 @@
+@@ -729,7 +729,8 @@
    // content when style recalc is over and DOM mutation is allowed again.
    if (!url.IsNull()) {
-     Resource* resource = GetMemoryCache()->ResourceForURL(
+     Resource* resource = MemoryCache::Get()->ResourceForURL(
 -        url, element_->GetDocument().Fetcher()->GetCacheIdentifier(url));
 +        url, element_->GetDocument().Fetcher()->GetCacheIdentifier(url,
 +                element_->GetDocument().TopFrameOrigin()));
@@ -75,16 +74,16 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
          CanReuseFromListOfAvailableImages(
 --- a/third_party/blink/renderer/platform/loader/fetch/memory_cache.cc
 +++ b/third_party/blink/renderer/platform/loader/fetch/memory_cache.cc
-@@ -197,7 +197,7 @@
+@@ -198,7 +198,7 @@
  }
  
  bool MemoryCache::Contains(const Resource* resource) const {
 -  if (!resource || resource->Url().IsEmpty())
-+  if (!resource || resource->Url().IsEmpty() || resource->CacheIdentifier().IsEmpty())
++  if (!resource || resource->Url().IsEmpty() || resource->CacheIdentifier().empty())
      return false;
  
    const auto resource_maps_it =
-@@ -213,12 +213,9 @@
+@@ -214,12 +214,9 @@
    return resource == resources_it->value->GetResource();
  }
  
@@ -94,13 +93,13 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 -
  Resource* MemoryCache::ResourceForURL(const KURL& resource_url,
                                        const String& cache_identifier) const {
-+  if (cache_identifier.IsEmpty()) return nullptr;
++  if (cache_identifier.empty()) return nullptr;
    DCHECK(WTF::IsMainThread());
    if (!resource_url.IsValid() || resource_url.IsNull())
      return nullptr;
 --- a/third_party/blink/renderer/platform/loader/fetch/memory_cache.h
 +++ b/third_party/blink/renderer/platform/loader/fetch/memory_cache.h
-@@ -112,9 +112,7 @@
+@@ -116,9 +116,7 @@
      TypeStatistic other;
    };
  
@@ -110,7 +109,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
    void Add(Resource*);
    void Remove(Resource*);
-@@ -159,6 +157,8 @@
+@@ -163,6 +161,8 @@
        base::MemoryPressureListener::MemoryPressureLevel) override;
  
   private:
@@ -121,7 +120,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      kAutomaticPrune,
 --- a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc
 +++ b/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc
-@@ -652,7 +652,8 @@
+@@ -657,7 +657,8 @@
    if (!archive_ && factory.GetType() == ResourceType::kRaw)
      return nullptr;
  
@@ -131,10 +130,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // Most off-main-thread resource fetches use Resource::kRaw and don't reach
    // this point, but off-main-thread module fetches might.
    if (IsMainThread()) {
-@@ -1111,7 +1112,9 @@
+@@ -1116,7 +1117,9 @@
          resource = nullptr;
        } else {
-         resource = GetMemoryCache()->ResourceForURL(
+         resource = MemoryCache::Get()->ResourceForURL(
 -            params.Url(), GetCacheIdentifier(params.Url()));
 +            params.Url(),
 +            GetCacheIdentifier(params.Url(),
@@ -142,7 +141,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        }
        if (resource) {
          policy = DetermineRevalidationPolicy(resource_type, params, *resource,
-@@ -1319,7 +1322,8 @@
+@@ -1324,7 +1327,8 @@
      const FetchParameters& params,
      const ResourceFactory& factory) {
    const String cache_identifier =
@@ -152,7 +151,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    if (!base::FeatureList::IsEnabled(
            blink::features::kScopeMemoryCachePerContext)) {
      DCHECK(!IsMainThread() || params.IsStaleRevalidation() ||
-@@ -2207,13 +2211,16 @@
+@@ -2213,13 +2217,16 @@
    to_be_removed.clear();
  }
  
@@ -172,7 +171,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
    // Requests that can be satisfied via `archive_` (i.e. MHTML) or
    // `subresource_web_bundles_` should not participate in the global caching,
-@@ -2225,7 +2232,7 @@
+@@ -2231,7 +2238,7 @@
    if (bundle)
      return bundle->GetCacheIdentifier();
  

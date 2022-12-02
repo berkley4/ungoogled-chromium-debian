@@ -1,5 +1,5 @@
---- a/components/cast_channel/enum_table.h
-+++ b/components/cast_channel/enum_table.h
+--- a/components/media_router/common/providers/cast/channel/enum_table.h
++++ b/components/media_router/common/providers/cast/channel/enum_table.h
 @@ -8,6 +8,7 @@
  #include <cstdint>
  #include <cstring>

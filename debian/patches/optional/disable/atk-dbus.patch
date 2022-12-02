@@ -129,7 +129,7 @@
 +#endif
  }
  
- void OpenExternal(Profile* profile, const GURL& url) {
+ void OpenExternal(const GURL& url) {
 --- a/device/bluetooth/adapter.cc
 +++ b/device/bluetooth/adapter.cc
 @@ -109,7 +109,7 @@

@@ -8,11 +8,10 @@ and disable observers
 Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- .../renderer/modules/netinfo/network_information.cc |  7 ++++++-
- .../renderer/modules/netinfo/network_information.h  |  1 +
- .../platform/network/network_state_notifier.cc      | 13 +++++++++++++
- .../platform/network/network_state_notifier.h       |  2 +-
- 4 files changed, 21 insertions(+), 2 deletions(-)
+ .../renderer/modules/netinfo/network_information.cc   |  5 ++++-
+ .../platform/network/network_state_notifier.cc        | 11 +++++++++++
+ .../platform/network/network_state_notifier.h         |  2 +-
+ 3 files changed, 16 insertions(+), 2 deletions(-)
 
 --- a/third_party/blink/renderer/modules/netinfo/network_information.cc
 +++ b/third_party/blink/renderer/modules/netinfo/network_information.cc
@@ -21,7 +20,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
  bool NetworkInformation::IsObserving() const {
 -  return !!connection_observer_handle_;
-+  return !!connection_observer_handle_ || is_fake_observing_;
++  return false;
  }
  
  String NetworkInformation::type() const {
@@ -33,38 +32,26 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    DCHECK(GetExecutionContext()->IsContextThread());
  
    const String host = Host();
-@@ -242,6 +243,8 @@
+@@ -242,6 +243,7 @@
  }
  
  void NetworkInformation::StartObserving() {
-+  is_fake_observing_ = true;
 +  if ((true)) return;
    if (!IsObserving() && !context_stopped_) {
      type_ = GetNetworkStateNotifier().ConnectionType();
      DCHECK(!connection_observer_handle_);
-@@ -252,6 +255,8 @@
+@@ -252,6 +254,7 @@
  }
  
  void NetworkInformation::StopObserving() {
-+  is_fake_observing_ = false;
 +  if ((true)) return;
    if (IsObserving()) {
      DCHECK(connection_observer_handle_);
      connection_observer_handle_ = nullptr;
---- a/third_party/blink/renderer/modules/netinfo/network_information.h
-+++ b/third_party/blink/renderer/modules/netinfo/network_information.h
-@@ -118,6 +118,7 @@
- 
-   std::unique_ptr<NetworkStateNotifier::NetworkStateObserverHandle>
-       connection_observer_handle_;
-+  bool is_fake_observing_ = false;
- };
- 
- }  // namespace blink
 --- a/third_party/blink/renderer/platform/network/network_state_notifier.cc
 +++ b/third_party/blink/renderer/platform/network/network_state_notifier.cc
-@@ -522,6 +522,19 @@
-   return absl::nullopt;
+@@ -99,6 +99,17 @@
+   }
  }
  
 +NetworkStateNotifier::NetworkStateNotifier() : has_override_(false) {
@@ -75,14 +62,12 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +    /*effective_type*/ absl::nullopt,
 +    /*http_rtt_msec*/ 0,
 +    /*max_bandwidth_mbps*/ std::numeric_limits<double>::max());
-+  SetNetworkQuality(
-+    /*effective_type*/ WebEffectiveConnectionType::kType4G,
-+    base::TimeDelta(), base::TimeDelta(), 10000);
++  SetNetworkQuality(/*effective_type*/ WebEffectiveConnectionType::kType4G, base::TimeDelta(), base::TimeDelta(), 10000);
 +}
 +
- void NetworkStateNotifier::GetMetricsWithWebHoldback(
-     WebConnectionType* type,
-     double* downlink_max_mbps,
+ NetworkStateNotifier::NetworkStateObserverHandle::NetworkStateObserverHandle(
+     NetworkStateNotifier* notifier,
+     NetworkStateNotifier::ObserverType type,
 --- a/third_party/blink/renderer/platform/network/network_state_notifier.h
 +++ b/third_party/blink/renderer/platform/network/network_state_notifier.h
 @@ -122,7 +122,7 @@

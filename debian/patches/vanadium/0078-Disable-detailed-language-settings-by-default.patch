@@ -9,12 +9,12 @@ Subject: [PATCH] Disable detailed language settings by default
 
 --- a/components/language/core/common/language_experiments.cc
 +++ b/components/language/core/common/language_experiments.cc
-@@ -25,7 +25,7 @@
- const base::Feature kForceAppLanguagePrompt{"ForceAppLanguagePrompt",
-                                             base::FEATURE_DISABLED_BY_DEFAULT};
- const base::Feature kDetailedLanguageSettings{"DetailedLanguageSettings",
--                                              base::FEATURE_ENABLED_BY_DEFAULT};
-+                                              base::FEATURE_DISABLED_BY_DEFAULT};
- const base::Feature kDesktopDetailedLanguageSettings{
-     "DesktopDetailedLanguageSettings", base::FEATURE_DISABLED_BY_DEFAULT};
- const base::Feature kTranslateAssistContent{"TranslateAssistContent",
+@@ -31,7 +31,7 @@
+              base::FEATURE_DISABLED_BY_DEFAULT);
+ BASE_FEATURE(kDetailedLanguageSettings,
+              "DetailedLanguageSettings",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             base::FEATURE_DISABLED_BY_DEFAULT);
+ BASE_FEATURE(kDesktopDetailedLanguageSettings,
+              "DesktopDetailedLanguageSettings",
+              base::FEATURE_DISABLED_BY_DEFAULT);

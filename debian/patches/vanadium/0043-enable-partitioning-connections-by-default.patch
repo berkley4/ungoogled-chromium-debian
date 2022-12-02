@@ -9,41 +9,41 @@ Subject: [PATCH] enable partitioning connections by default
 
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -131,11 +131,11 @@
-     "SplitCacheByNetworkIsolationKey", base::FEATURE_ENABLED_BY_DEFAULT};
+@@ -95,11 +95,11 @@
  
- const base::Feature kSplitHostCacheByNetworkIsolationKey{
--    "SplitHostCacheByNetworkIsolationKey", base::FEATURE_DISABLED_BY_DEFAULT};
-+    "SplitHostCacheByNetworkIsolationKey", base::FEATURE_ENABLED_BY_DEFAULT};
+ BASE_FEATURE(kSplitHostCacheByNetworkIsolationKey,
+              "SplitHostCacheByNetworkIsolationKey",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             base::FEATURE_ENABLED_BY_DEFAULT);
  
- const base::Feature kPartitionConnectionsByNetworkIsolationKey{
-     "PartitionConnectionsByNetworkIsolationKey",
--    base::FEATURE_DISABLED_BY_DEFAULT};
-+    base::FEATURE_ENABLED_BY_DEFAULT};
+ BASE_FEATURE(kPartitionConnectionsByNetworkIsolationKey,
+              "PartitionConnectionsByNetworkIsolationKey",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             base::FEATURE_ENABLED_BY_DEFAULT);
  
- const base::Feature kForceIsolationInfoFrameOriginToTopLevelFrame{
-     "ForceIsolationInfoFrameOriginToTopLevelFrame",
-@@ -143,19 +143,19 @@
+ BASE_FEATURE(kForceIsolationInfoFrameOriginToTopLevelFrame,
+              "ForceIsolationInfoFrameOriginToTopLevelFrame",
+@@ -107,19 +107,19 @@
  
- const base::Feature kPartitionHttpServerPropertiesByNetworkIsolationKey{
-     "PartitionHttpServerPropertiesByNetworkIsolationKey",
--    base::FEATURE_DISABLED_BY_DEFAULT};
-+    base::FEATURE_ENABLED_BY_DEFAULT};
+ BASE_FEATURE(kPartitionHttpServerPropertiesByNetworkIsolationKey,
+              "PartitionHttpServerPropertiesByNetworkIsolationKey",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             base::FEATURE_ENABLED_BY_DEFAULT);
  
- const base::Feature kPartitionSSLSessionsByNetworkIsolationKey{
-     "PartitionSSLSessionsByNetworkIsolationKey",
--    base::FEATURE_DISABLED_BY_DEFAULT};
-+    base::FEATURE_ENABLED_BY_DEFAULT};
+ BASE_FEATURE(kPartitionSSLSessionsByNetworkIsolationKey,
+              "PartitionSSLSessionsByNetworkIsolationKey",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             base::FEATURE_ENABLED_BY_DEFAULT);
  
- const base::Feature kPartitionExpectCTStateByNetworkIsolationKey{
-     "PartitionExpectCTStateByNetworkIsolationKey",
--    base::FEATURE_DISABLED_BY_DEFAULT};
-+    base::FEATURE_ENABLED_BY_DEFAULT};
+ BASE_FEATURE(kPartitionExpectCTStateByNetworkIsolationKey,
+              "PartitionExpectCTStateByNetworkIsolationKey",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             base::FEATURE_ENABLED_BY_DEFAULT);
  
- const base::Feature kPartitionNelAndReportingByNetworkIsolationKey{
-     "PartitionNelAndReportingByNetworkIsolationKey",
--    base::FEATURE_DISABLED_BY_DEFAULT};
-+    base::FEATURE_ENABLED_BY_DEFAULT};
+ BASE_FEATURE(kPartitionNelAndReportingByNetworkIsolationKey,
+              "PartitionNelAndReportingByNetworkIsolationKey",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             base::FEATURE_ENABLED_BY_DEFAULT);
  
- const base::Feature kEnableDoubleKeyNetworkAnonymizationKey{
-     "EnableDoubleKeyNetworkAnonymizationKey",
+ BASE_FEATURE(kEnableDoubleKeyNetworkAnonymizationKey,
+              "EnableDoubleKeyNetworkAnonymizationKey",

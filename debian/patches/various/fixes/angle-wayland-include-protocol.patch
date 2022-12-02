@@ -13,7 +13,7 @@
    }
  }
  
-@@ -1098,6 +1104,7 @@
+@@ -1099,6 +1105,7 @@
      include_dirs = [
        "$wayland_dir/egl",
        "$wayland_dir/src",

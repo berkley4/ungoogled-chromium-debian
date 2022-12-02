@@ -1,7 +1,7 @@
 --- a/third_party/webrtc/modules/video_coding/codecs/av1/dav1d_decoder.cc
 +++ b/third_party/webrtc/modules/video_coding/codecs/av1/dav1d_decoder.cc
 @@ -18,7 +18,7 @@
- #include "common_video/include/video_frame_buffer_pool.h"
+ #include "common_video/include/video_frame_buffer.h"
  #include "modules/video_coding/include/video_error_codes.h"
  #include "rtc_base/logging.h"
 -#include "third_party/dav1d/libdav1d/include/dav1d/dav1d.h"

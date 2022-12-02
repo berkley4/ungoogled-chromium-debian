@@ -21,7 +21,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -6090,6 +6090,11 @@
+@@ -6286,6 +6286,11 @@
           "")},
  #endif
  
@@ -35,8 +35,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       flag_descriptions::kEnableWebAuthenticationChromeOSAuthenticatorName,
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -2691,6 +2691,11 @@
-     "expiry_milestone": 105
+@@ -2698,6 +2698,11 @@
+     "expiry_milestone": 130
    },
    {
 +    "name": "enable-text-fragment-anchor",
@@ -44,34 +44,34 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +    "expiry_milestone": -1
 +  },
 +  {
-     "name": "enable-payment-request-basic-card",
-     "owners": [ "web-payments-team@google.com" ],
-     // This flag is used by developers to disable the "basic-card" method, to
+     "name": "enable-neural-stylus-palm-rejection",
+     "owners": [ "robsc", "napper", "adlr" ],
+     // We add a neural net to change how fingers are handled. We set a milestone
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
 @@ -1382,6 +1382,10 @@
-     "Enable the restricted web APIs for dev trial. This will be replaced with "
-     "permission policies to control the capabilities afterwards.";
+     "intentionally interact with elements on that page. By dropping the events "
+     "we prevent accidental interaction with a page the user has not seen yet.";
  
 +const char kEnableTextFragmentAnchorName[] = "Enable Text Fragment Anchor.";
 +const char kEnableTextFragmentAnchorDescription[] =
 +    "Enables scrolling to text specified in URL's fragment.";
 +
- const char kEnableUseZoomForDsfName[] =
-     "Use Blink's zoom for device scale factor.";
- const char kEnableUseZoomForDsfDescription[] =
+ const char kEnableCssSelectorFragmentAnchorName[] =
+     "Enables CSS selector fragment anchors";
+ const char kEnableCssSelectorFragmentAnchorDescription[] =
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
 @@ -764,6 +764,9 @@
- extern const char kEnableRestrictedWebApisName[];
- extern const char kEnableRestrictedWebApisDescription[];
  
+ extern const char kRetailCouponsName[];
+ extern const char kRetailCouponsDescription[];
 +extern const char kEnableTextFragmentAnchorName[];
 +extern const char kEnableTextFragmentAnchorDescription[];
 +
- extern const char kEnableUseZoomForDsfName[];
- extern const char kEnableUseZoomForDsfDescription[];
- extern const char kEnableUseZoomForDsfChoiceDefault[];
+ 
+ extern const char kDropInputEventsBeforeFirstPaintName[];
+ extern const char kDropInputEventsBeforeFirstPaintDescription[];
 --- a/chrome/browser/ui/prefs/prefs_tab_helper.cc
 +++ b/chrome/browser/ui/prefs/prefs_tab_helper.cc
 @@ -361,7 +361,7 @@
@@ -88,37 +88,37 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 @@ -269,6 +269,7 @@
       features::kSharedArrayBufferOnDesktop},
      {wf::EnableSharedAutofill, autofill::features::kAutofillSharedAutofill},
-     {wf::EnableSubresourceWebBundles, features::kSubresourceWebBundles},
-+    {wf::EnableTextFragmentIdentifiers, blink::features::kTextFragmentAnchor},
      {wf::EnableTouchDragAndContextMenu, features::kTouchDragAndContextMenu},
++    {wf::EnableTextFragmentIdentifiers, blink::features::kTextFragmentAnchor},
      {wf::EnableUserActivationSameOriginVisibility,
       features::kUserActivationSameOriginVisibility},
+     {wf::EnableVideoPlaybackQuality, features::kVideoPlaybackQuality},
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -451,6 +451,10 @@
- const base::Feature kDropInputEventsBeforeFirstPaint{
-     "DropInputEventsBeforeFirstPaint", base::FEATURE_DISABLED_BY_DEFAULT};
+@@ -498,6 +498,10 @@
+              "DropInputEventsBeforeFirstPaint",
+              base::FEATURE_DISABLED_BY_DEFAULT);
  
 +// Enable text snippets in URL fragments. https://crbug.com/919204.
 +const base::Feature kTextFragmentAnchor{"TextFragmentAnchor",
 +                                        base::FEATURE_DISABLED_BY_DEFAULT};
 +
  // File handling icons. https://crbug.com/1218213
- const base::Feature kFileHandlingIcons{"FileHandlingIcons",
-                                        base::FEATURE_DISABLED_BY_DEFAULT};
+ BASE_FEATURE(kFileHandlingIcons,
+              "FileHandlingIcons",
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
 @@ -226,6 +226,7 @@
- BLINK_COMMON_EXPORT extern const base::Feature kServiceWorkerUpdateDelay;
- BLINK_COMMON_EXPORT extern const base::Feature kStopInBackground;
- BLINK_COMMON_EXPORT extern const base::Feature kDropInputEventsBeforeFirstPaint;
+ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kDecodeLossyWebPImagesToYUV);
+ 
+ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kWebFontsCacheAwareTimeoutAdaption);
 +BLINK_COMMON_EXPORT extern const base::Feature kTextFragmentAnchor;
- BLINK_COMMON_EXPORT extern const base::Feature kFileHandlingIcons;
- BLINK_COMMON_EXPORT extern const base::Feature kAllowSyncXHRInPageDismissal;
- BLINK_COMMON_EXPORT extern const base::Feature kPrefetchPrivacyChanges;
+ 
+ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kAudioWorkletThreadRealtimePriority);
+ 
 --- a/third_party/blink/renderer/core/dom/document.cc
 +++ b/third_party/blink/renderer/core/dom/document.cc
-@@ -4254,9 +4254,14 @@
+@@ -4259,9 +4259,14 @@
    TRACE_EVENT1("navigation", "Document::SetURL", "url",
                 new_url.GetString().Utf8());
  
@@ -135,7 +135,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    UpdateBaseURL();
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -2545,10 +2545,9 @@
+@@ -2583,10 +2583,9 @@
      },
      {
        name: "TextFragmentIdentifiers",

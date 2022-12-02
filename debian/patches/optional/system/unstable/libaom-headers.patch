@@ -1,16 +1,3 @@
---- a/third_party/webrtc/modules/video_coding/codecs/av1/libaom_av1_decoder.cc
-+++ b/third_party/webrtc/modules/video_coding/codecs/av1/libaom_av1_decoder.cc
-@@ -21,8 +21,8 @@
- #include "common_video/include/video_frame_buffer_pool.h"
- #include "modules/video_coding/include/video_error_codes.h"
- #include "rtc_base/logging.h"
--#include "third_party/libaom/source/libaom/aom/aom_decoder.h"
--#include "third_party/libaom/source/libaom/aom/aomdx.h"
-+#include <aom/aom_decoder.h>
-+#include <aom/aomdx.h>
- #include "third_party/libyuv/include/libyuv/convert.h"
- 
- namespace webrtc {
 --- a/third_party/webrtc/modules/video_coding/codecs/av1/libaom_av1_encoder.cc
 +++ b/third_party/webrtc/modules/video_coding/codecs/av1/libaom_av1_encoder.cc
 @@ -32,9 +32,9 @@
