@@ -80,7 +80,6 @@ various/disable/angle-build-tests.patch
 various/disable/orchestrator.patch
 various/fedora/enable-hardware-accelerated-mjpeg.patch
 various/fixes/angle-wayland-include-protocol.patch
-various/fixes/audio-sandbox.patch
 various/fixes/cross-origin-favicons-1.patch
 various/fixes/EnumTable-crash.patch
 various/fixes/font-rendering.patch
