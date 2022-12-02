@@ -1,0 +1,40 @@
+Description: Disables collection of motherboard metrics, which would 
+ trigger Apparmor denials.
+From: Nathan Pratta Teodosio <nathan.teodosio@canonical.com>
+Ubuntu-bug: https://launchpad.net/bugs/1993562
+Forwarded: not-needed
+
+--- a/components/metrics/motherboard.cc
++++ b/components/metrics/motherboard.cc
+@@ -41,31 +41,7 @@
+ using base::TRIM_TRAILING;
+ 
+ MotherboardDetails ReadMotherboardDetails() {
+-  constexpr FilePath::CharType kDmiPath[] = "/sys/devices/virtual/dmi/id";
+-  constexpr FilePath::CharType kEfiPath[] = "/sys/firmware/efi";
+-  const FilePath dmi_path(kDmiPath);
+   MotherboardDetails details;
+-  std::string temp;
+-  if (ReadFileToString(dmi_path.Append("board_vendor"), &temp)) {
+-    details.manufacturer =
+-        std::string(TrimWhitespaceASCII(temp, TRIM_TRAILING));
+-  }
+-  if (ReadFileToString(dmi_path.Append("board_name"), &temp)) {
+-    details.model = std::string(TrimWhitespaceASCII(temp, TRIM_TRAILING));
+-  }
+-  if (ReadFileToString(dmi_path.Append("bios_vendor"), &temp)) {
+-    details.bios_manufacturer =
+-        std::string(TrimWhitespaceASCII(temp, TRIM_TRAILING));
+-  }
+-  if (ReadFileToString(dmi_path.Append("bios_version"), &temp)) {
+-    details.bios_version =
+-        std::string(TrimWhitespaceASCII(temp, TRIM_TRAILING));
+-  }
+-  if (PathExists(FilePath(kEfiPath))) {
+-    details.bios_type = Motherboard::BiosType::kUefi;
+-  } else {
+-    details.bios_type = Motherboard::BiosType::kLegacy;
+-  }
+   return details;
+ }
+ #endif

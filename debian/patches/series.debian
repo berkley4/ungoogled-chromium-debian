@@ -96,6 +96,7 @@ various/fixes/scoped-file-no-close.patch
 various/fixes/shim-fix-for-official-builds.patch
 various/fixes/sql-virtual-cursor.patch
 various/fixes/xfce-maximize.patch
+various/launchpad/dont-collect-motherboard-metrics.patch
 various/system/pdfium-system-tiff.patch
 various/system/perfetto-system-zlib.patch
 various/system/zlib.patch
