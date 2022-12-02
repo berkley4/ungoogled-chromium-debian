@@ -27,16 +27,28 @@ system/openjpeg.patch
 system/opus.patch
 system/zlib.patch
 
+bromite/Add-site-engagement-flag.patch
 bromite/AudioBuffer-AnalyserNode-fp-mitigations.patch
+bromite/Clamp-time-resolution-in-requestAnimationFrame.patch
 bromite/Disable-AsyncDNS-by-default.patch
+bromite/Disable-idle-detection.patch
+bromite/Disable-plugins-enumeration.patch
 bromite/Disable-some-signed-exchange-features.patch
 bromite/Disable-text-fragments-by-default.patch
 bromite/Disable-TLS-resumption.patch
+bromite/Do-not-build-API-keys-infobar.patch
 bromite/Hardening-against-incognito-mode-detection.patch
+bromite/Never-fetch-popular-sites.patch
 bromite/Partition-Blink-memory-cache.patch
+bromite/Partition-blobs-by-top-frame-URL.patch
+bromite/profile-resetter-disable-send-settings.patch
 bromite/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
 bromite/Remove-navigator.connection-info.patch
+bromite/Remove-segmentation-platform.patch
+bromite/Remove-window-name-on-cross-origin-navigation.patch
 bromite/Replace-DoH-probe-domain-with-RIPE-domain.patch
+bromite/Revert-Permit-blocking-of-view-source.patch
+bromite/updater-disable-updater-pings.patch
 bromite/webRTC-do-not-expose-local-IP-addresses.patch
 
 vanadium/0003-switch-to-fstack-protector-strong.patch
@@ -70,6 +82,7 @@ various/wayland-egl.patch
 #various/addenda/
 various/bromite/autofill-miscellaneous.patch
 various/bromite/Disable-all-predictors-code.patch
+various/bromite/Disable-conversion-measurement-api.patch
 various/bromite/DoH-improvements.patch
 various/disable/angle-build-tests.patch
 various/disable/orchestrator.patch
