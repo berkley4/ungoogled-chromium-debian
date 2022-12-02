@@ -1,13 +1,11 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2591,7 +2591,9 @@
+@@ -2591,7 +2591,7 @@
  config("default_init_stack_vars") {
    cflags = []
    if (init_stack_vars && is_clang && !is_nacl && !using_sanitizer) {
 -    cflags += [ "-ftrivial-auto-var-init=pattern" ]
-+    cflags += [ "-ftrivial-auto-var-init=zero",
-+                "-enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang",
-+    ]
++    cflags += [ "-ftrivial-auto-var-init=zero" ]
    }
  }
  
