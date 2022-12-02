@@ -29,7 +29,6 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-gpu-rasterization"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-raw-draw"
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-zero-copy"
 
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --num-raster-threads=2"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --ui-disable-partial-swap"
 
 
