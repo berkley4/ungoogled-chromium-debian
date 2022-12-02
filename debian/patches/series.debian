@@ -40,6 +40,7 @@ bromite/Partition-Blink-memory-cache.patch
 bromite/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
 bromite/Remove-navigator.connection-info.patch
 bromite/Replace-DoH-probe-domain-with-RIPE-domain.patch
+bromite/webRTC-do-not-expose-local-IP-addresses.patch
 
 vanadium/0003-switch-to-fstack-protector-strong.patch
 vanadium/0004-enable-fwrapv-in-Clang-for-non-UBSan-builds.patch
@@ -54,10 +55,7 @@ vanadium/0039-disable-media-DRM-preprovisioning-by-default.patch
 vanadium/0041-enable-user-agent-freeze-by-default.patch
 vanadium/0042-enable-split-cache-by-default.patch
 vanadium/0043-enable-partitioning-connections-by-default.patch
-vanadium/0045-disable-autofill-assistant-by-default.patch
-vanadium/0046-disable-autofill-server-communication-by-default.patch
 vanadium/0047-disable-component-updater-pings-by-default.patch
-vanadium/0050-most-private-WebRTC-IP-handling-policy-by-default.patch
 vanadium/0051-stub-out-the-battery-status-API.patch
 vanadium/0075-Enable-strict-origin-isolation-by-default.patch
 vanadium/0076-disable-appending-variations-header.patch
@@ -73,6 +71,7 @@ various/use-clang-to-optimize-debug-info.patch
 various/vanadium-disable-article-suggestions-feature-by-default.patch
 various/wayland-egl.patch
 #various/addenda/
+various/bromite/autofill-miscellaneous.patch
 various/bromite/Disable-all-predictors-code.patch
 various/bromite/disable-happiness-tracking.patch
 various/bromite/DoH-improvements.patch
