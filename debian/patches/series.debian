@@ -7,8 +7,6 @@
 
 debianization/master-preferences.patch
 
-fixes/angle-wayland.patch
-#fixes/fix-arm-vfpv3-d16-libaom.patch
 fixes/ps-print.patch
 fixes/widevine-enable-version-string.patch
 fixes/widevine-locations.patch
@@ -35,7 +33,6 @@ bromite/Disable-some-signed-exchange-features.patch
 bromite/Disable-text-fragments-by-default.patch
 bromite/Disable-TLS-resumption.patch
 bromite/Hardening-against-incognito-mode-detection.patch
-bromite/Make-all-favicon-requests-on-demand.patch
 bromite/Partition-Blink-memory-cache.patch
 bromite/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
 bromite/Remove-navigator.connection-info.patch
@@ -73,7 +70,6 @@ various/wayland-egl.patch
 #various/addenda/
 various/bromite/autofill-miscellaneous.patch
 various/bromite/Disable-all-predictors-code.patch
-various/bromite/disable-happiness-tracking.patch
 various/bromite/DoH-improvements.patch
 various/disable/angle-build-tests.patch
 various/disable/orchestrator.patch
