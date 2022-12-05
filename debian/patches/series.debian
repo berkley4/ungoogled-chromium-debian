@@ -112,6 +112,7 @@ various/vanadium/disable-article-suggestions-feature-by-default.patch
 #optional/avx.patch
 #optional/avx2.patch
 #optional/llvm-polly-stripmine.patch
+#optional/llvm-polly-extra.patch
 #optional/disable/catapult.patch
 #optional/disable/atk-dbus.patch
 #optional/disable/rtc-protobuf.patch
