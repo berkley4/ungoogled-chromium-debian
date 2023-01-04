@@ -1,0 +1,127 @@
+--- a/AUTHORS
++++ b/AUTHORS
+@@ -97,6 +97,7 @@
+ Andras Tokodi <a.tokodi@eyeo.com>
+ Andreas Nazlidis <andreas221b@gmail.com>
+ Andreas Papacharalampous <andreas@apap04.com>
++Andreas Schneider <asn@cryptomilk.org>
+ Andrei Borza <andrei.borza@gmail.com>
+ Andrei Parvu <andrei.prv@gmail.com>
+ Andrei Parvu <parvu@adobe.com>
+--- a/media/filters/ffmpeg_demuxer.cc
++++ b/media/filters/ffmpeg_demuxer.cc
+@@ -58,7 +58,7 @@
+ 
+ namespace {
+ 
+-constexpr int64_t kInvalidPTSMarker = static_cast<int64_t>(0x8000000000000000);
++constexpr int64_t kRelativeTsBase = static_cast<int64_t>(0x7ffeffffffffffff);
+ 
+ void SetAVStreamDiscard(AVStream* stream, AVDiscard discard) {
+   DCHECK(stream);
+@@ -91,7 +91,7 @@
+                             sample_rate);
+ }
+ 
+-static base::TimeDelta ExtractStartTime(AVStream* stream) {
++static base::TimeDelta ExtractStartTime(AVStream* stream, int64_t first_dts) {
+   // The default start time is zero.
+   base::TimeDelta start_time;
+ 
+@@ -101,12 +101,12 @@
+ 
+   // Next try to use the first DTS value, for codecs where we know PTS == DTS
+   // (excludes all H26x codecs). The start time must be returned in PTS.
+-  if (av_stream_get_first_dts(stream) != kNoFFmpegTimestamp &&
++  if (first_dts != AV_NOPTS_VALUE &&
+       stream->codecpar->codec_id != AV_CODEC_ID_HEVC &&
+       stream->codecpar->codec_id != AV_CODEC_ID_H264 &&
+       stream->codecpar->codec_id != AV_CODEC_ID_MPEG4) {
+     const base::TimeDelta first_pts =
+-        ConvertFromTimeBase(stream->time_base, av_stream_get_first_dts(stream));
++        ConvertFromTimeBase(stream->time_base, first_dts);
+     if (first_pts < start_time)
+       start_time = first_pts;
+   }
+@@ -275,6 +275,7 @@
+       fixup_negative_timestamps_(false),
+       fixup_chained_ogg_(false),
+       num_discarded_packet_warnings_(0),
++      first_dts_(AV_NOPTS_VALUE),
+       last_packet_pos_(AV_NOPTS_VALUE),
+       last_packet_dts_(AV_NOPTS_VALUE) {
+   DCHECK(demuxer_);
+@@ -341,6 +342,11 @@
+   int64_t packet_dts =
+       packet->dts == AV_NOPTS_VALUE ? packet->pts : packet->dts;
+ 
++  if (first_dts_ == AV_NOPTS_VALUE && packet->dts != AV_NOPTS_VALUE &&
++      last_packet_dts_ != AV_NOPTS_VALUE) {
++    first_dts_ = packet->dts - (last_packet_dts_ + kRelativeTsBase);
++  }
++
+   // Chained ogg files have non-monotonically increasing position and time stamp
+   // values, which prevents us from using them to determine if a packet should
+   // be dropped. Since chained ogg is only allowed on single track audio only
+@@ -683,6 +689,7 @@
+   ResetBitstreamConverter();
+ 
+   if (!preserve_packet_position) {
++    first_dts_ = AV_NOPTS_VALUE;
+     last_packet_pos_ = AV_NOPTS_VALUE;
+     last_packet_dts_ = AV_NOPTS_VALUE;
+   }
+@@ -1434,7 +1441,8 @@
+ 
+     max_duration = std::max(max_duration, streams_[i]->duration());
+ 
+-    base::TimeDelta start_time = ExtractStartTime(stream);
++    base::TimeDelta start_time =
++        ExtractStartTime(stream, streams_[i]->first_dts());
+ 
+     // Note: This value is used for seeking, so we must take the true value and
+     // not the one possibly clamped to zero below.
+@@ -1591,7 +1599,7 @@
+   for (const auto& stream : streams_) {
+     if (!stream || stream->IsEnabled() != enabled)
+       continue;
+-    if (av_stream_get_first_dts(stream->av_stream()) == kInvalidPTSMarker)
++    if (stream->first_dts() == AV_NOPTS_VALUE)
+       continue;
+     if (!lowest_start_time_stream ||
+         stream->start_time() < lowest_start_time_stream->start_time()) {
+@@ -1612,7 +1620,7 @@
+     if (stream->type() != DemuxerStream::VIDEO)
+       continue;
+ 
+-    if (av_stream_get_first_dts(stream->av_stream()) == kInvalidPTSMarker)
++    if (stream->first_dts() == AV_NOPTS_VALUE)
+       continue;
+ 
+     if (!stream->IsEnabled())
+@@ -1926,4 +1934,4 @@
+   std::move(pending_seek_cb_).Run(status);
+ }
+ 
+-}  // namespace media
++}  // namespace media
+\ No newline at end of file
+--- a/media/filters/ffmpeg_demuxer.h
++++ b/media/filters/ffmpeg_demuxer.h
+@@ -145,6 +145,8 @@
+   base::TimeDelta start_time() const { return start_time_; }
+   void set_start_time(base::TimeDelta time) { start_time_ = time; }
+ 
++  int64_t first_dts() const { return first_dts_; }
++
+  private:
+   friend class FFmpegDemuxerTest;
+ 
+@@ -202,6 +204,7 @@
+   bool fixup_chained_ogg_;
+ 
+   int num_discarded_packet_warnings_;
++  int64_t first_dts_;
+   int64_t last_packet_pos_;
+   int64_t last_packet_dts_;
+ };

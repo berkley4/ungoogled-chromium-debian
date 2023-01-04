@@ -64,6 +64,7 @@ vanadium/0039-disable-media-DRM-preprovisioning-by-default.patch
 vanadium/0041-enable-user-agent-freeze-by-default.patch
 vanadium/0042-enable-split-cache-by-default.patch
 vanadium/0043-enable-partitioning-connections-by-default.patch
+vanadium/0044-enable-new-third-party-storage-partitioning.patch
 vanadium/0047-disable-component-updater-pings-by-default.patch
 vanadium/0051-stub-out-the-battery-status-API.patch
 vanadium/0075-Enable-strict-origin-isolation-by-default.patch
@@ -89,7 +90,9 @@ various/fedora/enable-hardware-accelerated-mjpeg.patch
 various/fixes/angle-wayland-include-protocol.patch
 various/fixes/cross-origin-favicons-1.patch
 various/fixes/EnumTable-crash.patch
+various/fixes/ffmpeg-first_dts.patch
 various/fixes/font-rendering.patch
+various/fixes/revert-GlobalMediaControlsCastStartStop.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/scoped-file-no-close.patch
 various/fixes/shim-fix-for-official-builds.patch
