@@ -126,8 +126,8 @@ various/vanadium/disable-article-suggestions-feature-by-default.patch
 #optional/system/unstable/dav1d-no-unbundled-libavif.patch
 #optional/system/unstable/icu.patch
 #optional/system/unstable/icu-headers.patch
-optional/system/unstable/icu72.patch
+#optional/system/unstable/icu72.patch
 #optional/system/unstable/libaom-headers.patch
 #optional/system/unstable/roll-src-third_party-ffmpeg-102.patch
 #optional/system/unstable/roll-src-third_party-ffmpeg-106.patch
-optional/system/unstable/v8-enhance-Date-parser-to-take-Unicode-SPACE.patch
+#optional/system/unstable/v8-enhance-Date-parser-to-take-Unicode-SPACE.patch
