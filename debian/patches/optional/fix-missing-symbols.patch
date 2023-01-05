@@ -1,0 +1,17 @@
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -520,6 +520,14 @@
+     }
+   }
+ 
++  if (use_lld) {
++    # Workaround for missing symbol link errors similar in form to the one at
++    # https://github.com/llvm/llvm-project/issues/59660 and described at
++    # https://reviews.llvm.org/D140591#4014995.
++    ldflags += [ "-Wl,--undefined-version" ]
++  }
++
++
+   # Enable text section splitting only on linux when using lld for now. Other
+   # platforms can be added later if needed.
+   if ((is_linux || is_chromeos) && use_lld && use_text_section_splitting) {

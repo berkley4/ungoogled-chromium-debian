@@ -131,3 +131,4 @@ various/vanadium/disable-article-suggestions-feature-by-default.patch
 #optional/system/unstable/roll-src-third_party-ffmpeg-102.patch
 #optional/system/unstable/roll-src-third_party-ffmpeg-106.patch
 #optional/system/unstable/v8-enhance-Date-parser-to-take-Unicode-SPACE.patch
+#optional/fix-missing-symbols.patch
