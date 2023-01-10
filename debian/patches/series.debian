@@ -79,6 +79,7 @@ various/silence-alsa-frames-log-msg.patch
 various/template-correction.patch
 various/use-clang-to-optimize-debug-info.patch
 various/wayland-egl.patch
+various/zero-call-used-registers.patch
 #various/addenda/
 various/bromite/autofill-miscellaneous.patch
 various/bromite/Disable-all-predictors-code.patch
