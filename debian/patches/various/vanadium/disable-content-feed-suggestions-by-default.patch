@@ -1,0 +1,21 @@
+From beb94a379db43e249b4e9c7aa260ef557911f6ac Mon Sep 17 00:00:00 2001
+From: Daniel Micay <danielmicay@gmail.com>
+Date: Sun, 22 Mar 2020 01:23:48 -0400
+Subject: [PATCH] disable content feed suggestions by default
+
+---
+ .../org/chromium/chrome/browser/flags/CachedFeatureFlags.java   | 2 +-
+ components/feed/feed_feature_list.cc                            | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+--- a/components/feed/feed_feature_list.cc
++++ b/components/feed/feed_feature_list.cc
+@@ -24,7 +24,7 @@
+ // changed, please update the cached one's default value in CachedFeatureFlags.
+ BASE_FEATURE(kInterestFeedV2,
+              "InterestFeedV2",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             base::FEATURE_DISABLED_BY_DEFAULT);
+ 
+ BASE_FEATURE(kInterestFeedV2Autoplay,
+              "InterestFeedV2Autoplay",

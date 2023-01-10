@@ -11,7 +11,7 @@ fixes/ps-print.patch
 fixes/widevine-enable-version-string.patch
 fixes/widevine-locations.patch
 
-upstream/re-fix-tflite.patch
+#upstream/
 
 disable/android.patch
 disable/angle-perftests.patch
@@ -29,7 +29,6 @@ system/zlib.patch
 
 bromite/Add-site-engagement-flag.patch
 bromite/AudioBuffer-AnalyserNode-fp-mitigations.patch
-bromite/Clamp-time-resolution-in-requestAnimationFrame.patch
 bromite/Disable-AsyncDNS-by-default.patch
 bromite/Disable-idle-detection.patch
 bromite/Disable-plugins-enumeration.patch
@@ -55,7 +54,6 @@ vanadium/0003-switch-to-fstack-protector-strong.patch
 vanadium/0004-enable-fwrapv-in-Clang-for-non-UBSan-builds.patch
 vanadium/0020-disable-contextual-search-by-default.patch
 vanadium/0024-disable-showing-popular-sites-by-default.patch
-vanadium/0026-disable-content-feed-suggestions-by-default.patch
 vanadium/0027-disable-sensors-access-by-default.patch
 vanadium/0030-disable-background-sync-by-default.patch
 vanadium/0032-disable-media-router-media-remoting-by-default.patch
@@ -65,12 +63,12 @@ vanadium/0041-enable-user-agent-freeze-by-default.patch
 vanadium/0042-enable-split-cache-by-default.patch
 vanadium/0043-enable-partitioning-connections-by-default.patch
 vanadium/0044-enable-new-third-party-storage-partitioning.patch
-vanadium/0047-disable-component-updater-pings-by-default.patch
-vanadium/0051-stub-out-the-battery-status-API.patch
-vanadium/0075-Enable-strict-origin-isolation-by-default.patch
-vanadium/0076-disable-appending-variations-header.patch
-vanadium/0078-Disable-detailed-language-settings-by-default.patch
-vanadium/0082-enable-process-isolated-sandboxed-iframes-by-default.patch
+vanadium/0048-disable-component-updater-pings-by-default.patch
+vanadium/0052-stub-out-the-battery-status-API.patch
+vanadium/0076-Enable-strict-origin-isolation-by-default.patch
+vanadium/0077-disable-appending-variations-header.patch
+vanadium/0079-Disable-detailed-language-settings-by-default.patch
+vanadium/0083-enable-process-isolated-sandboxed-iframes-by-default.patch
 
 various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
 various/fno-plt.patch
@@ -83,7 +81,7 @@ various/zero-call-used-registers.patch
 #various/addenda/
 various/bromite/autofill-miscellaneous.patch
 various/bromite/Disable-all-predictors-code.patch
-various/bromite/Disable-conversion-measurement-api.patch
+#various/bromite/Disable-conversion-measurement-api.patch
 various/bromite/DoH-improvements.patch
 various/disable/angle-build-tests.patch
 various/disable/orchestrator.patch
@@ -107,6 +105,7 @@ various/system/extra/brotli.patch
 various/system/extra/opus.patch
 various/system/extra/zlib.patch
 various/vanadium/disable-article-suggestions-feature-by-default.patch
+various/vanadium/disable-content-feed-suggestions-by-default.patch
 
 #optional/custom-import-limits.patch
 #optional/custom-thin-lto-cache-location.patch
