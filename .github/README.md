@@ -43,8 +43,7 @@ ___Performance improvements___
     - -mllvm polly -mllvm -polly-vectorizer=stripmine - enables llvm polly vectorization
     - -fno-plt - (see [here](https://patchwork.ozlabs.org/project/gcc/patch/alpine.LNX.2.11.1505061730460.22867@monopod.intra.ispras.ru/))
     - -ftrivial-auto-var-init set to zero - see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html)
-    - -Wl,-mllvm,-import-instr-limit=10 - via an optional patch (details [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1591725#c32))
-    - -Wl,-mllvm,-import-hot-multiplier=60 - the release debs use 30 (with -import-instr-limit=10)
+    - -import-instr-limit=25 and -import-hot-multiplier=18 - gives a hot import limit of 450 (25*18) vs default of 300 (30*10)
 
 ___Security/Privacy improvements___
 
@@ -52,6 +51,7 @@ ___Security/Privacy improvements___
 - Extra Bromite and Vanadium patches, the later of which includes the following clang options
     - -fstack-protector-strong - chromium's default is the less-strict -fstack-protector
     - -ftrivial-auto-var-init=zero - see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html)
+    - -fzero-call-used-regs=used-gpr - see [here](https://www.jerkeby.se/newsletter/posts/rop-reduction-zero-call-user-regs/)
     - -fwrapv - see [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1031653) and [here](https://gitlab.e.foundation/e/apps/browser/-/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch)
 - An example policy file is in the repo (install manually or edit ungoogled-chromium.install.in at build time4)
 - Some security/privacy themed flag files are installed to /etc/chromium.d (strict isolation is enabled by default)
