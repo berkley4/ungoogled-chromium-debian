@@ -1,0 +1,70 @@
+From d2a48e82265fbc7a34bdd26db21fc6866911c7be Mon Sep 17 00:00:00 2001
+From: Bruce Dawson <brucedawson@chromium.org>
+Date: Wed, 02 Nov 2022 13:41:33 -0700
+Subject: [PATCH] Permanently switch to new openh264 include directory
+
+Openh264 switched from api/svc to api/wels as the location for some
+codec header files. During the transition it was necessary to
+conditionally from either the old or new location, but now that the
+switch is completed and has settled for about two weeks the conditionals
+can be removed. This finishes the #include transition started by
+webrtc-review.googlesource.com/c/280800
+
+Bug: chromium:1218384
+Change-Id: Ic0847428d134687908cc26fec1fdec0c612674b2
+Reviewed-on: https://webrtc-review.googlesource.com/c/src/+/281561
+Reviewed-by: Mirko Bonadei <mbonadei@webrtc.org>
+Reviewed-by: Sergey Silkin <ssilkin@webrtc.org>
+Auto-Submit: Bruce Dawson <brucedawson@chromium.org>
+Commit-Queue: Sergey Silkin <ssilkin@webrtc.org>
+Cr-Commit-Position: refs/heads/main@{#38622}
+---
+
+--- a/third_party/webrtc/modules/video_coding/BUILD.gn
++++ b/third_party/webrtc/modules/video_coding/BUILD.gn
+@@ -544,7 +544,6 @@
+   if (rtc_use_h264) {
+     deps += [
+       "//third_party/ffmpeg",
+-      "//third_party/openh264:buildflags",
+       "//third_party/openh264:encoder",
+     ]
+     if (!build_with_mozilla) {
+--- a/third_party/webrtc/modules/video_coding/codecs/h264/h264_encoder_impl.cc
++++ b/third_party/webrtc/modules/video_coding/codecs/h264/h264_encoder_impl.cc
+@@ -31,19 +31,10 @@
+ #include "system_wrappers/include/metrics.h"
+ #include "third_party/libyuv/include/libyuv/convert.h"
+ #include "third_party/libyuv/include/libyuv/scale.h"
+-// TODO(crbug.com/1218384): Remove after new openh264 is rolled.
+-#include "third_party/openh264/buildflags.h"
+-#if BUILDFLAG(OPENH264_API_WELS)
+ #include "third_party/openh264/src/codec/api/wels/codec_api.h"
+ #include "third_party/openh264/src/codec/api/wels/codec_app_def.h"
+ #include "third_party/openh264/src/codec/api/wels/codec_def.h"
+ #include "third_party/openh264/src/codec/api/wels/codec_ver.h"
+-#else
+-#include "third_party/openh264/src/codec/api/svc/codec_api.h"
+-#include "third_party/openh264/src/codec/api/svc/codec_app_def.h"
+-#include "third_party/openh264/src/codec/api/svc/codec_def.h"
+-#include "third_party/openh264/src/codec/api/svc/codec_ver.h"
+-#endif
+ 
+ namespace webrtc {
+ 
+--- a/third_party/webrtc/modules/video_coding/codecs/h264/h264_encoder_impl.h
++++ b/third_party/webrtc/modules/video_coding/codecs/h264/h264_encoder_impl.h
+@@ -30,13 +30,7 @@
+ #include "modules/video_coding/codecs/h264/include/h264.h"
+ #include "modules/video_coding/svc/scalable_video_controller.h"
+ #include "modules/video_coding/utility/quality_scaler.h"
+-// TODO(crbug.com/1218384): Remove after new openh264 is rolled.
+-#include "third_party/openh264/buildflags.h"
+-#if BUILDFLAG(OPENH264_API_WELS)
+ #include "third_party/openh264/src/codec/api/wels/codec_app_def.h"
+-#else
+-#include "third_party/openh264/src/codec/api/svc/codec_app_def.h"
+-#endif
+ 
+ class ISVCEncoder;
+ 

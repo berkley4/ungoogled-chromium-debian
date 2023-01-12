@@ -3,7 +3,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -229,7 +229,6 @@
+@@ -237,7 +237,6 @@
      deps += [
        "//google_apis/gcm:mcs_probe",
        "//media/cast:cast_unittests",
@@ -11,7 +11,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      ]
      if (!is_android) {
        if (!is_castos) {
-@@ -364,7 +363,6 @@
+@@ -368,7 +367,6 @@
        "//services:services_junit_tests",
        "//testing/android/junit:junit_unit_tests",
        "//third_party/android_build_tools/lint:custom_lint_java",
@@ -19,7 +19,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        "//third_party/r8:custom_d8_java",
        "//tools/android:android_tools",
        "//tools/android:memconsumer",
-@@ -1006,7 +1004,6 @@
+@@ -1011,7 +1009,6 @@
        "//ui/ozone:ozone_integration_tests",
  
        # Blocked on https://github.com/catapult-project/catapult/issues/2297
@@ -27,15 +27,15 @@ author: Michael Gilbert <mgilbert@debian.org>
        "//tools/perf/clear_system_cache",
        "//ui/ozone/gl:ozone_gl_unittests",
      ]
-@@ -1123,7 +1120,6 @@
+@@ -1132,7 +1129,6 @@
          "//chrome:chrome",
-         "//chrome/test/chromedriver",
+         "//chrome/test/chromedriver:chromedriver_server",
          "//testing:test_scripts_shared",
 -        "//third_party/catapult/third_party/typ",
        ]
        if (is_win) {
          data_deps += [ "//build/win:copy_cdb_to_output" ]
-@@ -1172,7 +1168,6 @@
+@@ -1181,7 +1177,6 @@
        "//third_party/blink/public:blink_devtools_inspector_resources",
        "//third_party/blink/public/mojom:mojom_platform_js_data_deps",
        "//third_party/blink/renderer/core:js_files_for_form_controls_web_tests",
@@ -43,7 +43,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        "//third_party/hyphenation-patterns:test_data",
        "//third_party/mesa_headers",
        "//tools/imagediff",
-@@ -1248,7 +1243,6 @@
+@@ -1258,7 +1253,6 @@
  
      if (is_android) {
        data += [
@@ -51,7 +51,7 @@ author: Michael Gilbert <mgilbert@debian.org>
          "//build/android/",
        ]
      }
-@@ -1601,10 +1595,6 @@
+@@ -1606,10 +1600,6 @@
        "//third_party/blink/web_tests/StaleTestExpectations",
        "//third_party/blink/web_tests/TestExpectations",
        "//third_party/blink/web_tests/VirtualTestSuites",
@@ -87,7 +87,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -10565,8 +10565,6 @@
+@@ -10648,8 +10648,6 @@
        "//chrome/test/data/password/captured_sites/",
        "//chrome/test/data/web_page_replay_go_helper_scripts/automation_helper.js",
        "//components/test/data/autofill/web_page_replay_support_files/",
@@ -96,7 +96,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      ]
  
      if (is_linux || is_chromeos || is_win) {
-@@ -10777,7 +10775,6 @@
+@@ -10861,7 +10859,6 @@
      deps = [ "//tools/perf/chrome_telemetry_build:telemetry_chrome_test" ]
  
      data = [
@@ -154,7 +154,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  }
 --- a/tools/gritsettings/resource_ids.spec
 +++ b/tools/gritsettings/resource_ids.spec
-@@ -829,11 +829,6 @@
+@@ -852,11 +852,6 @@
      "includes": [3840],
    },
  
@@ -168,14 +168,14 @@ author: Michael Gilbert <mgilbert@debian.org>
    # START ios/web/ section.
 --- a/content/browser/BUILD.gn
 +++ b/content/browser/BUILD.gn
-@@ -2617,7 +2617,6 @@
-   if (!is_android) {
-     deps += [
+@@ -3123,7 +3123,6 @@
+       "//components/speech",
        "//components/vector_icons",
+       "//content/browser/devtools:devtools_resources_extern",
 -      "//content/browser/tracing:resources",
+       "//third_party/flac",
      ]
-     sources += [
-       # Non-Android platforms that don't presently support
+   }
 --- a/chrome/chrome_paks.gni
 +++ b/chrome/chrome_paks.gni
 @@ -171,7 +171,6 @@
@@ -196,7 +196,7 @@ author: Michael Gilbert <mgilbert@debian.org>
          sources += [
 --- a/content/shell/BUILD.gn
 +++ b/content/shell/BUILD.gn
-@@ -471,11 +471,6 @@
+@@ -469,11 +469,6 @@
      "//ui/strings",
    ]
  
@@ -260,7 +260,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  #include "content/browser/tracing/tracing_controller_impl.h"
  #include "content/public/browser/browser_context.h"
  #include "content/public/browser/browser_thread.h"
-@@ -240,8 +239,6 @@
+@@ -242,8 +241,6 @@
        web_ui->GetWebContents()->GetBrowserContext(), kChromeUITracingHost);
    source->DisableTrustedTypesCSP();
    source->UseStringsJs();
@@ -333,7 +333,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  }
 --- a/third_party/blink/tools/BUILD.gn
 +++ b/third_party/blink/tools/BUILD.gn
-@@ -34,7 +34,6 @@
+@@ -38,7 +38,6 @@
    data_deps = [
      ":wpt_tests_mojo_bindings",
      "//testing:test_scripts_shared",
