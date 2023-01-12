@@ -14,10 +14,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  const char kPopularSitesDefaultVersion[] = "5";
  const int kSitesExplorationStartVersion = 6;
 -const int kPopularSitesRedownloadIntervalHours = 24;
- 
- GURL GetPopularSitesURL(const std::string& directory,
-                         const std::string& country,
-@@ -285,7 +284,12 @@
+ const char kIOSDefaultPopularSitesExperimentIncludeApps[] =
+     "https://www.gstatic.com/chrome/ntp/ios/"
+     "suggested_sites_US_2023q1_mvt_experiment_with_popular_sites.json";
+@@ -370,7 +369,12 @@
    DCHECK(!callback_);
    callback_ = std::move(callback);
  
@@ -31,7 +31,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        prefs_->GetInt64(prefs::kPopularSitesLastDownloadPref));
    const base::TimeDelta time_since_last_download =
        base::Time::Now() - last_download_time;
-@@ -302,7 +306,7 @@
+@@ -387,7 +391,7 @@
        (time_since_last_download > redownload_interval) || url_changed) {
      FetchPopularSites();
      return true;

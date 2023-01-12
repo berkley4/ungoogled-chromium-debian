@@ -20,7 +20,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -141,6 +141,7 @@
+@@ -143,6 +143,7 @@
  #include "components/segmentation_platform/public/features.h"
  #include "components/send_tab_to_self/features.h"
  #include "components/services/heap_profiling/public/cpp/switches.h"
@@ -28,9 +28,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "components/shared_highlighting/core/common/shared_highlighting_features.h"
  #include "components/signin/core/browser/dice_account_reconcilor_delegate.h"
  #include "components/signin/public/base/signin_buildflags.h"
-@@ -9090,6 +9091,11 @@
-      SINGLE_VALUE_TYPE(switches::kPervasiveSystemAccentColor)},
- #endif
+@@ -9358,6 +9359,11 @@
+      flag_descriptions::kReduceUserAgentPlatformOsCpuDescription, kOsAll,
+      FEATURE_VALUE_TYPE(blink::features::kReduceUserAgentPlatformOsCpu)},
  
 +    {"site-engagement",
 +     flag_descriptions::kSiteEngagementName,
@@ -38,11 +38,11 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +     FEATURE_VALUE_TYPE(site_engagement::features::kSiteEngagement)},
 +
  #if BUILDFLAG(IS_CHROMEOS_ASH)
-     {"use-multiple-overlays", flag_descriptions::kUseMultipleOverlaysName,
-      flag_descriptions::kUseMultipleOverlaysDescription, kOsCrOS,
+     {"enable-variable-refresh-rate",
+      flag_descriptions::kEnableVariableRefreshRateName,
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3410,6 +3410,11 @@
+@@ -3356,6 +3356,11 @@
      "Skips starting the service worker and run the fetch handler if the fetch "
      "handler is recognized as skippable.";
  
@@ -56,7 +56,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      "The WebSQL API is enabled by default, but can be disabled here.";
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -1932,6 +1932,9 @@
+@@ -1914,6 +1914,9 @@
  extern const char kSkipServiceWorkerFetchHandlerName[];
  extern const char kSkipServiceWorkerFetchHandlerDescription[];
  

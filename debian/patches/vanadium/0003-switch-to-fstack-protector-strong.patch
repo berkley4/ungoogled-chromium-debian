@@ -1,4 +1,4 @@
-From c89d33c0ac6f8484093235669be131792bcaaa35 Mon Sep 17 00:00:00 2001
+From a31616d09fb990fe3f1586210a46c2b2be94f0ea Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Wed, 26 Dec 2018 10:20:24 -0500
 Subject: [PATCH] switch to -fstack-protector-strong
@@ -9,7 +9,7 @@ Subject: [PATCH] switch to -fstack-protector-strong
 
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -314,18 +314,12 @@
+@@ -319,18 +319,12 @@
          cflags += [ "-fstack-protector" ]
        }
      } else if ((is_posix && !is_chromeos && !is_nacl) || is_fuchsia) {

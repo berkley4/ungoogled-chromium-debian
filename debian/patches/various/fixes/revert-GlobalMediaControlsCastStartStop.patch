@@ -19,7 +19,7 @@ Cr-Commit-Position: refs/heads/main@{#961658}
 
 --- a/chrome/browser/media/router/media_router_feature.cc
 +++ b/chrome/browser/media/router/media_router_feature.cc
-@@ -54,7 +54,7 @@
+@@ -55,7 +55,7 @@
  #else
  BASE_FEATURE(kGlobalMediaControlsCastStartStop,
               "GlobalMediaControlsCastStartStop",
@@ -27,4 +27,4 @@ Cr-Commit-Position: refs/heads/main@{#961658}
 +             base::FEATURE_DISABLED_BY_DEFAULT);
  #endif  // BUILDFLAG(IS_CHROMEOS)
  
- #endif  // !BUILDFLAG(IS_ANDROID)
+ #endif  // BUILDFLAG(IS_ANDROID)

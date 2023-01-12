@@ -10,7 +10,7 @@
  Andrei Parvu <parvu@adobe.com>
 --- a/media/filters/ffmpeg_demuxer.cc
 +++ b/media/filters/ffmpeg_demuxer.cc
-@@ -58,7 +58,7 @@
+@@ -59,7 +59,7 @@
  
  namespace {
  
@@ -19,7 +19,7 @@
  
  void SetAVStreamDiscard(AVStream* stream, AVDiscard discard) {
    DCHECK(stream);
-@@ -91,7 +91,7 @@
+@@ -92,7 +92,7 @@
                              sample_rate);
  }
  
@@ -28,7 +28,7 @@
    // The default start time is zero.
    base::TimeDelta start_time;
  
-@@ -101,12 +101,12 @@
+@@ -102,12 +102,12 @@
  
    // Next try to use the first DTS value, for codecs where we know PTS == DTS
    // (excludes all H26x codecs). The start time must be returned in PTS.
@@ -43,7 +43,7 @@
      if (first_pts < start_time)
        start_time = first_pts;
    }
-@@ -275,6 +275,7 @@
+@@ -276,6 +276,7 @@
        fixup_negative_timestamps_(false),
        fixup_chained_ogg_(false),
        num_discarded_packet_warnings_(0),
@@ -51,7 +51,7 @@
        last_packet_pos_(AV_NOPTS_VALUE),
        last_packet_dts_(AV_NOPTS_VALUE) {
    DCHECK(demuxer_);
-@@ -341,6 +342,11 @@
+@@ -342,6 +343,11 @@
    int64_t packet_dts =
        packet->dts == AV_NOPTS_VALUE ? packet->pts : packet->dts;
  
@@ -63,7 +63,7 @@
    // Chained ogg files have non-monotonically increasing position and time stamp
    // values, which prevents us from using them to determine if a packet should
    // be dropped. Since chained ogg is only allowed on single track audio only
-@@ -683,6 +689,7 @@
+@@ -684,6 +690,7 @@
    ResetBitstreamConverter();
  
    if (!preserve_packet_position) {
@@ -71,7 +71,7 @@
      last_packet_pos_ = AV_NOPTS_VALUE;
      last_packet_dts_ = AV_NOPTS_VALUE;
    }
-@@ -1434,7 +1441,8 @@
+@@ -1439,7 +1446,8 @@
  
      max_duration = std::max(max_duration, streams_[i]->duration());
  
@@ -81,7 +81,7 @@
  
      // Note: This value is used for seeking, so we must take the true value and
      // not the one possibly clamped to zero below.
-@@ -1591,7 +1599,7 @@
+@@ -1596,7 +1604,7 @@
    for (const auto& stream : streams_) {
      if (!stream || stream->IsEnabled() != enabled)
        continue;
@@ -90,7 +90,7 @@
        continue;
      if (!lowest_start_time_stream ||
          stream->start_time() < lowest_start_time_stream->start_time()) {
-@@ -1612,7 +1620,7 @@
+@@ -1617,7 +1625,7 @@
      if (stream->type() != DemuxerStream::VIDEO)
        continue;
  
@@ -99,7 +99,7 @@
        continue;
  
      if (!stream->IsEnabled())
-@@ -1926,4 +1934,4 @@
+@@ -1931,4 +1939,4 @@
    std::move(pending_seek_cb_).Run(status);
  }
  

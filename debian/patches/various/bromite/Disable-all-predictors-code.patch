@@ -29,7 +29,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        NavigationPredictorKeyedService::PredictionSource::
 --- a/chrome/common/chrome_features.cc
 +++ b/chrome/common/chrome_features.cc
-@@ -874,8 +874,8 @@
+@@ -879,8 +879,8 @@
  // Enables using the prediction service for permission prompts. We will keep
  // this feature in order to allow us to update the holdback chance via finch.
  BASE_FEATURE(kPermissionPredictions,
@@ -40,7 +40,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
  // The holdback chance is 30% but it can also be configured/updated
  // through finch if needed.
-@@ -886,8 +886,8 @@
+@@ -891,8 +891,8 @@
  
  // Enables using the prediction service for geolocation permission prompts.
  BASE_FEATURE(kPermissionGeolocationPredictions,
@@ -168,7 +168,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
  BASE_FEATURE(kPageContentAnnotationsValidation,
               "PageContentAnnotationsValidation",
-@@ -408,7 +404,7 @@
+@@ -414,7 +410,7 @@
  
  bool ShouldPersistHintsToDisk() {
    return GetFieldTrialParamByFeatureAsBool(kOptimizationHints,
@@ -179,7 +179,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  bool ShouldOverrideOptimizationTargetDecisionForMetricsPurposes(
 --- a/components/optimization_guide/core/prediction_model_download_manager.cc
 +++ b/components/optimization_guide/core/prediction_model_download_manager.cc
-@@ -46,7 +46,7 @@
+@@ -45,7 +45,7 @@
  // we require models to come from.
  constexpr uint8_t kPublisherKeyHash[] = {
      0x66, 0xa1, 0xd9, 0x3e, 0x4e, 0x5a, 0x66, 0x8a, 0x0f, 0xd3, 0xfa,
@@ -188,7 +188,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      0x5c, 0x7f, 0xd0, 0x0c, 0xa1, 0x6e, 0xef, 0xdd, 0x63, 0x7a};
  const net::NetworkTrafficAnnotationTag
      kOptimizationGuidePredictionModelsTrafficAnnotation =
-@@ -99,7 +99,7 @@
+@@ -93,7 +93,7 @@
      const base::FilePath& models_dir_path,
      scoped_refptr<base::SequencedTaskRunner> background_task_runner)
      : download_service_(download_service),
@@ -197,7 +197,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        api_key_(features::GetOptimizationGuideServiceAPIKey()),
        models_dir_path_(models_dir_path),
        background_task_runner_(background_task_runner) {}
-@@ -114,6 +114,7 @@
+@@ -103,6 +103,7 @@
  void PredictionModelDownloadManager::StartDownload(
      const GURL& download_url,
      proto::OptimizationTarget optimization_target) {
@@ -205,7 +205,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    download::DownloadParams download_params;
    download_params.client =
        download::DownloadClient::OPTIMIZATION_GUIDE_PREDICTION_MODELS;
-@@ -250,6 +251,7 @@
+@@ -239,6 +240,7 @@
  absl::optional<std::pair<base::FilePath, base::FilePath>>
  PredictionModelDownloadManager::VerifyDownload(const base::FilePath& file_path,
                                                 bool delete_file_on_error) {
@@ -257,7 +257,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
               "PermissionOnDeviceGeolocationPredictions",
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -216,12 +216,8 @@
+@@ -232,12 +232,8 @@
  // predictor may preconnect/prefetch to resources/origins to make the
  // future navigations faster.
  BASE_FEATURE(kNavigationPredictor,

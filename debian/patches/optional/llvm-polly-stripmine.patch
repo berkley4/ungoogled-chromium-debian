@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2034,6 +2034,15 @@
+@@ -2068,6 +2068,15 @@
        # smaller.
        common_optimize_on_cflags += [ "-fno-unique-section-names" ]
      }

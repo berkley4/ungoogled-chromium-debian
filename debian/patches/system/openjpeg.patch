@@ -14,7 +14,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      "PNG_USE_READ_MACROS",
 --- a/third_party/pdfium/core/fpdfapi/render/BUILD.gn
 +++ b/third_party/pdfium/core/fpdfapi/render/BUILD.gn
-@@ -47,6 +47,7 @@
+@@ -43,6 +43,7 @@
      "../../../:pdfium_noshorten_config",
    ]
    deps = [

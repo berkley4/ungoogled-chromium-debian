@@ -3,7 +3,7 @@ author: Andres Salomon <dilinger@debian.org>
 
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -1725,7 +1725,6 @@
+@@ -1711,7 +1711,6 @@
          ":chrome_symbols",
        ]
        if (is_linux) {
@@ -11,7 +11,7 @@ author: Andres Salomon <dilinger@debian.org>
        }
        if (!is_chromeos) {
          deps += [ ":angle_libvulkan_symbols" ]
-@@ -1758,6 +1757,7 @@
+@@ -1744,6 +1743,7 @@
  
        deps = [ "//components/crash/core/app:chrome_crashpad_handler" ]
      }
@@ -19,7 +19,7 @@ author: Andres Salomon <dilinger@debian.org>
      extract_symbols("swiftshader_vk_symbols") {
        binary = "$root_out_dir/libvk_swiftshader.so"
  
-@@ -1770,6 +1770,7 @@
+@@ -1756,6 +1756,7 @@
  
        deps = [ "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan" ]
      }

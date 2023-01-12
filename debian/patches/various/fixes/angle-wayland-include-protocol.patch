@@ -1,6 +1,6 @@
 --- a/third_party/angle/BUILD.gn
 +++ b/third_party/angle/BUILD.gn
-@@ -511,6 +511,12 @@
+@@ -538,6 +538,12 @@
    if (angle_enable_vulkan && angle_use_wayland &&
        defined(vulkan_wayland_include_dirs)) {
      include_dirs = vulkan_wayland_include_dirs
@@ -13,7 +13,7 @@
    }
  }
  
-@@ -1099,6 +1105,7 @@
+@@ -1109,6 +1115,7 @@
      include_dirs = [
        "$wayland_dir/egl",
        "$wayland_dir/src",

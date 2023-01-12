@@ -13,15 +13,15 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/browser/flag_descriptions.h                           | 3 +++
  chrome/browser/ui/prefs/prefs_tab_helper.cc                  | 2 +-
  content/child/runtime_features.cc                            | 1 +
- third_party/blink/common/features.cc                         | 4 ++++
+ third_party/blink/common/features.cc                         | 5 +++++
  third_party/blink/public/common/features.h                   | 1 +
  third_party/blink/renderer/core/dom/document.cc              | 5 +++++
  .../blink/renderer/platform/runtime_enabled_features.json5   | 5 ++---
- 10 files changed, 31 insertions(+), 4 deletions(-)
+ 10 files changed, 32 insertions(+), 4 deletions(-)
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -6286,6 +6286,11 @@
+@@ -6408,6 +6408,11 @@
           "")},
  #endif
  
@@ -35,7 +35,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       flag_descriptions::kEnableWebAuthenticationChromeOSAuthenticatorName,
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -2703,6 +2703,11 @@
+@@ -2732,6 +2732,11 @@
      "expiry_milestone": 130
    },
    {
@@ -49,7 +49,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      // We add a neural net to change how fingers are handled. We set a milestone
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -1382,6 +1382,10 @@
+@@ -1336,6 +1336,10 @@
      "intentionally interact with elements on that page. By dropping the events "
      "we prevent accidental interaction with a page the user has not seen yet.";
  
@@ -62,7 +62,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  const char kEnableCssSelectorFragmentAnchorDescription[] =
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -764,6 +764,9 @@
+@@ -745,6 +745,9 @@
  
  extern const char kRetailCouponsName[];
  extern const char kRetailCouponsDescription[];
@@ -85,7 +85,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    registry->RegisterBooleanPref(browser_ui::prefs::kWebKitForceEnableZoom,
 --- a/content/child/runtime_features.cc
 +++ b/content/child/runtime_features.cc
-@@ -269,6 +269,7 @@
+@@ -270,6 +270,7 @@
       features::kSharedArrayBufferOnDesktop},
      {wf::EnableSharedAutofill, autofill::features::kAutofillSharedAutofill},
      {wf::EnableTouchDragAndContextMenu, features::kTouchDragAndContextMenu},
@@ -95,30 +95,31 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      {wf::EnableVideoPlaybackQuality, features::kVideoPlaybackQuality},
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -498,6 +498,10 @@
+@@ -518,6 +518,11 @@
               "DropInputEventsBeforeFirstPaint",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
 +// Enable text snippets in URL fragments. https://crbug.com/919204.
-+const base::Feature kTextFragmentAnchor{"TextFragmentAnchor",
-+                                        base::FEATURE_DISABLED_BY_DEFAULT};
++BASE_FEATURE(kTextFragmentAnchor,
++             "TextFragmentAnchor",
++             base::FEATURE_DISABLED_BY_DEFAULT);
 +
  // File handling icons. https://crbug.com/1218213
  BASE_FEATURE(kFileHandlingIcons,
               "FileHandlingIcons",
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -226,6 +226,7 @@
+@@ -235,6 +235,7 @@
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kDecodeLossyWebPImagesToYUV);
  
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kWebFontsCacheAwareTimeoutAdaption);
-+BLINK_COMMON_EXPORT extern const base::Feature kTextFragmentAnchor;
++BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kTextFragmentAnchor);
  
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kAudioWorkletThreadRealtimePriority);
- 
+ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kWebAudioSinkSelection);
 --- a/third_party/blink/renderer/core/dom/document.cc
 +++ b/third_party/blink/renderer/core/dom/document.cc
-@@ -4259,9 +4259,14 @@
+@@ -4287,9 +4287,14 @@
    TRACE_EVENT1("navigation", "Document::SetURL", "url",
                 new_url.GetString().Utf8());
  
@@ -135,7 +136,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    UpdateBaseURL();
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -2583,10 +2583,9 @@
+@@ -2699,10 +2699,9 @@
      },
      {
        name: "TextFragmentIdentifiers",

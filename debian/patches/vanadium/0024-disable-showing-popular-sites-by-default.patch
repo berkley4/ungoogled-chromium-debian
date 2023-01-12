@@ -1,4 +1,4 @@
-From 2dcda4acd9cd6082100e7047181bda066f7a3f6a Mon Sep 17 00:00:00 2001
+From 08c086fb3c355f7fd55a8216ceea3b7c37802f31 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Tue, 6 Mar 2018 00:27:41 -0500
 Subject: [PATCH] disable showing popular sites by default
@@ -9,7 +9,7 @@ Subject: [PATCH] disable showing popular sites by default
 
 --- a/components/ntp_tiles/features.cc
 +++ b/components/ntp_tiles/features.cc
-@@ -14,14 +14,14 @@
+@@ -18,7 +18,7 @@
  
  BASE_FEATURE(kPopularSitesBakedInContentFeature,
               "NTPPopularSitesBakedInContent",
@@ -18,12 +18,12 @@ Subject: [PATCH] disable showing popular sites by default
  
  BASE_FEATURE(kNtpMostLikelyFaviconsFromServerFeature,
               "NTPMostLikelyFaviconsFromServer",
--             base::FEATURE_ENABLED_BY_DEFAULT);
-+             base::FEATURE_DISABLED_BY_DEFAULT);
+@@ -26,7 +26,7 @@
  
  BASE_FEATURE(kUsePopularSitesSuggestions,
               "UsePopularSitesSuggestions",
 -             base::FEATURE_ENABLED_BY_DEFAULT);
 +             base::FEATURE_DISABLED_BY_DEFAULT);
  
- }  // namespace ntp_tiles
+ BASE_FEATURE(kIOSPopularSitesImprovedSuggestions,
+              "IOSPopularSitesImprovedSuggestions",

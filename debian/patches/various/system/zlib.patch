@@ -22,7 +22,7 @@
  
 --- a/net/websockets/websocket_deflater.cc
 +++ b/net/websockets/websocket_deflater.cc
-@@ -11,7 +11,7 @@
+@@ -12,7 +12,7 @@
  #include "base/check_op.h"
  #include "base/containers/circular_deque.h"
  #include "net/base/io_buffer.h"
@@ -154,7 +154,7 @@
  
 --- a/chrome/browser/profiling_host/profiling_process_host.cc
 +++ b/chrome/browser/profiling_host/profiling_process_host.cc
-@@ -29,7 +29,7 @@
+@@ -28,7 +28,7 @@
  #include "content/public/browser/browser_task_traits.h"
  #include "content/public/browser/browser_thread.h"
  #include "services/network/public/cpp/shared_url_loader_factory.h"
