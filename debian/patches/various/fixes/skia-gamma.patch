@@ -1,0 +1,11 @@
+--- a/skia/BUILD.gn
++++ b/skia/BUILD.gn
+@@ -139,7 +139,7 @@
+   # Settings for text blitting, chosen to approximate the system browser.
+   if (is_linux || is_chromeos) {
+     defines += [
+-      "SK_GAMMA_EXPONENT=1.2",
++      "SK_GAMMA_EXPONENT=2.2",
+       "SK_GAMMA_CONTRAST=0.2",
+     ]
+   } else if (is_android) {
