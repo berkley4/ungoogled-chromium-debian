@@ -82,6 +82,7 @@ various/zero-call-used-registers.patch
 various/bromite/autofill-miscellaneous.patch
 various/bromite/Disable-all-predictors-code.patch
 various/bromite/Disable-conversion-measurement-api.patch
+various/bromite/Disable-various-metrics.patch
 various/bromite/DoH-improvements.patch
 various/disable/angle-build-tests.patch
 various/disable/orchestrator.patch
