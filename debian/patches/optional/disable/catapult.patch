@@ -168,7 +168,7 @@ author: Michael Gilbert <mgilbert@debian.org>
    # START ios/web/ section.
 --- a/content/browser/BUILD.gn
 +++ b/content/browser/BUILD.gn
-@@ -3123,7 +3123,6 @@
+@@ -3125,7 +3125,6 @@
        "//components/speech",
        "//components/vector_icons",
        "//content/browser/devtools:devtools_resources_extern",
