@@ -1,4 +1,4 @@
-From 9d558e651a0a745af992f1f680f0dfbdb6177a12 Mon Sep 17 00:00:00 2001
+From e6036cff321d2682bb9c00235bed6c65c078da39 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Wed, 3 Mar 2021 13:42:41 -0500
 Subject: [PATCH] enable user agent freeze by default
@@ -9,7 +9,7 @@ Subject: [PATCH] enable user agent freeze by default
 
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -2832,6 +2832,7 @@
+@@ -2897,6 +2897,7 @@
        // iOS not included as it should not send a reduced User-Agent string.
        origin_trial_os: ["android", "chromeos", "fuchsia", "linux", "mac", "win"],
        base_feature: "ReduceUserAgent",

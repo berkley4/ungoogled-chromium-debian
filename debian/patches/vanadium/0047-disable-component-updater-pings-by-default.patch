@@ -1,4 +1,4 @@
-From 7abeffb26cdf00addb2eec94c55c31e2ddc6b053 Mon Sep 17 00:00:00 2001
+From af4b7dd593ab0271bb4bb3847a3030a9b7f19c7c Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Fri, 27 Nov 2020 03:56:29 -0500
 Subject: [PATCH] disable component updater pings by default
@@ -9,7 +9,7 @@ Subject: [PATCH] disable component updater pings by default
 
 --- a/components/component_updater/component_updater_command_line_config_policy.h
 +++ b/components/component_updater/component_updater_command_line_config_policy.h
-@@ -41,7 +41,7 @@
+@@ -42,7 +42,7 @@
    bool background_downloads_enabled_ = false;
    bool deltas_enabled_ = true;
    bool fast_update_ = false;
@@ -17,4 +17,4 @@ Subject: [PATCH] disable component updater pings by default
 +  bool pings_enabled_ = false;
    bool test_request_ = false;
  
-   // If non-zero, time interval in seconds until the first component
+   // If non-zero, time interval until the first component update check.

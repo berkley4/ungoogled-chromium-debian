@@ -63,12 +63,12 @@ vanadium/0041-enable-user-agent-freeze-by-default.patch
 vanadium/0042-enable-split-cache-by-default.patch
 vanadium/0043-enable-partitioning-connections-by-default.patch
 vanadium/0044-enable-new-third-party-storage-partitioning.patch
-vanadium/0048-disable-component-updater-pings-by-default.patch
-vanadium/0052-stub-out-the-battery-status-API.patch
-vanadium/0076-Enable-strict-origin-isolation-by-default.patch
-vanadium/0077-disable-appending-variations-header.patch
-vanadium/0079-Disable-detailed-language-settings-by-default.patch
-vanadium/0083-enable-process-isolated-sandboxed-iframes-by-default.patch
+vanadium/0047-disable-component-updater-pings-by-default.patch
+vanadium/0051-stub-out-the-battery-status-API.patch
+vanadium/0075-Enable-strict-origin-isolation-by-default.patch
+vanadium/0076-disable-appending-variations-header.patch
+vanadium/0078-Disable-detailed-language-settings-by-default.patch
+vanadium/0082-enable-process-isolated-sandboxed-iframes-by-default.patch
 
 various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
 various/fno-plt.patch

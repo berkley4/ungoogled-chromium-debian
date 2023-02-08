@@ -1,4 +1,4 @@
-From e92cf2d608e7616b14592d03180bc181357cf1d5 Mon Sep 17 00:00:00 2001
+From ceed6c6edd23a09d1fadddeacdfff50187fc1dc6 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Sun, 16 Jun 2019 21:57:26 -0400
 Subject: [PATCH] disable background sync by default
@@ -9,7 +9,7 @@ Subject: [PATCH] disable background sync by default
 
 --- a/components/content_settings/core/browser/content_settings_registry.cc
 +++ b/components/content_settings/core/browser/content_settings_registry.cc
-@@ -259,7 +259,7 @@
+@@ -240,7 +240,7 @@
             ContentSettingsInfo::EXCEPTIONS_ON_SECURE_ORIGINS_ONLY);
  
    Register(ContentSettingsType::BACKGROUND_SYNC, "background-sync",
