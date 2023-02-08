@@ -19,10 +19,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../attribution_report_network_sender.cc          |  3 +++
  content/browser/storage_partition_impl.cc         |  7 +------
  content/public/browser/navigation_controller.cc   |  1 -
- content/renderer/render_thread_impl.cc            |  2 +-
  third_party/blink/common/features.cc              |  4 ++--
  .../platform/runtime_enabled_features.json5       |  7 +++++++
- 10 files changed, 32 insertions(+), 33 deletions(-)
+ 9 files changed, 31 insertions(+), 32 deletions(-)
 
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
@@ -144,17 +143,6 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        is_pdf(input.is_pdf) {
  #if DCHECK_IS_ON()
    DCHECK(input.Valid());
---- a/content/renderer/render_thread_impl.cc
-+++ b/content/renderer/render_thread_impl.cc
-@@ -1836,7 +1836,7 @@
- 
- void RenderThreadImpl::SetOsSupportForAttributionReporting(
-     attribution_reporting::mojom::OsSupport attribution_os_support) {
--  attribution_os_support_ = attribution_os_support;
-+  attribution_os_support_ = blink::mojom::AttributionOsSupport::kDisabled;
- }
- 
- }  // namespace content
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 @@ -202,6 +202,13 @@
