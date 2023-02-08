@@ -1,35 +1,35 @@
-description: build using system openjpeg
-author: Michael Gilbert <mgilbert@debian.org>
-
 --- a/third_party/pdfium/BUILD.gn
 +++ b/third_party/pdfium/BUILD.gn
-@@ -24,7 +24,7 @@
+@@ -4,6 +4,7 @@
+ 
+ import("//build/config/clang/clang.gni")
+ import("//build/config/gclient_args.gni")
++import("//build/config/linux/pkg_config.gni")
+ import("//testing/test.gni")
+ import("pdfium.gni")
+ 
+@@ -21,6 +22,13 @@ group("freetype_common") {
+   }
+ }
+ 
++if (use_system_libopenjpeg2) {
++  pkg_config("libopenjpeg2_from_pkgconfig") {
++    defines = [ "USE_SYSTEM_LIBOPENJPEG2" ]
++    packages = [ "libopenjp2" ]
++  }
++}
++
+ config("pdfium_common_config") {
    cflags = []
    cflags_cc = []
-   ldflags = []
--  include_dirs = [ "." ]
-+  include_dirs = [ ".", "/usr/include/openjpeg-2.5", "/usr/include/openjpeg-2.4" ]
-   defines = [
-     "PNG_PREFIX",
-     "PNG_USE_READ_MACROS",
---- a/third_party/pdfium/core/fpdfapi/render/BUILD.gn
-+++ b/third_party/pdfium/core/fpdfapi/render/BUILD.gn
-@@ -43,6 +43,7 @@
-     "../../../:pdfium_noshorten_config",
-   ]
-   deps = [
-+    "../../../third_party:libopenjpeg2",
-     "../../../constants",
-     "../../fxcodec",
-     "../../fxcrt",
---- a/third_party/pdfium/core/fxcodec/jpx/cjpx_decoder.h
-+++ b/third_party/pdfium/core/fxcodec/jpx/cjpx_decoder.h
-@@ -12,7 +12,7 @@
- #include "core/fxcrt/unowned_ptr.h"
- #include "third_party/base/span.h"
+@@ -28,7 +36,9 @@ config("pdfium_common_config") {
+   include_dirs = [ "." ]
+   defines = []
  
--#if defined(USE_SYSTEM_LIBOPENJPEG2)
-+#if 1
- #include <openjpeg.h>
- #else
- #include "third_party/libopenjpeg/openjpeg.h"
+-  if (!use_system_libopenjpeg2) {
++  if (use_system_libopenjpeg2) {
++    configs = [ ":libopenjpeg2_from_pkgconfig" ]
++  } else {
+     defines += [ "OPJ_STATIC" ]
+   }
+ 

@@ -3,7 +3,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -342,7 +342,7 @@
+@@ -346,7 +346,7 @@ group("gn_all") {
    # Allow building md5sum tool for other OSes (android is added below).
    # For Windows, see: crbug.com/1090428.
    # TODO(cavalcantii): move it out of 'android' folder.
@@ -12,12 +12,3 @@ author: Michael Gilbert <mgilbert@debian.org>
      deps += [ "//tools/android/md5sum" ]
    }
  
-@@ -420,7 +420,7 @@
-   #       seems currently broken for this platform at the moment, and the
-   #       corresponding code build and works on Linux unmodified.
-   #       See instructions in the corresponding BUILD.gn.
--  if (is_linux || is_chromeos) {
-+  if (is_android) {
-     deps +=
-         [ "//third_party/android_crazy_linker:android_crazy_linker_zip_fuzzer" ]
-   }

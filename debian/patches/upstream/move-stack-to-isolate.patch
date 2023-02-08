@@ -1,0 +1,168 @@
+Index: chromium-110.0.5481.77/v8/src/execution/isolate.cc
+===================================================================
+--- chromium-110.0.5481.77.orig/v8/src/execution/isolate.cc
++++ chromium-110.0.5481.77/v8/src/execution/isolate.cc
+@@ -3074,22 +3074,23 @@ void Isolate::AddSharedWasmMemory(Handle
+ void Isolate::RecordStackSwitchForScanning() {
+   Object current = root(RootIndex::kActiveContinuation);
+   DCHECK(!current.IsUndefined());
+-  thread_local_top()->stack_.ClearStackSegments();
+-  wasm::StackMemory* stack = Managed<wasm::StackMemory>::cast(
+-                                 WasmContinuationObject::cast(current).stack())
+-                                 .get()
+-                                 .get();
++  stack().ClearStackSegments();
++  wasm::StackMemory* wasm_stack =
++      Managed<wasm::StackMemory>::cast(
++          WasmContinuationObject::cast(current).stack())
++          .get()
++          .get();
+   current = WasmContinuationObject::cast(current).parent();
+-  thread_local_top()->stack_.SetStackStart(
+-      reinterpret_cast<void*>(stack->base()));
++  heap()->SetStackStart(reinterpret_cast<void*>(wasm_stack->base()));
+   // We don't need to add all inactive stacks. Only the ones in the active chain
+   // may contain cpp heap pointers.
+   while (!current.IsUndefined()) {
+     auto cont = WasmContinuationObject::cast(current);
+-    auto* stack = Managed<wasm::StackMemory>::cast(cont.stack()).get().get();
+-    thread_local_top()->stack_.AddStackSegment(
+-        reinterpret_cast<const void*>(stack->base()),
+-        reinterpret_cast<const void*>(stack->jmpbuf()->sp));
++    auto* wasm_stack =
++        Managed<wasm::StackMemory>::cast(cont.stack()).get().get();
++    stack().AddStackSegment(
++        reinterpret_cast<const void*>(wasm_stack->base()),
++        reinterpret_cast<const void*>(wasm_stack->jmpbuf()->sp));
+     current = cont.parent();
+   }
+ }
+@@ -3377,20 +3378,13 @@ void Isolate::Delete(Isolate* isolate) {
+   Isolate* saved_isolate = isolate->TryGetCurrent();
+   SetIsolateThreadLocals(isolate, nullptr);
+   isolate->set_thread_id(ThreadId::Current());
+-  isolate->thread_local_top()->stack_ =
+-      saved_isolate ? std::move(saved_isolate->thread_local_top()->stack_)
+-                    : ::heap::base::Stack(base::Stack::GetStackStart());
++  isolate->heap()->SetStackStart(base::Stack::GetStackStart());
+ 
+   bool owns_shared_isolate = isolate->owns_shared_isolate_;
+   Isolate* maybe_shared_isolate = isolate->shared_isolate_;
+ 
+   isolate->Deinit();
+ 
+-  // Restore the saved isolate's stack.
+-  if (saved_isolate)
+-    saved_isolate->thread_local_top()->stack_ =
+-        std::move(isolate->thread_local_top()->stack_);
+-
+ #ifdef DEBUG
+   non_disposed_isolates_--;
+ #endif  // DEBUG
+@@ -4647,6 +4641,10 @@ bool Isolate::Init(SnapshotData* startup
+ void Isolate::Enter() {
+   Isolate* current_isolate = nullptr;
+   PerIsolateThreadData* current_data = CurrentPerIsolateThreadData();
++
++  // Set the stack start for the main thread that enters the isolate.
++  heap()->SetStackStart(base::Stack::GetStackStart());
++
+   if (current_data != nullptr) {
+     current_isolate = current_data->isolate_;
+     DCHECK_NOT_NULL(current_isolate);
+Index: chromium-110.0.5481.77/v8/src/execution/isolate.h
+===================================================================
+--- chromium-110.0.5481.77.orig/v8/src/execution/isolate.h
++++ chromium-110.0.5481.77/v8/src/execution/isolate.h
+@@ -32,6 +32,7 @@
+ #include "src/execution/stack-guard.h"
+ #include "src/handles/handles.h"
+ #include "src/handles/traced-handles.h"
++#include "src/heap/base/stack.h"
+ #include "src/heap/factory.h"
+ #include "src/heap/heap.h"
+ #include "src/heap/read-only-heap.h"
+@@ -2022,6 +2023,8 @@ class V8_EXPORT_PRIVATE Isolate final :
+   SimulatorData* simulator_data() { return simulator_data_; }
+ #endif
+ 
++  ::heap::base::Stack& stack() { return stack_; }
++
+ #ifdef V8_ENABLE_WEBASSEMBLY
+   wasm::StackMemory*& wasm_stacks() { return wasm_stacks_; }
+   // Update the thread local's Stack object so that it is aware of the new stack
+@@ -2520,6 +2523,9 @@ class V8_EXPORT_PRIVATE Isolate final :
+   // The mutex only guards adding pages, the retrieval is signal safe.
+   base::Mutex code_pages_mutex_;
+ 
++  // Stack information for the main thread.
++  ::heap::base::Stack stack_;
++
+ #ifdef V8_ENABLE_WEBASSEMBLY
+   wasm::StackMemory* wasm_stacks_;
+ #endif
+Index: chromium-110.0.5481.77/v8/src/execution/thread-local-top.cc
+===================================================================
+--- chromium-110.0.5481.77.orig/v8/src/execution/thread-local-top.cc
++++ chromium-110.0.5481.77/v8/src/execution/thread-local-top.cc
+@@ -37,14 +37,12 @@ void ThreadLocalTop::Clear() {
+   current_embedder_state_ = nullptr;
+   failed_access_check_callback_ = nullptr;
+   thread_in_wasm_flag_address_ = kNullAddress;
+-  stack_ = ::heap::base::Stack();
+ }
+ 
+ void ThreadLocalTop::Initialize(Isolate* isolate) {
+   Clear();
+   isolate_ = isolate;
+   thread_id_ = ThreadId::Current();
+-  stack_.SetStackStart(base::Stack::GetStackStart());
+ #if V8_ENABLE_WEBASSEMBLY
+   thread_in_wasm_flag_address_ = reinterpret_cast<Address>(
+       trap_handler::GetThreadInWasmThreadLocalAddress());
+Index: chromium-110.0.5481.77/v8/src/execution/thread-local-top.h
+===================================================================
+--- chromium-110.0.5481.77.orig/v8/src/execution/thread-local-top.h
++++ chromium-110.0.5481.77/v8/src/execution/thread-local-top.h
+@@ -10,7 +10,6 @@
+ #include "include/v8-unwinder.h"
+ #include "src/common/globals.h"
+ #include "src/execution/thread-id.h"
+-#include "src/heap/base/stack.h"
+ #include "src/objects/contexts.h"
+ #include "src/utils/utils.h"
+ 
+@@ -30,7 +29,7 @@ class ThreadLocalTop {
+   // TODO(all): This is not particularly beautiful. We should probably
+   // refactor this to really consist of just Addresses and 32-bit
+   // integer fields.
+-  static constexpr uint32_t kSizeInBytes = 30 * kSystemPointerSize;
++  static constexpr uint32_t kSizeInBytes = 25 * kSystemPointerSize;
+ 
+   // Does early low-level initialization that does not depend on the
+   // isolate being present.
+@@ -147,9 +146,6 @@ class ThreadLocalTop {
+ 
+   // Address of the thread-local "thread in wasm" flag.
+   Address thread_in_wasm_flag_address_;
+-
+-  // Stack information.
+-  ::heap::base::Stack stack_;
+ };
+ 
+ }  // namespace internal
+Index: chromium-110.0.5481.77/v8/src/heap/heap.cc
+===================================================================
+--- chromium-110.0.5481.77.orig/v8/src/heap/heap.cc
++++ chromium-110.0.5481.77/v8/src/heap/heap.cc
+@@ -5851,9 +5851,7 @@ void Heap::SetStackStart(void* stack_sta
+   stack().SetStackStart(stack_start);
+ }
+ 
+-::heap::base::Stack& Heap::stack() {
+-  return isolate_->thread_local_top()->stack_;
+-}
++::heap::base::Stack& Heap::stack() { return isolate_->stack(); }
+ 
+ void Heap::RegisterExternallyReferencedObject(Address* location) {
+   Object object = TracedHandles::Mark(location, TracedHandles::MarkMode::kAll);
