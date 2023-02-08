@@ -25,7 +25,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
  }
  
  declare_args() {
-@@ -282,7 +282,7 @@
+@@ -282,10 +282,10 @@
        is_apple &&
        (angle_enable_glsl || angle_enable_metal || use_fuzzing_engine)
  
@@ -33,7 +33,11 @@ author: Michel Le Bihan <michel@lebihan.pl>
 +  angle_has_histograms = false
  
    # True if we want to build the ANGLE test suites. On by default in most configs.
-   angle_build_tests = angle_has_build
+-  angle_build_tests = angle_has_build
++  angle_build_tests = false
+ }
+ 
+ declare_args() {
 --- a/third_party/angle/src/tests/BUILD.gn
 +++ b/third_party/angle/src/tests/BUILD.gn
 @@ -10,8 +10,7 @@
