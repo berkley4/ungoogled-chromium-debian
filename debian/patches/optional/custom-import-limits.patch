@@ -6,9 +6,9 @@
          import_instr_limit = 5
 +      } else if (is_linux) {
 +        # Use a slightly lower import_instr_limit value of 25 for linux and
-+        # raise the import-hot-multiplier from the default of 10 to 18.
++        # raise the import-hot-multiplier from the default of 10 to 16.
 +        import_instr_limit = 25
-+        ldflags += [ "-Wl,-mllvm,-import-hot-multiplier=18" ]
++        ldflags += [ "-Wl,-mllvm,-import-hot-multiplier=16" ]
        }
  
        ldflags += [ "-Wl,-mllvm,-import-instr-limit=$import_instr_limit" ]
