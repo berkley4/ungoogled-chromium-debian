@@ -29,7 +29,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  }  // namespace component_updater
 --- a/components/component_updater/configurator_impl.cc
 +++ b/components/component_updater/configurator_impl.cc
-@@ -45,8 +45,7 @@
+@@ -38,8 +38,7 @@
      : background_downloads_enabled_(config_policy.BackgroundDownloadsEnabled()),
        deltas_enabled_(config_policy.DeltaUpdatesEnabled()),
        fast_update_(config_policy.FastUpdate()),
@@ -39,7 +39,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        url_source_override_(config_policy.UrlSourceOverride()),
        initial_delay_(config_policy.InitialDelay()) {
    if (config_policy.TestRequest()) {
-@@ -81,8 +80,6 @@
+@@ -74,8 +73,6 @@
  
    std::vector<GURL> urls{GURL(kUpdaterJSONDefaultUrl),
                           GURL(kUpdaterJSONFallbackUrl)};
@@ -56,5 +56,5 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    const bool pings_enabled_;
 -  const bool require_encryption_;
    const GURL url_source_override_;
-   const double initial_delay_;
+   const base::TimeDelta initial_delay_;
  };

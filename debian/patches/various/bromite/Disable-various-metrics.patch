@@ -21,7 +21,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/browser_process_impl.cc
 +++ b/chrome/browser/browser_process_impl.cc
-@@ -1008,7 +1008,7 @@
+@@ -1031,7 +1031,7 @@
  #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
  
    registry->RegisterBooleanPref(metrics::prefs::kMetricsReportingEnabled,
@@ -40,7 +40,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "chrome/browser/media/audio_service_util.h"
  #include "chrome/browser/media/router/media_router_feature.h"
  #include "chrome/browser/media/webrtc/audio_debug_recordings_handler.h"
-@@ -4709,16 +4708,6 @@
+@@ -4773,16 +4772,6 @@
      content::NavigationHandle* handle) {
    std::vector<std::unique_ptr<content::NavigationThrottle>> throttles;
  
@@ -57,7 +57,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #if BUILDFLAG(ENABLE_SUPERVISED_USERS)
    MaybeAddThrottle(
        SupervisedUserNavigationThrottle::MaybeCreateThrottleFor(handle),
-@@ -4803,10 +4792,6 @@
+@@ -4867,10 +4856,6 @@
      throttle_manager->MaybeAppendNavigationThrottles(handle, &throttles);
    }
  
@@ -169,7 +169,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "components/ntp_tiles/pref_names.h"
  #include "components/ntp_tiles/switches.h"
  #include "components/pref_registry/pref_registry_syncable.h"
-@@ -729,10 +728,6 @@
+@@ -702,10 +701,6 @@
                                     ? RemoveInvalidPreinstallApps(new_tiles)
                                     : new_tiles;
  

@@ -14,7 +14,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/net/stub_resolver_config_reader.cc
 +++ b/chrome/browser/net/stub_resolver_config_reader.cc
-@@ -156,7 +156,7 @@
+@@ -161,7 +161,7 @@
        if (entries.count("dns-over-https@1")) {
          // The user has "Enabled" selected.
          local_state_->SetString(prefs::kDnsOverHttpsMode,
@@ -23,7 +23,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        } else if (entries.count("dns-over-https@2")) {
          // The user has "Disabled" selected.
          local_state_->SetString(prefs::kDnsOverHttpsMode,
-@@ -341,22 +341,7 @@
+@@ -356,22 +356,7 @@
      check_parental_controls = false;
    }
  

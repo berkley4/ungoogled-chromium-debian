@@ -3,7 +3,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
 
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -5118,10 +5118,6 @@
+@@ -5165,10 +5165,6 @@
        data_deps += [ "//third_party/dawn/src/dawn/tests:dawn_perf_tests" ]
      }
  
@@ -25,7 +25,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
  }
  
  declare_args() {
-@@ -282,10 +282,10 @@
+@@ -290,10 +290,10 @@
        is_apple &&
        (angle_enable_glsl || angle_enable_metal || use_fuzzing_engine)
  
@@ -50,15 +50,15 @@ author: Michel Le Bihan <michel@lebihan.pl>
  }
  
  declare_args() {
-@@ -189,7 +188,6 @@
+@@ -188,7 +187,6 @@
  
    deps = [
      ":angle_test_expectations",
 -    "$angle_root:angle_json_serializer",
-     "$angle_root:libANGLE",
-     "$angle_root:libEGL_static",
-     "$angle_root:libGLESv2_static",
-@@ -419,7 +417,7 @@
+     "$angle_root:angle_static",
+     "$angle_root:libfeature_support",
+     "$angle_root/util:angle_util_static",
+@@ -400,7 +398,7 @@
    test_utils = ":angle_common_test_utils_static"
  }
  
@@ -67,7 +67,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
    import("angle_perftests.gni")
  
    # This test suite is for perf tests that use ANGLE's internals in some direct way.
-@@ -1741,10 +1739,10 @@
+@@ -1689,10 +1687,10 @@
    if (build_angle_trace_tests) {
      deps += [ ":angle_trace_tests" ]
    }

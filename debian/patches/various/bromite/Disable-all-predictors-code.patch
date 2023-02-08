@@ -29,7 +29,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        NavigationPredictorKeyedService::PredictionSource::
 --- a/chrome/common/chrome_features.cc
 +++ b/chrome/common/chrome_features.cc
-@@ -879,8 +879,8 @@
+@@ -881,8 +881,8 @@
  // Enables using the prediction service for permission prompts. We will keep
  // this feature in order to allow us to update the holdback chance via finch.
  BASE_FEATURE(kPermissionPredictions,
@@ -40,7 +40,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
  // The holdback chance is 30% but it can also be configured/updated
  // through finch if needed.
-@@ -891,8 +891,8 @@
+@@ -893,8 +893,8 @@
  
  // Enables using the prediction service for geolocation permission prompts.
  BASE_FEATURE(kPermissionGeolocationPredictions,
@@ -79,7 +79,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
    // This set contains URLs that require some information to be fetched, whether
    // that be a URL-keyed hint or a host-keyed hint.
-@@ -1263,6 +1265,9 @@
+@@ -1264,6 +1266,9 @@
      proto::OptimizationType optimization_type,
      OptimizationMetadata* optimization_metadata) {
    DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
@@ -168,7 +168,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
  BASE_FEATURE(kPageContentAnnotationsValidation,
               "PageContentAnnotationsValidation",
-@@ -414,7 +410,7 @@
+@@ -418,7 +414,7 @@
  
  bool ShouldPersistHintsToDisk() {
    return GetFieldTrialParamByFeatureAsBool(kOptimizationHints,
@@ -179,7 +179,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  bool ShouldOverrideOptimizationTargetDecisionForMetricsPurposes(
 --- a/components/optimization_guide/core/prediction_model_download_manager.cc
 +++ b/components/optimization_guide/core/prediction_model_download_manager.cc
-@@ -45,7 +45,7 @@
+@@ -47,7 +47,7 @@
  // we require models to come from.
  constexpr uint8_t kPublisherKeyHash[] = {
      0x66, 0xa1, 0xd9, 0x3e, 0x4e, 0x5a, 0x66, 0x8a, 0x0f, 0xd3, 0xfa,
@@ -188,16 +188,16 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      0x5c, 0x7f, 0xd0, 0x0c, 0xa1, 0x6e, 0xef, 0xdd, 0x63, 0x7a};
  const net::NetworkTrafficAnnotationTag
      kOptimizationGuidePredictionModelsTrafficAnnotation =
-@@ -93,7 +93,7 @@
-     const base::FilePath& models_dir_path,
+@@ -106,7 +106,7 @@
+     const proto::ModelCacheKey& model_cache_key,
      scoped_refptr<base::SequencedTaskRunner> background_task_runner)
      : download_service_(download_service),
 -      is_available_for_downloads_(true),
 +      is_available_for_downloads_(false),
        api_key_(features::GetOptimizationGuideServiceAPIKey()),
        models_dir_path_(models_dir_path),
-       background_task_runner_(background_task_runner) {}
-@@ -103,6 +103,7 @@
+       prediction_model_store_(prediction_model_store),
+@@ -118,6 +118,7 @@
  void PredictionModelDownloadManager::StartDownload(
      const GURL& download_url,
      proto::OptimizationTarget optimization_target) {
@@ -205,7 +205,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    download::DownloadParams download_params;
    download_params.client =
        download::DownloadClient::OPTIMIZATION_GUIDE_PREDICTION_MODELS;
-@@ -239,6 +240,7 @@
+@@ -254,6 +255,7 @@
  absl::optional<std::pair<base::FilePath, base::FilePath>>
  PredictionModelDownloadManager::VerifyDownload(const base::FilePath& file_path,
                                                 bool delete_file_on_error) {
@@ -238,7 +238,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    # even in a developer build in args.gn.  Setting this variable explicitly to true will
 --- a/components/permissions/features.cc
 +++ b/components/permissions/features.cc
-@@ -85,12 +85,12 @@
+@@ -78,12 +78,12 @@
  // When enabled, use the value of the `service_url` FeatureParam as the url
  // for the Web Permission Predictions Service.
  BASE_FEATURE(kPermissionPredictionServiceUseUrlOverride,

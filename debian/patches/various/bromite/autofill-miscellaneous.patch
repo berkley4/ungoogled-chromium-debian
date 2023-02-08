@@ -127,7 +127,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      if (translate_driver) {
 --- a/components/autofill/core/browser/browser_autofill_manager.h
 +++ b/components/autofill/core/browser/browser_autofill_manager.h
-@@ -747,9 +747,9 @@
+@@ -737,9 +737,9 @@
    std::unique_ptr<CreditCardFormEventLogger> credit_card_form_event_logger_;
  
    // Have we logged whether Autofill is enabled for this page load?
@@ -141,7 +141,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // Has the user manually edited at least one form field among the autofillable
 --- a/components/autofill/core/common/autofill_features.cc
 +++ b/components/autofill/core/common/autofill_features.cc
-@@ -501,8 +501,8 @@
+@@ -448,8 +448,8 @@
  // "upload" resources.
  // i.e., https://other.autofill.server:port/tbproxy/af/
  BASE_FEATURE(kAutofillServerCommunication,
@@ -152,21 +152,6 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
  // Controls whether Autofill may fill across origins as part of the
  // AutofillAcrossIframes experiment.
---- a/components/autofill_assistant/browser/public/prefs.cc
-+++ b/components/autofill_assistant/browser/public/prefs.cc
-@@ -24,10 +24,10 @@
-     "Chrome.AutofillAssistant.LiteScriptFirstTimeUser";
- 
- void RegisterProfilePrefs(PrefRegistrySimple* registry) {
--  registry->RegisterBooleanPref(prefs::kAutofillAssistantEnabled, true);
-+  registry->RegisterBooleanPref(prefs::kAutofillAssistantEnabled, false);
-   registry->RegisterBooleanPref(prefs::kAutofillAssistantConsent, false);
-   registry->RegisterBooleanPref(prefs::kAutofillAssistantTriggerScriptsEnabled,
--                                true);
-+                                false);
-   registry->RegisterBooleanPref(
-       prefs::kAutofillAssistantTriggerScriptsIsFirstTimeUser, true);
- }
 --- a/components/password_manager/core/browser/password_generation_frame_helper.cc
 +++ b/components/password_manager/core/browser/password_generation_frame_helper.cc
 @@ -85,7 +85,6 @@
@@ -187,3 +172,17 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    if (!client_->IsSavingAndFillingEnabled(url)) {
      if (logger)
        logger->LogMessage(Logger::STRING_GENERATION_DISABLED_SAVING_DISABLED);
+--- a/chrome/browser/prefs/browser_prefs.cc
++++ b/chrome/browser/prefs/browser_prefs.cc
+@@ -1059,9 +1059,9 @@
+ #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
+ 
+   // Deprecated 11/2022.
+-  registry->RegisterBooleanPref(kAutofillAssistantEnabled, true);
++  registry->RegisterBooleanPref(kAutofillAssistantEnabled, false);
+   registry->RegisterBooleanPref(kAutofillAssistantConsent, false);
+-  registry->RegisterBooleanPref(kAutofillAssistantTriggerScriptsEnabled, true);
++  registry->RegisterBooleanPref(kAutofillAssistantTriggerScriptsEnabled, false);
+   registry->RegisterBooleanPref(kAutofillAssistantTriggerScriptsIsFirstTimeUser,
+                                 true);
+ }

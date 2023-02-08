@@ -57,7 +57,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/third_party/blink/renderer/core/execution_context/execution_context.cc
 +++ b/third_party/blink/renderer/core/execution_context/execution_context.cc
-@@ -528,6 +528,15 @@
+@@ -531,6 +531,15 @@
    policy_container_->UpdateReferrerPolicy(referrer_policy);
  }
  
@@ -83,7 +83,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "services/network/public/mojom/referrer_policy.mojom-blink-forward.h"
  #include "third_party/abseil-cpp/absl/types/optional.h"
  #include "third_party/blink/public/common/tokens/tokens.h"
-@@ -391,6 +392,9 @@
+@@ -398,6 +399,9 @@
        const String& message = g_empty_string,
        const String& source_file = g_empty_string) const {}
  
@@ -105,7 +105,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        nullptr /* worklet_module_response_map */,
 --- a/third_party/blink/renderer/core/frame/policy_container.cc
 +++ b/third_party/blink/renderer/core/frame/policy_container.cc
-@@ -52,12 +52,22 @@
+@@ -53,12 +53,22 @@
    return policies_->referrer_policy;
  }
  
@@ -157,7 +157,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    void AddContentSecurityPolicies(
 --- a/third_party/blink/renderer/core/frame/web_frame_test.cc
 +++ b/third_party/blink/renderer/core/frame/web_frame_test.cc
-@@ -8043,6 +8043,40 @@
+@@ -8046,6 +8046,40 @@
    EXPECT_EQ(client.StopLoadingCount(), 2);
  }
  
@@ -313,7 +313,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    base::UnguessableToken parent_devtools_token;
    std::unique_ptr<WorkerSettings> settings;
    ExecutionContext* execution_context = GetExecutionContext();
-@@ -495,6 +500,7 @@
+@@ -493,6 +498,7 @@
        execution_context->GetSecurityOrigin(),
        execution_context->IsSecureContext(), execution_context->GetHttpsState(),
        MakeGarbageCollected<WorkerClients>(), CreateWebContentSettingsClient(),

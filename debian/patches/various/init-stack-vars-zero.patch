@@ -1,11 +1,11 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2643,7 +2643,7 @@
+@@ -2651,7 +2651,7 @@
  config("default_init_stack_vars") {
    cflags = []
    if (init_stack_vars && is_clang && !is_nacl && !using_sanitizer) {
--    cflags += [ "-ftrivial-auto-var-init=pattern" ]
-+    cflags += [ "-ftrivial-auto-var-init=zero" ]
-   }
- }
+-    if (is_chromeos && !chromeos_is_browser_only) {
++    if (is_linux || (is_chromeos && !chromeos_is_browser_only)) {
+       # TODO(adriandole) remove chromeos_is_browser_only condition
+       # once lacros updates toolchain
  

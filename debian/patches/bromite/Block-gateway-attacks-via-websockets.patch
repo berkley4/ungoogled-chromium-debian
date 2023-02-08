@@ -22,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/third_party/blink/renderer/core/execution_context/execution_context.cc
 +++ b/third_party/blink/renderer/core/execution_context/execution_context.cc
-@@ -688,4 +688,20 @@
+@@ -692,4 +692,20 @@
    proto->set_type(GetContextType(*this));
  }
  
@@ -45,7 +45,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  }  // namespace blink
 --- a/third_party/blink/renderer/core/execution_context/execution_context.h
 +++ b/third_party/blink/renderer/core/execution_context/execution_context.h
-@@ -392,6 +392,7 @@
+@@ -399,6 +399,7 @@
        const String& source_file = g_empty_string) const {}
  
    HeapObserverSet<ContextLifecycleObserver>& ContextLifecycleObserverSet();
@@ -94,7 +94,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      const ResourceLoaderOptions& options,
 --- a/third_party/blink/renderer/core/loader/frame_fetch_context.h
 +++ b/third_party/blink/renderer/core/loader/frame_fetch_context.h
-@@ -168,6 +168,7 @@
+@@ -172,6 +172,7 @@
    bool ShouldBlockWebSocketByMixedContentCheck(const KURL&) const override;
    std::unique_ptr<WebSocketHandshakeThrottle> CreateWebSocketHandshakeThrottle()
        override;
