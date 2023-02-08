@@ -51,7 +51,6 @@ Build-Depends:
 #libavif-dev,
 #libdav1d-dev,
 #libjpeg-dev,
-#libjxl-dev,
 #libopenh264-dev
 
 Package: ungoogled-chromium
