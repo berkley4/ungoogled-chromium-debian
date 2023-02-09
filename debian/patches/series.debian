@@ -132,7 +132,6 @@ various/vanadium/disable-content-feed-suggestions-by-default.patch
 #optional/system/unstable/icu.patch
 #optional/system/unstable/icu-headers.patch
 #optional/system/unstable/icu72_fix-the-way-to-handle-codecs-in-the-system-icu.patch
-#optional/system/unstable/icu72_v8-enhance-Date-parser-to-take-Unicode-SPACE.patch
 #optional/system/unstable/libaom-headers.patch
 #optional/system/unstable/openh264.patch
 #optional/system/unstable/roll-src-third_party-ffmpeg-102.patch

@@ -1,6 +1,6 @@
 --- a/chrome/browser/spellchecker/spellcheck_hunspell_dictionary.cc
 +++ b/chrome/browser/spellchecker/spellcheck_hunspell_dictionary.cc
-@@ -279,7 +279,7 @@
+@@ -277,7 +277,7 @@
    DCHECK(!bdict_file.empty());
  
    static const char kDownloadServerUrl[] =
@@ -28,5 +28,5 @@
 -const char kSecurityOrigin[] = "trk:220:https://translate.googleapis.com/";
 +const char kSecurityOrigin[] = "https://translate.googleapis.com/";
  
- const base::Feature kTranslateSubFrames{"TranslateSubFrames",
-                                         base::FEATURE_DISABLED_BY_DEFAULT};
+ BASE_FEATURE(kTranslateSubFrames,
+              "TranslateSubFrames",

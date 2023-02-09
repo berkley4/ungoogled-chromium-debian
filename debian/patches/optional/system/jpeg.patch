@@ -3,7 +3,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -738,7 +738,6 @@
+@@ -725,7 +725,6 @@
        "//third_party/angle:libEGL",
        "//third_party/angle:libGLESv2",
        "//third_party/leveldatabase:leveldb_test_targets",
@@ -11,7 +11,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        "//third_party/opus:opus_compare",
        "//third_party/opus:opus_demo",
        "//third_party/opus:test_opus_api",
-@@ -753,7 +752,6 @@
+@@ -740,7 +739,6 @@
        if (!is_android) {
          deps += [ "//chrome/test:load_library_perf_tests" ]
        }
