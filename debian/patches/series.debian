@@ -11,7 +11,9 @@ fixes/ps-print.patch
 fixes/widevine-enable-version-string.patch
 fixes/widevine-locations.patch
 
-#upstream/
+upstream/blink-dbl-float.patch
+upstream/clamp.patch
+upstream/move-stack-to-isolate.patch
 
 disable/android.patch
 disable/font-tests.patch
