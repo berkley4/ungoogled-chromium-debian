@@ -69,6 +69,7 @@ GN_FLAGS += \
         use_gnome_keyring=false \
         use_kerberos=false \
         use_qt=false \
+        use_runtime_vlog=false \
         use_sysroot=false \
         use_text_section_splitting=true \
         v8_enable_zone_compression=true
