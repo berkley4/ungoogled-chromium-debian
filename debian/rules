@@ -76,10 +76,14 @@ GN_FLAGS += \
 
 # Currently omitted from base (stable)
 #
+# Note: jsoncpp, re2, snappy (and perhaps woff2) cannot
+#       be unbundled when use_custom_libcxx=true.
+#       Custom (ie bundled) libcxx is needed for CFI.
+#
 # Extra work     : ffmpeg
 # Minor bug      : libpng
-# Not in stable  : libaom, libavif, openh264
-# Stable too old : dav1d, icu
+# Not in stable  : openh264
+# Stable too old : dav1d, icu, libaom, libavif
 # Compile issues : jsoncpp, re2, snappy, woff2
 # Problematic    : harfbuzz-ng, libvpx, libyuv
 #
