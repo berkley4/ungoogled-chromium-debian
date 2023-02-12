@@ -2,18 +2,6 @@
 ## Note: the uncommented flags will probably work for most users
 
 
-# Pick one of --use-gl=desktop, --use-gl=egl, --use-angle=gl
-
-# Default which should work for most people
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-gl=desktop"
-
-# Requires libgles2 package [/usr/lib/x86_64-linux-gnu/libGLESv2.so.2]
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-gl=egl"
-
-# Requires ungoogled-chromium-libraries package [/usr/lib/chromium/libGLESv2.so]
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-angle=gl"
-
-
 # Uncomment if you're on x11 (ie not wayland)
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --ozone-platform=x11"
 
@@ -39,3 +27,10 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-zero-copy"
 
 # might help with eg google streetview on very old GPUs
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-accelerated-2d-canvas"
+
+
+# It's probably not necessary to set any of these
+# (the last one would require compilation with swiftshader enabled)
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --gl=gl=egl-gles2,angle=none"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --gl=gl=egl-angle,angle=default"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --gl=egl-angle,angle=swiftshader"
