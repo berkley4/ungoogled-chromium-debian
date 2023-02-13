@@ -81,9 +81,8 @@ GN_FLAGS += \
 #       Custom (ie bundled) libcxx is needed for CFI.
 #
 # Extra work     : ffmpeg
-# Minor bug      : libpng
 # Not in stable  : openh264
-# Stable too old : dav1d, icu, libaom, libavif
+# Stable too old : dav1d, icu, libaom, libavif, libpng
 # Compile issues : jsoncpp, re2, snappy, woff2
 # Problematic    : harfbuzz-ng, libvpx, libyuv
 #
@@ -117,7 +116,8 @@ SYS_LIBS :=               \
 #SYS_LIBS += libaom libavif
 
 # Uncomment if you are on testing/unstable (or a new enough distro)
-#SYS_LIBS += dav1d icu libaom libavif openh264
+#GN_FLAGS += use_system_libpng=true
+#SYS_LIBS += dav1d icu libaom libavif libpng openh264
 
 # Uncoment to disable atk/dbus
 #GN_FLAGS += use_atk=false use_dbus=false

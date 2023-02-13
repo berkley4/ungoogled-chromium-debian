@@ -51,7 +51,8 @@ Build-Depends:
 #libavif-dev,
 #libdav1d-dev,
 #libjpeg-dev,
-#libopenh264-dev
+#libopenh264-dev,
+#libpng-dev
 
 Package: ungoogled-chromium
 Architecture: i386 amd64 arm64 armhf
