@@ -36,24 +36,25 @@ The main features and changes are as follows :-
 ___Performance improvements___
 
 - Profile Guided Optimisation (PGO) - a smaller, faster chrome binary
-- Upstream optimisation - levels vary per target (versus debian's -O2 everywhere default)
+- PartitionAlloc pointer compression - should help reduce memory usage and help boost performance
 - Various compiler flags aimed at improving speed
     - -march=[x86-64-v2](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels)
     - -maes - enables AES instructions
     - -mpclmul - enables CLMUL instructions
     - -mavx - enables AVX instructions (AVX2 is available via an optional patch)
-    - -mllvm polly -mllvm -polly-vectorizer=stripmine - enables llvm polly vectorization
     - -fno-plt - (see [here](https://patchwork.ozlabs.org/project/gcc/patch/alpine.LNX.2.11.1505061730460.22867@monopod.intra.ispras.ru/))
     - -ftrivial-auto-var-init set to zero - see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html)
-    - -import-instr-limit=25 and -import-hot-multiplier=18 - gives a hot import limit of 450 (25*18) vs default of 300 (30*10)
+    - -import-instr-limit=25 and -import-hot-multiplier=16 - gives a hot import limit of 400 (25*16) vs default of 300 (30*10)
+    - The following LLVM polly options are available (via optional patches, needs a capable toolchain) :-
+        -polly-vectorizer=stripmine, -polly-run-dce, -polly-run-inliner, -polly-invariant-load-hoisting
 
 ___Security/Privacy improvements___
 
+- ROP exploit mitigation (-fzero-call-used-regs=used-gpr) - see [here](https://www.jerkeby.se/newsletter/posts/rop-reduction-zero-call-user-regs/)
 - Bad Cast Checking in addition to regular Control Flow Integrity (see [here](https://clang.llvm.org/docs/ControlFlowIntegrity.html#bad-cast-checking))
 - Extra Bromite and Vanadium patches, the later of which includes the following clang options
     - -fstack-protector-strong - chromium's default is the less-strict -fstack-protector
     - -ftrivial-auto-var-init=zero - see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html)
-    - -fzero-call-used-regs=used-gpr - see [here](https://www.jerkeby.se/newsletter/posts/rop-reduction-zero-call-user-regs/)
     - -fwrapv - see [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1031653) and [here](https://gitlab.e.foundation/e/apps/browser/-/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch)
 - An example policy file is in the repo (install manually or edit ungoogled-chromium.install.in at build time4)
 - Some security/privacy themed flag files are installed to /etc/chromium.d (strict isolation is enabled by default)
@@ -62,8 +63,7 @@ ___Security/Privacy improvements___
 ___Other features___
 
 - The ungoogled-chromium-common package has split into the libraries and main packages
-- A new ungoogled-chromium-libraries package (likely not needed by everyone)
-- Bundled libpng - avoids an upstream debian bug (see [here](https://github.com/ungoogled-software/ungoogled-chromium-debian/issues/169))
+- A new ungoogled-chromium-libraries package
 - Google translate - optional build support via a patch to re-enable this functionality
 - Disable mDNS and service discovery - optional build support
 
@@ -71,10 +71,10 @@ ___Other features___
 ___Build system___
 
 - Predominantly uses git to obtain and update source (release tarballs are supported too)
-- Incremental builds for faster builds/rebuilds
+- Incremental ninja builds for faster builds/rebuilds
 - Built with upstream google clang/llvm binaries
 - Patches for -march/-mtune and various other CPU instructions
-- Various patches to disable components (eg dbus/atk) and enable system libraries (eg icu)
+- Various patches to disable components (eg atk/dbus) and enable system libraries (eg icu)
 - Various lines in debian/rules can be uncommented to enable/disable build options or system libraries
 - Ungoogled Chromium patches are merged into debian's build system with a variety of other patches
 - Debug optimisation is now handled by building with -fdebug-types-section (instead of dwz)
@@ -84,17 +84,6 @@ ___Build system___
 
 
 The following are optional features :-
-
-
-___Enable Vulkan___
-
-Vulkan can be enabled via uncommenting the following runtime flags in /etc/chromium.d/gpu-options :-
-
---use-vulkan
-
-In the past it appeared that the environment variable VK_ICD_FILENAMES needed to be set, but this 
-no longer appears to be the case.
-(eg VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/intel_icd.x86_64.json chromium)
 
 
 ___Google Translate___
@@ -232,7 +221,7 @@ git checkout tags/$TAG
 gclient sync -D --force --nohooks --no-history --shallow --jobs=$JOBS
 
 # Download various build components
-gclient runhooks
+gclient runhooks --jobs=$JOBS
 
 # Copy over the debian directory into your source tree
 cp -a ../../debian .
