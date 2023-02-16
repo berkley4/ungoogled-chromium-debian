@@ -1,0 +1,37 @@
+From 9d146e05055f4232d74bd3f1bd1448ddfea97b15 Mon Sep 17 00:00:00 2001
+From: Tom Anderson <thomasanderson@chromium.org>
+Date: Mon, 13 Feb 2023 21:08:03 +0000
+Subject: [PATCH] [Merge to M110] Apply text color to omnibox tail suggest ellipse view
+
+When the tail suggest ellipse view doesn't have a color set, the ellipse
+renders using gfx::PlaceholderColor.  This CL sets the ellipse color to
+the results text color.
+
+(cherry picked from commit 7c3e8fdd5c9c0b38fb0e0efd65e444d45e4f0035)
+
+Bug: 1405097
+Change-Id: Ic9d12d689279dbe1c9ef66896c6db3158fa3cc55
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4140327
+Commit-Queue: Tommy Li <tommycli@chromium.org>
+Auto-Submit: Thomas Anderson <thomasanderson@chromium.org>
+Reviewed-by: Tommy Li <tommycli@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1089899}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4245822
+Commit-Queue: Thomas Anderson <thomasanderson@chromium.org>
+Cr-Commit-Position: refs/branch-heads/5481@{#1117}
+Cr-Branched-From: 130f3e4d850f4bc7387cfb8d08aa993d288a67a9-refs/heads/main@{#1084008}
+---
+
+--- a/chrome/browser/ui/views/omnibox/omnibox_match_cell_view.cc
++++ b/chrome/browser/ui/views/omnibox/omnibox_match_cell_view.cc
+@@ -225,6 +225,10 @@
+ 
+   tail_suggest_ellipse_view_->SetVisible(
+       !match.tail_suggest_common_prefix.empty());
++  tail_suggest_ellipse_view_->ApplyTextColor(
++      result_view->GetThemeState() == OmniboxPartState::SELECTED
++          ? kColorOmniboxResultsTextSelected
++          : kColorOmniboxText);
+ 
+   // Set up the separator.
+   separator_view_->SetSize(layout_style_ == LayoutStyle::TWO_LINE_SUGGESTION ||
