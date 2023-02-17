@@ -1,7 +1,6 @@
 ## Refer to chrome://gpu/ to see if there are any problems
 ## Note: the uncommented flags will probably work for most users
 
-
 # Uncomment if you're on x11 (ie not wayland)
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --ozone-platform=x11"
 
@@ -16,6 +15,8 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --canvas-oop-rasterization"
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-gpu-rasterization"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-raw-draw"
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-zero-copy"
+
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --num-raster-threads=2"
 
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --ui-disable-partial-swap"
 

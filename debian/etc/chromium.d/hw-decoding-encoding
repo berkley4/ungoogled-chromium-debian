@@ -13,5 +13,8 @@
 # Uncomment to enable VAAPI hardware decoding
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoDecoder"
 
+# Uncomment to enable VAAPI hardware eecoding
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoEncoder"
+
 # The line below probably needs to also be uncommented
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=UseChromeOSDirectVideoDecoder"
