@@ -38,17 +38,7 @@
  #endif  // BUILDFLAG(IS_CHROMEOS)
 --- a/chrome/browser/metrics/bluetooth_metrics_provider.cc
 +++ b/chrome/browser/metrics/bluetooth_metrics_provider.cc
-@@ -6,7 +6,9 @@
- 
- #include "base/bind.h"
- #include "base/metrics/histogram_functions.h"
-+#if defined(USE_DBUS)
- #include "device/bluetooth/floss/floss_features.h"
-+#endif  // defined(USE_DBUS)
- 
- namespace metrics {
- 
-@@ -15,11 +17,13 @@
+@@ -15,11 +15,15 @@ BluetoothMetricsProvider::BluetoothMetricsProvider() = default;
  BluetoothMetricsProvider::~BluetoothMetricsProvider() = default;
  
  bool BluetoothMetricsProvider::ProvideHistograms() {
@@ -58,6 +48,8 @@
                                      ? BluetoothStackName::kFloss
                                      : BluetoothStackName::kBlueZ);
    return true;
++#else
++  return false;
 +#endif  // defined(USE_DBUS)
  }
  
