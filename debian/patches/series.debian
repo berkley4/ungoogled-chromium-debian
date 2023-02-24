@@ -79,8 +79,7 @@ various/template-correction.patch
 various/use-clang-to-optimize-debug-info.patch
 various/wayland-egl.patch
 various/zero-call-used-registers.patch
-various/addenda/0001-Apply-text-color-to-omnibox-tail-suggest-ellipse-view.patch
-various/addenda/0002-Fix-UAF-problem-in-AngleVulkanImageBacking.patch
+#various/addenda/
 various/bromite/autofill-miscellaneous.patch
 various/bromite/Disable-all-predictors-code.patch
 various/bromite/Disable-conversion-measurement-api.patch
