@@ -14,11 +14,9 @@ Date:   Mon Dec 19 19:07:37 2022 +0000
     Commit-Queue: Stephan Hartmann <stha09@googlemail.com>
     Cr-Commit-Position: refs/heads/main@{#1085034}
 
-diff --git a/ui/native_theme/native_theme_base.cc b/ui/native_theme/native_theme_base.cc
-index 169c60cc7f6fc..36db49a310506 100644
 --- a/ui/native_theme/native_theme_base.cc
 +++ b/ui/native_theme/native_theme_base.cc
-@@ -1336,7 +1336,7 @@ SkColor NativeThemeBase::OutlineColor(SkScalar* hsv1, SkScalar* hsv2) const {
+@@ -1336,7 +1336,7 @@
    // The following code has been tested to look OK with all of the
    // default GTK themes.
    SkScalar min_diff = base::clamp((hsv1[1] + hsv2[1]) * 1.2f, 0.28f, 0.5f);

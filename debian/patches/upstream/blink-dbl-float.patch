@@ -13,11 +13,9 @@ Date:   Fri Jan 13 17:57:44 2023 +0000
     Commit-Queue: Stephan Hartmann <stha09@googlemail.com>
     Cr-Commit-Position: refs/heads/main@{#1092495}
 
-diff --git a/third_party/blink/renderer/platform/graphics/dark_mode_lab_color_space.h b/third_party/blink/renderer/platform/graphics/dark_mode_lab_color_space.h
-index 999c3e5b58ae0..28a15cd7f9485 100644
 --- a/third_party/blink/renderer/platform/graphics/dark_mode_lab_color_space.h
 +++ b/third_party/blink/renderer/platform/graphics/dark_mode_lab_color_space.h
-@@ -125,8 +125,7 @@ class DarkModeLABColorSpace {
+@@ -125,8 +125,7 @@
    // https://en.wikipedia.org/wiki/CIELAB_color_space#Reverse_transformation.
    SkV3 FromXYZ(const SkV3& v) const {
      auto f = [](float x) {
@@ -27,7 +25,7 @@ index 999c3e5b58ae0..28a15cd7f9485 100644
      };
  
      float fx = f(v.x / kIlluminantD50.x);
-@@ -145,7 +144,7 @@ class DarkModeLABColorSpace {
+@@ -145,7 +144,7 @@
    // https://en.wikipedia.org/wiki/CIELAB_color_space#Forward_transformation.
    SkV3 ToXYZ(const SkV3& lab) const {
      auto invf = [](float x) {
