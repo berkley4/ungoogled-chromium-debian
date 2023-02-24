@@ -113,6 +113,7 @@ various/system/extra/brotli.patch
 various/system/extra/opus.patch
 various/system/extra/zlib.patch
 various/upstream/Reorganize-NodeData.patch
+various/upstream/v8-Fix-saving-the-callee-saved-registers-on-stack.patch
 various/vanadium/disable-article-suggestions-feature-by-default.patch
 various/vanadium/disable-content-feed-suggestions-by-default.patch
 
