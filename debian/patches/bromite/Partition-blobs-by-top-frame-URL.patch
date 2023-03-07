@@ -14,9 +14,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../core/fileapi/public_url_manager.cc        | 17 +++++++++
  4 files changed, 75 insertions(+), 5 deletions(-)
 
+diff --git a/storage/browser/blob/blob_url_store_impl.cc b/storage/browser/blob/blob_url_store_impl.cc
 --- a/storage/browser/blob/blob_url_store_impl.cc
 +++ b/storage/browser/blob/blob_url_store_impl.cc
-@@ -84,6 +84,20 @@
+@@ -84,6 +84,20 @@ BlobURLStoreImpl::~BlobURLStoreImpl() {
    }
  }
  
@@ -37,7 +38,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  void BlobURLStoreImpl::Register(
      mojo::PendingRemote<blink::mojom::Blob> blob,
      const GURL& url,
-@@ -114,11 +128,18 @@
+@@ -114,11 +128,18 @@ void BlobURLStoreImpl::Revoke(const GURL& url) {
    urls_.erase(url);
  }
  
@@ -57,7 +58,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    mojo::PendingRemote<blink::mojom::Blob> blob = registry_->GetBlobFromUrl(url);
    std::move(callback).Run(std::move(blob),
                            registry_->GetUnsafeAgentClusterID(url));
-@@ -127,6 +148,8 @@
+@@ -127,6 +148,8 @@ void BlobURLStoreImpl::Resolve(const GURL& url, ResolveCallback callback) {
  void BlobURLStoreImpl::ResolveAsURLLoaderFactory(
      const GURL& url,
      mojo::PendingReceiver<network::mojom::URLLoaderFactory> receiver,
@@ -66,7 +67,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      ResolveAsURLLoaderFactoryCallback callback) {
    if (!registry_) {
      BlobURLLoaderFactory::Create(mojo::NullRemote(), url, std::move(receiver));
-@@ -134,6 +157,12 @@
+@@ -134,6 +157,12 @@ void BlobURLStoreImpl::ResolveAsURLLoaderFactory(
      return;
    }
  
@@ -79,7 +80,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    BlobURLLoaderFactory::Create(registry_->GetBlobFromUrl(url), url,
                                 std::move(receiver));
    std::move(callback).Run(registry_->GetUnsafeAgentClusterID(url),
-@@ -143,11 +172,17 @@
+@@ -143,11 +172,17 @@ void BlobURLStoreImpl::ResolveAsURLLoaderFactory(
  void BlobURLStoreImpl::ResolveForNavigation(
      const GURL& url,
      mojo::PendingReceiver<blink::mojom::BlobURLToken> token,
@@ -97,9 +98,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    mojo::PendingRemote<blink::mojom::Blob> blob = registry_->GetBlobFromUrl(url);
    if (!blob) {
      std::move(callback).Run(absl::nullopt);
+diff --git a/storage/browser/blob/blob_url_store_impl.h b/storage/browser/blob/blob_url_store_impl.h
 --- a/storage/browser/blob/blob_url_store_impl.h
 +++ b/storage/browser/blob/blob_url_store_impl.h
-@@ -42,14 +42,21 @@
+@@ -42,14 +42,21 @@ class COMPONENT_EXPORT(STORAGE_BROWSER) BlobURLStoreImpl
        const absl::optional<net::SchemefulSite>& unsafe_top_level_site,
        RegisterCallback callback) override;
    void Revoke(const GURL& url) override;
@@ -122,7 +124,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        ResolveForNavigationCallback callback) override;
  
   private:
-@@ -59,6 +66,11 @@
+@@ -59,6 +66,11 @@ class COMPONENT_EXPORT(STORAGE_BROWSER) BlobURLStoreImpl
    // `Revoke()`.
    bool BlobUrlIsValid(const GURL& url, const char* method) const;
  
@@ -134,9 +136,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    const blink::StorageKey storage_key_;
  
    base::WeakPtr<BlobUrlRegistry> registry_;
+diff --git a/third_party/blink/public/mojom/blob/blob_url_store.mojom b/third_party/blink/public/mojom/blob/blob_url_store.mojom
 --- a/third_party/blink/public/mojom/blob/blob_url_store.mojom
 +++ b/third_party/blink/public/mojom/blob/blob_url_store.mojom
-@@ -33,7 +33,9 @@
+@@ -33,7 +33,9 @@ interface BlobURLStore {
    Revoke(url.mojom.Url url);
  
    // Resolves a public Blob URL.
@@ -147,7 +150,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      pending_remote<blink.mojom.Blob>? blob,
      // TODO(https://crbug.com/1224926): Remove this once experiment is over.
      mojo_base.mojom.UnguessableToken? unsafe_agent_cluster_id);
-@@ -47,7 +49,9 @@
+@@ -47,7 +49,9 @@ interface BlobURLStore {
    // both the blob URL and all other references to the blob have been dropped.
    ResolveAsURLLoaderFactory(
      url.mojom.Url url,
@@ -158,7 +161,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      // TODO(https://crbug.com/1224926): Remove these once experiment is over.
      mojo_base.mojom.UnguessableToken? unsafe_agent_cluster_id,
      network.mojom.SchemefulSite? unsafe_top_level_site);
-@@ -57,7 +61,9 @@
+@@ -57,7 +61,9 @@ interface BlobURLStore {
    // refer to, even after the URL is revoked.
    // As long as the token is alive, the resolved blob will also be kept alive.
    ResolveForNavigation(url.mojom.Url url,
@@ -169,9 +172,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      // TODO(https://crbug.com/1224926): Remove this once experiment is over.
      mojo_base.mojom.UnguessableToken? unsafe_agent_cluster_id);
  };
+diff --git a/third_party/blink/renderer/core/fileapi/public_url_manager.cc b/third_party/blink/renderer/core/fileapi/public_url_manager.cc
 --- a/third_party/blink/renderer/core/fileapi/public_url_manager.cc
 +++ b/third_party/blink/renderer/core/fileapi/public_url_manager.cc
-@@ -62,6 +62,21 @@
+@@ -64,6 +64,21 @@ static void RemoveFromNullOriginMapIfNecessary(const KURL& blob_url) {
      BlobURLNullOriginMap::GetInstance()->Remove(blob_url);
  }
  
@@ -192,8 +196,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +
  }  // namespace
  
- PublicURLManager::PublicURLManager(ExecutionContext* execution_context)
-@@ -261,6 +276,7 @@
+ // Execution context names corresponding to the entries from
+@@ -297,6 +312,7 @@ void PublicURLManager::Resolve(
  
    GetBlobURLStore().ResolveAsURLLoaderFactory(
        url, std::move(factory_receiver),
@@ -201,7 +205,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        WTF::BindOnce(metrics_callback, WrapPersistent(GetExecutionContext())));
  }
  
-@@ -284,6 +300,7 @@
+@@ -320,6 +336,7 @@ void PublicURLManager::Resolve(
  
    GetBlobURLStore().ResolveForNavigation(
        url, std::move(token_receiver),
@@ -209,3 +213,5 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        WTF::BindOnce(metrics_callback, WrapPersistent(GetExecutionContext())));
  }
  
+--
+2.25.1

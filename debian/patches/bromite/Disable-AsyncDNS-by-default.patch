@@ -10,9 +10,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/common/chrome_features.cc | 9 ++-------
  1 file changed, 2 insertions(+), 7 deletions(-)
 
+diff --git a/chrome/common/chrome_features.cc b/chrome/common/chrome_features.cc
 --- a/chrome/common/chrome_features.cc
 +++ b/chrome/common/chrome_features.cc
-@@ -86,13 +86,8 @@
+@@ -72,13 +72,8 @@ BASE_FEATURE(kAppShimNewCloseBehavior,
  
  // Enables the built-in DNS resolver.
  BASE_FEATURE(kAsyncDns,
@@ -28,3 +29,5 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  );
  
  #if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX) || \
+--
+2.25.1

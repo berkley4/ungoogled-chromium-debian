@@ -13,9 +13,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/component_updater/configurator_impl.h             | 1 -
  3 files changed, 3 insertions(+), 7 deletions(-)
 
+diff --git a/components/component_updater/component_updater_url_constants.cc b/components/component_updater/component_updater_url_constants.cc
 --- a/components/component_updater/component_updater_url_constants.cc
 +++ b/components/component_updater/component_updater_url_constants.cc
-@@ -15,9 +15,9 @@
+@@ -15,9 +15,9 @@ namespace component_updater {
  // The value of |kDefaultUrlSource| can be overridden with
  // --component-updater=url-source=someurl.
  const char kUpdaterJSONDefaultUrl[] =
@@ -27,9 +28,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +    "about:blank";
  
  }  // namespace component_updater
+diff --git a/components/component_updater/configurator_impl.cc b/components/component_updater/configurator_impl.cc
 --- a/components/component_updater/configurator_impl.cc
 +++ b/components/component_updater/configurator_impl.cc
-@@ -38,8 +38,7 @@
+@@ -38,8 +38,7 @@ ConfiguratorImpl::ConfiguratorImpl(
      : background_downloads_enabled_(config_policy.BackgroundDownloadsEnabled()),
        deltas_enabled_(config_policy.DeltaUpdatesEnabled()),
        fast_update_(config_policy.FastUpdate()),
@@ -39,7 +41,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        url_source_override_(config_policy.UrlSourceOverride()),
        initial_delay_(config_policy.InitialDelay()) {
    if (config_policy.TestRequest()) {
-@@ -74,8 +73,6 @@
+@@ -74,8 +73,6 @@ std::vector<GURL> ConfiguratorImpl::UpdateUrl() const {
  
    std::vector<GURL> urls{GURL(kUpdaterJSONDefaultUrl),
                           GURL(kUpdaterJSONFallbackUrl)};
@@ -48,9 +50,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
    return urls;
  }
+diff --git a/components/component_updater/configurator_impl.h b/components/component_updater/configurator_impl.h
 --- a/components/component_updater/configurator_impl.h
 +++ b/components/component_updater/configurator_impl.h
-@@ -105,7 +105,6 @@
+@@ -105,7 +105,6 @@ class ConfiguratorImpl {
    const bool deltas_enabled_;
    const bool fast_update_;
    const bool pings_enabled_;
@@ -58,3 +61,5 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    const GURL url_source_override_;
    const base::TimeDelta initial_delay_;
  };
+--
+2.25.1

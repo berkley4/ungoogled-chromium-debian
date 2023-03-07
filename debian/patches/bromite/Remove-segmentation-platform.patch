@@ -11,6 +11,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/segmentation_platform/public/features.cc       | 8 ++------
  2 files changed, 6 insertions(+), 6 deletions(-)
 
+diff --git a/chrome/browser/segmentation_platform/chrome_browser_main_extra_parts_segmentation_platform.cc b/chrome/browser/segmentation_platform/chrome_browser_main_extra_parts_segmentation_platform.cc
 --- a/chrome/browser/segmentation_platform/chrome_browser_main_extra_parts_segmentation_platform.cc
 +++ b/chrome/browser/segmentation_platform/chrome_browser_main_extra_parts_segmentation_platform.cc
 @@ -12,17 +12,20 @@
@@ -34,13 +35,14 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    if (!profile || profile->IsOffTheRecord())
      return;
  
-@@ -34,5 +37,6 @@
+@@ -34,5 +37,6 @@ void ChromeBrowserMainExtraPartsSegmentationPlatform::PostProfileInit(
  }
  
  void ChromeBrowserMainExtraPartsSegmentationPlatform::PostMainMessageLoopRun() {
 +  if ((true)) return;
    segmentation_platform::UkmDatabaseClient::GetInstance().PostMessageLoopRun();
  }
+diff --git a/components/segmentation_platform/public/features.cc b/components/segmentation_platform/public/features.cc
 --- a/components/segmentation_platform/public/features.cc
 +++ b/components/segmentation_platform/public/features.cc
 @@ -9,8 +9,8 @@
@@ -54,7 +56,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
  BASE_FEATURE(kSegmentationStructuredMetricsFeature,
               "SegmentationStructuredMetrics",
-@@ -34,11 +34,7 @@
+@@ -38,11 +38,7 @@ BASE_FEATURE(kSegmentationPlatformSearchUser,
  
  BASE_FEATURE(kSegmentationPlatformFeedSegmentFeature,
               "SegmentationPlatformFeedSegmentFeature",
@@ -66,3 +68,5 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
  BASE_FEATURE(kResumeHeavyUserSegmentFeature,
               "ResumeHeavyUserSegment",
+--
+2.25.1

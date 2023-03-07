@@ -1,4 +1,4 @@
-From 0d0649c339d9bc927722dfbe0a87fdf11bfe39b5 Mon Sep 17 00:00:00 2001
+From d0393f43548f5077545e058f3f0f6d8526ea682e Mon Sep 17 00:00:00 2001
 From: June <june@eridan.me>
 Date: Sun, 8 May 2022 01:34:58 +0000
 Subject: [PATCH] enable process isolated sandboxed iframes by default
@@ -8,9 +8,11 @@ Signed-off-by: June <june@eridan.me>
  third_party/blink/common/features.cc | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/features.cc
+index dd48de82e854f..4f5d8fb317448 100644
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -1611,7 +1611,7 @@
+@@ -1633,7 +1633,7 @@ BASE_FEATURE(kWebRtcCombinedNetworkAndWorkerThread,
  // sandboxes are isolated.
  BASE_FEATURE(kIsolateSandboxedIframes,
               "IsolateSandboxedIframes",

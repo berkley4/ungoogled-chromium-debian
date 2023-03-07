@@ -7,9 +7,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/ntp_tiles/popular_sites_impl.cc | 10 +++++++---
  1 file changed, 7 insertions(+), 3 deletions(-)
 
+diff --git a/components/ntp_tiles/popular_sites_impl.cc b/components/ntp_tiles/popular_sites_impl.cc
 --- a/components/ntp_tiles/popular_sites_impl.cc
 +++ b/components/ntp_tiles/popular_sites_impl.cc
-@@ -61,7 +61,6 @@
+@@ -61,7 +61,6 @@ const char kPopularSitesDefaultDirectory[] = "chrome/ntp/";
  const char kPopularSitesDefaultCountryCode[] = "DEFAULT";
  const char kPopularSitesDefaultVersion[] = "5";
  const int kSitesExplorationStartVersion = 6;
@@ -17,7 +18,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  const char kIOSDefaultPopularSitesExperimentIncludeApps[] =
      "https://www.gstatic.com/chrome/ntp/ios/"
      "suggested_sites_US_2023q1_mvt_experiment_with_popular_sites.json";
-@@ -376,7 +375,12 @@
+@@ -376,7 +375,12 @@ bool PopularSitesImpl::MaybeStartFetch(bool force_download,
    DCHECK(!callback_);
    callback_ = std::move(callback);
  
@@ -31,7 +32,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        prefs_->GetInt64(prefs::kPopularSitesLastDownloadPref));
    const base::TimeDelta time_since_last_download =
        base::Time::Now() - last_download_time;
-@@ -393,7 +397,7 @@
+@@ -393,7 +397,7 @@ bool PopularSitesImpl::MaybeStartFetch(bool force_download,
        (time_since_last_download > redownload_interval) || url_changed) {
      FetchPopularSites();
      return true;
@@ -40,3 +41,5 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    return false;
  }
  
+--
+2.25.1

@@ -36,9 +36,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  net/socket/ssl_client_socket_impl.h  |  2 +
  9 files changed, 130 insertions(+), 1 deletion(-)
 
+diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -4682,6 +4682,12 @@
+@@ -4627,6 +4627,12 @@ const FeatureEntry kFeatureEntries[] = {
      {"enable-tls13-early-data", flag_descriptions::kEnableTLS13EarlyDataName,
       flag_descriptions::kEnableTLS13EarlyDataDescription, kOsAll,
       FEATURE_VALUE_TYPE(net::features::kEnableTLS13EarlyData)},
@@ -51,11 +52,12 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      {"post-quantum-cecpq2", flag_descriptions::kPostQuantumCECPQ2Name,
       flag_descriptions::kPostQuantumCECPQ2Description, kOsAll,
       FEATURE_VALUE_TYPE(net::features::kPostQuantumCECPQ2)},
+diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -953,6 +953,14 @@
-     "during the handshake when resuming a connection to a compatible TLS 1.3 "
-     "server.";
+@@ -1012,6 +1012,14 @@ const char kChromeVoxQ1FastTrackFeaturesDescription[] =
+     "This option enables experimental Accessibility ChromeVox improvements for "
+     "Chrome OS.";
  
 +const char kDisableTLSResumptionName[] = "Disable TLS Session Resumption";
 +const char kDisableTLSResumptionDescription[] =
@@ -68,9 +70,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  const char kAccessibilityServiceName[] = "Experimental Accessibility Service";
  const char kAccessibilityServiceDescription[] =
      "This option enables the experimental Accessibility Service and runs some "
+diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -550,6 +550,12 @@
+@@ -573,6 +573,12 @@ extern const char kEnablePreinstalledWebAppDuplicationFixerDescription[];
  extern const char kEnableTLS13EarlyDataName[];
  extern const char kEnableTLS13EarlyDataDescription[];
  
@@ -80,12 +83,13 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +extern const char kLogTLSResumptionName[];
 +extern const char kLogTLSResumptionDescription[];
 +
- extern const char kAccessibilityServiceName[];
- extern const char kAccessibilityServiceDescription[];
+ extern const char kAccessibilityAcceleratorNotificationsTimeoutName[];
+ extern const char kAccessibilityAcceleratorNotificationsTimeoutDescription[];
  
+diff --git a/net/base/features.cc b/net/base/features.cc
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -63,6 +63,14 @@
+@@ -61,6 +61,14 @@ const base::FeatureParam<base::TimeDelta> kUseDnsHttpsSvcbSecureExtraTimeMin{
      &kUseDnsHttpsSvcb, "UseDnsHttpsSvcbSecureExtraTimeMin",
      base::Milliseconds(5)};
  
@@ -100,9 +104,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  BASE_FEATURE(kUseDnsHttpsSvcbAlpn,
               "UseDnsHttpsSvcbAlpn",
               base::FEATURE_DISABLED_BY_DEFAULT);
+diff --git a/net/base/features.h b/net/base/features.h
 --- a/net/base/features.h
 +++ b/net/base/features.h
-@@ -91,6 +91,12 @@
+@@ -92,6 +92,12 @@ NET_EXPORT BASE_DECLARE_FEATURE(kUseDnsHttpsSvcbAlpn);
  // Enables TLS 1.3 early data.
  NET_EXPORT BASE_DECLARE_FEATURE(kEnableTLS13EarlyData);
  
@@ -115,9 +120,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  // Enables the TLS Encrypted ClientHello feature.
  // https://datatracker.ietf.org/doc/html/draft-ietf-tls-esni-13
  NET_EXPORT BASE_DECLARE_FEATURE(kEncryptedClientHello);
+diff --git a/net/http/http_network_session.cc b/net/http/http_network_session.cc
 --- a/net/http/http_network_session.cc
 +++ b/net/http/http_network_session.cc
-@@ -211,6 +211,7 @@
+@@ -211,6 +211,7 @@ HttpNetworkSession::HttpNetworkSession(const HttpNetworkSessionParams& params,
  
    next_protos_.push_back(kProtoHTTP11);
  
@@ -125,9 +131,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    http_server_properties_->SetMaxServerConfigsStoredInProperties(
        context.quic_context->params()->max_server_configs_stored_in_properties);
    http_server_properties_->SetBrokenAlternativeServicesDelayParams(
+diff --git a/net/quic/quic_stream_factory.cc b/net/quic/quic_stream_factory.cc
 --- a/net/quic/quic_stream_factory.cc
 +++ b/net/quic/quic_stream_factory.cc
-@@ -71,6 +71,7 @@
+@@ -72,6 +72,7 @@
  #include "net/third_party/quiche/src/quiche/quic/core/quic_utils.h"
  #include "net/third_party/quiche/src/quiche/quic/platform/api/quic_flags.h"
  #include "third_party/boringssl/src/include/openssl/aead.h"
@@ -135,7 +142,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "url/gurl.h"
  #include "url/scheme_host_port.h"
  #include "url/url_constants.h"
-@@ -236,6 +237,38 @@
+@@ -237,6 +238,38 @@ quic::ParsedQuicVersion SelectQuicVersion(
  
  }  // namespace
  
@@ -174,7 +181,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  // Refcounted class that owns quic::QuicCryptoClientConfig and tracks how many
  // consumers are using it currently. When the last reference is freed, the
  // QuicCryptoClientConfigHandle informs the owning QuicStreamFactory, moves it
-@@ -2351,7 +2384,7 @@
+@@ -2352,7 +2385,7 @@ QuicStreamFactory::CreateCryptoConfigHandle(
                sct_auditing_delegate_,
                HostsFromOrigins(params_.origins_to_force_quic_on),
                actual_network_anonymization_key),
@@ -183,9 +190,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
    quic::QuicCryptoClientConfig* crypto_config = crypto_config_owner->config();
    crypto_config->set_user_agent_id(params_.user_agent_id);
+diff --git a/net/socket/ssl_client_socket_impl.cc b/net/socket/ssl_client_socket_impl.cc
 --- a/net/socket/ssl_client_socket_impl.cc
 +++ b/net/socket/ssl_client_socket_impl.cc
-@@ -393,7 +393,33 @@
+@@ -392,7 +392,33 @@ SSLClientSocketImpl::SSLClientSocketImpl(
    CHECK(context_);
  }
  
@@ -219,7 +227,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    Disconnect();
  }
  
-@@ -787,6 +813,8 @@
+@@ -793,6 +819,8 @@ int SSLClientSocketImpl::Init() {
      }
      if (session)
        SSL_set_session(ssl_.get(), session.get());
@@ -228,7 +236,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    }
  
    transport_adapter_ = std::make_unique<SocketBIOAdapter>(
-@@ -1078,6 +1106,35 @@
+@@ -1084,6 +1112,35 @@ int SSLClientSocketImpl::DoHandshakeComplete(int result) {
                      : SSLHandshakeDetails::kTLS13Full;
      }
    }
@@ -264,7 +272,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    UMA_HISTOGRAM_ENUMERATION("Net.SSLHandshakeDetails", details);
  
    // Measure TLS connections that implement the renegotiation_info extension.
-@@ -1760,6 +1817,8 @@
+@@ -1765,6 +1822,8 @@ bool SSLClientSocketImpl::IsRenegotiationAllowed() const {
  }
  
  bool SSLClientSocketImpl::IsCachingEnabled() const {
@@ -273,9 +281,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    return context_->ssl_client_session_cache() != nullptr;
  }
  
+diff --git a/net/socket/ssl_client_socket_impl.h b/net/socket/ssl_client_socket_impl.h
 --- a/net/socket/ssl_client_socket_impl.h
 +++ b/net/socket/ssl_client_socket_impl.h
-@@ -127,6 +127,8 @@
+@@ -127,6 +127,8 @@ class SSLClientSocketImpl : public SSLClientSocket,
    friend class SSLClientSocket;
    friend class SSLContext;
  
@@ -284,3 +293,5 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    int Init();
    void DoReadCallback(int result);
    void DoWriteCallback(int result);
+--
+2.25.1

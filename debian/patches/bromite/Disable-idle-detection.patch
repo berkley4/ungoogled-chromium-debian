@@ -7,9 +7,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  content/public/common/content_features.cc | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/content/public/common/content_features.cc b/content/public/common/content_features.cc
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
-@@ -512,7 +512,7 @@
+@@ -557,7 +557,7 @@ BASE_FEATURE(kHandleRendererThreadTypeChangesInBrowser,
  // This is intended as a kill switch for the Idle Detection feature. To enable
  // this feature, the experimental web platform features flag should be set,
  // or the site should obtain an Origin Trial token.
@@ -18,3 +19,5 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
  // A feature flag for the memory-backed code cache.
  BASE_FEATURE(kInMemoryCodeCache,
+--
+2.25.1

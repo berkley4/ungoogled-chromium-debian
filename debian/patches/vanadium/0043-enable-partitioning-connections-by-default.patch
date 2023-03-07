@@ -1,4 +1,4 @@
-From 08d23a59178ccda88fd774325a3bab68629ed7ed Mon Sep 17 00:00:00 2001
+From 5f4c1e6a37a7988b45e6dd7a28f246912fa9c01b Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Mon, 8 Mar 2021 16:53:47 -0500
 Subject: [PATCH] enable partitioning connections by default
@@ -7,9 +7,11 @@ Subject: [PATCH] enable partitioning connections by default
  net/base/features.cc | 10 +++++-----
  1 file changed, 5 insertions(+), 5 deletions(-)
 
+diff --git a/net/base/features.cc b/net/base/features.cc
+index 6292c91243175..d70903fc5ad77 100644
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -97,11 +97,11 @@
+@@ -87,11 +87,11 @@ BASE_FEATURE(kSplitCacheByNetworkIsolationKey,
  
  BASE_FEATURE(kSplitHostCacheByNetworkIsolationKey,
               "SplitHostCacheByNetworkIsolationKey",
@@ -23,7 +25,7 @@ Subject: [PATCH] enable partitioning connections by default
  
  BASE_FEATURE(kForceIsolationInfoFrameOriginToTopLevelFrame,
               "ForceIsolationInfoFrameOriginToTopLevelFrame",
-@@ -109,15 +109,15 @@
+@@ -99,15 +99,15 @@ BASE_FEATURE(kForceIsolationInfoFrameOriginToTopLevelFrame,
  
  BASE_FEATURE(kPartitionHttpServerPropertiesByNetworkIsolationKey,
               "PartitionHttpServerPropertiesByNetworkIsolationKey",

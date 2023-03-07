@@ -19,9 +19,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../blink/renderer/platform/runtime_enabled_features.json5   | 5 ++---
  10 files changed, 32 insertions(+), 4 deletions(-)
 
+diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -6042,6 +6042,11 @@
+@@ -5908,6 +5908,11 @@ const FeatureEntry kFeatureEntries[] = {
           "")},
  #endif
  
@@ -33,23 +34,25 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #if BUILDFLAG(IS_CHROMEOS_ASH)
      {"enable-web-authentication-chromeos-authenticator",
       flag_descriptions::kEnableWebAuthenticationChromeOSAuthenticatorName,
+diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -2712,6 +2712,11 @@
+@@ -2772,6 +2772,11 @@
+     "owners": [ "robsc", "napper", "alanlxl" ],
      "expiry_milestone": 130
    },
-   {
++  {
 +    "name": "enable-text-fragment-anchor",
 +    "owners": [ "bokan", "input-dev" ],
 +    "expiry_milestone": -1
 +  },
-+  {
+   {
      "name": "enable-neural-stylus-palm-rejection",
      "owners": [ "robsc", "napper", "adlr" ],
-     // We add a neural net to change how fingers are handled. We set a milestone
+diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -1296,6 +1296,10 @@
+@@ -1336,6 +1336,10 @@ extern const char kDropInputEventsBeforeFirstPaintDescription[] =
      "intentionally interact with elements on that page. By dropping the events "
      "we prevent accidental interaction with a page the user has not seen yet.";
  
@@ -60,9 +63,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  const char kEnableCssSelectorFragmentAnchorName[] =
      "Enables CSS selector fragment anchors";
  const char kEnableCssSelectorFragmentAnchorDescription[] =
+diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -721,6 +721,9 @@
+@@ -738,6 +738,9 @@ extern const char kReduceHorizontalFlingVelocityDescription[];
  
  extern const char kRetailCouponsName[];
  extern const char kRetailCouponsDescription[];
@@ -72,9 +76,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
  extern const char kDropInputEventsBeforeFirstPaintName[];
  extern const char kDropInputEventsBeforeFirstPaintDescription[];
+diff --git a/chrome/browser/ui/prefs/prefs_tab_helper.cc b/chrome/browser/ui/prefs/prefs_tab_helper.cc
 --- a/chrome/browser/ui/prefs/prefs_tab_helper.cc
 +++ b/chrome/browser/ui/prefs/prefs_tab_helper.cc
-@@ -361,7 +361,7 @@
+@@ -361,7 +361,7 @@ void PrefsTabHelper::RegisterProfilePrefs(
        prefs::kEnableReferrers,
        !base::FeatureList::IsEnabled(features::kNoReferrers));
    registry->RegisterBooleanPref(prefs::kEnableEncryptedMedia, true);
@@ -83,9 +88,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #if BUILDFLAG(IS_ANDROID)
    registry->RegisterDoublePref(browser_ui::prefs::kWebKitFontScaleFactor, 1.0);
    registry->RegisterBooleanPref(browser_ui::prefs::kWebKitForceEnableZoom,
+diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.cc
 --- a/content/child/runtime_features.cc
 +++ b/content/child/runtime_features.cc
-@@ -266,6 +266,7 @@
+@@ -273,6 +273,7 @@ void SetRuntimeFeaturesFromChromiumFeatures() {
       features::kSharedArrayBufferOnDesktop},
      {wf::EnableSharedAutofill, autofill::features::kAutofillSharedAutofill},
      {wf::EnableTouchDragAndContextMenu, features::kTouchDragAndContextMenu},
@@ -93,9 +99,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      {wf::EnableUserActivationSameOriginVisibility,
       features::kUserActivationSameOriginVisibility},
      {wf::EnableVideoPlaybackQuality, features::kVideoPlaybackQuality},
+diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/features.cc
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -489,6 +489,11 @@
+@@ -497,6 +497,11 @@ BASE_FEATURE(kDropInputEventsBeforeFirstPaint,
               "DropInputEventsBeforeFirstPaint",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -107,9 +114,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  // File handling icons. https://crbug.com/1218213
  BASE_FEATURE(kFileHandlingIcons,
               "FileHandlingIcons",
+diff --git a/third_party/blink/public/common/features.h b/third_party/blink/public/common/features.h
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -217,6 +217,7 @@
+@@ -234,6 +234,7 @@ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kDecodeJpeg420ImagesToYUV);
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kDecodeLossyWebPImagesToYUV);
  
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kWebFontsCacheAwareTimeoutAdaption);
@@ -117,9 +125,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kAudioWorkletThreadRealtimePriority);
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kWebAudioSinkSelection);
+diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink/renderer/core/dom/document.cc
 --- a/third_party/blink/renderer/core/dom/document.cc
 +++ b/third_party/blink/renderer/core/dom/document.cc
-@@ -4286,9 +4286,14 @@
+@@ -4279,9 +4279,14 @@ void Document::SetURL(const KURL& url) {
    TRACE_EVENT1("navigation", "Document::SetURL", "url",
                 new_url.GetString().Utf8());
  
@@ -134,9 +143,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
    url_ = new_url;
    UpdateBaseURL();
+diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -2787,10 +2787,9 @@
+@@ -2835,10 +2835,9 @@
      },
      {
        name: "TextFragmentIdentifiers",
@@ -149,3 +159,5 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      },
      {
        name: "TextFragmentTapOpensContextMenu",
+--
+2.25.1

@@ -1,4 +1,4 @@
-From 070a01fa71fa95a64c1e557dc1e67c9cb8bf47df Mon Sep 17 00:00:00 2001
+From c10e7e70c4a617cd17735a73cf606e1102f7495b Mon Sep 17 00:00:00 2001
 From: fgei <fgei@gmail.com>
 Date: Tue, 8 Feb 2022 03:04:20 +0000
 Subject: [PATCH] Disable detailed language settings by default
@@ -7,9 +7,11 @@ Subject: [PATCH] Disable detailed language settings by default
  components/language/core/common/language_experiments.cc | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/components/language/core/common/language_experiments.cc b/components/language/core/common/language_experiments.cc
+index 86c54d29a1265..1688fab990e0b 100644
 --- a/components/language/core/common/language_experiments.cc
 +++ b/components/language/core/common/language_experiments.cc
-@@ -31,7 +31,7 @@
+@@ -31,7 +31,7 @@ BASE_FEATURE(kForceAppLanguagePrompt,
               base::FEATURE_DISABLED_BY_DEFAULT);
  BASE_FEATURE(kDetailedLanguageSettings,
               "DetailedLanguageSettings",

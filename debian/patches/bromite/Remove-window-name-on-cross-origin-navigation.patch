@@ -10,9 +10,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  third_party/blink/renderer/core/loader/document_loader.cc | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/third_party/blink/renderer/core/loader/document_loader.cc b/third_party/blink/renderer/core/loader/document_loader.cc
 --- a/third_party/blink/renderer/core/loader/document_loader.cc
 +++ b/third_party/blink/renderer/core/loader/document_loader.cc
-@@ -2556,7 +2556,7 @@
+@@ -2550,7 +2550,7 @@ void DocumentLoader::CommitNavigation() {
      // that the name would be nulled and if the name is accessed after we will
      // fire a UseCounter. If we decide to move forward with this change, we'd
      // actually clean the name here.
@@ -21,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      frame_->Tree().ExperimentalSetNulledName();
    }
  
-@@ -2567,6 +2567,7 @@
+@@ -2561,6 +2561,7 @@ void DocumentLoader::CommitNavigation() {
      // TODO(shuuran): CrossSiteCrossBrowsingContextGroupSetNulledName will just
      // record the fact that the name would be nulled and if the name is accessed
      // after we will fire a UseCounter.
@@ -29,3 +30,5 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      frame_->Tree().CrossSiteCrossBrowsingContextGroupSetNulledName();
    }
  
+--
+2.25.1

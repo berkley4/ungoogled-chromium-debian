@@ -13,9 +13,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../policy_blocklist_navigation_throttle.h    |  4 -
  5 files changed, 115 deletions(-)
 
+diff --git a/chrome/browser/policy/test/url_blocklist_policy_browsertest.cc b/chrome/browser/policy/test/url_blocklist_policy_browsertest.cc
 --- a/chrome/browser/policy/test/url_blocklist_policy_browsertest.cc
 +++ b/chrome/browser/policy/test/url_blocklist_policy_browsertest.cc
-@@ -60,14 +60,6 @@
+@@ -60,14 +60,6 @@ void CheckCanOpenURL(Browser* browser, const std::string& spec) {
    EXPECT_NE(blocked_page_title, contents->GetTitle());
  }
  
@@ -30,7 +31,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  // Handler for embedded http-server, returns a small page with javascript
  // variable and a link to increment it. It's for JavascriptBlocklistable test.
  std::unique_ptr<net::test_server::HttpResponse> JSIncrementerPageHandler(
-@@ -148,76 +140,6 @@
+@@ -148,76 +140,6 @@ IN_PROC_BROWSER_TEST_F(UrlBlockingPolicyTest, URLBlocklist) {
    CheckCanOpenURL(browser(), kURLS[4]);
  }
  
@@ -107,9 +108,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  IN_PROC_BROWSER_TEST_F(UrlBlockingPolicyTest, URLBlocklistIncognito) {
    // Checks that URLs can be blocklisted, and that exceptions can be made to
    // the blocklist.
+diff --git a/chrome/browser/policy/url_blocking_policy_test_utils.cc b/chrome/browser/policy/url_blocking_policy_test_utils.cc
 --- a/chrome/browser/policy/url_blocking_policy_test_utils.cc
 +++ b/chrome/browser/policy/url_blocking_policy_test_utils.cc
-@@ -56,15 +56,4 @@
+@@ -56,15 +56,4 @@ void UrlBlockingPolicyTest::CheckURLIsBlocked(Browser* browser,
    CheckURLIsBlockedInWebContents(contents, url);
  }
  
@@ -125,9 +127,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 -}
 -
  }  // namespace policy
+diff --git a/chrome/browser/policy/url_blocking_policy_test_utils.h b/chrome/browser/policy/url_blocking_policy_test_utils.h
 --- a/chrome/browser/policy/url_blocking_policy_test_utils.h
 +++ b/chrome/browser/policy/url_blocking_policy_test_utils.h
-@@ -29,9 +29,6 @@
+@@ -29,9 +29,6 @@ class UrlBlockingPolicyTest : public PolicyTest {
  
    // Verifies that access to the given url |spec| is blocked.
    void CheckURLIsBlocked(Browser* browser, const std::string& spec);
@@ -137,6 +140,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  };
  
  }  // namespace policy
+diff --git a/components/policy/content/policy_blocklist_navigation_throttle.cc b/components/policy/content/policy_blocklist_navigation_throttle.cc
 --- a/components/policy/content/policy_blocklist_navigation_throttle.cc
 +++ b/components/policy/content/policy_blocklist_navigation_throttle.cc
 @@ -13,7 +13,6 @@
@@ -147,7 +151,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "content/public/browser/navigation_handle.h"
  #include "url/gurl.h"
  
-@@ -41,19 +40,6 @@
+@@ -41,19 +40,6 @@ PolicyBlocklistNavigationThrottle::PolicyBlocklistNavigationThrottle(
  PolicyBlocklistNavigationThrottle::~PolicyBlocklistNavigationThrottle() =
      default;
  
@@ -167,21 +171,22 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  content::NavigationThrottle::ThrottleCheckResult
  PolicyBlocklistNavigationThrottle::WillStartRequest() {
    const GURL& url = navigation_handle()->GetURL();
-@@ -69,11 +55,6 @@
-     return ThrottleCheckResult(BLOCK_REQUEST,
+@@ -70,11 +56,6 @@ PolicyBlocklistNavigationThrottle::WillStartRequest() {
                                 net::ERR_BLOCKED_BY_ADMINISTRATOR);
    }
--
+ 
 -  if (IsBlockedViewSourceNavigation()) {
 -    return ThrottleCheckResult(BLOCK_REQUEST,
 -                               net::ERR_BLOCKED_BY_ADMINISTRATOR);
 -  }
- 
+-
    if (blocklist_state == URLBlocklistState::URL_IN_ALLOWLIST)
      return PROCEED;
+ 
+diff --git a/components/policy/content/policy_blocklist_navigation_throttle.h b/components/policy/content/policy_blocklist_navigation_throttle.h
 --- a/components/policy/content/policy_blocklist_navigation_throttle.h
 +++ b/components/policy/content/policy_blocklist_navigation_throttle.h
-@@ -35,10 +35,6 @@
+@@ -35,10 +35,6 @@ class PolicyBlocklistNavigationThrottle : public content::NavigationThrottle {
    const char* GetNameForLogging() override;
  
   private:
@@ -192,3 +197,5 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // To ensure both allow and block policies override Safe Sites,
    // SafeSitesNavigationThrottle must be consulted as part of this throttle
    // rather than added separately to the list of throttles.
+--
+2.25.1
