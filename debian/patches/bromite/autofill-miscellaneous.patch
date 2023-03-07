@@ -10,16 +10,35 @@ Do not skip google.com domains for password generation (csagan5)
 
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
+ chrome/browser/prefs/browser_prefs.cc         |  6 ++--
  .../core/browser/autofill_download_manager.cc | 35 +++----------------
  .../core/browser/autofill_download_manager.h  |  2 --
  .../autofill/core/browser/autofill_manager.cc | 20 -----------
  .../core/browser/browser_autofill_manager.h   |  4 +--
  .../autofill/core/common/autofill_features.cc |  4 +--
- .../autofill/core/common/autofill_prefs.cc    |  4 +--
- .../browser/public/prefs.cc                   |  4 +--
+ .../autofill/core/common/autofill_prefs.cc    |  8 ++---
  .../password_generation_frame_helper.cc       |  4 ---
- 8 files changed, 13 insertions(+), 64 deletions(-)
+ 8 files changed, 16 insertions(+), 67 deletions(-)
 
+diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browser_prefs.cc
+--- a/chrome/browser/prefs/browser_prefs.cc
++++ b/chrome/browser/prefs/browser_prefs.cc
+@@ -1105,11 +1105,11 @@ void RegisterProfilePrefsForMigration(
+                                    PrefRegistry::LOSSY_PREF);
+ 
+   // Deprecated 11/2022.
+-  registry->RegisterBooleanPref(kAutofillAssistantEnabled, true);
++  registry->RegisterBooleanPref(kAutofillAssistantEnabled, false);
+   registry->RegisterBooleanPref(kAutofillAssistantConsent, false);
+-  registry->RegisterBooleanPref(kAutofillAssistantTriggerScriptsEnabled, true);
++  registry->RegisterBooleanPref(kAutofillAssistantTriggerScriptsEnabled, false);
+   registry->RegisterBooleanPref(kAutofillAssistantTriggerScriptsIsFirstTimeUser,
+-                                true);
++                                false);
+ 
+   // Deprecated 12/2022.
+   registry->RegisterBooleanPref(kAutofillWalletImportStorageCheckboxState,
+diff --git a/components/autofill/core/browser/autofill_download_manager.cc b/components/autofill/core/browser/autofill_download_manager.cc
 --- a/components/autofill/core/browser/autofill_download_manager.cc
 +++ b/components/autofill/core/browser/autofill_download_manager.cc
 @@ -509,35 +509,6 @@
@@ -58,7 +77,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  // Gets HTTP body payload for API POST request.
  bool GetAPIBodyPayload(const std::string& payload,
                         AutofillDownloadManager::RequestType type,
-@@ -773,6 +744,7 @@
+@@ -780,6 +751,7 @@
    // ID of the resource to add to the API request URL. Nothing will be added if
    // |resource_id| is empty.
    std::string resource_id;
@@ -66,7 +85,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    std::string method = "POST";
  
    if (request_data.request_type == AutofillDownloadManager::REQUEST_QUERY) {
-@@ -793,7 +765,10 @@
+@@ -800,7 +772,10 @@
  
    // Add the query parameter to set the response format to a serialized proto.
    url = net::AppendQueryParameter(url, "alt", "proto");
@@ -80,11 +99,11 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/components/autofill/core/browser/autofill_download_manager.h
 +++ b/components/autofill/core/browser/autofill_download_manager.h
-@@ -36,8 +36,6 @@
- class AutofillDriver;
+@@ -38,8 +38,6 @@ namespace autofill {
+ class AutofillClient;
  class LogManager;
  
--const size_t kMaxQueryGetSize = 10240;  // 10 KiB
+-constexpr size_t kMaxQueryGetSize = 10240;  // 10 KiB
 -
  // A helper to make sure that tests which modify the set of active autofill
  // experiments do not interfere with one another.
@@ -117,7 +136,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        form_interactions_ukm_logger_(CreateFormInteractionsUkmLogger()) {
 -  if (enable_download_manager) {
 -    download_manager_ = std::make_unique<AutofillDownloadManager>(
--        driver, this, GetAPIKeyForUrl(channel),
+-        client, GetAPIKeyForUrl(channel),
 -        AutofillDownloadManager::IsRawMetadataUploadingEnabled(
 -            IsRawMetadataUploadingEnabled(channel)),
 -        log_manager_);
@@ -127,7 +146,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      if (translate_driver) {
 --- a/components/autofill/core/browser/browser_autofill_manager.h
 +++ b/components/autofill/core/browser/browser_autofill_manager.h
-@@ -737,9 +737,9 @@
+@@ -744,9 +744,9 @@
    std::unique_ptr<CreditCardFormEventLogger> credit_card_form_event_logger_;
  
    // Have we logged whether Autofill is enabled for this page load?
@@ -141,7 +160,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // Has the user manually edited at least one form field among the autofillable
 --- a/components/autofill/core/common/autofill_features.cc
 +++ b/components/autofill/core/common/autofill_features.cc
-@@ -448,8 +448,8 @@
+@@ -485,8 +485,8 @@
  // "upload" resources.
  // i.e., https://other.autofill.server:port/tbproxy/af/
  BASE_FEATURE(kAutofillServerCommunication,
@@ -152,6 +171,40 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
  // Controls whether Autofill may fill across origins as part of the
  // AutofillAcrossIframes experiment.
+--- a/components/autofill/core/common/autofill_prefs.cc
++++ b/components/autofill/core/common/autofill_prefs.cc
+@@ -107,7 +107,7 @@
+ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
+   // Synced prefs. Used for cross-device choices, e.g., credit card Autofill.
+   registry->RegisterBooleanPref(
+-      prefs::kAutofillProfileEnabled, true,
++      prefs::kAutofillProfileEnabled, false,
+       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
+   registry->RegisterIntegerPref(
+       prefs::kAutofillLastVersionDeduped, 0,
+@@ -117,10 +117,10 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
+       prefs::kAutofillLastVersionDisusedAddressesDeleted, 0,
+       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
+   registry->RegisterBooleanPref(
+-      prefs::kAutofillCreditCardEnabled, true,
++      prefs::kAutofillCreditCardEnabled, false,
+       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
+   registry->RegisterBooleanPref(
+-      prefs::kAutofillIBANEnabled, true,
++      prefs::kAutofillIBANEnabled, false,
+       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
+ 
+   // Non-synced prefs. Used for per-device choices, e.g., signin promo.
+@@ -146,7 +146,7 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
+ 
+   // Deprecated prefs registered for migration.
+   registry->RegisterBooleanPref(
+-      prefs::kAutofillEnabledDeprecated, true,
++      prefs::kAutofillEnabledDeprecated, false,
+       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
+ }
+ 
+diff --git a/components/password_manager/core/browser/password_generation_frame_helper.cc b/components/password_manager/core/browser/password_generation_frame_helper.cc
 --- a/components/password_manager/core/browser/password_generation_frame_helper.cc
 +++ b/components/password_manager/core/browser/password_generation_frame_helper.cc
 @@ -85,7 +85,6 @@
@@ -172,17 +225,3 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    if (!client_->IsSavingAndFillingEnabled(url)) {
      if (logger)
        logger->LogMessage(Logger::STRING_GENERATION_DISABLED_SAVING_DISABLED);
---- a/chrome/browser/prefs/browser_prefs.cc
-+++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -1059,9 +1059,9 @@
- #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
- 
-   // Deprecated 11/2022.
--  registry->RegisterBooleanPref(kAutofillAssistantEnabled, true);
-+  registry->RegisterBooleanPref(kAutofillAssistantEnabled, false);
-   registry->RegisterBooleanPref(kAutofillAssistantConsent, false);
--  registry->RegisterBooleanPref(kAutofillAssistantTriggerScriptsEnabled, true);
-+  registry->RegisterBooleanPref(kAutofillAssistantTriggerScriptsEnabled, false);
-   registry->RegisterBooleanPref(kAutofillAssistantTriggerScriptsIsFirstTimeUser,
-                                 true);
- }

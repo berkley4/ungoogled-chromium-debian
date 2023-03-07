@@ -27,6 +27,7 @@ system/zlib.patch
 
 bromite/Add-site-engagement-flag.patch
 bromite/AudioBuffer-AnalyserNode-fp-mitigations.patch
+bromite/autofill-miscellaneous.patch
 bromite/Block-gateway-attacks-via-websockets.patch
 bromite/Disable-AsyncDNS-by-default.patch
 bromite/Disable-idle-detection.patch
@@ -79,7 +80,6 @@ various/use-clang-to-optimize-debug-info.patch
 various/wayland-egl.patch
 various/zero-call-used-registers.patch
 #various/addenda/
-various/bromite/autofill-miscellaneous.patch
 various/bromite/Disable-all-predictors-code.patch
 various/bromite/Disable-conversion-measurement-api.patch
 various/bromite/Disable-various-metrics.patch
