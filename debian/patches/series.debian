@@ -108,7 +108,6 @@ various/system/zlib.patch
 various/system/extra/brotli.patch
 various/system/extra/opus.patch
 various/system/extra/zlib.patch
-various/upstream/Identifiability-Study-Fix-construction-of-mesa-distribution.patch
 various/upstream/Reorganize-NodeData.patch
 various/upstream/v8-Fix-saving-the-callee-saved-registers-on-stack.patch
 various/upstream/v8-move-the-Stack-object-from-ThreadLocalTop.patch
