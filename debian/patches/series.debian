@@ -92,7 +92,6 @@ various/fedora/enable-hardware-accelerated-mjpeg.patch
 various/fixes/angle-wayland-include-protocol.patch
 various/fixes/cross-origin-favicons-1.patch
 various/fixes/EnumTable-crash.patch
-various/fixes/ffmpeg-first_dts.patch
 various/fixes/font-rendering.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/revert-GlobalMediaControlsCastStartStop.patch
@@ -133,6 +132,7 @@ various/vanadium/disable-content-feed-suggestions-by-default.patch
 #optional/system/jpeg.patch
 #optional/system/unstable/dav1d.patch
 #optional/system/unstable/dav1d-no-unbundled-libavif.patch
+#optional/system/unstable/ffmpeg-first_dts.patch
 #optional/system/unstable/icu.patch
 #optional/system/unstable/icu-headers.patch
 #optional/system/unstable/icu72_fix-the-way-to-handle-codecs-in-the-system-icu.patch
