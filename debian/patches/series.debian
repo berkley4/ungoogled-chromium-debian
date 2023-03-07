@@ -79,7 +79,7 @@ various/template-correction.patch
 various/use-clang-to-optimize-debug-info.patch
 various/wayland-egl.patch
 various/zero-call-used-registers.patch
-various/addenda/Ensure-safe-access-to-children-during-ui-Layer-OnDeviceScaleFactorChanged.patch
+#various/addenda/
 various/bromite/autofill-miscellaneous.patch
 various/bromite/Disable-all-predictors-code.patch
 various/bromite/Disable-conversion-measurement-api.patch
