@@ -72,6 +72,7 @@ vanadium/0076-disable-appending-variations-header.patch
 vanadium/0078-Disable-detailed-language-settings-by-default.patch
 vanadium/0082-enable-process-isolated-sandboxed-iframes-by-default.patch
 
+various/fix-unbundle-script-dh-clean-interoperabilty.patch
 various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
 various/fno-plt.patch
 various/init-stack-vars-zero.patch
