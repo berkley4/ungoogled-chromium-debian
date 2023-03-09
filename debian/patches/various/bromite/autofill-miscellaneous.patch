@@ -20,10 +20,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../password_generation_frame_helper.cc       |  4 ---
  8 files changed, 16 insertions(+), 67 deletions(-)
 
-diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browser_prefs.cc
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -1105,11 +1105,11 @@ void RegisterProfilePrefsForMigration(
+@@ -1098,11 +1098,11 @@
                                     PrefRegistry::LOSSY_PREF);
  
    // Deprecated 11/2022.
@@ -38,7 +37,6 @@ diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browse
  
    // Deprecated 12/2022.
    registry->RegisterBooleanPref(kAutofillWalletImportStorageCheckboxState,
-diff --git a/components/autofill/core/browser/autofill_download_manager.cc b/components/autofill/core/browser/autofill_download_manager.cc
 --- a/components/autofill/core/browser/autofill_download_manager.cc
 +++ b/components/autofill/core/browser/autofill_download_manager.cc
 @@ -509,35 +509,6 @@
@@ -99,7 +97,7 @@ diff --git a/components/autofill/core/browser/autofill_download_manager.cc b/com
  
 --- a/components/autofill/core/browser/autofill_download_manager.h
 +++ b/components/autofill/core/browser/autofill_download_manager.h
-@@ -38,8 +38,6 @@ namespace autofill {
+@@ -38,8 +38,6 @@
  class AutofillClient;
  class LogManager;
  
@@ -173,21 +171,8 @@ diff --git a/components/autofill/core/browser/autofill_download_manager.cc b/com
  // AutofillAcrossIframes experiment.
 --- a/components/autofill/core/common/autofill_prefs.cc
 +++ b/components/autofill/core/common/autofill_prefs.cc
-@@ -107,7 +107,7 @@
- void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
-   // Synced prefs. Used for cross-device choices, e.g., credit card Autofill.
-   registry->RegisterBooleanPref(
--      prefs::kAutofillProfileEnabled, true,
-+      prefs::kAutofillProfileEnabled, false,
-       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
-   registry->RegisterIntegerPref(
-       prefs::kAutofillLastVersionDeduped, 0,
-@@ -117,10 +117,10 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
-       prefs::kAutofillLastVersionDisusedAddressesDeleted, 0,
-       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
-   registry->RegisterBooleanPref(
--      prefs::kAutofillCreditCardEnabled, true,
-+      prefs::kAutofillCreditCardEnabled, false,
+@@ -120,7 +120,7 @@
+       prefs::kAutofillCreditCardEnabled, false,
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
    registry->RegisterBooleanPref(
 -      prefs::kAutofillIBANEnabled, true,
@@ -195,7 +180,7 @@ diff --git a/components/autofill/core/browser/autofill_download_manager.cc b/com
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
  
    // Non-synced prefs. Used for per-device choices, e.g., signin promo.
-@@ -146,7 +146,7 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
+@@ -146,7 +146,7 @@
  
    // Deprecated prefs registered for migration.
    registry->RegisterBooleanPref(
@@ -204,7 +189,6 @@ diff --git a/components/autofill/core/browser/autofill_download_manager.cc b/com
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
  }
  
-diff --git a/components/password_manager/core/browser/password_generation_frame_helper.cc b/components/password_manager/core/browser/password_generation_frame_helper.cc
 --- a/components/password_manager/core/browser/password_generation_frame_helper.cc
 +++ b/components/password_manager/core/browser/password_generation_frame_helper.cc
 @@ -85,7 +85,6 @@
