@@ -1,0 +1,17 @@
+--- a/build/linux/unbundle/replace_gn_files.py
++++ b/build/linux/unbundle/replace_gn_files.py
+@@ -97,12 +97,12 @@
+     if args.undo:
+       # Restore original file, and also remove the backup.
+       # This is meant to restore the source tree to its original state.
+-      os.rename(os.path.join(source_tree_root, path + '.orig'),
++      os.rename(os.path.join(source_tree_root, path + '.original'),
+                 os.path.join(source_tree_root, path))
+     else:
+       # Create a backup copy for --undo.
+       shutil.copyfile(os.path.join(source_tree_root, path),
+-                      os.path.join(source_tree_root, path + '.orig'))
++                      os.path.join(source_tree_root, path + '.original'))
+ 
+       # Copy the GN file from directory of this script to target path.
+       shutil.copyfile(os.path.join(my_dirname, '%s.gn' % lib),
