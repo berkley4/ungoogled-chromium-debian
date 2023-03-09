@@ -108,9 +108,6 @@ various/system/zlib.patch
 various/system/extra/brotli.patch
 various/system/extra/opus.patch
 various/system/extra/zlib.patch
-various/upstream/Reorganize-NodeData.patch
-various/upstream/v8-Fix-saving-the-callee-saved-registers-on-stack.patch
-various/upstream/v8-move-the-Stack-object-from-ThreadLocalTop.patch
 various/vanadium/disable-article-suggestions-feature-by-default.patch
 various/vanadium/disable-content-feed-suggestions-by-default.patch
 
@@ -134,7 +131,6 @@ various/vanadium/disable-content-feed-suggestions-by-default.patch
 #optional/system/unstable/ffmpeg-first_dts.patch
 #optional/system/unstable/icu.patch
 #optional/system/unstable/icu-headers.patch
-#optional/system/unstable/icu72_fix-the-way-to-handle-codecs-in-the-system-icu.patch
 #optional/system/unstable/libaom-headers.patch
 #optional/system/unstable/openh264.patch
 #optional/system/unstable/roll-src-third_party-ffmpeg-102.patch
