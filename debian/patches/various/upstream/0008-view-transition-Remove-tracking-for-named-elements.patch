@@ -1,0 +1,87 @@
+From 47c08bb25407fcfe65541418e4e84825286f991d Mon Sep 17 00:00:00 2001
+From: Khushal Sagar <khushalsagar@chromium.org>
+Date: Wed, 8 Feb 2023 21:36:10 +0000
+Subject: [PATCH] view-transition: Remove tracking for named elements.
+
+This is no longer necessary now that we don't require named elements to
+have containment.
+
+Fixed: 1386296
+Change-Id: Ibaf6a8bec9d1eef55aa900adfa5740593c801bcd
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4232910
+Commit-Queue: Khushal Sagar <khushalsagar@chromium.org>
+Auto-Submit: Khushal Sagar <khushalsagar@chromium.org>
+Reviewed-by: Vladimir Levin <vmpstr@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1102900}
+---
+ third_party/blink/renderer/core/dom/node.cc            |  5 -----
+ .../core/view_transition/view_transition_supplement.cc | 10 ----------
+ .../core/view_transition/view_transition_supplement.h  | 10 ----------
+ 3 files changed, 25 deletions(-)
+
+--- a/third_party/blink/renderer/core/dom/node.cc
++++ b/third_party/blink/renderer/core/dom/node.cc
+@@ -1042,11 +1042,6 @@
+   // We don't set computed style for text nodes.
+   DCHECK(IsElementNode());
+ 
+-  if (auto* element = DynamicTo<Element>(this)) {
+-    ViewTransitionSupplement::From(GetDocument())
+-        ->UpdateViewTransitionNames(*element, computed_style.get());
+-  }
+-
+   // Already pointing to a non empty NodeData so just set the pointer
+   // to the new LayoutObject.
+   if (!data_->IsSharedEmptyData()) {
+--- a/third_party/blink/renderer/core/view_transition/view_transition_supplement.cc
++++ b/third_party/blink/renderer/core/view_transition/view_transition_supplement.cc
+@@ -185,15 +185,6 @@
+   return transition_;
+ }
+ 
+-void ViewTransitionSupplement::UpdateViewTransitionNames(
+-    const Element& element,
+-    const ComputedStyle* style) {
+-  if (style && style->ViewTransitionName())
+-    elements_with_view_transition_name_.insert(&element);
+-  else
+-    elements_with_view_transition_name_.erase(&element);
+-}
+-
+ ViewTransitionSupplement::ViewTransitionSupplement(Document& document)
+     : Supplement<Document>(document) {}
+ 
+@@ -201,7 +192,6 @@
+ 
+ void ViewTransitionSupplement::Trace(Visitor* visitor) const {
+   visitor->Trace(transition_);
+-  visitor->Trace(elements_with_view_transition_name_);
+ 
+   Supplement<Document>::Trace(visitor);
+ }
+--- a/third_party/blink/renderer/core/view_transition/view_transition_supplement.h
++++ b/third_party/blink/renderer/core/view_transition/view_transition_supplement.h
+@@ -51,14 +51,6 @@
+ 
+   ViewTransition* GetActiveTransition();
+ 
+-  // Tracks the set of elements with a valid |view-transition-name|.
+-  void UpdateViewTransitionNames(const Element& element,
+-                                 const ComputedStyle* style);
+-  const HeapHashSet<Member<const Element>>& ElementsWithViewTransitionName()
+-      const {
+-    return elements_with_view_transition_name_;
+-  }
+-
+   explicit ViewTransitionSupplement(Document&);
+   ~ViewTransitionSupplement() override;
+ 
+@@ -92,8 +84,6 @@
+ 
+   VectorOf<std::unique_ptr<ViewTransitionRequest>> pending_requests_;
+ 
+-  HeapHashSet<Member<const Element>> elements_with_view_transition_name_;
+-
+   mojom::ViewTransitionSameOriginOptIn same_origin_opt_in_ =
+       mojom::ViewTransitionSameOriginOptIn::kDisabled;
+ };

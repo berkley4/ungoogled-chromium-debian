@@ -1,0 +1,302 @@
+From 1afbd2e01ca83316d3ac41aa73b269bf2aeece7b Mon Sep 17 00:00:00 2001
+From: Camillo Bruni <cbruni@chromium.org>
+Date: Fri, 3 Feb 2023 00:00:48 +0000
+Subject: [PATCH] [blink][string] Add String::LengthWithStrippedWhiteSpace
+
+This avoids the `string.StripWhiteSpace().length() == 0` pattern
+which allocates a temporary string only for checking it's length.
+
+This is visible in InspectorDOMAgent::ShouldSkipNode when running
+speedometer through selenium.
+
+
+Bug: 1411809, 1337229, 808503
+Change-Id: Id4e1913a8df53d4f1c840f33232e37f84fb1a122
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4210249
+Reviewed-by: Kent Tamura <tkent@chromium.org>
+Commit-Queue: Camillo Bruni <cbruni@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1100735}
+---
+ .../same_block_word_iterator.cc               |  6 +--
+ .../text_fragment_selector_generator.cc       | 20 +++++-----
+ .../core/inspector/inspector_dom_agent.cc     |  4 +-
+ .../renderer/core/layout/text_autosizer.cc    | 10 +++--
+ .../renderer/platform/wtf/text/string_impl.cc | 40 +++++++++++++++++--
+ .../renderer/platform/wtf/text/string_impl.h  |  4 ++
+ .../renderer/platform/wtf/text/wtf_string.cc  |  7 ++++
+ .../renderer/platform/wtf/text/wtf_string.h   |  4 ++
+ .../platform/wtf/text/wtf_string_test.cc      | 19 +++++++++
+ 9 files changed, 91 insertions(+), 23 deletions(-)
+
+--- a/third_party/blink/renderer/core/fragment_directive/same_block_word_iterator.cc
++++ b/third_party/blink/renderer/core/fragment_directive/same_block_word_iterator.cc
+@@ -44,10 +44,10 @@
+   do {
+     int pos =
+         Direction::FindNextWordPos(current_node_text_, current_text_offset_);
+-    String next_word =
++    unsigned next_word_stripped_length =
+         Direction::Substring(current_node_text_, current_text_offset_, pos)
+-            .StripWhiteSpace();
+-    if (!next_word.empty()) {
++            .LengthWithStrippedWhiteSpace();
++    if (next_word_stripped_length > 0) {
+       current_text_offset_ = pos;
+       return true;
+     }
+--- a/third_party/blink/renderer/core/fragment_directive/text_fragment_selector_generator.cc
++++ b/third_party/blink/renderer/core/fragment_directive/text_fragment_selector_generator.cc
+@@ -37,8 +37,7 @@
+   auto range_end = PositionInFlatTree(node, pos_offset);
+   return node->getNodeType() == Node::kElementNode || pos_offset == 0 ||
+          PlainText(EphemeralRangeInFlatTree(range_start, range_end))
+-             .StripWhiteSpace()
+-             .empty();
++                 .LengthWithStrippedWhiteSpace() == 0;
+ }
+ 
+ // Returns true if text from |pos_offset| until end of |node| can be considered
+@@ -49,8 +48,7 @@
+   return node->getNodeType() == Node::kElementNode ||
+          pos_offset == node->textContent().length() ||
+          PlainText(EphemeralRangeInFlatTree(range_start, range_end))
+-             .StripWhiteSpace()
+-             .empty();
++                 .LengthWithStrippedWhiteSpace() == 0;
+ }
+ 
+ struct ForwardDirection {
+@@ -84,10 +82,10 @@
+       return nullptr;
+     // Filter out nodes without layout object.
+     if (next_node->GetLayoutObject() &&
+-        !PlainText(EphemeralRange::RangeOfContents(*next_node))
+-             .StripWhiteSpace()
+-             .empty())
++        PlainText(EphemeralRange::RangeOfContents(*next_node))
++                .LengthWithStrippedWhiteSpace() > 0) {
+       return next_node;
++    }
+     node = next_node;
+   }
+   return nullptr;
+@@ -197,8 +195,9 @@
+     std::move(did_find_match_callback_for_testing_).Run(is_unique);
+ 
+   if (is_unique &&
+-      PlainText(match.ToEphemeralRange()).StripWhiteSpace().length() ==
+-          PlainText(range_->ToEphemeralRange()).StripWhiteSpace().length()) {
++      PlainText(match.ToEphemeralRange()).LengthWithStrippedWhiteSpace() ==
++          PlainText(range_->ToEphemeralRange())
++              .LengthWithStrippedWhiteSpace()) {
+     state_ = kSuccess;
+     ResolveSelectorState();
+   } else {
+@@ -325,8 +324,7 @@
+   }
+ 
+   // Shouldn't continue if selection is empty.
+-  String selected_text = PlainText(ephemeral_range).StripWhiteSpace();
+-  if (selected_text.empty()) {
++  if (PlainText(ephemeral_range).LengthWithStrippedWhiteSpace() == 0) {
+     state_ = kFailure;
+     error_ = LinkGenerationError::kEmptySelection;
+     ResolveSelectorState();
+--- a/third_party/blink/renderer/core/inspector/inspector_dom_agent.cc
++++ b/third_party/blink/renderer/core/inspector/inspector_dom_agent.cc
+@@ -976,7 +976,7 @@
+   }
+ 
+   if (!found_original_attribute && name.isJust() &&
+-      !name.fromJust().StripWhiteSpace().empty()) {
++      name.fromJust().LengthWithStrippedWhiteSpace() > 0) {
+     return dom_editor_->RemoveAttribute(element, case_adjusted_name);
+   }
+   return Response::Success();
+@@ -2077,7 +2077,7 @@
+     return false;
+ 
+   bool is_whitespace = node && node->getNodeType() == Node::kTextNode &&
+-                       node->nodeValue().StripWhiteSpace().length() == 0;
++                       node->nodeValue().LengthWithStrippedWhiteSpace() == 0;
+ 
+   return is_whitespace;
+ }
+--- a/third_party/blink/renderer/core/layout/text_autosizer.cc
++++ b/third_party/blink/renderer/core/layout/text_autosizer.cc
+@@ -156,9 +156,11 @@
+   while (layout_object) {
+     if (!IsPotentialClusterRoot(layout_object)) {
+       if (layout_object->IsText() &&
+-          To<LayoutText>(layout_object)->GetText().StripWhiteSpace().length() >
+-              3)
++          To<LayoutText>(layout_object)
++                  ->GetText()
++                  .LengthWithStrippedWhiteSpace() > 3) {
+         return false;
++      }
+       if (!layout_object->IsInline() || layout_object->IsBR())
+         return false;
+     }
+@@ -818,12 +820,12 @@
+         continue;
+       }
+     } else if (descendant->IsText()) {
+-      // Note: Using text().stripWhiteSpace().length() instead of
++      // Note: Using text().LengthWithStrippedWhiteSpace() instead of
+       // resolvedTextLength() because the lineboxes will not be built until
+       // layout. These values can be different.
+       // Note: This is an approximation assuming each character is 1em wide.
+       length +=
+-          To<LayoutText>(descendant)->GetText().StripWhiteSpace().length() *
++          To<LayoutText>(descendant)->GetText().LengthWithStrippedWhiteSpace() *
+           descendant->StyleRef().SpecifiedFontSize();
+ 
+       if (length >= minimum_text_length_to_autosize) {
+--- a/third_party/blink/renderer/platform/wtf/text/string_impl.cc
++++ b/third_party/blink/renderer/platform/wtf/text/string_impl.cc
+@@ -466,6 +466,36 @@
+ }
+ 
+ template <class UCharPredicate>
++inline unsigned StringImpl::LengthWithStrippedMatchedCharacters(
++    UCharPredicate predicate) const {
++  if (!length_) {
++    return 0;
++  }
++
++  wtf_size_t start = 0;
++  wtf_size_t end = length_ - 1;
++
++  // Skip white space from the start.
++  while (start <= end &&
++         predicate(Is8Bit() ? Characters8()[start] : Characters16()[start])) {
++    ++start;
++  }
++
++  // String only contains white space.
++  if (start > end) {
++    return 0;
++  }
++
++  // Skip white space from the end.
++  while (end &&
++         predicate(Is8Bit() ? Characters8()[end] : Characters16()[end])) {
++    --end;
++  }
++
++  return end + 1 - start;
++}
++
++template <class UCharPredicate>
+ inline scoped_refptr<StringImpl> StringImpl::StripMatchedCharacters(
+     UCharPredicate predicate) {
+   if (!length_)
+@@ -474,16 +504,16 @@
+   wtf_size_t start = 0;
+   wtf_size_t end = length_ - 1;
+ 
+-  // skip white space from start
++  // Skip white space from the start.
+   while (start <= end &&
+          predicate(Is8Bit() ? Characters8()[start] : Characters16()[start]))
+     ++start;
+ 
+-  // only white space
++  // String only contains white space.
+   if (start > end)
+     return empty_;
+ 
+-  // skip white space from end
++  // Skip white space from the end
+   while (end && predicate(Is8Bit() ? Characters8()[end] : Characters16()[end]))
+     --end;
+ 
+@@ -514,6 +544,10 @@
+   inline bool operator()(UChar ch) const { return IsSpaceOrNewline(ch); }
+ };
+ 
++unsigned StringImpl::LengthWithStrippedWhiteSpace() const {
++  return LengthWithStrippedMatchedCharacters(SpaceOrNewlinePredicate());
++}
++
+ scoped_refptr<StringImpl> StringImpl::StripWhiteSpace() {
+   return StripMatchedCharacters(SpaceOrNewlinePredicate());
+ }
+--- a/third_party/blink/renderer/platform/wtf/text/string_impl.h
++++ b/third_party/blink/renderer/platform/wtf/text/string_impl.h
+@@ -388,6 +388,8 @@
+ 
+   scoped_refptr<StringImpl> Truncate(wtf_size_t length);
+ 
++  unsigned LengthWithStrippedWhiteSpace() const;
++
+   scoped_refptr<StringImpl> StripWhiteSpace();
+   scoped_refptr<StringImpl> StripWhiteSpace(IsWhiteSpaceFunctionPtr);
+   scoped_refptr<StringImpl> SimplifyWhiteSpace(
+@@ -571,6 +573,8 @@
+                                     wtf_size_t replacement_length);
+ 
+   template <class UCharPredicate>
++  unsigned LengthWithStrippedMatchedCharacters(UCharPredicate) const;
++  template <class UCharPredicate>
+   scoped_refptr<StringImpl> StripMatchedCharacters(UCharPredicate);
+   template <typename CharType, class UCharPredicate>
+   scoped_refptr<StringImpl> SimplifyMatchedCharactersToSpace(UCharPredicate,
+--- a/third_party/blink/renderer/platform/wtf/text/wtf_string.cc
++++ b/third_party/blink/renderer/platform/wtf/text/wtf_string.cc
+@@ -144,6 +144,13 @@
+   return impl_->UpperASCII();
+ }
+ 
++unsigned String::LengthWithStrippedWhiteSpace() const {
++  if (!impl_) {
++    return 0;
++  }
++  return impl_->LengthWithStrippedWhiteSpace();
++}
++
+ String String::StripWhiteSpace() const {
+   if (!impl_)
+     return String();
+--- a/third_party/blink/renderer/platform/wtf/text/wtf_string.h
++++ b/third_party/blink/renderer/platform/wtf/text/wtf_string.h
+@@ -352,6 +352,10 @@
+   // This function converts ASCII characters only.
+   [[nodiscard]] String UpperASCII() const;
+ 
++  // Returns the length of the string after stripping white spaces.
++  // This is equivalent (minus the allocation overhead) of doing:
++  // `string.StripWhiteSpace().length()`
++  [[nodiscard]] unsigned LengthWithStrippedWhiteSpace() const;
+   [[nodiscard]] String StripWhiteSpace() const;
+   [[nodiscard]] String StripWhiteSpace(IsWhiteSpaceFunctionPtr) const;
+   [[nodiscard]] String SimplifyWhiteSpace(
+--- a/third_party/blink/renderer/platform/wtf/text/wtf_string_test.cc
++++ b/third_party/blink/renderer/platform/wtf/text/wtf_string_test.cc
+@@ -170,6 +170,25 @@
+   EXPECT_EQ(string_vector, same_string_vector);
+ }
+ 
++TEST(WTF, LengthWithStrippedWhiteSpace) {
++  String stripped("Hello  world");
++  EXPECT_EQ(stripped.LengthWithStrippedWhiteSpace(), stripped.length());
++  EXPECT_EQ(String("  Hello  world  ").LengthWithStrippedWhiteSpace(),
++            stripped.length());
++  EXPECT_EQ(String("Hello  world  ").LengthWithStrippedWhiteSpace(),
++            stripped.length());
++  EXPECT_EQ(String("  Hello  world").LengthWithStrippedWhiteSpace(),
++            stripped.length());
++  EXPECT_EQ(String("\nHello\n world  ").LengthWithStrippedWhiteSpace(),
++            stripped.length());
++  EXPECT_EQ(String().LengthWithStrippedWhiteSpace(), 0u);
++  EXPECT_EQ(String("").LengthWithStrippedWhiteSpace(), 0u);
++  EXPECT_EQ(String("\n").LengthWithStrippedWhiteSpace(), 0u);
++  EXPECT_EQ(String("\n\n").LengthWithStrippedWhiteSpace(), 0u);
++  String only_spaces("   ");
++  EXPECT_EQ(only_spaces.LengthWithStrippedWhiteSpace(), 0u);
++}
++
+ TEST(WTF, SimplifyWhiteSpace) {
+   String extra_spaces("  Hello  world  ");
+   EXPECT_EQ(String("Hello world"), extra_spaces.SimplifyWhiteSpace());

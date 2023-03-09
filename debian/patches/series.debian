@@ -79,7 +79,7 @@ various/template-correction.patch
 various/use-clang-to-optimize-debug-info.patch
 various/wayland-egl.patch
 various/zero-call-used-registers.patch
-#various/addenda/
+various/addenda/0001-hid-Handle-empty-input-reports.patch
 various/bromite/autofill-miscellaneous.patch
 various/bromite/Disable-all-predictors-code.patch
 various/bromite/Disable-conversion-measurement-api.patch
@@ -108,6 +108,15 @@ various/system/zlib.patch
 various/system/extra/brotli.patch
 various/system/extra/opus.patch
 various/system/extra/zlib.patch
+various/upstream/0001-v8-cppgc-Introduce-subtle-UncompressedMember.patch
+various/upstream/0002-blink-Use-UncompressedMember-for-hot-Node-getters.patch
+various/upstream/0003-blink-Optimise-Node-ClearNeedsStyleRecalc.patch
+various/upstream/0004-blink-Only-use-NodeCount-in-debug-builds.patch
+various/upstream/0005-Make-Document-node_count_itself-DCHECK-only.patch
+various/upstream/0006-blink-string-Add-String-LengthWithStrippedWhiteSpace.patch
+various/upstream/0007-blink-Speed-up-Element-PseudoStateChanged.patch
+various/upstream/0008-view-transition-Remove-tracking-for-named-elements.patch
+various/upstream/0009-blink-Minimize-decompressions-during-Node-traversal.patch
 various/vanadium/disable-article-suggestions-feature-by-default.patch
 various/vanadium/disable-content-feed-suggestions-by-default.patch
 

@@ -1,0 +1,62 @@
+From 1c744af0c035a510fe6d4c51c75907155028dd2c Mon Sep 17 00:00:00 2001
+From: Camillo Bruni <cbruni@chromium.org>
+Date: Tue, 7 Feb 2023 15:21:06 +0000
+Subject: [PATCH] [blink] Speed up Element::PseudoStateChanged
+
+- Avoid double pointer decompression for GetDocument() (somehow
+  this does not get optimised by clang)
+- Outline precheck (likely just the uncommon case, but there is
+  only one call site)
+
+This locally reduces the overhead of PseudoStateChanged from 0.83%
+to 0.76% on speedometer's jQuery workload.
+
+Bug: 808503
+Change-Id: I53abeac7d6fb845d580e0f98d0c7bc43a01b375f
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4227736
+Reviewed-by: Jeremy Roman <jbroman@chromium.org>
+Commit-Queue: Camillo Bruni <cbruni@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1102153}
+---
+ third_party/blink/renderer/core/css/style_engine.cc |  6 ++----
+ third_party/blink/renderer/core/dom/element.cc      | 12 ++++++++----
+ 2 files changed, 10 insertions(+), 8 deletions(-)
+
+--- a/third_party/blink/renderer/core/css/style_engine.cc
++++ b/third_party/blink/renderer/core/css/style_engine.cc
+@@ -1607,10 +1607,8 @@
+     Element& element,
+     bool invalidate_descendants_or_siblings,
+     bool invalidate_ancestors_or_siblings) {
+-  if (!invalidate_descendants_or_siblings &&
+-      !invalidate_ancestors_or_siblings) {
+-    return;
+-  }
++  DCHECK(invalidate_descendants_or_siblings ||
++         invalidate_ancestors_or_siblings);
+ 
+   if (ShouldSkipInvalidationFor(element)) {
+     return;
+--- a/third_party/blink/renderer/core/dom/element.cc
++++ b/third_party/blink/renderer/core/dom/element.cc
+@@ -4213,12 +4213,16 @@
+   // we'd never process them.
+   // TODO(esprehn): Make this an ASSERT and fix places that call into this
+   // like HTMLSelectElement.
+-  if (GetDocument().InStyleRecalc()) {
++  Document& document = GetDocument();
++  if (document.InStyleRecalc()) {
+     return;
+   }
+-  GetDocument().GetStyleEngine().PseudoStateChangedForElement(
+-      pseudo, *this, affected_by_pseudo.children_or_siblings,
+-      affected_by_pseudo.ancestors_or_siblings);
++  if (affected_by_pseudo.children_or_siblings ||
++      affected_by_pseudo.ancestors_or_siblings) {
++    document.GetStyleEngine().PseudoStateChangedForElement(
++        pseudo, *this, affected_by_pseudo.children_or_siblings,
++        affected_by_pseudo.ancestors_or_siblings);
++  }
+ }
+ 
+ Element::HighlightRecalc Element::CalculateHighlightRecalc(
