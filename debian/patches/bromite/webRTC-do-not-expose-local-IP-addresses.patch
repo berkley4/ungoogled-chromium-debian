@@ -14,10 +14,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../peerconnection/peer_connection_dependency_factory.cc    | 6 ++++--
  2 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/chrome/browser/ui/browser_ui_prefs.cc b/chrome/browser/ui/browser_ui_prefs.cc
 --- a/chrome/browser/ui/browser_ui_prefs.cc
 +++ b/chrome/browser/ui/browser_ui_prefs.cc
-@@ -90,7 +90,7 @@ void RegisterBrowserUserPrefs(user_prefs::PrefRegistrySyncable* registry) {
+@@ -90,7 +90,7 @@
                                  false);
  #endif
    registry->RegisterStringPref(prefs::kWebRTCIPHandlingPolicy,
@@ -26,10 +25,9 @@ diff --git a/chrome/browser/ui/browser_ui_prefs.cc b/chrome/browser/ui/browser_u
    registry->RegisterStringPref(prefs::kWebRTCUDPPortRange, std::string());
    registry->RegisterBooleanPref(prefs::kWebRtcEventLogCollectionAllowed, false);
    registry->RegisterListPref(prefs::kWebRtcLocalIpsAllowedUrls);
-diff --git a/third_party/blink/renderer/modules/peerconnection/peer_connection_dependency_factory.cc b/third_party/blink/renderer/modules/peerconnection/peer_connection_dependency_factory.cc
 --- a/third_party/blink/renderer/modules/peerconnection/peer_connection_dependency_factory.cc
 +++ b/third_party/blink/renderer/modules/peerconnection/peer_connection_dependency_factory.cc
-@@ -124,7 +124,9 @@ WebRTCIPHandlingPolicy GetWebRTCIPHandlingPolicy(const String& preference) {
+@@ -123,7 +123,9 @@
      return kDefaultPublicInterfaceOnly;
    if (preference == kWebRTCIPHandlingDisableNonProxiedUdp)
      return kDisableNonProxiedUdp;
@@ -40,7 +38,7 @@ diff --git a/third_party/blink/renderer/modules/peerconnection/peer_connection_d
  }
  
  bool IsValidPortRange(uint16_t min_port, uint16_t max_port) {
-@@ -777,7 +779,7 @@ PeerConnectionDependencyFactory::CreatePortAllocator(
+@@ -771,7 +773,7 @@
            break;
        }
  
@@ -49,5 +47,3 @@ diff --git a/third_party/blink/renderer/modules/peerconnection/peer_connection_d
                << "policy: " << policy
                << ", multiple_routes: " << port_config.enable_multiple_routes
                << ", nonproxied_udp: " << port_config.enable_nonproxied_udp
---
-2.25.1

@@ -7,11 +7,9 @@ Subject: [PATCH] disable showing popular sites by default
  components/ntp_tiles/features.cc | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/components/ntp_tiles/features.cc b/components/ntp_tiles/features.cc
-index 8b29a14102ba0..48df4146cd5d0 100644
 --- a/components/ntp_tiles/features.cc
 +++ b/components/ntp_tiles/features.cc
-@@ -18,7 +18,7 @@ const char kIOSPopularSitesExcludePopularAppsParam[] =
+@@ -18,7 +18,7 @@
  
  BASE_FEATURE(kPopularSitesBakedInContentFeature,
               "NTPPopularSitesBakedInContent",
@@ -20,7 +18,7 @@ index 8b29a14102ba0..48df4146cd5d0 100644
  
  BASE_FEATURE(kNtpMostLikelyFaviconsFromServerFeature,
               "NTPMostLikelyFaviconsFromServer",
-@@ -26,7 +26,7 @@ BASE_FEATURE(kNtpMostLikelyFaviconsFromServerFeature,
+@@ -26,7 +26,7 @@
  
  BASE_FEATURE(kUsePopularSitesSuggestions,
               "UsePopularSitesSuggestions",

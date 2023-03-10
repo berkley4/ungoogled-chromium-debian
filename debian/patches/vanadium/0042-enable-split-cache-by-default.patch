@@ -7,11 +7,9 @@ Subject: [PATCH] enable split cache by default
  net/base/features.cc | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/base/features.cc b/net/base/features.cc
-index 0c2345563036a..6292c91243175 100644
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -83,7 +83,7 @@ BASE_FEATURE(kSplitCacheByIncludeCredentials,
+@@ -93,7 +93,7 @@
  
  BASE_FEATURE(kSplitCacheByNetworkIsolationKey,
               "SplitCacheByNetworkIsolationKey",

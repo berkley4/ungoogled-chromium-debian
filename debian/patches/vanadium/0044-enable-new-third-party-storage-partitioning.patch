@@ -7,11 +7,9 @@ Subject: [PATCH] enable new third party storage partitioning
  net/base/features.cc | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/base/features.cc b/net/base/features.cc
-index d70903fc5ad77..173de3540c59a 100644
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -306,7 +306,7 @@ const base::FeatureParam<bool> kStorageAccessAPIAutoDenyOutsideFPS{
+@@ -316,7 +316,7 @@
  // by the top level site to reduce fingerprinting.
  BASE_FEATURE(kThirdPartyStoragePartitioning,
               "ThirdPartyStoragePartitioning",

@@ -1,6 +1,6 @@
 --- a/skia/BUILD.gn
 +++ b/skia/BUILD.gn
-@@ -139,7 +139,7 @@
+@@ -141,7 +141,7 @@
    # Settings for text blitting, chosen to approximate the system browser.
    if (is_linux || is_chromeos) {
      defines += [

@@ -22,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/third_party/blink/renderer/core/execution_context/execution_context.cc
 +++ b/third_party/blink/renderer/core/execution_context/execution_context.cc
-@@ -692,4 +692,20 @@
+@@ -705,4 +705,20 @@
    proto->set_type(GetContextType(*this));
  }
  
@@ -45,7 +45,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  }  // namespace blink
 --- a/third_party/blink/renderer/core/execution_context/execution_context.h
 +++ b/third_party/blink/renderer/core/execution_context/execution_context.h
-@@ -399,6 +399,7 @@
+@@ -400,6 +400,7 @@
        const String& source_file = g_empty_string) const {}
  
    HeapObserverSet<ContextLifecycleObserver>& ContextLifecycleObserverSet();
@@ -55,7 +55,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // Implementation of WindowOrWorkerGlobalScope.crossOriginIsolated.
 --- a/third_party/blink/renderer/core/loader/base_fetch_context.h
 +++ b/third_party/blink/renderer/core/loader/base_fetch_context.h
-@@ -84,6 +84,7 @@
+@@ -88,6 +88,7 @@
  
    virtual SubresourceFilter* GetSubresourceFilter() const = 0;
    virtual bool ShouldBlockWebSocketByMixedContentCheck(const KURL&) const = 0;
@@ -65,7 +65,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/third_party/blink/renderer/core/loader/frame_fetch_context.cc
 +++ b/third_party/blink/renderer/core/loader/frame_fetch_context.cc
-@@ -578,6 +578,26 @@
+@@ -580,6 +580,26 @@
    return should_block_request;
  }
  
@@ -94,7 +94,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      const ResourceLoaderOptions& options,
 --- a/third_party/blink/renderer/core/loader/frame_fetch_context.h
 +++ b/third_party/blink/renderer/core/loader/frame_fetch_context.h
-@@ -172,6 +172,7 @@
+@@ -175,6 +175,7 @@
    bool ShouldBlockWebSocketByMixedContentCheck(const KURL&) const override;
    std::unique_ptr<WebSocketHandshakeThrottle> CreateWebSocketHandshakeThrottle()
        override;
@@ -112,7 +112,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "third_party/blink/renderer/platform/runtime_enabled_features.h"
  #include "third_party/blink/renderer/platform/supplementable.h"
  #include "third_party/blink/renderer/platform/weborigin/security_policy.h"
-@@ -91,6 +92,26 @@
+@@ -93,6 +94,26 @@
    return should_block_request;
  }
  
@@ -198,7 +198,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/third_party/blink/renderer/modules/websockets/websocket_channel_impl.cc
 +++ b/third_party/blink/renderer/modules/websockets/websocket_channel_impl.cc
-@@ -276,6 +276,11 @@
+@@ -277,6 +277,11 @@
      return false;
    }
  

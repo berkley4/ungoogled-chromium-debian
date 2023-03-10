@@ -7,11 +7,9 @@ Subject: [PATCH] Disable detailed language settings by default
  components/language/core/common/language_experiments.cc | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/components/language/core/common/language_experiments.cc b/components/language/core/common/language_experiments.cc
-index 86c54d29a1265..1688fab990e0b 100644
 --- a/components/language/core/common/language_experiments.cc
 +++ b/components/language/core/common/language_experiments.cc
-@@ -31,7 +31,7 @@ BASE_FEATURE(kForceAppLanguagePrompt,
+@@ -31,7 +31,7 @@
               base::FEATURE_DISABLED_BY_DEFAULT);
  BASE_FEATURE(kDetailedLanguageSettings,
               "DetailedLanguageSettings",

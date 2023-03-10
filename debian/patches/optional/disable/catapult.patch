@@ -3,7 +3,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -239,7 +239,6 @@ group("gn_all") {
+@@ -238,7 +238,6 @@
      deps += [
        "//google_apis/gcm:mcs_probe",
        "//media/cast:cast_unittests",
@@ -11,7 +11,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      ]
      if (!is_android) {
        if (!is_castos) {
-@@ -1112,7 +1111,6 @@ if (!is_ios) {
+@@ -1103,7 +1102,6 @@
          "//chrome:chrome",
          "//chrome/test/chromedriver:chromedriver_server",
          "//testing:test_scripts_shared",
@@ -19,7 +19,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        ]
        if (is_win) {
          data_deps += [ "//build/win:copy_cdb_to_output" ]
-@@ -1165,7 +1163,6 @@ if (!is_ios) {
+@@ -1156,7 +1154,6 @@
        "//third_party/blink/public:blink_devtools_inspector_resources",
        "//third_party/blink/public/mojom:mojom_platform_js_data_deps",
        "//third_party/blink/renderer/core:js_files_for_form_controls_web_tests",
@@ -27,7 +27,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        "//third_party/hyphenation-patterns:test_data",
        "//third_party/mesa_headers",
        "//tools/imagediff",
-@@ -1616,10 +1613,6 @@ if (!is_ios) {
+@@ -1607,10 +1604,6 @@
        "//third_party/blink/web_tests/TestExpectations",
        "//third_party/blink/web_tests/VirtualTestSuites",
        "//third_party/blink/web_tests/W3CImportExpectations",
@@ -40,7 +40,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        "//third_party/depot_tools/pylintrc",
 --- a/tools/binary_size/BUILD.gn
 +++ b/tools/binary_size/BUILD.gn
-@@ -20,7 +20,6 @@ python_library("sizes_py") {
+@@ -20,7 +20,6 @@
    pydeps_file = "sizes.pydeps"
    data_deps = [
      "//build/util:test_results",
@@ -50,7 +50,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -10555,8 +10555,6 @@ if (!is_android && !is_fuchsia) {
+@@ -10549,8 +10549,6 @@
        "//chrome/test/data/password/captured_sites/",
        "//chrome/test/data/web_page_replay_go_helper_scripts/automation_helper.js",
        "//components/test/data/autofill/web_page_replay_support_files/",
@@ -59,7 +59,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      ]
  
      if (is_linux || is_chromeos || is_win) {
-@@ -10643,7 +10641,6 @@ if (!is_android) {
+@@ -10637,7 +10635,6 @@
      deps = [ "//tools/perf/chrome_telemetry_build:telemetry_chrome_test" ]
  
      data = [
@@ -69,7 +69,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      ]
 --- a/tools/grit/BUILD.gn
 +++ b/tools/grit/BUILD.gn
-@@ -33,7 +33,6 @@ group("grit_python_unittests") {
+@@ -33,7 +33,6 @@
    data = [
      "//testing/scripts/run_isolated_script_test.py",
      "//tools/grit/",
@@ -79,7 +79,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  }
 --- a/tools/metrics/BUILD.gn
 +++ b/tools/metrics/BUILD.gn
-@@ -45,7 +45,6 @@ group("metrics_python_tests") {
+@@ -45,7 +45,6 @@
      # The run_isolated_script_test.py script and its dependencies.
      "//testing/scripts/run_isolated_script_test.py",
      "//testing/scripts/common.py",
@@ -89,7 +89,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      "//tools/json_comment_eater/json_comment_eater.py",
 --- a/tools/perf/chrome_telemetry_build/BUILD.gn
 +++ b/tools/perf/chrome_telemetry_build/BUILD.gn
-@@ -181,7 +181,6 @@ group("telemetry_chrome_test_without_chr
+@@ -181,7 +181,6 @@
    ]
    data_deps = [
      "//testing:test_scripts_shared",
@@ -97,7 +97,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      "//tools/metrics:metrics_python_tests",
    ]
  
-@@ -225,7 +224,5 @@ group("telemetry_chrome_test_without_chr
+@@ -225,7 +224,5 @@
        "//build/android:devil_chromium_py",
        "//build/android:stack_tools",
      ]
@@ -107,7 +107,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  }
 --- a/tools/polymer/BUILD.gn
 +++ b/tools/polymer/BUILD.gn
-@@ -8,7 +8,6 @@ group("polymer_tools_python_unittests")
+@@ -8,7 +8,6 @@
    data = [
      "//testing/scripts/run_isolated_script_test.py",
      "//tools/polymer/",
@@ -131,7 +131,7 @@ author: Michael Gilbert <mgilbert@debian.org>
    # START ios/web/ section.
 --- a/content/browser/BUILD.gn
 +++ b/content/browser/BUILD.gn
-@@ -3173,7 +3173,6 @@ source_set("browser") {
+@@ -3173,7 +3173,6 @@
        "//components/speech:speech",
        "//components/vector_icons",
        "//content/browser/devtools:devtools_resources_extern",
@@ -141,7 +141,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  
 --- a/chrome/chrome_paks.gni
 +++ b/chrome/chrome_paks.gni
-@@ -183,7 +183,6 @@ template("chrome_extra_paks") {
+@@ -183,7 +183,6 @@
          "$root_gen_dir/chrome/webui_gallery_resources.pak",
          "$root_gen_dir/chrome/whats_new_resources.pak",
          "$root_gen_dir/content/browser/devtools/devtools_resources.pak",
@@ -149,7 +149,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        ]
        deps += [
          "//chrome/browser/resources:component_extension_resources",
-@@ -224,7 +223,6 @@ template("chrome_extra_paks") {
+@@ -224,7 +223,6 @@
          "//chrome/browser/resources/webui_gallery:resources",
          "//chrome/browser/resources/whats_new:resources",
          "//content/browser/devtools:devtools_resources",
@@ -159,7 +159,7 @@ author: Michael Gilbert <mgilbert@debian.org>
          sources += [
 --- a/content/shell/BUILD.gn
 +++ b/content/shell/BUILD.gn
-@@ -473,11 +473,6 @@ repack("pak") {
+@@ -473,11 +473,6 @@
      "//ui/strings",
    ]
  
@@ -223,7 +223,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  #include "content/browser/tracing/tracing_controller_impl.h"
  #include "content/public/browser/browser_context.h"
  #include "content/public/browser/browser_thread.h"
-@@ -241,8 +240,6 @@ TracingUI::TracingUI(WebUI* web_ui)
+@@ -241,8 +240,6 @@
        web_ui->GetWebContents()->GetBrowserContext(), kChromeUITracingHost);
    source->DisableTrustedTypesCSP();
    source->UseStringsJs();
@@ -234,7 +234,7 @@ author: Michael Gilbert <mgilbert@debian.org>
                             base::BindRepeating(OnTracingRequest));
 --- a/testing/BUILD.gn
 +++ b/testing/BUILD.gn
-@@ -45,7 +45,6 @@ group("run_perf_test") {
+@@ -45,7 +45,6 @@
  
    data_deps = [
      ":test_scripts_shared",
@@ -244,7 +244,7 @@ author: Michael Gilbert <mgilbert@debian.org>
    if (is_android) {
 --- a/mojo/public/tools/BUILD.gn
 +++ b/mojo/public/tools/BUILD.gn
-@@ -17,6 +17,5 @@ group("mojo_python_unittests") {
+@@ -17,6 +17,5 @@
    ]
    data_deps = [
      "//testing:test_scripts_shared",
@@ -253,7 +253,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  }
 --- a/third_party/webrtc/test/BUILD.gn
 +++ b/third_party/webrtc/test/BUILD.gn
-@@ -305,10 +305,6 @@ rtc_library("perf_test") {
+@@ -305,10 +305,6 @@
    ]
    if (rtc_enable_protobuf) {
      sources += [ "testsupport/perf_test_histogram_writer.cc" ]
@@ -264,7 +264,7 @@ author: Michael Gilbert <mgilbert@debian.org>
    } else {
      sources += [ "testsupport/perf_test_histogram_writer_no_protobuf.cc" ]
    }
-@@ -695,7 +691,6 @@ if (rtc_include_tests && !build_with_chr
+@@ -695,7 +691,6 @@
  
      if (rtc_enable_protobuf) {
        sources += [ "testsupport/perf_test_histogram_writer_unittest.cc" ]
@@ -274,7 +274,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      data = test_support_unittests_resources
 --- a/tools/perf/core/perfetto_binary_roller/BUILD.gn
 +++ b/tools/perf/core/perfetto_binary_roller/BUILD.gn
-@@ -7,7 +7,6 @@ import("//build/util/generate_wrapper.gn
+@@ -7,7 +7,6 @@
  generate_wrapper("upload_trace_processor") {
    testonly = true
    data_deps = [
@@ -284,7 +284,7 @@ author: Michael Gilbert <mgilbert@debian.org>
    data = [
 --- a/weblayer/shell/BUILD.gn
 +++ b/weblayer/shell/BUILD.gn
-@@ -183,9 +183,6 @@ repack("support_pak") {
+@@ -183,9 +183,6 @@
    }
    if (is_android) {
      deps += [ "//ui/android:ui_java_resources" ]
@@ -296,7 +296,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  }
 --- a/third_party/blink/tools/BUILD.gn
 +++ b/third_party/blink/tools/BUILD.gn
-@@ -40,7 +40,6 @@ group("wpt_tests_isolate") {
+@@ -40,7 +40,6 @@
    data_deps = [
      ":wpt_tests_mojo_bindings",
      "//testing:test_scripts_shared",

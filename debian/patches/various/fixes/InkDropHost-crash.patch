@@ -1,5 +1,5 @@
---- a/ui/views/animation/ink_drop_host_view.h
-+++ b/ui/views/animation/ink_drop_host_view.h
+--- a/ui/views/animation/ink_drop_host.h
++++ b/ui/views/animation/ink_drop_host.h
 @@ -233,6 +233,11 @@
    // Used to observe View and inform the InkDrop of host-transform changes.
    ViewLayerTransformObserver host_view_transform_observer_;

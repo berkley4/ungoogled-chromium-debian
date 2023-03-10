@@ -38,7 +38,7 @@
  #endif  // BUILDFLAG(IS_CHROMEOS)
 --- a/chrome/browser/metrics/bluetooth_metrics_provider.cc
 +++ b/chrome/browser/metrics/bluetooth_metrics_provider.cc
-@@ -15,11 +15,15 @@ BluetoothMetricsProvider::BluetoothMetricsProvider() = default;
+@@ -15,11 +15,15 @@
  BluetoothMetricsProvider::~BluetoothMetricsProvider() = default;
  
  bool BluetoothMetricsProvider::ProvideHistograms() {
@@ -80,7 +80,7 @@
  const char kMethodListActivatableNames[] = "ListActivatableNames";
  const char kMethodNameHasOwner[] = "NameHasOwner";
  
-@@ -286,6 +291,7 @@
+@@ -288,6 +293,7 @@
    base::CallbackListSubscription browser_shutdown_subscription_;
    base::WeakPtrFactory<ShowItemHelper> weak_ptr_factory_{this};
  };
@@ -88,7 +88,7 @@
  
  void RunCommand(const std::string& command,
                  const base::FilePath& working_directory,
-@@ -352,8 +358,10 @@
+@@ -354,8 +360,10 @@
  }  // namespace internal
  
  void ShowItemInFolder(Profile* profile, const base::FilePath& full_path) {
@@ -127,9 +127,9 @@
  
 -#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX) || \
 +#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_CHROMEOS) || (BUILDFLAG(IS_LINUX) && defined(USE_DBUS)) || \
-     BUILDFLAG(IS_MAC)
+     BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN)
    return true;
- #elif BUILDFLAG(IS_WIN)
+ #else
 --- a/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc
 +++ b/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc
 @@ -1313,7 +1313,7 @@

@@ -1,11 +1,11 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2651,7 +2651,7 @@
- config("default_init_stack_vars") {
-   cflags = []
-   if (init_stack_vars && is_clang && !is_nacl && !using_sanitizer) {
--    if (is_chromeos && !chromeos_is_browser_only) {
-+    if (is_linux || (is_chromeos && !chromeos_is_browser_only)) {
-       # TODO(adriandole) remove chromeos_is_browser_only condition
-       # once lacros updates toolchain
+@@ -139,7 +139,7 @@
  
+   # Zero init has favorable performance/size tradeoffs for Chrome OS
+   # but was not evaluated for other platforms.
+-  init_stack_vars_zero = is_chromeos
++  init_stack_vars_zero = (is_chromeos || is_linux)
+ 
+   # This argument is to control whether enabling text section splitting in the
+   # final binary. When enabled, the separated text sections with prefix

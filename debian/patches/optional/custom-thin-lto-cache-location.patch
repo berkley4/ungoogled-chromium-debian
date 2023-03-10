@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -710,9 +710,7 @@
+@@ -718,9 +718,7 @@
            "-Wcrl,object_path_lto" + _object_path_suffix,
          ]
        } else {

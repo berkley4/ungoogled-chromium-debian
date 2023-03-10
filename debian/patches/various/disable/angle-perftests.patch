@@ -3,7 +3,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
 
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -5165,10 +5165,6 @@
+@@ -5116,10 +5116,6 @@
        data_deps += [ "//third_party/dawn/src/dawn/tests:dawn_perf_tests" ]
      }
  
@@ -67,7 +67,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
    import("angle_perftests.gni")
  
    # This test suite is for perf tests that use ANGLE's internals in some direct way.
-@@ -1689,10 +1687,10 @@
+@@ -1695,10 +1693,10 @@
    if (build_angle_trace_tests) {
      deps += [ ":angle_trace_tests" ]
    }

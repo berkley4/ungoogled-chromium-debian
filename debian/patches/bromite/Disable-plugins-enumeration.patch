@@ -7,10 +7,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  third_party/blink/renderer/core/frame/local_frame.cc | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/third_party/blink/renderer/core/frame/local_frame.cc b/third_party/blink/renderer/core/frame/local_frame.cc
 --- a/third_party/blink/renderer/core/frame/local_frame.cc
 +++ b/third_party/blink/renderer/core/frame/local_frame.cc
-@@ -1946,9 +1946,7 @@ WebContentSettingsClient* LocalFrame::GetContentSettingsClient() {
+@@ -1946,9 +1946,7 @@
  }
  
  PluginData* LocalFrame::GetPluginData() const {
@@ -20,5 +19,3 @@ diff --git a/third_party/blink/renderer/core/frame/local_frame.cc b/third_party/
  }
  
  void LocalFrame::SetAdTrackerForTesting(AdTracker* ad_tracker) {
---
-2.25.1
