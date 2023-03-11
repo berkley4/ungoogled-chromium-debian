@@ -92,6 +92,9 @@ GN_FLAGS += link_pulseaudio=true
 # Disable pulseaudio
 #GN_FLAGS += use_pulseaudio=false
 
+# Disable VA-API
+#GN_FLAGS += use_vaapi=false
+
 
 # Currently omitted from base (stable)
 #
