@@ -25,8 +25,8 @@ DATETIME := $(shell date -R)
 # Start with the upstream Ungoogled Chromium flags
 GN_FLAGS := $(shell tr "\n" " " < $(UC_DIR)/flags.gn | sed 's/"/\\"/g')
 
-# Custom toolchain (needed if enabling optional/llvm-polly-stripmine.patch)
-# The llvm version needs to match that of upstream for PGO builds to work
+# Custom toolchain (needed if enabling optional/llvm-polly-* patches)
+# The llvm version needs to match that of chromium for PGO builds to work
 #
 #GN_FLAGS += custom_toolchain=\"//build/toolchain/linux/unbundle:default\" \
 #            host_toolchain=\"//build/toolchain/linux/unbundle:default\"
