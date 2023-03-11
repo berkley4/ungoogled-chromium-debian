@@ -62,9 +62,7 @@ GN_FLAGS += \
         enable_lens_desktop=false \
         enable_trace_logging=false \
         enable_vr=false \
-        link_pulseaudio=true \
         rtc_disable_metrics=true \
-        rtc_use_pipewire=true \
         skia_enable_skshaper_tests=false \
         use_cfi_cast=true \
         use_dawn=false \
@@ -129,6 +127,15 @@ SYS_LIBS :=               \
 
 # Uncomment to build pdfium without v8 (javascript) and XFA forms support
 #GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
+
+# Enable pipewire
+GN_FLAGS += rtc_use_pipewire=true
+
+# Enable pulseaudio
+GN_FLAGS += link_pulseaudio=true
+
+# Disable pulseaudio
+#GN_FLAGS += use_pulseaudio=false
 
 # Add extra flags for system libs
 GN_FLAGS +=                           \
