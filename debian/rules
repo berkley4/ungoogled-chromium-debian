@@ -77,6 +77,22 @@ GN_FLAGS += \
         enable_pointer_compression_support=true \
         v8_enable_zone_compression=true
 
+# Uncoment to disable atk/dbus
+#GN_FLAGS += use_atk=false use_dbus=false
+
+# Uncomment to build pdfium without v8 (javascript) and XFA forms support
+#GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
+
+# Enable pipewire
+GN_FLAGS += rtc_use_pipewire=true
+
+# Enable pulseaudio
+GN_FLAGS += link_pulseaudio=true
+
+# Disable pulseaudio
+#GN_FLAGS += use_pulseaudio=false
+
+
 # Currently omitted from base (stable)
 #
 # Note: jsoncpp, re2, snappy (and perhaps woff2) cannot
@@ -121,21 +137,6 @@ SYS_LIBS :=               \
 # Uncomment if you are on testing/unstable (or a new enough distro)
 #GN_FLAGS += use_system_libpng=true
 #SYS_LIBS += dav1d icu libaom libavif libpng openh264
-
-# Uncoment to disable atk/dbus
-#GN_FLAGS += use_atk=false use_dbus=false
-
-# Uncomment to build pdfium without v8 (javascript) and XFA forms support
-#GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
-
-# Enable pipewire
-GN_FLAGS += rtc_use_pipewire=true
-
-# Enable pulseaudio
-GN_FLAGS += link_pulseaudio=true
-
-# Disable pulseaudio
-#GN_FLAGS += use_pulseaudio=false
 
 # Add extra flags for system libs
 GN_FLAGS +=                           \
