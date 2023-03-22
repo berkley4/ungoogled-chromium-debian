@@ -86,11 +86,11 @@ GN_FLAGS += \
 # Enable pipewire
 GN_FLAGS += rtc_use_pipewire=true
 
-# Enable pulseaudio
-GN_FLAGS += link_pulseaudio=true
-
 # Disable pulseaudio
 #GN_FLAGS += use_pulseaudio=false
+
+# Enable linking to pulseaudio library
+GN_FLAGS += link_pulseaudio=true
 
 # Disable VA-API
 #GN_FLAGS += use_vaapi=false
