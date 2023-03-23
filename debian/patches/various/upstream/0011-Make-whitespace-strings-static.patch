@@ -1,0 +1,40 @@
+From 2862a0b9e8c1f93d32ef4b34d5ef60bb6bc855b1 Mon Sep 17 00:00:00 2001
+From: Anton Bikineev <bikineev@chromium.org>
+Date: Tue, 7 Mar 2023 12:02:00 +0000
+Subject: [PATCH] Make whitespace strings static
+
+According to the perf profile on Speedometer jQuery, we spent around
+0.3% on adjusting refcount for the whitespace strings. Mark the
+strings as static, as they've always been.
+
+Change-Id: I97b7ca56e792a697eea06c0958b773c6f024f6a7
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4311041
+Reviewed-by: Kentaro Hara <haraken@chromium.org>
+Commit-Queue: Kentaro Hara <haraken@chromium.org>
+Reviewed-by: Mason Freed <masonf@chromium.org>
+Auto-Submit: Anton Bikineev <bikineev@chromium.org>
+Commit-Queue: Anton Bikineev <bikineev@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1113883}
+---
+ .../blink/renderer/platform/wtf/text/string_statics.cc | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+--- a/third_party/blink/renderer/platform/wtf/text/string_statics.cc
++++ b/third_party/blink/renderer/platform/wtf/text/string_statics.cc
+@@ -93,9 +93,13 @@
+             std::end(whitespace_buffer), ' ');
+ 
+   // Keep g_table_[0] uninitialized.
+-  for (size_t i = 1; i < kTableSize; ++i) {
+-    new (NotNullTag::kNotNull, (void*)(&g_table_[i]))
+-        String(AtomicString(whitespace_buffer, i).GetString());
++  for (size_t length = 1; length < kTableSize; ++length) {
++    const unsigned hash =
++        StringHasher::ComputeHashAndMaskTop8Bits(whitespace_buffer, length);
++    auto* string_impl = StringImpl::CreateStatic(
++        reinterpret_cast<const char*>(whitespace_buffer), length, hash);
++    new (NotNullTag::kNotNull, (void*)(&g_table_[length]))
++        String(AtomicString(string_impl).GetString());
+   }
+ }
+ 

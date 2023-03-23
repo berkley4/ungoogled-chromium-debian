@@ -117,6 +117,13 @@ various/upstream/0006-blink-string-Add-String-LengthWithStrippedWhiteSpace.patch
 various/upstream/0007-blink-Speed-up-Element-PseudoStateChanged.patch
 various/upstream/0008-view-transition-Remove-tracking-for-named-elements.patch
 various/upstream/0009-blink-Minimize-decompressions-during-Node-traversal.patch
+various/upstream/0010-blink-Avoid-more-pointer-decompression-in-document-cc.patch
+various/upstream/0011-Make-whitespace-strings-static.patch
+various/upstream/0012-Use-simple-union-for-blink-CharacterData.patch
+various/upstream/0013-Reserve-background-to-avoid-reallocation-of-candidates.patch
+various/upstream/0014-V4Store-Remove-check-for-IsRunningCpuReductionExperiment.patch
+various/upstream/0015-Mojo-Remove-check-for-IsRunningCpuReductionExperiment.patch
+various/upstream/0016-Optional-mask-filter-in-shared-quad-state-mojo.patch
 various/vanadium/disable-article-suggestions-feature-by-default.patch
 various/vanadium/disable-content-feed-suggestions-by-default.patch
 

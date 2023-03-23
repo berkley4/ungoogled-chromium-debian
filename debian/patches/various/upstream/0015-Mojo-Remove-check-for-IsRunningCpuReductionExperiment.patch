@@ -1,0 +1,45 @@
+From 512a88df4f4b74e2b480cc807a14cf9ac7eb45f9 Mon Sep 17 00:00:00 2001
+From: Tushar Agarwal <agarwaltushar@google.com>
+Date: Mon, 13 Mar 2023 14:48:55 +0000
+Subject: [PATCH] [Mojo] Remove check for `IsRunningCpuReductionExperiment`.
+
+AFAIK, this experiment is now complete and we can default-enable
+the optimized behaviour in `HandleTable`.
+
+Bug: 1295449,1295441
+Change-Id: Ia5267c7473b58fe9307d9132afaab1e152deb36f
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4328143
+Reviewed-by: Olivier Li <olivierli@chromium.org>
+Reviewed-by: Francois Pierre Doray <fdoray@chromium.org>
+Auto-Submit: Tushar Agarwal <agarwaltushar@google.com>
+Commit-Queue: Robert Sesek <rsesek@chromium.org>
+Reviewed-by: Robert Sesek <rsesek@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1116367}
+---
+ mojo/core/handle_table.cc | 8 --------
+ 1 file changed, 8 deletions(-)
+
+--- a/mojo/core/handle_table.cc
++++ b/mojo/core/handle_table.cc
+@@ -8,7 +8,6 @@
+ 
+ #include <limits>
+ 
+-#include "base/cpu_reduction_experiment.h"
+ #include "base/trace_event/memory_dump_manager.h"
+ 
+ namespace mojo {
+@@ -51,13 +50,6 @@
+ 
+ const scoped_refptr<Dispatcher>* HandleTable::EntriesAccessor::GetDispatcher(
+     const MojoHandle handle) {
+-  // TODO(crbug.com/1295441): Remove the if-block below.
+-  // This intentionally duplicates code in this function a bit, so that this
+-  // entire if-block can later be removed cleanly.
+-  if (!base::IsRunningCpuReductionExperiment()) {
+-    const auto iter = handles_.find(handle);
+-    return iter == handles_.end() ? nullptr : &iter->second.dispatcher;
+-  }
+   if (last_read_handle_ != MOJO_HANDLE_INVALID && last_read_handle_ == handle) {
+     return &last_read_dispatcher_;
+   }

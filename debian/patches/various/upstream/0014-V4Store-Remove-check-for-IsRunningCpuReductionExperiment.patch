@@ -1,0 +1,40 @@
+From a9bdd12396b12ad7b4417d380d4af173110f356e Mon Sep 17 00:00:00 2001
+From: Tushar Agarwal <agarwaltushar@google.com>
+Date: Mon, 13 Mar 2023 11:10:52 +0000
+Subject: [PATCH] [V4Store] Remove check for `IsRunningCpuReductionExperiment`.
+
+AFAIK, this experiment is now complete and we can default-enable
+the optimized behaviour.
+
+Bug: 1295441
+Change-Id: I7247e7a4eafe17dcb3eabbf359a3b22ae05dc09a
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4328284
+Commit-Queue: Tushar Agarwal <agarwaltushar@google.com>
+Reviewed-by: Daniel Rubery <drubery@chromium.org>
+Reviewed-by: Francois Pierre Doray <fdoray@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1116306}
+---
+ components/safe_browsing/core/browser/db/v4_store.cc | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+--- a/components/safe_browsing/core/browser/db/v4_store.cc
++++ b/components/safe_browsing/core/browser/db/v4_store.cc
+@@ -8,7 +8,6 @@
+ #include <utility>
+ 
+ #include "base/base64.h"
+-#include "base/cpu_reduction_experiment.h"
+ #include "base/files/file_enumerator.h"
+ #include "base/files/file_util.h"
+ #include "base/functional/bind.h"
+@@ -239,9 +238,7 @@
+ 
+ bool V4Store::HasValidData() {
+   // Record every 256th time (`record_has_valid_data_counter_` is 8-bit).
+-  if (++record_has_valid_data_counter_ == 1 ||
+-      // TODO(crbug.com/1295441): Remove the condition below.
+-      !base::IsRunningCpuReductionExperiment()) {
++  if (++record_has_valid_data_counter_ == 1) {
+     RecordBooleanWithAndWithoutSuffix("SafeBrowsing.V4Store.IsStoreValid",
+                                       has_valid_data_, store_path_);
+   }

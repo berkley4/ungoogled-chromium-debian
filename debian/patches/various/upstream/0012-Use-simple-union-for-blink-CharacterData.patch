@@ -1,0 +1,182 @@
+From a34ac45c348b3d78f1a361e05e956ffaae7c08dd Mon Sep 17 00:00:00 2001
+From: Anton Bikineev <bikineev@chromium.org>
+Date: Tue, 7 Mar 2023 20:59:45 +0000
+Subject: [PATCH] Use simple union for blink::CharacterData
+
+The variant dispatching can unfortunately be expensive. The absl's
+version has a switch statement over 32 entries, which could gets
+lowered into a jump table which is unnecessary expensive for simple
+variants like blink::CharacterData. In fact, perf reports that this
+dispatching only on destruction takes 0.1% of overall cycles on
+Speedometer:jQuery. The simple if-branching for string|parked_string
+must be cheaper and more predictable.
+
+Speedometer2 improvement on M1 corresponds to 0.1%.
+
+Bug: 1422253
+Change-Id: I0f7316e189ff6a3980a6ed157ea2667238af7e0d
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4315806
+Reviewed-by: Mason Freed <masonf@chromium.org>
+Commit-Queue: Anton Bikineev <bikineev@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1114155}
+---
+ .../blink/renderer/core/dom/character_data.cc | 11 +++--
+ .../blink/renderer/core/dom/character_data.h  | 45 +++++++++++++------
+ .../core/dom/processing_instruction.cc        |  8 +---
+ 3 files changed, 41 insertions(+), 23 deletions(-)
+
+--- a/third_party/blink/renderer/core/dom/character_data.cc
++++ b/third_party/blink/renderer/core/dom/character_data.cc
+@@ -39,11 +39,14 @@
+ namespace blink {
+ 
+ void CharacterData::MakeParkable() {
+-  if (absl::holds_alternative<ParkableString>(data_))
++  if (is_parkable_) {
+     return;
++  }
+ 
+-  auto released = absl::get<String>(data_).ReleaseImpl();
+-  data_ = ParkableString(std::move(released));
++  auto released = data_.ReleaseImpl();
++  data_.~String();
++  new (&parkable_data_) ParkableString(std::move(released));
++  is_parkable_ = true;
+ }
+ 
+ void CharacterData::setData(const String& data) {
+@@ -195,7 +198,7 @@
+                                      unsigned new_length,
+                                      UpdateSource source) {
+   String old_data = this->data();
+-  data_ = new_data;
++  SetDataWithoutUpdate(new_data);
+ 
+   DCHECK(!GetLayoutObject() || IsTextNode());
+   if (auto* text_node = DynamicTo<Text>(this))
+--- a/third_party/blink/renderer/core/dom/character_data.h
++++ b/third_party/blink/renderer/core/dom/character_data.h
+@@ -24,7 +24,6 @@
+ #ifndef THIRD_PARTY_BLINK_RENDERER_CORE_DOM_CHARACTER_DATA_H_
+ #define THIRD_PARTY_BLINK_RENDERER_CORE_DOM_CHARACTER_DATA_H_
+ 
+-#include "third_party/abseil-cpp/absl/types/variant.h"
+ #include "third_party/blink/renderer/core/core_export.h"
+ #include "third_party/blink/renderer/core/dom/node.h"
+ #include "third_party/blink/renderer/platform/bindings/parkable_string.h"
+@@ -39,18 +38,17 @@
+   DEFINE_WRAPPERTYPEINFO();
+ 
+  public:
++  CharacterData(const CharacterData&) = delete;
++  CharacterData& operator=(const CharacterData&) = delete;
++
+   // Makes the data Parkable. This enables de-duplication and compression.
+   void MakeParkable();
+   const String& data() const {
+-    if (auto* parked = absl::get_if<ParkableString>(&data_))
+-      return parked->ToString();
+-    return absl::get<String>(data_);
++    return is_parkable_ ? parkable_data_.ToString() : data_;
+   }
+   void setData(const String&);
+   unsigned length() const {
+-    if (auto* parked = absl::get_if<ParkableString>(&data_))
+-      return parked->length();
+-    return absl::get<String>(data_).length();
++    return is_parkable_ ? parkable_data_.length() : data_.length();
+   }
+   String substringData(unsigned offset, unsigned count, ExceptionState&);
+   void appendData(const String&);
+@@ -72,34 +70,55 @@
+   CharacterData(TreeScope& tree_scope,
+                 const String& text,
+                 ConstructionType type)
+-      : Node(&tree_scope, type), data_(!text.IsNull() ? text : g_empty_string) {
++      : Node(&tree_scope, type),
++        data_(!text.IsNull() ? text : g_empty_string),
++        is_parkable_(false) {
+     DCHECK(type == kCreateComment || type == kCreateText ||
+            type == kCreateCdataSection ||
+            type == kCreateProcessingInstruction || type == kCreateEditingText);
+   }
+ 
+   CharacterData(TreeScope& tree_scope, String&& text, ConstructionType type)
+-      : Node(&tree_scope, type), data_(std::move(text)) {
++      : Node(&tree_scope, type), data_(std::move(text)), is_parkable_(false) {
+     DCHECK(type == kCreateComment || type == kCreateText ||
+            type == kCreateCdataSection ||
+            type == kCreateProcessingInstruction || type == kCreateEditingText);
+-    DCHECK(absl::holds_alternative<String>(data_));
+-    if (absl::get<String>(data_).IsNull()) {
++    DCHECK(!is_parkable_);
++    if (data_.IsNull()) {
+       data_ = g_empty_string;
+     }
+   }
+ 
++  ~CharacterData() noexcept override {
++    if (is_parkable_) {
++      parkable_data_.~ParkableString();
++    } else {
++      data_.~String();
++    }
++  }
++
+   void SetDataWithoutUpdate(const String& data) {
+     DCHECK(!data.IsNull());
+-    data_ = data;
++    if (!is_parkable_) {
++      data_ = data;
++      return;
++    }
++    is_parkable_ = false;
++    parkable_data_.~ParkableString();
++    new (&data_) String(data);
+   }
++
+   enum UpdateSource {
+     kUpdateFromParser,
+     kUpdateFromNonParser,
+   };
+   void DidModifyData(const String& old_value, UpdateSource);
+ 
+-  absl::variant<ParkableString, String> data_;
++  union {
++    ParkableString parkable_data_;
++    String data_;
++  };
++  bool is_parkable_;
+ 
+  private:
+   String nodeValue() const final;
+--- a/third_party/blink/renderer/core/dom/processing_instruction.cc
++++ b/third_party/blink/renderer/core/dom/processing_instruction.cc
+@@ -74,11 +74,9 @@
+ }
+ 
+ Node* ProcessingInstruction::Clone(Document& factory, CloneChildrenFlag) const {
+-  DCHECK(absl::holds_alternative<String>(data_));
+   // FIXME: Is it a problem that this does not copy local_href_?
+   // What about other data members?
+-  return MakeGarbageCollected<ProcessingInstruction>(factory, target_,
+-                                                     absl::get<String>(data_));
++  return MakeGarbageCollected<ProcessingInstruction>(factory, target_, data_);
+ }
+ 
+ void ProcessingInstruction::DidAttributeChanged() {
+@@ -100,13 +98,11 @@
+       parentNode() != GetDocument())
+     return false;
+ 
+-  DCHECK(absl::holds_alternative<String>(data_));
+   // see http://www.w3.org/TR/xml-stylesheet/
+   // ### support stylesheet included in a fragment of this (or another) document
+   // ### make sure this gets called when adding from javascript
+   bool attrs_ok;
+-  const HashMap<String, String> attrs =
+-      ParseAttributes(absl::get<String>(data_), attrs_ok);
++  const HashMap<String, String> attrs = ParseAttributes(data_, attrs_ok);
+   if (!attrs_ok)
+     return false;
+   HashMap<String, String>::const_iterator i = attrs.find("type");
