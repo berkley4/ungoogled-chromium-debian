@@ -36,6 +36,7 @@ debian/etc/chromium.d/google-api-keys                                          e
 debian/etc/chromium.d/gpu-options                                              etc/chromium.d
 debian/etc/chromium.d/hw-decoding-encoding                                     etc/chromium.d
 debian/etc/chromium.d/load-extensions                                          etc/chromium.d
+debian/etc/chromium.d/ng-shape-cache                                           etc/chromium.d
 debian/etc/chromium.d/no-ipv6-probe                                            etc/chromium.d
 debian/etc/chromium.d/strict-origin-isolation                                  etc/chromium.d
 debian/etc/chromium.d/webassembly                                              etc/chromium.d

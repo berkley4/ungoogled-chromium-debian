@@ -1,0 +1,72 @@
+From 54cdcf28d4e50d88a9ac29ffe0dc239afda1aca8 Mon Sep 17 00:00:00 2001
+From: Kent Tamura <tkent@chromium.org>
+Date: Fri, 3 Feb 2023 08:31:53 +0000
+Subject: [PATCH] DeferredShaping: Remove an about:flags entry
+
+Bug: 1259085
+Change-Id: I42a088b2d8114f44d4f2ac8087625b5ad40c2cc7
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4221314
+Auto-Submit: Kent Tamura <tkent@chromium.org>
+Reviewed-by: Koji Ishii <kojii@chromium.org>
+Commit-Queue: Koji Ishii <kojii@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1100885}
+---
+ chrome/browser/about_flags.cc       | 4 ----
+ chrome/browser/flag-metadata.json   | 5 -----
+ chrome/browser/flag_descriptions.cc | 5 -----
+ chrome/browser/flag_descriptions.h  | 3 ---
+ 4 files changed, 17 deletions(-)
+
+--- a/chrome/browser/about_flags.cc
++++ b/chrome/browser/about_flags.cc
+@@ -7647,10 +7647,6 @@
+                                     kCheckOfflineCapabilityVariations,
+                                     "CheckOfflineCapability")},
+ 
+-    {"deferred-font-shaping", flag_descriptions::kDeferredFontShapingName,
+-     flag_descriptions::kDeferredFontShapingDescription, kOsAll,
+-     FEATURE_VALUE_TYPE(blink::features::kDeferredShaping)},
+-
+     {"show-performance-metrics-hud",
+      flag_descriptions::kShowPerformanceMetricsHudName,
+      flag_descriptions::kShowPerformanceMetricsHudDescription, kOsAll,
+--- a/chrome/browser/flag-metadata.json
++++ b/chrome/browser/flag-metadata.json
+@@ -1328,11 +1328,6 @@
+     "expiry_milestone": 112
+   },
+   {
+-    "name": "deferred-font-shaping",
+-    "owners": [ "tkent", "layout-dev" ],
+-    "expiry_milestone": 122
+-  },
+-  {
+     "name": "deprecate-alt-based-six-pack",
+     "owners": [ "zentaro@google.com", "jimmyxgong@google.com",
+                 "cros-peripherals@google.com"],
+--- a/chrome/browser/flag_descriptions.cc
++++ b/chrome/browser/flag_descriptions.cc
+@@ -168,11 +168,6 @@
+     "Enable replacing policies to force install Chrome apps with policies to "
+     "force install PWAs";
+ 
+-const char kDeferredFontShapingName[] = "Deferred Font Shaping";
+-const char kDeferredFontShapingDescription[] =
+-    "Defer text rendering in invisible CSS boxes until the boxes become "
+-    "visible.";
+-
+ const char kDocumentPictureInPictureApiName[] =
+     "Document Picture-in-Picture API";
+ const char kDocumentPictureInPictureApiDescription[] =
+--- a/chrome/browser/flag_descriptions.h
++++ b/chrome/browser/flag_descriptions.h
+@@ -112,9 +112,6 @@
+ extern const char kDefaultChromeAppsMigrationName[];
+ extern const char kDefaultChromeAppsMigrationDescription[];
+ 
+-extern const char kDeferredFontShapingName[];
+-extern const char kDeferredFontShapingDescription[];
+-
+ extern const char kDocumentPictureInPictureApiName[];
+ extern const char kDocumentPictureInPictureApiDescription[];
+ 

@@ -124,6 +124,12 @@ various/upstream/0013-Reserve-background-to-avoid-reallocation-of-candidates.pat
 various/upstream/0014-V4Store-Remove-check-for-IsRunningCpuReductionExperiment.patch
 various/upstream/0015-Mojo-Remove-check-for-IsRunningCpuReductionExperiment.patch
 various/upstream/0016-Optional-mask-filter-in-shared-quad-state-mojo.patch
+various/upstream/0020-DeferredShaping-Disable-the-feature-in-non-blink-tests.patch
+various/upstream/0021-DeferredShaping-Remove-an-about-flags-entry.patch
+various/upstream/0022-DeferredShaping-Disable-the-feature-in-all-tests.patch
+various/upstream/0023-DeferredShaping-Remove-the-code.patch
+various/upstream/0024-DeferredShaping-Update-a-comment.patch
+various/upstream/0025-Introduce-a-cache-for-ShapeResults-in-NGInlineNode-ShapeText.patch
 various/vanadium/disable-article-suggestions-feature-by-default.patch
 various/vanadium/disable-content-feed-suggestions-by-default.patch
 

@@ -1,0 +1,72 @@
+From 1ba58e60f4c101aa71f2f02b01a29d2306c8345c Mon Sep 17 00:00:00 2001
+From: Kent Tamura <tkent@chromium.org>
+Date: Fri, 3 Feb 2023 08:27:34 +0000
+Subject: [PATCH] DeferredShaping: Disable the feature in non-blink tests
+
+We decided not to ship the feature.
+
+Bug: 1259085, 1359553, 1359625, 1359575
+Change-Id: Ic03c14f52ec0b779c170e01269eac70aecbf2e41
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4218174
+Commit-Queue: Rakina Zata Amni <rakina@chromium.org>
+Auto-Submit: Kent Tamura <tkent@chromium.org>
+Reviewed-by: Rakina Zata Amni <rakina@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1100883}
+---
+ .../variations/fieldtrial_testing_config.json | 21 -------------------
+ tools/perf/benchmarks/blink_perf.py           |  7 +------
+ 2 files changed, 1 insertion(+), 27 deletions(-)
+
+--- a/testing/variations/fieldtrial_testing_config.json
++++ b/testing/variations/fieldtrial_testing_config.json
+@@ -3690,27 +3690,6 @@
+             ]
+         }
+     ],
+-    "DeferredShaping": [
+-        {
+-            "platforms": [
+-                "android",
+-                "chromeos",
+-                "chromeos_lacros",
+-                "fuchsia",
+-                "linux",
+-                "mac",
+-                "windows"
+-            ],
+-            "experiments": [
+-                {
+-                    "name": "Enabled",
+-                    "enable_features": [
+-                        "DeferredShaping"
+-                    ]
+-                }
+-            ]
+-        }
+-    ],
+     "DeferredSyncStartupCustomDelay": [
+         {
+             "platforms": [
+--- a/tools/perf/benchmarks/blink_perf.py
++++ b/tools/perf/benchmarks/blink_perf.py
+@@ -392,9 +392,7 @@
+     return 'blink_perf.accessibility'
+ 
+   def SetExtraBrowserOptions(self, options):
+-    options.AppendExtraBrowserArgs([
+-        '--force-renderer-accessibility', '--disable-features=DeferredShaping'
+-    ])
++    options.AppendExtraBrowserArgs(['--force-renderer-accessibility'])
+ 
+ 
+ @benchmark.Info(
+@@ -621,9 +619,6 @@
+   def Name(cls):
+     return 'blink_perf.paint'
+ 
+-  def SetExtraBrowserOptions(self, options):
+-    options.AppendExtraBrowserArgs(['--disable-features=DeferredShaping'])
+-
+ 
+ @benchmark.Info(emails=['yoavweiss@chromium.org'],
+                 component='Blink>PerformanceAPIs',

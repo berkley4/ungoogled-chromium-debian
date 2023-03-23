@@ -1,0 +1,27 @@
+From 072fc82ca16e0472d61e354d3bac1a1e7c79179a Mon Sep 17 00:00:00 2001
+From: Kent Tamura <tkent@chromium.org>
+Date: Fri, 10 Feb 2023 04:37:02 +0000
+Subject: [PATCH] DeferredShaping: Update a comment
+
+Bug: 1259085
+Change-Id: Ib328a36a07e45b3c55e10888d35977b3eb76dfef
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4235608
+Commit-Queue: Koji Ishii <kojii@chromium.org>
+Auto-Submit: Kent Tamura <tkent@chromium.org>
+Reviewed-by: Koji Ishii <kojii@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1103689}
+---
+ .../blink/renderer/core/display_lock/display_lock_utilities.cc  | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/third_party/blink/renderer/core/display_lock/display_lock_utilities.cc
++++ b/third_party/blink/renderer/core/display_lock/display_lock_utilities.cc
+@@ -887,7 +887,7 @@
+         // Note that technically we could do a similar approach to
+         // IsLockedForAccessibility by recording whether this context is locked
+         // but allow paint. However, that situation is not possible since all
+-        // locked contexts always prevent paint except for DeferredShaping.
++        // locked contexts always prevent paint.
+         DCHECK(!context->IsLocked() || !context->ShouldPaintChildren());
+         if (!context->ShouldPaintChildren()) {
+           memoizer_->NotifyLocked(previous_ancestor);

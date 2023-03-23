@@ -1,0 +1,2611 @@
+From 915d167f1e298e8576bea99e8eb927409dc329db Mon Sep 17 00:00:00 2001
+From: Kent Tamura <tkent@chromium.org>
+Date: Tue, 7 Feb 2023 21:17:55 +0000
+Subject: [PATCH] DeferredShaping: Remove the code
+
+* Remove ShapeTextOrDefer() calls in Layout() and ComputeMinMaxSizes().
+  Shaping from PrepareLayout() is enough.
+  Other ShapeTextOrDefer() callsites are replaced with
+  ShapeTextIncludingFirstLine();
+* Make LayoutBox::DisassociatePhysicalFragments() private
+* Make relevant UseCounters obsoleted
+* shape_result.*: Remove CreateForSpacesWithPerGlyphWidth(), and fold
+  CreateForSpacesInternal() into CreateForSpaces().
+* Remove Renderer.Font.Shaping.* UMA
+
+Bug: 1259085
+Change-Id: Ifb5e63b2540ca5e4e20e283e44372a087dc5018a
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4223680
+Reviewed-by: Yoshifumi Inoue <yosin@chromium.org>
+Reviewed-by: Koji Ishii <kojii@chromium.org>
+Auto-Submit: Kent Tamura <tkent@chromium.org>
+Reviewed-by: Robert Kaplow <rkaplow@chromium.org>
+Commit-Queue: Kent Tamura <tkent@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1102372}
+---
+ .../use_counter/metrics/web_feature.mojom     |  22 +-
+ .../css/css_computed_style_declaration.cc     |  11 +-
+ .../display_lock_document_state.cc            |   2 -
+ .../blink/renderer/core/dom/document.cc       |  23 -
+ .../blink/renderer/core/dom/element.cc        |  14 -
+ third_party/blink/renderer/core/dom/range.cc  |   9 -
+ .../renderer/core/frame/local_dom_window.cc   |   5 -
+ .../renderer/core/frame/local_frame_view.cc   |  24 -
+ .../core/frame/web_frame_widget_impl.cc       |   3 -
+ .../core/inspector/inspector_contrast.cc      |   8 -
+ .../blink/renderer/core/layout/build.gni      |   5 -
+ .../renderer/core/layout/deferred_shaping.cc  |  22 -
+ .../renderer/core/layout/deferred_shaping.h   | 125 ----
+ .../layout/deferred_shaping_controller.cc     | 214 -------
+ .../core/layout/deferred_shaping_controller.h | 128 ----
+ .../core/layout/deferred_shaping_test.cc      | 597 ------------------
+ .../renderer/core/layout/layout_block_flow.cc |  11 -
+ .../renderer/core/layout/layout_block_flow.h  |   2 -
+ .../blink/renderer/core/layout/layout_box.cc  |   5 +-
+ .../blink/renderer/core/layout/layout_box.h   |   5 +-
+ .../renderer/core/layout/layout_box_hot.cc    |   5 +-
+ .../core/layout/layout_box_model_object.cc    |  13 -
+ .../core/layout/layout_box_model_object.h     |   2 -
+ .../renderer/core/layout/layout_media.cc      |   2 -
+ .../renderer/core/layout/layout_object.cc     |   8 -
+ .../renderer/core/layout/layout_object.h      |   2 -
+ .../blink/renderer/core/layout/layout_view.cc |   5 -
+ .../blink/renderer/core/layout/layout_view.h  |   7 -
+ .../ng/flex/ng_flex_layout_algorithm.cc       |   7 -
+ .../core/layout/ng/inline/ng_inline_node.cc   | 115 +---
+ .../core/layout/ng/inline/ng_inline_node.h    |   8 -
+ .../layout/ng/inline/ng_inline_node_data.h    |   9 +-
+ .../layout/ng/ng_block_layout_algorithm.cc    |  21 -
+ .../layout/ng/ng_block_layout_algorithm.h     |   5 -
+ .../renderer/core/layout/ng/ng_block_node.cc  |   7 -
+ .../layout/ng/ng_out_of_flow_layout_part.cc   |   2 -
+ .../core/layout/scroll_anchor_test.cc         |   8 -
+ .../core/layout/svg/layout_svg_root.cc        |   2 -
+ .../core/paint/ng/ng_box_fragment_painter.cc  |   3 -
+ .../core/paint/timing/paint_timing.cc         |   6 -
+ .../platform/fonts/font_performance.cc        |   8 -
+ .../platform/fonts/font_performance.h         |  15 -
+ .../platform/fonts/shaping/shape_result.cc    |  40 +-
+ .../platform/fonts/shaping/shape_result.h     |  14 -
+ .../platform/runtime_enabled_features.json5   |   4 -
+ tools/metrics/histograms/enums.xml            |  23 +-
+ .../metadata/renderer/histograms.xml          |  25 -
+ 47 files changed, 50 insertions(+), 1551 deletions(-)
+ delete mode 100644 third_party/blink/renderer/core/layout/deferred_shaping.cc
+ delete mode 100644 third_party/blink/renderer/core/layout/deferred_shaping.h
+ delete mode 100644 third_party/blink/renderer/core/layout/deferred_shaping_controller.cc
+ delete mode 100644 third_party/blink/renderer/core/layout/deferred_shaping_controller.h
+ delete mode 100644 third_party/blink/renderer/core/layout/deferred_shaping_test.cc
+
+--- a/third_party/blink/public/mojom/use_counter/metrics/web_feature.mojom
++++ b/third_party/blink/public/mojom/use_counter/metrics/web_feature.mojom
+@@ -3585,7 +3585,7 @@
+   kEventTimingInteractionId = 4256,
+   kSecurePaymentConfirmationOptOut = 4257,
+   kAnyPopoverAttribute = 4258,
+-  kDeferredShapingWorked = 4259,
++  kOBSOLETE_DeferredShapingWorked = 4259,
+   kOBSOLETE_DeferredShapingReshapedByForceLayout = 4260,
+   kMediaSourceGetHandle = 4261,
+   kIdentityInCanMakePaymentEvent = 4262,
+@@ -3668,19 +3668,19 @@
+   kPrivateAggregationApiSharedStorage = 4335,
+   // The items above roughly this point are available in the M106 branch.
+ 
+-  kDeferredShaping2ReshapedByComputedStyle = 4336,
+-  kDeferredShaping2ReshapedByDomContentLoaded = 4337,
+-  kDeferredShaping2ReshapedByFcp = 4338,
+-  kDeferredShaping2DisabledByFragmentAnchor = 4339,
+-  kDeferredShaping2ReshapedByFocus = 4340,
+-  kDeferredShaping2ReshapedByGeometry = 4341,
+-  kDeferredShaping2ReshapedByInspector = 4342,
+-  kDeferredShaping2ReshapedByPrinting = 4343,
+-  kDeferredShaping2ReshapedByScrolling = 4344,
++  kOBSOLETE_DeferredShaping2ReshapedByComputedStyle = 4336,
++  kOBSOLETE_DeferredShaping2ReshapedByDomContentLoaded = 4337,
++  kOBSOLETE_DeferredShaping2ReshapedByFcp = 4338,
++  kOBSOLETE_DeferredShaping2DisabledByFragmentAnchor = 4339,
++  kOBSOLETE_DeferredShaping2ReshapedByFocus = 4340,
++  kOBSOLETE_DeferredShaping2ReshapedByGeometry = 4341,
++  kOBSOLETE_DeferredShaping2ReshapedByInspector = 4342,
++  kOBSOLETE_DeferredShaping2ReshapedByPrinting = 4343,
++  kOBSOLETE_DeferredShaping2ReshapedByScrolling = 4344,
+   kLCPCandidateImageFromOriginDirtyStyle = 4345,
+   kV8TurboFanOsrCompileStarted = 4346,
+   kV8Document_HasRedemptionRecord_Method = 4347,
+-  kDeferredShaping2ReshapedByLastResort = 4348,
++  kOBSOLETE_DeferredShaping2ReshapedByLastResort = 4348,
+   kAudioContextSinkId = 4349,
+   kAudioContextSetSinkId = 4350,
+   kViewportDependentLazyLoadedImageWithSizesAttribute = 4351,
+--- a/third_party/blink/renderer/core/css/css_computed_style_declaration.cc
++++ b/third_party/blink/renderer/core/css/css_computed_style_declaration.cc
+@@ -45,7 +45,6 @@
+ #include "third_party/blink/renderer/core/dom/pseudo_element.h"
+ #include "third_party/blink/renderer/core/frame/web_feature.h"
+ #include "third_party/blink/renderer/core/html/html_frame_owner_element.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping_controller.h"
+ #include "third_party/blink/renderer/core/layout/layout_object.h"
+ #include "third_party/blink/renderer/core/style/computed_style.h"
+ #include "third_party/blink/renderer/platform/bindings/exception_state.h"
+@@ -274,12 +273,8 @@
+         property_name && !property_name->IsCustomProperty() &&
+         CSSProperty::Get(property_name->Id()).IsLayoutDependentProperty();
+     if (is_for_layout_dependent_property) {
+-      auto& owner_doc = owner->GetDocument();
+-      if (auto* ds_controller = DeferredShapingController::From(owner_doc)) {
+-        ds_controller->ReshapeDeferred(ReshapeReason::kComputedStyle,
+-                                       *styled_node, property_name->Id());
+-      }
+-      owner_doc.UpdateStyleAndLayout(DocumentUpdateReason::kJavaScript);
++      owner->GetDocument().UpdateStyleAndLayout(
++          DocumentUpdateReason::kJavaScript);
+       // The style recalc could have caused the styled node to be discarded or
+       // replaced if it was a PseudoElement so we need to update it.
+       styled_node = StyledNode();
+@@ -315,8 +310,6 @@
+     auto& doc = styled_node->GetDocument();
+     // EditingStyle uses this class with DisallowTransitionScope.
+     if (!doc.Lifecycle().StateTransitionDisallowed() && doc.View()) {
+-      DeferredShapingController::From(doc)->ReshapeDeferred(
+-          ReshapeReason::kComputedStyle, *styled_node, property->PropertyID());
+       doc.UpdateStyleAndLayoutForNode(styled_node,
+                                       DocumentUpdateReason::kJavaScript);
+     }
+--- a/third_party/blink/renderer/core/display_lock/display_lock_document_state.cc
++++ b/third_party/blink/renderer/core/display_lock/display_lock_document_state.cc
+@@ -14,8 +14,6 @@
+ #include "third_party/blink/renderer/core/inspector/console_message.h"
+ #include "third_party/blink/renderer/core/intersection_observer/intersection_observer.h"
+ #include "third_party/blink/renderer/core/intersection_observer/intersection_observer_entry.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping_controller.h"
+ #include "third_party/blink/renderer/core/layout/layout_block.h"
+ #include "third_party/blink/renderer/core/style/computed_style.h"
+ #include "third_party/blink/renderer/core/view_transition/view_transition_utils.h"
+--- a/third_party/blink/renderer/core/dom/document.cc
++++ b/third_party/blink/renderer/core/dom/document.cc
+@@ -249,7 +249,6 @@
+ #include "third_party/blink/renderer/core/intersection_observer/intersection_observer_controller.h"
+ #include "third_party/blink/renderer/core/intersection_observer/intersection_observer_entry.h"
+ #include "third_party/blink/renderer/core/layout/adjust_for_absolute_zoom.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping_controller.h"
+ #include "third_party/blink/renderer/core/layout/hit_test_canvas_result.h"
+ #include "third_party/blink/renderer/core/layout/hit_test_result.h"
+ #include "third_party/blink/renderer/core/layout/layout_embedded_content.h"
+@@ -2687,11 +2686,6 @@
+   if (!node->InActiveDocument())
+     return;
+ 
+-  if (reason == DocumentUpdateReason::kJavaScript) {
+-    DeferredShapingController::From(*this)->ReshapeDeferred(
+-        ReshapeReason::kGeometryApi, *node);
+-  }
+-
+   DisplayLockUtilities::ScopedForcedUpdate scoped_update_forced(
+       node, DisplayLockContext::ForcedPhase::kLayout);
+ 
+@@ -2707,14 +2701,6 @@
+   if (!node->InActiveDocument())
+     return;
+ 
+-  if (RuntimeEnabledFeatures::DeferredShapingEnabled()) {
+-    auto* ds_controller = DeferredShapingController::From(*this);
+-    if (property_id == CSSPropertyID::kWidth)
+-      ds_controller->ReshapeDeferredForWidth(*node->GetLayoutObject());
+-    else
+-      ds_controller->ReshapeDeferredForHeight(*node->GetLayoutObject());
+-  }
+-
+   DisplayLockUtilities::ScopedForcedUpdate scoped_update_forced(
+       node, DisplayLockContext::ForcedPhase::kLayout);
+ 
+@@ -3228,8 +3214,6 @@
+ 
+   if (was_printing != is_printing) {
+     GetDisplayLockDocumentState().NotifyPrintingOrPreviewChanged();
+-    if (auto* ds_controller = DeferredShapingController::From(*this))
+-      ds_controller->ReshapeAllDeferred(ReshapeReason::kPrinting);
+ 
+     // We force the color-scheme to light for printing.
+     ColorSchemeChanged();
+@@ -4107,11 +4091,6 @@
+       parsing_state_ == kFinishedParsing) {
+     if (form_controller_ && form_controller_->HasControlStates())
+       form_controller_->ScheduleRestore();
+-    if (auto* ds_controller = DeferredShapingController::From(*this)) {
+-      PaintTiming& timing = PaintTiming::From(*this);
+-      if (!timing.FirstContentfulPaintIgnoringSoftNavigations().is_null())
+-        ds_controller->ReshapeAllDeferred(ReshapeReason::kDomContentLoaded);
+-    }
+   }
+ }
+ 
+@@ -8963,8 +8942,6 @@
+     : document_(document) {
+   document_.paint_preview_ = state;
+   document_.GetDisplayLockDocumentState().NotifyPrintingOrPreviewChanged();
+-  if (auto* ds_controller = DeferredShapingController::From(document_))
+-    ds_controller->ReshapeAllDeferred(ReshapeReason::kPrinting);
+ }
+ 
+ Document::PaintPreviewScope::~PaintPreviewScope() {
+--- a/third_party/blink/renderer/core/dom/element.cc
++++ b/third_party/blink/renderer/core/dom/element.cc
+@@ -165,7 +165,6 @@
+ #include "third_party/blink/renderer/core/intersection_observer/element_intersection_observer_data.h"
+ #include "third_party/blink/renderer/core/intersection_observer/intersection_observer_controller.h"
+ #include "third_party/blink/renderer/core/layout/adjust_for_absolute_zoom.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping_controller.h"
+ #include "third_party/blink/renderer/core/layout/layout_text_fragment.h"
+ #include "third_party/blink/renderer/core/layout/layout_view.h"
+ #include "third_party/blink/renderer/core/layout/ng/inline/layout_ng_text_combine.h"
+@@ -1178,9 +1177,6 @@
+ }
+ 
+ void Element::scrollIntoViewWithOptions(const ScrollIntoViewOptions* options) {
+-  if (auto* ds_controller = DeferredShapingController::From(GetDocument())) {
+-    ds_controller->ReshapeAllDeferred(ReshapeReason::kScrollingApi);
+-  }
+   ActivateDisplayLockIfNeeded(DisplayLockActivationReason::kScrollIntoView);
+   GetDocument().EnsurePaintLocationDataValidForNode(
+       this, DocumentUpdateReason::kJavaScript);
+@@ -1603,8 +1599,6 @@
+     return;
+   }
+ 
+-  DeferredShapingController::From(GetDocument())
+-      ->ReshapeAllDeferred(ReshapeReason::kScrollingApi);
+   GetDocument().UpdateStyleAndLayoutForNode(this,
+                                             DocumentUpdateReason::kJavaScript);
+ 
+@@ -1658,8 +1652,6 @@
+     return;
+   }
+ 
+-  DeferredShapingController::From(GetDocument())
+-      ->ReshapeAllDeferred(ReshapeReason::kScrollingApi);
+   GetDocument().UpdateStyleAndLayoutForNode(this,
+                                             DocumentUpdateReason::kJavaScript);
+ 
+@@ -2989,8 +2981,6 @@
+   DetachPrecedingPseudoElements(performing_reattach);
+ 
+   auto* context = GetDisplayLockContext();
+-  bool was_shaping_deferred =
+-      context && GetLayoutObject() && GetLayoutObject()->IsShapingDeferred();
+ 
+   // TODO(futhark): We need to traverse into IsUserActionElement() subtrees,
+   // even if they are already display:none because we do not clear the
+@@ -3032,9 +3022,6 @@
+   if (context) {
+     context->DetachLayoutTree();
+   }
+-  if (was_shaping_deferred && GetDocument().View()) {
+-    DeferredShapingController::From(GetDocument())->UnregisterDeferred(*this);
+-  }
+ }
+ 
+ void Element::ReattachLayoutTreeChildren(base::PassKey<StyleEngine>) {
+@@ -5151,7 +5138,6 @@
+                                       mojom::blink::FocusType::kScript
+                                   ? DisplayLockActivationReason::kScriptFocus
+                                   : DisplayLockActivationReason::kUserFocus);
+-  DeferredShapingController::From(GetDocument())->OnFocus(*this);
+ 
+   if (!GetDocument().GetPage()->GetFocusController().SetFocusedElement(
+           this, GetDocument().GetFrame(), params_to_use)) {
+--- a/third_party/blink/renderer/core/dom/range.cc
++++ b/third_party/blink/renderer/core/dom/range.cc
+@@ -54,7 +54,6 @@
+ #include "third_party/blink/renderer/core/highlight/highlight_registry.h"
+ #include "third_party/blink/renderer/core/html/html_body_element.h"
+ #include "third_party/blink/renderer/core/html/html_element.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping_controller.h"
+ #include "third_party/blink/renderer/core/layout/layout_object.h"
+ #include "third_party/blink/renderer/core/layout/layout_text.h"
+ #include "third_party/blink/renderer/core/layout/layout_text_fragment.h"
+@@ -1601,10 +1600,6 @@
+ }
+ 
+ DOMRectList* Range::getClientRects() const {
+-  if (owner_document_->View()) {
+-    DeferredShapingController::From(*owner_document_)
+-        ->ReshapeAllDeferred(ReshapeReason::kGeometryApi);
+-  }
+   DisplayLockUtilities::ScopedForcedUpdate force_locks(
+       this, DisplayLockContext::ForcedPhase::kLayout);
+   owner_document_->UpdateStyleAndLayout(DocumentUpdateReason::kJavaScript);
+@@ -1738,10 +1733,6 @@
+ }
+ 
+ gfx::RectF Range::BoundingRect() const {
+-  if (owner_document_->View()) {
+-    DeferredShapingController::From(*owner_document_)
+-        ->ReshapeAllDeferred(ReshapeReason::kGeometryApi);
+-  }
+   absl::optional<DisplayLockUtilities::ScopedForcedUpdate> force_locks;
+   if (!collapsed()) {
+     force_locks = DisplayLockUtilities::ScopedForcedUpdate(
+--- a/third_party/blink/renderer/core/frame/local_dom_window.cc
++++ b/third_party/blink/renderer/core/frame/local_dom_window.cc
+@@ -115,7 +115,6 @@
+ #include "third_party/blink/renderer/core/inspector/inspector_trace_events.h"
+ #include "third_party/blink/renderer/core/inspector/main_thread_debugger.h"
+ #include "third_party/blink/renderer/core/layout/adjust_for_absolute_zoom.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping_controller.h"
+ #include "third_party/blink/renderer/core/layout/layout_view.h"
+ #include "third_party/blink/renderer/core/loader/document_loader.h"
+ #include "third_party/blink/renderer/core/navigation_api/navigation_api.h"
+@@ -1743,8 +1742,6 @@
+   if (!page)
+     return;
+ 
+-  DeferredShapingController::From(*document())
+-      ->ReshapeAllDeferred(ReshapeReason::kScrollingApi);
+   document()->UpdateStyleAndLayout(DocumentUpdateReason::kJavaScript);
+ 
+   float x = 0.0f;
+@@ -1804,8 +1801,6 @@
+   // clamped, which is never the case for (0, 0).
+   if (!scroll_to_options->hasLeft() || !scroll_to_options->hasTop() ||
+       scroll_to_options->left() || scroll_to_options->top()) {
+-    DeferredShapingController::From(*document())
+-        ->ReshapeAllDeferred(ReshapeReason::kScrollingApi);
+     document()->UpdateStyleAndLayout(DocumentUpdateReason::kJavaScript);
+   }
+ 
+--- a/third_party/blink/renderer/core/frame/local_frame_view.cc
++++ b/third_party/blink/renderer/core/frame/local_frame_view.cc
+@@ -107,8 +107,6 @@
+ #include "third_party/blink/renderer/core/intersection_observer/intersection_observation.h"
+ #include "third_party/blink/renderer/core/intersection_observer/intersection_observer_controller.h"
+ #include "third_party/blink/renderer/core/layout/adjust_for_absolute_zoom.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping_controller.h"
+ #include "third_party/blink/renderer/core/layout/geometry/transform_state.h"
+ #include "third_party/blink/renderer/core/layout/geometry/writing_mode_converter.h"
+ #include "third_party/blink/renderer/core/layout/layout_counter.h"
+@@ -847,21 +845,7 @@
+       if (HasOrthogonalWritingModeRoots())
+         LayoutOrthogonalWritingModeRoots();
+ 
+-      DeferredShapingController& ds_controller =
+-          GetLayoutView()->GetDeferredShapingController();
+-      bool default_allow_deferred_shaping =
+-          ds_controller.DefaultAllowDeferredShaping() &&
+-          RuntimeEnabledFeatures::DeferredShapingEnabled() &&
+-          !frame_->PagePopupOwner() && !auto_size_info_ &&
+-          !GetScrollableArea()->HasPendingHistoryRestoreScrollOffset();
+-      if (!default_allow_deferred_shaping)
+-        ds_controller.DisallowDeferredShaping();
+-      using PassKey = base::PassKey<LocalFrameView>;
+-      ds_controller.SetAllowDeferredShaping(
+-          PassKey(), default_allow_deferred_shaping && !document->Printing());
+-      DeferredShapingViewportScope viewport_scope(*GetLayoutView());
+       GetLayoutView()->UpdateLayout();
+-      ds_controller.SetAllowDeferredShaping(PassKey(), false);
+     }
+   }
+ 
+@@ -1390,10 +1374,6 @@
+     // part of the lifecycle.
+     if (same_document_navigation)
+       ScheduleAnimation();
+-    if (const auto* layout_view = GetLayoutView()) {
+-      layout_view->GetDeferredShapingController().ReshapeAllDeferred(
+-          ReshapeReason::kFragmentAnchor);
+-    }
+   }
+ }
+ 
+@@ -1889,8 +1869,6 @@
+   ScheduleUpdatePluginsIfNecessary();
+   if (visual_viewport_size_changed && !document->Printing())
+     frame_->GetDocument()->EnqueueVisualViewportResizeEvent();
+-
+-  GetLayoutView()->GetDeferredShapingController().PerformPostLayoutTask();
+ }
+ 
+ float LocalFrameView::InputEventsScaleFactor() const {
+@@ -3839,8 +3817,6 @@
+   document->LayoutViewportWasResized();
+   if (frame_->IsMainFrame())
+     TextAutosizer::UpdatePageInfoInAllFrames(frame_);
+-  if (auto* ds_controller = DeferredShapingController::From(*document))
+-    ds_controller->OnResizeFrame();
+ }
+ 
+ void LocalFrameView::DidChangeScrollOffset() {
+--- a/third_party/blink/renderer/core/frame/web_frame_widget_impl.cc
++++ b/third_party/blink/renderer/core/frame/web_frame_widget_impl.cc
+@@ -100,7 +100,6 @@
+ #include "third_party/blink/renderer/core/input/context_menu_allowed_scope.h"
+ #include "third_party/blink/renderer/core/input/event_handler.h"
+ #include "third_party/blink/renderer/core/input/touch_action_util.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping_controller.h"
+ #include "third_party/blink/renderer/core/layout/hit_test_location.h"
+ #include "third_party/blink/renderer/core/layout/hit_test_request.h"
+ #include "third_party/blink/renderer/core/layout/layout_box.h"
+@@ -4366,8 +4365,6 @@
+         Document* document = core_frame->GetDocument();
+         // Similarly, a fully attached frame must always have a document.
+         DCHECK(document);
+-        if (auto* ds_controller = DeferredShapingController::From(*document))
+-          ds_controller->ReshapeAllDeferred(ReshapeReason::kTesting);
+       });
+ }
+ 
+--- a/third_party/blink/renderer/core/inspector/inspector_contrast.cc
++++ b/third_party/blink/renderer/core/inspector/inspector_contrast.cc
+@@ -18,7 +18,6 @@
+ #include "third_party/blink/renderer/core/html/html_embed_element.h"
+ #include "third_party/blink/renderer/core/inspector/inspector_dom_agent.h"
+ #include "third_party/blink/renderer/core/inspector/inspector_dom_snapshot_agent.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping_controller.h"
+ #include "third_party/blink/renderer/core/layout/geometry/physical_rect.h"
+ #include "third_party/blink/renderer/core/layout/layout_view.h"
+ #include "third_party/blink/renderer/core/style/style_generated_image.h"
+@@ -141,8 +140,6 @@
+   if (!layout_view)
+     return;
+ 
+-  DeferredShapingController::From(*document_)
+-      ->ReshapeAllDeferred(ReshapeReason::kInspector);
+   if (!layout_view->GetFrameView()->UpdateLifecycleToPrePaintClean(
+           DocumentUpdateReason::kInspector)) {
+     return;
+@@ -276,11 +273,6 @@
+     return colors;
+   }
+ 
+-  if (RuntimeEnabledFeatures::DeferredShapingEnabled()) {
+-    if (auto* ds_controller = DeferredShapingController::From(*document_))
+-      ds_controller->ReshapeAllDeferred(ReshapeReason::kInspector);
+-    document_->UpdateStyleAndLayout(DocumentUpdateReason::kInspector);
+-  }
+   PhysicalRect content_bounds = GetNodeRect(text_node);
+   LocalFrameView* view = text_node->GetDocument().View();
+   if (!view)
+--- a/third_party/blink/renderer/core/layout/build.gni
++++ b/third_party/blink/renderer/core/layout/build.gni
+@@ -65,10 +65,6 @@
+   "custom_scrollbar.h",
+   "depth_ordered_layout_object_list.cc",
+   "depth_ordered_layout_object_list.h",
+-  "deferred_shaping.cc",
+-  "deferred_shaping.h",
+-  "deferred_shaping_controller.cc",
+-  "deferred_shaping_controller.h",
+   "flexible_box_algorithm.cc",
+   "flexible_box_algorithm.h",
+   "floating_objects.cc",
+@@ -846,7 +842,6 @@
+   "anchor_scroll_data_test.cc",
+   "api/selection_state_test.cc",
+   "collapsed_border_value_test.cc",
+-  "deferred_shaping_test.cc",
+   "geometry/axis_test.cc",
+   "geometry/logical_rect_test.cc",
+   "geometry/physical_rect_test.cc",
+--- a/third_party/blink/renderer/core/layout/deferred_shaping.cc
++++ /dev/null
+@@ -1,22 +0,0 @@
+-// Copyright 2022 The Chromium Authors
+-// Use of this source code is governed by a BSD-style license that can be
+-// found in the LICENSE file.
+-
+-#include "third_party/blink/renderer/core/layout/deferred_shaping.h"
+-
+-namespace blink {
+-
+-DeferredShapingViewportScope::DeferredShapingViewportScope(
+-    const LayoutView& layout_view)
+-    : ds_controller_(layout_view.GetDeferredShapingController()),
+-      previous_value_(ds_controller_.CurrentViewportBottom()) {
+-  const auto* scrollable_area = layout_view.GetScrollableArea();
+-  LayoutUnit viewport_top =
+-      LayoutUnit(scrollable_area ? scrollable_area->GetScrollOffset().y() : 0);
+-  LayoutUnit viewport_height =
+-      layout_view.InitialContainingBlockSize().block_size;
+-  ds_controller_.SetCurrentViewportBottom(PassKey(),
+-                                          viewport_top + viewport_height);
+-}
+-
+-}  // namespace blink
+--- a/third_party/blink/renderer/core/layout/deferred_shaping.h
++++ /dev/null
+@@ -1,125 +0,0 @@
+-// Copyright 2022 The Chromium Authors
+-// Use of this source code is governed by a BSD-style license that can be
+-// found in the LICENSE file.
+-
+-#ifndef THIRD_PARTY_BLINK_RENDERER_CORE_LAYOUT_DEFERRED_SHAPING_H_
+-#define THIRD_PARTY_BLINK_RENDERER_CORE_LAYOUT_DEFERRED_SHAPING_H_
+-
+-#include "third_party/blink/renderer/core/layout/deferred_shaping_controller.h"
+-#include "third_party/blink/renderer/core/layout/layout_view.h"
+-#include "third_party/blink/renderer/core/layout/ng/ng_layout_input_node.h"
+-
+-namespace blink {
+-
+-// Register the viewport bottom of the nearest scrollable ancestor.
+-class DeferredShapingViewportScope {
+-  STACK_ALLOCATED();
+-  using PassKey = base::PassKey<DeferredShapingViewportScope>;
+-
+- public:
+-  explicit DeferredShapingViewportScope(const LayoutView& layout_view);
+-  ~DeferredShapingViewportScope() {
+-    ds_controller_.SetCurrentViewportBottom(PassKey(), previous_value_);
+-  }
+-
+-  DeferredShapingViewportScope(DeferredShapingViewportScope&&) = delete;
+-  DeferredShapingViewportScope(const DeferredShapingViewportScope&) = delete;
+-  DeferredShapingViewportScope& operator=(const DeferredShapingViewportScope&) =
+-      delete;
+-
+- private:
+-  DeferredShapingController& ds_controller_;
+-  const LayoutUnit previous_value_;
+-};
+-
+-// --------------------------------------------------------------------------
+-
+-// Register the "minimum top" position of the box which is being laid out.
+-// A DeferredShapingMinimumTopScope instance is movable, and not copyable.
+-class DeferredShapingMinimumTopScope {
+-  STACK_ALLOCATED();
+-  using PassKey = base::PassKey<DeferredShapingMinimumTopScope>;
+-
+- public:
+-  // |input_node| - Source of LayoutView. It's ok to specify any layout
+-  //                input node if it is associated to the same LayoutView.
+-  // |minimum_top| - The value to be set to CurrentMinimumTop().
+-  DeferredShapingMinimumTopScope(const NGLayoutInputNode input_node,
+-                                 LayoutUnit minimum_top)
+-      : controller_(&DeferredShapingController::From(input_node)),
+-        previous_value_(controller_->CurrentMinimumTop()) {
+-    controller_->SetCurrentMinimumTop(PassKey(), minimum_top);
+-  }
+-
+-  // |input_node| - Source of LayoutView. It's ok to specify any layout
+-  //                input node if it is associated to the same LayoutView.
+-  // |delta| - The value to be added to CurrentMinimumTop().
+-  [[nodiscard]] static DeferredShapingMinimumTopScope CreateDelta(
+-      const NGLayoutInputNode input_node,
+-      LayoutUnit delta) {
+-    return DeferredShapingMinimumTopScope(
+-        input_node,
+-        DeferredShapingController::From(input_node).CurrentMinimumTop() +
+-            delta);
+-  }
+-
+-  DeferredShapingMinimumTopScope(DeferredShapingMinimumTopScope&& other)
+-      : controller_(other.controller_), previous_value_(other.previous_value_) {
+-    other.controller_ = nullptr;
+-  }
+-
+-  ~DeferredShapingMinimumTopScope() {
+-    if (controller_)
+-      controller_->SetCurrentMinimumTop(PassKey(), previous_value_);
+-  }
+-
+-  DeferredShapingMinimumTopScope(const DeferredShapingMinimumTopScope&) =
+-      delete;
+-  DeferredShapingMinimumTopScope& operator=(
+-      const DeferredShapingMinimumTopScope&) = delete;
+-
+- private:
+-  DeferredShapingController* controller_;
+-  const LayoutUnit previous_value_;
+-};
+-
+-// --------------------------------------------------------------------------
+-
+-// Disable Deferred Shaping while an instance of this class is alive.
+-class DeferredShapingDisallowScope {
+-  STACK_ALLOCATED();
+-  using PassKey = base::PassKey<DeferredShapingDisallowScope>;
+-
+- public:
+-  explicit DeferredShapingDisallowScope(const LayoutView& view,
+-                                        bool disable = true)
+-      : controller_(view.GetDeferredShapingController()),
+-        previous_value_(controller_.AllowDeferredShaping()) {
+-    if (disable)
+-      controller_.SetAllowDeferredShaping(PassKey(), false);
+-  }
+-
+-  ~DeferredShapingDisallowScope() {
+-    controller_.SetAllowDeferredShaping(PassKey(), previous_value_);
+-  }
+-
+-  DeferredShapingDisallowScope(DeferredShapingDisallowScope&&) = delete;
+-  DeferredShapingDisallowScope(const DeferredShapingDisallowScope&) = delete;
+-  DeferredShapingDisallowScope& operator=(const DeferredShapingDisallowScope&) =
+-      delete;
+-
+- private:
+-  DeferredShapingController& controller_;
+-  const bool previous_value_;
+-};
+-
+-// We can see logs with |--v=N| or |--vmodule=deferred_shaping=N| where N is a
+-// verbose level, as well as the |--enable-logging=stderr| CLI argument.
+-#define DEFERRED_SHAPING_VLOG(verbose_level) \
+-  LAZY_STREAM(                               \
+-      VLOG_STREAM(verbose_level),            \
+-      ((verbose_level) <= ::logging::GetVlogLevel("deferred_shaping")))
+-
+-}  // namespace blink
+-
+-#endif  // THIRD_PARTY_BLINK_RENDERER_CORE_LAYOUT_DEFERRED_SHAPING_H_
+--- a/third_party/blink/renderer/core/layout/deferred_shaping_controller.cc
++++ /dev/null
+@@ -1,214 +0,0 @@
+-// Copyright 2022 The Chromium Authors
+-// Use of this source code is governed by a BSD-style license that can be
+-// found in the LICENSE file.
+-
+-#include "third_party/blink/renderer/core/layout/deferred_shaping_controller.h"
+-
+-#include "third_party/blink/renderer/core/frame/local_frame.h"
+-#include "third_party/blink/renderer/core/frame/web_feature.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping.h"
+-#include "third_party/blink/renderer/core/layout/layout_box.h"
+-
+-namespace blink {
+-
+-constexpr base::TimeDelta kMaximumDeferDuration = base::Seconds(5);
+-
+-// static
+-DeferredShapingController* DeferredShapingController::From(
+-    const Document& document) {
+-  if (const auto* view = document.GetLayoutView())
+-    return &view->GetDeferredShapingController();
+-  return nullptr;
+-}
+-
+-// static
+-DeferredShapingController& DeferredShapingController::From(
+-    const NGLayoutInputNode input_node) {
+-  return input_node.GetLayoutBox()->View()->GetDeferredShapingController();
+-}
+-
+-DeferredShapingController::DeferredShapingController(Document& document)
+-    : document_(document) {}
+-
+-void DeferredShapingController::Trace(Visitor* visitor) const {
+-  visitor->Trace(document_);
+-  visitor->Trace(deferred_elements_);
+-}
+-
+-void DeferredShapingController::DisallowDeferredShaping() {
+-  DCHECK_EQ(CurrentViewportBottom(), kIndefiniteSize);
+-  DCHECK_EQ(CurrentMinimumTop(), LayoutUnit());
+-  default_allow_deferred_shaping_ = false;
+-}
+-
+-void DeferredShapingController::RegisterDeferred(Element& element) {
+-  deferred_elements_.insert(&element);
+-}
+-
+-bool DeferredShapingController::IsRegisteredDeferred(Element& element) const {
+-  return !deferred_elements_.empty() && deferred_elements_.Contains(&element);
+-}
+-
+-void DeferredShapingController::UnregisterDeferred(Element& element) {
+-  deferred_elements_.erase(&element);
+-}
+-
+-void DeferredShapingController::PerformPostLayoutTask() {
+-  if (deferred_elements_.size() <= 0)
+-    return;
+-  DCHECK(RuntimeEnabledFeatures::DeferredShapingEnabled());
+-  DEFERRED_SHAPING_VLOG(1) << "Deferred " << deferred_elements_.size()
+-                           << " elements";
+-  UseCounter::Count(*document_, WebFeature::kDeferredShapingWorked);
+-  reshaping_task_handle_ = PostDelayedCancellableTask(
+-      *document_->GetTaskRunner(TaskType::kInternalDefault), FROM_HERE,
+-      WTF::BindOnce(&DeferredShapingController::ReshapeAllDeferred,
+-                    WrapWeakPersistent(this), ReshapeReason::kLastResort),
+-      kMaximumDeferDuration);
+-}
+-
+-void DeferredShapingController::OnFirstContentfulPaint() {
+-  if (!RuntimeEnabledFeatures::DeferredShapingEnabled())
+-    return;
+-  if (!document_->HasFinishedParsing())
+-    return;
+-  if (!default_allow_deferred_shaping_ && deferred_elements_.empty())
+-    return;
+-  default_allow_deferred_shaping_ = false;
+-  // Cancels the last resort task.
+-  reshaping_task_handle_.Cancel();
+-  reshaping_task_handle_ = PostCancellableTask(
+-      *document_->GetTaskRunner(TaskType::kInternalDefault), FROM_HERE,
+-      WTF::BindOnce(&DeferredShapingController::ReshapeAllDeferred,
+-                    WrapWeakPersistent(this), ReshapeReason::kFcp));
+-}
+-
+-size_t DeferredShapingController::ReshapeAllDeferredInternal() {
+-  if (deferred_elements_.empty())
+-    return 0;
+-  size_t count = 0;
+-  for (auto& element : deferred_elements_) {
+-    if (!element->isConnected())
+-      continue;
+-    LayoutBox* box = element->GetLayoutBox();
+-    if (!box || !box->IsShapingDeferred())
+-      continue;
+-    ++count;
+-    box->MarkContainerChainForLayout();
+-    box->SetIntrinsicLogicalWidthsDirty();
+-    box->SetChildNeedsLayout();
+-    // Make sure we don't use cached NGFragmentItem objects.
+-    box->DisassociatePhysicalFragments();
+-    box->ClearLayoutResults();
+-  }
+-  deferred_elements_.clear();
+-  return count;
+-}
+-
+-void DeferredShapingController::ReshapeAllDeferred(ReshapeReason reason) {
+-  default_allow_deferred_shaping_ = false;
+-  size_t count = ReshapeAllDeferredInternal();
+-  if (count == 0)
+-    return;
+-
+-  const char* reason_string;
+-  WebFeature feature = WebFeature::kMaxValue;
+-  switch (reason) {
+-    case ReshapeReason::kComputedStyle:
+-      reason_string = "computed style";
+-      feature = WebFeature::kDeferredShaping2ReshapedByComputedStyle;
+-      break;
+-    case ReshapeReason::kDomContentLoaded:
+-      reason_string = "DOMContentLoaded after FCP";
+-      feature = WebFeature::kDeferredShaping2ReshapedByDomContentLoaded;
+-      break;
+-    case ReshapeReason::kFcp:
+-      reason_string = "FCP after DOMContentLoaded";
+-      feature = WebFeature::kDeferredShaping2ReshapedByFcp;
+-      break;
+-    case ReshapeReason::kFragmentAnchor:
+-      reason_string = "fragment anchor";
+-      feature = WebFeature::kDeferredShaping2DisabledByFragmentAnchor;
+-      break;
+-    case ReshapeReason::kFocus:
+-      reason_string = "focus";
+-      feature = WebFeature::kDeferredShaping2ReshapedByFocus;
+-      break;
+-    case ReshapeReason::kGeometryApi:
+-      reason_string = "geometry APIs";
+-      feature = WebFeature::kDeferredShaping2ReshapedByGeometry;
+-      break;
+-    case ReshapeReason::kInspector:
+-      reason_string = "inspector";
+-      feature = WebFeature::kDeferredShaping2ReshapedByInspector;
+-      break;
+-    case ReshapeReason::kLastResort:
+-      reason_string = "the last resort";
+-      feature = WebFeature::kDeferredShaping2ReshapedByLastResort;
+-      break;
+-    case ReshapeReason::kPrinting:
+-      reason_string = "printing";
+-      feature = WebFeature::kDeferredShaping2ReshapedByPrinting;
+-      break;
+-    case ReshapeReason::kScrollingApi:
+-      reason_string = "scrolling APIs";
+-      feature = WebFeature::kDeferredShaping2ReshapedByScrolling;
+-      break;
+-    case ReshapeReason::kTesting:
+-      reason_string = "a test";
+-      break;
+-  }
+-  if (feature != WebFeature::kMaxValue) {
+-    UseCounter::Count(*document_, feature);
+-  }
+-  DEFERRED_SHAPING_VLOG(1) << "Reshaped all " << count << " elements by "
+-                           << reason_string;
+-  return;
+-}
+-
+-void DeferredShapingController::ReshapeDeferred(ReshapeReason reason,
+-                                                const Node& target,
+-                                                CSSPropertyID property_id) {
+-  ReshapeAllDeferred(reason);
+-}
+-
+-void DeferredShapingController::ReshapeDeferredForWidth(
+-    const LayoutObject& object) {
+-  ReshapeAllDeferred(ReshapeReason::kGeometryApi);
+-}
+-
+-void DeferredShapingController::ReshapeDeferredForHeight(
+-    const LayoutObject& object) {
+-  ReshapeAllDeferred(ReshapeReason::kGeometryApi);
+-}
+-
+-void DeferredShapingController::OnResizeFrame() {
+-  // This function does not clear default_allow_deferred_shaping_.
+-  // We don't need precise geometry of a specific element, and it's ok
+-  // to defer elements after the resize.
+-  size_t count = ReshapeAllDeferredInternal();
+-  if (count <= 0)
+-    return;
+-  DEFERRED_SHAPING_VLOG(1) << "Reshaped all " << count
+-                           << " elements by resizing";
+-}
+-
+-void DeferredShapingController::OnFocus(const Element& element) {
+-  if (!RuntimeEnabledFeatures::DeferredShapingEnabled())
+-    return;
+-  // If the element is in the viewport, we don't need to reshape deferred
+-  // elements.
+-  if (const LayoutBox* box = element.GetLayoutBox()) {
+-    if (box->EverHadLayout()) {
+-      gfx::RectF rect =
+-          element.GetBoundingClientRectNoLifecycleUpdateNoAdjustment();
+-      // We don't take into account of scroll offset intentionally. Scrolled
+-      // viewport might contain deferred elements.
+-      if (rect.y() < box->View()->ViewHeight())
+-        return;
+-    }
+-  }
+-  ReshapeAllDeferred(ReshapeReason::kFocus);
+-}
+-
+-}  // namespace blink
+--- a/third_party/blink/renderer/core/layout/deferred_shaping_controller.h
++++ /dev/null
+@@ -1,128 +0,0 @@
+-// Copyright 2022 The Chromium Authors
+-// Use of this source code is governed by a BSD-style license that can be
+-// found in the LICENSE file.
+-
+-#ifndef THIRD_PARTY_BLINK_RENDERER_CORE_LAYOUT_DEFERRED_SHAPING_CONTROLLER_H_
+-#define THIRD_PARTY_BLINK_RENDERER_CORE_LAYOUT_DEFERRED_SHAPING_CONTROLLER_H_
+-
+-#include "third_party/blink/renderer/core/core_export.h"
+-#include "third_party/blink/renderer/core/css/css_property_names.h"
+-#include "third_party/blink/renderer/platform/geometry/layout_unit.h"
+-#include "third_party/blink/renderer/platform/heap/collection_support/heap_hash_set.h"
+-#include "third_party/blink/renderer/platform/heap/garbage_collected.h"
+-#include "third_party/blink/renderer/platform/heap/member.h"
+-#include "third_party/blink/renderer/platform/scheduler/public/post_cancellable_task.h"
+-
+-namespace blink {
+-
+-class DeferredShapingDisallowScope;
+-class DeferredShapingMinimumTopScope;
+-class DeferredShapingViewportScope;
+-class Document;
+-class Element;
+-class LayoutObject;
+-class LocalFrameView;
+-class NGLayoutInputNode;
+-class Node;
+-
+-enum class ReshapeReason {
+-  kComputedStyle,
+-  kDomContentLoaded,  // DOMCntentLoaded after FCP
+-  kFcp,               // FCP after DOMContentLoaded
+-  kFragmentAnchor,
+-  kFocus,
+-  kGeometryApi,
+-  kInspector,
+-  kLastResort,
+-  kPrinting,
+-  kScrollingApi,
+-  kTesting,
+-};
+-
+-// DeferredShapingController class manages states of the Deferred Shaping
+-// feature.
+-//
+-// A LayoutView owns a DeferredShapingController instance. A LayoutView and
+-// its DeferredShapingController are created and destroyed together.
+-class CORE_EXPORT DeferredShapingController
+-    : public GarbageCollected<DeferredShapingController> {
+- public:
+-  // This returns nullptr if the |document| is not active.
+-  static DeferredShapingController* From(const Document& document);
+-  static DeferredShapingController& From(const NGLayoutInputNode input_node);
+-  explicit DeferredShapingController(Document& document);
+-  void Trace(Visitor* visitor) const;
+-
+-  // Disable deferred shaping on the frame persistently.
+-  // This function should not be called during laying out.
+-  void DisallowDeferredShaping();
+-  bool DefaultAllowDeferredShaping() const {
+-    return default_allow_deferred_shaping_;
+-  }
+-
+-  // Manage states during layout
+-
+-  // The bottom position of the nearest scrollable ancestor.
+-  // This returns kIndefiniteSize if the viewport bottom is not registered.
+-  LayoutUnit CurrentViewportBottom() const { return current_viewport_bottom_; }
+-  void SetCurrentViewportBottom(base::PassKey<DeferredShapingViewportScope>,
+-                                LayoutUnit value) {
+-    current_viewport_bottom_ = value;
+-  }
+-  // The "minimum top" position of the box which is being laid out.
+-  LayoutUnit CurrentMinimumTop() const { return current_minimum_top_; }
+-  void SetCurrentMinimumTop(base::PassKey<DeferredShapingMinimumTopScope>,
+-                            LayoutUnit value) {
+-    current_minimum_top_ = value;
+-  }
+-  // A flag indicating whether the current layout container supports
+-  // deferred shaping.
+-  bool AllowDeferredShaping() const { return allow_deferred_shaping_; }
+-  void SetAllowDeferredShaping(base::PassKey<DeferredShapingDisallowScope>,
+-                               bool value) {
+-    allow_deferred_shaping_ = value;
+-  }
+-  void SetAllowDeferredShaping(base::PassKey<LocalFrameView>, bool value) {
+-    allow_deferred_shaping_ = value;
+-  }
+-
+-  void PerformPostLayoutTask();
+-  void RegisterDeferred(Element& element);
+-  bool IsRegisteredDeferred(Element& element) const;
+-  void UnregisterDeferred(Element& element);
+-
+-  // Manage reshaping
+-
+-  void ReshapeAllDeferred(ReshapeReason reason);
+-  // Reshape shaping-deferred elements so that |target| can return the precise
+-  // value of |property_id|.
+-  // If |property_id| is kInvalid, this function unlocks elements necessary for
+-  // any geometry of the target node.
+-  void ReshapeDeferred(ReshapeReason reason,
+-                       const Node& target,
+-                       CSSPropertyID property_id = CSSPropertyID::kInvalid);
+-  // Reshape shaping-deferred elements so that |object| can return the precise
+-  // width.
+-  void ReshapeDeferredForWidth(const LayoutObject& object);
+-  // Reshape shaping-deferred elements so that |object| can return the precise
+-  // height.
+-  void ReshapeDeferredForHeight(const LayoutObject& object);
+-  void OnFirstContentfulPaint();
+-  void OnResizeFrame();
+-  void OnFocus(const Element& element);
+-
+- private:
+-  size_t ReshapeAllDeferredInternal();
+-
+-  TaskHandle reshaping_task_handle_;
+-  HeapHashSet<Member<Element>> deferred_elements_;
+-  Member<Document> document_;
+-  LayoutUnit current_viewport_bottom_ = kIndefiniteSize;
+-  LayoutUnit current_minimum_top_;
+-  bool allow_deferred_shaping_ = false;
+-  bool default_allow_deferred_shaping_ = true;
+-};
+-
+-}  // namespace blink
+-
+-#endif  // THIRD_PARTY_BLINK_RENDERER_CORE_LAYOUT_DEFERRED_SHAPING_CONTROLLER_H_
+--- a/third_party/blink/renderer/core/layout/deferred_shaping_test.cc
++++ /dev/null
+@@ -1,597 +0,0 @@
+-// Copyright 2022 The Chromium Authors
+-// Use of this source code is governed by a BSD-style license that can be
+-// found in the LICENSE file.
+-
+-#include "third_party/blink/renderer/core/dom/range.h"
+-#include "third_party/blink/renderer/core/editing/position_with_affinity.h"
+-#include "third_party/blink/renderer/core/geometry/dom_rect.h"
+-#include "third_party/blink/renderer/core/html_names.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping_controller.h"
+-#include "third_party/blink/renderer/core/layout/ng/ng_physical_box_fragment.h"
+-#include "third_party/blink/renderer/core/page/print_context.h"
+-#include "third_party/blink/renderer/core/testing/core_unit_test_helper.h"
+-#include "third_party/blink/renderer/core/testing/null_execution_context.h"
+-#include "third_party/blink/renderer/platform/fonts/shaping/shape_result_inline_headers.h"
+-#include "third_party/blink/renderer/platform/testing/runtime_enabled_features_test_helpers.h"
+-
+-namespace blink {
+-
+-class DeferredShapingTest : public RenderingTest {
+- protected:
+-  bool IsDefer(const char* id_value) const {
+-    const auto* layout_object = GetLayoutObjectByElementId(id_value);
+-    return layout_object && layout_object->IsShapingDeferred();
+-  }
+-
+-  void ScrollAndLayout(double new_scroll_top) {
+-    GetDocument().scrollingElement()->setScrollTop(new_scroll_top);
+-    UpdateAllLifecyclePhasesForTest();
+-  }
+-
+- private:
+-  ScopedDeferredShapingForTest enable_deferred_shapign_{true};
+-};
+-
+-TEST_F(DeferredShapingTest, Basic) {
+-  SetBodyInnerHTML(R"HTML(
+-<div style="height:1800px"></div>
+-<div id="target">IFC</div>
+-)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target"));
+-
+-  ScrollAndLayout(1800);
+-  EXPECT_FALSE(IsDefer("target"));
+-}
+-
+-TEST_F(DeferredShapingTest, NoViewportMargin) {
+-  // The box starting around y=600 (== viewport height) is deferred.
+-  SetBodyInnerHTML(R"HTML(
+-<div style="height:600px"></div>
+-<div id="target">IFC</div>
+-)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target"));
+-}
+-
+-TEST_F(DeferredShapingTest, AlreadyAuto) {
+-  // If the element has content-visibility:auto, it never be deferred.
+-  SetBodyInnerHTML(R"HTML(
+-<div style="height:1800px"></div>
+-<div id="target" style="content-visibility:auto">IFC</div>
+-)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_FALSE(IsDefer("target"));
+-
+-  ScrollAndLayout(1800);
+-  EXPECT_FALSE(IsDefer("target"));
+-}
+-
+-TEST_F(DeferredShapingTest, AlreadyHidden) {
+-  // If the element has content-visibility:hidden, it never be deferred.
+-  SetBodyInnerHTML(R"HTML(
+-<div style="height:1800px"></div>
+-<div id="target" style="content-visibility:hidden">IFC</div>
+-)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_FALSE(IsDefer("target"));
+-
+-  ScrollAndLayout(1800);
+-  EXPECT_FALSE(IsDefer("target"));
+-}
+-
+-TEST_F(DeferredShapingTest, DynamicAuto) {
+-  // If a deferred element gets content-visibility:auto, it stops deferring.
+-  SetBodyInnerHTML(R"HTML(
+-<div style="height:1800px"></div>
+-<div id="target">IFC</div>
+-)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target"));
+-
+-  GetElementById("target")->setAttribute("style", "content-visibility:auto");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_FALSE(IsDefer("target"));
+-
+-  ScrollAndLayout(1800);
+-  EXPECT_FALSE(IsDefer("target"));
+-}
+-
+-TEST_F(DeferredShapingTest, DynamicHidden) {
+-  // If a deferred element gets content-visibility:hidden, it stops deferring.
+-  SetBodyInnerHTML(R"HTML(
+-<div style="height:1800px"></div>
+-<div id="target">IFC</div>
+-)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target"));
+-
+-  GetElementById("target")->setAttribute("style", "content-visibility:hidden");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_FALSE(IsDefer("target"));
+-
+-  GetElementById("target")->setAttribute("style", "content-visibility:visible");
+-  // A change of content-visibility property triggers a full layout, and the
+-  // target box is determined as "deferred" again.
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target"));
+-
+-  ScrollAndLayout(1800);
+-  EXPECT_FALSE(IsDefer("target"));
+-}
+-
+-TEST_F(DeferredShapingTest, DynamicPropertyChange) {
+-  // If a property of a deferred element is changed, it keeps deferred.
+-  SetBodyInnerHTML(R"HTML(
+-<div style="height:1800px"></div>
+-<div id="target">IFC</div>
+-)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target"));
+-
+-  GetElementById("target")->setAttribute("style", "width: 10em;");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target"));
+-}
+-
+-TEST_F(DeferredShapingTest, ListMarkerCrash) {
+-  SetBodyInnerHTML(R"HTML(
+-<div style="height:1800px"></div>
+-<ul>
+-<li id="target">IFC</li>
+-</ul>)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target"));
+-
+-  // Re-layout the target while deferred.
+-  GetElementById("target")->setTextContent("foobar");
+-  UpdateAllLifecyclePhasesForTest();
+-  // Pass if no crash.
+-}
+-
+-TEST_F(DeferredShapingTest, FragmentItemCache) {
+-  SetBodyInnerHTML(R"HTML(
+-<div style="height:1800px"></div>
+-<p id="target" style="font-family:Times; width:100px">
+-MMM MMMMM MMMMM MMM MMMMM MMMM MMM MMMM MMM.
+-MMM MMMMM MMMMM MMM MMMMM MMMM MMM MMMM MMM.
+-MMM MMMMM MMMMM MMM MMMMM MMMM MMM MMMM MMM.
+-MMM MMMMM MMMMM MMM MMMMM MMMM MMM MMMM MMM.
+-MMM MMMMM MMMMM MMM MMMMM MMMM MMM MMMM MMM.
+-MMM MMMMM MMMMM MMM MMMMM MMMM MMM MMMM MMM.
+-MMM MMMMM MMMMM MMM MMMMM MMMM MMM MMMM MMM.
+-MMM MMMMM MMMMM MMM MMMMM MMMM MMM MMMM MMM.
+-</p>)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target"));
+-  auto* target_box = GetLayoutBoxByElementId("target");
+-  const LayoutUnit deferred_item_width =
+-      (*target_box->PhysicalFragments().begin())
+-          .Items()
+-          ->Items()[0]
+-          .Size()
+-          .width;
+-
+-  ScrollAndLayout(1800);
+-  EXPECT_FALSE(IsDefer("target"));
+-  EXPECT_NE(deferred_item_width, (*target_box->PhysicalFragments().begin())
+-                                     .Items()
+-                                     ->Items()[0]
+-                                     .Size()
+-                                     .width);
+-}
+-
+-TEST_F(DeferredShapingTest, FragmentItemCacheWithMinMax) {
+-  SetBodyInnerHTML(R"HTML(
+-<div style="height:1800px"></div>
+-<div style="display:flex">
+-<div style="max-width: 100px; align-self:center; flex:1 1 auto">
+-<p id="target-p" style="font-family:Times;max-width: 100px;">
+-MMM MMMMM MMMMM MMM MMMMM MMMM MMM MMMM MMM.
+-MMM MMMMM MMMMM MMM MMMMM MMMM MMM MMMM MMM.
+-MMM MMMMM MMMMM MMM MMMMM MMMM MMM MMMM MMM.
+-MMM MMMMM MMMMM MMM MMMMM MMMM MMM MMMM MMM.
+-MMM MMMMM MMMMM MMM MMMMM MMMM MMM MMMM MMM.
+-MMM MMMMM MMMMM MMM MMMMM MMMM MMM MMMM MMM.
+-MMM MMMMM MMMMM MMM MMMMM MMMM MMM MMMM MMM.
+-MMM MMMMM MMMMM MMM MMMMM MMMM MMM MMMM MMM.
+-</p></div></div>)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target-p"));
+-  auto* target_box = GetLayoutBoxByElementId("target-p");
+-  const LayoutUnit deferred_item_width =
+-      (*target_box->PhysicalFragments().begin())
+-          .Items()
+-          ->Items()[0]
+-          .Size()
+-          .width;
+-
+-  ScrollAndLayout(1800);
+-  EXPECT_FALSE(IsDefer("target-p"));
+-  EXPECT_NE(deferred_item_width, (*target_box->PhysicalFragments().begin())
+-                                     .Items()
+-                                     ->Items()[0]
+-                                     .Size()
+-                                     .width);
+-}
+-
+-// crbug.com/1327891
+-TEST_F(DeferredShapingTest, FragmentAssociationAfterUnlock) {
+-  SetBodyInnerHTML(R"HTML(
+-<div style="height:1800px"></div>
+-<div id="target">IFC</div>)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target"));
+-  auto* box = GetLayoutBoxByElementId("target");
+-  auto* fragment = box->GetPhysicalFragment(0);
+-  EXPECT_EQ(box, fragment->GetLayoutObject());
+-
+-  ScrollAndLayout(1800);
+-  EXPECT_FALSE(IsDefer("target"));
+-  EXPECT_EQ(nullptr, fragment->GetLayoutObject());
+-}
+-
+-TEST_F(DeferredShapingTest, UpdateTextInDeferred) {
+-  SetBodyInnerHTML(R"HTML(
+-<div style="height:1800px"></div>
+-<p id="target">IFC</p>
+-</ul>)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target"));
+-
+-  DeferredShapingController::From(GetDocument())->DisallowDeferredShaping();
+-
+-  // Re-layout the target while it was deferred but deferred shaping is
+-  // disabled. We had an inconsistent state issue.
+-  GetElementById("target")->setTextContent("foobar");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target"));
+-}
+-
+-TEST_F(DeferredShapingTest, UnlockNestedDeferred) {
+-  // 'M' is used here because it is typically wider than ' '.
+-  SetBodyInnerHTML(
+-      uR"HTML(<div  style="font-family:Times; font-size:50px;">
+-<p>IFC<ruby>b<rt id="ref2">MMMMMMM MMMMMMM MMMMMMM</rt></ruby></p>
+-<div style="height:1800px"></div>
+-<p id="target">IFC<ruby>b<rt id="target2">MMMMMMM MMMMMMM MMMMMMM</rt></ruby>
+-</p></div>)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target"));
+-  EXPECT_TRUE(IsDefer("target2"));
+-
+-  ScrollAndLayout(1800);
+-  // Nested deferred IFCs are re-shaped together.
+-  EXPECT_FALSE(IsDefer("target"));
+-  EXPECT_FALSE(IsDefer("target2"));
+-  EXPECT_EQ(GetElementById("ref2")->clientWidth(),
+-            GetElementById("target2")->clientWidth());
+-}
+-
+-TEST_F(DeferredShapingTest, UnlockOnSwitchingToFlex) {
+-  SetBodyInnerHTML(R"HTML(<div style="height:1800px"></div>
+-<p id="target">IFC</p>)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target"));
+-
+-  GetElementById("target")->setAttribute("style", "display:flex");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_FALSE(IsDefer("target"));
+-}
+-
+-TEST_F(DeferredShapingTest, UnlockOnSwitchingToAnotherBlockFlow) {
+-  SetBodyInnerHTML(R"HTML(<div style="height:1800px"></div>
+-<p id="target">IFC</p>)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target"));
+-
+-  GetElementById("target")->setAttribute("style", "display:inline-block");
+-  UpdateAllLifecyclePhasesForTest();
+-  // Switching from 'block' to 'inline-block' unlocks the element
+-  // then locks the element again.
+-  EXPECT_TRUE(IsDefer("target"));
+-}
+-
+-TEST_F(DeferredShapingTest, UnlockOnDetach) {
+-  SetBodyInnerHTML(R"HTML(<div style="height:1800px"></div>
+-<div id="container"><p id="target">IFC</p></div>)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target"));
+-
+-  GetElementById("container")->setAttribute("style", "display:none");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_FALSE(IsDefer("target"));
+-}
+-
+-TEST_F(DeferredShapingTest, UnlockOnSwithcingToBfc) {
+-  SetBodyInnerHTML(R"HTML(<div style="height:1800px"></div>
+-<p id="target">IFC</p>)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target"));
+-
+-  GetElementById("target")->appendChild(
+-      GetDocument().CreateRawElement(html_names::kDivTag));
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_FALSE(IsDefer("target"));
+-}
+-
+-// crbug.com/1324458
+-TEST_F(DeferredShapingTest, UnlockOnSwithcingToBfcByChildPositionChange) {
+-  SetBodyInnerHTML(R"HTML(<div style="height:1800px"></div>
+-<li id="target">\n<div id="abs" style="position:absolute"></div></li>)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target"));
+-
+-  GetElementById("abs")->setAttribute("style", "position:static");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_FALSE(IsDefer("target"));
+-}
+-
+-// crbug.com/1335731
+-TEST_F(DeferredShapingTest, KeepDeferredAfterTextChange) {
+-  SetBodyInnerHTML(R"HTML(<div style="height:1800px"></div>
+-<p id="target">ifc<p>)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target"));
+-
+-  auto* target = GetElementById("target");
+-  target->appendChild(GetDocument().createTextNode("ifc2 "));
+-  target->appendChild(GetDocument().createTextNode("ifc3 "));
+-  UpdateAllLifecyclePhasesForTest();
+-  target->normalize();
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target"));
+-}
+-
+-TEST_F(DeferredShapingTest, ScrollIntoView) {
+-  SetBodyInnerHTML(R"HTML(<div style="height:1800px"></div>
+-<div><p id="prior">IFC</p></div>
+-<div style="height:3600px"></div>
+-<p id="ancestor">IFC<span style="display:inline-block" id="target"></sapn></p>
+-)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("prior"));
+-  EXPECT_TRUE(IsDefer("ancestor"));
+-
+-  GetElementById("target")->scrollIntoView();
+-  EXPECT_FALSE(IsDefer("prior"));
+-  EXPECT_FALSE(IsDefer("ancestor"));
+-}
+-
+-TEST_F(DeferredShapingTest, ElementGeometry) {
+-  SetBodyInnerHTML(R"HTML(<div style="height:1800px"></div>
+-<p id="ancestor">IFC
+-<span style="display:inline-block" id="previous">MMMM MMMM MMMM</sapn>
+-<span id="target">inline</span>
+-</p>)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("previous"));
+-  EXPECT_TRUE(IsDefer("ancestor"));
+-
+-  GetElementById("target")->getBoundingClientRect();
+-  EXPECT_FALSE(IsDefer("previous"));
+-  EXPECT_FALSE(IsDefer("ancestor"));
+-}
+-
+-TEST_F(DeferredShapingTest, ElementGeometryContainingDeferred) {
+-  SetBodyInnerHTML(R"HTML(<div style="display:inline-block" id="reference">
+-<div style="display:inline-block">MMMM MMMM MMMM</div></div>
+-<div style="height:1800px"></div>
+-<div style="display:inline-block" id="target">
+-<div style="display:inline-block" id="target-child">MMMM MMMM MMMM</div></div>
+-)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target-child"));
+-
+-  DOMRect& reference = *GetElementById("reference")->getBoundingClientRect();
+-  DOMRect& target = *GetElementById("target")->getBoundingClientRect();
+-  EXPECT_EQ(reference.width(), target.width());
+-  EXPECT_EQ(reference.height(), target.height());
+-  EXPECT_FALSE(IsDefer("target-child"));
+-}
+-
+-TEST_F(DeferredShapingTest, ElementGeometryAllReshape) {
+-  SetBodyInnerHTML(R"HTML(<div style="height:1800px"></div>
+-<p id="previous">Previous IFC</p>
+-<p id="ancestor">IFC
+-<span id="inline_target">inline</span>
+-</p>
+-<div id="block_target"><p id="inner">IFC</p></div>
+-<div id="abs_block" style="position:absolute; right:10px; bottom:42px"></div>
+-)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("previous"));
+-  EXPECT_TRUE(IsDefer("ancestor"));
+-  EXPECT_TRUE(IsDefer("inner"));
+-
+-  To<HTMLElement>(GetElementById("inline_target"))->offsetWidthForBinding();
+-  EXPECT_FALSE(IsDefer("previous"));
+-  EXPECT_FALSE(IsDefer("ancestor"));
+-
+-  To<HTMLElement>(GetElementById("block_target"))->offsetHeightForBinding();
+-  EXPECT_FALSE(IsDefer("previous"));
+-  EXPECT_FALSE(IsDefer("inner"));
+-
+-  To<HTMLElement>(GetElementById("abs_block"))->getBoundingClientRect();
+-  EXPECT_FALSE(IsDefer("previous"));
+-  EXPECT_FALSE(IsDefer("abs_block"));
+-}
+-
+-TEST_F(DeferredShapingTest, RangeGetClientRects) {
+-  SetBodyInnerHTML(R"HTML(<div style="height:1800px"></div>
+-<p id="ancestor">IFC
+-<span style="display:inline-block" id="previous">MMMM MMMM MMMM</sapn>
+-<span id="target">inline</span>
+-</p>)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("previous"));
+-  EXPECT_TRUE(IsDefer("ancestor"));
+-
+-  Element* target = GetElementById("target");
+-  Range* range = GetDocument().createRange();
+-  range->setStart(target, 0);
+-  range->setEnd(target, 1);
+-  // getClientRects() should re-shape all elements.
+-  range->getClientRects();
+-
+-  EXPECT_FALSE(IsDefer("previous"));
+-  EXPECT_FALSE(IsDefer("ancestor"));
+-}
+-
+-TEST_F(DeferredShapingTest, RangeGetBoundingClientRect) {
+-  SetBodyInnerHTML(R"HTML(<div style="height:1800px"></div>
+-<p id="ancestor">IFC
+-<span style="display:inline-block" id="previous">MMMM MMMM MMMM</sapn>
+-<span id="target">inline</span>
+-</p>)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("previous"));
+-  EXPECT_TRUE(IsDefer("ancestor"));
+-
+-  Element* target = GetElementById("target");
+-  Range* range = GetDocument().createRange();
+-  range->setStart(target, 0);
+-  range->setEnd(target, 1);
+-  // getBoundingClientRect() should re-shape all elements.
+-  range->getBoundingClientRect();
+-
+-  EXPECT_FALSE(IsDefer("previous"));
+-  EXPECT_FALSE(IsDefer("ancestor"));
+-}
+-
+-TEST_F(DeferredShapingTest, NonLayoutNGBlockFlow) {
+-  SetBodyInnerHTML(R"HTML(
+-<div style="height:1800px"></div>
+-<table><caption id="target">IFC</caption></table>)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  // LayoutNGTableCaption, which is not a subclass of LayoutNGBlockFlow,
+-  // should support IsShapingDeferred().
+-  EXPECT_TRUE(IsDefer("target"));
+-}
+-
+-TEST_F(DeferredShapingTest, ShapeResultCrash) {
+-  StringBuilder builder;
+-  builder.ReserveCapacity(1000);
+-  builder.Append(R"HTML(
+-<div style="height:1800px"></div><p>)HTML");
+-  for (unsigned i = 0; i < HarfBuzzRunGlyphData::kMaxCharacterIndex + 10; ++i)
+-    builder.Append('M');
+-  builder.Append("</p>");
+-  SetBodyInnerHTML(builder.ToString());
+-  UpdateAllLifecyclePhasesForTest();
+-  // Pass if no crashes.
+-}
+-
+-TEST_F(DeferredShapingTest, InnerText) {
+-  SetBodyInnerHTML(R"HTML(
+-<div style="height:1800px">Not-deferred</div>
+-<div id="target">IFC</div>
+-)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target"));
+-  EXPECT_EQ("Not-deferred\nIFC", GetDocument().body()->innerText());
+-}
+-
+-TEST_F(DeferredShapingTest, PositionForPoint) {
+-  SetBodyInnerHTML(R"HTML(
+-<div style="height:1800px">Not-deferred</div>
+-<div id="target">IFC</div>
+-)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target"));
+-
+-  auto& target = To<Element>(*GetElementById("target"));
+-  Node* text = target.firstChild();
+-  gfx::Rect text_rect =
+-      MakeGarbageCollected<Range>(GetDocument(), text, 0, text, 3)
+-          ->BoundingBox();
+-  auto position = target.GetLayoutBox()->PositionForPoint(
+-      {text_rect.width(), text_rect.height()});
+-  EXPECT_EQ(3, position.GetPosition().OffsetInContainerNode());
+-}
+-
+-TEST_F(DeferredShapingTest, DeferThenPrint) {
+-  SetBodyInnerHTML(R"HTML(
+-<div style="height:1800px"></div>
+-<div id="target">IFC</div>
+-)HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target"));
+-
+-  // Shaping-deferred elements are unlocked by printing.
+-  ScopedPrintContext print_context(&GetFrame());
+-  print_context->BeginPrintMode(800, 600);
+-  EXPECT_FALSE(IsDefer("target"));
+-}
+-
+-TEST_F(DeferredShapingTest, NoDeferDuringPrint) {
+-  SetBodyInnerHTML(R"HTML(
+-<div style="height:1800px"></div>
+-<div id="target">IFC</div>
+-)HTML");
+-
+-  // Printing layout produces no shaping-deferred elements.
+-  ScopedPrintContext print_context(&GetFrame());
+-  print_context->BeginPrintMode(800, 600);
+-  EXPECT_FALSE(IsDefer("target"));
+-}
+-
+-TEST_F(DeferredShapingTest, NoDeferForAutoSizing) {
+-  GetDocument().body()->setInnerHTML(R"HTML(
+-    <style>
+-    @media (max-height: 200px) {
+-      #target { display: inline; }
+-    }
+-    </style>
+-    <div style="height:1800px"></div>
+-    <div id="target">IFC</div>)HTML",
+-                                     ASSERT_NO_EXCEPTION);
+-
+-  GetFrame().View()->EnableAutoSizeMode({100, 100}, {1920, 4000});
+-  UpdateAllLifecyclePhasesForTest();
+-  // Pass if no DCHECK failures.
+-}
+-
+-TEST_F(DeferredShapingTest, ScrollIntoViewInInactiveDocument) {
+-  ScopedNullExecutionContext execution_context;
+-  Document* doc =
+-      Document::CreateForTest(execution_context.GetExecutionContext());
+-  Node* root = doc->appendChild(doc->CreateRawElement(html_names::kHTMLTag));
+-  To<Element>(root)->scrollIntoView();
+-  // PASS if no crash.
+-}
+-
+-TEST_F(DeferredShapingTest, ResizeFrame) {
+-  SetBodyInnerHTML(R"HTML(
+-      <div style="height:600px"></div>
+-      <div id="target" style="height:800px">IFC</div>
+-      <div id="target2">IFC2</div>
+-      )HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_TRUE(IsDefer("target"));
+-
+-  GetFrame().View()->SetLayoutSizeFixedToFrameSize(false);
+-  GetFrame().View()->SetLayoutSize({800, 1200});
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_FALSE(IsDefer("target"));
+-  EXPECT_TRUE(IsDefer("target2"));
+-}
+-
+-TEST_F(DeferredShapingTest, OnFocus) {
+-  SetBodyInnerHTML(R"HTML(
+-      <div id="target1" tabindex="1">IFC</div>
+-      <div style="height:600px"></div>
+-      <div id="target2" tabindex="1">IFC</div>
+-      )HTML");
+-  UpdateAllLifecyclePhasesForTest();
+-  EXPECT_FALSE(IsDefer("target1"));
+-  EXPECT_TRUE(IsDefer("target2"));
+-
+-  GetElementById("target1")->Focus();
+-  EXPECT_TRUE(IsDefer("target2"));
+-
+-  GetElementById("target2")->Focus();
+-  EXPECT_FALSE(IsDefer("target2"));
+-}
+-
+-}  // namespace blink
+--- a/third_party/blink/renderer/core/layout/layout_block_flow.cc
++++ b/third_party/blink/renderer/core/layout/layout_block_flow.cc
+@@ -42,7 +42,6 @@
+ #include "third_party/blink/renderer/core/frame/local_frame_view.h"
+ #include "third_party/blink/renderer/core/frame/web_feature.h"
+ #include "third_party/blink/renderer/core/html/shadow/shadow_element_names.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping_controller.h"
+ #include "third_party/blink/renderer/core/layout/hit_test_location.h"
+ #include "third_party/blink/renderer/core/layout/layout_flow_thread.h"
+ #include "third_party/blink/renderer/core/layout/layout_inline.h"
+@@ -3325,11 +3324,6 @@
+ void LayoutBlockFlow::MakeChildrenNonInline(LayoutObject* insertion_point) {
+   NOT_DESTROYED();
+ 
+-  if (IsShapingDeferred()) {
+-    View()->GetDeferredShapingController().UnregisterDeferred(
+-        *To<Element>(GetNode()));
+-  }
+-
+   // makeChildrenNonInline takes a block whose children are *all* inline and it
+   // makes sure that inline children are coalesced under anonymous blocks.
+   // If |insertionPoint| is defined, then it represents the insertion point for
+@@ -4775,9 +4769,4 @@
+   EnsureRareData().offset_mapping_ = offset_mapping;
+ }
+ 
+-void LayoutBlockFlow::StopDeferringShaping() const {
+-  if (HasNGInlineNodeData())
+-    GetNGInlineNodeData()->StopDeferringShaping();
+-}
+-
+ }  // namespace blink
+--- a/third_party/blink/renderer/core/layout/layout_block_flow.h
++++ b/third_party/blink/renderer/core/layout/layout_block_flow.h
+@@ -541,8 +541,6 @@
+   }
+   virtual void WillCollectInlines() { NOT_DESTROYED(); }
+ 
+-  void StopDeferringShaping() const;
+-
+ #if DCHECK_IS_ON()
+   void ShowLineTreeAndMark(const InlineBox* = nullptr,
+                            const char* = nullptr,
+--- a/third_party/blink/renderer/core/layout/layout_box.cc
++++ b/third_party/blink/renderer/core/layout/layout_box.cc
+@@ -3521,10 +3521,11 @@
+     return;
+ #if DCHECK_IS_ON()
+   // Column fragments are not really associated with a layout object.
+-  if (IsLayoutFlowThread())
++  if (IsLayoutFlowThread()) {
+     DCHECK(box_fragment.IsColumnBox());
+-  else if (!IsShapingDeferred())
++  } else {
+     DCHECK_EQ(this, box_fragment.GetLayoutObject());
++  }
+ #endif
+   ObjectPaintInvalidator(*this).SlowSetPaintingLayerNeedsRepaint();
+ }
+--- a/third_party/blink/renderer/core/layout/layout_box.h
++++ b/third_party/blink/renderer/core/layout/layout_box.h
+@@ -1224,8 +1224,6 @@
+   void FinalizeLayoutResults();
+ 
+   void ClearLayoutResults();
+-  // Clear LayoutObject fields of physical fragments.
+-  void DisassociatePhysicalFragments();
+ 
+   void RebuildFragmentTreeSpine();
+ 
+@@ -2408,6 +2406,9 @@
+   // Compute the border-box size from physical fragments.
+   LayoutSize ComputeSize() const;
+ 
++  // Clear LayoutObject fields of physical fragments.
++  void DisassociatePhysicalFragments();
++
+   // The CSS border box rect for this box.
+   //
+   // The rectangle is in LocationContainer's physical coordinates in flipped
+--- a/third_party/blink/renderer/core/layout/layout_box_hot.cc
++++ b/third_party/blink/renderer/core/layout/layout_box_hot.cc
+@@ -197,10 +197,11 @@
+   // valid (see comment in `SetCachedLayoutResult`), don't return the fragment,
+   // since it will be used to iteration the invalid children when running
+   // simplified layout.
+-  if ((!physical_fragment.ChildrenValid() || IsShapingDeferred()) &&
++  if (!physical_fragment.ChildrenValid() &&
+       (size_cache_status == NGLayoutCacheStatus::kNeedsSimplifiedLayout ||
+-       cache_status == NGLayoutCacheStatus::kNeedsSimplifiedLayout))
++       cache_status == NGLayoutCacheStatus::kNeedsSimplifiedLayout)) {
+     return nullptr;
++  }
+ 
+   // Update our temporary cache status, if the size cache check indicated we
+   // might need simplified layout.
+--- a/third_party/blink/renderer/core/layout/layout_box_model_object.cc
++++ b/third_party/blink/renderer/core/layout/layout_box_model_object.cc
+@@ -33,7 +33,6 @@
+ #include "third_party/blink/renderer/core/frame/settings.h"
+ #include "third_party/blink/renderer/core/frame/web_feature.h"
+ #include "third_party/blink/renderer/core/html/html_body_element.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping.h"
+ #include "third_party/blink/renderer/core/layout/geometry/transform_state.h"
+ #include "third_party/blink/renderer/core/layout/layout_block.h"
+ #include "third_party/blink/renderer/core/layout/layout_flexible_box.h"
+@@ -360,9 +359,6 @@
+     Layer()->SetNeedsCompositingInputsUpdate();
+   }
+ 
+-  if ((IsOutOfFlowPositioned() || IsRelPositioned()) && Parent())
+-    DisallowDeferredShapingIfNegativePositioned();
+-
+   if (Element* element = DynamicTo<Element>(GetNode())) {
+     if (IsOutOfFlowPositioned() && StyleRef().AnchorScroll())
+       element->EnsureAnchorScrollData();
+@@ -371,15 +367,6 @@
+   }
+ }
+ 
+-void LayoutBoxModelObject::InsertedIntoTree() {
+-  LayoutObject::InsertedIntoTree();
+-  if (IsOutOfFlowPositioned() || IsRelPositioned())
+-    DisallowDeferredShapingIfNegativePositioned();
+-}
+-
+-void LayoutBoxModelObject::DisallowDeferredShapingIfNegativePositioned() const {
+-}
+-
+ void LayoutBoxModelObject::CreateLayerAfterStyleChange() {
+   NOT_DESTROYED();
+   DCHECK(!HasLayer() && !Layer());
+--- a/third_party/blink/renderer/core/layout/layout_box_model_object.h
++++ b/third_party/blink/renderer/core/layout/layout_box_model_object.h
+@@ -601,7 +601,6 @@
+   virtual void LocalQuadsForSelf(Vector<gfx::QuadF>& quads) const;
+ 
+   void WillBeDestroyed() override;
+-  void InsertedIntoTree() override;
+ 
+   PhysicalOffset AdjustedPositionRelativeTo(const PhysicalOffset&,
+                                             const Element*) const;
+@@ -730,7 +729,6 @@
+         &LayoutBoxModelObject::BorderTop, &LayoutBoxModelObject::BorderRight,
+         &LayoutBoxModelObject::BorderBottom, &LayoutBoxModelObject::BorderLeft);
+   }
+-  void DisallowDeferredShapingIfNegativePositioned() const;
+ };
+ 
+ template <>
+--- a/third_party/blink/renderer/core/layout/layout_media.cc
++++ b/third_party/blink/renderer/core/layout/layout_media.cc
+@@ -32,7 +32,6 @@
+ #include "third_party/blink/renderer/core/frame/visual_viewport.h"
+ #include "third_party/blink/renderer/core/html/media/html_media_element.h"
+ #include "third_party/blink/renderer/core/html/media/media_controls.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping.h"
+ #include "third_party/blink/renderer/core/layout/layout_view.h"
+ #include "third_party/blink/renderer/core/page/page.h"
+ 
+@@ -56,7 +55,6 @@
+ 
+ void LayoutMedia::UpdateLayout() {
+   NOT_DESTROYED();
+-  DeferredShapingDisallowScope disallow_deferred(*View());
+   LayoutSize old_size(ContentWidth(), ContentHeight());
+ 
+   LayoutImage::UpdateLayout();
+--- a/third_party/blink/renderer/core/layout/layout_object.cc
++++ b/third_party/blink/renderer/core/layout/layout_object.cc
+@@ -5033,14 +5033,6 @@
+ #endif
+ }
+ 
+-bool LayoutObject::IsShapingDeferred() const {
+-  if (const auto* block_flow = DynamicTo<LayoutBlockFlow>(this)) {
+-    return block_flow->HasNGInlineNodeData() &&
+-           block_flow->GetNGInlineNodeData()->IsShapingDeferred();
+-  }
+-  return false;
+-}
+-
+ bool LayoutObject::ForceLegacyLayoutForChildren() const {
+   NOT_DESTROYED();
+   if (bitfields_.ForceLegacyLayout())
+--- a/third_party/blink/renderer/core/layout/layout_object.h
++++ b/third_party/blink/renderer/core/layout/layout_object.h
+@@ -3616,8 +3616,6 @@
+     return context && !context->ShouldPaintChildren();
+   }
+ 
+-  bool IsShapingDeferred() const;
+-
+   // This flag caches StyleRef().HasBorderDecoration() &&
+   // !Table()->ShouldCollapseBorders().
+   bool HasNonCollapsedBorderDecoration() const {
+--- a/third_party/blink/renderer/core/layout/layout_view.cc
++++ b/third_party/blink/renderer/core/layout/layout_view.cc
+@@ -41,7 +41,6 @@
+ #include "third_party/blink/renderer/core/html/plugin_document.h"
+ #include "third_party/blink/renderer/core/input/event_handler.h"
+ #include "third_party/blink/renderer/core/inspector/inspector_trace_events.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping_controller.h"
+ #include "third_party/blink/renderer/core/layout/geometry/transform_state.h"
+ #include "third_party/blink/renderer/core/layout/hit_test_result.h"
+ #include "third_party/blink/renderer/core/layout/layout_counter.h"
+@@ -105,9 +104,6 @@
+ LayoutView::LayoutView(ContainerNode* document)
+     : LayoutBlockFlow(document),
+       frame_view_(To<Document>(document)->View()),
+-      deferred_shaping_controller_(
+-          MakeGarbageCollected<DeferredShapingController>(
+-              *To<Document>(document))),
+       layout_state_(nullptr),
+       layout_quote_head_(nullptr),
+       layout_counter_count_(0),
+@@ -135,7 +131,6 @@
+ 
+ void LayoutView::Trace(Visitor* visitor) const {
+   visitor->Trace(frame_view_);
+-  visitor->Trace(deferred_shaping_controller_);
+   visitor->Trace(fragmentation_context_);
+   visitor->Trace(layout_quote_head_);
+   visitor->Trace(svg_text_descendants_);
+--- a/third_party/blink/renderer/core/layout/layout_view.h
++++ b/third_party/blink/renderer/core/layout/layout_view.h
+@@ -40,7 +40,6 @@
+ 
+ namespace blink {
+ 
+-class DeferredShapingController;
+ class LayoutQuote;
+ class LocalFrameView;
+ class NamedPagesMapper;
+@@ -360,11 +359,6 @@
+ 
+   TrackedDescendantsMap& SvgTextDescendantsMap();
+ 
+-  DeferredShapingController& GetDeferredShapingController() const {
+-    NOT_DESTROYED();
+-    return *deferred_shaping_controller_;
+-  }
+-
+  protected:
+   void StyleDidChange(StyleDifference, const ComputedStyle* old_style) override;
+   int ViewLogicalWidthForBoxSizing() const {
+@@ -390,7 +384,6 @@
+   bool UpdateLogicalWidthAndColumnWidth() override;
+ 
+   Member<LocalFrameView> frame_view_;
+-  Member<DeferredShapingController> deferred_shaping_controller_;
+ 
+   // The page size.
+   // This is only used during printing to split the content into pages.
+--- a/third_party/blink/renderer/core/layout/ng/flex/ng_flex_layout_algorithm.cc
++++ b/third_party/blink/renderer/core/layout/ng/flex/ng_flex_layout_algorithm.cc
+@@ -7,7 +7,6 @@
+ #include <memory>
+ #include "third_party/abseil-cpp/absl/types/optional.h"
+ #include "third_party/blink/renderer/core/frame/web_feature.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping.h"
+ #include "third_party/blink/renderer/core/layout/flexible_box_algorithm.h"
+ #include "third_party/blink/renderer/core/layout/geometry/logical_size.h"
+ #include "third_party/blink/renderer/core/layout/layout_box.h"
+@@ -1285,8 +1284,6 @@
+       NGConstraintSpace child_space = BuildSpaceForLayout(
+           flex_item.ng_input_node_, flex_item.FlexedBorderBoxSize(),
+           flex_item.max_content_contribution_);
+-      auto minimum_top = DeferredShapingMinimumTopScope::CreateDelta(
+-          Node(), cross_axis_offset);
+ 
+       // We need to get the item's cross axis size given its new main size. If
+       // the new main size is the item's inline size, then we have to do a
+@@ -1458,8 +1455,6 @@
+             flex_item.ng_input_node, flex_item.main_axis_final_size,
+             /* override_inline_size */ absl::nullopt,
+             line_output.line_cross_size);
+-        auto minimum_top = DeferredShapingMinimumTopScope::CreateDelta(
+-            Node(), offset.block_offset);
+         layout_result =
+             flex_item.ng_input_node.Layout(child_space,
+                                            /* break_token */ nullptr);
+@@ -1740,8 +1735,6 @@
+         flex_item->ng_input_node, flex_item->main_axis_final_size,
+         /* override_inline_size */ absl::nullopt, line_cross_size_for_stretch,
+         offset.block_offset, min_block_size_should_encompass_intrinsic_size);
+-    auto minimum_top = DeferredShapingMinimumTopScope::CreateDelta(
+-        Node(), offset.block_offset);
+     const NGLayoutResult* layout_result = flex_item->ng_input_node.Layout(
+         child_space, item_break_token, early_break_in_child);
+ 
+--- a/third_party/blink/renderer/core/layout/ng/inline/ng_inline_node.cc
++++ b/third_party/blink/renderer/core/layout/ng/inline/ng_inline_node.cc
+@@ -11,10 +11,7 @@
+ #include "base/debug/dump_without_crashing.h"
+ #include "base/ranges/algorithm.h"
+ #include "base/trace_event/trace_event.h"
+-#include "build/build_config.h"
+ #include "third_party/blink/renderer/core/frame/web_feature.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping_controller.h"
+ #include "third_party/blink/renderer/core/layout/layout_block_flow.h"
+ #include "third_party/blink/renderer/core/layout/layout_counter.h"
+ #include "third_party/blink/renderer/core/layout/layout_inline.h"
+@@ -444,15 +441,6 @@
+   }
+ }
+ 
+-bool IsDeferrableContent(const NGInlineNodeData& data) {
+-  for (wtf_size_t i = 0; i < data.text_content.length(); ++i) {
+-    if (data.text_content[i] != kObjectReplacementCharacter &&
+-        !IsASCIISpace(data.text_content[i]))
+-      return true;
+-  }
+-  return false;
+-}
+-
+ }  // namespace
+ 
+ NGInlineNode::NGInlineNode(LayoutBlockFlow* block)
+@@ -492,44 +480,6 @@
+   }
+ }
+ 
+-void NGInlineNode::ShapeTextOrDefer(const NGConstraintSpace& space) const {
+-  if (Data().shaping_state_ != NGInlineNodeData::kShapingNone) {
+-    if (!ShouldBeReshaped())
+-      return;
+-  }
+-
+-  NGInlineNodeData* data = MutableData();
+-  auto& ds_controller = DeferredShapingController::From(*this);
+-  NGInlineNodeData::ShapingState new_state = NGInlineNodeData::kShapingDone;
+-  if (ds_controller.AllowDeferredShaping() &&
+-      !GetLayoutBox()->IsInsideFlowThread() &&
+-      Style().IsContentVisibilityVisible() &&
+-      Style().ViewTransitionName().empty()) {
+-    DCHECK(IsHorizontalWritingMode(Style().GetWritingMode()));
+-    const LayoutUnit viewport_bottom = ds_controller.CurrentViewportBottom();
+-    DCHECK_NE(viewport_bottom, kIndefiniteSize) << GetLayoutBox();
+-    LayoutUnit top = ds_controller.CurrentMinimumTop();
+-    // For css2.1/t080301-c411-vt-mrgn-00-b.html we should apply negative
+-    // margin, but not positive margin because of margin collapse.
+-    NGBoxStrut margins = ComputeMarginsForSelf(space, Style());
+-    if (margins.block_start < LayoutUnit())
+-      top += margins.block_start;
+-    if (viewport_bottom >= LayoutUnit() && IsDeferrableContent(*data) &&
+-        top > viewport_bottom) {
+-      new_state = NGInlineNodeData::kShapingDeferred;
+-
+-      if (Element* element = DynamicTo<Element>(GetDOMNode())) {
+-        ds_controller.RegisterDeferred(*element);
+-      } else {
+-        // We don't support deferring anonymous IFCs because DisplayLock
+-        // supports only elements.
+-        new_state = NGInlineNodeData::kShapingDone;
+-      }
+-    }
+-  }
+-  ShapeTextIncludingFirstLine(new_state, MutableData(), nullptr, nullptr);
+-}
+-
+ void NGInlineNode::PrepareLayout(NGInlineNodeData* previous_data) const {
+   // Scan list of siblings collecting all in-flow non-atomic inlines. A single
+   // NGInlineNode represent a collection of adjacent non-atomic inlines.
+@@ -537,20 +487,8 @@
+   DCHECK(data);
+   CollectInlines(data, previous_data);
+   SegmentText(data);
+-  if ((previous_data && previous_data->IsShapingDone()) ||
+-      UNLIKELY(IsTextCombine())) {
+-    ShapeTextIncludingFirstLine(
+-        NGInlineNodeData::kShapingDone, data,
+-        previous_data ? &previous_data->text_content : nullptr, nullptr);
+-  } else if (previous_data && previous_data->IsShapingDeferred()) {
+-    if (IsDisplayLocked()) {
+-      ShapeTextIncludingFirstLine(NGInlineNodeData::kShapingDeferred, data,
+-                                  &previous_data->text_content, nullptr);
+-    } else {
+-      ShapeTextIncludingFirstLine(NGInlineNodeData::kShapingDone, data, nullptr,
+-                                  nullptr);
+-    }
+-  }
++  ShapeTextIncludingFirstLine(
++      data, previous_data ? &previous_data->text_content : nullptr, nullptr);
+   AssociateItemsWithInlines(data);
+   DCHECK_EQ(data, MutableData());
+ 
+@@ -957,15 +895,8 @@
+   // Relocates |ShapeResult| in |previous_data| after |offset|+|length|
+   editor.Run();
+   node.SegmentText(data);
+-  if (previous_data->IsShapingDone()) {
+-    node.ShapeTextIncludingFirstLine(NGInlineNodeData::kShapingDone, data,
+-                                     &previous_data->text_content,
+-                                     &previous_data->items);
+-  } else if (previous_data->IsShapingDeferred()) {
+-    node.ShapeTextIncludingFirstLine(NGInlineNodeData::kShapingDeferred, data,
+-                                     &previous_data->text_content,
+-                                     &previous_data->items);
+-  }
++  node.ShapeTextIncludingFirstLine(data, &previous_data->text_content,
++                                   &previous_data->items);
+   node.AssociateItemsWithInlines(data);
+   return true;
+ }
+@@ -1418,16 +1349,8 @@
+     }
+ 
+     // Shape each item with the full context of the entire node.
+-    scoped_refptr<ShapeResult> shape_result;
+-    if (MutableData() && MutableData()->IsShapingDeferred() &&
+-        font.PrimaryFont()) {
+-      unsigned length = end_offset - start_item.StartOffset();
+-      shape_result = ShapeResult::CreateForSpacesWithPerGlyphWidth(
+-          &font, TextDirection::kLtr, start_item.StartOffset(), length,
+-          font.PrimaryFont()->AvgCharWidth());
+-    } else {
+-      shape_result = shaper.Shape(start_item, font, end_offset);
+-    }
++    scoped_refptr<ShapeResult> shape_result =
++        shaper.Shape(start_item, font, end_offset);
+ 
+     if (UNLIKELY(spacing.SetSpacing(font.GetFontDescription()))) {
+       DCHECK(!IsTextCombine()) << GetLayoutBlockFlow();
+@@ -1530,22 +1453,11 @@
+ }
+ 
+ void NGInlineNode::ShapeTextIncludingFirstLine(
+-    NGInlineNodeData::ShapingState new_state,
+     NGInlineNodeData* data,
+     const String* previous_text,
+     const HeapVector<NGInlineItem>* previous_items) const {
+-  DCHECK_NE(new_state, NGInlineNodeData::kShapingNone);
+-  data->shaping_state_ = new_state;
+-#if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_ANDROID)
+-  // Because |ElapsedTimer| causes notable speed regression on Android and
+-  // ChromeOS, we don't use it. See http://crbug.com/1261519
+-#else
+-  FontPerformance::ShapeTextTimingScope shape_text_timing_scope;
+-#endif
+-
+   ShapeText(data, previous_text, previous_items);
+-  if (new_state == NGInlineNodeData::kShapingDone)
+-    ShapeTextForFirstLineIfNeeded(data);
++  ShapeTextForFirstLineIfNeeded(data);
+ }
+ 
+ void NGInlineNode::AssociateItemsWithInlines(NGInlineNodeData* data) const {
+@@ -1586,7 +1498,6 @@
+     const NGColumnSpannerPath* column_spanner_path,
+     NGInlineChildLayoutContext* context) const {
+   PrepareLayoutIfNeeded();
+-  ShapeTextOrDefer(constraint_space);
+ 
+   const auto* inline_break_token = To<NGInlineBreakToken>(break_token);
+   NGInlineLayoutAlgorithm algorithm(*this, constraint_space, inline_break_token,
+@@ -1951,7 +1862,6 @@
+     const NGConstraintSpace& space,
+     const MinMaxSizesFloatInput& float_input) const {
+   PrepareLayoutIfNeeded();
+-  ShapeTextOrDefer(space);
+ 
+   // Compute the max of inline sizes of all line boxes with 0 available inline
+   // size. This gives the min-content, the width where lines wrap at every
+@@ -1983,17 +1893,6 @@
+          GetLayoutBox()->GetDocument().GetStyleEngine().UsesFirstLineRules();
+ }
+ 
+-bool NGInlineNode::ShouldBeReshaped() const {
+-  if (!Data().IsShapingDeferred())
+-    return false;
+-  return !IsDisplayLocked();
+-}
+-
+-bool NGInlineNode::IsDisplayLocked() const {
+-  return DeferredShapingController::From(*this).IsRegisteredDeferred(
+-      *To<Element>(GetDOMNode()));
+-}
+-
+ void NGInlineNode::CheckConsistency() const {
+ #if DCHECK_IS_ON()
+   const HeapVector<NGInlineItem>& items = Data().items;
+--- a/third_party/blink/renderer/core/layout/ng/inline/ng_inline_node.h
++++ b/third_party/blink/renderer/core/layout/ng/inline/ng_inline_node.h
+@@ -102,12 +102,6 @@
+ 
+   bool IsBlockLevel() { return EnsureData().is_block_level_; }
+ 
+-  // This returns true if Deferred Shaping was applied to this IFC, and
+-  // it's unlocked and should be reshaped.
+-  bool ShouldBeReshaped() const;
+-  // TODO(crbug.com/1259085): Rename this function.
+-  bool IsDisplayLocked() const;
+-
+   // @return if this node can contain the "first formatted line".
+   // https://www.w3.org/TR/CSS22/selector.html#first-formatted-line
+   bool CanContainFirstFormattedLine() const {
+@@ -165,11 +159,9 @@
+                  const Font* override_font = nullptr) const;
+   void ShapeTextForFirstLineIfNeeded(NGInlineNodeData*) const;
+   void ShapeTextIncludingFirstLine(
+-      NGInlineNodeData::ShapingState new_state,
+       NGInlineNodeData* data,
+       const String* previous_text,
+       const HeapVector<NGInlineItem>* previous_items) const;
+-  void ShapeTextOrDefer(const NGConstraintSpace& space) const;
+   void AssociateItemsWithInlines(NGInlineNodeData*) const;
+ 
+   NGInlineNodeData* MutableData() const {
+--- a/third_party/blink/renderer/core/layout/ng/inline/ng_inline_node_data.h
++++ b/third_party/blink/renderer/core/layout/ng/inline/ng_inline_node_data.h
+@@ -17,7 +17,7 @@
+ // Data which is required for inline nodes.
+ struct CORE_EXPORT NGInlineNodeData final : NGInlineItemsData {
+  public:
+-  NGInlineNodeData() : shaping_state_(kShapingNone) {}
++  NGInlineNodeData() = default;
+   bool IsBidiEnabled() const { return is_bidi_enabled_; }
+   TextDirection BaseDirection() const {
+     return static_cast<TextDirection>(base_direction_);
+@@ -34,10 +34,6 @@
+                : *first_line_items_;
+   }
+ 
+-  bool IsShapingDeferred() const { return shaping_state_ == kShapingDeferred; }
+-  bool IsShapingDone() const { return shaping_state_ == kShapingDone; }
+-  void StopDeferringShaping() { shaping_state_ = kShapingNone; }
+-
+   void Trace(Visitor* visitor) const override;
+ 
+  private:
+@@ -88,9 +84,6 @@
+   // May not be able to use line caches even when the line or earlier lines are
+   // not dirty.
+   unsigned changes_may_affect_earlier_lines_ : 1;
+-
+-  enum ShapingState { kShapingNone, kShapingDone, kShapingDeferred };
+-  unsigned shaping_state_ : 2;
+ };
+ 
+ }  // namespace blink
+--- a/third_party/blink/renderer/core/layout/ng/ng_block_layout_algorithm.cc
++++ b/third_party/blink/renderer/core/layout/ng/ng_block_layout_algorithm.cc
+@@ -11,7 +11,6 @@
+ #include "third_party/abseil-cpp/absl/types/optional.h"
+ #include "third_party/blink/renderer/core/frame/web_feature.h"
+ #include "third_party/blink/renderer/core/html/forms/html_input_element.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping.h"
+ #include "third_party/blink/renderer/core/layout/layout_multi_column_flow_thread.h"
+ #include "third_party/blink/renderer/core/layout/layout_object.h"
+ #include "third_party/blink/renderer/core/layout/ng/inline/ng_inline_cursor.h"
+@@ -1636,7 +1635,6 @@
+     // exclusion space.
+     DCHECK(child_space.ExclusionSpace().IsEmpty());
+ 
+-    auto minimum_top = CreateMinimumTopScopeForChild(child, child_data);
+     const NGLayoutResult* layout_result = LayoutBlockChild(
+         child_space, child_break_token, early_break_,
+         /* column_spanner_path */ nullptr, &To<NGBlockNode>(child));
+@@ -1790,7 +1788,6 @@
+       /* is_new_fc */ false, forced_bfc_block_offset,
+       has_clearance_past_adjoining_floats,
+       previous_inflow_position->block_end_annotation_space);
+-  auto minimum_top = CreateMinimumTopScopeForChild(child, child_data);
+   const NGLayoutResult* layout_result =
+       LayoutInflow(child_space, child_break_token, early_break_,
+                    column_spanner_path_, &child, inline_child_layout_context);
+@@ -1979,7 +1976,6 @@
+     NGConstraintSpace new_child_space = CreateConstraintSpaceForChild(
+         child, child_break_token, *child_data, ChildAvailableSize(),
+         /* is_new_fc */ false, child_bfc_block_offset);
+-    auto minimum_top = CreateMinimumTopScopeForChild(child, *child_data);
+     layout_result =
+         LayoutInflow(new_child_space, child_break_token, early_break_,
+                      column_spanner_path_, &child, inline_child_layout_context);
+@@ -2001,7 +1997,6 @@
+       new_child_space = CreateConstraintSpaceForChild(
+           child, child_break_token, *child_data, ChildAvailableSize(),
+           /* is_new_fc */ false, child_bfc_block_offset);
+-      auto minimum_top2 = CreateMinimumTopScopeForChild(child, *child_data);
+       layout_result = LayoutInflow(new_child_space, child_break_token,
+                                    early_break_, column_spanner_path_, &child,
+                                    inline_child_layout_context);
+@@ -2818,21 +2813,6 @@
+   return builder.ToConstraintSpace();
+ }
+ 
+-DeferredShapingMinimumTopScope
+-NGBlockLayoutAlgorithm::CreateMinimumTopScopeForChild(
+-    const NGLayoutInputNode child,
+-    const NGInflowChildData& child_data) const {
+-  LayoutUnit minimum_top =
+-      DeferredShapingController::From(Node()).CurrentMinimumTop();
+-  if (Node().CreatesNewFormattingContext()) {
+-    minimum_top += child_data.bfc_offset_estimate.block_offset;
+-  } else {
+-    minimum_top = minimum_top - ConstraintSpace().BfcOffset().block_offset +
+-                  child_data.bfc_offset_estimate.block_offset;
+-  }
+-  return DeferredShapingMinimumTopScope(child, minimum_top);
+-}
+-
+ void NGBlockLayoutAlgorithm::PropagateBaselineFromLineBox(
+     const NGPhysicalFragment& child,
+     LayoutUnit block_offset) {
+@@ -3226,7 +3206,6 @@
+       placeholder, /* child_break_token */ nullptr, child_data, available_size,
+       is_new_fc);
+ 
+-  auto minimum_top = CreateMinimumTopScopeForChild(placeholder, child_data);
+   const NGLayoutResult* result = placeholder.Layout(space);
+   LogicalOffset offset = BorderScrollbarPadding().StartOffset();
+   if (Node().IsTextArea()) {
+--- a/third_party/blink/renderer/core/layout/ng/ng_block_layout_algorithm.h
++++ b/third_party/blink/renderer/core/layout/ng/ng_block_layout_algorithm.h
+@@ -23,7 +23,6 @@
+ namespace blink {
+ 
+ enum class NGBreakStatus;
+-class DeferredShapingMinimumTopScope;
+ class NGConstraintSpace;
+ class NGFragment;
+ 
+@@ -114,10 +113,6 @@
+       bool has_clearance_past_adjoining_floats = false,
+       LayoutUnit block_start_annotation_space = LayoutUnit());
+ 
+-  [[nodiscard]] DeferredShapingMinimumTopScope CreateMinimumTopScopeForChild(
+-      const NGLayoutInputNode child,
+-      const NGInflowChildData& child_data) const;
+-
+   // @return Estimated BFC block offset for the "to be layout" child.
+   NGInflowChildData ComputeChildData(const NGPreviousInflowPosition&,
+                                      NGLayoutInputNode,
+--- a/third_party/blink/renderer/core/layout/ng/ng_block_node.cc
++++ b/third_party/blink/renderer/core/layout/ng/ng_block_node.cc
+@@ -12,7 +12,6 @@
+ #include "third_party/blink/renderer/core/html/html_marquee_element.h"
+ #include "third_party/blink/renderer/core/input_type_names.h"
+ #include "third_party/blink/renderer/core/layout/box_layout_extra_input.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping.h"
+ #include "third_party/blink/renderer/core/layout/geometry/writing_mode_converter.h"
+ #include "third_party/blink/renderer/core/layout/intrinsic_sizing_info.h"
+ #include "third_party/blink/renderer/core/layout/layout_block_flow.h"
+@@ -509,9 +508,6 @@
+       box_, fragment_geometry->border_box_size.inline_size);
+ 
+   PrepareForLayout();
+-  DeferredShapingDisallowScope disallow_deferred(
+-      *box_->View(), Style().HasTransform() ||
+-                         !IsHorizontalWritingMode(Style().GetWritingMode()));
+ 
+   NGLayoutAlgorithmParams params(*this, *fragment_geometry, constraint_space,
+                                  break_token, early_break);
+@@ -1028,9 +1024,6 @@
+     return MinMaxSizesResult(sizes, /* depends_on_block_constraints */ false);
+   }
+ 
+-  DeferredShapingDisallowScope disallow_deferred(
+-      *box_->View(), Style().HasTransform() ||
+-                         !IsHorizontalWritingMode(Style().GetWritingMode()));
+   bool is_orthogonal_flow_root =
+       !IsParallelWritingMode(container_writing_mode, Style().GetWritingMode());
+ 
+--- a/third_party/blink/renderer/core/layout/ng/ng_out_of_flow_layout_part.cc
++++ b/third_party/blink/renderer/core/layout/ng/ng_out_of_flow_layout_part.cc
+@@ -7,7 +7,6 @@
+ #include <math.h>
+ 
+ #include "third_party/blink/renderer/core/layout/anchor_scroll_data.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping.h"
+ #include "third_party/blink/renderer/core/layout/geometry/writing_mode_converter.h"
+ #include "third_party/blink/renderer/core/layout/layout_block.h"
+ #include "third_party/blink/renderer/core/layout/layout_box.h"
+@@ -2058,7 +2057,6 @@
+         ConstraintSpace(), node, block_offset, &builder, /* is_new_fc */ true,
+         /* requires_content_before_breaking */ false);
+   }
+-  DeferredShapingMinimumTopScope minimum_top_scope(node, block_offset);
+   NGConstraintSpace space = builder.ToConstraintSpace();
+ 
+   if (is_repeatable)
+--- a/third_party/blink/renderer/core/layout/scroll_anchor_test.cc
++++ b/third_party/blink/renderer/core/layout/scroll_anchor_test.cc
+@@ -16,7 +16,6 @@
+ #include "third_party/blink/renderer/core/frame/web_local_frame_impl.h"
+ #include "third_party/blink/renderer/core/geometry/dom_rect.h"
+ #include "third_party/blink/renderer/core/html/html_element.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping_controller.h"
+ #include "third_party/blink/renderer/core/layout/layout_box.h"
+ #include "third_party/blink/renderer/core/page/print_context.h"
+ #include "third_party/blink/renderer/core/paint/paint_layer_scrollable_area.h"
+@@ -1111,13 +1110,6 @@
+ };
+ 
+ TEST_F(MAYBE_ScrollAnchorFindInPageTest, FindInPageResultPrioritized) {
+-  // getBoundingClientRect() clears physical fragments of deferred boxes to
+-  // return precise geometry. So the sizes of some boxes are 0x0 during
+-  // ScrollAnchor handling.
+-  // The behavior doesn't cause issues in production because deferred boxes
+-  // are usually re-shaped before user interaction.
+-  DeferredShapingController::From(GetDocument())->DisallowDeferredShaping();
+-
+   ResizeAndFocus();
+   SetHtmlInnerHTML(R"HTML(
+     <style>
+--- a/third_party/blink/renderer/core/layout/svg/layout_svg_root.cc
++++ b/third_party/blink/renderer/core/layout/svg/layout_svg_root.cc
+@@ -27,7 +27,6 @@
+ #include "third_party/blink/renderer/core/frame/frame_owner.h"
+ #include "third_party/blink/renderer/core/frame/local_frame.h"
+ #include "third_party/blink/renderer/core/frame/web_feature.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping.h"
+ #include "third_party/blink/renderer/core/layout/hit_test_result.h"
+ #include "third_party/blink/renderer/core/layout/intrinsic_sizing_info.h"
+ #include "third_party/blink/renderer/core/layout/layout_embedded_content.h"
+@@ -204,7 +203,6 @@
+ void LayoutSVGRoot::UpdateLayout() {
+   NOT_DESTROYED();
+   DCHECK(NeedsLayout());
+-  DeferredShapingDisallowScope disallow_deferred(*View());
+ 
+   LayoutSize old_size = Size();
+   if (!RuntimeEnabledFeatures::LayoutNGReplacedNoBoxSettersEnabled()) {
+--- a/third_party/blink/renderer/core/paint/ng/ng_box_fragment_painter.cc
++++ b/third_party/blink/renderer/core/paint/ng/ng_box_fragment_painter.cc
+@@ -754,9 +754,6 @@
+   DCHECK(layout_object->IsLayoutBlock());
+   DCHECK(box_fragment_.IsInlineFormattingContext());
+ 
+-  if (layout_object->IsShapingDeferred())
+-    return;
+-
+   // When the layout-tree gets into a bad state, we can end up trying to paint
+   // a fragment with inline children, without a paint fragment. See:
+   // http://crbug.com/1022545
+--- a/third_party/blink/renderer/core/paint/timing/paint_timing.cc
++++ b/third_party/blink/renderer/core/paint/timing/paint_timing.cc
+@@ -15,7 +15,6 @@
+ #include "third_party/blink/renderer/core/frame/local_dom_window.h"
+ #include "third_party/blink/renderer/core/frame/local_frame.h"
+ #include "third_party/blink/renderer/core/frame/local_frame_view.h"
+-#include "third_party/blink/renderer/core/layout/deferred_shaping_controller.h"
+ #include "third_party/blink/renderer/core/loader/document_loader.h"
+ #include "third_party/blink/renderer/core/loader/interactive_detector.h"
+ #include "third_party/blink/renderer/core/loader/progress_tracker.h"
+@@ -384,11 +383,6 @@
+         stamp - timing_for_reporting->NavigationStartAsMonotonicTime();
+     coordinator->OnFirstContentfulPaint(fcp);
+   }
+-
+-  if (auto* ds_controller =
+-          DeferredShapingController::From(*GetSupplementable())) {
+-    ds_controller->OnFirstContentfulPaint();
+-  }
+ }
+ 
+ void PaintTiming::SetFirstImagePaintPresentation(base::TimeTicks stamp) {
+--- a/third_party/blink/renderer/platform/fonts/font_performance.cc
++++ b/third_party/blink/renderer/platform/fonts/font_performance.cc
+@@ -5,14 +5,12 @@
+ #include "third_party/blink/renderer/platform/fonts/font_performance.h"
+ 
+ #include "base/metrics/histogram_macros.h"
+-#include "build/build_config.h"
+ 
+ namespace blink {
+ 
+ base::TimeDelta FontPerformance::primary_font_;
+ base::TimeDelta FontPerformance::primary_font_in_style_;
+ base::TimeDelta FontPerformance::system_fallback_;
+-base::TimeDelta FontPerformance::shaping_;
+ unsigned FontPerformance::in_style_ = 0;
+ 
+ // static
+@@ -23,9 +21,6 @@
+                       FontPerformance::PrimaryFontTimeInStyle());
+   UMA_HISTOGRAM_TIMES("Renderer.Font.SystemFallback.FCP",
+                       FontPerformance::SystemFallbackFontTime());
+-#if !BUILDFLAG(IS_CHROMEOS) && !BUILDFLAG(IS_ANDROID)
+-  UMA_HISTOGRAM_TIMES("Renderer.Font.Shaping.FCP", shaping_);
+-#endif
+ }
+ 
+ // static
+@@ -36,9 +31,6 @@
+                       FontPerformance::PrimaryFontTimeInStyle());
+   UMA_HISTOGRAM_TIMES("Renderer.Font.SystemFallback.DomContentLoaded",
+                       FontPerformance::SystemFallbackFontTime());
+-#if !BUILDFLAG(IS_CHROMEOS) && !BUILDFLAG(IS_ANDROID)
+-  UMA_HISTOGRAM_TIMES("Renderer.Font.Shaping.DomContentLoaded", shaping_);
+-#endif
+ }
+ 
+ }  // namespace blink
+--- a/third_party/blink/renderer/platform/fonts/font_performance.h
++++ b/third_party/blink/renderer/platform/fonts/font_performance.h
+@@ -21,7 +21,6 @@
+     primary_font_ = base::TimeDelta();
+     primary_font_in_style_ = base::TimeDelta();
+     system_fallback_ = base::TimeDelta();
+-    shaping_ = base::TimeDelta();
+   }
+ 
+   // The aggregated time spent in |DeterminePrimarySimpleFontData|.
+@@ -48,22 +47,9 @@
+     system_fallback_ += time;
+   }
+ 
+-  static void AddShapingTime(base::TimeDelta time) {
+-    if (UNLIKELY(!IsMainThread()))
+-      return;
+-    shaping_ += time;
+-  }
+-
+   static void MarkFirstContentfulPaint();
+   static void MarkDomContentLoaded();
+ 
+-  struct ShapeTextTimingScope final {
+-    ~ShapeTextTimingScope() {
+-      FontPerformance::AddShapingTime(shaping_timer.Elapsed());
+-    }
+-    base::ElapsedTimer shaping_timer;
+-  };
+-
+   class StyleScope {
+    public:
+     StyleScope() { ++in_style_; }
+@@ -77,7 +63,6 @@
+   static base::TimeDelta primary_font_;
+   static base::TimeDelta primary_font_in_style_;
+   static base::TimeDelta system_fallback_;
+-  static base::TimeDelta shaping_;
+   static unsigned in_style_;
+ };
+ 
+--- a/third_party/blink/renderer/platform/fonts/shaping/shape_result.cc
++++ b/third_party/blink/renderer/platform/fonts/shaping/shape_result.cc
+@@ -1519,13 +1519,11 @@
+   return result;
+ }
+ 
+-scoped_refptr<ShapeResult> ShapeResult::CreateForSpacesInternal(
+-    const Font* font,
+-    TextDirection direction,
+-    unsigned start_index,
+-    unsigned length,
+-    float total_width,
+-    float per_glyph_width) {
++scoped_refptr<ShapeResult> ShapeResult::CreateForSpaces(const Font* font,
++                                                        TextDirection direction,
++                                                        unsigned start_index,
++                                                        unsigned length,
++                                                        float width) {
+   DCHECK_GT(length, 0u);
+   const SimpleFontData* font_data = font->PrimaryFont();
+   DCHECK(font_data);
+@@ -1540,39 +1538,17 @@
+   scoped_refptr<ShapeResult::RunInfo> run = RunInfo::Create(
+       font_data, hb_direction, CanvasRotationInVertical::kRegular,
+       HB_SCRIPT_COMMON, start_index, length, length);
+-  result->width_ = run->width_ = total_width;
+-  if (per_glyph_width > 0 && length != run->NumGlyphs())
+-    per_glyph_width = per_glyph_width * length / run->NumGlyphs();
++  result->width_ = run->width_ = width;
+   length = run->NumGlyphs();
+   for (unsigned i = 0; i < length; i++) {
+     const unsigned index = blink::IsLtr(direction) ? i : length - 1 - i;
+-    run->glyph_data_[i] = {font_data->SpaceGlyph(), index, true,
+-                           per_glyph_width > 0 ? per_glyph_width : total_width};
+-    total_width = 0;
++    run->glyph_data_[i] = {font_data->SpaceGlyph(), index, true, width};
++    width = 0;
+   }
+   result->runs_.push_back(std::move(run));
+   return result;
+ }
+ 
+-scoped_refptr<ShapeResult> ShapeResult::CreateForSpaces(const Font* font,
+-                                                        TextDirection direction,
+-                                                        unsigned start_index,
+-                                                        unsigned length,
+-                                                        float width) {
+-  return CreateForSpacesInternal(font, direction, start_index, length, width,
+-                                 -1);
+-}
+-
+-scoped_refptr<ShapeResult> ShapeResult::CreateForSpacesWithPerGlyphWidth(
+-    const Font* font,
+-    TextDirection direction,
+-    unsigned start_index,
+-    unsigned length,
+-    float per_glyph_width) {
+-  return CreateForSpacesInternal(font, direction, start_index, length,
+-                                 per_glyph_width * length, per_glyph_width);
+-}
+-
+ scoped_refptr<ShapeResult> ShapeResult::CreateForStretchyMathOperator(
+     const Font* font,
+     TextDirection direction,
+--- a/third_party/blink/renderer/platform/fonts/shaping/shape_result.h
++++ b/third_party/blink/renderer/platform/fonts/shaping/shape_result.h
+@@ -145,13 +145,6 @@
+                                                     unsigned start_index,
+                                                     unsigned length,
+                                                     float width);
+-  // Each of glyphs has |per_glyph_width| advance.
+-  static scoped_refptr<ShapeResult> CreateForSpacesWithPerGlyphWidth(
+-      const Font* font,
+-      TextDirection direction,
+-      unsigned start_index,
+-      unsigned length,
+-      float per_glyph_width);
+   static scoped_refptr<ShapeResult> CreateForStretchyMathOperator(
+       const Font*,
+       TextDirection,
+@@ -533,13 +526,6 @@
+   friend class ShapeResultTest;
+   friend class StretchyOperatorShaper;
+ 
+-  static scoped_refptr<ShapeResult> CreateForSpacesInternal(
+-      const Font* font,
+-      TextDirection direction,
+-      unsigned start_index,
+-      unsigned length,
+-      float total_width,
+-      float per_glyph_width);
+   template <bool has_non_zero_glyph_offsets>
+   float ForEachGlyphImpl(float initial_advance,
+                          GlyphCallback,
+--- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
++++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
+@@ -981,10 +981,6 @@
+       status: "stable",
+     },
+     {
+-      // crbug.com/1259085
+-      name: "DeferredShaping",
+-    },
+-    {
+       name: "DeflateRawCompressionFormat",
+       status: "stable",
+     },
+--- a/tools/metrics/histograms/enums.xml
++++ b/tools/metrics/histograms/enums.xml
+@@ -41763,7 +41763,7 @@
+   <int value="4256" label="EventTimingInteractionId"/>
+   <int value="4257" label="SecurePaymentConfirmationOptOut"/>
+   <int value="4258" label="AnyPopoverAttribute"/>
+-  <int value="4259" label="DeferredShapingWorked"/>
++  <int value="4259" label="OBSOLETE_DeferredShapingWorked"/>
+   <int value="4260" label="OBSOLETE_DeferredShapingReshapedByForceLayout"/>
+   <int value="4261" label="MediaSourceGetHandle"/>
+   <int value="4262" label="IdentityInCanMakePaymentEvent"/>
+@@ -41845,19 +41845,20 @@
+   <int value="4333" label="PrivateAggregationApiAll"/>
+   <int value="4334" label="PrivateAggregationApiFledge"/>
+   <int value="4335" label="PrivateAggregationApiSharedStorage"/>
+-  <int value="4336" label="DeferredShaping2ReshapedByComputedStyle"/>
+-  <int value="4337" label="DeferredShaping2ReshapedByDomContentLoaded"/>
+-  <int value="4338" label="DeferredShaping2ReshapedByFcp"/>
+-  <int value="4339" label="DeferredShaping2DisabledByFragmentAnchor"/>
+-  <int value="4340" label="DeferredShaping2ReshapedByFocus"/>
+-  <int value="4341" label="DeferredShaping2ReshapedByGeometry"/>
+-  <int value="4342" label="DeferredShaping2ReshapedByInspector"/>
+-  <int value="4343" label="DeferredShaping2ReshapedByPrinting"/>
+-  <int value="4344" label="DeferredShaping2ReshapedByScrolling"/>
++  <int value="4336" label="OBSOLETE_DeferredShaping2ReshapedByComputedStyle"/>
++  <int value="4337"
++      label="OBSOLETE_DeferredShaping2ReshapedByDomContentLoaded"/>
++  <int value="4338" label="OBSOLETE_DeferredShaping2ReshapedByFcp"/>
++  <int value="4339" label="OBSOLETE_DeferredShaping2DisabledByFragmentAnchor"/>
++  <int value="4340" label="OBSOLETE_DeferredShaping2ReshapedByFocus"/>
++  <int value="4341" label="OBSOLETE_DeferredShaping2ReshapedByGeometry"/>
++  <int value="4342" label="OBSOLETE_DeferredShaping2ReshapedByInspector"/>
++  <int value="4343" label="OBSOLETE_DeferredShaping2ReshapedByPrinting"/>
++  <int value="4344" label="OBSOLETE_DeferredShaping2ReshapedByScrolling"/>
+   <int value="4345" label="LCPCandidateImageFromOriginDirtyStyle"/>
+   <int value="4346" label="V8TurboFanOsrCompileStarted"/>
+   <int value="4347" label="V8Document_HasRedemptionRecord_Method"/>
+-  <int value="4348" label="DeferredShaping2ReshapedByLastResort"/>
++  <int value="4348" label="OBSOLETE_DeferredShaping2ReshapedByLastResort"/>
+   <int value="4349" label="AudioContextSinkId"/>
+   <int value="4350" label="AudioContextSetSinkId"/>
+   <int value="4351" label="ViewportDependentLazyLoadedImageWithSizesAttribute"/>
+--- a/tools/metrics/histograms/metadata/renderer/histograms.xml
++++ b/tools/metrics/histograms/metadata/renderer/histograms.xml
+@@ -352,31 +352,6 @@
+   </summary>
+ </histogram>
+ 
+-<histogram name="Renderer.Font.Shaping.DomContentLoaded" units="ms"
+-    expires_after="2023-05-27">
+-  <owner>tkent@chromium.org</owner>
+-  <owner>kojii@chromium.org</owner>
+-  <owner>yosin@chromium.org</owner>
+-  <owner>layout-dev@chromium.org</owner>
+-  <summary>
+-    The time spent shaping font before DOMContentLoaded event. This would be
+-    helpful for evaluating performance of the &quot;deferred shaping&quot;
+-    feature.
+-  </summary>
+-</histogram>
+-
+-<histogram name="Renderer.Font.Shaping.FCP" units="ms"
+-    expires_after="2023-05-27">
+-  <owner>tkent@chromium.org</owner>
+-  <owner>kojii@chromium.org</owner>
+-  <owner>yosin@chromium.org</owner>
+-  <owner>layout-dev@chromium.org</owner>
+-  <summary>
+-    The time spent shaping font before FCP. This would be helpful for evaluating
+-    performance of the &quot;deferred shaping&quot; feature.
+-  </summary>
+-</histogram>
+-
+ <histogram name="Renderer.Font.SystemFallback.DomContentLoaded" units="ms"
+     expires_after="2023-06-04">
+   <owner>kojii@chromium.org</owner>
