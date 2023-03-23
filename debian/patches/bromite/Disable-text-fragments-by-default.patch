@@ -136,7 +136,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    UpdateBaseURL();
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -2835,10 +2835,9 @@
+@@ -2836,10 +2836,9 @@
      },
      {
        name: "TextFragmentIdentifiers",
