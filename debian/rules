@@ -107,6 +107,7 @@ GN_FLAGS += link_pulseaudio=true
 # Stable too old : dav1d, icu, libaom, libavif, libpng
 # Compile issues : jsoncpp, re2, snappy, woff2
 # Problematic    : harfbuzz-ng, libvpx, libyuv
+# Interdependent : libxslt depends upon libxml; libxml depends upon icu
 #
 SYS_LIBS :=               \
         brotli            \
@@ -117,9 +118,7 @@ SYS_LIBS :=               \
         libdrm            \
         libevent          \
         libwebp           \
-        libxml            \
         libXNVCtrl        \
-        libxslt           \
         opus              \
         zlib
 
@@ -139,7 +138,7 @@ SYS_LIBS :=               \
 
 # Uncomment if you are on testing/unstable (or a new enough distro)
 #GN_FLAGS += use_system_libpng=true
-#SYS_LIBS += dav1d icu libaom libavif libpng openh264
+#SYS_LIBS += dav1d icu libaom libavif libpng libxml libxslt openh264
 
 # Add extra flags for system libs
 GN_FLAGS +=                           \
