@@ -1,0 +1,362 @@
+From 8198e3845ab2175a96faea9dbc84e90f3b4a5bee Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Dominik=20R=C3=B6ttsches?= <drott@chromium.org>
+Date: Fri, 17 Feb 2023 13:32:18 +0000
+Subject: [PATCH] Manual revert of "Avoid memory leak of FontGlobalContext"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+The original change dropped the ::Remove() method that removed
+HarfBuzzFace instances from the HarfBuzzFontCache. [1] This has been
+identified to cause itself a memory leak regression when a high number
+of font instances is created, for example in animating variable fonts,
+see bug.
+
+This CL reverts the change manually, as the automatic revert did not
+apply cleanly anymore. It's a partial revert as the changes to
+font_global_context.cc are left in place.
+
+This revert has to work around issues in refcounting consistency of
+objects stored in FontDataCache by downgrading a DCHECK. For details see
+issue 1417160. This is considered important but a test-only problem at
+the moment, as in Blink the FontGlobalContext does not practically get
+taken down at the moment (without Parallel Text Shaping).
+
+Manually tested against tests from the bug report. [2] now runs
+indefinitely on Mac and memory consumption normalizes and does not show
+unbounded growth.
+
+[1] https://chromium-review.googlesource.com/c/chromium/src/+/3552068/12/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_face.cc#100
+[2] http://thierryblancpain.com/temp/crash/
+
+Bug: 778352, 1264280, 1417160
+Cq-Include-Trybots: luci.chromium.try:linux_chromium_tsan_rel_ng
+Change-Id: I870bf71c3a4f4cc880751cd20ff538b174e0db46
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4203630
+Commit-Queue: Dominik Röttsches <drott@chromium.org>
+Reviewed-by: Koji Ishii <kojii@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1106746}
+---
+ .../platform/fonts/font_platform_data.cc      |  6 ++-
+ .../platform/fonts/font_platform_data.h       |  2 +-
+ .../platform/fonts/shaping/harfbuzz_face.cc   | 49 ++++++++----------
+ .../platform/fonts/shaping/harfbuzz_face.h    | 16 +++---
+ .../fonts/shaping/harfbuzz_font_cache.cc      | 28 +++++++++++
+ .../fonts/shaping/harfbuzz_font_cache.h       | 50 +++++++++++--------
+ .../fonts/shaping/harfbuzz_font_data.h        | 11 ++--
+ 7 files changed, 96 insertions(+), 66 deletions(-)
+
+--- a/third_party/blink/renderer/platform/fonts/font_platform_data.cc
++++ b/third_party/blink/renderer/platform/fonts/font_platform_data.cc
+@@ -208,8 +208,10 @@
+ }
+ 
+ HarfBuzzFace* FontPlatformData::GetHarfBuzzFace() const {
+-  if (!harfbuzz_face_)
+-    harfbuzz_face_ = HarfBuzzFace::Create(const_cast<FontPlatformData*>(this));
++  if (!harfbuzz_face_) {
++    harfbuzz_face_ =
++        HarfBuzzFace::Create(const_cast<FontPlatformData*>(this), UniqueID());
++  }
+ 
+   return harfbuzz_face_.get();
+ }
+--- a/third_party/blink/renderer/platform/fonts/font_platform_data.h
++++ b/third_party/blink/renderer/platform/fonts/font_platform_data.h
+@@ -185,7 +185,7 @@
+   WebFontRenderStyle style_;
+ #endif
+ 
+-  mutable std::unique_ptr<HarfBuzzFace> harfbuzz_face_;
++  mutable scoped_refptr<HarfBuzzFace> harfbuzz_face_;
+   bool is_hash_table_deleted_value_ = false;
+ };
+ 
+--- a/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_face.cc
++++ b/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_face.cc
+@@ -62,22 +62,18 @@
+ 
+ namespace blink {
+ 
+-std::unique_ptr<HarfBuzzFace> HarfBuzzFace::Create(
+-    FontPlatformData* platform_data) {
+-  auto harfbuzz_font_data =
+-      FontGlobalContext::GetHarfBuzzFontCache().GetOrCreateFontData(
+-          platform_data);
+-  return base::WrapUnique(new HarfBuzzFace(platform_data, harfbuzz_font_data));
+-}
+-
+-HarfBuzzFace::HarfBuzzFace(FontPlatformData* platform_data,
+-                           scoped_refptr<HarfBuzzFontData> harfbuzz_font_data)
+-    : platform_data_(platform_data),
+-      unique_id_(platform_data->UniqueID()),
+-      harfbuzz_font_data_(harfbuzz_font_data),
+-      unscaled_font_(harfbuzz_font_data->unscaled_font_.get()) {}
++HarfBuzzFace::HarfBuzzFace(FontPlatformData* platform_data, uint64_t unique_id)
++    : platform_data_(platform_data), unique_id_(unique_id) {
++  HbFontCacheEntry* const cache_entry =
++      FontGlobalContext::GetHarfBuzzFontCache().RefOrNew(unique_id_,
++                                                         platform_data);
++  unscaled_font_ = cache_entry->HbFont();
++  harfbuzz_font_data_ = cache_entry->HbFontData();
++}
+ 
+-HarfBuzzFace::~HarfBuzzFace() = default;
++HarfBuzzFace::~HarfBuzzFace() {
++  FontGlobalContext::GetHarfBuzzFontCache().Remove(unique_id_);
++}
+ 
+ static hb_bool_t HarfBuzzGetGlyph(hb_font_t* hb_font,
+                                   void* font_data,
+@@ -276,7 +272,7 @@
+ 
+ Glyph HarfBuzzFace::HbGlyphForCharacter(UChar32 character) {
+   hb_codepoint_t glyph = 0;
+-  HarfBuzzGetNominalGlyph(unscaled_font_, harfbuzz_font_data_.get(), character,
++  HarfBuzzGetNominalGlyph(unscaled_font_, harfbuzz_font_data_, character,
+                           &glyph, nullptr);
+   return glyph;
+ }
+@@ -433,9 +429,7 @@
+   return face;
+ }
+ 
+-// TODO(yosin): We should move |CreateHarfBuzzFontData()| to
+-// "harfbuzz_font_cache.cc".
+-static scoped_refptr<HarfBuzzFontData> CreateHarfBuzzFontData(
++static scoped_refptr<HbFontCacheEntry> CreateHbFontCacheEntry(
+     hb_face_t* face,
+     SkTypeface* typeface) {
+   hb::unique_ptr<hb_font_t> ot_font(hb_font_create(face));
+@@ -456,23 +450,24 @@
+   // Creating a sub font means that non-available functions
+   // are found from the parent.
+   hb_font_t* const unscaled_font = hb_font_create_sub_font(ot_font.get());
+-  scoped_refptr<HarfBuzzFontData> harfbuzz_font_data =
+-      HarfBuzzFontData::Create(unscaled_font);
++  scoped_refptr<HbFontCacheEntry> cache_entry =
++      HbFontCacheEntry::Create(unscaled_font);
+   hb_font_set_funcs(unscaled_font,
+                     HarfBuzzSkiaFontFuncs::Get().GetFunctions(typeface),
+-                    harfbuzz_font_data.get(), nullptr);
+-  return harfbuzz_font_data;
++                    cache_entry->HbFontData(), nullptr);
++  return cache_entry;
+ }
+ 
+-scoped_refptr<HarfBuzzFontData> HarfBuzzFontCache::GetOrCreateFontData(
+-    FontPlatformData* platform_data) {
+-  const auto& result = font_map_.insert(platform_data->UniqueID(), nullptr);
++HbFontCacheEntry* HarfBuzzFontCache::RefOrNew(uint64_t unique_id,
++                                              FontPlatformData* platform_data) {
++  const auto& result = font_map_.insert(unique_id, nullptr);
+   if (result.is_new_entry) {
+     hb::unique_ptr<hb_face_t> face = CreateFace(platform_data);
+     result.stored_value->value =
+-        CreateHarfBuzzFontData(face.get(), platform_data->Typeface());
++        CreateHbFontCacheEntry(face.get(), platform_data->Typeface());
+   }
+-  return result.stored_value->value;
++  result.stored_value->value->AddRef();
++  return result.stored_value->value.get();
+ }
+ 
+ static_assert(
+--- a/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_face.h
++++ b/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_face.h
+@@ -31,7 +31,6 @@
+ #ifndef THIRD_PARTY_BLINK_RENDERER_PLATFORM_FONTS_SHAPING_HARFBUZZ_FACE_H_
+ #define THIRD_PARTY_BLINK_RENDERER_PLATFORM_FONTS_SHAPING_HARFBUZZ_FACE_H_
+ 
+-#include "base/memory/scoped_refptr.h"
+ #include "third_party/blink/renderer/platform/fonts/glyph.h"
+ #include "third_party/blink/renderer/platform/fonts/typesetting_features.h"
+ #include "third_party/blink/renderer/platform/fonts/unicode_range_set.h"
+@@ -45,16 +44,18 @@
+ namespace blink {
+ 
+ class FontPlatformData;
+-class HarfBuzzFontCache;
+ struct HarfBuzzFontData;
+ 
+ // |HarfBuzzFace| is a thread specific data associated to |FontPlatformData|,
+ // hold by |HarfBuzzFontCache|.
+-class HarfBuzzFace final {
++class HarfBuzzFace final : public RefCounted<HarfBuzzFace> {
+   USING_FAST_MALLOC(HarfBuzzFace);
+ 
+  public:
+-  static std::unique_ptr<HarfBuzzFace> Create(FontPlatformData* platform_data);
++  static scoped_refptr<HarfBuzzFace> Create(FontPlatformData* platform_data,
++                                            uint64_t unique_id) {
++    return base::AdoptRef(new HarfBuzzFace(platform_data, unique_id));
++  }
+ 
+   HarfBuzzFace(const HarfBuzzFace&) = delete;
+   HarfBuzzFace& operator=(const HarfBuzzFace&) = delete;
+@@ -86,15 +87,14 @@
+   static void Init();
+ 
+  private:
+-  HarfBuzzFace(FontPlatformData* platform_data,
+-               scoped_refptr<HarfBuzzFontData> harf_buzz_font_data);
++  HarfBuzzFace(FontPlatformData* platform_data, uint64_t);
+ 
+   void PrepareHarfBuzzFontData();
+ 
+   FontPlatformData* const platform_data_;
+   const uint64_t unique_id_;
+-  const scoped_refptr<HarfBuzzFontData> harfbuzz_font_data_;
+-  hb_font_t* const unscaled_font_;
++  hb_font_t* unscaled_font_;
++  HarfBuzzFontData* harfbuzz_font_data_;
+ };
+ 
+ }  // namespace blink
+--- a/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_font_cache.cc
++++ b/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_font_cache.cc
+@@ -8,10 +8,38 @@
+ 
+ namespace blink {
+ 
++HbFontCacheEntry::HbFontCacheEntry(hb_font_t* font)
++    : hb_font_(hb::unique_ptr<hb_font_t>(font)),
++      hb_font_data_(std::make_unique<HarfBuzzFontData>()) {}
++
++HbFontCacheEntry::~HbFontCacheEntry() = default;
++
++scoped_refptr<HbFontCacheEntry> HbFontCacheEntry::Create(hb_font_t* hb_font) {
++  DCHECK(hb_font);
++  return base::AdoptRef(new HbFontCacheEntry(hb_font));
++}
++
+ HarfBuzzFontCache::HarfBuzzFontCache() = default;
+ HarfBuzzFontCache::~HarfBuzzFontCache() = default;
+ 
+ // See "harfbuzz_face.cc" for |HarfBuzzFontCache::GetOrCreateFontData()|
+ // implementation.
+ 
++void HarfBuzzFontCache::Remove(uint64_t unique_id) {
++  auto it = font_map_.find(unique_id);
++  // TODO(https://crbug.com/1417160): In tests such as FontObjectThreadedTest
++  // that test taking down FontGlobalContext an object may not be found due to
++  // existing issues with refcounting of font objects at thread destruction
++  // time.
++  if (it == font_map_.end()) {
++    return;
++  }
++  DCHECK(!it.Get()->value->HasOneRef());
++  it.Get()->value->Release();
++  if (!it.Get()->value->HasOneRef()) {
++    return;
++  }
++  font_map_.erase(it);
++}
++
+ }  // namespace blink
+--- a/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_font_cache.h
++++ b/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_font_cache.h
+@@ -8,6 +8,11 @@
+ #include "third_party/blink/renderer/platform/fonts/font_metrics.h"
+ #include "third_party/blink/renderer/platform/fonts/unicode_range_set.h"
+ 
++#include <hb.h>
++#include <hb-cplusplus.hh>
++
++#include <memory>
++
+ namespace blink {
+ 
+ struct HarfBuzzFontData;
+@@ -20,34 +25,39 @@
+ // FIXME, crbug.com/609099: We should fix the FontCache to only keep one
+ // FontPlatformData object independent of size, then consider using this here.
+ 
+-// The HarfBuzzFontCache is thread specific cache for mapping
+-//  from |FontPlatformData| to |HarfBuzzFace|, and
+-//  from |FontPlatformData::UniqueID()| to |HarfBuzzFontData|.
+-//
+-//  |HarfBuzzFace| holds shared |HarfBuzzData| per unique id.
+-//
+-//  |FontPlatformData-1| |FontPlatformData-2|
+-//         |                    |
+-//    |HarfBuzzFace-1|     |HarfBuzzFace-2|
+-//         |                    |
+-//         +----------+---------+
+-//                    |
+-//               |HarfBuzzFontData|
+-//
++class HbFontCacheEntry : public RefCounted<HbFontCacheEntry> {
++  USING_FAST_MALLOC(HbFontCacheEntry);
++
++ public:
++  static scoped_refptr<HbFontCacheEntry> Create(hb_font_t* hb_font);
++
++  hb_font_t* HbFont() { return hb_font_.get(); }
++  HarfBuzzFontData* HbFontData() { return hb_font_data_.get(); }
++
++  ~HbFontCacheEntry();
++
++ private:
++  explicit HbFontCacheEntry(hb_font_t* font);
++
++  hb::unique_ptr<hb_font_t> hb_font_;
++  std::unique_ptr<HarfBuzzFontData> hb_font_data_;
++};
++
+ class HarfBuzzFontCache final {
+  public:
+   HarfBuzzFontCache();
+   ~HarfBuzzFontCache();
+ 
+-  scoped_refptr<HarfBuzzFontData> GetOrCreateFontData(
+-      FontPlatformData* platform_data);
++  HbFontCacheEntry* RefOrNew(uint64_t unique_id,
++                             FontPlatformData* platform_data);
++  void Remove(uint64_t unique_id);
+ 
+  private:
+-  using FontDataMap = HashMap<uint64_t,
+-                              scoped_refptr<HarfBuzzFontData>,
+-                              IntWithZeroKeyHashTraits<uint64_t>>;
++  using HbFontDataMap = HashMap<uint64_t,
++                                scoped_refptr<HbFontCacheEntry>,
++                                IntWithZeroKeyHashTraits<uint64_t>>;
+ 
+-  FontDataMap font_map_;
++  HbFontDataMap font_map_;
+ };
+ 
+ }  // namespace blink
+--- a/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_font_data.h
++++ b/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_font_data.h
+@@ -19,16 +19,14 @@
+ 
+ const unsigned kInvalidFallbackMetricsValue = static_cast<unsigned>(-1);
+ 
+-// The HarfBuzzFontData struct carries thread specific user-pointer data for
++// The HarfBuzzFontData struct carries user-pointer data for
+ // |hb_font_t| callback functions/operations. It contains metrics and OpenType
+ // layout information related to a font scaled to a particular size.
+-struct HarfBuzzFontData final : public RefCounted<HarfBuzzFontData> {
++struct HarfBuzzFontData final {
+   USING_FAST_MALLOC(HarfBuzzFontData);
+ 
+  public:
+-  static scoped_refptr<HarfBuzzFontData> Create(hb_font_t* hb_font) {
+-    return base::AdoptRef(new HarfBuzzFontData(hb_font));
+-  }
++  HarfBuzzFontData() : vertical_data_(nullptr), range_set_(nullptr) {}
+ 
+   HarfBuzzFontData(const HarfBuzzFontData&) = delete;
+   HarfBuzzFontData& operator=(const HarfBuzzFontData&) = delete;
+@@ -101,9 +99,6 @@
+ 
+   scoped_refptr<OpenTypeVerticalData> vertical_data_;
+   scoped_refptr<UnicodeRangeSet> range_set_;
+-
+- private:
+-  explicit HarfBuzzFontData(hb_font_t* hb_font) : unscaled_font_(hb_font) {}
+ };
+ 
+ }  // namespace blink
