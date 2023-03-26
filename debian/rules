@@ -89,7 +89,7 @@ GN_FLAGS += rtc_use_pipewire=true
 # Disable pulseaudio
 #GN_FLAGS += use_pulseaudio=false
 
-# Enable linking to pulseaudio library
+# Enable linking to pulseaudio library (has no effect if use_pulseaudio=false)
 GN_FLAGS += link_pulseaudio=true
 
 # Disable VA-API
