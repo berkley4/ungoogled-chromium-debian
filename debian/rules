@@ -224,7 +224,7 @@ setup_no_mdns_translate: disable_mdns translate_configure setup
 
 override_dh_auto_configure: find_remove_most undo_unbundling
 	test -d $(OUT_DIR) && ninja -j $(JOBS) -C $(OUT_DIR) -t cleandead || printf '%s\n' "$(OUT_DIR) does not exist, nothing to do."
-	$(UB_REP_SCRIPT) --system-libraries $(SYS_LIBS)
+	test -z "$(SYS_LIBS)" || $(UB_REP_SCRIPT) --system-libraries $(SYS_LIBS)
 	test -f $(DS_CACHE) && printf '%s\n' "$(DS_CACHE) exists, aborting." || $(UL_DIR)/domain_substitution.py apply -r $(UC_DIR)/domain_regex.list -f $(UC_DIR)/domain_substitution.list -c $(DS_CACHE) $(RT_DIR)
 
 override_dh_auto_build:
