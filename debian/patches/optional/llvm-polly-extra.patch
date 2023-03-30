@@ -1,15 +1,15 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2090,6 +2090,12 @@
-         "-polly",
-         "-mllvm",
-         "-polly-vectorizer=stripmine",
-+        "-mllvm",
-+        "-polly-run-dce",
-+        "-mllvm",
-+        "-polly-run-inliner",
-+        "-mllvm",
-+        "-polly-invariant-load-hoisting",
-       ]
-     }
- 
+@@ -2099,6 +2099,12 @@
+       "-polly",
+       "-mllvm",
+       "-polly-vectorizer=stripmine",
++      "-mllvm",
++      "-polly-run-dce",
++      "-mllvm",
++      "-polly-run-inliner",
++      "-mllvm",
++      "-polly-invariant-load-hoisting",
+     ]
+   }
+ }

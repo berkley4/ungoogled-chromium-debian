@@ -1,18 +1,45 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2083,6 +2083,15 @@
-       # smaller.
-       common_optimize_on_cflags += [ "-fno-unique-section-names" ]
-     }
-+    if (is_clang) {
-+      # Add llmv polly vectorization
-+      common_optimize_on_cflags += [
-+        "-mllvm",
-+        "-polly",
-+        "-mllvm",
-+        "-polly-vectorizer=stripmine",
-+      ]
-+    }
+@@ -2092,6 +2092,15 @@
+       "-Wl,--gc-sections",
+     ]
+   }
++
++  if (is_clang) {
++    polly_cflags = [
++      "-mllvm",
++      "-polly",
++      "-mllvm",
++      "-polly-vectorizer=stripmine",
++    ]
++  }
+ }
  
-     common_optimize_on_ldflags += [
-       # Specifically tell the linker to perform optimizations.
+ config("default_stack_frames") {
+@@ -2169,7 +2178,7 @@
+     # vectorization while otherwise optimizing for size.
+     rustflags = [ "-Copt-level=s" ]
+   } else {
+-    cflags = [ "-O2" ] + common_optimize_on_cflags
++    cflags = [ "-O2" ] + common_optimize_on_cflags + polly_cflags
+ 
+     # The `-O3` for clang turns on extra optimizations compared to the standard
+     # `-O2`. But for rust, `-Copt-level=3` is the default and is thus reliable
+@@ -2240,7 +2249,7 @@
+     } else if (optimize_for_fuzzing) {
+       cflags = [ "-O1" ] + common_optimize_on_cflags
+     } else {
+-      cflags = [ "-O2" ] + common_optimize_on_cflags
++      cflags = [ "-O2" ] + common_optimize_on_cflags + polly_cflags
+     }
+     rustflags = [ "-Copt-level=3" ]
+   }
+@@ -2273,7 +2282,7 @@
+     } else if (optimize_for_fuzzing) {
+       cflags = [ "-O1" ] + common_optimize_on_cflags
+     } else {
+-      cflags = [ "-O3" ] + common_optimize_on_cflags
++      cflags = [ "-O3" ] + common_optimize_on_cflags + polly_cflags
+     }
+     rustflags = [ "-Copt-level=3" ]
+   }
