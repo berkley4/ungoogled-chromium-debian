@@ -1,0 +1,2 @@
+# Uncomment to hide the "Press Esc to exit full screen" message
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --hide-fullscreen-exit-ui"

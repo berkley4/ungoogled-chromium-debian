@@ -34,6 +34,7 @@ debian/etc/chromium.d/disable-setuid-sandbox                                   e
 debian/etc/chromium.d/google-api-keys                                          etc/chromium.d
 #debian/etc/chromium.d/google-translate                                         etc/chromium.d
 debian/etc/chromium.d/gpu-options                                              etc/chromium.d
+debian/etc/chromium.d/hide-fullscreen-exit-ui                                  etc/chromium.d
 debian/etc/chromium.d/hw-decoding-encoding                                     etc/chromium.d
 debian/etc/chromium.d/load-extensions                                          etc/chromium.d
 debian/etc/chromium.d/ng-shape-cache                                           etc/chromium.d
