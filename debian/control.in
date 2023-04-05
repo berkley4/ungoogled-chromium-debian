@@ -31,7 +31,6 @@ Build-Depends:
  libasound2-dev,
  libpci-dev,
  libopus-dev,
- libwebp-dev,
  libflac-dev,
  libminizip-dev,
  libevent-dev,
@@ -39,7 +38,6 @@ Build-Depends:
  libopenjp2-7-dev,
  libtiff-dev,
  libpipewire-0.3-dev,
- libbrotli-dev,
  libdouble-conversion-dev,
  libxnvctrl-dev,
  libva-dev,
@@ -49,11 +47,7 @@ Build-Depends:
 #libaom-dev,
 #libavif-dev,
 #libdav1d-dev,
-#libjpeg-dev,
 #libopenh264-dev,
-#libpng-dev,
-#libicu-dev (>= 72.1),
-#libxml2-dev,
 #libxslt1-dev
 
 Package: ungoogled-chromium
