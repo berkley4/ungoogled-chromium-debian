@@ -37,6 +37,7 @@ Build-Depends:
  libevent-dev,
  liblcms2-dev,
  libopenjp2-7-dev,
+ libtiff-dev,
  libpipewire-0.3-dev,
  libbrotli-dev,
  libdouble-conversion-dev,

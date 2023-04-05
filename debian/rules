@@ -146,6 +146,7 @@ GN_FLAGS +=                           \
         use_system_freetype=true      \
         use_system_lcms2=true         \
         use_system_libopenjpeg2=true  \
+        use_system_libtiff=true       \
         use_system_zlib=true
 
 %:
