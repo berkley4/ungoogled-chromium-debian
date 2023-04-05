@@ -65,7 +65,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/third_party/blink/renderer/core/loader/frame_fetch_context.cc
 +++ b/third_party/blink/renderer/core/loader/frame_fetch_context.cc
-@@ -580,6 +580,26 @@
+@@ -583,6 +583,26 @@
    return should_block_request;
  }
  
@@ -94,7 +94,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      const ResourceLoaderOptions& options,
 --- a/third_party/blink/renderer/core/loader/frame_fetch_context.h
 +++ b/third_party/blink/renderer/core/loader/frame_fetch_context.h
-@@ -175,6 +175,7 @@
+@@ -176,6 +176,7 @@
    bool ShouldBlockWebSocketByMixedContentCheck(const KURL&) const override;
    std::unique_ptr<WebSocketHandshakeThrottle> CreateWebSocketHandshakeThrottle()
        override;
@@ -105,14 +105,14 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 --- a/third_party/blink/renderer/core/loader/worker_fetch_context.cc
 +++ b/third_party/blink/renderer/core/loader/worker_fetch_context.cc
 @@ -25,6 +25,7 @@
- #include "third_party/blink/renderer/platform/loader/fetch/resource_timing_info.h"
+ #include "third_party/blink/renderer/platform/loader/fetch/url_loader/url_loader_factory.h"
  #include "third_party/blink/renderer/platform/loader/fetch/worker_resource_timing_notifier.h"
  #include "third_party/blink/renderer/platform/network/network_state_notifier.h"
 +#include "third_party/blink/renderer/platform/network/network_utils.h"
  #include "third_party/blink/renderer/platform/runtime_enabled_features.h"
+ #include "third_party/blink/renderer/platform/scheduler/public/virtual_time_controller.h"
  #include "third_party/blink/renderer/platform/supplementable.h"
- #include "third_party/blink/renderer/platform/weborigin/security_policy.h"
-@@ -93,6 +94,26 @@
+@@ -94,6 +95,26 @@
    return should_block_request;
  }
  
@@ -141,7 +141,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      const ResourceLoaderOptions& options,
 --- a/third_party/blink/renderer/core/loader/worker_fetch_context.h
 +++ b/third_party/blink/renderer/core/loader/worker_fetch_context.h
-@@ -62,6 +62,7 @@
+@@ -63,6 +63,7 @@
    bool ShouldBlockWebSocketByMixedContentCheck(const KURL&) const override;
    std::unique_ptr<WebSocketHandshakeThrottle> CreateWebSocketHandshakeThrottle()
        override;

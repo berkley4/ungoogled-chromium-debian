@@ -22,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -3275,6 +3275,10 @@
+@@ -3293,6 +3293,10 @@
       flag_descriptions::kKioskEnableAppServiceDescription, kOsCrOS,
       FEATURE_VALUE_TYPE(features::kKioskEnableAppService)},
  #endif  // BUILDFLAG(IS_CHROMEOS)
@@ -35,7 +35,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       flag_descriptions::kWebRtcRemoteEventLogName,
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3297,6 +3297,11 @@
+@@ -3334,6 +3334,11 @@
      "When enabled, WebRTC will only use the Video Encode Accelerator for "
      "video resolutions inside those published as supported.";
  
@@ -49,7 +49,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  const char kWebUsbDeviceDetectionDescription[] =
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -1876,6 +1876,9 @@
+@@ -1893,6 +1893,9 @@
  extern const char kWebrtcUseMinMaxVEADimensionsName[];
  extern const char kWebrtcUseMinMaxVEADimensionsDescription[];
  
@@ -61,7 +61,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -642,6 +642,10 @@
+@@ -646,6 +646,10 @@
  #endif
  );
  
@@ -74,7 +74,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  BASE_FEATURE(kBlinkHeapCompaction,
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -261,6 +261,8 @@
+@@ -253,6 +253,8 @@
  
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kWebRtcUseMinMaxVEADimensions);
  
@@ -127,7 +127,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "third_party/blink/public/platform/modules/webrtc/webrtc_logging.h"
  #include "third_party/blink/public/platform/web_audio_latency_hint.h"
  #include "third_party/blink/renderer/bindings/core/v8/script_promise_resolver.h"
-@@ -556,7 +557,9 @@
+@@ -572,7 +573,9 @@
    DCHECK(IsMainThread());
    DCHECK(destination());
  

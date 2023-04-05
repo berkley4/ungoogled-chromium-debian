@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2092,6 +2092,15 @@
+@@ -2101,6 +2101,15 @@
        "-Wl,--gc-sections",
      ]
    }
@@ -16,7 +16,7 @@
  }
  
  config("default_stack_frames") {
-@@ -2169,7 +2178,7 @@
+@@ -2178,7 +2187,7 @@
      # vectorization while otherwise optimizing for size.
      rustflags = [ "-Copt-level=s" ]
    } else {
@@ -25,7 +25,7 @@
  
      # The `-O3` for clang turns on extra optimizations compared to the standard
      # `-O2`. But for rust, `-Copt-level=3` is the default and is thus reliable
-@@ -2240,7 +2249,7 @@
+@@ -2249,7 +2258,7 @@
      } else if (optimize_for_fuzzing) {
        cflags = [ "-O1" ] + common_optimize_on_cflags
      } else {
@@ -34,7 +34,7 @@
      }
      rustflags = [ "-Copt-level=3" ]
    }
-@@ -2273,7 +2282,7 @@
+@@ -2282,7 +2291,7 @@
      } else if (optimize_for_fuzzing) {
        cflags = [ "-O1" ] + common_optimize_on_cflags
      } else {

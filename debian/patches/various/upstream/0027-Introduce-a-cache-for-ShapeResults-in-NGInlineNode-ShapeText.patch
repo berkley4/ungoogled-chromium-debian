@@ -159,7 +159,7 @@ Cr-Commit-Position: refs/heads/main@{#1114480}
  };
  
  // The function is templated to indicate the purpose of collected inlines:
-@@ -1221,10 +1247,36 @@
+@@ -1224,10 +1250,36 @@
    const String& text_content = data->text_content;
    HeapVector<NGInlineItem>* items = &data->items;
  
@@ -198,7 +198,7 @@ Cr-Commit-Position: refs/heads/main@{#1114480}
    DCHECK(!data->segments ||
           data->segments->EndOffset() == text_content.length());
  
-@@ -1349,12 +1401,15 @@
+@@ -1352,12 +1404,15 @@
      }
  
      // Shape each item with the full context of the entire node.
@@ -218,7 +218,7 @@ Cr-Commit-Position: refs/heads/main@{#1114480}
      // If the text is from one item, use the ShapeResult as is.
 --- a/third_party/blink/renderer/platform/BUILD.gn
 +++ b/third_party/blink/renderer/platform/BUILD.gn
-@@ -701,6 +701,8 @@
+@@ -702,6 +702,8 @@
      "fonts/shaping/harfbuzz_font_data.h",
      "fonts/shaping/harfbuzz_shaper.cc",
      "fonts/shaping/harfbuzz_shaper.h",
@@ -227,7 +227,7 @@ Cr-Commit-Position: refs/heads/main@{#1114480}
      "fonts/shaping/run_segmenter.cc",
      "fonts/shaping/run_segmenter.h",
      "fonts/shaping/shape_cache.h",
-@@ -2052,6 +2054,7 @@
+@@ -2063,6 +2065,7 @@
      "fonts/shaping/caching_word_shaper_test.cc",
      "fonts/shaping/font_features_test.cc",
      "fonts/shaping/harfbuzz_shaper_test.cc",
@@ -271,7 +271,7 @@ Cr-Commit-Position: refs/heads/main@{#1114480}
    ShapeCache* GetShapeCache() const;
 --- a/third_party/blink/renderer/platform/fonts/font_cache.cc
 +++ b/third_party/blink/renderer/platform/fonts/font_cache.cc
-@@ -165,6 +165,24 @@
+@@ -166,6 +166,24 @@
  #endif
  }
  
@@ -296,7 +296,7 @@ Cr-Commit-Position: refs/heads/main@{#1114480}
  ShapeCache* FontCache::GetShapeCache(const FallbackListCompositeKey& key) {
    FallbackListShaperCache::iterator it = fallback_list_shaper_cache_.find(key);
    ShapeCache* result = nullptr;
-@@ -285,11 +303,22 @@
+@@ -286,11 +304,22 @@
    font_platform_data_cache_->Purge(*font_data_cache_);
  }
  
@@ -319,7 +319,7 @@ Cr-Commit-Position: refs/heads/main@{#1114480}
  void FontCache::InvalidateShapeCache() {
    PurgeFallbackListShaperCache();
  }
-@@ -305,6 +334,7 @@
+@@ -306,6 +335,7 @@
      return;
  
    PurgePlatformFontDataCache();
@@ -733,8 +733,8 @@ Cr-Commit-Position: refs/heads/main@{#1114480}
 +}  // namespace blink
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -1934,6 +1934,11 @@
-       status: "stable",
+@@ -2201,6 +2201,11 @@
+       base_feature: "none",
      },
      {
 +      name: "LayoutNGShapeCache",

@@ -1,14 +1,23 @@
-From c10e7e70c4a617cd17735a73cf606e1102f7495b Mon Sep 17 00:00:00 2001
+From bdcce3f000bb88311abb13d28f84c2e57a7065f1 Mon Sep 17 00:00:00 2001
 From: fgei <fgei@gmail.com>
 Date: Tue, 8 Feb 2022 03:04:20 +0000
 Subject: [PATCH] Disable detailed language settings by default
 
 ---
- components/language/core/common/language_experiments.cc | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ components/language/core/common/language_experiments.cc | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 --- a/components/language/core/common/language_experiments.cc
 +++ b/components/language/core/common/language_experiments.cc
+@@ -22,7 +22,7 @@
+              base::FEATURE_DISABLED_BY_DEFAULT);
+ BASE_FEATURE(kAppLanguagePrompt,
+              "AppLanguagePrompt",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             base::FEATURE_DISABLED_BY_DEFAULT);
+ BASE_FEATURE(kAppLanguagePromptULP,
+              "AppLanguagePromptULP",
+              base::FEATURE_ENABLED_BY_DEFAULT);
 @@ -31,7 +31,7 @@
               base::FEATURE_DISABLED_BY_DEFAULT);
  BASE_FEATURE(kDetailedLanguageSettings,

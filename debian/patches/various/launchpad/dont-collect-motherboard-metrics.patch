@@ -6,7 +6,7 @@ Forwarded: not-needed
 
 --- a/components/metrics/motherboard.cc
 +++ b/components/metrics/motherboard.cc
-@@ -43,31 +43,7 @@
+@@ -42,31 +42,7 @@
  using base::TRIM_TRAILING;
  
  MotherboardDetails ReadMotherboardDetails() {

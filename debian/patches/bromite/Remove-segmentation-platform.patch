@@ -52,8 +52,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +             "SegmentationPlatform",                // disabled by default
 +             base::FEATURE_DISABLED_BY_DEFAULT);    // in Bromite
  
- BASE_FEATURE(kSegmentationStructuredMetricsFeature,
-              "SegmentationStructuredMetrics",
+ BASE_FEATURE(kSegmentationPlatformUkmEngine,
+              "SegmentationPlatformUkmEngine",
 @@ -38,11 +38,7 @@
  
  BASE_FEATURE(kSegmentationPlatformFeedSegmentFeature,

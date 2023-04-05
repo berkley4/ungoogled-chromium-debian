@@ -19,7 +19,7 @@ Change-Id: I7787761c080aba680543e173bef12254ab7ccafe
  #include "media/gpu/vp8_decoder.h"
  #include "media/gpu/vp9_decoder.h"
  #include "media/video/picture.h"
-@@ -229,6 +230,12 @@
+@@ -230,6 +231,12 @@
      decoder_delegate_ = accelerator.get();
      decoder_.reset(new VP9Decoder(std::move(accelerator), profile,
                                    config.container_color_space));
@@ -32,7 +32,7 @@ Change-Id: I7787761c080aba680543e173bef12254ab7ccafe
    } else {
      VLOGF(1) << "Unsupported profile " << GetProfileName(profile);
      return false;
-@@ -1196,12 +1203,11 @@
+@@ -1197,12 +1204,11 @@
  VaapiVideoDecodeAccelerator::GetSupportedProfiles() {
    VideoDecodeAccelerator::SupportedProfiles profiles =
        VaapiWrapper::GetSupportedDecodeProfiles();

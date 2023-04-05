@@ -24,19 +24,6 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../platform/runtime_enabled_features.json5       |  7 +++++++
  11 files changed, 37 insertions(+), 32 deletions(-)
 
---- a/chrome/browser/flags/android/chrome_feature_list.cc
-+++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -481,8 +481,8 @@
-              base::FEATURE_DISABLED_BY_DEFAULT);
- 
- BASE_FEATURE(kAppToWebAttribution,
--             "AppToWebAttribution",
--             base::FEATURE_DISABLED_BY_DEFAULT);
-+             "AppToWebAttribution",               // must be disabled
-+             base::FEATURE_DISABLED_BY_DEFAULT);  // in Bromite
- 
- BASE_FEATURE(kBackgroundThreadPool,
-              "BackgroundThreadPool",
 --- a/components/embedder_support/origin_trials/features.cc
 +++ b/components/embedder_support/origin_trials/features.cc
 @@ -14,11 +14,11 @@
