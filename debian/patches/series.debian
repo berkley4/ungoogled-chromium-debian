@@ -66,7 +66,7 @@ vanadium/0044-enable-new-third-party-storage-partitioning.patch
 vanadium/0047-disable-component-updater-pings-by-default.patch
 vanadium/0051-stub-out-the-battery-status-API.patch
 vanadium/0075-Enable-strict-origin-isolation-by-default.patch
-vanadium/0076-disable-appending-variations-header.patch
+#vanadium/0076-disable-appending-variations-header.patch
 vanadium/0078-Disable-detailed-language-settings-by-default.patch
 vanadium/0082-enable-process-isolated-sandboxed-iframes-by-default.patch
 
@@ -77,7 +77,6 @@ various/init-stack-vars-zero.patch
 various/silence-alsa-frames-log-msg.patch
 various/template-correction.patch
 various/use-clang-to-optimize-debug-info.patch
-various/wayland-egl.patch
 various/zero-call-used-registers.patch
 #various/addenda/
 various/bromite/autofill-miscellaneous.patch
@@ -108,29 +107,12 @@ various/system/zlib.patch
 various/system/extra/brotli.patch
 various/system/extra/opus.patch
 various/system/extra/zlib.patch
-various/upstream/0001-v8-cppgc-Introduce-subtle-UncompressedMember.patch
-various/upstream/0002-blink-Use-UncompressedMember-for-hot-Node-getters.patch
-various/upstream/0003-blink-Optimise-Node-ClearNeedsStyleRecalc.patch
-various/upstream/0004-blink-Only-use-NodeCount-in-debug-builds.patch
-various/upstream/0005-Make-Document-node_count_itself-DCHECK-only.patch
-various/upstream/0006-blink-string-Add-String-LengthWithStrippedWhiteSpace.patch
-various/upstream/0007-blink-Speed-up-Element-PseudoStateChanged.patch
-various/upstream/0008-view-transition-Remove-tracking-for-named-elements.patch
-various/upstream/0009-blink-Minimize-decompressions-during-Node-traversal.patch
-various/upstream/0010-blink-Avoid-more-pointer-decompression-in-document-cc.patch
 various/upstream/0011-Make-whitespace-strings-static.patch
 various/upstream/0012-Use-simple-union-for-blink-CharacterData.patch
 various/upstream/0013-Reserve-background-to-avoid-reallocation-of-candidates.patch
 various/upstream/0014-V4Store-Remove-check-for-IsRunningCpuReductionExperiment.patch
 various/upstream/0015-Mojo-Remove-check-for-IsRunningCpuReductionExperiment.patch
 various/upstream/0016-Optional-mask-filter-in-shared-quad-state-mojo.patch
-various/upstream/0020-layout-Stop-reusing-ShapeResult-ends-with-ligature.patch
-various/upstream/0021-DeferredShaping-Disable-the-feature-in-non-blink-tests.patch
-various/upstream/0022-DeferredShaping-Remove-an-about-flags-entry.patch
-various/upstream/0023-DeferredShaping-Disable-the-feature-in-all-tests.patch
-various/upstream/0024-DeferredShaping-Remove-the-code.patch
-various/upstream/0025-DeferredShaping-Update-a-comment.patch
-various/upstream/0026-Manual-revert-of-Avoid-memory-leak-of-FontGlobalContext.patch
 various/upstream/0027-Introduce-a-cache-for-ShapeResults-in-NGInlineNode-ShapeText.patch
 various/vanadium/disable-article-suggestions-feature-by-default.patch
 various/vanadium/disable-content-feed-suggestions-by-default.patch
@@ -148,7 +130,7 @@ various/vanadium/disable-content-feed-suggestions-by-default.patch
 #optional/disable/atk-dbus.patch
 #optional/disable/catapult.patch
 #optional/disable/rtc-protobuf.patch
-#optional/legacy-i386/byteswap-constexpr2.patch
+#optional/legacy-i386/angle-lockfree.patch
 #optional/legacy-i386/support-i386.patch
 #optional/system/jpeg.patch
 #optional/system/unstable/dav1d.patch
