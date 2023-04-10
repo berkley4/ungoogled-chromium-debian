@@ -138,7 +138,10 @@ SYS_LIBS :=               \
 
 # Uncomment if you are on testing/unstable (or a new enough distro)
 #GN_FLAGS += use_system_libpng=true
-#SYS_LIBS += dav1d icu libaom libavif libpng libxml libxslt openh264
+#SYS_LIBS += dav1d libaom libavif libpng libxml libxslt openh264
+
+# Unstable users can uncomment to enable system icu
+#SYS_LIBS += icu
 
 # Add extra flags for system libs
 GN_FLAGS +=                           \
