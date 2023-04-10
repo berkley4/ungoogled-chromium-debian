@@ -1,0 +1,29 @@
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -2747,6 +2747,16 @@
+   }
+ }
+ 
++# Stack clash protection
++config("default_stack_clash_prot") {
++  cflags = []
++  ldflags = []
++  if (is_clang && !is_nacl && current_cpu == "x64") {
++    cflags += [ "-fstack-clash-protection" ]
++    ldflags += [ "-fstack-clash-protection" ]
++  }
++}
++
+ buildflag_header("compiler_buildflags") {
+   header = "compiler_buildflags.h"
+ 
+--- a/build/config/BUILDCONFIG.gn
++++ b/build/config/BUILDCONFIG.gn
+@@ -340,6 +340,7 @@
+   "//build/config/compiler:default_include_dirs",
+   "//build/config/compiler:default_init_stack_vars",
+   "//build/config/compiler:default_optimization",
++  "//build/config/compiler:default_stack_clash_prot",
+   "//build/config/compiler:default_stack_frames",
+   "//build/config/compiler:default_symbols",
+   "//build/config/compiler:export_dynamic",

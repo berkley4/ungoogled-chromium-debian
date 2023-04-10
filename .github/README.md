@@ -50,6 +50,7 @@ ___Performance improvements___
 
 ___Security/Privacy improvements___
 
+- Stack clash protection (-fstack-clash-protection) - see [here](https://blog.llvm.org/posts/2021-01-05-stack-clash-protection/)
 - ROP exploit mitigation (-fzero-call-used-regs=used-gpr) - see [here](https://www.jerkeby.se/newsletter/posts/rop-reduction-zero-call-user-regs/)
 - Bad Cast Checking in addition to regular Control Flow Integrity (see [here](https://clang.llvm.org/docs/ControlFlowIntegrity.html#bad-cast-checking))
 - Extra Bromite and Vanadium patches, the later of which includes the following clang options
