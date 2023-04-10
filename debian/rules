@@ -80,8 +80,8 @@ GN_FLAGS += \
 # Uncoment to disable atk/dbus
 #GN_FLAGS += use_atk=false use_dbus=false
 
-# Uncomment to build pdfium without v8 (javascript) and XFA forms support
-#GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
+# Comment to build pdfium with v8 (javascript) and XFA forms support
+GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
 
 # Enable pipewire
 GN_FLAGS += rtc_use_pipewire=true
