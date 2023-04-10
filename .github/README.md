@@ -51,8 +51,9 @@ ___Performance improvements___
 ___Security/Privacy improvements___
 
 - Stack clash protection (-fstack-clash-protection) - see [here](https://blog.llvm.org/posts/2021-01-05-stack-clash-protection/)
+- Intel control flow enforcement technology (-fcf-protection) - cpu-based control flow integrity (see [here](https://wiki.ubuntu.com/ToolChain/CompilerFlags#A-fcf-protection))
 - ROP exploit mitigation (-fzero-call-used-regs=used-gpr) - see [here](https://www.jerkeby.se/newsletter/posts/rop-reduction-zero-call-user-regs/)
-- Bad Cast Checking in addition to regular Control Flow Integrity (see [here](https://clang.llvm.org/docs/ControlFlowIntegrity.html#bad-cast-checking))
+- Bad Cast Checking - see [here](https://clang.llvm.org/docs/ControlFlowIntegrity.html#bad-cast-checking)
 - Extra Bromite and Vanadium patches, the later of which includes the following clang options
     - -fstack-protector-strong - chromium's default is the less-strict -fstack-protector
     - -ftrivial-auto-var-init=zero - see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html)

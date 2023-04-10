@@ -79,6 +79,7 @@ various/stack-clash-protection.patch
 various/template-correction.patch
 various/use-clang-to-optimize-debug-info.patch
 various/zero-call-used-registers.patch
+various/intel-control-flow-enforcement.patch
 #various/addenda/
 various/bromite/autofill-miscellaneous.patch
 various/bromite/Disable-all-predictors-code.patch
