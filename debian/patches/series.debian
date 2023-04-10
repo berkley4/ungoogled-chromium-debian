@@ -72,20 +72,20 @@ vanadium/0082-enable-process-isolated-sandboxed-iframes-by-default.patch
 
 various/fix-unbundle-script-dh-clean-interoperabilty.patch
 various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
-various/fno-plt.patch
-various/init-stack-vars-zero.patch
 various/silence-alsa-frames-log-msg.patch
-various/stack-clash-protection.patch
 various/template-correction.patch
-various/use-clang-to-optimize-debug-info.patch
-various/zero-call-used-registers.patch
-various/intel-control-flow-enforcement.patch
 #various/addenda/
 various/bromite/autofill-miscellaneous.patch
 various/bromite/Disable-all-predictors-code.patch
 various/bromite/Disable-conversion-measurement-api.patch
 various/bromite/Disable-various-metrics.patch
 various/bromite/DoH-improvements.patch
+various/compiler-flags/no-plt.patch
+various/compiler-flags/init-stack-vars-zero.patch
+various/compiler-flags/stack-clash-protection.patch
+various/compiler-flags/optimize-debug-info.patch
+various/compiler-flags/zero-call-used-registers.patch
+various/compiler-flags/intel-control-flow-enforcement.patch
 various/disable/angle-perftests.patch
 various/disable/driver-chrome-path.patch
 various/disable/orchestrator.patch
