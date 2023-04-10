@@ -2,7 +2,7 @@
 # Note: this could potentially make you stand out even more from the crowd.
 
 # Disables GREASE for TLS (seems safe enough to set by default)
-# See https://github.com/Eloston/ungoogled-chromium/issues/783 for more details
+# See https://github.com/ungoogled-software/ungoogled-chromium/issues/783 for more details
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-tls-grease"
 
 # Uncomment to disable TLS resumption for all HTTPS and QUIC connections

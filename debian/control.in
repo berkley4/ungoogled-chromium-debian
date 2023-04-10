@@ -2,7 +2,7 @@ Source: ungoogled-chromium
 Section: web
 Priority: optional
 Maintainer: @@AUTHOR@@
-Homepage: https://github.com/Eloston/ungoogled-chromium
+Homepage: https://github.com/ungoogled-software/ungoogled-chromium
 Standards-Version: 4.5.0
 Build-Depends:
  debhelper (>= 12),
