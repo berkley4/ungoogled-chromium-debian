@@ -80,12 +80,12 @@ various/bromite/Disable-all-predictors-code.patch
 various/bromite/Disable-conversion-measurement-api.patch
 various/bromite/Disable-various-metrics.patch
 various/bromite/DoH-improvements.patch
-various/compiler-flags/no-plt.patch
 various/compiler-flags/init-stack-vars-zero.patch
-various/compiler-flags/stack-clash-protection.patch
-various/compiler-flags/optimize-debug-info.patch
-various/compiler-flags/zero-call-used-registers.patch
 various/compiler-flags/intel-control-flow-enforcement.patch
+various/compiler-flags/no-plt.patch
+various/compiler-flags/optimize-debug-info.patch
+various/compiler-flags/stack-clash-protection.patch
+various/compiler-flags/zero-call-used-registers.patch
 various/disable/angle-perftests.patch
 various/disable/driver-chrome-path.patch
 various/disable/orchestrator.patch
