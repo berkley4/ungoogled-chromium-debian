@@ -6,7 +6,9 @@ There are debs in the release section which are built with -march=x86-64-v2 --mt
 These should run on CPUs which support AVX instructions, which should encompass the Intel Sandybridge/AMD Bulldozer era (circa 2011) onwards.
 There's also a patch which can be used by builders to enable AVX2 support (cat /proc/cpuinfo is your friend here).
 
-The debs are built in a debian stable chroot, so should work on that, Ubuntu Focal and newer.
+There are currently two release branches: stable and unstable, with their respective deb packages built in debian stable and unstable chroots.
+The stable release should work on debian stable or equivalent (eg ubuntu focal).
+The unstable release obviously needs debian unstable or a new enough distro.
 
 
 # Installation
@@ -67,20 +69,19 @@ ___Other features___
 - The ungoogled-chromium-common package has split into the libraries and main packages
 - A new ungoogled-chromium-libraries package
 - Google translate - optional build support via a patch to re-enable this functionality
-- Disable mDNS and service discovery - optional build support
+- Disable mDNS and service discovery - optional build support (a work in progress)
 
 
 ___Build system___
 
-- Predominantly uses git to obtain and update source (release tarballs are supported too)
-- Incremental ninja builds for faster builds/rebuilds
-- Built with upstream google clang/llvm binaries
+- Predominantly uses git to obtain and update source (release tarballs were supported until recently)
+- System clang/llvm is preferred for building (upstream llvm is best to ensure compatibility with the PGO profile)
 - Patches for -march/-mtune and various other CPU instructions
 - Various patches to disable components (eg atk/dbus) and enable system libraries (eg icu)
-- Various lines in debian/rules can be uncommented to enable/disable build options or system libraries
+- A configure script is provided to enable customisation of the build
 - Ungoogled Chromium patches are merged into debian's build system with a variety of other patches
 - Debug optimisation is now handled by building with -fdebug-types-section (instead of dwz)
-- Several other fixes and improvements
+- Several improvements have been made to make the build process more robust
 
 - - - -
 
@@ -97,7 +98,7 @@ To build with google translate enabled, instead of running debian/rules setup, r
 debian/rules setup_translate
 
 
-___Disable mDNS and service discovery___
+___Disable mDNS and service discovery (a work-in-progress)___
 
 To build with mdns (and service discovery) disabled, run the following :-
 
@@ -152,7 +153,7 @@ export QUILT_SERIES=series
 export QUILT_PATCHES=debian/patches
 
 # Clone ungoogled-chromium-debian
-git clone [-b <stable>] https://github.com/berkley4/ungoogled-chromium-debian.git
+git clone [-b <stable|unstable>] https://github.com/berkley4/ungoogled-chromium-debian.git
 cd ungoogled-chromium-debian
 
 # Update submodules
@@ -244,15 +245,19 @@ debian/rules tarball
 ## Finish preparing the source
 
 ```sh
-# Optional: enable (and possibly edit) any optional patches, for example :-
-for p in optional/march optional/system/jpeg; do sed "s@^#\($p\.patch\)@\1@" \
-  -i debian/patches/series.debian
+# Run the configuration script. Customisation can be done via the setting of
+# variables (read the script and look at GN_FLAGS/SYS_LIBS in debian/rules)
+#
+# Example for stable :-
+ATK_DBUS=0 CATAPULT=0 DRIVER=0 MARCH=native MTUNE=native JPEG=1 ./debian/configure.sh
+# Example for unstable :-
+ICU=0 PIPEWIRE=0 MARCH=native MTUNE=native JPEG=1 UNSTABLE=1 ./debian/configure.sh
 
 # Normally you just need to run the following (see above for enabling translate)
 debian/rules setup
 
-# Change version (eg create a pre-release from an unmerged UC update pull request)
-# (note: you need to specify the version and revision as one string)
+# Change version (eg create a pre-release from an unmerged UC pull request)
+# note: you need to specify the version and revision (eg '-1') as one string
 VERSION=999.0.1234.567-1 debian/rules setup
 ```
 
@@ -266,7 +271,7 @@ while quilt push; do quilt refresh; done
 JOBS=4 dpkg-buildpackage --source-option=--no-preparation -b -uc -nc
 ```
 
-## Optional: clean out all built objects/configs (not routinely need)
+## Optional: clean out all built objects/configs (not routinely needed)
 
 ```sh
 debian/rules hardclean
