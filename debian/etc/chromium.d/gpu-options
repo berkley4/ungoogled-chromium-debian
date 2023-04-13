@@ -13,13 +13,12 @@
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --canvas-oop-rasterization"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-drdc"
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-gpu-rasterization"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-hardware-overlays"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-native-gpu-memory-buffers"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-raw-draw"
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-zero-copy"
 
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --num-raster-threads=2"
-
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --ui-disable-partial-swap"
-
 
 # Uncomment the first one to enable vulkan
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-vulkan"
@@ -28,10 +27,3 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-zero-copy"
 
 # might help with eg google streetview on very old GPUs
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-accelerated-2d-canvas"
-
-
-# It's probably not necessary to set any of these
-# (the last one would require compilation with swiftshader enabled)
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --gl=gl=egl-gles2,angle=none"
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --gl=gl=egl-angle,angle=default"
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --gl=egl-angle,angle=swiftshader"
