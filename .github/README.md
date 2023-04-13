@@ -13,7 +13,7 @@ The unstable release obviously needs debian unstable or a new enough distro.
 
 # Installation
 
-The ungoogled-chromium package is mandatory, and ungoogled-chromium-libraries is recommended to enable gpu acceleration.
+The ungoogled-chromium and ungoogled-chromium-libraries packages are mandatory.
 
 The other debs are :-
 

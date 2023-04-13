@@ -56,6 +56,7 @@ Depends:
  ${misc:Depends},
  ${shlibs:Depends},
  libgtk-3-0,
+ ungoogled-chromium-libraries,
 Recommends:
  libgles2,
  ungoogled-chromium-libraries,
