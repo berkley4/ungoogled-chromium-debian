@@ -16,5 +16,15 @@
 # Uncomment to enable VAAPI hardware eecoding
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoEncoder"
 
-# The line below probably needs to also be uncommented
+
+# Possibly needed if using vulkan
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VulkanFromANGLE,DefaultANGLEVulkan"
+
+# Deprecated non-vulkan method
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=UseChromeOSDirectVideoDecoder"
+
+# Might be needed
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=UseSkiaRenderer"
+
+# Might be worth trying if all else fails
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiIgnoreDriverChecks"
