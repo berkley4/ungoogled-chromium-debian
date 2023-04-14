@@ -112,15 +112,15 @@ if [ $OOP_PR -eq 1 ]; then
 fi
 
 
-if [ $POLICIES -eq 1 ]; then
-  sed -e 's@^#\(.*/managed/policies\.json\)@\1@' \
-      -i $DEBIAN/ungoogled-chromium.install.in
-fi
-
-
 if [ $PDF_JS -eq 1 ]; then
   # pdf_enable_v8=false pdf_enable_xfa=false
   gn_disable="$gn_disable pdf_enable_v8"
+fi
+
+
+if [ $POLICIES -eq 1 ]; then
+  sed -e 's@^#\(.*/managed/policies\.json\)@\1@' \
+      -i $DEBIAN/ungoogled-chromium.install.in
 fi
 
 
