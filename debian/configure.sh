@@ -200,36 +200,40 @@ fi
 
 if [ -n "$optional_deps" ]; then
   for i in $optional_deps; do
-    sed -e "s@^#\(${i}-dev\)@ \1@" -i $DEBIAN/control.in
+    CON="$CON -e \"s@^#\(${i}-dev\)@ \1@\""
   done
+  eval sed $CON -i $DEBIAN/control.in
 fi
 
 
 if [ -n "$optional_patches" ]; then
   for i in $optional_patches; do
-    sed -e "s@^#\(optional/${i}\.patch\)@\1@" -i $DEBIAN/patches/series.debian
+    SER="$SER -e \"s@^#\(optional/${i}\.patch\)@\1@\""
   done
+  eval sed $SER -i $DEBIAN/patches/series.debian
 fi
 
 
-if [ -n "$gn_disable" ]; then
-  for i in $gn_disable; do
-    sed -e "s@^\(GN_FLAGS += ${i}=\)@#\1@" -i $DEBIAN/rules
-  done
-fi
+if [ -n "$gn_disable" ] || [ -n "$gn_enable" ] || [ -n "$sys_enable" ]; then
+  if [ -n "$gn_disable" ]; then
+    for i in $gn_disable; do
+      RUL="$RUL -e \"s@^\(GN_FLAGS += ${i}=\)@#\1@\""
+    done
+  fi
 
+  if [ -n "$gn_enable" ]; then
+    for i in $gn_enable; do
+      RUL="$RUL -e \"s@^#\(GN_FLAGS += ${i}=\)@\1@\""
+    done
+  fi
 
-if [ -n "$gn_enable" ]; then
-  for i in $gn_enable; do
-    sed -e "s@^#\(GN_FLAGS += ${i}=\)@\1@" -i $DEBIAN/rules
-  done
-fi
+  if [ -n "$sys_enable" ]; then
+    for i in $sys_enable; do
+      RUL="$RUL -e \"s@^#\(SYS_LIBS += ${i}\)@\1@\""
+    done
+  fi
 
-
-if [ -n "$sys_enable" ]; then
-  for i in $sys_enable; do
-    sed -e "s@^#\(SYS_LIBS += ${i}\)@\1@" -i $DEBIAN/rules
-  done
+  eval sed $RUL -i $DEBIAN/rules
 fi
 
 
