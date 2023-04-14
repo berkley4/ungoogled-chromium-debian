@@ -10,6 +10,8 @@ optional_patches='custom-import-limits aes-pclmul march mtune avx'
 
 # Default values
 [ -n "$BUNDLED_CLANG" ] || BUNDLED_CLANG=0
+[ -n "POLLY_STRIPMINE" ] || POLLY_STRIPMINE=1
+[ -n "$POLLY_EXTRA" ] || POLLY_EXTRA=1
 [ -n "$POLLY_PARALLEL" ] || POLLY_PARALLEL=0
 
 [ -n "$JPEG" ] || JPEG=0
@@ -39,7 +41,15 @@ DEBIAN=$(dirname $0)
 #######################
 
 if [ $BUNDLED_CLANG -eq 0 ]; then
-  clang_patches="fix-missing-symbols llvm-polly-stripmine llvm-polly-extra"
+  clang_patches="fix-missing-symbols"
+
+  if [ $POLLY_STRIPMINE -eq 1 ]; then
+    clang_patches="$clang_patches llvm-polly-stripmine"
+
+    if [ $POLLY_EXTRA -eq 1 ]; then
+      clang_patches="$clang_patches lvm-polly-extra"
+    fi
+  fi
 
   if [ $POLLY_PARALLEL -eq 1 ]; then
     clang_patches="$clang_patches lvm-polly-parallel"
