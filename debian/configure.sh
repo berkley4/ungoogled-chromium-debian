@@ -21,6 +21,7 @@ optional_patches='custom-import-limits aes-pclmul march mtune avx'
 [ -n "$ATK_DBUS" ] || ATK_DBUS=1
 [ -n "$CATAPULT" ] || CATAPULT=1
 [ -n "$DRIVER" ] || DRIVER=1
+[ -n "$OOP_PR" ] || OOP_PR=0
 [ -n "$PDF_JS" ] || PDF_JS=0
 [ -n "$POLICIES" ] || POLICIES=0
 [ -n "$WIDEVINE" ] || WIDEVINE=1
@@ -103,6 +104,11 @@ if [ $DRIVER -eq 0 ]; then
   sed -e 's@ chromedriver@@' -i $DEBIAN/rules
 
   find $DEBIAN/ -maxdepth 1 -name ungoogled-chromium-driver.\* -delete
+fi
+
+
+if [ $OOP_PR -eq 1 ]; then
+  gn_enable="$gn_enable enable_oop_basic_print_dialog"
 fi
 
 

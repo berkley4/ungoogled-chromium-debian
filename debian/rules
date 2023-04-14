@@ -83,6 +83,9 @@ GN_FLAGS += \
 # Comment to build pdfium with v8 (javascript) and XFA forms support
 GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
 
+# Uncomment to enable an out-of-process print dialog (X11 only)
+#GN_FLAGS += enable_oop_basic_print_dialog=true
+
 # Disable print preview (workaround for print preview dialog crash)
 GN_FLAGS += enable_print_preview=false
 
