@@ -36,6 +36,7 @@ ICU_SET=0
 DEBIAN=$(dirname $0)
 
 
+
 #######################
 ##  Customise build  ##
 #######################
@@ -57,11 +58,10 @@ if [ $BUNDLED_CLANG -eq 0 ]; then
 
   optional_patches="$optional_patches $clang_patches"
 
-  sed -e 's@^#\(.*[a-z][a-z]*_toolchain\)@\1@' \
-      -e 's@^#\(export [A-Z].*llvm-\)@\1@' \
-      -e 's@^#\(export [A-Z].*clang\)@\1@' \
-      -e 's@^#\(export DEB_C[_A-Z]*FLAGS_MAINT_SET\)@\1@' \
-      -i $DEBIAN/rules
+  RUL="$RUL -e \"s@^#\(.*[a-z][a-z]*_toolchain\)@\1@\""
+  RUL="$RUL -e \"s@^#\(export [A-Z].*llvm-\)@\1@\""
+  RUL="$RUL -e \"s@^#\(export [A-Z].*clang\)@\1@\""
+  RUL="$RUL -e \"s@^#\(export DEB_C[_A-Z]*FLAGS_MAINT_SET\)@\1@\""
 fi
 
 
@@ -107,11 +107,9 @@ fi
 
 
 if [ $DRIVER -eq 0 ]; then
-  sed -e '/^Package: ungoogled-chromium-driver/,/^Package:/{//!d}' \
-      -e '/^Package: ungoogled-chromium-driver/d' \
-      -i $DEBIAN/control.in
-
-  sed -e 's@ chromedriver@@' -i $DEBIAN/rules
+  CON="$CON -e \"/^Package: ungoogled-chromium-driver/,/^Package:/{//!d}\""
+  CON="$CON -e \"/^Package: ungoogled-chromium-driver/d\""
+  RUL="$RUL -e \"s@ chromedriver@@\""
 
   find $DEBIAN/ -maxdepth 1 -name ungoogled-chromium-driver.\* -delete
 fi
@@ -193,16 +191,19 @@ if [ $UNSTABLE -eq 1 ]; then
   # dav1d libaom libavif libpng libxml libxslt openh264
   sys_enable="$sys_enable dav1d"
 
-  sed -e 's@^\(RELEASE  := \)\(stable\)@\1un\2@' -i $DEBIAN/rules
+  RUL="$RUL -e \"s@^\(RELEASE  := \)\(stable\)@\1un\2@\""
 fi
 
 
+
+#################################################
+##  Aggregate dependencies, patches and flags  ##
+#################################################
 
 if [ -n "$optional_deps" ]; then
   for i in $optional_deps; do
     CON="$CON -e \"s@^#\(${i}-dev\)@ \1@\""
   done
-  eval sed $CON -i $DEBIAN/control.in
 fi
 
 
@@ -210,7 +211,6 @@ if [ -n "$optional_patches" ]; then
   for i in $optional_patches; do
     SER="$SER -e \"s@^#\(optional/${i}\.patch\)@\1@\""
   done
-  eval sed $SER -i $DEBIAN/patches/series.debian
 fi
 
 
@@ -232,9 +232,19 @@ if [ -n "$gn_disable" ] || [ -n "$gn_enable" ] || [ -n "$sys_enable" ]; then
       RUL="$RUL -e \"s@^#\(SYS_LIBS += ${i}\)@\1@\""
     done
   fi
-
-  eval sed $RUL -i $DEBIAN/rules
 fi
+
+
+
+##########################
+##  Modify build files  ##
+##########################
+
+[ -z "$CON" ] || eval sed $CON -i $DEBIAN/control.in
+
+[ -z "$SER" ] || eval sed $SER -i $DEBIAN/patches/series.debian
+
+[ -z "$RUL" ] || eval sed $RUL -i $DEBIAN/rules
 
 
 
