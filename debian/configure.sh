@@ -135,8 +135,7 @@ fi
 
 
 if [ $POLICIES -eq 1 ]; then
-  sed -e 's@^#\(.*/managed/policies\.json\)@\1@' \
-      -i $DEBIAN/ungoogled-chromium.install.in
+  INS="$INS -e \"s@^#\(.*/managed/policies\.json\)@\1@\""
 fi
 
 
@@ -179,8 +178,7 @@ if [ $UNSTABLE -eq 1 ]; then
 
     sys_enable="$sys_enable icu"
 
-    sed -e 's@^\(out/Release/icudtl\.dat\)@#\1@' \
-        -i $DEBIAN/ungoogled-chromium.install.in
+    INS="$INS -e \"s@^\(out/Release/icudtl\.dat\)@#\1@\""
   fi
 
   sys_patches="dav1d libaom-headers openh264"
@@ -256,9 +254,11 @@ fi
 
 [ -z "$CON" ] || eval sed $CON -i $DEBIAN/control.in
 
-[ -z "$SER" ] || eval sed $SER -i $DEBIAN/patches/series.debian
-
 [ -z "$RUL" ] || eval sed $RUL -i $DEBIAN/rules
+
+[ -z "$INS" ] || eval sed $INS -i $DEBIAN/ungoogled-chromium.install.in
+
+[ -z "$SER" ] || eval sed $SER -i $DEBIAN/patches/series.debian
 
 
 
