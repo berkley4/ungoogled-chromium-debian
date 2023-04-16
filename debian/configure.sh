@@ -199,7 +199,7 @@ fi
 
 
 if [ $USB -eq 1 ]; then
-  optional_patches="$optional_patches /system/libusb.patch"
+  optional_patches="$optional_patches system/libusb.patch"
   gn_enable="$gn_enable libusb"
 fi
 
