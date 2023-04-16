@@ -8,10 +8,12 @@ sys_enable=
 optional_deps=
 optional_patches='custom-import-limits aes-pclmul march mtune avx'
 
-# Default values
+ICU_SET=0
+POLLY_EXTRA_SET=0
+
+## Default values ##
 [ -n "$BUNDLED_CLANG" ] || BUNDLED_CLANG=0
 [ -n "$POLLY_STRIPMINE" ] || POLLY_STRIPMINE=1
-[ -n "$POLLY_EXTRA" ] || POLLY_EXTRA=1
 [ -n "$POLLY_PARALLEL" ] || POLLY_PARALLEL=0
 
 [ -n "$ATK_DBUS" ] || ATK_DBUS=1
@@ -30,8 +32,10 @@ optional_patches='custom-import-limits aes-pclmul march mtune avx'
 [ -n "$VAAPI" ] || VAAPI=1
 
 # ICU is automatically enabled when UNSTABLE=1
-ICU_SET=0
 [ -n "$ICU" ] && ICU_SET=1 || ICU=0
+
+# POLLY_EXTRA is automatically enabled when POLLY_STRIPMINE=1
+[ -n "$POLLY_EXTRA" ] && POLLY_EXTRA_SET=1 || POLLY_EXTRA=0
 
 
 DEBIAN=$(dirname $0)
@@ -47,6 +51,9 @@ if [ $BUNDLED_CLANG -eq 0 ]; then
 
   if [ $POLLY_STRIPMINE -eq 1 ]; then
     clang_patches="$clang_patches llvm-polly-stripmine"
+
+    # Enable POLLY_EXTRA unless explicity disabled via the environment
+    [ $POLLY_EXTRA_SET -eq 1 ] && [ $POLLY_EXTRA -eq 0 ] || POLLY_EXTRA=1
 
     if [ $POLLY_EXTRA -eq 1 ]; then
       clang_patches="$clang_patches llvm-polly-extra"
