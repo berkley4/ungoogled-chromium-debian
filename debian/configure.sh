@@ -14,13 +14,6 @@ optional_patches='custom-import-limits aes-pclmul march mtune avx'
 [ -n "$POLLY_EXTRA" ] || POLLY_EXTRA=1
 [ -n "$POLLY_PARALLEL" ] || POLLY_PARALLEL=0
 
-[ -n "$JPEG" ] || JPEG=0
-[ -n "$PIPEWIRE" ] || PIPEWIRE=1
-[ -n "$PULSE" ] || PULSE=1
-[ -n "$UNSTABLE" ] || UNSTABLE=0
-[ -n "$USB" ] || USB=0
-[ -n "$VAAPI" ] || VAAPI=1
-
 [ -n "$ATK_DBUS" ] || ATK_DBUS=1
 [ -n "$CATAPULT" ] || CATAPULT=1
 [ -n "$DRIVER" ] || DRIVER=1
@@ -28,6 +21,13 @@ optional_patches='custom-import-limits aes-pclmul march mtune avx'
 [ -n "$PDF_JS" ] || PDF_JS=0
 [ -n "$POLICIES" ] || POLICIES=0
 [ -n "$WIDEVINE" ] || WIDEVINE=1
+
+[ -n "$JPEG" ] || JPEG=0
+[ -n "$PIPEWIRE" ] || PIPEWIRE=1
+[ -n "$PULSE" ] || PULSE=1
+[ -n "$UNSTABLE" ] || UNSTABLE=0
+[ -n "$USB" ] || USB=0
+[ -n "$VAAPI" ] || VAAPI=1
 
 # ICU is automatically enabled when UNSTABLE=1
 ICU_SET=0
@@ -95,10 +95,10 @@ fi
 ##############################
 
 if [ $ATK_DBUS -eq 0 ]; then
+  optional_patches="$optional_patches disable/atk-dbus"
+
   # use_atk=false use_dbus=false
   gn_enable="$gn_enable use_atk"
-
-  optional_patches="$optional_patches disable/atk-dbus"
 fi
 
 
@@ -156,19 +156,8 @@ fi
 
 
 if [ $PULSE -eq 0 ]; then
-  gn_enable="$gn_enable use_pulseaudio"
   gn_disable="$gn_disable link_pulseaudio"
-fi
-
-
-if [ $USB -eq 1 ]; then
-  optional_patches="$optional_patches /system/libusb.patch"
-  gn_enable="$gn_enable libusb"
-fi
-
-
-if [ $VAAPI -eq 0 ]; then
-  gn_enable="$gn_enable use_vaapi"
+  gn_enable="$gn_enable use_pulseaudio"
 fi
 
 
@@ -199,6 +188,17 @@ if [ $UNSTABLE -eq 1 ]; then
   sys_enable="$sys_enable dav1d"
 
   RUL="$RUL -e \"s@^\(RELEASE  := \)\(stable\)@\1un\2@\""
+fi
+
+
+if [ $USB -eq 1 ]; then
+  optional_patches="$optional_patches /system/libusb.patch"
+  gn_enable="$gn_enable libusb"
+fi
+
+
+if [ $VAAPI -eq 0 ]; then
+  gn_enable="$gn_enable use_vaapi"
 fi
 
 
