@@ -109,7 +109,6 @@ various/system/extra/brotli.patch
 various/system/extra/opus.patch
 various/system/extra/zlib.patch
 various/upstream/0001-Add-use-system-libtiff-build-option.patch
-various/upstream/0002-Split-out-ios-shared-feed-protos.patch
 various/upstream/0011-Make-whitespace-strings-static.patch
 various/upstream/0012-Use-simple-union-for-blink-CharacterData.patch
 various/upstream/0013-Reserve-background-to-avoid-reallocation-of-candidates.patch
