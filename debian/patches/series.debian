@@ -90,15 +90,15 @@ various/disable/angle-perftests.patch
 various/disable/driver-chrome-path.patch
 various/disable/orchestrator.patch
 various/fedora/enable-hardware-accelerated-mjpeg.patch
-various/fixes/angle-wayland-include-protocol.patch
 various/fixes/cross-origin-favicons-1.patch
 various/fixes/EnumTable-crash.patch
 various/fixes/font-rendering.patch
 various/fixes/InkDropHost-crash.patch
+various/fixes/remove-main-main10-profile-limit.patch
 various/fixes/revert-GlobalMediaControlsCastStartStop.patch
-various/fixes/scoped-file-no-close.patch
 various/fixes/shim-fix-for-official-builds.patch
 various/fixes/skia-gamma.patch
+various/fixes/sql-relax-constraints-on-VirtualCursor-layout.patch
 various/fixes/sql-virtual-cursor.patch
 various/fixes/vaapi-add-av1-support.patch
 various/fixes/xfce-maximize.patch
@@ -109,6 +109,7 @@ various/system/extra/brotli.patch
 various/system/extra/opus.patch
 various/system/extra/zlib.patch
 various/upstream/0001-Add-use-system-libtiff-build-option.patch
+various/upstream/0002-Split-out-ios-shared-feed-protos.patch
 various/upstream/0011-Make-whitespace-strings-static.patch
 various/upstream/0012-Use-simple-union-for-blink-CharacterData.patch
 various/upstream/0013-Reserve-background-to-avoid-reallocation-of-candidates.patch
