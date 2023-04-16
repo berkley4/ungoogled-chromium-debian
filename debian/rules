@@ -135,6 +135,9 @@ SYS_LIBS :=               \
 # Enable if you are building on the same distro you intend to run under
 #SYS_LIBS += libjpeg
 
+# Enable if needed (normally not a compiled target)
+#SYS_LIBS += libusb
+
 # If your system ffmpeg has been rebuilt with patches from system_ffmpeg
 #SYS_LIBS += ffmpeg
 

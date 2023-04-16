@@ -18,6 +18,7 @@ optional_patches='custom-import-limits aes-pclmul march mtune avx'
 [ -n "$PIPEWIRE" ] || PIPEWIRE=1
 [ -n "$PULSE" ] || PULSE=1
 [ -n "$UNSTABLE" ] || UNSTABLE=0
+[ -n "$USB" ] || USB=0
 [ -n "$VAAPI" ] || VAAPI=1
 
 [ -n "$ATK_DBUS" ] || ATK_DBUS=1
@@ -157,6 +158,12 @@ fi
 if [ $PULSE -eq 0 ]; then
   gn_enable="$gn_enable use_pulseaudio"
   gn_disable="$gn_disable link_pulseaudio"
+fi
+
+
+if [ $USB -eq 1 ]; then
+  optional_patches="$optional_patches /system/libusb.patch"
+  gn_enable="$gn_enable libusb"
 fi
 
 
