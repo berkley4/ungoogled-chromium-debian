@@ -10,7 +10,7 @@ optional_patches='custom-import-limits aes-pclmul march mtune avx'
 
 # Default values
 [ -n "$BUNDLED_CLANG" ] || BUNDLED_CLANG=0
-[ -n "POLLY_STRIPMINE" ] || POLLY_STRIPMINE=1
+[ -n "$POLLY_STRIPMINE" ] || POLLY_STRIPMINE=1
 [ -n "$POLLY_EXTRA" ] || POLLY_EXTRA=1
 [ -n "$POLLY_PARALLEL" ] || POLLY_PARALLEL=0
 
@@ -49,7 +49,7 @@ if [ $BUNDLED_CLANG -eq 0 ]; then
     clang_patches="$clang_patches llvm-polly-stripmine"
 
     if [ $POLLY_EXTRA -eq 1 ]; then
-      clang_patches="$clang_patches lvm-polly-extra"
+      clang_patches="$clang_patches llvm-polly-extra"
     fi
   fi
 
@@ -187,7 +187,7 @@ if [ $UNSTABLE -eq 1 ]; then
   # dav1d libaom libavif libpng libxml libxslt openh264
   sys_enable="$sys_enable dav1d"
 
-  RUL="$RUL -e \"s@^\(RELEASE  := \)\(stable\)@\1un\2@\""
+  RUL="$RUL -e \"/^RELEASE/{s/stable/unstable/}\""
 fi
 
 
