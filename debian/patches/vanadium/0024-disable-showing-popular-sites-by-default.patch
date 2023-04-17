@@ -1,4 +1,4 @@
-From 3b9a253e7faf1383bb2cccd3b33dafad82df7be2 Mon Sep 17 00:00:00 2001
+From 7a3ab75042a288987ac4a0c1333ab47fe7419423 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Tue, 6 Mar 2018 00:27:41 -0500
 Subject: [PATCH] disable showing popular sites by default
@@ -7,9 +7,11 @@ Subject: [PATCH] disable showing popular sites by default
  components/ntp_tiles/features.cc | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/components/ntp_tiles/features.cc b/components/ntp_tiles/features.cc
+index 26049117ac858..87bc57efba5a9 100644
 --- a/components/ntp_tiles/features.cc
 +++ b/components/ntp_tiles/features.cc
-@@ -15,7 +15,7 @@
+@@ -15,7 +15,7 @@ const char kPopularSitesFieldTrialName[] = "NTPPopularSites";
  
  BASE_FEATURE(kPopularSitesBakedInContentFeature,
               "NTPPopularSitesBakedInContent",
@@ -18,7 +20,7 @@ Subject: [PATCH] disable showing popular sites by default
  
  BASE_FEATURE(kNtpMostLikelyFaviconsFromServerFeature,
               "NTPMostLikelyFaviconsFromServer",
-@@ -23,7 +23,7 @@
+@@ -23,7 +23,7 @@ BASE_FEATURE(kNtpMostLikelyFaviconsFromServerFeature,
  
  BASE_FEATURE(kUsePopularSitesSuggestions,
               "UsePopularSitesSuggestions",

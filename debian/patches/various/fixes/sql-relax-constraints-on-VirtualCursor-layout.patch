@@ -25,11 +25,9 @@ Cr-Commit-Position: refs/heads/main@{#1111925}
  sql/recover_module/cursor.h | 10 ++++------
  1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/sql/recover_module/cursor.h b/sql/recover_module/cursor.h
-index 1970bdca8c6..4cb06557009 100644
 --- a/sql/recover_module/cursor.h
 +++ b/sql/recover_module/cursor.h
-@@ -63,12 +63,10 @@ class VirtualCursor {
+@@ -63,12 +63,10 @@
    // |sqlite_cursor| must have been returned by VirtualTable::SqliteCursor().
    static inline VirtualCursor* FromSqliteCursor(
        sqlite3_vtab_cursor* sqlite_cursor) {

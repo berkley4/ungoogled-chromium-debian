@@ -16,7 +16,7 @@
  }
  
  config("default_stack_frames") {
-@@ -2178,7 +2187,7 @@
+@@ -2179,7 +2188,7 @@
      # vectorization while otherwise optimizing for size.
      rustflags = [ "-Copt-level=s" ]
    } else {

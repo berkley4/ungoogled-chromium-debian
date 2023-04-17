@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -738,6 +738,11 @@
+@@ -739,6 +739,11 @@
          # TODO(crbug.com/1308318): Investigate if we can get the > 6% perf win
          # of import_instr_limit 30 with a binary size hit smaller than ~2 MiB.
          import_instr_limit = 5
