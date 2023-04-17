@@ -191,11 +191,6 @@ tarball:
 	test -d $(DL_CACHE) || mkdir -p $(DL_CACHE)
 	test ! -f base/BUILD.gn && $(UL_DIR)/downloads.py retrieve -i $(UC_DIR)/downloads.ini -c $(DL_CACHE) && $(UL_DIR)/downloads.py unpack -i $(UC_DIR)/downloads.ini -c $(DL_CACHE) $(RT_DIR)
 
-disable_mdns:
-	test -n "$$(grep ^enable_mdns= $(UC_DIR)/flags.gn)" || sed -e '$$ a enable_mdns=false' -i $(UC_DIR)/flags.gn
-	test -f $(DB_DIR)/patches/fix-building-without-mdns-and-service-discovery.patch || cp -a $(MP_DIR)/fix-building-without-mdns-and-service-discovery.patch $(DB_DIR)/patches/
-	test -n "$$(grep ^fix-building-without-mdns-and-service-discovery\.patch $(DB_DIR)/patches/series.debian)" || sed '$$ a \\nfix-building-without-mdns-and-service-discovery.patch' -i $(DB_DIR)/patches/series.debian
-
 pgo_configure:
 	test -d $(LLVM_DIR) || tools/clang/scripts/update.py
 	test -d $(RT_DIR)/chrome/build/pgo_profiles || tools/update_pgo_profiles.py --target linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles
@@ -218,9 +213,6 @@ setup: changelog control pgo_configure
 	sed -e '/^build_with_tflite_lib/d' -e '/^chrome_pgo_phase/d' -e '/^enable_hangout_services_extension/d' -e '/^enable_nacl/d' -e '/^enable_service_discovery/d' -e '/^exclude_unwind_tables/d' -e '/^google_api_key/d' -e '/^google_default_client_id/d' -e '/^google_default_client_secret/d' -i $(UC_DIR)/flags.gn
 	# Remove various entries from domain_substitution.list
 	sed -e '/^chrome\/browser\/flag_descriptions\.cc/d' -e '/content\/browser\/resources\/gpu\/info_view\.js/d' -e '/^third_party\/depot_tools/d' -e '/^tools\/clang/d' -i $(UC_DIR)/domain_substitution.list
-
-setup_no_mdns: disable_mdns setup
-	:
 
 override_dh_auto_configure: find_remove_most undo_unbundling
 	test -d $(OUT_DIR) && ninja -j $(JOBS) -C $(OUT_DIR) -t cleandead || printf '%s\n' "$(OUT_DIR) does not exist, nothing to do."

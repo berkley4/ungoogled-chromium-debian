@@ -69,7 +69,6 @@ ___Other features___
 - The ungoogled-chromium-common package has split into the libraries and main packages
 - A new ungoogled-chromium-libraries package
 - Google translate - optional build support via a patch to re-enable this functionality
-- Disable mDNS and service discovery - optional build support (a work in progress)
 
 
 ___Build system___
@@ -98,13 +97,6 @@ variables (this is done immediately after copying over the debian
 directory into your build tree). For example :-
 
 TRANSLATE=1 UNSTABLE=1 ./debian/configure.sh
-
-
-___Disable mDNS and service discovery (a work-in-progress)___
-
-To build with mdns (and service discovery) disabled, run the following :-
-
-debian/rules setup_no_mdns
 
 
 - - - -
