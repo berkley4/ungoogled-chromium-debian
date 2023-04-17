@@ -39,6 +39,6 @@ debian/etc/chromium.d/hw-decoding-encoding                                     e
 debian/etc/chromium.d/load-extensions                                          etc/chromium.d
 debian/etc/chromium.d/ng-shape-cache                                           etc/chromium.d
 debian/etc/chromium.d/no-ipv6-probe                                            etc/chromium.d
-debian/etc/chromium.d/strict-origin-isolation                                  etc/chromium.d
+debian/etc/chromium.d/isolation                                                etc/chromium.d
 debian/etc/chromium.d/webassembly                                              etc/chromium.d
 debian/etc/chromium.d/README                                                   etc/chromium.d
