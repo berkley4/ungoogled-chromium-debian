@@ -25,7 +25,7 @@ POLLY_EXTRA_SET=0
 [ -n "$POLICIES" ] || POLICIES=0
 [ -n "$WIDEVINE" ] || WIDEVINE=1
 
-[ -n "$JPEG" ] || JPEG=0
+[ -n "$JPEG" ] || JPEG=1
 [ -n "$PIPEWIRE" ] || PIPEWIRE=1
 [ -n "$PULSE" ] || PULSE=1
 [ -n "$UNSTABLE" ] || UNSTABLE=0

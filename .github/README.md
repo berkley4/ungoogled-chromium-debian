@@ -238,9 +238,9 @@ debian/rules tarball
 # variables (read the script and look at GN_FLAGS/SYS_LIBS in debian/rules)
 #
 # Example for stable :-
-ATK_DBUS=0 CATAPULT=0 DRIVER=0 MARCH=native MTUNE=native JPEG=1 ./debian/configure.sh
+ATK_DBUS=0 CATAPULT=0 DRIVER=0 MARCH=native MTUNE=native ./debian/configure.sh
 # Example for unstable :-
-MARCH=native MTUNE=native JPEG=1 TRANSLATE=1 UNSTABLE=1 ./debian/configure.sh
+DRIVER=0 MARCH=native MTUNE=native TRANSLATE=1 UNSTABLE=1 ./debian/configure.sh
 
 # Normally you just need to run the following
 debian/rules setup
