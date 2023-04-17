@@ -33,9 +33,11 @@ POLLY_EXTRA_SET=0
 [ -n "$VAAPI" ] || VAAPI=1
 
 # ICU is automatically enabled when UNSTABLE=1
+# Set ICU=0 to force disable
 [ -n "$ICU" ] && ICU_SET=1 || ICU=0
 
 # POLLY_EXTRA is automatically enabled when POLLY_VECTORIZER=1
+# Set POLLY_EXTRA=0 to force disable
 [ -n "$POLLY_EXTRA" ] && POLLY_EXTRA_SET=1 || POLLY_EXTRA=0
 
 
@@ -244,24 +246,22 @@ if [ -n "$optional_patches" ]; then
 fi
 
 
-if [ -n "$gn_disable" ] || [ -n "$gn_enable" ] || [ -n "$sys_enable" ]; then
-  if [ -n "$gn_disable" ]; then
-    for i in $gn_disable; do
-      RUL="$RUL -e \"s@^\(GN_FLAGS += ${i}=\)@#\1@\""
-    done
-  fi
+if [ -n "$gn_disable" ]; then
+  for i in $gn_disable; do
+    RUL="$RUL -e \"s@^\(GN_FLAGS += ${i}=\)@#\1@\""
+  done
+fi
 
-  if [ -n "$gn_enable" ]; then
-    for i in $gn_enable; do
-      RUL="$RUL -e \"s@^#\(GN_FLAGS += ${i}=\)@\1@\""
-    done
-  fi
+if [ -n "$gn_enable" ]; then
+  for i in $gn_enable; do
+    RUL="$RUL -e \"s@^#\(GN_FLAGS += ${i}=\)@\1@\""
+  done
+fi
 
-  if [ -n "$sys_enable" ]; then
-    for i in $sys_enable; do
-      RUL="$RUL -e \"s@^#\(SYS_LIBS += ${i}\)@\1@\""
-    done
-  fi
+if [ -n "$sys_enable" ]; then
+  for i in $sys_enable; do
+    RUL="$RUL -e \"s@^#\(SYS_LIBS += ${i}\)@\1@\""
+  done
 fi
 
 
