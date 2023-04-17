@@ -93,9 +93,11 @@ ___Google Translate___
 
 Not enabled by default in the binaries, you need to build it yourself.
 
-To build with google translate enabled, instead of running debian/rules setup, run the following :-
+To build with translate enabled, include TRANSLATE=1 in your configure
+variables (this is done immediately after copying over the debian
+directory into your build tree). For example :-
 
-debian/rules setup_translate
+TRANSLATE=1 UNSTABLE=1 ./debian/configure.sh
 
 
 ___Disable mDNS and service discovery (a work-in-progress)___
@@ -103,11 +105,6 @@ ___Disable mDNS and service discovery (a work-in-progress)___
 To build with mdns (and service discovery) disabled, run the following :-
 
 debian/rules setup_no_mdns
-
-
-If you want to both enable google translate and disable mdns, run the following :-
-
-debian/rules setup_no_mdns_translate
 
 
 - - - -
@@ -251,9 +248,9 @@ debian/rules tarball
 # Example for stable :-
 ATK_DBUS=0 CATAPULT=0 DRIVER=0 MARCH=native MTUNE=native JPEG=1 ./debian/configure.sh
 # Example for unstable :-
-ICU=0 PIPEWIRE=0 MARCH=native MTUNE=native JPEG=1 UNSTABLE=1 ./debian/configure.sh
+MARCH=native MTUNE=native JPEG=1 TRANSLATE=1 UNSTABLE=1 ./debian/configure.sh
 
-# Normally you just need to run the following (see above for enabling translate)
+# Normally you just need to run the following
 debian/rules setup
 
 # Change version (eg create a pre-release from an unmerged UC pull request)

@@ -202,13 +202,6 @@ pgo_configure:
 	test -n "$$(grep ^pgo_data_path $(UC_DIR)/flags.gn)" || sed "$$ a pgo_data_path=\"$$(realpath chrome/build/pgo_profiles/$$(cat chrome/build/linux.pgo.txt))\"" -i $(UC_DIR)/flags.gn
 	sed -e '/^chrome\/build\/pgo_profiles/d' -i $(UC_DIR)/pruning.list
 
-translate_configure:
-	test -f $(DB_DIR)/patches/translate-reverse-enable.patch || cp -a $(MP_DIR)/translate-reverse-enable.patch $(DB_DIR)/patches/
-	test -n "$$(grep ^translate-reverse-enable\.patch $(DB_DIR)/patches/series.debian)" || sed '$$ a \\ntranslate-reverse-enable.patch' -i $(DB_DIR)/patches/series.debian
-	test -f $(DB_DIR)/etc/chromium.d/google-translate || cp -a $(SH_DIR)/google-translate $(DB_DIR)/etc/chromium.d/
-	sed 's@^#\(debian/etc/chromium.d/google-translate\)@\1@' < $(DB_DIR)/ungoogled-chromium.install.in > $(DB_DIR)/ungoogled-chromium.install
-	sed -e '/\/translate_manager_browsertest\.cc/d' -e '/\/translate_script\.cc/d' -e '/\/translate_util\.cc/d' -i $(UC_DIR)/domain_substitution.list
-
 setup: changelog control pgo_configure
 	if ! patch -R -p1 -s -f --dry-run < $(MP_DIR)/no-exit-if-pruned.patch >/dev/null 2>&1; then patch -p1 < $(MP_DIR)/no-exit-if-pruned.patch; fi
 	sed -e '/^buildtools/d' -e '/^third_party\/depot_tools/d' -e '/^third_party\/llvm/d' -e '/^tools\/clang/d' -i $(UC_DIR)/pruning.list
@@ -227,12 +220,6 @@ setup: changelog control pgo_configure
 	sed -e '/^chrome\/browser\/flag_descriptions\.cc/d' -e '/content\/browser\/resources\/gpu\/info_view\.js/d' -e '/^third_party\/depot_tools/d' -e '/^tools\/clang/d' -i $(UC_DIR)/domain_substitution.list
 
 setup_no_mdns: disable_mdns setup
-	:
-
-setup_translate: translate_configure setup
-	:
-
-setup_no_mdns_translate: disable_mdns translate_configure setup
 	:
 
 override_dh_auto_configure: find_remove_most undo_unbundling

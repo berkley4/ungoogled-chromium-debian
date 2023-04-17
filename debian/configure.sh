@@ -15,6 +15,7 @@ POLLY_EXTRA_SET=0
 [ -n "$BUNDLED_CLANG" ] || BUNDLED_CLANG=0
 [ -n "$POLLY_VECTORIZER" ] || POLLY_VECTORIZER=1
 [ -n "$POLLY_PARALLEL" ] || POLLY_PARALLEL=0
+[ -n "$TRANSLATE" ] || TRANSLATE=0
 
 [ -n "$ATK_DBUS" ] || ATK_DBUS=1
 [ -n "$CATAPULT" ] || CATAPULT=1
@@ -93,6 +94,23 @@ if [ -n "$MARCH" ] || [ -n "$MTUNE" ]; then
     sed -e "s@\(march=\)[^"]*@\1$MARCH@" -e "s@\(mtune=\)[^"]*@\1$MTUNE@" \
         -i $DEBIAN/patches/optional/$i.patch
   done
+fi
+
+
+if [ $TRANSLATE -eq 1 ]; then
+  cp -a $DEBIAN/misc_patches/translate-reverse-enable.patch $DEBIAN/patches/
+  cp -a $DEBIAN/shims/google-translate $DEBIAN/etc/chromium.d/
+
+  sed -e '/\/translate_manager_browsertest\.cc/d' \
+      -e '/\/translate_script\.cc/d' \
+      -e '/\/translate_util\.cc/d' \
+      -i $DEBIAN/submodules/ungoogled-chromium/domain_substitution.list
+
+  INS="$INS \"s@^#\(debian/etc/chromium.d/google-translate\)@\1@\""
+
+  if [ -z "$(grep ^translate-reverse-enable\.patch $DEBIAN/patches/series.debian)" ]; then
+    SER="$SER -e \"$ a\translate-reverse-enable.patch\""
+  fi
 fi
 
 
