@@ -190,13 +190,9 @@ tarball:
 	find . -mindepth 1 -maxdepth 1 -type d \( -name debian -o -name out \) -prune -o -exec rm -rf "{}" +
 	test -d $(DL_CACHE) || mkdir -p $(DL_CACHE)
 	test ! -f base/BUILD.gn && $(UL_DIR)/downloads.py retrieve -i $(UC_DIR)/downloads.ini -c $(DL_CACHE) && $(UL_DIR)/downloads.py unpack -i $(UC_DIR)/downloads.ini -c $(DL_CACHE) $(RT_DIR)
-
-pgo_configure:
-	test -d $(LLVM_DIR) || tools/clang/scripts/update.py
 	test -d $(RT_DIR)/chrome/build/pgo_profiles || tools/update_pgo_profiles.py --target linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles
-	test -n "$$(grep ^pgo_data_path $(UC_DIR)/flags.gn)" || sed "$$ a pgo_data_path=\"$$(realpath chrome/build/pgo_profiles/$$(cat chrome/build/linux.pgo.txt))\"" -i $(UC_DIR)/flags.gn
 
-setup: changelog control pgo_configure
+setup: changelog control
 	if ! patch -R -p1 -s -f --dry-run < $(MP_DIR)/no-exit-if-pruned.patch >/dev/null 2>&1; then patch -p1 < $(MP_DIR)/no-exit-if-pruned.patch; fi
 	sed -e '/^buildtools/d' -e '/^chrome\/build\/pgo_profiles/d' -e '/^third_party\/depot_tools/d' -e '/^third_party\/llvm/d' -e '/^tools\/clang/d' -i $(UC_DIR)/pruning.list
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list
@@ -208,7 +204,9 @@ setup: changelog control pgo_configure
 	test -f $(DB_DIR)/ungoogled-chromium.install || cp -a $(DB_DIR)/ungoogled-chromium.install.in $(DB_DIR)/ungoogled-chromium.install
 	test -x $(DB_DIR)/ungoogled-chromium.install || chmod 0700 $(DB_DIR)/ungoogled-chromium.install
 	test -f $(DB_DIR)/etc/chromium.d/chromium-flags.conf || cp -a $(SH_DIR)/chromium-flags.conf $(DB_DIR)/etc/chromium.d/
-	# Remove some default/unwanted flags from submodules/ungoogled-chromium/flags.gn
+	# Add pgo profile path (if it does not already exist in flags.gn)
+        test -n "$$(grep ^pgo_data_path $(UC_DIR)/flags.gn)" || sed "$$ a pgo_data_path=\"$$(realpath chrome/build/pgo_profiles/$$(cat chrome/build/linux.pgo.txt))\"" -i $(UC_DIR)/flags.gn
+        # Remove some default/unwanted flags from submodules/ungoogled-chromium/flags.gn
 	sed -e '/^build_with_tflite_lib/d' -e '/^chrome_pgo_phase/d' -e '/^enable_hangout_services_extension/d' -e '/^enable_nacl/d' -e '/^enable_service_discovery/d' -e '/^exclude_unwind_tables/d' -e '/^google_api_key/d' -e '/^google_default_client_id/d' -e '/^google_default_client_secret/d' -i $(UC_DIR)/flags.gn
 	# Remove various entries from domain_substitution.list
 	sed -e '/^chrome\/browser\/flag_descriptions\.cc/d' -e '/content\/browser\/resources\/gpu\/info_view\.js/d' -e '/^third_party\/depot_tools/d' -e '/^tools\/clang/d' -i $(UC_DIR)/domain_substitution.list
