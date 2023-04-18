@@ -44,6 +44,7 @@ POLLY_EXTRA_SET=0
 
 
 DEBIAN=$(dirname $0)
+UC_DIR=$DEBIAN/submodules/ungoogled-chromium
 
 
 
@@ -108,7 +109,7 @@ if [ $TRANSLATE -eq 1 ]; then
   sed -e '/\/translate_manager_browsertest\.cc/d' \
       -e '/\/translate_script\.cc/d' \
       -e '/\/translate_util\.cc/d' \
-      -i $DEBIAN/submodules/ungoogled-chromium/domain_substitution.list
+      -i $UC_DIR/domain_substitution.list
 
   INS="$INS \"s@^#\(debian/etc/chromium.d/google-translate\)@\1@\""
 
@@ -162,8 +163,7 @@ fi
 
 
 if [ $WIDEVINE -eq 0 ]; then
-  sed -e 's@^\(enable_widevine=\)true@\1false@' \
-      -i $DEBIAN/submodules/ungoogled-chromium/flags.gn
+  sed -e 's@^\(enable_widevine=\)true@\1false@' -i $UC_DIR/flags.gn
 fi
 
 
@@ -282,6 +282,58 @@ fi
 
 
 
+###################################
+##  Prepare miscellaneous files  ##
+###################################
+
+## Runtime flags
+cp -a $DEBIAN/shims/chromium-flags.conf $DEBIAN/etc/chromium.d/
+
+
+## Install file
+cp -a $DEBIAN/ungoogled-chromium.install.in $DEBIAN/ungoogled-chromium.install
+
+if [ ! -x $DEBIAN/ungoogled-chromium.install ]; then
+  chmod 0700 $DEBIAN/ungoogled-chromium.install
+fi
+
+
+## Pruning
+if ! patch -R -p1 -s -f --dry-run \
+  < $DEBIAN/misc_patches/no-exit-if-pruned.patch >/dev/null 2>&1; then
+    patch -p1 < $DEBIAN/misc_patches/no-exit-if-pruned.patch
+fi
+
+sed -e '/^buildtools/d' \
+    -e '/^chrome\/build\/pgo_profiles/d' \
+    -e '/^third_party\/depot_tools/d' \
+    -e '/^third_party\/llvm/d' \
+    -e '/^tools\/clang/d' \
+    -i $UC_DIR/pruning.list
+
+
+## Domain substitution
+sed -e '/^chrome\/browser\/flag_descriptions\.cc/d' \
+    -e '/content\/browser\/resources\/gpu\/info_view\.js/d' \
+    -e '/^third_party\/depot_tools/d' \
+    -e '/^tools\/clang/d' \
+    -i $UC_DIR/domain_substitution.list
+
+
+## Build flags
+sed -e '/^build_with_tflite_lib/d' \
+    -e '/^chrome_pgo_phase/d' \
+    -e '/^enable_hangout_services_extension/d' \
+    -e '/^enable_nacl/d' \
+    -e '/^enable_service_discovery/d' \
+    -e '/^exclude_unwind_tables/d' \
+    -e '/^google_api_key/d' \
+    -e '/^google_default_client_id/d' \
+    -e '/^google_default_client_secret/d' \
+    -i $UC_DIR/flags.gn
+
+
+
 #############################
 ##  Fetch/Extract Tarball  ##
 #############################
@@ -300,14 +352,11 @@ if [ $TARBALL -eq 1 ]; then
   [ -d $TB_DIR/../download_cache ] || mkdir -p $TB_DIR/../download_cache
 
   if [ ! -f $TB_DIR/base/BUILD.gn ]; then
-    $DEBIAN/submodules/ungoogled-chromium/utils/downloads.py retrieve \
-      -i $DEBIAN/submodules/ungoogled-chromium/downloads.ini \
-      -c $DEBIAN/../../download_cache
+    $UC_DIR/utils/downloads.py retrieve \
+      -i $UC_DIR/downloads.ini -c $DEBIAN/../../download_cache
 
-    $DEBIAN/submodules/ungoogled-chromium/utils/downloads.py unpack \
-      -i $DEBIAN/submodules/ungoogled-chromium/downloads.ini \
-      -c $TB_DIR/../download_cache
-        $TB_DIR
+    $UC_DIR/utils/downloads.py unpack \
+      -i $UC_DIR/downloads.ini -c $TB_DIR/../download_cache $TB_DIR
   fi
 
   if [ ! -d $TB_DIR/chrome/build/pgo_profiles ]; then
