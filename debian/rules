@@ -8,7 +8,6 @@ SH_DIR   := $(DB_DIR)/shims
 UC_DIR   := $(DB_DIR)/submodules/ungoogled-chromium
 UL_DIR   := $(UC_DIR)/utils
 UP_DIR   := $(UC_DIR)/patches
-DL_CACHE := $(RT_DIR)/../download_cache
 DS_CACHE := $(DB_DIR)/domsubcache.tar.gz
 OUT_DIR  := out/Release
 
@@ -189,13 +188,6 @@ remove_bundled:
 
 undo_unbundling:
 	find \( -path .\*/.git -o -path ./.pc -o -path ./debian -o -path ./out \) -prune -o -type f \( -name \*.gn.original -o -name \*.gni.original \) -print | while read f; do mv $$f $${f%.original}; done
-
-tarball:
-	test "$$(dirname $(CURDIR))" != "tarball" && printf '%s\n' "Cannot run outside of tarball directory" && exit 1
-	find . -mindepth 1 -maxdepth 1 -type d \( -name debian -o -name out \) -prune -o -exec rm -rf "{}" +
-	test -d $(DL_CACHE) || mkdir -p $(DL_CACHE)
-	test ! -f base/BUILD.gn && $(UL_DIR)/downloads.py retrieve -i $(UC_DIR)/downloads.ini -c $(DL_CACHE) && $(UL_DIR)/downloads.py unpack -i $(UC_DIR)/downloads.ini -c $(DL_CACHE) $(RT_DIR)
-	test -d $(RT_DIR)/chrome/build/pgo_profiles || tools/update_pgo_profiles.py --target linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles
 
 setup: changelog control
 	if ! patch -R -p1 -s -f --dry-run < $(MP_DIR)/no-exit-if-pruned.patch >/dev/null 2>&1; then patch -p1 < $(MP_DIR)/no-exit-if-pruned.patch; fi

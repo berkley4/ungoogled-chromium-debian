@@ -12,6 +12,8 @@ ICU_SET=0
 POLLY_EXTRA_SET=0
 
 ## Default values ##
+[ -n "$TARBALL" || TARBALL=0
+
 [ -n "$BUNDLED_CLANG" ] || BUNDLED_CLANG=0
 [ -n "$POLLY_VECTORIZER" ] || POLLY_VECTORIZER=1
 [ -n "$POLLY_PARALLEL" ] || POLLY_PARALLEL=0
@@ -277,6 +279,43 @@ fi
 [ -z "$INS" ] || eval sed $INS -i $DEBIAN/ungoogled-chromium.install.in
 
 [ -z "$SER" ] || eval sed $SER -i $DEBIAN/patches/series.debian
+
+
+
+#############################
+##  Fetch/Extract Tarball  ##
+#############################
+
+if [ $TARBALL -eq 1 ]; then
+  TB_DIR=$(dirname $DEBIAN)
+
+  if [ "$TB_DIR" != "tarball" ]; then
+    printf '%s\n' "Cannot run outside of tarball directory"
+    exit 1
+  fi
+
+  find $TB_DIR/ -mindepth 1 -maxdepth 1 \
+    -type d \( -name debian -o -name out \) -prune -o -exec rm -rf "{}" +
+
+  [ -d $TB_DIR/../download_cache ] || mkdir -p $TB_DIR/../download_cache
+
+  if [ ! -f $TB_DIR/base/BUILD.gn ]; then
+    $DEBIAN/submodules/ungoogled-chromium/utils/downloads.py retrieve \
+      -i $DEBIAN/submodules/ungoogled-chromium/downloads.ini \
+      -c $DEBIAN/../../download_cache
+
+    $DEBIAN/submodules/ungoogled-chromium/utils/downloads.py unpack \
+      -i $DEBIAN/submodules/ungoogled-chromium/downloads.ini \
+      -c $TB_DIR/../download_cache
+        $TB_DIR
+  fi
+
+  if [ ! -d $TB_DIR/chrome/build/pgo_profiles ]; then
+    $TB_DIR/tools/update_pgo_profiles.py \
+      --target linux update \
+      --gs-url-base=chromium-optimization-profiles/pgo_profiles
+  fi
+fi
 
 
 

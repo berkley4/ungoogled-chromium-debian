@@ -73,7 +73,7 @@ ___Other features___
 
 ___Build system___
 
-- Predominantly uses git to obtain and update source (release tarballs were supported until recently)
+- Predominantly uses git to obtain and update source (release tarballs are not actively supported)
 - System clang/llvm is preferred for building (upstream llvm is best to ensure compatibility with the PGO profile)
 - Patches for -march/-mtune and various other CPU instructions
 - Various patches to disable components (eg atk/dbus) and enable system libraries (eg icu)
@@ -227,8 +227,9 @@ cd build/tarball
 # Copy over the debian directory
 cp -a ../../debian .
 
-# Download and extract the upstream tarball
-debian/rules tarball
+# Include TARBALL=1 in your variables and run the configure script to
+# download and extract (refer below and to the script to configure further)
+TARBALL=1 ./debian/configure.sh
 ```
 
 ## Finish preparing the source
