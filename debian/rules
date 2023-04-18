@@ -195,11 +195,10 @@ pgo_configure:
 	test -d $(LLVM_DIR) || tools/clang/scripts/update.py
 	test -d $(RT_DIR)/chrome/build/pgo_profiles || tools/update_pgo_profiles.py --target linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles
 	test -n "$$(grep ^pgo_data_path $(UC_DIR)/flags.gn)" || sed "$$ a pgo_data_path=\"$$(realpath chrome/build/pgo_profiles/$$(cat chrome/build/linux.pgo.txt))\"" -i $(UC_DIR)/flags.gn
-	sed -e '/^chrome\/build\/pgo_profiles/d' -i $(UC_DIR)/pruning.list
 
 setup: changelog control pgo_configure
 	if ! patch -R -p1 -s -f --dry-run < $(MP_DIR)/no-exit-if-pruned.patch >/dev/null 2>&1; then patch -p1 < $(MP_DIR)/no-exit-if-pruned.patch; fi
-	sed -e '/^buildtools/d' -e '/^third_party\/depot_tools/d' -e '/^third_party\/llvm/d' -e '/^tools\/clang/d' -i $(UC_DIR)/pruning.list
+	sed -e '/^buildtools/d' -e '/^chrome\/build\/pgo_profiles/d' -e '/^third_party\/depot_tools/d' -e '/^third_party\/llvm/d' -e '/^tools\/clang/d' -i $(UC_DIR)/pruning.list
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list
 	#all_libs="$$(sed -n "s@^[^-_a-zA-Z0-9]*\([-_a-zA-Z0-9]*\)[^-_a-zA-Z0-9]*third_party/.*@\1@p" $(UB_REP_SCRIPT))"; for lib in $(SYS_LIBS); do all_libs="$$(echo "$$all_libs" | sed "/^$$lib$/d")"; done
 	#keep_libs="$$(for lib in $$(echo "$$all_libs" | tr '\n' ' '); do sed -n "s@^[^-_a-zA-Z0-9]*$$lib[^-_a-zA-Z0-9].*\(third_party/[^/]*\).*@\1@p" $(UB_REP_SCRIPT); done | tr '\n' ' ')"
