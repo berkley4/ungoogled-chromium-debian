@@ -1,7 +1,7 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
 @@ -2114,7 +2114,11 @@
-       "-polly-run-inliner",
+       "-polly-run-dce",
        "-mllvm",
        "-polly-invariant-load-hoisting",
 +      "-mllvm",
