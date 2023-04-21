@@ -301,7 +301,7 @@ fi
 ## Pruning
 if ! patch -R -p1 -s -f --dry-run \
   < $DEBIAN/misc_patches/no-exit-if-pruned.patch >/dev/null 2>&1; then
-    patch -p1 < $DEBIAN/misc_patches/no-exit-if-pruned.patch
+    patch -p1 < $DEBIAN/misc_patches/no-exit-if-pruned.patch >/dev/null
 fi
 
 sed -e '/^buildtools/d' \
