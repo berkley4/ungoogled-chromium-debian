@@ -12,7 +12,7 @@ ICU_SET=0
 POLLY_EXTRA_SET=0
 
 ## Default values ##
-[ -n "$TARBALL" || TARBALL=0
+[ -n "$TARBALL" ] || TARBALL=0
 
 [ -n "$BUNDLED_CLANG" ] || BUNDLED_CLANG=0
 [ -n "$POLLY_VECTORIZER" ] || POLLY_VECTORIZER=1
