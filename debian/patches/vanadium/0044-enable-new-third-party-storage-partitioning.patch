@@ -7,11 +7,9 @@ Subject: [PATCH] enable new third party storage partitioning
  net/base/features.cc | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/base/features.cc b/net/base/features.cc
-index 159deea8f62d5..06e6afc45a4fc 100644
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -277,7 +277,7 @@ BASE_FEATURE(kOptimisticBlockfileWrite,
+@@ -287,7 +287,7 @@
  // by the top level site to reduce fingerprinting.
  BASE_FEATURE(kThirdPartyStoragePartitioning,
               "ThirdPartyStoragePartitioning",

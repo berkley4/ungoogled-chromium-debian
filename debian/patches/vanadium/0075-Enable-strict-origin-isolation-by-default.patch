@@ -14,11 +14,9 @@ for more detail.
  content/public/common/content_features.cc | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/content/public/common/content_features.cc b/content/public/common/content_features.cc
-index 0cfbd10419fba..40cc17b204b0e 100644
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
-@@ -1223,7 +1223,7 @@ BASE_FEATURE(kStopVideoCaptureOnScreenLock,
+@@ -1223,7 +1223,7 @@
  // eTLD+1.
  BASE_FEATURE(kStrictOriginIsolation,
               "StrictOriginIsolation",

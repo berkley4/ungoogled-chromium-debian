@@ -7,11 +7,9 @@ Subject: [PATCH] disable component updater pings by default
  .../component_updater_command_line_config_policy.h              | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/components/component_updater/component_updater_command_line_config_policy.h b/components/component_updater/component_updater_command_line_config_policy.h
-index 6c16b4e37a753..a627cb7ffd59c 100644
 --- a/components/component_updater/component_updater_command_line_config_policy.h
 +++ b/components/component_updater/component_updater_command_line_config_policy.h
-@@ -42,7 +42,7 @@ class ComponentUpdaterCommandLineConfigPolicy final
+@@ -42,7 +42,7 @@
    bool background_downloads_enabled_ = false;
    bool deltas_enabled_ = true;
    bool fast_update_ = false;
