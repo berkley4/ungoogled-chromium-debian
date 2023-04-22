@@ -106,14 +106,13 @@ if [ $TRANSLATE -eq 1 ]; then
   cp -a $DEBIAN/misc_patches/translate-reverse-enable.patch $DEBIAN/patches/
   cp -a $DEBIAN/shims/google-translate $DEBIAN/etc/chromium.d/
 
-  sed -e '/\/translate_manager_browsertest\.cc/d' \
-      -e '/\/translate_script\.cc/d' \
-      -e '/\/translate_util\.cc/d' \
-      -i $UC_DIR/domain_substitution.list
+  DSB="$DSB -e \"/\/translate_manager_browsertest\.cc/d\""
+  DSB="$DSB -e \"/\/translate_script\.cc/d\""
+  DSB="$DSB -e \"/\/translate_util\.cc/d\""
 
   INS="$INS \"s@^#\(debian/etc/chromium.d/google-translate\)@\1@\""
 
-  if [ -z "$(grep ^translate-reverse-enable\.patch $DEBIAN/patches/series.debian)" ]; then
+  if [ -z "$(grep ^translate-reverse $DEBIAN/patches/series.debian)" ]; then
     SER="$SER -e \"$ a\translate-reverse-enable.patch\""
   fi
 fi
@@ -163,7 +162,7 @@ fi
 
 
 if [ $WIDEVINE -eq 0 ]; then
-  sed -e 's@^\(enable_widevine=\)true@\1false@' -i $UC_DIR/flags.gn
+  SMF="$SMF -e \"s@^\(enable_widevine=\)true@\1false@\""
 fi
 
 
@@ -230,9 +229,33 @@ fi
 
 
 
-#################################################
-##  Aggregate dependencies, patches and flags  ##
-#################################################
+###############################################
+##  Domain substitution and Submodule flags  ##
+###############################################
+
+## Domain substitution
+DSB="$DSB -e \"/^chrome\/browser\/flag_descriptions\.cc/d\""
+DSB="$DSB -e \"/^content\/browser\/resources\/gpu\/info_view\.js/d\""
+DSB="$DSB -e \"/^third_party\/depot_tools\//d\""
+DSB="$DSB -e \"/^tools\/clang\//d\""
+
+
+## Submodule flags
+SMF="$SMF -e \"/^build_with_tflite_lib/d\""
+SMF="$SMF -e \"/^chrome_pgo_phase/d\""
+SMF="$SMF -e \"/^enable_hangout_services_extension/d\""
+SMF="$SMF -e \"/^enable_nacl/d\""
+SMF="$SMF -e \"/^enable_service_discovery/d\""
+SMF="$SMF -e \"/^exclude_unwind_tables/d\""
+SMF="$SMF -e \"/^google_api_key/d\""
+SMF="$SMF -e \"/^google_default_client_id/d\""
+SMF="$SMF -e \"/^google_default_client_secret/d\""
+
+
+
+##############################
+##  Aggregate sed commands  ##
+##############################
 
 if [ -n "$optional_deps" ]; then
   for i in $optional_deps; do
@@ -280,6 +303,10 @@ fi
 
 [ -z "$SER" ] || eval sed $SER -i $DEBIAN/patches/series.debian
 
+[ -z "$DSB" ] || eval sed $DSB -i $UC_DIR/domain_substitution.list
+
+[ -z "$SMF" ] || eval sed $SMF -i $UC_DIR/flags.gn
+
 
 
 ###################################
@@ -310,27 +337,6 @@ sed -e '/^buildtools/d' \
     -e '/^third_party\/llvm/d' \
     -e '/^tools\/clang/d' \
     -i $UC_DIR/pruning.list
-
-
-## Domain substitution
-sed -e '/^chrome\/browser\/flag_descriptions\.cc/d' \
-    -e '/content\/browser\/resources\/gpu\/info_view\.js/d' \
-    -e '/^third_party\/depot_tools/d' \
-    -e '/^tools\/clang/d' \
-    -i $UC_DIR/domain_substitution.list
-
-
-## Build flags
-sed -e '/^build_with_tflite_lib/d' \
-    -e '/^chrome_pgo_phase/d' \
-    -e '/^enable_hangout_services_extension/d' \
-    -e '/^enable_nacl/d' \
-    -e '/^enable_service_discovery/d' \
-    -e '/^exclude_unwind_tables/d' \
-    -e '/^google_api_key/d' \
-    -e '/^google_default_client_id/d' \
-    -e '/^google_default_client_secret/d' \
-    -i $UC_DIR/flags.gn
 
 
 
