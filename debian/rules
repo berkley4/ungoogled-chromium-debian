@@ -7,7 +7,6 @@ MP_DIR   := $(DB_DIR)/misc_patches
 SH_DIR   := $(DB_DIR)/shims
 UC_DIR   := $(DB_DIR)/submodules/ungoogled-chromium
 UL_DIR   := $(UC_DIR)/utils
-UP_DIR   := $(UC_DIR)/patches
 DS_CACHE := $(DB_DIR)/domsubcache.tar.gz
 OUT_DIR  := out/Release
 
@@ -180,10 +179,6 @@ setup:
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list
 	# Uncomment 'remove_bundled' below to remove bundled files associated with SYS_LIBS
 	#remove_bundled
-	cat $(UP_DIR)/series $(DB_DIR)/patches/series.debian > $(DB_DIR)/patches/series
-	test -d $(DB_DIR)/patches/core && test -d $(DB_DIR)/patches/extra || cp -a $(UP_DIR)/core $(UP_DIR)/extra $(DB_DIR)/patches/
-	# Add pgo profile path (if it does not already exist in flags.gn)
-	test -n "$$(grep ^pgo_data_path $(UC_DIR)/flags.gn)" || sed "$$ a pgo_data_path=\"$$(realpath chrome/build/pgo_profiles/$$(cat chrome/build/linux.pgo.txt))\"" -i $(UC_DIR)/flags.gn
 
 override_dh_auto_configure: find_remove_most undo_unbundling
 	test -d $(OUT_DIR) && ninja -j $(JOBS) -C $(OUT_DIR) -t cleandead || printf '%s\n' "$(OUT_DIR) does not exist, nothing to do."

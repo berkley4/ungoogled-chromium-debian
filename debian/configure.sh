@@ -49,6 +49,7 @@ RELEASE_SET=0
 
 
 DEBIAN=$(dirname $0)
+RT_DIR=$(dirname $DEBIAN)
 UC_DIR=$DEBIAN/submodules/ungoogled-chromium
 
 INSTALL=ungoogled-chromium.install
@@ -65,6 +66,50 @@ if [ -z "$AUTHOR" ]; then
 fi
 
 CON="$CON -e \"s;@@AUTHOR@@;$AUTHOR;\""
+
+
+
+
+#############################
+##  Fetch/Extract Tarball  ##
+#############################
+
+if [ $TARBALL -eq 1 ]; then
+  TB_DIR=$(dirname $DEBIAN)
+
+  if [ "$TB_DIR" != "tarball" ]; then
+    printf '%s\n' "Cannot run outside of tarball directory"
+    exit 1
+  fi
+
+  find $TB_DIR/ -mindepth 1 -maxdepth 1 \
+    -type d \( -name debian -o -name out \) -prune -o -exec rm -rf "{}" +
+
+  [ -d $TB_DIR/../download_cache ] || mkdir -p $TB_DIR/../download_cache
+
+  if [ ! -f $TB_DIR/base/BUILD.gn ]; then
+    $UC_DIR/utils/downloads.py retrieve \
+      -i $UC_DIR/downloads.ini -c $DEBIAN/../../download_cache
+
+    $UC_DIR/utils/downloads.py unpack \
+      -i $UC_DIR/downloads.ini -c $TB_DIR/../download_cache $TB_DIR
+  fi
+
+  if [ ! -d $TB_DIR/chrome/build/pgo_profiles ]; then
+    $TB_DIR/tools/update_pgo_profiles.py \
+      --target linux update \
+      --gs-url-base=chromium-optimization-profiles/pgo_profiles
+  fi
+fi
+
+
+
+########################
+##  PGO profile path  ##
+########################
+
+PGO_PROF=$(cat $RT_DIR/chrome/build/linux.pgo.txt)
+PGO_PATH=$(realpath $RT_DIR/chrome/build/pgo_profiles/$PGO_PROF)
 
 
 
@@ -272,6 +317,10 @@ SMF="$SMF -e \"/^google_api_key/d\""
 SMF="$SMF -e \"/^google_default_client_id/d\""
 SMF="$SMF -e \"/^google_default_client_secret/d\""
 
+if [ -z "$(grep ^pgo_data_path $UC_DIR/flags.gn)" ]; then
+  SMF="$SMF -e \"$ a\pgo_data_path=\"$PGO_PATH\"\""
+fi
+
 
 
 ##############################
@@ -345,6 +394,15 @@ fi
 cp -a $DEBIAN/shims/chromium-flags.conf $DEBIAN/etc/chromium.d/
 
 
+## Merge upstream UC patches
+if [ -d $DEBIAN/patches/core ] || [ -d $DEBIAN/patches/extra ]; then
+  cp -a $UC_DIR/patches/core $UC_DIR/patches/extra $DEBIAN/patches/
+fi
+
+cat $UC_DIR/patches/series $DEBIAN/patches/series.debian \
+  > $DEBIAN/patches/series
+
+
 ## Pruning
 if ! patch -R -p1 -f --dry-run < $PRUNE_PATCH >/dev/null 2>&1; then
   patch -p1 < $PRUNE_PATCH >/dev/null
@@ -356,41 +414,6 @@ sed -e '/^buildtools/d' \
     -e '/^third_party\/llvm/d' \
     -e '/^tools\/clang/d' \
     -i $UC_DIR/pruning.list
-
-
-
-#############################
-##  Fetch/Extract Tarball  ##
-#############################
-
-if [ $TARBALL -eq 1 ]; then
-  TB_DIR=$(dirname $DEBIAN)
-
-  if [ "$TB_DIR" != "tarball" ]; then
-    printf '%s\n' "Cannot run outside of tarball directory"
-    exit 1
-  fi
-
-  find $TB_DIR/ -mindepth 1 -maxdepth 1 \
-    -type d \( -name debian -o -name out \) -prune -o -exec rm -rf "{}" +
-
-  [ -d $TB_DIR/../download_cache ] || mkdir -p $TB_DIR/../download_cache
-
-  if [ ! -f $TB_DIR/base/BUILD.gn ]; then
-    $UC_DIR/utils/downloads.py retrieve \
-      -i $UC_DIR/downloads.ini -c $DEBIAN/../../download_cache
-
-    $UC_DIR/utils/downloads.py unpack \
-      -i $UC_DIR/downloads.ini -c $TB_DIR/../download_cache $TB_DIR
-  fi
-
-  if [ ! -d $TB_DIR/chrome/build/pgo_profiles ]; then
-    $TB_DIR/tools/update_pgo_profiles.py \
-      --target linux update \
-      --gs-url-base=chromium-optimization-profiles/pgo_profiles
-  fi
-fi
-
 
 
 ## Produce changelog from template
