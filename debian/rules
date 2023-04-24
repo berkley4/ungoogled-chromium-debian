@@ -2,9 +2,7 @@
 
 RT_DIR   := $(CURDIR)
 DB_DIR   := $(RT_DIR)/debian
-DU_DIR   := $(DB_DIR)/devutils
 MP_DIR   := $(DB_DIR)/misc_patches
-SH_DIR   := $(DB_DIR)/shims
 UC_DIR   := $(DB_DIR)/submodules/ungoogled-chromium
 UL_DIR   := $(UC_DIR)/utils
 DS_CACHE := $(DB_DIR)/domsubcache.tar.gz
@@ -196,7 +194,6 @@ override_dh_prep: find_remove_pycache undo_unbundling
 
 override_dh_auto_install-arch:
 	chmod 4755 out/Release/chrome_sandbox
-	$(DU_DIR)/update_launcher.sh < $(SH_DIR)/chromium.sh > $(SH_DIR)/chromium
 
 override_dh_auto_install-indep:
 	test ! -f out/Release/locales/en-US.pak || rm -f out/Release/locales/en-US.pak

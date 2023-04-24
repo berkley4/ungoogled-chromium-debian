@@ -390,6 +390,13 @@ fi
 [ -x $DEBIAN/$INSTALL ] || chmod 0700 $DEBIAN/$INSTALL
 
 
+## Shell launcher
+if [ ! -f $DEBIAN/shims/chromium ]; then
+  $DEBIAN/devutils/update_launcher.sh \
+    < $DEBIAN/shims/chromium.sh > $DEBIAN/shims/chromium
+fi
+
+
 ## Runtime flags
 cp -a $DEBIAN/shims/chromium-flags.conf $DEBIAN/etc/chromium.d/
 
