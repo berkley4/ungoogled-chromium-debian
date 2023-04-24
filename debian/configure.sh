@@ -52,6 +52,7 @@ DEBIAN=$(dirname $0)
 UC_DIR=$DEBIAN/submodules/ungoogled-chromium
 
 INSTALL=ungoogled-chromium.install
+PRUNE_PATCH=$DEBIAN/misc_patches/no-exit-if-pruned.patch
 
 
 ## Allow overriding VERSION and AUTHOR
@@ -345,9 +346,8 @@ cp -a $DEBIAN/shims/chromium-flags.conf $DEBIAN/etc/chromium.d/
 
 
 ## Pruning
-if ! patch -R -p1 -s -f --dry-run \
-  < $DEBIAN/misc_patches/no-exit-if-pruned.patch >/dev/null 2>&1; then
-    patch -p1 < $DEBIAN/misc_patches/no-exit-if-pruned.patch >/dev/null
+if ! patch -R -p1 -f --dry-run < $PRUNE_PATCH >/dev/null 2>&1; then
+  patch -p1 < $PRUNE_PATCH >/dev/null
 fi
 
 sed -e '/^buildtools/d' \
