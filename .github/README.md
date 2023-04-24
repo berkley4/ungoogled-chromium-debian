@@ -150,10 +150,6 @@ cd debian
 git submodule foreach git reset --hard
 git submodule update --init --recursive
 cd ..
-
-# Optional: verify the current version and revison of ungoogled-chromium upstream
-cat debian/submodules/ungoogled-chromium/chromium_version.txt
-cat debian/submodules/ungoogled-chromium/revision.txt
 ```
 
 ## Cloning the chromium git repo (recommended, tarball method is detailed further below)
@@ -245,10 +241,6 @@ DRIVER=0 MARCH=native MTUNE=native TRANSLATE=1 UNSTABLE=1 ./debian/configure.sh
 
 # Normally you just need to run the following
 debian/rules setup
-
-# Change version (eg create a pre-release from an unmerged UC pull request)
-# note: you need to specify the version and revision (eg '-1') as one string
-VERSION=999.0.1234.567-1 debian/rules setup
 ```
 
 ## Building the binary packages

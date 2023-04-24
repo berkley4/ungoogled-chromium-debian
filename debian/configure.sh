@@ -10,6 +10,7 @@ optional_patches='custom-import-limits aes-pclmul march mtune avx'
 
 ICU_SET=0
 POLLY_EXTRA_SET=0
+RELEASE_SET=0
 
 ## Default values ##
 [ -n "$TARBALL" ] || TARBALL=0
@@ -42,9 +43,27 @@ POLLY_EXTRA_SET=0
 # Set POLLY_EXTRA=0 to force disable
 [ -n "$POLLY_EXTRA" ] && POLLY_EXTRA_SET=1 || POLLY_EXTRA=0
 
+# RELEASE is automatically set to unstable when UNSTABLE=1
+# unless explicitly set to something other than stable (eg testing)
+[ -n "$RELEASE" ] && RELEASE_SET=1 || RELEASE=stable
+
 
 DEBIAN=$(dirname $0)
 UC_DIR=$DEBIAN/submodules/ungoogled-chromium
+
+INSTALL=ungoogled-chromium.install
+
+
+## Allow overriding VERSION and AUTHOR
+if [ -z "$VERSION" ]; then
+  VERSION=$(cat $UC_DIR/chromium_version.txt)-$(cat $UC_DIR/revision.txt)
+fi
+
+if [ -z "$AUTHOR" ]; then
+  AUTHOR='ungoogled-chromium Maintainers <github@null.invalid>'
+fi
+
+CON="$CON -e \"s;@@AUTHOR@@;$AUTHOR;\""
 
 
 
@@ -189,6 +208,9 @@ fi
 
 
 if [ $UNSTABLE -eq 1 ]; then
+  # Release set to unstable unless set to something else via the environment
+  [ $RELEASE_SET -eq 1 ] && [ "$RELEASE" != "stable" ] || RELEASE=unstable
+
   # Enable ICU unless explicity disabled via the environment
   [ $ICU_SET -eq 1 ] && [ $ICU -eq 0 ] || ICU=1
 
@@ -212,8 +234,6 @@ if [ $UNSTABLE -eq 1 ]; then
 
   # dav1d libaom libavif libpng libxml libxslt openh264
   sys_enable="$sys_enable dav1d"
-
-  RUL="$RUL -e \"/^RELEASE/{s/stable/unstable/}\""
 fi
 
 
@@ -291,15 +311,15 @@ fi
 
 
 
-##########################
-##  Modify build files  ##
-##########################
+#####################################
+##  Modify debian directory files  ##
+#####################################
 
-[ -z "$CON" ] || eval sed $CON -i $DEBIAN/control.in
+[ -z "$CON" ] || eval sed $CON < $DEBIAN/control.in > $DEBIAN/control
+
+[ -z "$INS" ] || eval sed $INS < $DEBIAN/$INSTALL.in > $DEBIAN/$INSTALL
 
 [ -z "$RUL" ] || eval sed $RUL -i $DEBIAN/rules
-
-[ -z "$INS" ] || eval sed $INS -i $DEBIAN/ungoogled-chromium.install.in
 
 [ -z "$SER" ] || eval sed $SER -i $DEBIAN/patches/series.debian
 
@@ -313,16 +333,15 @@ fi
 ##  Prepare miscellaneous files  ##
 ###################################
 
+## Create control and ungoogled-chromium.install if they don't yet exist
+[ -f $DEBIAN/control ] || cp -a $DEBIAN/control.in $DEBIAN/control
+
+[ -f $DEBIAN/$INSTALL ] || cp -a $DEBIAN/$INSTALL.in $DEBIAN/$INSTALL
+[ -x $DEBIAN/$INSTALL ] || chmod 0700 $DEBIAN/$INSTALL
+
+
 ## Runtime flags
 cp -a $DEBIAN/shims/chromium-flags.conf $DEBIAN/etc/chromium.d/
-
-
-## Install file
-cp -a $DEBIAN/ungoogled-chromium.install.in $DEBIAN/ungoogled-chromium.install
-
-if [ ! -x $DEBIAN/ungoogled-chromium.install ]; then
-  chmod 0700 $DEBIAN/ungoogled-chromium.install
-fi
 
 
 ## Pruning
@@ -371,6 +390,16 @@ if [ $TARBALL -eq 1 ]; then
       --gs-url-base=chromium-optimization-profiles/pgo_profiles
   fi
 fi
+
+
+
+## Produce changelog from template
+sed -e "s;@@VERSION@@;$VERSION;" \
+    -e "s;@@RELEASE@@;$RELEASE;" \
+    -e "s;@@AUTHOR@@;$AUTHOR;" \
+    -e "s;@@DATETIME@@;$(date -R);" \
+  < $DEBIAN/changelog.in \
+  > $DEBIAN/changelog
 
 
 
