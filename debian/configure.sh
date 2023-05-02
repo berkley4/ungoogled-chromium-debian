@@ -175,7 +175,7 @@ if [ $TRANSLATE -eq 1 ]; then
   DSB="$DSB -e \"/\/translate_script\.cc/d\""
   DSB="$DSB -e \"/\/translate_util\.cc/d\""
 
-  INS="$INS \"s@^#\(debian/etc/chromium.d/google-translate\)@\1@\""
+  INS="$INS -e \"s@^#\(debian/etc/chromium.d/google-translate\)@\1@\""
 
   if [ -z "$(grep ^translate-reverse $DEBIAN/patches/series.debian)" ]; then
     SER="$SER -e \"$ a\translate-reverse-enable.patch\""
