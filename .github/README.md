@@ -161,10 +161,10 @@ cat debian/submodules/ungoogled-chromium/revision.txt
 ```sh
 # Clone depot_tools and put it in your PATH
 git clone https://chromium.googlesource.com/chromium/tools/depot_tools
-export PATH=$PATH:/path/to/depot_tools
+export PATH=$PATH:$PWD/depot_tools
 
 # Optional: always have depot_tools in your path
-echo 'export PATH=$PATH:/path/to/depot_tools' >> ~/.bashrc
+echo 'export PATH=$PATH:'"$PWD"'/depot_tools' >> ~/.bashrc
 
 # Clone the chromium repository (creates build/src)
 cd build
