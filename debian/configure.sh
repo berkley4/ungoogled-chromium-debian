@@ -141,6 +141,9 @@ if [ $BUNDLED_CLANG -eq 0 ]; then
   RUL="$RUL -e \"s@^#\(export [A-Z].*llvm-\)@\1@\""
   RUL="$RUL -e \"s@^#\(export [A-Z].*clang\)@\1@\""
   RUL="$RUL -e \"s@^#\(export DEB_C[_A-Z]*FLAGS_MAINT_SET\)@\1@\""
+else
+  PRU="$PRU -e \"/^third_party\/llvm/d\""
+  PRU="$PRU -e \"/^tools\/clang/d\""
 fi
 
 
@@ -295,9 +298,9 @@ fi
 
 
 
-###############################################
-##  Domain substitution and Submodule flags  ##
-###############################################
+##########################################################
+##  Domain substitution, submodule flags & pruning list ##
+##########################################################
 
 ## Domain substitution
 DSB="$DSB -e \"/^chrome\/browser\/flag_descriptions\.cc/d\""
@@ -320,6 +323,16 @@ SMF="$SMF -e \"/^google_default_client_secret/d\""
 if [ -z "$(grep ^pgo_data_path $UC_DIR/flags.gn)" ]; then
   # Using \x22 hex character code for double quotes
   SMF="$SMF -e \"$ a\pgo_data_path=\x22$PGO_PATH\x22\""
+fi
+
+
+## Pruning
+PRU="$PRU -e \"/^buildtools/d\""
+PRU="$PRU -e \"/^chrome\/build\/pgo_profiles/d\""
+PRU="$PRU -e \"/^third_party\/depot_tools/d\""
+
+if ! patch -R -p1 -f --dry-run < $PRUNE_PATCH >/dev/null 2>&1; then
+  patch -p1 < $PRUNE_PATCH >/dev/null
 fi
 
 
@@ -378,6 +391,8 @@ fi
 
 [ -z "$SMF" ] || eval sed $SMF -i $UC_DIR/flags.gn
 
+[ -z "$PRU" ] || eval sed $PRU -i $UC_DIR/pruning.list
+
 
 
 ###################################
@@ -409,19 +424,6 @@ fi
 
 cat $UC_DIR/patches/series $DEBIAN/patches/series.debian \
   > $DEBIAN/patches/series
-
-
-## Pruning
-if ! patch -R -p1 -f --dry-run < $PRUNE_PATCH >/dev/null 2>&1; then
-  patch -p1 < $PRUNE_PATCH >/dev/null
-fi
-
-sed -e '/^buildtools/d' \
-    -e '/^chrome\/build\/pgo_profiles/d' \
-    -e '/^third_party\/depot_tools/d' \
-    -e '/^third_party\/llvm/d' \
-    -e '/^tools\/clang/d' \
-    -i $UC_DIR/pruning.list
 
 
 ## Produce changelog from template
