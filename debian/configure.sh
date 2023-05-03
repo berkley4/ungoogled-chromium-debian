@@ -318,7 +318,8 @@ SMF="$SMF -e \"/^google_default_client_id/d\""
 SMF="$SMF -e \"/^google_default_client_secret/d\""
 
 if [ -z "$(grep ^pgo_data_path $UC_DIR/flags.gn)" ]; then
-  SMF="$SMF -e \"$ a\pgo_data_path=\"$PGO_PATH\"\""
+  # Using \x22 hex character code for double quotes
+  SMF="$SMF -e \"$ a\pgo_data_path=\x22$PGO_PATH\x22\""
 fi
 
 
