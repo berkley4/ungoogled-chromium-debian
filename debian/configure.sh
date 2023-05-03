@@ -402,7 +402,7 @@ cp -a $DEBIAN/shims/chromium-flags.conf $DEBIAN/etc/chromium.d/
 
 
 ## Merge upstream UC patches
-if [ -d $DEBIAN/patches/core ] || [ -d $DEBIAN/patches/extra ]; then
+if [ ! -d $DEBIAN/patches/core ] || [ ! -d $DEBIAN/patches/extra ]; then
   cp -a $UC_DIR/patches/core $UC_DIR/patches/extra $DEBIAN/patches/
 fi
 
