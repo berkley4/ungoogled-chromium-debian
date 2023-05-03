@@ -327,7 +327,6 @@ fi
 
 
 ## Pruning
-PRU="$PRU -e \"/^buildtools/d\""
 PRU="$PRU -e \"/^chrome\/build\/pgo_profiles/d\""
 PRU="$PRU -e \"/^third_party\/depot_tools/d\""
 
