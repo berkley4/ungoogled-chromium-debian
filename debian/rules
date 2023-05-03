@@ -12,7 +12,7 @@ UB_DEL_SCRIPT := build/linux/unbundle/remove_bundled_libraries.py
 UB_REP_SCRIPT := build/linux/unbundle/replace_gn_files.py
 
 # Start with the upstream Ungoogled Chromium flags
-GN_FLAGS := $(shell tr "\n" " " < $(UC_DIR)/flags.gn | sed 's/"/\\"/g')
+GN_FLAGS := $(shell sed ':a;N;$!ba;s/\n/ /g;s/"/\\"/g' < $(UC_DIR)/flags.gn)
 
 # Custom toolchain (needed if enabling optional/llvm-polly-* patches)
 # The llvm version needs to match that of chromium for PGO builds to work
