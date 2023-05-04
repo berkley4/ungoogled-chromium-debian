@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2109,6 +2109,10 @@
+@@ -2105,6 +2105,10 @@
        "-polly",
        "-mllvm",
        "-polly-vectorizer=stripmine",

@@ -1,9 +1,12 @@
-description: search for master_preferences in /usr/share/chromium
-author: Michael Gilbert <mgilbert@debian.org>
+description: search for {initial,master}_preferences in /etc/chromium
+author: Andres Salomon <dilinger@debian.org>
+
+The default chromium behavior of checking the current binary directory for
+initial_preferences or master_preferences doesn't conform to debian policy.
 
 --- a/chrome/browser/first_run/first_run_internal_linux.cc
 +++ b/chrome/browser/first_run/first_run_internal_linux.cc
-@@ -19,16 +19,7 @@
+@@ -19,10 +19,7 @@
  }
  
  base::FilePath InitialPrefsPath() {
@@ -11,13 +14,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 -  base::FilePath initial_prefs;
 -  if (!base::PathService::Get(base::DIR_EXE, &initial_prefs))
 -    return base::FilePath();
--
--  base::FilePath new_path = initial_prefs.AppendASCII(installer::kInitialPrefs);
--  if (base::PathIsReadable(new_path))
--    return new_path;
--
--  return initial_prefs.AppendASCII(installer::kLegacyInitialPrefs);
-+  return base::FilePath("/etc/chromium/master_preferences");
- }
++  base::FilePath initial_prefs = base::FilePath("/etc/chromium");
  
- }  // namespace internal
+   base::FilePath new_path = initial_prefs.AppendASCII(installer::kInitialPrefs);
+   if (base::PathIsReadable(new_path))

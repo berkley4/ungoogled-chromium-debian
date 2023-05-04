@@ -2,8 +2,8 @@
 +++ b/third_party/webrtc/modules/video_coding/codecs/av1/libaom_av1_encoder.cc
 @@ -34,9 +34,9 @@
  #include "rtc_base/checks.h"
+ #include "rtc_base/experiments/encoder_info_settings.h"
  #include "rtc_base/logging.h"
- #include "rtc_base/numerics/sequence_number_unwrapper.h"
 -#include "third_party/libaom/source/libaom/aom/aom_codec.h"
 -#include "third_party/libaom/source/libaom/aom/aom_encoder.h"
 -#include "third_party/libaom/source/libaom/aom/aomcx.h"

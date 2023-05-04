@@ -13,7 +13,7 @@
  # necessary.
 --- a/chrome/browser/chrome_browser_main_linux.cc
 +++ b/chrome/browser/chrome_browser_main_linux.cc
-@@ -60,11 +60,11 @@
+@@ -57,11 +57,11 @@
  #if BUILDFLAG(IS_CHROMEOS)
    // No-op: Ash and Lacros Bluetooth DBusManager initialization depend on
    // FeatureList, and is done elsewhere.
@@ -27,7 +27,7 @@
    // Set up crypt config. This needs to be done before anything starts the
    // network service, as the raw encryption key needs to be shared with the
    // network service for encrypted cookie storage.
-@@ -125,7 +125,7 @@
+@@ -122,7 +122,7 @@
  void ChromeBrowserMainPartsLinux::PostDestroyThreads() {
  #if BUILDFLAG(IS_CHROMEOS)
    // No-op; per PostBrowserStart() comment, this is done elsewhere.
@@ -118,7 +118,7 @@
      return true;
 -#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || \
 +#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_WIN) || (BUILDFLAG(IS_LINUX) && defined(USE_DBUS)) || \
-     BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_MAC)
+     BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_APPLE)
    return true;
  #else
 @@ -55,7 +55,7 @@
@@ -127,12 +127,12 @@
  
 -#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX) || \
 +#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_CHROMEOS) || (BUILDFLAG(IS_LINUX) && defined(USE_DBUS)) || \
-     BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN)
+     BUILDFLAG(IS_APPLE) || BUILDFLAG(IS_WIN)
    return true;
  #else
 --- a/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc
 +++ b/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc
-@@ -1320,7 +1320,7 @@
+@@ -1319,7 +1319,7 @@
  // TODO: Ideally this should be handled by our feature system, so that this
  // code doesn't even compile on OSes it isn't being used on, but currently this
  // is not possible.
@@ -141,7 +141,7 @@
    base::WeakPtr<device::BluetoothLocalGattService> service =
        device::BluetoothLocalGattService::Create(
            event_router_->adapter(),
-@@ -1349,6 +1349,7 @@
+@@ -1348,6 +1348,7 @@
  }
  
  void BluetoothLowEnergyCreateCharacteristicFunction::DoWork() {
@@ -149,7 +149,7 @@
    device::BluetoothLocalGattService* service =
        event_router_->adapter()->GetGattService(params_->service_id);
    if (!service) {
-@@ -1369,6 +1370,9 @@
+@@ -1368,6 +1369,9 @@
  
    Respond(ArgumentList(apibtle::CreateCharacteristic::Results::Create(
        characteristic->GetIdentifier())));
@@ -159,7 +159,7 @@
  }
  
  // createDescriptor:
-@@ -1385,6 +1389,7 @@
+@@ -1384,6 +1388,7 @@
  }
  
  void BluetoothLowEnergyCreateDescriptorFunction::DoWork() {
@@ -167,7 +167,7 @@
    device::BluetoothLocalGattCharacteristic* characteristic =
        event_router_->GetLocalCharacteristic(params_->characteristic_id);
    if (!characteristic) {
-@@ -1400,6 +1405,9 @@
+@@ -1399,6 +1404,9 @@
  
    Respond(ArgumentList(
        apibtle::CreateDescriptor::Results::Create(descriptor->GetIdentifier())));

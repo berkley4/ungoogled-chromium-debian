@@ -20,7 +20,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/common/chrome_features.cc
 +++ b/chrome/common/chrome_features.cc
-@@ -878,8 +878,8 @@
+@@ -885,8 +885,8 @@
  // Enables using the prediction service for permission prompts. We will keep
  // this feature in order to allow us to update the holdback chance via finch.
  BASE_FEATURE(kPermissionPredictions,
@@ -31,7 +31,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
  // The holdback chance is 30% but it can also be configured/updated
  // through finch if needed.
-@@ -890,8 +890,8 @@
+@@ -897,8 +897,8 @@
  
  // Enables using the prediction service for geolocation permission prompts.
  BASE_FEATURE(kPermissionGeolocationPredictions,
@@ -134,13 +134,12 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  bool ShouldOverrideOptimizationTargetDecisionForMetricsPurposes(
 --- a/components/optimization_guide/features.gni
 +++ b/components/optimization_guide/features.gni
-@@ -11,9 +11,7 @@
+@@ -11,8 +11,7 @@
    # This enables build with TFLite library.
    # TODO(b/269198471): Make sure the internal archive files for opt guide get
    #   updated when win arm64 gets added as a supported platform for TFLite.
--  build_with_tflite_lib =
--      is_android || (is_win && target_cpu != "arm64") || is_linux || is_mac ||
--      is_chromeos || is_fuchsia || is_ios
+-  build_with_tflite_lib = is_android || is_win || is_linux || is_mac ||
+-                          is_chromeos || is_fuchsia || is_ios
 +  build_with_tflite_lib = false
  }
  
@@ -166,9 +165,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
               "PermissionOnDeviceGeolocationPredictions",
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -234,12 +234,8 @@
- // predictor may preconnect/prefetch to resources/origins to make the
- // future navigations faster.
+@@ -241,12 +241,8 @@
+ // in the first viewport after the page load and the metrics of the clicked
+ // anchor element will be extracted and recorded.
  BASE_FEATURE(kNavigationPredictor,
 -             "NavigationPredictor",
 -#if BUILDFLAG(IS_ANDROID)

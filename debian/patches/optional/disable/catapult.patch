@@ -3,7 +3,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -243,7 +243,6 @@
+@@ -242,7 +242,6 @@
      deps += [
        "//google_apis/gcm:mcs_probe",
        "//media/cast:cast_unittests",
@@ -11,7 +11,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      ]
      if (!is_android) {
        if (!is_castos) {
-@@ -1110,7 +1109,6 @@
+@@ -1117,7 +1116,6 @@
          "//chrome:chrome",
          "//chrome/test/chromedriver:chromedriver_server",
          "//testing:test_scripts_shared",
@@ -19,7 +19,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        ]
        if (is_win) {
          data_deps += [ "//build/win:copy_cdb_to_output" ]
-@@ -1163,7 +1161,6 @@
+@@ -1170,7 +1168,6 @@
        "//third_party/blink/public:blink_devtools_inspector_resources",
        "//third_party/blink/public/mojom:mojom_platform_js_data_deps",
        "//third_party/blink/renderer/core:js_files_for_form_controls_web_tests",
@@ -27,7 +27,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        "//third_party/hyphenation-patterns:test_data",
        "//third_party/mesa_headers",
        "//tools/imagediff",
-@@ -1616,10 +1613,6 @@
+@@ -1623,10 +1620,6 @@
        "//third_party/blink/web_tests/TestExpectations",
        "//third_party/blink/web_tests/VirtualTestSuites",
        "//third_party/blink/web_tests/W3CImportExpectations",
@@ -50,7 +50,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -10660,8 +10660,6 @@
+@@ -10791,8 +10791,6 @@
        "//chrome/test/data/password/captured_sites/",
        "//chrome/test/data/web_page_replay_go_helper_scripts/automation_helper.js",
        "//components/test/data/autofill/web_page_replay_support_files/",
@@ -59,7 +59,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      ]
  
      if (is_linux || is_chromeos || is_win) {
-@@ -10748,7 +10746,6 @@
+@@ -10879,7 +10877,6 @@
      deps = [ "//tools/perf/chrome_telemetry_build:telemetry_chrome_test" ]
  
      data = [
@@ -97,7 +97,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      "//tools/metrics:metrics_python_tests",
    ]
  
-@@ -225,7 +224,5 @@
+@@ -233,7 +232,5 @@
        "//build/android:devil_chromium_py",
        "//build/android:stack_tools",
      ]
@@ -117,7 +117,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  }
 --- a/tools/gritsettings/resource_ids.spec
 +++ b/tools/gritsettings/resource_ids.spec
-@@ -919,11 +919,6 @@
+@@ -929,11 +929,6 @@
      "includes": [3840],
    },
  
@@ -128,10 +128,10 @@ author: Michael Gilbert <mgilbert@debian.org>
 -  },
    # END content/ section.
  
-   # START ios/web/ section.
+   # START "everything else" section.
 --- a/content/browser/BUILD.gn
 +++ b/content/browser/BUILD.gn
-@@ -3170,7 +3170,6 @@
+@@ -3190,7 +3190,6 @@
        "//components/speech:speech",
        "//components/vector_icons",
        "//content/browser/devtools:devtools_resources_extern",
@@ -159,7 +159,7 @@ author: Michael Gilbert <mgilbert@debian.org>
          sources += [
 --- a/content/shell/BUILD.gn
 +++ b/content/shell/BUILD.gn
-@@ -496,11 +496,6 @@
+@@ -509,11 +509,6 @@
      "//ui/strings",
    ]
  
@@ -253,7 +253,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  }
 --- a/third_party/webrtc/test/BUILD.gn
 +++ b/third_party/webrtc/test/BUILD.gn
-@@ -322,10 +322,6 @@
+@@ -324,10 +324,6 @@
    ]
    if (rtc_enable_protobuf) {
      sources += [ "testsupport/perf_test_histogram_writer.cc" ]
@@ -264,14 +264,14 @@ author: Michael Gilbert <mgilbert@debian.org>
    } else {
      sources += [ "testsupport/perf_test_histogram_writer_no_protobuf.cc" ]
    }
-@@ -714,7 +710,6 @@
+@@ -718,7 +714,6 @@
  
-     if (rtc_enable_protobuf) {
-       sources += [ "testsupport/perf_test_histogram_writer_unittest.cc" ]
--      deps += [ "//third_party/catapult/tracing/tracing:histogram" ]
-     }
+       if (rtc_enable_protobuf) {
+         sources += [ "testsupport/perf_test_histogram_writer_unittest.cc" ]
+-        deps += [ "//third_party/catapult/tracing/tracing:histogram" ]
+       }
  
-     data = test_support_unittests_resources
+       data = test_support_unittests_resources
 --- a/tools/perf/core/perfetto_binary_roller/BUILD.gn
 +++ b/tools/perf/core/perfetto_binary_roller/BUILD.gn
 @@ -7,7 +7,6 @@
@@ -296,7 +296,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  }
 --- a/third_party/blink/tools/BUILD.gn
 +++ b/third_party/blink/tools/BUILD.gn
-@@ -40,7 +40,6 @@
+@@ -38,7 +38,6 @@
    data_deps = [
      ":wpt_tests_mojo_bindings",
      "//testing:test_scripts_shared",

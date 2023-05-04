@@ -21,7 +21,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/browser_process_impl.cc
 +++ b/chrome/browser/browser_process_impl.cc
-@@ -1038,7 +1038,7 @@
+@@ -1070,7 +1070,7 @@
  #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
  
    registry->RegisterBooleanPref(metrics::prefs::kMetricsReportingEnabled,
@@ -32,7 +32,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -71,7 +71,6 @@
+@@ -72,7 +72,6 @@
  #include "chrome/browser/hid/chrome_hid_delegate.h"
  #include "chrome/browser/interstitials/enterprise_util.h"
  #include "chrome/browser/lifetime/browser_shutdown.h"
@@ -40,7 +40,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "chrome/browser/media/audio_service_util.h"
  #include "chrome/browser/media/router/media_router_feature.h"
  #include "chrome/browser/media/webrtc/audio_debug_recordings_handler.h"
-@@ -4834,16 +4833,6 @@
+@@ -4860,16 +4859,6 @@
      content::NavigationHandle* handle) {
    std::vector<std::unique_ptr<content::NavigationThrottle>> throttles;
  
@@ -57,7 +57,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #if BUILDFLAG(ENABLE_SUPERVISED_USERS)
    MaybeAddThrottle(
        SupervisedUserNavigationThrottle::MaybeCreateThrottleFor(handle),
-@@ -4928,10 +4917,6 @@
+@@ -4954,10 +4943,6 @@
      throttle_manager->MaybeAppendNavigationThrottles(handle, &throttles);
    }
  
@@ -70,7 +70,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #if BUILDFLAG(ENABLE_PDF)
 --- a/chrome/browser/metrics/chrome_metrics_services_manager_client.cc
 +++ b/chrome/browser/metrics/chrome_metrics_services_manager_client.cc
-@@ -74,8 +74,8 @@
+@@ -75,8 +75,8 @@
  // recording and reporting are enabled. If the feature is enabled, but no
  // consent is given, then there will be no recording or reporting.
  BASE_FEATURE(kMetricsReportingFeature,
@@ -81,7 +81,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
  #if BUILDFLAG(IS_ANDROID)
  // Same as |kMetricsReportingFeature|, but this feature is associated with a
-@@ -84,8 +84,8 @@
+@@ -85,8 +85,8 @@
  // the fix to not affect the overall sampling rate, this new feature was
  // created. See crbug/1306481.
  BASE_FEATURE(kPostFREFixMetricsReportingFeature,

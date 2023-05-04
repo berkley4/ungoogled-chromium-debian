@@ -139,7 +139,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  }  // namespace policy
 --- a/components/policy/content/policy_blocklist_navigation_throttle.cc
 +++ b/components/policy/content/policy_blocklist_navigation_throttle.cc
-@@ -13,7 +13,6 @@
+@@ -15,7 +15,6 @@
  #include "components/prefs/pref_service.h"
  #include "components/user_prefs/user_prefs.h"
  #include "content/public/browser/browser_context.h"
@@ -147,7 +147,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "content/public/browser/navigation_handle.h"
  #include "url/gurl.h"
  
-@@ -41,19 +40,6 @@
+@@ -43,19 +42,6 @@
  PolicyBlocklistNavigationThrottle::~PolicyBlocklistNavigationThrottle() =
      default;
  
@@ -167,7 +167,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  content::NavigationThrottle::ThrottleCheckResult
  PolicyBlocklistNavigationThrottle::WillStartRequest() {
    const GURL& url = navigation_handle()->GetURL();
-@@ -69,11 +55,6 @@
+@@ -71,11 +57,6 @@
      return ThrottleCheckResult(BLOCK_REQUEST,
                                 net::ERR_BLOCKED_BY_ADMINISTRATOR);
    }

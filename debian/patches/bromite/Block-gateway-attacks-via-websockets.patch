@@ -22,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/third_party/blink/renderer/core/execution_context/execution_context.cc
 +++ b/third_party/blink/renderer/core/execution_context/execution_context.cc
-@@ -705,4 +705,20 @@
+@@ -713,4 +713,20 @@
    proto->set_type(GetContextType(*this));
  }
  
@@ -32,8 +32,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +    case network::mojom::IPAddressSpace::kUnknown:
 +      return "public";
 +
-+    case network::mojom::IPAddressSpace::kPrivate:
-+      return "private";
++    case network::mojom::IPAddressSpace::kLoopback:
++      return "loopback";
 +
 +    case network::mojom::IPAddressSpace::kLocal:
 +      return "local";
@@ -45,7 +45,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  }  // namespace blink
 --- a/third_party/blink/renderer/core/execution_context/execution_context.h
 +++ b/third_party/blink/renderer/core/execution_context/execution_context.h
-@@ -400,6 +400,7 @@
+@@ -401,6 +401,7 @@
        const String& source_file = g_empty_string) const {}
  
    HeapObserverSet<ContextLifecycleObserver>& ContextLifecycleObserverSet();
@@ -65,7 +65,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/third_party/blink/renderer/core/loader/frame_fetch_context.cc
 +++ b/third_party/blink/renderer/core/loader/frame_fetch_context.cc
-@@ -583,6 +583,26 @@
+@@ -584,6 +584,26 @@
    return should_block_request;
  }
  
@@ -78,9 +78,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +  network::mojom::IPAddressSpace target_space =
 +      network::mojom::IPAddressSpace::kPublic;
 +  if (network_utils::IsReservedIPAddress(request_url.Host()))
-+    target_space = network::mojom::IPAddressSpace::kPrivate;
-+  if (SecurityOrigin::Create(request_url)->IsLocalhost())
 +    target_space = network::mojom::IPAddressSpace::kLocal;
++  if (SecurityOrigin::Create(request_url)->IsLocalhost())
++    target_space = network::mojom::IPAddressSpace::kLoopback;
 +
 +  bool is_external_request = requestor_space > target_space;
 +  if (is_external_request)
@@ -125,9 +125,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +  network::mojom::IPAddressSpace target_space =
 +      network::mojom::IPAddressSpace::kPublic;
 +  if (network_utils::IsReservedIPAddress(request_url.Host()))
-+    target_space = network::mojom::IPAddressSpace::kPrivate;
-+  if (SecurityOrigin::Create(request_url)->IsLocalhost())
 +    target_space = network::mojom::IPAddressSpace::kLocal;
++  if (SecurityOrigin::Create(request_url)->IsLocalhost())
++    target_space = network::mojom::IPAddressSpace::kLoopback;
 +
 +  bool is_external_request = requestor_space > target_space;
 +  if (is_external_request)
@@ -168,9 +168,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +    network::mojom::IPAddressSpace target_space =
 +        network::mojom::IPAddressSpace::kPublic;
 +    if (network_utils::IsReservedIPAddress(request_url.Host()))
-+      target_space = network::mojom::IPAddressSpace::kPrivate;
-+    if (SecurityOrigin::Create(request_url)->IsLocalhost())
 +      target_space = network::mojom::IPAddressSpace::kLocal;
++    if (SecurityOrigin::Create(request_url)->IsLocalhost())
++      target_space = network::mojom::IPAddressSpace::kLoopback;
 +
 +    bool is_external_request = requestor_space > target_space;
 +    if (is_external_request)
@@ -198,7 +198,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/third_party/blink/renderer/modules/websockets/websocket_channel_impl.cc
 +++ b/third_party/blink/renderer/modules/websockets/websocket_channel_impl.cc
-@@ -277,6 +277,11 @@
+@@ -278,6 +278,11 @@
      return false;
    }
  
@@ -237,9 +237,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +  network::mojom::IPAddressSpace target_space =
 +      network::mojom::IPAddressSpace::kPublic;
 +  if (network_utils::IsReservedIPAddress(request_url.Host()))
-+    target_space = network::mojom::IPAddressSpace::kPrivate;
-+  if (SecurityOrigin::Create(request_url)->IsLocalhost())
 +    target_space = network::mojom::IPAddressSpace::kLocal;
++  if (SecurityOrigin::Create(request_url)->IsLocalhost())
++    target_space = network::mojom::IPAddressSpace::kLoopback;
 +
 +  bool is_external_request = requestor_space > target_space;
 +  if (is_external_request)

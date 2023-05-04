@@ -1,4 +1,4 @@
-From 87ffc9c10c7e514280f58cde8093492deb631554 Mon Sep 17 00:00:00 2001
+From 305d2b3e9307910153ab9a5fc8ed36c3c11294c0 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Thu, 4 Jul 2019 19:08:52 -0400
 Subject: [PATCH] disable media router by default
@@ -10,7 +10,7 @@ Subject: [PATCH] disable media router by default
 
 --- a/chrome/browser/media/router/media_router_feature.cc
 +++ b/chrome/browser/media/router/media_router_feature.cc
-@@ -119,7 +119,7 @@
+@@ -127,7 +127,7 @@
      pref_values.insert(std::make_pair(context, allowed));
      return allowed;
    }

@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -90,7 +90,6 @@
+@@ -85,7 +85,6 @@
      "//codelabs",
      "//components:components_unittests",
      "//components/gwp_asan:gwp_asan_unittests",
