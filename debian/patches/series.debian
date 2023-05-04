@@ -11,8 +11,6 @@ fixes/ps-print.patch
 fixes/widevine-enable-version-string.patch
 fixes/widevine-locations.patch
 
-#upstream/
-
 disable/android.patch
 disable/font-tests.patch
 disable/swiftshader.patch
