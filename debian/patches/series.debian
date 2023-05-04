@@ -16,6 +16,7 @@ disable/font-tests.patch
 disable/swiftshader.patch
 disable/swiftshader-2.patch
 disable/tests.patch
+disable/unrar.patch
 disable/widevine-cdm-cu.patch
 
 system/event.patch
@@ -63,10 +64,10 @@ vanadium/0043-enable-partitioning-connections-by-default.patch
 vanadium/0044-enable-new-third-party-storage-partitioning.patch
 vanadium/0047-disable-component-updater-pings-by-default.patch
 vanadium/0051-stub-out-the-battery-status-API.patch
-vanadium/0075-Enable-strict-origin-isolation-by-default.patch
-#vanadium/0076-disable-appending-variations-header.patch
-vanadium/0078-Disable-detailed-language-settings-by-default.patch
-vanadium/0082-enable-process-isolated-sandboxed-iframes-by-default.patch
+vanadium/0081-Enable-strict-origin-isolation-by-default.patch
+#vanadium/0082-disable-appending-variations-header.patch
+vanadium/0084-Disable-detailed-language-settings-by-default.patch
+vanadium/0088-enable-process-isolated-sandboxed-iframes-by-default.patch
 
 various/fix-unbundle-script-dh-clean-interoperabilty.patch
 various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
@@ -90,13 +91,13 @@ various/disable/orchestrator.patch
 various/fedora/enable-hardware-accelerated-mjpeg.patch
 various/fixes/cross-origin-favicons-1.patch
 various/fixes/EnumTable-crash.patch
+various/fixes/fc-cache-version.patch
 various/fixes/font-rendering.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/remove-main-main10-profile-limit.patch
 various/fixes/revert-GlobalMediaControlsCastStartStop.patch
 various/fixes/shim-fix-for-official-builds.patch
 various/fixes/skia-gamma.patch
-various/fixes/sql-relax-constraints-on-VirtualCursor-layout.patch
 various/fixes/sql-virtual-cursor.patch
 various/fixes/vaapi-add-av1-support.patch
 various/fixes/xfce-maximize.patch
@@ -107,13 +108,6 @@ various/system/extra/brotli.patch
 various/system/extra/opus.patch
 various/system/extra/zlib.patch
 various/upstream/0001-Add-use-system-libtiff-build-option.patch
-various/upstream/0011-Make-whitespace-strings-static.patch
-various/upstream/0012-Use-simple-union-for-blink-CharacterData.patch
-various/upstream/0013-Reserve-background-to-avoid-reallocation-of-candidates.patch
-various/upstream/0014-V4Store-Remove-check-for-IsRunningCpuReductionExperiment.patch
-various/upstream/0015-Mojo-Remove-check-for-IsRunningCpuReductionExperiment.patch
-various/upstream/0016-Optional-mask-filter-in-shared-quad-state-mojo.patch
-various/upstream/0027-Introduce-a-cache-for-ShapeResults-in-NGInlineNode-ShapeText.patch
 various/vanadium/disable-article-suggestions-feature-by-default.patch
 various/vanadium/disable-content-feed-suggestions-by-default.patch
 
@@ -144,3 +138,4 @@ various/vanadium/disable-content-feed-suggestions-by-default.patch
 #optional/system/unstable/roll-src-third_party-ffmpeg-102.patch
 #optional/system/unstable/roll-src-third_party-ffmpeg-106.patch
 #optional/fix-missing-symbols.patch
+#optional/lambda-bug.patch
