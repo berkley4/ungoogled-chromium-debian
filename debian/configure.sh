@@ -8,9 +8,9 @@ sys_enable=
 optional_deps=
 optional_patches='custom-import-limits aes-pclmul march mtune avx'
 
-ICU_SET=0
 POLLY_EXTRA_SET=0
 RELEASE_SET=0
+SYS_ICU_SET=0
 
 ## Default values ##
 [ -n "$TARBALL" ] || TARBALL=0
@@ -28,16 +28,17 @@ RELEASE_SET=0
 [ -n "$POLICIES" ] || POLICIES=0
 [ -n "$WIDEVINE" ] || WIDEVINE=1
 
-[ -n "$JPEG" ] || JPEG=1
 [ -n "$PIPEWIRE" ] || PIPEWIRE=1
 [ -n "$PULSE" ] || PULSE=1
 [ -n "$UNSTABLE" ] || UNSTABLE=0
-[ -n "$USB" ] || USB=0
 [ -n "$VAAPI" ] || VAAPI=1
 
-# ICU is automatically enabled when UNSTABLE=1
-# Set ICU=0 to force disable
-[ -n "$ICU" ] && ICU_SET=1 || ICU=0
+[ -n "$SYS_JPEG" ] || SYS_JPEG=1
+[ -n "SYS_USB" ] || SYS_USB=0
+
+# SYS_ICU is automatically enabled when UNSTABLE=1
+# Set SYS_ICU=0 to force disable
+[ -n "$SYS_ICU" ] && SYS_ICU_SET=1 || SYS_ICU=0
 
 # POLLY_EXTRA is automatically enabled when POLLY_VECTORIZER=1
 # Set POLLY_EXTRA=0 to force disable
@@ -239,12 +240,6 @@ fi
 ##  Bundled libraries  ##
 #########################
 
-if [ $JPEG -eq 1 ]; then
-  optional_patches="$optional_patches system/jpeg"
-  sys_enable="$sys_enable libjpeg"
-fi
-
-
 if [ $PIPEWIRE -eq 0 ]; then
   gn_disable="$gn_disable rtc_use_pipewire"
 fi
@@ -256,14 +251,26 @@ if [ $PULSE -eq 0 ]; then
 fi
 
 
+if [ $SYS_JPEG -eq 1 ]; then
+  optional_patches="$optional_patches system/jpeg"
+  sys_enable="$sys_enable libjpeg"
+fi
+
+
+if [ $SYS_USB -eq 1 ]; then
+  optional_patches="$optional_patches system/libusb.patch"
+  gn_enable="$gn_enable libusb"
+fi
+
+
 if [ $UNSTABLE -eq 1 ]; then
   # Release set to unstable unless set to something else via the environment
   [ $RELEASE_SET -eq 1 ] && [ "$RELEASE" != "stable" ] || RELEASE=unstable
 
-  # Enable ICU unless explicity disabled via the environment
-  [ $ICU_SET -eq 1 ] && [ $ICU -eq 0 ] || ICU=1
+  # Enable SYS_ICU unless explicity disabled via the environment
+  [ $SYS_ICU_SET -eq 1 ] && [ $SYS_ICU -eq 0 ] || SYS_ICU=1
 
-  if [ $ICU -eq 1 ]; then
+  if [ $SYS_ICU -eq 1 ]; then
     icu_patches="icu icu-headers"
     icu_patches="$(echo $icu_patches | sed "s@\([^ ]*\)@system/unstable/\1@g")"
     optional_patches="$optional_patches $icu_patches"
@@ -283,12 +290,6 @@ if [ $UNSTABLE -eq 1 ]; then
 
   # dav1d libaom libavif libpng libxml libxslt openh264
   sys_enable="$sys_enable dav1d"
-fi
-
-
-if [ $USB -eq 1 ]; then
-  optional_patches="$optional_patches system/libusb.patch"
-  gn_enable="$gn_enable libusb"
 fi
 
 
