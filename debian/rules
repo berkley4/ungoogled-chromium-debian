@@ -66,13 +66,16 @@ GN_FLAGS +=                                     \
         enable_pointer_compression_support=true \
         v8_enable_zone_compression=true
 
-# Uncoment to disable atk/dbus
+# The below is best configured via debian/configure.sh (which
+# needs to be run anyway when self-compiling).
+
+# Disable atk/dbus
 #GN_FLAGS += use_atk=false use_dbus=false
 
-# Comment to build pdfium with v8 (javascript) and XFA forms support
+# Diable pdfium javascript and XFA forms support
 GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
 
-# Uncomment to enable an out-of-process print dialog (X11 only)
+# Enable an out-of-process print dialog (X11 only)
 #GN_FLAGS += enable_oop_basic_print_dialog=true
 
 # Disable print preview (workaround for print preview dialog crash)
@@ -84,7 +87,7 @@ GN_FLAGS += rtc_use_pipewire=true
 # Disable pulseaudio
 #GN_FLAGS += use_pulseaudio=false
 
-# Enable linking to pulseaudio library (has no effect if use_pulseaudio=false)
+# Enable linking to pulseaudio (has no effect if use_pulseaudio=false)
 GN_FLAGS += link_pulseaudio=true
 
 # Disable VA-API
@@ -117,18 +120,11 @@ SYS_LIBS :=               \
         opus              \
         zlib
 
-# If enabling extra SYS_LIBS/GN_FLAGS below look, be sure to uncomment
-# the corresponding patches (look inside optional/* and various/*).
-# One can also uncomment the relevant dev libraries in debian/control.in
+# The below is best configured via debian/configure.sh, ehich is better
+# suited to automatically deal with any of the dependent patches.
 
-# Enable if you are building on the same distro you intend to run under
+# Uncomment if you are building on the same distro you intend to run under
 #SYS_LIBS += libjpeg
-
-# Enable if needed (normally not a compiled target)
-#SYS_LIBS += libusb
-
-# If your system ffmpeg has been rebuilt with patches from system_ffmpeg
-#SYS_LIBS += ffmpeg
 
 # Uncomment if you on stable and have installed the backport library
 # libaom should work but libavif might not
@@ -140,6 +136,12 @@ SYS_LIBS :=               \
 
 # Unstable users can uncomment to enable system icu
 #SYS_LIBS += icu
+
+# Enable only if really needed (not normally a compiled target)
+#SYS_LIBS += libusb
+
+# If your system ffmpeg is self-built with patches from system_ffmpeg
+#SYS_LIBS += ffmpeg
 
 # Add extra flags for system libs
 GN_FLAGS +=                           \
