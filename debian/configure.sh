@@ -12,6 +12,10 @@ POLLY_EXTRA_SET=0
 RELEASE_SET=0
 SYS_ICU_SET=0
 
+real_dir_path () (
+  OLDPWD=- CDPATH= cd -P -- $1 && pwd
+)
+
 ## Default values ##
 [ -n "$TARBALL" ] || TARBALL=0
 
@@ -110,7 +114,7 @@ fi
 ########################
 
 PGO_PROF=$(cat $RT_DIR/chrome/build/linux.pgo.txt)
-PGO_PATH=$(realpath $RT_DIR/chrome/build/pgo_profiles/$PGO_PROF)
+PGO_PATH=$(real_dir_path $RT_DIR/chrome/build/pgo_profiles)/$PGO_PROF
 
 
 
