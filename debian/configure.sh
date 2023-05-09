@@ -12,9 +12,17 @@ POLLY_EXTRA_SET=0
 RELEASE_SET=0
 SYS_ICU_SET=0
 
+DEBIAN=$(dirname $0)
+RT_DIR=$(dirname $DEBIAN)
+UC_DIR=$DEBIAN/submodules/ungoogled-chromium
+
+INSTALL=ungoogled-chromium.install
+PRUNE_PATCH=$DEBIAN/misc_patches/no-exit-if-pruned.patch
+
 real_dir_path () (
   OLDPWD=- CDPATH= cd -P -- $1 && pwd
 )
+
 
 ## Default values ##
 [ -n "$TARBALL" ] || TARBALL=0
@@ -51,14 +59,6 @@ real_dir_path () (
 # RELEASE is automatically set to unstable when UNSTABLE=1
 # unless explicitly set to something other than stable (eg testing)
 [ -n "$RELEASE" ] && RELEASE_SET=1 || RELEASE=stable
-
-
-DEBIAN=$(dirname $0)
-RT_DIR=$(dirname $DEBIAN)
-UC_DIR=$DEBIAN/submodules/ungoogled-chromium
-
-INSTALL=ungoogled-chromium.install
-PRUNE_PATCH=$DEBIAN/misc_patches/no-exit-if-pruned.patch
 
 
 ## Allow overriding VERSION and AUTHOR
@@ -106,15 +106,6 @@ if [ $TARBALL -eq 1 ]; then
       --gs-url-base=chromium-optimization-profiles/pgo_profiles
   fi
 fi
-
-
-
-########################
-##  PGO profile path  ##
-########################
-
-PGO_PROF=$(cat $RT_DIR/chrome/build/linux.pgo.txt)
-PGO_PATH=$(real_dir_path $RT_DIR/chrome/build/pgo_profiles)/$PGO_PROF
 
 
 
@@ -300,6 +291,15 @@ fi
 if [ $VAAPI -eq 0 ]; then
   gn_enable="$gn_enable use_vaapi"
 fi
+
+
+
+########################
+##  PGO profile path  ##
+########################
+
+PGO_PROF=$(cat $RT_DIR/chrome/build/linux.pgo.txt)
+PGO_PATH=$(real_dir_path $RT_DIR/chrome/build/pgo_profiles)/$PGO_PROF
 
 
 
