@@ -24,7 +24,10 @@ real_dir_path () (
 )
 
 
+####################
 ## Default values ##
+####################
+
 [ -n "$TARBALL" ] || TARBALL=0
 
 [ -n "$BUNDLED_CLANG" ] || BUNDLED_CLANG=0
@@ -48,16 +51,14 @@ real_dir_path () (
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
 [ -n "SYS_USB" ] || SYS_USB=0
 
-# SYS_ICU is automatically enabled when UNSTABLE=1
-# Set SYS_ICU=0 to force disable
+
+# SYS_ICU is auto-enabled when UNSTABLE=1 (set to zero to disable)
 [ -n "$SYS_ICU" ] && SYS_ICU_SET=1 || SYS_ICU=0
 
-# POLLY_EXTRA is automatically enabled when POLLY_VECTORIZER=1
-# Set POLLY_EXTRA=0 to force disable
+# POLLY_EXTRA is auto-enabled when POLLY_VECTORIZER=1 (set to zero to disable)
 [ -n "$POLLY_EXTRA" ] && POLLY_EXTRA_SET=1 || POLLY_EXTRA=0
 
-# RELEASE is automatically set to unstable when UNSTABLE=1
-# unless explicitly set to something other than stable (eg testing)
+# RELEASE is auto-set to unstable when UNSTABLE=1 (if not explicitly set)
 [ -n "$RELEASE" ] && RELEASE_SET=1 || RELEASE=stable
 
 
@@ -119,7 +120,6 @@ if [ $BUNDLED_CLANG -eq 0 ]; then
   if [ $POLLY_VECTORIZER -eq 1 ]; then
     clang_patches="$clang_patches llvm-polly-vectorizer"
 
-    # Enable POLLY_EXTRA unless explicity disabled via the environment
     [ $POLLY_EXTRA_SET -eq 1 ] && [ $POLLY_EXTRA -eq 0 ] || POLLY_EXTRA=1
 
     if [ $POLLY_EXTRA -eq 1 ]; then
@@ -259,10 +259,7 @@ fi
 
 
 if [ $UNSTABLE -eq 1 ]; then
-  # Release set to unstable unless set to something else via the environment
   [ $RELEASE_SET -eq 1 ] && [ "$RELEASE" != "stable" ] || RELEASE=unstable
-
-  # Enable SYS_ICU unless explicity disabled via the environment
   [ $SYS_ICU_SET -eq 1 ] && [ $SYS_ICU -eq 0 ] || SYS_ICU=1
 
   if [ $SYS_ICU -eq 1 ]; then
