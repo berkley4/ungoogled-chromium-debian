@@ -131,6 +131,26 @@ echo "kernel.unprivileged_userns_clone = 0" > /etc/systctl.d/userns
 
 - - - -
 
+# LLVM/Clang
+
+At a minimum you need a recent enough clang for PGO profile compatibility purposes.
+
+This means (in-tree) bundled clang, debian experimental or the apt.llvm.org snapshot branch.
+
+Howver, bundled clang lacks support LLVM Polly optimisations, and debian experimental
+packages are often months old and unsuitable for debian stable. Bundled clang has LTO and
+PGO optimisations, which as far as I know is not the case with the debian or llvm.org
+packages.
+
+Compiling your own toolchain has speed advantages due to being able compile with BOLT
+optimisation in addition to LTO and PGO.
+
+Rough instructions for self-building are available [here](Toolchain.md).
+
+
+
+- - - -
+
 ## Prepare ungoogled-chromium-debian packaging
 
 ```sh
