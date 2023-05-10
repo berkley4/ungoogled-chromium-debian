@@ -62,6 +62,10 @@ real_dir_path () (
 [ -n "$RELEASE" ] && RELEASE_SET=1 || RELEASE=stable
 
 
+# Allow 'extreme' xz compression strategy for deb packages (size reduction)
+[ -n "$XZ_EXTREME" ] || XZ_EXTREME=0
+
+
 ## Allow overriding VERSION and AUTHOR
 if [ -z "$VERSION" ]; then
   VERSION=$(cat $UC_DIR/chromium_version.txt)-$(cat $UC_DIR/revision.txt)
@@ -300,9 +304,9 @@ PGO_PATH=$(real_dir_path $RT_DIR/chrome/build/pgo_profiles)/$PGO_PROF
 
 
 
-##########################################################
-##  Domain substitution, submodule flags & pruning list ##
-##########################################################
+############################################################
+##  Domain substitution, flags, pruning list and other items
+############################################################
 
 ## Domain substitution
 DSB="$DSB -e \"/^chrome\/browser\/flag_descriptions\.cc/d\""
@@ -334,6 +338,12 @@ PRU="$PRU -e \"/^third_party\/depot_tools/d\""
 
 if ! patch -R -p1 -f --dry-run < $PRUNE_PATCH >/dev/null 2>&1; then
   patch -p1 < $PRUNE_PATCH >/dev/null
+fi
+
+
+## xz 'extreme' deb package compression strategy
+if [ $XZ_EXTREME -eq 1 ]; then
+  RUL="$RUL -e \"s@\(dh_builddeb.*\)@\1 -S extreme@\""
 fi
 
 
