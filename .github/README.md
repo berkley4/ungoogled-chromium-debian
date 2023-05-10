@@ -145,7 +145,7 @@ packages.
 Compiling your own toolchain has speed advantages due to being able compile with BOLT
 optimisation in addition to LTO and PGO.
 
-Rough instructions for self-building are available [here](Toolchain.md).
+Rough instructions for self-building are available [here]([Toolchain.md](https://github.com/berkley4/ungoogled-chromium-debian/blob/unstable/Toolchain.md).
 
 
 
