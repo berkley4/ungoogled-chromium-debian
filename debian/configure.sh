@@ -235,9 +235,9 @@ fi
 
 
 
-#########################
-##  Bundled libraries  ##
-#########################
+#################
+##  Libraries  ##
+#################
 
 if [ $PIPEWIRE -eq 0 ]; then
   gn_disable="$gn_disable rtc_use_pipewire"
