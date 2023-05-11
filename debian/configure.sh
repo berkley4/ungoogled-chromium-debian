@@ -49,7 +49,7 @@ real_dir_path () (
 [ -n "$VAAPI" ] || VAAPI=1
 
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
-[ -n "SYS_USB" ] || SYS_USB=0
+[ -n "$SYS_USB" ] || SYS_USB=0
 
 
 # SYS_ICU is auto-enabled when UNSTABLE=1 (set to zero to disable)
@@ -343,7 +343,9 @@ fi
 
 ## xz 'extreme' deb package compression strategy
 if [ $XZ_EXTREME -eq 1 ]; then
-  RUL="$RUL -e \"s@\(dh_builddeb.*\)@\1 -S extreme@\""
+  if [ -z "$(grep "dh_builddeb.*-S extreme" $DEBIAN/rules)" ]; then
+    RUL="$RUL -e \"s@^\([ \t]*dh_builddeb.*\)@\1 -S extreme@\""
+  fi
 fi
 
 
