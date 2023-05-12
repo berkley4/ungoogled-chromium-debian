@@ -38,22 +38,36 @@ git checkout origin/main
 
 ___Clean the build___
 
-git clean -dfx -e build
-
 git reset --hard HEAD
-ninja -j4 -C build -t cleandead
 
 
 ___Configure___
+
 ```sh
 export LLVM_DIR=/usr/lib/llvm-16/bin
 ```
 
-Paste the following as a single line (ie without the '\' linebreaks :-
+See what /usr/bin/x86_64-linux-gnu-ld points to :-
+
+```sh
+ls -l /usr/bin/x86_64-linux-gnu-ld
+```
+
+Note this down in case you want to change back. Now make sure
+that ld points at /usr/lib/llvm-16/bin/lld :-
+
+```sh
+cd /usr/bin
+
+ln -sf $LLVM_DIR/lld x86_64-linux-gnu-ld
+```
+
+Paste the following as a single line (ie without the '\' linebreaks) :-
 
 ```sh
 AR=$LLVM_DIR/llvm-ar NM=$LLVM_DIR/llvm-nm RANLIB=$LLVM_DIR/llvm-ranlib CC=$LLVM_DIR/clang CXX=$LLVM_DIR/clang++ \
 CFLAGS="-fno-plt -march=native" CXXFLAGS="-fno-plt -march=native" \
+LDFLAGS="-Wl,-mllvm,-import-instr-limit=25 -Wl,-mllvm,-import-hot-multiplier=16" \
 cmake -B build -G Ninja llvm -C clang/cmake/caches/BOLT-PGO.cmake -DCMAKE_BUILD_TYPE=Release \
 -DLLVM_ENABLE_PROJECTS='bolt;clang;lld;openmp;polly' -DLLVM_BUILD_UTILS=OFF -DLLVM_TARGETS_TO_BUILD="X86;WebAssembly" \
 -DLLVM_ENABLE_CURL=OFF -DLLVM_ENABLE_LLD=ON -DLLVM_ENABLE_TERMINFO=OFF -DLLVM_ENABLE_UNWIND_TABLES=OFF -DLLVM_ENABLE_Z3_SOLVER=OFF \
@@ -64,11 +78,16 @@ cmake -B build -G Ninja llvm -C clang/cmake/caches/BOLT-PGO.cmake -DCMAKE_BUILD_
 -DLLVM_LINK_LLVM_DYLIB=ON -DBOOTSTRAP_LLVM_ENABLE_LLD=ON -DBOOTSTRAP_BOOTSTRAP_LLVM_ENABLE_LLD=ON -DPGO_INSTRUMENT_LTO=Thin
 ```
 
+If you have built before then run :-
 
+```sh
+ninja -j4 -C build -t cleandead
+```
 
 ___Compile___
 ```sh
-cd build && ninja -j4
+cd build
+ninja -j4 stage2-clang-bolt
 ```
 
 (-j4 = four threads)
@@ -79,10 +98,8 @@ ___Install___
 Default install target is /usr/local, so do this as root :-
 
 ```sh
-ninja -j4 install/strip
+ninja -j4 install
 ```
-
-After
 
 
 ___Check for root-only permissions___
