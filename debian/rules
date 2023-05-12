@@ -181,12 +181,12 @@ setup:
 	#remove_bundled
 
 override_dh_auto_configure: find_remove_most undo_unbundling
-	test -d $(OUT_DIR) && ninja -j $(JOBS) -C $(OUT_DIR) -t cleandead || printf '%s\n' "$(OUT_DIR) does not exist, nothing to do."
 	test -z "$(SYS_LIBS)" || $(UB_REP_SCRIPT) --system-libraries $(SYS_LIBS)
 	test -f $(DS_CACHE) && printf '%s\n' "$(DS_CACHE) exists, aborting." || $(UL_DIR)/domain_substitution.py apply -r $(UC_DIR)/domain_regex.list -f $(UC_DIR)/domain_substitution.list -c $(DS_CACHE) $(RT_DIR)
 
 override_dh_auto_build:
 	gn gen $(OUT_DIR) --args="$(GN_FLAGS)" --fail-on-unused-args
+	ninja -j $(JOBS) -C $(OUT_DIR) -t cleandead
 	ninja -j $(JOBS) -C $(OUT_DIR) chrome chrome_sandbox chromedriver
 	test ! -f out/Release/locales/en-US.pak || cp -a out/Release/locales/en-US.pak out/Release/resources/
 
