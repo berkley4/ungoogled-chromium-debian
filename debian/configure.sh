@@ -11,6 +11,7 @@ optional_patches='custom-import-limits aes-pclmul march mtune avx'
 POLLY_EXTRA_SET=0
 RELEASE_SET=0
 SYS_ICU_SET=0
+XZ_EXTREME_SET=0
 
 DEBIAN=$(dirname $0)
 RT_DIR=$(dirname $DEBIAN)
@@ -52,18 +53,21 @@ real_dir_path () (
 [ -n "$SYS_USB" ] || SYS_USB=0
 
 
-# SYS_ICU is auto-enabled when UNSTABLE=1 (set to zero to disable)
+# SYS_ICU is enabled if UNSTABLE=1 (set to zero to disable)
 [ -n "$SYS_ICU" ] && SYS_ICU_SET=1 || SYS_ICU=0
 
-# POLLY_EXTRA is auto-enabled when POLLY_VECTORIZER=1 (set to zero to disable)
+# POLLY_EXTRA is enabled if POLLY_VECTORIZER=1 (set to zero to disable)
 [ -n "$POLLY_EXTRA" ] && POLLY_EXTRA_SET=1 || POLLY_EXTRA=0
 
 # RELEASE is auto-set to unstable when UNSTABLE=1 (if not explicitly set)
 [ -n "$RELEASE" ] && RELEASE_SET=1 || RELEASE=stable
 
 
-# Allow 'extreme' xz compression strategy for deb packages (size reduction)
-[ -n "$XZ_EXTREME" ] || XZ_EXTREME=0
+# xz 'extreme' compression strategy (set to zero to disable if XZ_THREADED=1)
+[ -n "$XZ_EXTREME" ] && XZ_EXTREME_SET=1 || XZ_EXTREME=0
+
+# xz threaded compression (enabled if XZ_THREADED=1; unstable only)
+[ -n "$XZ_THREADED" ] || XZ_THREADED=0
 
 
 ## Allow overriding VERSION and AUTHOR
@@ -341,7 +345,14 @@ if ! patch -R -p1 -f --dry-run < $PRUNE_PATCH >/dev/null 2>&1; then
 fi
 
 
-## xz 'extreme' deb package compression strategy
+if [ $XZ_THREADED -eq 1 ] && [ $UNSTABLE -eq 1 ]; then
+  if [ -z "$(dh_builddeb.*--threads-max=" $DEBIAN/rules)" ]; then
+    RUL="$RUL -e \"s@^\([ \t]*dh_builddeb.*\)@\1 --threads-max=\$(JOBS)@\""
+  fi
+
+  [ $XZ_EXTREME_SET -eq 1 ] && [ $XZ_EXTREME -eq 0 ] || XZ_EXTREME=1
+fi
+
 if [ $XZ_EXTREME -eq 1 ]; then
   if [ -z "$(grep "dh_builddeb.*-S extreme" $DEBIAN/rules)" ]; then
     RUL="$RUL -e \"s@^\([ \t]*dh_builddeb.*\)@\1 -S extreme@\""
