@@ -66,7 +66,7 @@ Paste the following as a single line (ie without the '\' linebreaks) :-
 
 ```sh
 AR=$LLVM_DIR/llvm-ar NM=$LLVM_DIR/llvm-nm RANLIB=$LLVM_DIR/llvm-ranlib CC=$LLVM_DIR/clang CXX=$LLVM_DIR/clang++ \
-CFLAGS="-fno-plt -march=native" CXXFLAGS="-fno-plt -march=native" \
+CFLAGS="-fno-plt -march=native -Wno-profile-instr-unprofiled" CXXFLAGS="-fno-plt -march=native -Wno-profile-instr-unprofiled" \
 LDFLAGS="-Wl,-mllvm,-import-instr-limit=25 -Wl,-mllvm,-import-hot-multiplier=16" \
 cmake -B build -G Ninja llvm -C clang/cmake/caches/BOLT-PGO.cmake -DCMAKE_BUILD_TYPE=Release \
 -DLLVM_ENABLE_PROJECTS='bolt;clang;lld;openmp;polly' -DLLVM_BUILD_UTILS=OFF -DLLVM_TARGETS_TO_BUILD="X86;WebAssembly" \
