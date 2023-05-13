@@ -8,7 +8,6 @@ UL_DIR   := $(UC_DIR)/utils
 DS_CACHE := $(DB_DIR)/domsubcache.tar.gz
 OUT_DIR  := out/Release
 
-UB_DEL_SCRIPT := build/linux/unbundle/remove_bundled_libraries.py
 UB_REP_SCRIPT := build/linux/unbundle/replace_gn_files.py
 
 # Start with the upstream Ungoogled Chromium flags
@@ -167,18 +166,11 @@ find_remove_pycache:
 hardclean: find_remove_all
 	test -d $(OUT_DIR) && ninja -j $(JOBS) -C $(OUT_DIR) -g -t clean || printf '%s\n' "$(OUT_DIR) does not exist, nothing to do."
 
-remove_bundled:
-	all_libs="$$(sed -n "s@^[^-_a-zA-Z0-9]*\([-_a-zA-Z0-9]*\)[^-_a-zA-Z0-9]*third_party/.*@\1@p" $(UB_REP_SCRIPT))"; for lib in $(SYS_LIBS); do all_libs="$$(echo "$$all_libs" | sed "/^$$lib$/d")"; done
-	keep_libs="$$(for lib in $$(echo "$$all_libs" | tr '\n' ' '); do sed -n "s@^[^-_a-zA-Z0-9]*$$lib[^-_a-zA-Z0-9].*\(third_party/[^/]*\).*@\1@p" $(UB_REP_SCRIPT); done | tr '\n' ' ')"
-	test -x $(UB_DEL_SCRIPT) || chmod 0700 $(UB_DEL_SCRIPT) && $(UB_DEL_SCRIPT) --do-remove $$keep_libs
-
 undo_unbundling:
 	find base/third_party/ third_party/ -type f -name \*.bundled -print | while read f; do mv $$f $${f%.bundled}; done
 
 setup:
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list
-	# Uncomment 'remove_bundled' below to remove bundled files associated with SYS_LIBS
-	#remove_bundled
 
 override_dh_auto_configure: find_remove_most undo_unbundling
 	test -z "$(SYS_LIBS)" || $(UB_REP_SCRIPT) --system-libraries $(SYS_LIBS)
