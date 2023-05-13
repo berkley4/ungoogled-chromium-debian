@@ -331,7 +331,6 @@ SMF="$SMF -e \"/^google_default_client_id/d\""
 SMF="$SMF -e \"/^google_default_client_secret/d\""
 
 if [ -z "$(grep ^pgo_data_path $UC_DIR/flags.gn)" ]; then
-  # Using \x22 hex character code for double quotes
   SMF="$SMF -e \"$ a\pgo_data_path=\x22$PGO_PATH\x22\""
 fi
 
@@ -346,8 +345,8 @@ fi
 
 
 if [ $XZ_THREADED -eq 1 ] && [ $UNSTABLE -eq 1 ]; then
-  if [ -z "$(dh_builddeb.*--threads-max=" $DEBIAN/rules)" ]; then
-    RUL="$RUL -e \"s@^\([ \t]*dh_builddeb.*\)@\1 --threads-max=\$(JOBS)@\""
+  if [ -z "$(grep "dh_builddeb.*--threads-max=" $DEBIAN/rules)" ]; then
+    RUL="$RUL -e \"s@^\([ \t]*dh_builddeb.*\)@\1 --threads-max=\x24(JOBS)@\""
   fi
 
   [ $XZ_EXTREME_SET -eq 1 ] && [ $XZ_EXTREME -eq 0 ] || XZ_EXTREME=1
