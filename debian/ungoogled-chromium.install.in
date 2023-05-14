@@ -4,7 +4,6 @@ debian/shims/chromium                                                          u
 
 debian/initial_preferences                                                     usr/lib/chromium
 out/Release/chrome                                                             usr/lib/chromium
-out/Release/chrome_crashpad_handler                                            usr/lib/chromium
 out/Release/chrome_*_percent.pak                                               usr/lib/chromium
 out/Release/icudtl.dat                                                         usr/lib/chromium
 out/Release/resources.pak                                                      usr/lib/chromium
