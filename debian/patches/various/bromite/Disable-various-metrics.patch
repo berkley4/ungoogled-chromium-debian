@@ -40,7 +40,15 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "chrome/browser/media/audio_service_util.h"
  #include "chrome/browser/media/router/media_router_feature.h"
  #include "chrome/browser/media/webrtc/audio_debug_recordings_handler.h"
-@@ -4860,16 +4859,6 @@
+@@ -228,7 +227,6 @@
+ #include "components/no_state_prefetch/common/no_state_prefetch_final_status.h"
+ #include "components/no_state_prefetch/common/prerender_url_loader_throttle.h"
+ #include "components/omnibox/common/omnibox_features.h"
+-#include "components/page_load_metrics/browser/metrics_navigation_throttle.h"
+ #include "components/page_load_metrics/browser/metrics_web_contents_observer.h"
+ #include "components/payments/content/payment_handler_navigation_throttle.h"
+ #include "components/payments/content/payment_request_display_manager.h"
+@@ -4860,16 +4858,6 @@
      content::NavigationHandle* handle) {
    std::vector<std::unique_ptr<content::NavigationThrottle>> throttles;
  
@@ -57,7 +65,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #if BUILDFLAG(ENABLE_SUPERVISED_USERS)
    MaybeAddThrottle(
        SupervisedUserNavigationThrottle::MaybeCreateThrottleFor(handle),
-@@ -4954,10 +4943,6 @@
+@@ -4954,10 +4942,6 @@
      throttle_manager->MaybeAppendNavigationThrottles(handle, &throttles);
    }
  
