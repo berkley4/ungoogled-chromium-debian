@@ -11,7 +11,7 @@ author: Michael Gilbert <mgilbert@debian.org>
      ]
      if (!is_android) {
        if (!is_castos) {
-@@ -1117,7 +1116,6 @@
+@@ -1109,7 +1108,6 @@
          "//chrome:chrome",
          "//chrome/test/chromedriver:chromedriver_server",
          "//testing:test_scripts_shared",
@@ -19,7 +19,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        ]
        if (is_win) {
          data_deps += [ "//build/win:copy_cdb_to_output" ]
-@@ -1170,7 +1168,6 @@
+@@ -1162,7 +1160,6 @@
        "//third_party/blink/public:blink_devtools_inspector_resources",
        "//third_party/blink/public/mojom:mojom_platform_js_data_deps",
        "//third_party/blink/renderer/core:js_files_for_form_controls_web_tests",
@@ -27,7 +27,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        "//third_party/hyphenation-patterns:test_data",
        "//third_party/mesa_headers",
        "//tools/imagediff",
-@@ -1623,10 +1620,6 @@
+@@ -1615,10 +1612,6 @@
        "//third_party/blink/web_tests/TestExpectations",
        "//third_party/blink/web_tests/VirtualTestSuites",
        "//third_party/blink/web_tests/W3CImportExpectations",
