@@ -1,20 +1,23 @@
 # Uncomment to enable anti-tracking mitigations
 # Note: this could potentially make you stand out even more from the crowd.
 
+# Disable automatic search engine scraping from webpages
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-search-engine-collection"
+
 # Disables GREASE for TLS (seems safe enough to set by default)
 # See https://github.com/ungoogled-software/ungoogled-chromium/issues/783 for more details
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-tls-grease"
 
-# Uncomment to disable TLS resumption for all HTTPS and QUIC connections
+# Disable TLS resumption for all HTTPS and QUIC connections
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-tls-resumption"
 
-# Uncomment to mitigate against canvas-based fingerprinting
+# Mitigate against canvas-based fingerprinting
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --fingerprinting-canvas-image-data-noise"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --fingerprinting-canvas-measuretext-noise"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --fingerprinting-client-rects-noise"
 
-# Uncomment to disable OpenGL ES 3 APIs. This in turn will disable WebGL2.
-# Supposed to help prevent gpu info exposure
+# Disable OpenGL ES 3 APIs (prevents gpu info leakage; will also disable WebGL2)
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-es3-apis"
 
-# Uncomment to limit referrer headers; 'minimal' & 'noreferrers' are more stringent
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --referrer-directive=nocrossorigin"
+# Limit referrer headers (choices: MinimalReferrers, NoCrossOriginReferrers, NoReferrers)
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=MinimalReferrers"

@@ -1,6 +1,2 @@
-# Uncomment to disable setuid sandbox
-# Note: I consider the setuid sandbox to be the lesser of two evils compared
-#       to unprivileged user namespaces which are not mature and have been 
-#       the subject of security advisories in the recent past.
-
+# Disable setuid sandbox (usually not a wise idea)
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-setuid-sandbox"

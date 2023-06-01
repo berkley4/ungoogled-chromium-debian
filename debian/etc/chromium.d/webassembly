@@ -19,5 +19,5 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-webassembly-relaxed-simd"
 # JavaScript Promise Integration (JSPI) [experimental]
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-experimental-webassembly-stack-switching"
 
-# Uncomment to disable websssembly (wasm)
+# Disable websssembly (wasm)
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --js-flags=--noexpose_wasm"

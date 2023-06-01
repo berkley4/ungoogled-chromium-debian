@@ -1,19 +1,14 @@
-# Note: VAAPI is not by default enabled upstream on linux due to past security concerns
-#
-#       A newer implementation that requires vulkan and works on
-#       both linux and chromeOS is currently in development
-
-# Uncomment to disable hardware decoding/encoding
+# Disable hardware decoding/encoding
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=VaapiVideoDecoder"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-accelerated-video-decode"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-accelerated-video-encode"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-webrtc-hw-decoding"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-webrtc-hw-encoding"
 
-# Uncomment to enable VAAPI hardware decoding
+# Enable VAAPI hardware decoding
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoDecoder"
 
-# Uncomment to enable VAAPI hardware eecoding
+# Enable VAAPI hardware eecoding
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoEncoder"
 
 

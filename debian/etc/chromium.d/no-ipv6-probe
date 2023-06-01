@@ -1,3 +1,3 @@
-# Uncomment to disable probing for ipv6
+# Disable probing for ipv6
 
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --set-ipv6-probe-false"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=SetIpv6ProbeFalse"
