@@ -37,7 +37,7 @@ real_dir_path () (
 [ -n "$TRANSLATE" ] || TRANSLATE=0
 
 [ -n "$ATK_DBUS" ] || ATK_DBUS=1
-[ -n "$CATAPULT" ] || CATAPULT=0
+[ -n "$CATAPULT" ] || CATAPULT=1
 [ -n "$DRIVER" ] || DRIVER=1
 [ -n "$OOP_PR" ] || OOP_PR=0
 [ -n "$PDF_JS" ] || PDF_JS=0

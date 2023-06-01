@@ -1,6 +1,14 @@
 description: remove dependencies on third_party catapult
 author: Michael Gilbert <mgilbert@debian.org>
 
+
+See https://bugs.debian.org/922431 for more details, but tl;dr: we should
+bring this back and just get rid of the (common) minified stuff in catapult/third_party/.
+
+Stuff like chai, jszip, and node-d3 are packaged for debian already.
+
+
+
 --- a/BUILD.gn
 +++ b/BUILD.gn
 @@ -242,7 +242,6 @@
