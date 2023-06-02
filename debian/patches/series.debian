@@ -100,7 +100,6 @@ various/fixes/revert-GlobalMediaControlsCastStartStop.patch
 various/fixes/shim-fix-for-official-builds.patch
 various/fixes/skia-gamma.patch
 various/fixes/sql-virtual-cursor.patch
-various/fixes/vaapi-add-av1-support.patch
 various/fixes/xfce-maximize.patch
 various/launchpad/dont-collect-motherboard-metrics.patch
 various/system/perfetto-system-zlib.patch
@@ -129,6 +128,8 @@ various/vanadium/disable-content-feed-suggestions-by-default.patch
 #optional/legacy-i386/support-i386.patch
 #optional/system/jpeg.patch
 #optional/system/libusb.patch
+#optional/system/vaapi-add-av1-support.patch
+#optional/system/vaapi-disable-libaom-encoding.patch
 #optional/system/unstable/dav1d.patch
 #optional/system/unstable/dav1d-no-unbundled-libavif.patch
 #optional/system/unstable/icu.patch

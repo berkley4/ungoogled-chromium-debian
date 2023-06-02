@@ -295,6 +295,9 @@ fi
 
 if [ $VAAPI -eq 0 ]; then
   gn_enable="$gn_enable use_vaapi"
+else
+  optional_patches="$optional_patches system/vaapi-add-av1-support"
+  optional_patches="$optional_patches system/vaapi-disable-libaom-encoding"
 fi
 
 
