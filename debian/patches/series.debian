@@ -99,7 +99,6 @@ various/fixes/remove-main-main10-profile-limit.patch
 various/fixes/revert-GlobalMediaControlsCastStartStop.patch
 various/fixes/shim-fix-for-official-builds.patch
 various/fixes/skia-gamma.patch
-various/fixes/sql-virtual-cursor.patch
 various/fixes/xfce-maximize.patch
 various/launchpad/dont-collect-motherboard-metrics.patch
 various/system/perfetto-system-zlib.patch
