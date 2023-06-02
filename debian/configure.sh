@@ -136,7 +136,7 @@ if [ $BUNDLED_CLANG -eq 0 ]; then
   fi
 
   if [ $POLLY_PARALLEL -eq 1 ]; then
-    clang_patches="$clang_patches llvm-polly-parallel lambda-bug"
+    clang_patches="$clang_patches llvm-polly-parallel scope-bug"
   fi
 
   optional_patches="$optional_patches $clang_patches"

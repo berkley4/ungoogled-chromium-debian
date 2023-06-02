@@ -139,4 +139,4 @@ various/vanadium/disable-content-feed-suggestions-by-default.patch
 #optional/system/unstable/roll-src-third_party-ffmpeg-102.patch
 #optional/system/unstable/roll-src-third_party-ffmpeg-106.patch
 #optional/fix-missing-symbols.patch
-#optional/lambda-bug.patch
+#optional/scope-bug.patch
