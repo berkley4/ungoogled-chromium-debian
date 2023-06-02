@@ -8,6 +8,7 @@ sys_enable=
 optional_deps=
 optional_patches='custom-import-limits aes-pclmul march mtune avx'
 
+MARCH_SET=0
 POLLY_EXTRA_SET=0
 RELEASE_SET=0
 SYS_ICU_SET=0
@@ -164,8 +165,15 @@ fi
 
 
 if [ -n "$MARCH" ] || [ -n "$MTUNE" ]; then
-  [ -n "$MARCH" ] || MARCH=x86-64-v2
-  [ -n "$MTUNE" ] || MTUNE=generic
+  [ -n "$MARCH" ] && MARCH_SET=1 || MARCH=x86-64-v2
+
+  if [ -z "$MTUNE" ]; then
+    if [ $MARCH_SET -eq 1 ]; then
+      printf '%s\n' "WARN: setting MTUNE unspecified, using MTUNE=generic"
+    fi
+
+    MTUNE=generic
+  fi
 
   for i in avx avx2 march mtune; do
     sed -e "s@\(march=\)[^"]*@\1$MARCH@" -e "s@\(mtune=\)[^"]*@\1$MTUNE@" \
