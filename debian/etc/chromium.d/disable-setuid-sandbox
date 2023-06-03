@@ -1,2 +1,3 @@
 # Disable setuid sandbox (usually not a wise idea)
+
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-setuid-sandbox"

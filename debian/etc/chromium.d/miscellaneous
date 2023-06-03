@@ -7,7 +7,7 @@
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=DisableLinkDrag"
 
 # Choices: search, search-bookmarks, search-chrome, search-bookmarks-chrome
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --omnibox-autocomplete-filtering"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --omnibox-autocomplete-filtering=search-chrome"
 
 # Opens popups as tabs instead
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --popups-to-tabs"
@@ -34,7 +34,7 @@
 
 # Sets visibility of the avatar button.
 # Choices are: always, incognito-and-guest or never
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --show-avatar-button"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --show-avatar-button=never"
 
 # Hide the side panel button
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --hide-sidepanel-button"
