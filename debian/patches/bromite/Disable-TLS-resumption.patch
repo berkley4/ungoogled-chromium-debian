@@ -38,7 +38,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -4875,6 +4875,12 @@
+@@ -4990,6 +4990,12 @@
      {"enable-tls13-early-data", flag_descriptions::kEnableTLS13EarlyDataName,
       flag_descriptions::kEnableTLS13EarlyDataDescription, kOsAll,
       FEATURE_VALUE_TYPE(net::features::kEnableTLS13EarlyData)},
@@ -53,7 +53,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       flag_descriptions::kFeedBottomSyncBannerDescription, kOsAndroid,
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -1012,6 +1012,14 @@
+@@ -1051,6 +1051,14 @@
      "shortcut (docked magnifier, screen magnifier and high contrast) to time "
      "out instead of remaining pinned.";
  
@@ -70,7 +70,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      "This option enables the experimental Accessibility Service and runs some "
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -574,6 +574,12 @@
+@@ -596,6 +596,12 @@
  extern const char kEnableTLS13EarlyDataName[];
  extern const char kEnableTLS13EarlyDataDescription[];
  
@@ -117,7 +117,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  NET_EXPORT BASE_DECLARE_FEATURE(kEncryptedClientHello);
 --- a/net/http/http_network_session.cc
 +++ b/net/http/http_network_session.cc
-@@ -211,6 +211,7 @@
+@@ -213,6 +213,7 @@
  
    next_protos_.push_back(kProtoHTTP11);
  
@@ -127,7 +127,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    http_server_properties_->SetBrokenAlternativeServicesDelayParams(
 --- a/net/quic/quic_stream_factory.cc
 +++ b/net/quic/quic_stream_factory.cc
-@@ -72,6 +72,7 @@
+@@ -73,6 +73,7 @@
  #include "net/third_party/quiche/src/quiche/quic/core/quic_utils.h"
  #include "net/third_party/quiche/src/quiche/quic/platform/api/quic_flags.h"
  #include "third_party/boringssl/src/include/openssl/aead.h"
@@ -135,7 +135,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "url/gurl.h"
  #include "url/scheme_host_port.h"
  #include "url/url_constants.h"
-@@ -220,6 +221,38 @@
+@@ -221,6 +222,38 @@
  
  }  // namespace
  
@@ -174,7 +174,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  // Refcounted class that owns quic::QuicCryptoClientConfig and tracks how many
  // consumers are using it currently. When the last reference is freed, the
  // QuicCryptoClientConfigHandle informs the owning QuicStreamFactory, moves it
-@@ -2614,7 +2647,7 @@
+@@ -2625,7 +2658,7 @@
                sct_auditing_delegate_,
                HostsFromOrigins(params_.origins_to_force_quic_on),
                actual_network_anonymization_key),
@@ -185,7 +185,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    crypto_config->set_user_agent_id(params_.user_agent_id);
 --- a/net/socket/ssl_client_socket_impl.cc
 +++ b/net/socket/ssl_client_socket_impl.cc
-@@ -393,7 +393,33 @@
+@@ -381,7 +381,33 @@
    CHECK(context_);
  }
  
@@ -219,7 +219,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    Disconnect();
  }
  
-@@ -794,6 +820,8 @@
+@@ -780,6 +806,8 @@
      }
      if (session)
        SSL_set_session(ssl_.get(), session.get());
@@ -228,7 +228,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    }
  
    transport_adapter_ = std::make_unique<SocketBIOAdapter>(
-@@ -1085,6 +1113,35 @@
+@@ -1071,6 +1099,35 @@
                      : SSLHandshakeDetails::kTLS13Full;
      }
    }
@@ -264,7 +264,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    UMA_HISTOGRAM_ENUMERATION("Net.SSLHandshakeDetails", details);
  
    // Measure TLS connections that implement the renegotiation_info extension.
-@@ -1766,6 +1823,8 @@
+@@ -1751,6 +1808,8 @@
  }
  
  bool SSLClientSocketImpl::IsCachingEnabled() const {

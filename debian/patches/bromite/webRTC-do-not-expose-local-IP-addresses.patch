@@ -38,7 +38,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  }
  
  bool IsValidPortRange(uint16_t min_port, uint16_t max_port) {
-@@ -771,7 +773,7 @@
+@@ -770,7 +772,7 @@
            break;
        }
  

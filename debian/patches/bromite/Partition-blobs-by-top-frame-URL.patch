@@ -193,7 +193,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  }  // namespace
  
  // Execution context names corresponding to the entries from
-@@ -297,6 +312,7 @@
+@@ -300,6 +315,7 @@
  
    GetBlobURLStore().ResolveAsURLLoaderFactory(
        url, std::move(factory_receiver),
@@ -201,7 +201,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        WTF::BindOnce(metrics_callback, WrapPersistent(GetExecutionContext())));
  }
  
-@@ -320,6 +336,7 @@
+@@ -323,6 +339,7 @@
  
    GetBlobURLStore().ResolveForNavigation(
        url, std::move(token_receiver),

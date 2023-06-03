@@ -27,7 +27,7 @@ Cr-Commit-Position: refs/heads/main@{#1033741}
 
 --- a/chrome/browser/favicon/content_favicon_driver_browsertest.cc
 +++ b/chrome/browser/favicon/content_favicon_driver_browsertest.cc
-@@ -1196,3 +1196,79 @@
+@@ -1195,3 +1195,79 @@
    EXPECT_TRUE(url_loader_interceptor.was_loaded(icon_url));
    EXPECT_FALSE(url_loader_interceptor.did_bypass_cache(icon_url));
  }

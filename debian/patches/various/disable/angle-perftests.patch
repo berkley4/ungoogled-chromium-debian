@@ -3,7 +3,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
 
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -5285,10 +5285,6 @@
+@@ -5326,10 +5326,6 @@
        data_deps += [ "//third_party/dawn/src/dawn/tests:dawn_perf_tests" ]
      }
  
@@ -25,9 +25,9 @@ author: Michel Le Bihan <michel@lebihan.pl>
  }
  
  declare_args() {
-@@ -290,10 +290,10 @@
-       is_apple &&
-       (angle_enable_glsl || angle_enable_metal || use_fuzzing_engine)
+@@ -289,10 +289,10 @@
+   angle_enable_apple_translator_workarounds =
+       is_apple && (angle_enable_glsl || use_fuzzing_engine)
  
 -  angle_has_histograms = angle_has_build
 +  angle_has_histograms = false
@@ -67,7 +67,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
    import("angle_perftests.gni")
  
    # This test suite is for perf tests that use ANGLE's internals in some direct way.
-@@ -1696,10 +1694,10 @@
+@@ -1708,10 +1706,10 @@
    if (build_angle_trace_tests) {
      deps += [ ":angle_trace_tests" ]
    }

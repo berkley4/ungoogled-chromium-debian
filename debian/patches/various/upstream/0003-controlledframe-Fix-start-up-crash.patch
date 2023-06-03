@@ -1,0 +1,37 @@
+From a1fec6273f3ad7c73b35bb420a5540355df35b74 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Ovidio=20Ruiz-Henr=C3=ADquez?= <odejesush@chromium.org>
+Date: Thu, 25 May 2023 19:27:54 +0000
+Subject: [PATCH] controlledframe: Fix start up crash
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+This commit applies a fix from mail@maciej.szmigiero.name to prevent a
+null reference error in GetControlledFrameFeatureList(). The fix is to
+add static to `feature_list` so that the object lives past this
+function.
+
+BUG=1447422
+
+Change-Id: I22879831ec879ce7d6a178760540f88106b3ded4
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4555985
+Commit-Queue: Ovidio Ruiz-Henríquez <odejesush@chromium.org>
+Reviewed-by: David Roger <droger@chromium.org>
+Reviewed-by: Chase Phillips <cmp@chromium.org>
+Auto-Submit: Ovidio Ruiz-Henríquez <odejesush@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1149296}
+---
+ chrome/common/initialize_extensions_client.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/chrome/common/initialize_extensions_client.cc
++++ b/chrome/common/initialize_extensions_client.cc
+@@ -19,7 +19,7 @@
+ 
+ // This list should stay in sync with GetExpectedDelegatedFeaturesForTest().
+ base::span<const char* const> GetControlledFrameFeatureList() {
+-  constexpr const char* feature_list[] = {
++  static constexpr const char* feature_list[] = {
+       "controlledFrameInternal", "chromeWebViewInternal", "guestViewInternal",
+       "webRequestInternal",      "webViewInternal",
+   };

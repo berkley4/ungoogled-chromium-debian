@@ -1,23 +1,23 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -684,14 +684,6 @@
-     ]
-   }
+@@ -673,14 +673,6 @@
+       ]
+     }
  
--  if (is_mac || is_win || is_android || is_linux || is_chromeos) {
--    deps += [
--      "//third_party/crashpad/crashpad:crashpad_tests",
--      "//third_party/crashpad/crashpad/handler:crashpad_handler",
--      "//third_party/crashpad/crashpad/tools:crashpad_database_util",
--    ]
--  }
+-    if (is_mac || is_win || is_android || is_linux || is_chromeos) {
+-      deps += [
+-        "//third_party/crashpad/crashpad:crashpad_tests",
+-        "//third_party/crashpad/crashpad/handler:crashpad_handler",
+-        "//third_party/crashpad/crashpad/tools:crashpad_database_util",
+-      ]
+-    }
 -
-   if (enable_message_center) {
-     deps += [ "//ui/message_center:message_center_unittests" ]
-   }
+     if (enable_message_center) {
+       deps += [ "//ui/message_center:message_center_unittests" ]
+     }
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -4540,10 +4540,6 @@
+@@ -4575,10 +4575,6 @@
        ]
      }
  
@@ -30,7 +30,7 @@
      if (!is_win) {
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -305,8 +305,6 @@
+@@ -302,8 +302,6 @@
            public_deps += [
              ":xdg_mime",  # Needs to be public for installer to consume files.
            ]
@@ -39,7 +39,7 @@
          }
  
          ldflags = []
-@@ -1729,7 +1727,6 @@
+@@ -1725,7 +1723,6 @@
        deps = [
          ":angle_egl_symbols",
          ":angle_gles_symbols",
@@ -47,7 +47,7 @@
          ":chrome_symbols",
        ]
        if (is_linux) {
-@@ -1753,18 +1750,6 @@
+@@ -1749,18 +1746,6 @@
  
        deps = [ ":chrome" ]
      }
@@ -68,7 +68,7 @@
        binary = "$root_out_dir/libvk_swiftshader.so"
 --- a/headless/BUILD.gn
 +++ b/headless/BUILD.gn
-@@ -573,10 +573,6 @@
+@@ -566,10 +566,6 @@
      deps += [ "//sandbox" ]
    }
  

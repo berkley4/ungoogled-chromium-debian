@@ -19,7 +19,7 @@ Cr-Commit-Position: refs/heads/main@{#961658}
 
 --- a/chrome/browser/media/router/media_router_feature.cc
 +++ b/chrome/browser/media/router/media_router_feature.cc
-@@ -68,7 +68,7 @@
+@@ -75,7 +75,7 @@
  #else
  BASE_FEATURE(kGlobalMediaControlsCastStartStop,
               "GlobalMediaControlsCastStartStop",

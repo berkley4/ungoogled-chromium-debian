@@ -22,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -3540,6 +3540,10 @@
+@@ -3637,6 +3637,10 @@
       flag_descriptions::kKioskEnableAppServiceDescription, kOsCrOS,
       FEATURE_VALUE_TYPE(features::kKioskEnableAppService)},
  #endif  // BUILDFLAG(IS_CHROMEOS)
@@ -35,7 +35,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       flag_descriptions::kWebRtcRemoteEventLogName,
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3385,6 +3385,11 @@
+@@ -3494,6 +3494,11 @@
      "When enabled, WebRTC will only use the Video Encode Accelerator for "
      "video resolutions inside those published as supported.";
  
@@ -49,7 +49,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  const char kWebUsbDeviceDetectionDescription[] =
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -1933,6 +1933,9 @@
+@@ -2001,6 +2001,9 @@
  extern const char kWebrtcUseMinMaxVEADimensionsName[];
  extern const char kWebrtcUseMinMaxVEADimensionsDescription[];
  
@@ -61,7 +61,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -665,6 +665,10 @@
+@@ -659,6 +659,10 @@
  #endif
  );
  
@@ -74,7 +74,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  BASE_FEATURE(kBlinkHeapCompaction,
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -274,6 +274,8 @@
+@@ -255,6 +255,8 @@
  
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kWebRtcUseMinMaxVEADimensions);
  
@@ -148,7 +148,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "third_party/blink/public/mojom/devtools/console_message.mojom-blink.h"
  #include "third_party/blink/public/mojom/frame/lifecycle.mojom-shared.h"
  #include "third_party/blink/public/platform/platform.h"
-@@ -720,6 +721,17 @@
+@@ -721,6 +722,17 @@
    return window ? window->document() : nullptr;
  }
  

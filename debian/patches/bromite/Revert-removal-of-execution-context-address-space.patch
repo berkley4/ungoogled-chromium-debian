@@ -57,7 +57,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
-@@ -173,7 +173,7 @@
+@@ -178,7 +178,7 @@
  //  - kBlockInsecurePrivateNetworkRequests
  BASE_FEATURE(kBlockInsecurePrivateNetworkRequestsFromUnknown,
               "BlockInsecurePrivateNetworkRequestsFromUnknown",
@@ -68,7 +68,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  // trial. This is a necessary yet insufficient condition: documents that wish to
 --- a/third_party/blink/renderer/core/execution_context/execution_context.cc
 +++ b/third_party/blink/renderer/core/execution_context/execution_context.cc
-@@ -552,6 +552,15 @@
+@@ -560,6 +560,15 @@
    policy_container_->UpdateReferrerPolicy(referrer_policy);
  }
  
@@ -94,7 +94,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "services/network/public/mojom/referrer_policy.mojom-blink-forward.h"
  #include "third_party/abseil-cpp/absl/types/optional.h"
  #include "third_party/blink/public/common/tokens/tokens.h"
-@@ -400,6 +401,9 @@
+@@ -403,6 +404,9 @@
        const String& message = g_empty_string,
        const String& source_file = g_empty_string) const {}
  
@@ -106,7 +106,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    unsigned ContextLifecycleStateObserverCountForTesting() const;
 --- a/third_party/blink/renderer/core/exported/web_shared_worker_impl.cc
 +++ b/third_party/blink/renderer/core/exported/web_shared_worker_impl.cc
-@@ -278,6 +278,7 @@
+@@ -273,6 +273,7 @@
        MakeGarbageCollected<WorkerClients>(),
        std::make_unique<SharedWorkerContentSettingsProxy>(
            std::move(content_settings)),
@@ -168,7 +168,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    void AddContentSecurityPolicies(
 --- a/third_party/blink/renderer/core/frame/web_frame_test.cc
 +++ b/third_party/blink/renderer/core/frame/web_frame_test.cc
-@@ -8064,6 +8064,40 @@
+@@ -8063,6 +8063,40 @@
    EXPECT_EQ(client.StopLoadingCount(), 2);
  }
  
@@ -261,7 +261,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
          response_origin_trial_tokens.get());
 --- a/third_party/blink/renderer/core/workers/dedicated_worker.cc
 +++ b/third_party/blink/renderer/core/workers/dedicated_worker.cc
-@@ -275,12 +275,12 @@
+@@ -276,12 +276,12 @@
    if (options_->type() == script_type_names::kModule) {
      // Specify empty source code etc. here because scripts will be fetched on
      // the worker thread.
@@ -280,7 +280,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      return;
    }
    NOTREACHED() << "Invalid type: " << IDLEnumAsString(options_->type());
-@@ -328,6 +328,7 @@
+@@ -329,6 +329,7 @@
    ContinueStart(script_request_url_, std::move(worker_main_script_load_params),
                  network::mojom::ReferrerPolicy::kDefault,
                  Vector<network::mojom::blink::ContentSecurityPolicyPtr>(),
@@ -288,7 +288,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
                  String() /* source_code */, RejectCoepUnsafeNone(false),
                  std::move(back_forward_cache_controller_host));
  }
-@@ -391,6 +392,7 @@
+@@ -392,6 +393,7 @@
              ? mojo::Clone(classic_script_loader_->GetContentSecurityPolicy()
                                ->GetParsedPolicies())
              : Vector<network::mojom::blink::ContentSecurityPolicyPtr>(),
@@ -296,7 +296,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
          classic_script_loader_->SourceText(), RejectCoepUnsafeNone(false),
          std::move(back_forward_cache_controller_host));
      probe::ScriptImported(GetExecutionContext(),
-@@ -407,6 +409,7 @@
+@@ -408,6 +410,7 @@
      network::mojom::ReferrerPolicy referrer_policy,
      Vector<network::mojom::blink::ContentSecurityPolicyPtr>
          response_content_security_policies,
@@ -304,7 +304,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      const String& source_code,
      RejectCoepUnsafeNone reject_coep_unsafe_none,
      mojo::PendingRemote<mojom::blink::BackForwardCacheControllerHost>
-@@ -414,7 +417,8 @@
+@@ -415,7 +418,8 @@
    context_proxy_->StartWorkerGlobalScope(
        CreateGlobalScopeCreationParams(
            script_url, referrer_policy,
@@ -314,7 +314,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        std::move(worker_main_script_load_params), options_, script_url,
        *outside_fetch_client_settings_object_, v8_stack_trace_id_, source_code,
        reject_coep_unsafe_none, token_,
-@@ -451,7 +455,8 @@
+@@ -452,7 +456,8 @@
      const KURL& script_url,
      network::mojom::ReferrerPolicy referrer_policy,
      Vector<network::mojom::blink::ContentSecurityPolicyPtr>
@@ -324,7 +324,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    base::UnguessableToken parent_devtools_token;
    std::unique_ptr<WorkerSettings> settings;
    ExecutionContext* execution_context = GetExecutionContext();
-@@ -500,6 +505,7 @@
+@@ -501,6 +506,7 @@
        execution_context->GetSecurityOrigin(),
        execution_context->IsSecureContext(), execution_context->GetHttpsState(),
        MakeGarbageCollected<WorkerClients>(), CreateWebContentSettingsClient(),
@@ -528,7 +528,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
          mojom::blink::V8CacheOptions::kDefault,
 --- a/third_party/blink/renderer/core/workers/shared_worker_global_scope.cc
 +++ b/third_party/blink/renderer/core/workers/shared_worker_global_scope.cc
-@@ -111,6 +111,7 @@
+@@ -76,6 +76,7 @@
  void SharedWorkerGlobalScope::Initialize(
      const KURL& response_url,
      network::mojom::ReferrerPolicy response_referrer_policy,
@@ -536,7 +536,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      Vector<network::mojom::blink::ContentSecurityPolicyPtr> response_csp,
      const Vector<String>* response_origin_trial_tokens) {
    // Step 12.3. "Set worker global scope's url to response's url."
-@@ -124,6 +125,9 @@
+@@ -89,6 +90,9 @@
    // parsing the `Referrer-Policy` header of response."
    SetReferrerPolicy(response_referrer_policy);
  
@@ -546,7 +546,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // Step 12.6. "Execute the Initialize a global object's CSP list algorithm
    // on worker global scope and response. [CSP]"
    // SharedWorkerGlobalScope inherits the outside's CSP instead of the response
-@@ -133,6 +137,8 @@
+@@ -98,6 +102,8 @@
    // https://fetch.spec.whatwg.org/#local-scheme
    //
    // https://w3c.github.io/webappsec-csp/#initialize-global-object-csp
@@ -555,7 +555,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    Vector<network::mojom::blink::ContentSecurityPolicyPtr> csp_headers =
        response_url.ProtocolIsAbout() || response_url.ProtocolIsData() ||
                response_url.ProtocolIs("blob")
-@@ -280,6 +286,7 @@
+@@ -245,6 +251,7 @@
  
    // Step 12.3-12.6 are implemented in Initialize().
    Initialize(classic_script_loader->ResponseURL(), response_referrer_policy,
@@ -565,7 +565,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
                                     ->GetParsedPolicies())
 --- a/third_party/blink/renderer/core/workers/shared_worker_global_scope.h
 +++ b/third_party/blink/renderer/core/workers/shared_worker_global_scope.h
-@@ -65,6 +65,7 @@
+@@ -64,6 +64,7 @@
    void Initialize(
        const KURL& response_url,
        network::mojom::ReferrerPolicy response_referrer_policy,
@@ -754,7 +754,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        mojom::blink::V8CacheOptions::kFullCodeWithoutHeatCheck,
 --- a/third_party/blink/renderer/modules/service_worker/service_worker_global_scope.cc
 +++ b/third_party/blink/renderer/modules/service_worker/service_worker_global_scope.cc
-@@ -453,6 +453,7 @@
+@@ -454,6 +454,7 @@
    // is set, and with the following callback steps given evaluationStatus:"
    RunClassicScript(
        classic_script_loader->ResponseURL(), referrer_policy,
@@ -762,7 +762,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        classic_script_loader->GetContentSecurityPolicy()
            ? mojo::Clone(classic_script_loader->GetContentSecurityPolicy()
                              ->GetParsedPolicies())
-@@ -466,6 +467,7 @@
+@@ -467,6 +468,7 @@
  void ServiceWorkerGlobalScope::Initialize(
      const KURL& response_url,
      network::mojom::ReferrerPolicy response_referrer_policy,
@@ -770,7 +770,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      Vector<network::mojom::blink::ContentSecurityPolicyPtr> response_csp,
      const Vector<String>* response_origin_trial_tokens) {
    // Step 4.5. "Set workerGlobalScope's url to serviceWorker's script url."
-@@ -479,6 +481,9 @@
+@@ -480,6 +482,9 @@
    // script resource's referrer policy."
    SetReferrerPolicy(response_referrer_policy);
  
@@ -780,7 +780,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // This is quoted from the "Content Security Policy" algorithm in the service
    // workers spec:
    // "Whenever a user agent invokes Run Service Worker algorithm with a service
-@@ -489,6 +494,9 @@
+@@ -490,6 +495,9 @@
    // - If serviceWorker's script resource was delivered with a
    //   Content-Security-Policy-Report-Only HTTP header containing the value
    //   policy, the user agent must monitor policy for serviceWorker."
@@ -790,7 +790,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    InitContentSecurityPolicyFromVector(std::move(response_csp));
    BindContentSecurityPolicyToExecutionContext();
  
-@@ -529,26 +537,27 @@
+@@ -530,26 +538,27 @@
          kDoNotSupportReferrerPolicyLegacyKeywords, &referrer_policy);
    }
  
@@ -828,7 +828,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // script script if script is a classic script, otherwise, the result of
 --- a/third_party/blink/renderer/modules/service_worker/service_worker_global_scope.h
 +++ b/third_party/blink/renderer/modules/service_worker/service_worker_global_scope.h
-@@ -120,6 +120,7 @@
+@@ -123,6 +123,7 @@
    void Initialize(
        const KURL& response_url,
        network::mojom::ReferrerPolicy response_referrer_policy,
@@ -836,7 +836,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        Vector<network::mojom::blink::ContentSecurityPolicyPtr> response_csp,
        const Vector<String>* response_origin_trial_tokens) override;
    // Fetches and runs the top-level classic worker script.
-@@ -370,6 +371,7 @@
+@@ -373,6 +374,7 @@
    void RunClassicScript(
        const KURL& response_url,
        network::mojom::ReferrerPolicy response_referrer_policy,

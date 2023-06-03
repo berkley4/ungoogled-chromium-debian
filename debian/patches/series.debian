@@ -65,15 +65,14 @@ vanadium/0044-enable-new-third-party-storage-partitioning.patch
 vanadium/0047-disable-component-updater-pings-by-default.patch
 vanadium/0051-stub-out-the-battery-status-API.patch
 vanadium/0081-Enable-strict-origin-isolation-by-default.patch
-#vanadium/0082-disable-appending-variations-header.patch
 vanadium/0084-Disable-detailed-language-settings-by-default.patch
-vanadium/0088-enable-process-isolated-sandboxed-iframes-by-default.patch
+vanadium/0087-enable-process-isolated-sandboxed-iframes-by-default.patch
 
 various/fix-unbundle-script-dh-clean-interoperabilty.patch
 various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
 various/silence-alsa-frames-log-msg.patch
 various/template-correction.patch
-various/addenda/0001-Fix-a-crash-in-SubframeHistoryNavigationThrottle.patch
+various/addenda/0001-Automatic-update-from-google3.patch
 various/bromite/autofill-miscellaneous.patch
 various/bromite/Disable-all-predictors-code.patch
 various/bromite/Disable-conversion-measurement-api.patch
@@ -106,7 +105,9 @@ various/system/zlib.patch
 various/system/extra/brotli.patch
 various/system/extra/opus.patch
 various/system/extra/zlib.patch
-various/upstream/0001-Add-use-system-libtiff-build-option.patch
+various/upstream/0001-Add-some-typenames-that-are-required-in-C++17.patch
+various/upstream/0002-Fix-autocomplete-controller-build-with-tflite-lib-disabled.patch
+various/upstream/0003-controlledframe-Fix-start-up-crash.patch
 various/vanadium/disable-article-suggestions-feature-by-default.patch
 various/vanadium/disable-content-feed-suggestions-by-default.patch
 

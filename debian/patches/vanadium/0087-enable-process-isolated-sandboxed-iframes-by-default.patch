@@ -1,4 +1,4 @@
-From 734eaa0beaab55f9db6d6cc301e970720e6edcee Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: June <june@eridan.me>
 Date: Sun, 8 May 2022 01:34:58 +0000
 Subject: [PATCH] enable process isolated sandboxed iframes by default
@@ -10,7 +10,7 @@ Signed-off-by: June <june@eridan.me>
 
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -1631,7 +1631,7 @@
+@@ -1653,7 +1653,7 @@
  // sandboxes are isolated.
  BASE_FEATURE(kIsolateSandboxedIframes,
               "IsolateSandboxedIframes",

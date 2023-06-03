@@ -20,7 +20,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -142,6 +142,7 @@
+@@ -143,6 +143,7 @@
  #include "components/segmentation_platform/public/features.h"
  #include "components/send_tab_to_self/features.h"
  #include "components/services/heap_profiling/public/cpp/switches.h"
@@ -28,7 +28,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "components/shared_highlighting/core/common/shared_highlighting_features.h"
  #include "components/signin/core/browser/dice_account_reconcilor_delegate.h"
  #include "components/signin/public/base/signin_buildflags.h"
-@@ -8788,6 +8789,11 @@
+@@ -9060,6 +9061,11 @@
                                      kLargeFaviconFromGoogleVariations,
                                      "LargeFaviconFromGoogle")},
  
@@ -38,11 +38,11 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +     FEATURE_VALUE_TYPE(site_engagement::features::kSiteEngagement)},
 +
  #if BUILDFLAG(IS_ANDROID)
-     {"request-desktop-site-exceptions",
-      flag_descriptions::kRequestDesktopSiteExceptionsName,
+     {"force-off-text-autosizing",
+      flag_descriptions::kForceOffTextAutosizingName,
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3471,6 +3471,11 @@
+@@ -3582,6 +3582,11 @@
      "Skips starting the service worker and run the fetch handler if the fetch "
      "handler is recognized as skippable.";
  
@@ -56,7 +56,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      "The WebSQL API is enabled by default, but can be disabled here.";
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -1997,6 +1997,9 @@
+@@ -2065,6 +2065,9 @@
  extern const char kSkipServiceWorkerFetchHandlerName[];
  extern const char kSkipServiceWorkerFetchHandlerDescription[];
  
