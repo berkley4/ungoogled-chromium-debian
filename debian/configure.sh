@@ -6,7 +6,7 @@ gn_enable=
 sys_enable=
 
 optional_deps=
-optional_patches='custom-import-limits aes-pclmul march mtune avx'
+optional_patches='custom-import-limits march mtune'
 
 MARCH_SET=0
 POLLY_EXTRA_SET=0
@@ -30,12 +30,16 @@ real_dir_path () (
 ## Default values ##
 ####################
 
-[ -n "$TARBALL" ] || TARBALL=0
-
 [ -n "$BUNDLED_CLANG" ] || BUNDLED_CLANG=0
+[ -n "$TARBALL" ] || TARBALL=0
+[ -n "$TRANSLATE" ] || TRANSLATE=0
+
+[ -n "$AES_PCLMUL" ] || AES_PCLMUL=1
+[ -n "$AVX" ] || AVX=1
+[ -n "$AVX2" ] || AVX2=0
 [ -n "$POLLY_VECTORIZER" ] || POLLY_VECTORIZER=1
 [ -n "$POLLY_PARALLEL" ] || POLLY_PARALLEL=0
-[ -n "$TRANSLATE" ] || TRANSLATE=0
+[ -n "$V8_AVX2" ] || V8_AVX2=0
 
 [ -n "$ATK_DBUS" ] || ATK_DBUS=1
 [ -n "$CATAPULT" ] || CATAPULT=1
@@ -179,6 +183,27 @@ if [ -n "$MARCH" ] || [ -n "$MTUNE" ]; then
     sed -e "s@\(march=\)[^"]*@\1$MARCH@" -e "s@\(mtune=\)[^"]*@\1$MTUNE@" \
         -i $DEBIAN/patches/optional/$i.patch
   done
+fi
+
+
+if [ $AVX2 -eq 1 ]; then
+  AES_PCLMUL=1
+  AVX=1
+  V8_AVX2=1
+  optional_patches="$optional_patches avx2"
+fi
+
+if [ $AVX -eq 1 ]; then
+  AES_PCLMUL=1
+  optional_patches="$optional_patches avx"
+fi
+
+if [ $AES_PCLMUL -eq 1 ]; then
+  optional_patches="$optional_patches aes-pclmul"
+fi
+
+if [ $V8_AVX2 -eq 1 ]; then
+  gn_enable="$gn_enable v8_enable_wasm_simd256_revec"
 fi
 
 

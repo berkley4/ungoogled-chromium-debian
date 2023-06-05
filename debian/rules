@@ -92,6 +92,9 @@ GN_FLAGS += link_pulseaudio=true
 # Disable VA-API
 #GN_FLAGS += use_vaapi=false
 
+# Enable 256-bit re-vectorization pass in WASM compilation pipeline
+#GN_FLAGS += v8_enable_wasm_simd256_revec=true
+
 
 # Currently omitted from base (stable)
 #
