@@ -6,9 +6,8 @@ There are debs in the release section which are built with -march=x86-64-v2 --mt
 These should run on CPUs which support AVX instructions, which should encompass the Intel Sandybridge/AMD Bulldozer era (circa 2011) onwards.
 There's also a patch which can be used by builders to enable AVX2 support (cat /proc/cpuinfo is your friend here).
 
-There are currently two release branches: stable and unstable, with their respective deb packages built in debian stable and unstable chroots.
-The stable release should work on debian stable or equivalent (eg ubuntu focal).
-The unstable release obviously needs debian unstable or a new enough distro.
+There are currently two release branches: stable and unstable
+Currently there are deb packages for unstable, with build support for stable.
 
 
 # Installation
@@ -47,15 +46,15 @@ ___Performance improvements___
     - -fno-plt - (see [here](https://patchwork.ozlabs.org/project/gcc/patch/alpine.LNX.2.11.1505061730460.22867@monopod.intra.ispras.ru/))
     - -ftrivial-auto-var-init set to zero - see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html)
     - -import-instr-limit=25 and -import-hot-multiplier=16 - gives a hot import limit of 400 (25*16) vs default of 300 (30*10)
-    - The following LLVM polly options are available (via optional patches, needs a capable toolchain) :-
-        -polly-vectorizer=stripmine, -polly-run-dce, -polly-run-inliner, -polly-invariant-load-hoisting
+    - The following LLVM polly options are available (needs a capable toolchain) :-
+        -polly-vectorizer=stripmine, -polly-run-dce, -polly-invariant-load-hoisting
 
 ___Security/Privacy improvements___
 
 - Stack clash protection (-fstack-clash-protection) - see [here](https://blog.llvm.org/posts/2021-01-05-stack-clash-protection/)
 - Intel control flow enforcement technology (-fcf-protection) - cpu-based control flow integrity (see [here](https://wiki.ubuntu.com/ToolChain/CompilerFlags#A-fcf-protection))
 - ROP exploit mitigation (-fzero-call-used-regs=used-gpr) - see [here](https://www.jerkeby.se/newsletter/posts/rop-reduction-zero-call-user-regs/)
-- Bad Cast Checking - see [here](https://clang.llvm.org/docs/ControlFlowIntegrity.html#bad-cast-checking)
+- Bad Cast Checking (via use_cfi_cast=true build flag) - see [here](https://clang.llvm.org/docs/ControlFlowIntegrity.html#bad-cast-checking)
 - Extra Bromite and Vanadium patches, the later of which includes the following clang options
     - -fstack-protector-strong - chromium's default is the less-strict -fstack-protector
     - -ftrivial-auto-var-init=zero - see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html)
@@ -66,21 +65,19 @@ ___Security/Privacy improvements___
 
 ___Other features___
 
-- The ungoogled-chromium-common package has split into the libraries and main packages
-- A new ungoogled-chromium-libraries package
+- Lots of extra runtime flags (via the flag files in /etc/chromium.d)
 - Google translate - optional build support via a patch to re-enable this functionality
+- Patches for -march/-mtune and various other CPU instructions
+- Various patches to disable components (eg atk/dbus) and enable system libraries (eg icu)
 
 
 ___Build system___
 
 - Predominantly uses git to obtain and update source (release tarballs are not actively supported)
 - System clang/llvm is preferred for building (upstream llvm is best to ensure compatibility with the PGO profile)
-- Patches for -march/-mtune and various other CPU instructions
-- Various patches to disable components (eg atk/dbus) and enable system libraries (eg icu)
 - A configure script is provided to enable customisation of the build
 - Ungoogled Chromium patches are merged into debian's build system with a variety of other patches
 - Debug optimisation is now handled by building with -fdebug-types-section (instead of dwz)
-- Several improvements have been made to make the build process more robust
 
 - - - -
 
