@@ -478,7 +478,12 @@ cp -a $DEBIAN/shims/chromium-flags.conf $DEBIAN/etc/chromium.d/
 
 ## Merge upstream UC patches
 if [ ! -d $DEBIAN/patches/core ] || [ ! -d $DEBIAN/patches/extra ]; then
-  cp -a $UC_DIR/patches/core $UC_DIR/patches/extra $DEBIAN/patches/
+  UC_PATCH_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
+  if [ -d $UC_DIR/patches/upstream ]; then
+    UC_PATCH_DIRS="$UC_PATCH_DIRS $UC_DIR/patches/upstream"
+  fi
+
+  cp -a $UC_PATCH_DIRS $DEBIAN/patches/
 fi
 
 cat $UC_DIR/patches/series $DEBIAN/patches/series.debian \
