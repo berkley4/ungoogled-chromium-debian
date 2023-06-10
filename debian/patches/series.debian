@@ -101,6 +101,7 @@ various/fixes/skia-gamma.patch
 various/fixes/xfce-maximize.patch
 various/launchpad/dont-collect-motherboard-metrics.patch
 various/system/perfetto-system-zlib.patch
+various/system/xdg-scripts.patch
 various/system/zlib.patch
 various/system/extra/brotli.patch
 various/system/extra/opus.patch
