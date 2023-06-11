@@ -1,0 +1,125 @@
+From cefbc71dd293554f93be19f92b4c6504c9230d6a Mon Sep 17 00:00:00 2001
+From: Mei Liang <meiliang@chromium.org>
+Date: Wed, 07 Jun 2023 23:03:20 +0000
+Subject: [PATCH] [114][ChromeCart][Quest] Update annotation font size
+
+Before: https://screenshot.googleplex.com/3Qq65smq2ycnMZC
+After: https://screenshot.googleplex.com/5uSYWr8v2rvWtC7
+
+(cherry picked from commit 3a5d38b45f499daf61624346727e33725ac69d67)
+
+Bug: 1449035 b/284206972
+Change-Id: I6c67596e4de77411a1daa378f9c36aaf829a1493
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4566962
+Auto-Submit: Mei Liang <meiliang@chromium.org>
+Reviewed-by: Tibor Goldschwendt <tiborg@chromium.org>
+Commit-Queue: Tibor Goldschwendt <tiborg@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1149777}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4599747
+Cr-Commit-Position: refs/branch-heads/5735@{#1192}
+Cr-Branched-From: 2f562e4ddbaf79a3f3cb338b4d1bd4398d49eb67-refs/heads/main@{#1135570}
+---
+
+--- a/chrome/browser/resources/new_tab_page/modules/history_clusters/cart/cart_tile.html
++++ b/chrome/browser/resources/new_tab_page/modules/history_clusters/cart/cart_tile.html
+@@ -119,17 +119,9 @@
+   }
+ 
+   #titleAnnotation {
+-    align-items: center;
+     background: var(--color-sys-tonal-container);
+-    border-radius: 4px;
+     color: var(--color-sys-on-tonal-container);
+-    display: flex;
+-    font-size: 9px;
+-    font-weight: 500;
+-    height: 17px;
+-    justify-content: center;
+-    line-height: 7px;
+-    width: 54px;
++    width: 60px;
+   }
+ 
+   :host([one-image]) #titleAnnotation {
+@@ -181,16 +173,23 @@
+ 
+   #discountChip {
+     background: var(--color-sys-tertiary-container);
+-    border-radius: 4px;
+     color: var(--color-sys-on-tertiary-container);
+-    font-size: 9px;
+-    font-weight: 500;
+-    height: 17px;
+-    line-height: 17px;
+     margin-inline-start: 10px;
+     min-width: 40px;
++  }
++
++  .annotation {
++    align-items: center;
++    border-radius: 4px;
++    display: flex;
++    font-size: 11px;
++    font-weight: 500;
++    height: 17px;
++    justify-content: center;
++    line-height: 16px;
++    padding-inline-end: 4px;
++    padding-inline-start: 4px;
+     text-align: center;
+-    width: 40px;
+   }
+ </style>
+ 
+@@ -224,9 +223,11 @@
+     <div id="titleContainer">
+       <div id="title" class="truncate">[[cart.merchant]]</div>
+       <div id="annotationContainer">
+-        <div id="titleAnnotation">$i18n{modulesJourneysCartAnnotation}</div>
++        <div class="annotation" id="titleAnnotation">
++          $i18n{modulesJourneysCartAnnotation}
++        </div>
+         <template is="dom-if" if="[[cart.discountText]]" restamp>
+-          <div id="discountChip">[[cart.discountText]]</div>
++          <div class="annotation" id="discountChip">[[cart.discountText]]</div>
+         </template>
+       </div>
+     </div>
+--- a/chrome/test/data/webui/new_tab_page/modules/history_clusters/cart/cart_tile_test.ts
++++ b/chrome/test/data/webui/new_tab_page/modules/history_clusters/cart/cart_tile_test.ts
+@@ -52,7 +52,7 @@
+             '6 mins ago'));
+     assertEquals($$(tileElement, '#title')!.textContent, 'Foo');
+     assertEquals(
+-        $$(tileElement, '#titleAnnotation')!.textContent!,
++        $$(tileElement, '#titleAnnotation')!.textContent!.trim(),
+         loadTimeData.getString('modulesJourneysCartAnnotation'));
+     assertEquals(
+         tileElement.shadowRoot!.querySelectorAll('.small-image').length, 3);
+@@ -97,7 +97,7 @@
+         assertEquals($$(tileElement, '#title')!.textContent, 'Foo');
+         assertTrue(isVisible($$(tileElement, '#titleAnnotation')!));
+         assertEquals(
+-            $$(tileElement, '#titleAnnotation')!.textContent!,
++            $$(tileElement, '#titleAnnotation')!.textContent!.trim(),
+             loadTimeData.getString('modulesJourneysCartAnnotation'));
+         assertEquals(
+             tileElement.shadowRoot!.querySelectorAll('.small-image').length, 2);
+@@ -137,7 +137,7 @@
+     assertEquals($$(tileElement, '#title')!.textContent, 'Foo');
+     assertTrue(isVisible($$(tileElement, '#titleAnnotation')!));
+     assertEquals(
+-        $$(tileElement, '#titleAnnotation')!.textContent!,
++        $$(tileElement, '#titleAnnotation')!.textContent!.trim(),
+         loadTimeData.getString('modulesJourneysCartAnnotation'));
+     assertEquals(
+         tileElement.shadowRoot!.querySelectorAll('.small-image').length, 0);
+@@ -173,7 +173,7 @@
+     assertEquals($$(tileElement, '#title')!.textContent, 'Foo');
+     assertTrue(isVisible($$(tileElement, '#titleAnnotation')!));
+     assertEquals(
+-        $$(tileElement, '#titleAnnotation')!.textContent!,
++        $$(tileElement, '#titleAnnotation')!.textContent!.trim(),
+         loadTimeData.getString('modulesJourneysCartAnnotation'));
+     assertEquals(
+         tileElement.shadowRoot!.querySelectorAll('.small-image').length, 0);

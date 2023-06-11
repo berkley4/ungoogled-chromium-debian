@@ -1,0 +1,46 @@
+From 56b1b6f8e0dd06890498fda918ef0e40891e8760 Mon Sep 17 00:00:00 2001
+From: Alexander Cooper <alcooper@chromium.org>
+Date: Mon, 05 Jun 2023 23:30:21 +0000
+Subject: [PATCH] Fix DCHECK when there is already a pending xr session request
+
+It is possible to racily force two session requests to get served to the
+same runtime. This results in a DCHECK because we expect to only have
+one outstanding request at a time. For now, this softens the DCHECK into
+simply an immediate reject, but future work will investigate
+strengthening the guarantees from the Browser process that we cannot
+get multiple session requests.
+
+(cherry picked from commit d51e08f0dbca5b99e3e70596e0306c8db2dc2bd6)
+
+Fixed: 1450601
+Change-Id: Ic2b372a26156229092053d1734de9e62487b53ee
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4582708
+Reviewed-by: Brandon Jones <bajones@chromium.org>
+Commit-Queue: Alexander Cooper <alcooper@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1152234}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4590521
+Bot-Commit: Rubber Stamper <rubber-stamper@appspot.gserviceaccount.com>
+Auto-Submit: Alexander Cooper <alcooper@chromium.org>
+Commit-Queue: Rubber Stamper <rubber-stamper@appspot.gserviceaccount.com>
+Cr-Commit-Position: refs/branch-heads/5735@{#1168}
+Cr-Branched-From: 2f562e4ddbaf79a3f3cb338b4d1bd4398d49eb67-refs/heads/main@{#1135570}
+---
+
+--- a/device/vr/openxr/openxr_device.cc
++++ b/device/vr/openxr/openxr_device.cc
+@@ -134,7 +134,14 @@
+ void OpenXrDevice::RequestSession(
+     mojom::XRRuntimeSessionOptionsPtr options,
+     mojom::XRRuntime::RequestSessionCallback callback) {
+-  DCHECK(!request_session_callback_);
++  // TODO(https://crbug.com/1450707): Strengthen the guarantees from the browser
++  // process that we will not get a session request while one is pending.
++  if (request_session_callback_) {
++    LOG(ERROR) << __func__
++               << " New session request while processing previous request.";
++    std::move(callback).Run(nullptr);
++    return;
++  }
+ 
+   if (!AreAllRequiredFeaturesSupported(options->required_features,
+                                        extension_helper_)) {

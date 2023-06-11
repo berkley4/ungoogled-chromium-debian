@@ -1,0 +1,59 @@
+From 82d5ec6ff88560856cc17dd622699b0499024b0d Mon Sep 17 00:00:00 2001
+From: Maggie Chen <magchen@chromium.org>
+Date: Fri, 09 Jun 2023 12:42:19 +0000
+Subject: [PATCH] [M114 merge] Enable CALayerNewLimit by default on Apple
+
+Enable this feature by default. No major regressions with finch on 50% Canary/Dev.
+
+(cherry picked from commit e4aa64047a5908a4a6cce86e1b2d76300348fc73)
+
+Bug: 1285765
+Change-Id: I671c5617733dd7051bba2530f27a4aaea868141b
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4508533
+Auto-Submit: Maggie Chen <magchen@chromium.org>
+Reviewed-by: ccameron chromium <ccameron@chromium.org>
+Commit-Queue: ccameron chromium <ccameron@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1140094}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4601982
+Reviewed-by: Maggie Chen <magchen@chromium.org>
+Commit-Queue: Jonathan Ross <jonross@chromium.org>
+Reviewed-by: Jonathan Ross <jonross@chromium.org>
+Cr-Commit-Position: refs/branch-heads/5735@{#1215}
+Cr-Branched-From: 2f562e4ddbaf79a3f3cb338b4d1bd4398d49eb67-refs/heads/main@{#1135570}
+---
+
+--- a/components/viz/common/features.cc
++++ b/components/viz/common/features.cc
+@@ -163,7 +163,7 @@
+ //   feature parameters.
+ BASE_FEATURE(kCALayerNewLimit,
+              "CALayerNewLimit",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             base::FEATURE_ENABLED_BY_DEFAULT);
+ // Set FeatureParam default to -1. CALayerOverlayProcessor choose the default in
+ // ca_layer_overlay.cc When it's < 0.
+ const base::FeatureParam<int> kCALayerNewLimitDefault{&kCALayerNewLimit,
+--- a/testing/variations/fieldtrial_testing_config.json
++++ b/testing/variations/fieldtrial_testing_config.json
+@@ -2132,21 +2132,6 @@
+             ]
+         }
+     ],
+-    "CALayerNewLimit": [
+-        {
+-            "platforms": [
+-                "mac"
+-            ],
+-            "experiments": [
+-                {
+-                    "name": "Enabled",
+-                    "enable_features": [
+-                        "CALayerNewLimit"
+-                    ]
+-                }
+-            ]
+-        }
+-    ],
+     "CCTRealTimeEngagementSignalsAlternativeImpl": [
+         {
+             "platforms": [

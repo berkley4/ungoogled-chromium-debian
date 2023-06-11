@@ -1,0 +1,151 @@
+From 468867e6b514f460b8f23d5e92c3651d5d777326 Mon Sep 17 00:00:00 2001
+From: Sylvain Defresne <sdefresne@chromium.org>
+Date: Tue, 06 Jun 2023 21:22:12 +0000
+Subject: [PATCH] [M114] Revert "[code-health-rotation] Fix forbidden field in Cache"
+
+This reverts commit df18d3ac7fdf004ebd2b282ce2913e6399fc7816.
+
+Reason for revert: causes null dereferencing (https://crbug.com/1441375).
+
+Original change's description:
+> [code-health-rotation] Fix forbidden field in Cache
+>
+> Change field cache_remote_ from mojo::AssociatedRemote<...>
+> to blink::HeapMojoAssociatedRemote<...> which is aware of the gc.
+>
+> Fixed: 1432852
+> Change-Id: I0c13a4a977c7e4fa26f27406bd539b81a7a8f201
+> Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4442259
+> Auto-Submit: Sylvain Defresne <sdefresne@chromium.org>
+> Reviewed-by: Ayu Ishii <ayui@chromium.org>
+> Commit-Queue: Ayu Ishii <ayui@chromium.org>
+> Cr-Commit-Position: refs/heads/main@{#1135002}
+
+(cherry picked from commit 3f022ad0b95bfebd324c40a4b02980a40d93eb76)
+
+Fixed: 1441375, 1442129, 1443242
+Change-Id: I54ce88e93e9f878dee457df5b67b762381f8be3f
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4516601
+Commit-Queue: Sylvain Defresne <sdefresne@chromium.org>
+Reviewed-by: Irem Uguz <iremuguz@google.com>
+Owners-Override: Irem Uguz <iremuguz@google.com>
+Cr-Original-Commit-Position: refs/heads/main@{#1141307}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4573734
+Reviewed-by: Krishna Govind <govind@chromium.org>
+Owners-Override: Krishna Govind <govind@chromium.org>
+Commit-Queue: Krishna Govind <govind@chromium.org>
+Cr-Commit-Position: refs/branch-heads/5735@{#1183}
+Cr-Branched-From: 2f562e4ddbaf79a3f3cb338b4d1bd4398d49eb67-refs/heads/main@{#1135570}
+---
+
+--- a/third_party/blink/renderer/modules/cache_storage/cache.cc
++++ b/third_party/blink/renderer/modules/cache_storage/cache.cc
+@@ -888,18 +888,14 @@
+              CacheStorageBlobClientList* blob_client_list,
+              mojo::PendingAssociatedRemote<mojom::blink::CacheStorageCache>
+                  cache_pending_remote,
+-             scoped_refptr<base::SingleThreadTaskRunner> task_runner,
+-             ContextLifecycleNotifier* context)
+-    : scoped_fetcher_(fetcher),
+-      blob_client_list_(blob_client_list),
+-      cache_remote_(context) {
++             scoped_refptr<base::SingleThreadTaskRunner> task_runner)
++    : scoped_fetcher_(fetcher), blob_client_list_(blob_client_list) {
+   cache_remote_.Bind(std::move(cache_pending_remote), std::move(task_runner));
+ }
+ 
+ void Cache::Trace(Visitor* visitor) const {
+   visitor->Trace(scoped_fetcher_);
+   visitor->Trace(blob_client_list_);
+-  visitor->Trace(cache_remote_);
+   ScriptWrappable::Trace(visitor);
+ }
+ 
+--- a/third_party/blink/renderer/modules/cache_storage/cache.h
++++ b/third_party/blink/renderer/modules/cache_storage/cache.h
+@@ -7,6 +7,7 @@
+ 
+ #include "base/memory/scoped_refptr.h"
+ #include "base/task/single_thread_task_runner.h"
++#include "mojo/public/cpp/bindings/associated_remote.h"
+ #include "mojo/public/cpp/bindings/pending_associated_remote.h"
+ #include "third_party/blink/public/mojom/cache_storage/cache_storage.mojom-blink.h"
+ #include "third_party/blink/renderer/bindings/core/v8/script_promise.h"
+@@ -15,7 +16,6 @@
+ #include "third_party/blink/renderer/core/fetch/global_fetch.h"
+ #include "third_party/blink/renderer/modules/modules_export.h"
+ #include "third_party/blink/renderer/platform/bindings/script_wrappable.h"
+-#include "third_party/blink/renderer/platform/mojo/heap_mojo_associated_remote.h"
+ #include "third_party/blink/renderer/platform/wtf/forward.h"
+ #include "third_party/blink/renderer/platform/wtf/gc_plugin.h"
+ #include "third_party/blink/renderer/platform/wtf/text/wtf_string.h"
+@@ -56,8 +56,7 @@
+   Cache(GlobalFetch::ScopedFetcher*,
+         CacheStorageBlobClientList* blob_client_list,
+         mojo::PendingAssociatedRemote<mojom::blink::CacheStorageCache>,
+-        scoped_refptr<base::SingleThreadTaskRunner>,
+-        ContextLifecycleNotifier*);
++        scoped_refptr<base::SingleThreadTaskRunner>);
+ 
+   Cache(const Cache&) = delete;
+   Cache& operator=(const Cache&) = delete;
+@@ -136,8 +135,8 @@
+   Member<GlobalFetch::ScopedFetcher> scoped_fetcher_;
+   Member<CacheStorageBlobClientList> blob_client_list_;
+ 
+-  blink::HeapMojoAssociatedRemote<mojom::blink::CacheStorageCache>
+-      cache_remote_;
++  GC_PLUGIN_IGNORE("https://crbug.com/1381979")
++  mojo::AssociatedRemote<mojom::blink::CacheStorageCache> cache_remote_;
+ };
+ 
+ }  // namespace blink
+--- a/third_party/blink/renderer/modules/cache_storage/cache_storage.cc
++++ b/third_party/blink/renderer/modules/cache_storage/cache_storage.cc
+@@ -187,8 +187,7 @@
+               resolver->Resolve(MakeGarbageCollected<Cache>(
+                   fetcher, blob_client_list, std::move(result->get_cache()),
+                   resolver->GetExecutionContext()->GetTaskRunner(
+-                      blink::TaskType::kMiscPlatformAPI),
+-                  resolver->GetExecutionContext()));
++                      blink::TaskType::kMiscPlatformAPI)));
+             }
+           },
+           WrapPersistent(scoped_fetcher_.Get()),
+--- a/third_party/blink/renderer/modules/cache_storage/cache_test.cc
++++ b/third_party/blink/renderer/modules/cache_storage/cache_test.cc
+@@ -40,8 +40,6 @@
+ #include "third_party/blink/renderer/core/fetch/request.h"
+ #include "third_party/blink/renderer/core/fetch/response.h"
+ #include "third_party/blink/renderer/core/frame/frame.h"
+-#include "third_party/blink/renderer/core/frame/local_dom_window.h"
+-#include "third_party/blink/renderer/core/frame/local_frame.h"
+ #include "third_party/blink/renderer/core/testing/page_test_base.h"
+ #include "third_party/blink/renderer/modules/cache_storage/cache_storage_blob_client_list.h"
+ #include "third_party/blink/renderer/platform/bindings/exception_state.h"
+@@ -279,13 +277,11 @@
+   TestCache(
+       GlobalFetch::ScopedFetcher* fetcher,
+       mojo::PendingAssociatedRemote<mojom::blink::CacheStorageCache> remote,
+-      scoped_refptr<base::SingleThreadTaskRunner> task_runner,
+-      ContextLifecycleNotifier* context)
++      scoped_refptr<base::SingleThreadTaskRunner> task_runner)
+       : Cache(fetcher,
+               MakeGarbageCollected<CacheStorageBlobClientList>(),
+               std::move(remote),
+-              std::move(task_runner),
+-              context) {}
++              std::move(task_runner)) {}
+ 
+   bool IsAborted() const {
+     return abort_controller_ && abort_controller_->signal()->aborted();
+@@ -320,8 +316,7 @@
+         cache_.get(), cache_remote.BindNewEndpointAndPassDedicatedReceiver());
+     return MakeGarbageCollected<TestCache>(
+         fetcher, cache_remote.Unbind(),
+-        blink::scheduler::GetSingleThreadTaskRunnerForTesting(),
+-        GetFrame().DomWindow());
++        blink::scheduler::GetSingleThreadTaskRunnerForTesting());
+   }
+ 
+   ErrorCacheForTests* test_cache() { return cache_.get(); }

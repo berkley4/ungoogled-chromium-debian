@@ -1,0 +1,77 @@
+From 24343bf8625c31b3dc46d6880f18cac85d4c3b84 Mon Sep 17 00:00:00 2001
+From: Max Curran <curranmax@chromium.org>
+Date: Fri, 09 Jun 2023 19:15:14 +0000
+Subject: [PATCH] Disable block until head for eager prefetches.
+
+This CL changes the default value of the
+"block_until_head_eager_prefetch" Finch param to false. This is being
+done to address regressions caused by the attached bug where
+PrefetchService will indefinitley block a navigation that matches a
+prefetch that then times out.
+
+The CL also explicitly enables the param for tests that had assumed this
+param to be true.
+
+(cherry picked from commit cb65e52df988c90d2178a27fa4afca4129d7608b)
+
+Bug: 1448603
+Change-Id: I428559982a3fa10f558008ecb76e178e2a94e038
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4558686
+Reviewed-by: Ryan Sturm <ryansturm@chromium.org>
+Reviewed-by: Weizhong Xia <weizhong@google.com>
+Commit-Queue: Max Curran <curranmax@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1148788}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4604370
+Cr-Commit-Position: refs/branch-heads/5735@{#1228}
+Cr-Branched-From: 2f562e4ddbaf79a3f3cb338b4d1bd4398d49eb67-refs/heads/main@{#1135570}
+---
+
+--- a/content/browser/preloading/prefetch/prefetch_params.cc
++++ b/content/browser/preloading/prefetch/prefetch_params.cc
+@@ -224,7 +224,7 @@
+     case blink::mojom::SpeculationEagerness::kEager:
+       return base::GetFieldTrialParamByFeatureAsBool(
+           features::kPrefetchUseContentRefactor,
+-          "block_until_head_eager_prefetch", true);
++          "block_until_head_eager_prefetch", false);
+     case blink::mojom::SpeculationEagerness::kModerate:
+       return base::GetFieldTrialParamByFeatureAsBool(
+           features::kPrefetchUseContentRefactor,
+--- a/third_party/blink/web_tests/VirtualTestSuites
++++ b/third_party/blink/web_tests/VirtualTestSuites
+@@ -800,7 +800,7 @@
+     "platforms": ["Linux"],
+     "bases": ["http/tests/inspector-protocol/issues/payment-request-csp-violation-issue.js"],
+     "args": ["--enable-blink-features=IgnoreCSPInWebPaymentAPI"],
+-    "expires": "May 30, 2023"
++    "expires": "Jul 1, 2023"
+   },
+   {
+     "prefix": "payment-request-mandatory-total",
+@@ -1685,7 +1685,7 @@
+     "exclusive_tests": "ALL",
+     "args": [
+       "--enable-blink-features=SpeculationRulesPrefetchProxy,SpeculationRulesFetchFromHeader,SpeculationRulesDocumentRules,NoVarySearchPrefetch,SpeculationRulesEagerness,SpeculationRulesDocumentRulesSelectorMatches",
+-      "--enable-features=SpeculationRulesPrefetchProxy,PrefetchUseContentRefactor",
++      "--enable-features=SpeculationRulesPrefetchProxy,PrefetchUseContentRefactor:block_until_head_eager_prefetch/true",
+       "--bypass-prefetch-proxy-for-host=not-web-platform.test"
+     ],
+     "expires": "Jul 1, 2023"
+@@ -1699,7 +1699,7 @@
+     "exclusive_tests": "ALL",
+     "args": [
+       "--enable-blink-features=NoVarySearchPrefetch",
+-      "--enable-features=PrefetchUseContentRefactor"
++      "--enable-features=PrefetchUseContentRefactor:block_until_head_eager_prefetch/true"
+     ],
+     "expires": "Jul 1, 2023"
+   },
+@@ -1881,7 +1881,7 @@
+       "fast/forms/week/week-appearance-pseudo-elements.html"
+     ],
+     "args": ["--disable-blink-features=DateInputInlineBlock"],
+-    "expires": "Jun 1, 2023"
++    "expires": "Jul 1, 2023"
+   },
+   {
+     "prefix": "allow-rtc-encoded-video-frame-set-metadata-all-fields",

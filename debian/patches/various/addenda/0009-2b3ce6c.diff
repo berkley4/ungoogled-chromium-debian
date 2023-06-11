@@ -1,0 +1,41 @@
+From 2b3ce6ca04c4612010e3ff5d4c925da7d2d0a4fd Mon Sep 17 00:00:00 2001
+From: Alexander Cooper <alcooper@chromium.org>
+Date: Thu, 08 Jun 2023 18:42:35 +0000
+Subject: [PATCH] Add additional check to block race condition
+
+It is possible, though unlikely, for a second request to come through
+*after* a request has been served (e.g. the runtime is presenting and
+the request_session_callback_ has been nulled out). This request should
+be rejected as there is now an active immersive session; though the
+browser process may not know it yet. (e.g. the request got queued up
+while the previous request was processing and so the browser process
+was as yet unaware of the result).
+
+(cherry picked from commit 152f1a2903a9e4120bdd2b483b5ca18fa2270c23)
+
+Fixed: 1450601
+Change-Id: Ifbad64e0f3221e3068690879d6c120347e8163a7
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4592111
+Auto-Submit: Alexander Cooper <alcooper@chromium.org>
+Commit-Queue: Alexander Cooper <alcooper@chromium.org>
+Reviewed-by: Brandon Jones <bajones@chromium.org>
+Commit-Queue: Brandon Jones <bajones@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1153592}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4601690
+Bot-Commit: Rubber Stamper <rubber-stamper@appspot.gserviceaccount.com>
+Commit-Queue: Rubber Stamper <rubber-stamper@appspot.gserviceaccount.com>
+Cr-Commit-Position: refs/branch-heads/5735@{#1205}
+Cr-Branched-From: 2f562e4ddbaf79a3f3cb338b4d1bd4398d49eb67-refs/heads/main@{#1135570}
+---
+
+--- a/device/vr/openxr/openxr_device.cc
++++ b/device/vr/openxr/openxr_device.cc
+@@ -136,7 +136,7 @@
+     mojom::XRRuntime::RequestSessionCallback callback) {
+   // TODO(https://crbug.com/1450707): Strengthen the guarantees from the browser
+   // process that we will not get a session request while one is pending.
+-  if (request_session_callback_) {
++  if (request_session_callback_ || HasExclusiveSession()) {
+     LOG(ERROR) << __func__
+                << " New session request while processing previous request.";
+     std::move(callback).Run(nullptr);

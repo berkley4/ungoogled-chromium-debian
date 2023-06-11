@@ -1,0 +1,109 @@
+From 0410ec740df00739358836215d6fce3b03ae0bae Mon Sep 17 00:00:00 2001
+From: Eugene Zemtsov <eugene@chromium.org>
+Date: Fri, 09 Jun 2023 04:28:46 +0000
+Subject: [PATCH] [M114] webcodecs: Stop using async VideoFrame.copyTo() for WebGPU array buffers
+
+ArrayBufferContents from GPUMappedDOMArrayBuffer doesn't really own
+the underlying buffer, that's why default implementation of
+ShareNonSharedForInternalUse() doesn't make sense.
+
+(cherry picked from commit 8e8d7809e9f0634153bb1c303918fe069b2cfd4b)
+
+Bug: 1447839
+Change-Id: Iecf7abcb202aa79fa7775814677d7dc5c9ed558b
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4575395
+Reviewed-by: Kentaro Hara <haraken@chromium.org>
+Commit-Queue: Eugene Zemtsov <eugene@chromium.org>
+Reviewed-by: Dale Curtis <dalecurtis@chromium.org>
+Reviewed-by: Austin Eng <enga@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1151466}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4600047
+Reviewed-by: Daniel Cheng <dcheng@chromium.org>
+Bot-Commit: Rubber Stamper <rubber-stamper@appspot.gserviceaccount.com>
+Cr-Commit-Position: refs/branch-heads/5735@{#1213}
+Cr-Branched-From: 2f562e4ddbaf79a3f3cb338b4d1bd4398d49eb67-refs/heads/main@{#1135570}
+---
+
+--- a/third_party/blink/renderer/core/typed_arrays/dom_array_buffer.cc
++++ b/third_party/blink/renderer/core/typed_arrays/dom_array_buffer.cc
+@@ -116,6 +116,15 @@
+   return true;
+ }
+ 
++bool DOMArrayBuffer::ShareNonSharedForInternalUse(ArrayBufferContents& result) {
++  if (!Content()->BackingStore()) {
++    result.Detach();
++    return false;
++  }
++  Content()->ShareNonSharedForInternalUse(result);
++  return true;
++}
++
+ v8::Maybe<bool> DOMArrayBuffer::TransferDetachable(
+     v8::Isolate* isolate,
+     v8::Local<v8::Value> detach_key,
+--- a/third_party/blink/renderer/core/typed_arrays/dom_array_buffer.h
++++ b/third_party/blink/renderer/core/typed_arrays/dom_array_buffer.h
+@@ -79,16 +79,9 @@
+                 ExceptionState& exception_state);
+ 
+   // Share the ArrayBuffer, even if it is non-shared. Such sharing is necessary
+-  // for e.g. WebAudio which uses a separate thread for processing the
+-  // ArrayBuffer while at the same time exposing a NonShared Float32Array.
+-  bool ShareNonSharedForInternalUse(ArrayBufferContents& result) {
+-    if (!Content()->BackingStore()) {
+-      result.Detach();
+-      return false;
+-    }
+-    Content()->ShareNonSharedForInternalUse(result);
+-    return true;
+-  }
++  // for e.g. WebAudio and WebCodecs which use a separate thread for processing
++  // the ArrayBuffer while at the same time exposing a NonShared TypedArray.
++  virtual bool ShareNonSharedForInternalUse(ArrayBufferContents& result);
+ 
+   v8::MaybeLocal<v8::Value> Wrap(ScriptState*) override;
+ 
+--- a/third_party/blink/renderer/modules/webcodecs/allow_shared_buffer_source_util.cc
++++ b/third_party/blink/renderer/modules/webcodecs/allow_shared_buffer_source_util.cc
+@@ -16,7 +16,8 @@
+         if (buffer->IsShared()) {
+           buffer->Content()->ShareWith(result);
+         } else {
+-          buffer->Content()->ShareNonSharedForInternalUse(result);
++          static_cast<blink::DOMArrayBuffer*>(buffer)
++              ->ShareNonSharedForInternalUse(result);
+         }
+       }
+       return result;
+@@ -24,10 +25,11 @@
+     case AllowSharedBufferSource::ContentType::kArrayBufferViewAllowShared: {
+       auto* view = buffer_union->GetAsArrayBufferViewAllowShared().Get();
+       if (view && !view->IsDetached()) {
+-        if (view->IsShared())
++        if (view->IsShared()) {
+           view->BufferShared()->Content()->ShareWith(result);
+-        else
+-          view->buffer()->Content()->ShareNonSharedForInternalUse(result);
++        } else {
++          view->buffer()->ShareNonSharedForInternalUse(result);
++        }
+       }
+       return result;
+     }
+--- a/third_party/blink/renderer/modules/webgpu/gpu_buffer.cc
++++ b/third_party/blink/renderer/modules/webgpu/gpu_buffer.cc
+@@ -100,6 +100,13 @@
+     CHECK(result && IsDetached());
+   }
+ 
++  // Due to an unusual non-owning backing these array buffers can't be shared
++  // for internal use.
++  bool ShareNonSharedForInternalUse(ArrayBufferContents& result) override {
++    result.Detach();
++    return false;
++  }
++
+   void Trace(Visitor* visitor) const override {
+     DOMArrayBuffer::Trace(visitor);
+     visitor->Trace(owner_);

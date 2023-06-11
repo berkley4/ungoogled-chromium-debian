@@ -1,6 +1,6 @@
 --- a/third_party/webrtc/webrtc.gni
 +++ b/third_party/webrtc/webrtc.gni
-@@ -257,7 +257,7 @@
+@@ -251,7 +251,7 @@
  # declare_args block.
  declare_args() {
    # Enables the use of protocol buffers for debug recordings.

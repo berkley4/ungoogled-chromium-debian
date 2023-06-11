@@ -13,7 +13,7 @@ Cr-Commit-Position: refs/heads/main@{#1144491}
 
 --- a/components/omnibox/browser/autocomplete_controller.cc
 +++ b/components/omnibox/browser/autocomplete_controller.cc
-@@ -1055,11 +1055,14 @@
+@@ -1044,11 +1044,14 @@
        }
      }
  
@@ -28,7 +28,7 @@ Cr-Commit-Position: refs/heads/main@{#1144491}
      return;
    }
  
-@@ -1557,6 +1560,7 @@
+@@ -1546,6 +1549,7 @@
    return true;
  }
  
@@ -36,7 +36,7 @@ Cr-Commit-Position: refs/heads/main@{#1144491}
  void AutocompleteController::RunUrlScoringModel(
      base::OnceClosure completion_callback) {
    TRACE_EVENT0("omnibox", "AutocompleteController::RunUrlScoringModel");
-@@ -1584,6 +1588,7 @@
+@@ -1573,6 +1577,7 @@
      }
    }
  }
@@ -44,7 +44,7 @@ Cr-Commit-Position: refs/heads/main@{#1144491}
  
  void AutocompleteController::CancelUrlScoringModel() {
    // Try to cancel any pending requests to the scoring model and invalidate the
-@@ -1592,6 +1597,7 @@
+@@ -1581,6 +1586,7 @@
    weak_ptr_factory_.InvalidateWeakPtrs();
  }
  
@@ -52,7 +52,7 @@ Cr-Commit-Position: refs/heads/main@{#1144491}
  void AutocompleteController::OnUrlScoringModelDone(
      const base::ElapsedTimer elapsed_timer,
      base::OnceClosure completion_callback,
-@@ -1659,3 +1665,4 @@
+@@ -1648,3 +1654,4 @@
    }
    std::move(completion_callback).Run();
  }
