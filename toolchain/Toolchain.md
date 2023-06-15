@@ -33,7 +33,7 @@ git clone --depth 1 -b main https://github.com/llvm/llvm-project
 
 ___Updating___
 
-git fetch --depth 1 --jobs=<number of threads> origin
+git fetch --depth 1 --jobs=`<number of threads>` origin
 git checkout origin/main
 
 
@@ -96,7 +96,7 @@ cmake -B build -G Ninja -S llvm -C clang/cmake/caches/BOLT-PGO.cmake -DCMAKE_BUI
 ```
 
 
-For clarity I'll use -j4 below instead of -j<number of threads>.
+For clarity I'll use -j4 below instead of -j`<number of threads>`.
 
 If you have built before then run :-
 
