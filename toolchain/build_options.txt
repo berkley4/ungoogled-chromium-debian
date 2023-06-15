@@ -1,0 +1,14 @@
+### BEGIN: Extra compile flags
+
+add_compile_options(
+  -Wno-profile-instr-unprofiled -Wno-unused-command-line-argument
+  -fno-plt -march=native
+)
+
+add_link_options(
+  "SHELL:-Wl,-mllvm,-import-instr-limit=25"
+  "SHELL:-Wl,-mllvm,-import-hot-multiplier=16"
+)
+
+### END: Extra compile flags
+

@@ -1,28 +1,29 @@
 # Building Clang/LLVM
 
-The bundled Clang/LLVM toolchain does not support LLVM Polly optimisations, so a
-different toolchain is required.
+The bundled Clang/LLVM toolchain does not support LLVM Polly optimisations, so if
+you want to enable the llvm-polly-* patches then a different toolchain is required.
 
 To build a PGO-optimised chromium (using the bundled PGO profile) a sufficiently new
-version of clang is required (at least the major version numbers must match).
+version of clang is required, whereby at least the major version equals that of the
+bundled toolchain.
 
-For debian unstable these are normally available via experimental, however these can
-be several months old. The llvm repo (apt.llvm.org) offers up-to-date snapshots for
-both stable and unstable.
+The clang/llvm packages from Debian experimental normally suffice, however these
+can be several months old. The llvm repo (apt.llvm.org) offers up-to-date
+snapshots for both stable and unstable.
 
 Building your own Clang/LLVM toolchain offers some advantages over installing from
 debian or apt.llvm.org :-
 
-- Ability to customise what gets installed (less bloat)
+- The ability to customise what gets installed (less bloat, possibly faster)
 - You can build with native cpu optimisation (-march=native)
-- Build an LTO, PGO and Bolt-optimised toolchain
+- Build an LTO, PGO and Bolt-optimised toolchain (definitely faster)
 
 With building chromium taking some hours on an older PC, the best argument is
-probably speed. As far as I know, the packages from the debian and llvm
-repositories are not Bolt-optimised (which gives a significant speed boost).
+probably speed. As far as I know, the packages from the debian and llvm repos
+are not bolt-optimised (which gives a significant speed boost).
 
-Below are the steps needed to build and install. Replace anything in angle brackets
-with what applies to your own machine/setup.
+Below are the steps needed to build and install. Compilation time should be no
+more than a couple of hours on a cpu from the last decade or so.
 
 
 ___Clone___
@@ -62,13 +63,29 @@ cd /usr/bin
 ln -sf $LLVM_DIR/lld x86_64-linux-gnu-ld
 ```
 
-Paste the following as a single line (ie without the '\' linebreaks) :-
+If you want extra CFLAGS/LDFLAGS optimisation then we need to patch the CMakeLists.txt files
+before generating the cmake build configuration. (This is necessary in order to propagate
+flags beyond the initial build stage, to reliably set LDFLAGS and to avoid de-duplication
+issues or problems with flags which contain spaces).
+
+Navigate to the level above your git root directory and copy optimise.sh and
+build_options.txt to this location. Then run :-
+
+```sh
+./optimise.sh
+```
+
+You can optionally add the following feature flags to the command below :-
+
+-DLLVM_ENABLE_FFI=ON for libffi support
+-DLLVM_ENABLE_RTTI=ON to enable RTTI (needed to build mesa)
+-DLLVM_PARALLEL_LINK_JOBS=1 if you are thread/ram limited
+
+Now copy and edit the text below into a single line and execute inside the git root directory :-
 
 ```sh
 AR=$LLVM_DIR/llvm-ar NM=$LLVM_DIR/llvm-nm RANLIB=$LLVM_DIR/llvm-ranlib CC=$LLVM_DIR/clang CXX=$LLVM_DIR/clang++ \
-CFLAGS="-fno-plt -march=native -Wno-profile-instr-unprofiled" CXXFLAGS="-fno-plt -march=native -Wno-profile-instr-unprofiled" \
-LDFLAGS="-Wl,-mllvm,-import-instr-limit=25 -Wl,-mllvm,-import-hot-multiplier=16" \
-cmake -B build -G Ninja llvm -C clang/cmake/caches/BOLT-PGO.cmake -DCMAKE_BUILD_TYPE=Release \
+cmake -B build -G Ninja -S llvm -C clang/cmake/caches/BOLT-PGO.cmake -DCMAKE_BUILD_TYPE=Release \
 -DLLVM_ENABLE_PROJECTS='bolt;clang;lld;openmp;polly' -DLLVM_BUILD_UTILS=OFF -DLLVM_TARGETS_TO_BUILD="X86;WebAssembly" \
 -DLLVM_ENABLE_CURL=OFF -DLLVM_ENABLE_LLD=ON -DLLVM_ENABLE_TERMINFO=OFF -DLLVM_ENABLE_UNWIND_TABLES=OFF -DLLVM_ENABLE_Z3_SOLVER=OFF \
 -DLLVM_INCLUDE_GO_TESTS=OFF -DLLVM_USE_SPLIT_DWARF=ON -DCLANG_ENABLE_ARCMT=OFF -DCLANG_ENABLE_STATIC_ANALYZER=OFF \
@@ -78,11 +95,15 @@ cmake -B build -G Ninja llvm -C clang/cmake/caches/BOLT-PGO.cmake -DCMAKE_BUILD_
 -DLLVM_LINK_LLVM_DYLIB=ON -DBOOTSTRAP_LLVM_ENABLE_LLD=ON -DBOOTSTRAP_BOOTSTRAP_LLVM_ENABLE_LLD=ON -DPGO_INSTRUMENT_LTO=Thin
 ```
 
+
+For clarity I'll use -j4 below instead of -j<number of threads>.
+
 If you have built before then run :-
 
 ```sh
 ninja -j4 -C build -t cleandead
 ```
+
 
 ___Compile___
 ```sh
@@ -90,15 +111,22 @@ cd build
 ninja -j4 stage2-clang-bolt
 ```
 
-(-j4 = four threads)
-
 
 ___Install___
 
 Default install target is /usr/local, so do this as root :-
 
 ```sh
-ninja -j4 install
+ninja -j4 install/strip
+```
+
+
+___Reverse the CFLAGS/LDFLAGS patching___
+
+This is to prevent untracked files from persisting in the source tree.
+
+```sh
+./optimise.sh r
 ```
 
 
