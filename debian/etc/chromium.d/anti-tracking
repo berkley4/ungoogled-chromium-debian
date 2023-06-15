@@ -1,6 +1,9 @@
 # Uncomment to enable anti-tracking mitigations
 # Note: this could potentially make you stand out even more from the crowd.
 
+# Disable website pings
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --no-pings"
+
 # Disable automatic search engine scraping from webpages
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-search-engine-collection"
 
@@ -10,6 +13,11 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-tls-grease"
 
 # Disable TLS resumption for all HTTPS and QUIC connections
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-tls-resumption"
+
+# WebRTC IP privacy (builtin default is disable_non_proxied_udp)
+# Choices: default, default_public_and_private_interfaces,
+#          default_public_interface_only or  disable_non_proxied_udp
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --webrtc-ip-handling-policy=default_public_interface_only"
 
 # Mitigate against canvas-based fingerprinting
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --fingerprinting-canvas-image-data-noise"
@@ -21,3 +29,7 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-tls-grease"
 
 # Limit referrer headers (choices: MinimalReferrers, NoCrossOriginReferrers, NoReferrers)
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=MinimalReferrers"
+
+# Some flags for local privacy (and possibly remote too)
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-top-sites"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --incognito"

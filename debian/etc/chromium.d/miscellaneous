@@ -1,5 +1,15 @@
+# Start with a maximised (non-fullscreen) window
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --start-maximized"
+
 # Valid values are 6 and 15
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --max-connections-per-host=15"
+
+# For those on slow machines
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-low-end-device-mode"
+
+# Enable dark modes
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --force-dark-mode"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --web-ui-dark-mode"
 
 
 # Prevents link/text dragging and allows selecting text within links

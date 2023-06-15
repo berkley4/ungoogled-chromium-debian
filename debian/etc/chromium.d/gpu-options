@@ -25,5 +25,9 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-zero-copy"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-vulkan-surface"
 
 
+# Possibly good to for old GPUs or to prevent info leakage
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-webgl"
+
+
 # might help with eg google streetview on very old GPUs
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-accelerated-2d-canvas"
