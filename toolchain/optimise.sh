@@ -6,6 +6,11 @@ SCRIPT_NAME=$(basename $0)
 
 USAGE="Usage: $SCRIPT_NAME [r|reverse]"
 
+find_files() {
+  find $DIR_NAME/llvm-project -path ./llvm-project/build -prune \
+    -o -type f -name $1 -print
+}
+
 
 if [ ! -d $DIR_NAME/llvm-project ]; then
   printf "Cannot find $DIR_NAME/llvm-project"
@@ -14,14 +19,14 @@ fi
 
 case $1 in
   r|reverse)
-    find $DIR_NAME/llvm-project -type f -name CMakeLists.txt.pre_flags | \
+    find_files CMakeLists.txt.pre_flags | \
       while read l; do
         mv $l ${l%.pre_flags}
       done
   ;;
 
   "")
-    find $DIR_NAME/llvm-project -type f -name CMakeLists.txt | \
+    find_files CMakeLists.txt | \
       while read l; do
         if [ -f $l.pre_flags ]; then
           printf '%s\n' "File exists: $l.pre_flags"

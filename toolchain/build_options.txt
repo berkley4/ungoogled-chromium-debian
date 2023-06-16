@@ -1,7 +1,6 @@
 ### BEGIN: Extra compile flags
 
 add_compile_options(
-  -Wno-profile-instr-unprofiled -Wno-unused-command-line-argument
   -fno-plt -march=native
 )
 
