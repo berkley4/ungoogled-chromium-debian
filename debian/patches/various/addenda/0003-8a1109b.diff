@@ -1,0 +1,103 @@
+From 8a1109b016d5498b7370ee77f093218e1e995ef8 Mon Sep 17 00:00:00 2001
+From: Morten Stenshorne <mstensho@chromium.org>
+Date: Thu, 15 Jun 2023 19:03:44 +0000
+Subject: [PATCH] Never force a break before when we're already inside the node.
+
+When resuming a node after a fragmentainer break, ignore break-before
+values, since we're obviously not *before* it anymore (since we're
+*inside*). We used to end up in an infinite loop, until out of memory,
+not making any fragmentation progress. This was caused by monolithic
+content, which, when printing, may take up space on subsequent pages.
+This tricked us into thinking that it was a good place to insert a
+forced break before the node we were resuming, since we were not at the
+beginning of the page.
+
+(cherry picked from commit 103e40fd5ad3be926f83a0278833d2356bb14f51)
+
+Bug: 1451760
+Change-Id: I3c3168478f0f23035abd10597927cee47c00730c
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4594563
+Commit-Queue: Morten Stenshorne <mstensho@chromium.org>
+Reviewed-by: Ian Kilpatrick <ikilpatrick@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1156463}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4618111
+Bot-Commit: Rubber Stamper <rubber-stamper@appspot.gserviceaccount.com>
+Commit-Queue: Rubber Stamper <rubber-stamper@appspot.gserviceaccount.com>
+Auto-Submit: Morten Stenshorne <mstensho@chromium.org>
+Cr-Commit-Position: refs/branch-heads/5735@{#1297}
+Cr-Branched-From: 2f562e4ddbaf79a3f3cb338b4d1bd4398d49eb67-refs/heads/main@{#1135570}
+---
+
+--- a/third_party/blink/renderer/core/layout/ng/ng_fragmentation_utils.cc
++++ b/third_party/blink/renderer/core/layout/ng/ng_fragmentation_utils.cc
+@@ -113,12 +113,29 @@
+                                          const NGBoxFragmentBuilder& builder) {
+   if (child.IsInline())
+     return EBreakBetween::kAuto;
++
++  // Since it's not an inline node, if we have a fragment at all, it has to be a
++  // box fragment.
++  const NGPhysicalBoxFragment* box_fragment = nullptr;
++  if (layout_result.Status() == NGLayoutResult::kSuccess) {
++    box_fragment = &To<NGPhysicalBoxFragment>(layout_result.PhysicalFragment());
++    if (!box_fragment->IsFirstForNode()) {
++      // If the node is resumed after a break, we are not *before* it anymore,
++      // so ignore values. We normally don't even consider breaking before a
++      // resumed node, since there normally is no container separation. The
++      // normal place to resume is at the very start of the fragmentainer -
++      // cannot break there!  However, there are cases where a node is resumed
++      // at a location past the start of the fragmentainer, e.g. when printing
++      // monolithic overflowing content.
++      return EBreakBetween::kAuto;
++    }
++  }
++
+   EBreakBetween break_before = JoinFragmentainerBreakValues(
+       child.Style().BreakBefore(), layout_result.InitialBreakBefore());
+   break_before = builder.JoinedBreakBetweenValue(break_before);
+   const NGConstraintSpace& space = builder.ConstraintSpace();
+-  if (space.IsPaginated() &&
+-      layout_result.Status() == NGLayoutResult::kSuccess &&
++  if (space.IsPaginated() && box_fragment &&
+       !IsForcedBreakValue(builder.ConstraintSpace(), break_before)) {
+     AtomicString current_name = builder.PageName();
+     if (current_name == g_null_atom) {
+@@ -126,9 +143,7 @@
+     }
+     // If the page name propagated from the child differs from what we already
+     // have, we need to break before the child.
+-    const auto& fragment =
+-        To<NGPhysicalBoxFragment>(layout_result.PhysicalFragment());
+-    if (fragment.PageName() != current_name) {
++    if (box_fragment->PageName() != current_name) {
+       return EBreakBetween::kPage;
+     }
+   }
+--- /dev/null
++++ b/third_party/blink/web_tests/external/wpt/css/printing/monolithic-overflow-021-print-ref.html
+@@ -0,0 +1,8 @@
++<!DOCTYPE html>
++<link rel="author" title="Morten Stenshorne" href="mailto:mstensho@chromium.org">
++<style>
++  body {
++    margin: 0;
++  }
++</style>
++<div style="height:200vh; background:green;"></div>
+--- /dev/null
++++ b/third_party/blink/web_tests/external/wpt/css/printing/monolithic-overflow-021-print.html
+@@ -0,0 +1,14 @@
++<!DOCTYPE html>
++<link rel="author" title="Morten Stenshorne" href="mailto:mstensho@chromium.org">
++<link rel="help" href="https://bugs.chromium.org/p/chromium/issues/detail?id=1451760">
++<link rel="match" href="monolithic-overflow-021-print-ref.html">
++<style>
++  body {
++    margin: 0;
++  }
++</style>
++<div style="break-before:page; background:red;">
++  <div style="border-bottom:50vh solid green; background:red;">
++    <div style="contain:size; height:150vh; background:green;"></div>
++  </div>
++</div>

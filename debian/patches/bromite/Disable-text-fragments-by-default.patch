@@ -21,7 +21,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -6516,6 +6516,11 @@
+@@ -6522,6 +6522,11 @@
           "")},
  #endif
  

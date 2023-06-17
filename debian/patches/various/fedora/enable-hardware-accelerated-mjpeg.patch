@@ -1,6 +1,6 @@
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -4797,12 +4797,12 @@
+@@ -4799,12 +4799,12 @@
       FEATURE_VALUE_TYPE(device::features::kWebXrSharedBuffers)},
  #endif  // BUILDFLAG(IS_ANDROID)
  #endif  // ENABLE_VR

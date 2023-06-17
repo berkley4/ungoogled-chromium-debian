@@ -25,5 +25,5 @@ Subject: [PATCH] disable showing popular sites by default
 -             base::FEATURE_ENABLED_BY_DEFAULT);
 +             base::FEATURE_DISABLED_BY_DEFAULT);
  
- BASE_FEATURE(kNewTabPageRetention,
-              "IOSNewTabPageRetention",
+ BASE_FEATURE(kNewTabPageFieldTrial,
+              "IOSNewTabPageFieldTrials",

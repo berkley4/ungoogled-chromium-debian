@@ -14,17 +14,6 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../peerconnection/peer_connection_dependency_factory.cc    | 6 ++++--
  2 files changed, 5 insertions(+), 3 deletions(-)
 
---- a/chrome/browser/ui/browser_ui_prefs.cc
-+++ b/chrome/browser/ui/browser_ui_prefs.cc
-@@ -91,7 +91,7 @@
-                                 false);
- #endif
-   registry->RegisterStringPref(prefs::kWebRTCIPHandlingPolicy,
--                               blink::kWebRTCIPHandlingDefault);
-+                               blink::kWebRTCIPHandlingDisableNonProxiedUdp);
-   registry->RegisterStringPref(prefs::kWebRTCUDPPortRange, std::string());
-   registry->RegisterBooleanPref(prefs::kWebRtcEventLogCollectionAllowed, false);
-   registry->RegisterListPref(prefs::kWebRtcLocalIpsAllowedUrls);
 --- a/third_party/blink/renderer/modules/peerconnection/peer_connection_dependency_factory.cc
 +++ b/third_party/blink/renderer/modules/peerconnection/peer_connection_dependency_factory.cc
 @@ -123,7 +123,9 @@

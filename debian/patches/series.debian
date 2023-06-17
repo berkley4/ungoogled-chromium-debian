@@ -47,7 +47,6 @@ bromite/Replace-DoH-probe-domain-with-RIPE-domain.patch
 bromite/Revert-Permit-blocking-of-view-source.patch
 bromite/Revert-removal-of-execution-context-address-space.patch
 bromite/updater-disable-updater-pings.patch
-bromite/webRTC-do-not-expose-local-IP-addresses.patch
 
 vanadium/0003-switch-to-fstack-protector-strong.patch
 vanadium/0004-enable-fwrapv-in-Clang-for-non-UBSan-builds.patch
@@ -72,22 +71,9 @@ various/fix-unbundle-script-dh-clean-interoperabilty.patch
 various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
 various/silence-alsa-frames-log-msg.patch
 various/template-correction.patch
-various/addenda/0001-56b1b6f.diff
-various/addenda/0002-468867e6.diff
-various/addenda/0003-326ac4a3.diff
-various/addenda/0004-7b57131.diff
-various/addenda/0005-cefbc71dd.diff
-various/addenda/0006-b686d55.diff
-various/addenda/0007-f3e36a2e.diff
-various/addenda/0008-ea139a4.diff
-various/addenda/0009-2b3ce6c.diff
-various/addenda/0010-ec1c6f2.diff
-various/addenda/0011-12938e3.diff
-various/addenda/0012-0410ec7.diff
-various/addenda/0013-82d5ec6.diff
-various/addenda/0014-73a94f9e.diff
-various/addenda/0015-087f9c1.diff
-various/addenda/0016-24343bf.diff
+various/addenda/0001-85beff6.diff
+various/addenda/0002-8e0f944.diff
+various/addenda/0003-8a1109b.diff
 various/bromite/autofill-miscellaneous.patch
 various/bromite/Disable-all-predictors-code.patch
 various/bromite/Disable-conversion-measurement-api.patch
@@ -123,6 +109,7 @@ various/system/extra/opus.patch
 various/system/extra/zlib.patch
 various/upstream/0001-Add-some-typenames-that-are-required-in-C++17.patch
 various/upstream/0003-controlledframe-Fix-start-up-crash.patch
+various/upstream/0010-sigsegv-dom.patch
 various/vanadium/disable-article-suggestions-feature-by-default.patch
 various/vanadium/disable-content-feed-suggestions-by-default.patch
 
