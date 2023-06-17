@@ -1,59 +1,17 @@
-# Start with a maximised (non-fullscreen) window
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --start-maximized"
-
 # Valid values are 6 and 15
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --max-connections-per-host=15"
+
+# Don't display any warnings about not being the default browser
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --no-default-browser-check"
+
+# Do not hide any extensions in the about:extensions dialog
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --show-component-extension-options"
+
+# Allow extensions to be loaded remotely
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-remote-extensions"
 
 # For those on slow machines
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-low-end-device-mode"
 
-# Enable dark modes
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --force-dark-mode"
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --web-ui-dark-mode"
-
-
-# Prevents link/text dragging and allows selecting text within links
-# Also allows text selection without first clearing an existing selection
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=DisableLinkDrag"
-
-# Choices: search, search-bookmarks, search-chrome, search-bookmarks-chrome
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --omnibox-autocomplete-filtering=search-chrome"
-
-# Opens popups as tabs instead
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --popups-to-tabs"
-
-# Switch tabs with the scroll wheel when hovering over the tab strip
-# Choices are: always, never, incognito-and-guest
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --scroll-tabs=never"
-
-
-# Hides the bookmark bar in new tab pages
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --bookmark-bar-ntp=none"
-
-# This includes the puzzle piece icon as well as any pinned extensions.
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --hide-extensions-menu"
-
-# Hide the "Press Esc to exit full screen" message
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --hide-fullscreen-exit-ui"
-
-# Disables the QR generator for sharing page links
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=DisableQRGenerator"
-
-# Disables the sharing hub button
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-sharing-hub"
-
-# Sets visibility of the avatar button.
-# Choices are: always, incognito-and-guest or never
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --show-avatar-button=never"
-
-# Hide the side panel button
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --hide-sidepanel-button"
-
-# Hide tab close buttons
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --hide-tab-close-buttons"
-
-# Remove the tabsearch button
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --remove-tabsearch-button"
-
-# Disables tab hover cards
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --tab-hover-cards=none"
+# Disable the builtin media router
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --media-router=0"

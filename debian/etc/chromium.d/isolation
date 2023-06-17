@@ -2,10 +2,6 @@
 # patches. However, it probably won't hurt to enable some of these, even
 # if they've been pre-enabled via patch.
 
-# Enables partitioning of third-party storage by top-level site.
-# Note: under active development and may result in unexpected behavior.
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --third-party-storage-partitioning"
-
 # Note: this breaks the document.domain feature of websites which itself 
 #       is in the process of being obsoleted due to security concerns.
 #       Ref - https://developer.chrome.com/blog/immutable-document-domain/
@@ -22,3 +18,11 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-webview-tag-site-isolation"
 # Prevents out-of-process iframes from reusing compatible processes from
 # unrelated tabs. This will result in more processes being created.
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-process-reuse"
+
+# Disables site isolation (SitePerProcess, IsolateOrigins, etc).
+# Intended for diagnosing bugs that may be due to out-of-process iframes.
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --site-isolation-trial-opt-out"
+
+# Enables partitioning of third-party storage by top-level site.
+# Note: under active development and may result in unexpected behavior.
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --third-party-storage-partitioning"
