@@ -99,6 +99,22 @@ TRANSLATE=1 UNSTABLE=1 ./debian/configure.sh
 - - - -
 
 
+# VAAPI (hardware video decoding/encoding)
+
+To test whether hardware decoding is functional, have a look at chrome://media-internals/
+(or the newer media tab in devtools).
+
+I found that I needed to install the NON-FREE intel-media-va-driver-non-free (as opposed to the free
+intel-media-va-driver), as well running with the '--disable-features=UseChromeOSDirectVideoDecoder'
+runtime flag enabled in /etc/chromium.d/hw-decoding-encoding.
+
+If that doesn't work, then Try playing around with the options in /etc/chromium.d/hw-decoding-encoding.
+
+
+
+- - - -
+
+
 # Sandbox
 
 By default, chromium sandboxing on linux relies on using kernel unprivileged user namespaces. An alternative is via
@@ -128,7 +144,7 @@ echo "kernel.unprivileged_userns_clone = 0" > /etc/systctl.d/userns
 
 - - - -
 
-# LLVM/Clang
+# LLVM/Clang (for those wanting to self-compile)
 
 At a minimum you need a recent enough clang for PGO profile compatibility purposes.
 

@@ -1,3 +1,7 @@
+## Note: if using an intel GPU try enabling the flag under 'Deprecated method' below
+## and install intel-media-va-driver-non-free (as opposed to intel-media-va-driver)
+
+
 # Disable hardware decoding/encoding
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=VaapiVideoDecoder"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-accelerated-video-decode"
@@ -12,14 +16,16 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoDecoder"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoEncoder"
 
 
-# Possibly needed if using vulkan
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VulkanFromANGLE,DefaultANGLEVulkan"
-
-# Deprecated non-vulkan method
+# Deprecated method (seems to work for many)
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=UseChromeOSDirectVideoDecoder"
 
 # Might be needed
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=UseSkiaRenderer"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoDecodeLinuxGL"
 
-# Might be worth trying if all else fails
+
+# Possibly needed if using vulkan (this is probably unnecessary)
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VulkanFromANGLE,DefaultANGLEVulkan"
+
+# It might be worth trying one or both of these if all else fails
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiIgnoreDriverChecks"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=UseSkiaRenderer"
