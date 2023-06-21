@@ -133,6 +133,7 @@ various/vanadium/disable-content-feed-suggestions-by-default.patch
 #optional/system/libusb.patch
 #optional/system/vaapi-add-av1-support.patch
 #optional/system/vaapi-disable-libaom-encoding.patch
+#optional/system/vaapi-wayland.patch
 #optional/system/unstable/dav1d.patch
 #optional/system/unstable/dav1d-no-unbundled-libavif.patch
 #optional/system/unstable/icu.patch

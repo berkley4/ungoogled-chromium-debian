@@ -331,6 +331,7 @@ if [ $VAAPI -eq 0 ]; then
 else
   optional_patches="$optional_patches system/vaapi-add-av1-support"
   optional_patches="$optional_patches system/vaapi-disable-libaom-encoding"
+  optional_patches="$optional_patches system/vaapi-wayland"
 fi
 
 
