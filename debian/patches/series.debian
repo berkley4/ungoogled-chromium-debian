@@ -96,6 +96,7 @@ various/fixes/fc-cache-version.patch
 various/fixes/font-rendering.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/remove-main-main10-profile-limit.patch
+various/fixes/revert-fix-linking-chromedriver.patch
 various/fixes/revert-GlobalMediaControlsCastStartStop.patch
 various/fixes/shim-fix-for-official-builds.patch
 various/fixes/skia-gamma.patch
