@@ -1,0 +1,11 @@
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -713,7 +713,7 @@
+       # and let it use all cores.
+       # TODO(thakis): Check if '=0' (that is, number of cores, instead
+       # of "all" which means number of hardware threads) is faster.
+-      ldflags += [ "-Wl,--thinlto-jobs=all" ]
++      ldflags += [ "-Wl,--thinlto-jobs=1" ]
+       if (is_apple) {
+         ldflags += [
+           "-Wl,-cache_path_lto," +

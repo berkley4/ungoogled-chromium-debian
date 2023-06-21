@@ -124,6 +124,7 @@ various/vanadium/disable-content-feed-suggestions-by-default.patch
 #optional/llvm-polly-vectorizer.patch
 #optional/llvm-polly-extra.patch
 #optional/llvm-polly-parallel.patch
+#optional/thinlto-jobs.patch
 #optional/disable/atk-dbus.patch
 #optional/disable/catapult.patch
 #optional/disable/rtc-protobuf.patch
