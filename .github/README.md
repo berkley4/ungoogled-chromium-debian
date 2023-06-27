@@ -261,7 +261,7 @@ cp -a ../../debian .
 TARBALL=1 ./debian/configure.sh
 ```
 
-## Finish preparing the source
+## Prepare build setup and prune source binaries
 
 ```sh
 # Run the configuration script. Customisation can be done via the setting of
@@ -272,8 +272,8 @@ ATK_DBUS=0 CATAPULT=0 DRIVER=0 MARCH=native MTUNE=native ./debian/configure.sh
 # Example for unstable :-
 DRIVER=0 MARCH=native MTUNE=native TRANSLATE=1 UNSTABLE=1 ./debian/configure.sh
 
-# Normally you just need to run the following
-debian/rules setup
+# Prune the binaries :-
+debian/rules prune
 ```
 
 ## Building the binary packages

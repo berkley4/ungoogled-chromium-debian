@@ -172,8 +172,8 @@ hardclean: find_remove_all
 undo_unbundling:
 	find base/third_party/ third_party/ -type f -name \*.bundled -print | while read f; do mv $$f $${f%.bundled}; done
 
-setup:
-	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list
+prune:
+	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list 2>/dev/null
 
 override_dh_auto_configure: find_remove_most undo_unbundling
 	test -z "$(SYS_LIBS)" || $(UB_REP_SCRIPT) --system-libraries $(SYS_LIBS)
