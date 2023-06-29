@@ -98,13 +98,12 @@ GN_FLAGS += link_pulseaudio=true
 
 # Currently omitted from base (stable)
 #
-# Note: jsoncpp, re2, snappy (and perhaps woff2) cannot
-#       be unbundled when use_custom_libcxx=true.
-#       Custom (ie bundled) libcxx is needed for CFI.
+# Note: jsoncpp, re2, snappy and woff2 cannot be
+#       unbundled when use_custom_libcxx=true because
+#       custom (ie bundled) libcxx is needed for CFI.
 #
 # Extra work     : ffmpeg
-# Not in stable  : openh264
-# Stable too old : dav1d, icu, libaom, libavif, libpng
+# Stable too old : dav1d
 # Compile issues : jsoncpp, re2, snappy, woff2
 # Problematic    : harfbuzz-ng, libvpx, libyuv
 # Interdependent : libxslt depends upon libxml; libxml depends upon icu
@@ -117,6 +116,7 @@ SYS_LIBS :=               \
         freetype          \
         libdrm            \
         libevent          \
+        libpng            \
         libwebp           \
         libXNVCtrl        \
         opus              \
@@ -125,19 +125,27 @@ SYS_LIBS :=               \
 # The below is best configured via debian/configure.sh, ehich is better
 # suited to automatically deal with any of the dependent patches.
 
-# Uncomment if you are building on the same distro you intend to run under
+# If you are building on the same distro you intend to run under
 #SYS_LIBS += libjpeg
 
-# Uncomment if you on stable and have installed the backport library
-# libaom should work but libavif might not
-#SYS_LIBS += libaom libavif
+# If you on stable and have installed the corresponding backport libraries
+#SYS_LIBS +=
 
-# Uncomment if you are on testing/unstable (or a new enough distro)
-#GN_FLAGS += use_system_libpng=true
-#SYS_LIBS += dav1d libaom libavif libpng libxml libxslt openh264
+# A set of libraries which can currently be installed on stable and unstable
+# This list is bound to get shorter as time goes on
+#SYS_LIBS += libaom libavif libxml libxslt
 
-# Unstable users can uncomment to enable system icu
+# If you are on testing/unstable (or a new enough distro)
+#SYS_LIBS += dav1d
+
+# If system icu is new enough
 #SYS_LIBS += icu
+
+# Disable openh264
+#GN_FLAGS += media_use_openh264=false
+
+# Enable openh264
+#SYS_LIBS += openh264
 
 # Enable only if really needed (not normally a compiled target)
 #SYS_LIBS += libusb
@@ -151,6 +159,7 @@ GN_FLAGS +=                           \
         use_system_freetype=true      \
         use_system_lcms2=true         \
         use_system_libopenjpeg2=true  \
+        use_system_libpng=true        \
         use_system_libtiff=true       \
         use_system_zlib=true
 

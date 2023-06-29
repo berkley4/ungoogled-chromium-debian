@@ -49,6 +49,7 @@ real_dir_path () (
 [ -n "$POLICIES" ] || POLICIES=0
 [ -n "$WIDEVINE" ] || WIDEVINE=1
 
+[ -n "$OPENH264" ] || OPENH264=1
 [ -n "$PIPEWIRE" ] || PIPEWIRE=1
 [ -n "$PULSE" ] || PULSE=1
 [ -n "$UNSTABLE" ] || UNSTABLE=0
@@ -58,8 +59,8 @@ real_dir_path () (
 [ -n "$SYS_USB" ] || SYS_USB=0
 
 
-# SYS_ICU is enabled if UNSTABLE=1 (set to zero to disable)
-[ -n "$SYS_ICU" ] && SYS_ICU_SET=1 || SYS_ICU=0
+# SYS_ICU is enabled by default (set to zero to disable)
+[ -n "$SYS_ICU" ] && SYS_ICU_SET=1 || SYS_ICU=1
 
 # POLLY_EXTRA is enabled if POLLY_VECTORIZER=1 (set to zero to disable)
 [ -n "$POLLY_EXTRA" ] && POLLY_EXTRA_SET=1 || POLLY_EXTRA=0
@@ -74,7 +75,7 @@ real_dir_path () (
 # xz 'extreme' compression strategy (set to zero to disable if XZ_THREADED=1)
 [ -n "$XZ_EXTREME" ] && XZ_EXTREME_SET=1 || XZ_EXTREME=0
 
-# xz threaded compression (enabled if XZ_THREADED=1; unstable only)
+# xz threaded compression (enabled if XZ_THREADED=1)
 [ -n "$XZ_THREADED" ] || XZ_THREADED=0
 
 
@@ -304,6 +305,16 @@ if [ $PULSE -eq 0 ]; then
 fi
 
 
+if [ $VAAPI -eq 0 ]; then
+  # #GN_FLAGS += use_vaapi=false
+  gn_enable="$gn_enable use_vaapi"
+else
+  optional_patches="$optional_patches system/vaapi-add-av1-support"
+  optional_patches="$optional_patches system/vaapi-disable-libaom-encoding"
+  optional_patches="$optional_patches system/vaapi-wayland"
+fi
+
+
 if [ $SYS_JPEG -eq 1 ]; then
   optional_patches="$optional_patches system/jpeg"
   sys_enable="$sys_enable libjpeg"
@@ -316,39 +327,53 @@ if [ $SYS_USB -eq 1 ]; then
 fi
 
 
-if [ $UNSTABLE -eq 1 ]; then
-  [ $RELEASE_SET -eq 1 ] && [ "$RELEASE" != "stable" ] || RELEASE=unstable
-  [ $SYS_ICU_SET -eq 1 ] && [ $SYS_ICU -eq 0 ] || SYS_ICU=1
 
-  if [ $SYS_ICU -eq 1 ]; then
-    icu_patches="icu icu-headers"
-    icu_patches="$(echo $icu_patches | sed "s@\([^ ]*\)@system/unstable/\1@g")"
-    optional_patches="$optional_patches $icu_patches"
+## Items which are likely to become unstable-only as stable ages
 
-    sys_enable="$sys_enable icu"
+[ $SYS_ICU_SET -eq 1 ] && [ $SYS_ICU -eq 0 ] || SYS_ICU=1
 
-    INS="$INS -e \"s@^\(out/Release/icudtl\.dat\)@#\1@\""
-  fi
+if [ $SYS_ICU -eq 1 ]; then
+  icu_patches="icu icu-headers"
+  icu_patches="$(echo $icu_patches | sed "s@\([^ ]*\)@system/unstable/\1@g")"
+  optional_patches="$optional_patches $icu_patches"
 
-  sys_patches="dav1d libaom-headers openh264"
-  sys_patches="$(echo $sys_patches | sed "s@\([^ ]*\)@system/unstable/\1@g")"
+  sys_enable="$sys_enable icu"
 
-  optional_patches="$optional_patches $sys_patches"
-  optional_deps="$optional_deps libaom libavif libdav1d libopenh264 libxslt1"
-
-  gn_enable="$gn_enable use_system_libpng"
-
-  # dav1d libaom libavif libpng libxml libxslt openh264
-  sys_enable="$sys_enable dav1d"
+  INS="$INS -e \"s@^\(out/Release/icudtl\.dat\)@#\1@\""
 fi
 
 
-if [ $VAAPI -eq 0 ]; then
-  gn_enable="$gn_enable use_vaapi"
+if [ $OPENH264 -eq 0 ]; then
+  # GN_FLAGS += media_use_openh264=false
+  gn_enable="$gn_enable media_use_openh264"
 else
-  optional_patches="$optional_patches system/vaapi-add-av1-support"
-  optional_patches="$optional_patches system/vaapi-disable-libaom-encoding"
-  optional_patches="$optional_patches system/vaapi-wayland"
+  optional_patches="$optional_patches system/unstable/openh264"
+  optional_deps="$optional_deps libopenh264"
+
+  sys_enable="$sys_enable openh264"
+fi
+
+
+sys_patches="libaom-headers"
+sys_patches="$(echo $sys_patches | sed "s@\([^ ]*\)@system/unstable/\1@g")"
+
+optional_patches="$optional_patches $sys_patches"
+optional_deps="$optional_deps libaom libavif libxslt1"
+
+sys_enable="$sys_enable libaom libavif libxml libxslt openh264"
+
+
+
+if [ $UNSTABLE -eq 1 ]; then
+  [ $RELEASE_SET -eq 1 ] && [ "$RELEASE" != "stable" ] || RELEASE=unstable
+
+  sys_patches="dav1d"
+  sys_patches="$(echo $sys_patches | sed "s@\([^ ]*\)@system/unstable/\1@g")"
+
+  optional_patches="$optional_patches $sys_patches"
+  optional_deps="$optional_deps libdav1d"
+
+  sys_enable="$sys_enable dav1d"
 fi
 
 
@@ -398,7 +423,7 @@ if ! patch -R -p1 -f --dry-run < $PRUNE_PATCH >/dev/null 2>&1; then
 fi
 
 
-if [ $XZ_THREADED -eq 1 ] && [ $UNSTABLE -eq 1 ]; then
+if [ $XZ_THREADED -eq 1 ]; then
   if [ -z "$(grep "dh_builddeb.*--threads-max=" $DEBIAN/rules)" ]; then
     RUL="$RUL -e \"s@^\([ \t]*dh_builddeb.*\)@\1 --threads-max=\x24(JOBS)@\""
   fi
