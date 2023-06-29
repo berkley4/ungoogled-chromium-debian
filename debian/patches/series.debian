@@ -71,9 +71,7 @@ various/fix-unbundle-script-dh-clean-interoperabilty.patch
 various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
 various/silence-alsa-frames-log-msg.patch
 various/template-correction.patch
-various/addenda/0001-85beff6.diff
-various/addenda/0002-8e0f944.diff
-various/addenda/0003-8a1109b.diff
+#various/addenda/
 various/bromite/autofill-miscellaneous.patch
 various/bromite/Disable-all-predictors-code.patch
 various/bromite/Disable-conversion-measurement-api.patch
