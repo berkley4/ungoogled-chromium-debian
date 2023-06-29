@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -713,7 +713,7 @@
+@@ -705,7 +705,7 @@
        # and let it use all cores.
        # TODO(thakis): Check if '=0' (that is, number of cores, instead
        # of "all" which means number of hardware threads) is faster.
