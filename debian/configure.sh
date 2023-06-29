@@ -65,7 +65,7 @@ real_dir_path () (
 [ -n "$POLLY_EXTRA" ] && POLLY_EXTRA_SET=1 || POLLY_EXTRA=0
 
 # LTO Jobs (patch = 1; chromium default = all)
-[ -n "$LTO_JOBS" ] || LTO_JOBS=1
+[ -n "$LTO_JOBS" ] || LTO_JOBS=0
 
 # RELEASE is auto-set to unstable when UNSTABLE=1 (if not explicitly set)
 [ -n "$RELEASE" ] && RELEASE_SET=1 || RELEASE=stable
@@ -172,11 +172,11 @@ fi
 
 
 case $LTO_JOBS in
-  [0-9]|[1-9][0-9])
+  [1-9]|[1-9][0-9])
     optional_patches="$optional_patches thinlto-jobs"
 
     case $LTO_JOBS in
-      0|[2-9]|[1-9][0-9])
+      [2-9]|[1-9][0-9])
         sed "s@\(thinlto-jobs=\)1@\1$LTO_JOBS@" \
           -i $DEBIAN/patches/optional/thinlto-jobs.patch
         ;;
