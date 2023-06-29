@@ -1,0 +1,39 @@
+--- a/components/BUILD.gn
++++ b/components/BUILD.gn
+@@ -51,7 +51,7 @@
+ 
+ # Omit Lacros because it allows //components to depend on //chrome, which in
+ # turn depends on //extensions.
+-if (false) {
++if (!is_chromeos_lacros) {
+   disallowed_extension_deps_ = [
+     # Components should largely not depend on //extensions. Since // extensions
+     # is not a component target and is linked with //chrome, depending on most
+@@ -709,7 +709,7 @@
+   # On other platforms, no components should depend on Chrome.
+   # Since //chrome depends on //extensions, we also only assert_no_deps on
+   # extensions targets for non-lacros builds.
+-  if (false) {
++  if (!is_chromeos_lacros) {
+     assert_no_deps = [ "//chrome/*" ]
+     assert_no_deps += disallowed_extension_deps_
+   }
+@@ -988,7 +988,7 @@
+     # dependency. On other platforms, no components should depend on Chrome.
+     # Since //chrome depends on //extensions, we also only assert_no_deps on
+     # extensions targets for non-lacros builds.
+-    if (false) {
++    if (!is_chromeos_lacros) {
+       assert_no_deps = [ "//chrome/*" ]
+       assert_no_deps += disallowed_extension_deps_
+     }
+--- a/content/shell/BUILD.gn
++++ b/content/shell/BUILD.gn
+@@ -266,7 +266,6 @@
+     "//base/third_party/dynamic_annotations",
+     "//build:chromeos_buildflags",
+     "//cc/base",
+-    "//chrome/common",
+     "//components/cdm/renderer",
+     "//components/custom_handlers",
+     "//components/custom_handlers:test_support",
