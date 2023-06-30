@@ -78,12 +78,7 @@ real_dir_path () (
 # xz threaded compression (enabled if XZ_THREADED=1)
 [ -n "$XZ_THREADED" ] || XZ_THREADED=0
 
-
-## Allow overriding VERSION and AUTHOR
-if [ -z "$VERSION" ]; then
-  VERSION=$(cat $UC_DIR/chromium_version.txt)-$(cat $UC_DIR/revision.txt)
-fi
-
+# Allow overriding AUTHOR
 if [ -z "$AUTHOR" ]; then
   AUTHOR='ungoogled-chromium Maintainers <github@null.invalid>'
 fi
@@ -527,6 +522,20 @@ fi
 
 cat $UC_DIR/patches/series $DEBIAN/patches/series.debian \
   > $DEBIAN/patches/series
+
+
+## Allow overriding VERSION
+if [ -z "$VERSION" ]; then
+  VER=$(cat $UC_DIR/chromium_version.txt)
+  REV=$(cat $UC_DIR/revision.txt)
+
+  case $RELEASE in
+    stable)
+      REV=stable$REV ;;
+  esac
+
+  VERSION=$VER-$REV
+fi
 
 
 ## Produce changelog from template
