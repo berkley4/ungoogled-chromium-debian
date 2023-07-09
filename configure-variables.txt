@@ -1,0 +1,62 @@
+<OPTION>	<DEFAULT>	<DESCRIPTION>
+
+## General options
+
+AUTHOR		"ungoogled-chromium Maintainers <github@null.invalid>"
+RELEASE		stable		
+VERSION		<version>
+LTO_DIR		<dir>		Default iis <source root>/out/Release/thinlto-cache
+
+BUNDLED_CLANG	0		Use in-tree chromium clang/llvm binaries
+POLICIES	0		Install /etc/chromium/policies/managed/policies.json
+TARBALL		0		Use tarball download instead of git
+UNSTABLE	0		By default a stable version is built
+
+
+## Components that can be enabled/disabled via patches
+
+ATK_DBUS	1		D-Bus support (for bluetooth)
+CATAPULT	1		Catapult profiling support
+TRANSLATE	0		Google translate support
+
+
+## Enable/Disable components
+
+DRIVER		1		Chromedriver package
+
+OOP_PR		0		Out of process printing (X11 only)
+OPENH264	1
+PDF_JS		0		PDF javascript support
+PIPEWIRE	1
+PULSE		1
+VAAPI		1
+WIDEVINE	1
+
+
+## System Libraries (unbundling)
+
+SYS_JPEG	1
+SYS_USB		0
+SYS_ICU		1
+
+
+## CPU threading options
+
+LTO_JOBS	0		<0-99> : number of threads to use for linking (with lld)
+XZ_EXTREME	0		Extreme xz (deb) compression strategy
+XZ_THREADED	0		Multi-threaded xz compression (number of threads = $JOBS)
+
+
+## CPU architecture/instructions and optimisations
+
+MARCH		x86-64-v2
+MTUNE		generic
+
+AES_PCLMUL	1
+AVX		1
+AVX2		0
+V8_AVX2		0		AVX for v8 javascript (can enable on non-AVX2 capable hosts)
+
+POLLY_VECTOR	1		Polly vectorisation (oportunistic vector instruction optimisation)
+POLLY_EXTRA	1		Polly further compile optimisations
+POLLY_PARALLEL	0		Polly parallisation (opportunistic multi-threading)
