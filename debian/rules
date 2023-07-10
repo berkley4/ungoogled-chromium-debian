@@ -87,7 +87,10 @@ GN_FLAGS += enable_print_preview=false
 #GN_FLAGS += skia_use_dawn=true
 
 # Disable WebGPU
-#GN_FLAGS += use_dawn=false
+GN_FLAGS += use_dawn=false
+
+# Disable openh264
+#GN_FLAGS += media_use_openh264=false
 
 # Enable pipewire
 GN_FLAGS += rtc_use_pipewire=true
@@ -134,27 +137,22 @@ SYS_LIBS :=               \
 # The below is best configured via debian/configure.sh, ehich is better
 # suited to automatically deal with any of the dependent patches.
 
-# If you are building on the same distro you intend to run under
-#SYS_LIBS += libjpeg
-
-# If you on stable and have installed the corresponding backport libraries
+# Backported libraries (if you on stable)
 #SYS_LIBS +=
 
-# A set of libraries which can currently be installed on stable and unstable
-# This list is bound to get shorter as time goes on
-#SYS_LIBS += libaom libavif libxml libxslt
-
-# If you are on testing/unstable (or a new enough distro)
-#SYS_LIBS += dav1d
-
-# If system icu is new enough
-#SYS_LIBS += icu
-
-# Disable openh264
-#GN_FLAGS += media_use_openh264=false
+# If you are building on the same distro you intend to run under
+SYS_LIBS += libjpeg
 
 # Enable openh264
-#SYS_LIBS += openh264
+SYS_LIBS += openh264
+
+# (System icu listed with libraries which depend on it)
+#SYS_LIBS += icu libxml libxslt
+#SYS_LIBS += libaom libavif
+
+# TESTING/UNSTABLE libraries
+#SYS_LIBS += dav1d
+
 
 # Enable only if really needed (not normally a compiled target)
 #SYS_LIBS += libusb

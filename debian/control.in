@@ -27,7 +27,6 @@ Build-Depends:
  libxshmfence-dev,
  libgbm-dev,
  mesa-common-dev,
- libpulse-dev,
  libasound2-dev,
  libpci-dev,
  libopus-dev,
@@ -37,19 +36,21 @@ Build-Depends:
  liblcms2-dev,
  libopenjp2-7-dev,
  libtiff-dev,
- libpipewire-0.3-dev,
  libdouble-conversion-dev,
  libxnvctrl-dev,
+ libopenh264-dev,
+ libpipewire-0.3-dev,
+ libpulse-dev,
  libva-dev,
+ qtbase5-dev,
 #libavutil-dev,
 #libavcodec-dev (>= 7:5.1),
 #libavformat-dev,
 #libaom-dev,
 #libavif-dev,
 #libdav1d-dev,
-#libopenh264-dev,
-#libxslt1-dev,
-#qtbase5-dev
+#libusb-1.0-0-dev,
+#libxslt1-dev
 
 Package: ungoogled-chromium
 Architecture: i386 amd64 arm64 armhf

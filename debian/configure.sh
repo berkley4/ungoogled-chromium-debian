@@ -3,9 +3,13 @@ set -e
 
 gn_disable=
 gn_enable=
+
+sys_disable=
 sys_enable=
 
-optional_deps=
+deps_disable=
+deps_enable=
+
 optional_patches='custom-import-limits march mtune'
 
 MARCH_SET=0
@@ -287,10 +291,7 @@ if [ $POLICIES -eq 1 ]; then
 fi
 
 
-if [ $WEBGPU -eq 0 ]; then
-  # GN_FLAGS += use_dawn=false
-  gn_enable="$gn_enable use_dawn"
-else
+if [ $WEBGPU -eq 1 ]; then
   gn_enable="$gn_enable skia_use_dawn"
 fi
 
@@ -308,6 +309,7 @@ fi
 if [ $QT -eq 0 ]; then
   # GN_FLAGS += use_qt=false
   gn_enable="$gn_enable use_qt"
+  deps_disable="$deps_disable qtbase5"
 else
   optional_patches="$optional_patches qt/0001-handle_scale_factor_changes"
   optional_patches="$optional_patches qt/0002-fix_font_double_scaling"
@@ -323,18 +325,23 @@ fi
 
 if [ $PIPEWIRE -eq 0 ]; then
   gn_disable="$gn_disable rtc_use_pipewire"
+  deps_disable="$deps_disable libpipewire"
 fi
 
 
 if [ $PULSE -eq 0 ]; then
+  # GN_FLAGS += link_pulseaudio=true
   gn_disable="$gn_disable link_pulseaudio"
+  # GN_FLAGS += use_pulseaudio=false
   gn_enable="$gn_enable use_pulseaudio"
+  deps_disable="$deps_disable libpulse"
 fi
 
 
 if [ $VAAPI -eq 0 ]; then
   # #GN_FLAGS += use_vaapi=false
   gn_enable="$gn_enable use_vaapi"
+  deps_disable="$deps_disable libva"
 else
   optional_patches="$optional_patches system/vaapi-add-av1-support"
   optional_patches="$optional_patches system/vaapi-disable-libaom-encoding"
@@ -342,15 +349,18 @@ else
 fi
 
 
-if [ $SYS_JPEG -eq 1 ]; then
+if [ $SYS_JPEG -eq 0 ]; then
+  sys_disable="$sys_disable libjpeg"
+else
   optional_patches="$optional_patches system/jpeg"
-  sys_enable="$sys_enable libjpeg"
 fi
 
 
 if [ $SYS_USB -eq 1 ]; then
   optional_patches="$optional_patches system/libusb.patch"
+
   gn_enable="$gn_enable libusb"
+  deps_enable="$deps_enable libusb"
 fi
 
 
@@ -364,7 +374,9 @@ if [ $SYS_ICU -eq 1 ]; then
   icu_patches="$(echo $icu_patches | sed "s@\([^ ]*\)@system/unstable/\1@g")"
   optional_patches="$optional_patches $icu_patches"
 
+  # SYS_LIBS += icu libxml libxslt (last two depend on icu)
   sys_enable="$sys_enable icu"
+  deps_enable="$deps_enable icu libxml libxslt"
 
   INS="$INS -e \"s@^\(out/Release/icudtl\.dat\)@#\1@\""
 fi
@@ -373,31 +385,30 @@ fi
 if [ $OPENH264 -eq 0 ]; then
   # GN_FLAGS += media_use_openh264=false
   gn_enable="$gn_enable media_use_openh264"
+  sys_disable="$sys_disable openh264"
+  deps_disable="$deps_disable libopenh264"
 else
   optional_patches="$optional_patches system/unstable/openh264"
-  optional_deps="$optional_deps libopenh264"
-
-  sys_enable="$sys_enable openh264"
 fi
 
 
 sys_patches="libaom-headers"
 sys_patches="$(echo $sys_patches | sed "s@\([^ ]*\)@system/unstable/\1@g")"
-
 optional_patches="$optional_patches $sys_patches"
-optional_deps="$optional_deps libaom libavif libxslt1"
 
-sys_enable="$sys_enable libaom libavif libxml libxslt openh264"
+# SYS_LIBS += libaom libavif
+sys_enable="$sys_enable libaom"
+
+deps_enable="$deps_enable libaom libavif"
 
 
 if [ $STABLE -eq 0 ]; then
   sys_patches="dav1d"
   sys_patches="$(echo $sys_patches | sed "s@\([^ ]*\)@system/unstable/\1@g")"
-
   optional_patches="$optional_patches $sys_patches"
-  optional_deps="$optional_deps libdav1d"
 
   sys_enable="$sys_enable dav1d"
+  deps_enable="$deps_enable libdav1d"
 fi
 
 
@@ -467,9 +478,15 @@ fi
 ##  Aggregate sed commands  ##
 ##############################
 
-if [ -n "$optional_deps" ]; then
-  for i in $optional_deps; do
-    CON="$CON -e \"s@^#\(${i}-dev\)@ \1@\""
+if [ -n "$deps_disable" ]; then
+  for i in $deps_disable; do
+    CON="$CON -e \"s@^ \(${i}.*-dev\)@#\1@\""
+  done
+fi
+
+if [ -n "$deps_enable" ]; then
+  for i in $deps_enable; do
+    CON="$CON -e \"s@^#\(${i}.*-dev\)@ \1@\""
   done
 fi
 
@@ -490,6 +507,13 @@ fi
 if [ -n "$gn_enable" ]; then
   for i in $gn_enable; do
     RUL="$RUL -e \"s@^#\(GN_FLAGS += ${i}=\)@\1@\""
+  done
+fi
+
+
+if [ -n "$sys_disable" ]; then
+  for i in $sys_disable; do
+    RUL="$RUL -e \"s@^\(SYS_LIBS += ${i}\)@#\1@\""
   done
 fi
 
