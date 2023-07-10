@@ -93,7 +93,7 @@ To build with translate enabled, include TRANSLATE=1 in your configure
 variables (this is done immediately after copying over the debian
 directory into your build tree). For example :-
 
-TRANSLATE=1 UNSTABLE=1 ./debian/configure.sh
+TRANSLATE=1 ./debian/configure.sh
 
 
 - - - -
@@ -267,10 +267,10 @@ TARBALL=1 ./debian/configure.sh
 # Run the configuration script. Customisation can be done via the setting of
 # variables (read the script and look at GN_FLAGS/SYS_LIBS in debian/rules)
 #
-# Example for stable :-
-ATK_DBUS=0 CATAPULT=0 DRIVER=0 MARCH=native MTUNE=native ./debian/configure.sh
 # Example for unstable :-
-DRIVER=0 MARCH=native MTUNE=native TRANSLATE=1 UNSTABLE=1 ./debian/configure.sh
+ATK_DBUS=0 CATAPULT=0 DRIVER=0 MARCH=native MTUNE=native ./debian/configure.sh
+# Example for stable :-
+DRIVER=0 MARCH=native MTUNE=native TRANSLATE=1 STABLE=1 ./debian/configure.sh
 
 # Prune the binaries :-
 debian/rules prune

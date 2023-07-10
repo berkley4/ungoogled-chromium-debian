@@ -52,7 +52,7 @@ real_dir_path () (
 [ -n "$OPENH264" ] || OPENH264=1
 [ -n "$PIPEWIRE" ] || PIPEWIRE=1
 [ -n "$PULSE" ] || PULSE=1
-[ -n "$UNSTABLE" ] || UNSTABLE=0
+[ -n "$STABLE" ] || STABLE=0
 [ -n "$VAAPI" ] || VAAPI=1
 
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
@@ -68,15 +68,12 @@ real_dir_path () (
 # LTO Jobs (patch = 1; chromium default = all)
 [ -n "$LTO_JOBS" ] || LTO_JOBS=0
 
-# RELEASE is auto-set to unstable when UNSTABLE=1 (if not explicitly set)
-[ -n "$RELEASE" ] && RELEASE_SET=1 || RELEASE=stable
-
-
 # xz 'extreme' compression strategy (set to zero to disable if XZ_THREADED=1)
 [ -n "$XZ_EXTREME" ] && XZ_EXTREME_SET=1 || XZ_EXTREME=0
 
 # xz threaded compression (enabled if XZ_THREADED=1)
 [ -n "$XZ_THREADED" ] || XZ_THREADED=0
+
 
 # Allow overriding AUTHOR
 if [ -z "$AUTHOR" ]; then
@@ -85,6 +82,14 @@ fi
 
 CON="$CON -e \"s;@@AUTHOR@@;$AUTHOR;\""
 
+
+# By default RELEASE has a value of unstable if not explicitly set
+[ -n "$RELEASE" ] && RELEASE_SET=1 || RELEASE=unstable
+
+# If STABLE=1 then set RELEASE to stable (if not explicity set)
+if [ $STABLE -eq 1 ]; then
+  [ $RELEASE_SET -eq 1 ] && [ "$RELEASE" != "stable" ] || RELEASE=stable
+fi
 
 
 
@@ -358,10 +363,7 @@ optional_deps="$optional_deps libaom libavif libxslt1"
 sys_enable="$sys_enable libaom libavif libxml libxslt openh264"
 
 
-
-if [ $UNSTABLE -eq 1 ]; then
-  [ $RELEASE_SET -eq 1 ] && [ "$RELEASE" != "stable" ] || RELEASE=unstable
-
+if [ $STABLE -eq 0 ]; then
   sys_patches="dav1d"
   sys_patches="$(echo $sys_patches | sed "s@\([^ ]*\)@system/unstable/\1@g")"
 

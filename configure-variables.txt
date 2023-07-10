@@ -3,14 +3,14 @@
 ## General options
 
 AUTHOR		"ungoogled-chromium Maintainers <github@null.invalid>"
-RELEASE		stable		
+RELEASE		unstable
 VERSION		<version>
 LTO_DIR		<dir>		Default iis <source root>/out/Release/thinlto-cache
 
 BUNDLED_CLANG	0		Use in-tree chromium clang/llvm binaries
 POLICIES	0		Install /etc/chromium/policies/managed/policies.json
 TARBALL		0		Use tarball download instead of git
-UNSTABLE	0		By default a stable version is built
+STABLE		0		By default an unstable version is built
 
 
 ## Components that can be enabled/disabled via patches
