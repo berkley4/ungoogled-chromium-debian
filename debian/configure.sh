@@ -49,6 +49,7 @@ real_dir_path () (
 [ -n "$OOP_PR" ] || OOP_PR=0
 [ -n "$PDF_JS" ] || PDF_JS=0
 [ -n "$POLICIES" ] || POLICIES=0
+[ -n "$QT" ] || QT=1
 [ -n "$WEBGPU" ] || WEBGPU=0
 [ -n "$WIDEVINE" ] || WIDEVINE=1
 
@@ -303,6 +304,22 @@ fi
 #################
 ##  Libraries  ##
 #################
+
+if [ $QT -eq 0 ]; then
+  # GN_FLAGS += use_qt=false
+  gn_enable="$gn_enable use_qt"
+else
+  optional_patches="$optional_patches qt/0001-handle_scale_factor_changes"
+  optional_patches="$optional_patches qt/0002-fix_font_double_scaling"
+  optional_patches="$optional_patches qt/0003-printing_deps"
+  optional_patches="$optional_patches qt/0004-enable_AllowQt_feature_flag"
+  optional_patches="$optional_patches qt/0005-logical_scale_factor"
+
+  optional_deps="$optional_deps qtbase5"
+
+  INS="$INS -e \"s@^#\(out/Release/libqt5_shim.so\)@\1@\""
+fi
+
 
 if [ $PIPEWIRE -eq 0 ]; then
   gn_disable="$gn_disable rtc_use_pipewire"

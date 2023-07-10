@@ -28,6 +28,7 @@ OOP_PR		0		Out of process printing (X11 only)
 PDF_JS		0		PDF javascript support
 PIPEWIRE	1
 PULSE		1
+QT		1
 WEBGPU		0
 WIDEVINE	1
 

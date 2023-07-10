@@ -129,6 +129,11 @@ various/vanadium/disable-content-feed-suggestions-by-default.patch
 #optional/disable/rtc-protobuf.patch
 #optional/legacy-i386/angle-lockfree.patch
 #optional/legacy-i386/support-i386.patch
+#optional/qt/0001-handle_scale_factor_changes.patch
+#optional/qt/0002-fix_font_double_scaling.patch
+#optional/qt/0003-printing_deps.patch
+#optional/qt/0004-enable_AllowQt_feature_flag.patch
+#optional/qt/0005-logical_scale_factor.patch
 #optional/system/jpeg.patch
 #optional/system/libusb.patch
 #optional/system/vaapi-add-av1-support.patch

@@ -48,7 +48,8 @@ Build-Depends:
 #libavif-dev,
 #libdav1d-dev,
 #libopenh264-dev,
-#libxslt1-dev
+#libxslt1-dev,
+#qtbase5-dev
 
 Package: ungoogled-chromium
 Architecture: i386 amd64 arm64 armhf

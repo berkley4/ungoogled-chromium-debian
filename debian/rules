@@ -57,7 +57,6 @@ GN_FLAGS +=                                     \
         use_cfi_cast=true                       \
         use_gnome_keyring=false                 \
         use_kerberos=false                      \
-        use_qt=false                            \
         use_runtime_vlog=false                  \
         use_sysroot=false                       \
         use_text_section_splitting=true         \
@@ -98,6 +97,9 @@ GN_FLAGS += rtc_use_pipewire=true
 
 # Enable linking to pulseaudio (has no effect if use_pulseaudio=false)
 GN_FLAGS += link_pulseaudio=true
+
+# Disable Qt
+#GN_FLAGS += use_qt=false
 
 # Disable VA-API
 #GN_FLAGS += use_vaapi=false

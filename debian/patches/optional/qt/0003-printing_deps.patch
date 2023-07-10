@@ -1,0 +1,44 @@
+commit 7b1d747a599a752e493e34e7bbf841d8b4c7882f
+Author: Tomasz Śniatowski <tomasz.sniatowski@xperi.com>
+Date:   Thu May 25 16:09:27 2023 +0000
+
+    Dep on //printing in //ui/qt if printing is enabled
+    
+    qt_ui.h can use printing/printing_context_linux.h, and needs to dep
+    on //printing if it does, to avoid a missing dependency build break.
+    
+    Without this fix, a clean build can fail on obj/ui/qt/qt/qt_ui.o with
+      In file included from ../../ui/qt/qt_ui.cc:8:
+      In file included from ../../ui/qt/qt_ui.h:21:
+      ../../printing/printing_context_linux.h:12:10: fatal error:
+      'printing/mojom/print.mojom.h' file not found
+    
+    (the #include is a // NOGNCHECK one, which is how this came to be)
+    
+    Change-Id: I70af37071e232ffbf462a05e026051efae044b69
+    Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4566944
+    Reviewed-by: Thomas Anderson <thomasanderson@chromium.org>
+    Auto-Submit: Tomasz Śniatowski <tomasz.sniatowski@xperi.com>
+    Commit-Queue: Thomas Anderson <thomasanderson@chromium.org>
+    Cr-Commit-Position: refs/heads/main@{#1149138}
+
+--- a/ui/qt/BUILD.gn
++++ b/ui/qt/BUILD.gn
+@@ -5,6 +5,7 @@
+ import("//build/config/chromecast_build.gni")
+ import("//build/config/linux/pkg_config.gni")
+ import("//build/config/sysroot.gni")
++import("//printing/buildflags/buildflags.gni")
+ import("//ui/qt/qt.gni")
+ 
+ assert(use_qt)
+@@ -127,6 +128,9 @@
+     "//ui/views",
+   ]
+   public_deps = [ "//skia" ]
++  if (enable_printing) {
++    public_deps += [ "//printing" ]
++  }
+ 
+   sources = [
+     "qt_ui.cc",
