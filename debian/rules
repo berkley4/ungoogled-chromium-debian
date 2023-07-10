@@ -46,6 +46,8 @@ GN_FLAGS +=                                     \
         proprietary_codecs=true                 \
         angle_enable_swiftshader=false          \
         enable_swiftshader=false                \
+        build_dawn_tests=false                  \
+        dawn_use_swiftshader=false              \
         enable_component_updater=false          \
         enable_lens_desktop=false               \
         enable_trace_logging=false              \
@@ -53,8 +55,6 @@ GN_FLAGS +=                                     \
         rtc_disable_metrics=true                \
         skia_enable_skshaper_tests=false        \
         use_cfi_cast=true                       \
-        use_dawn=false                          \
-        build_dawn_tests=false                  \
         use_gnome_keyring=false                 \
         use_kerberos=false                      \
         use_qt=false                            \
@@ -80,6 +80,16 @@ GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
 # Disable print preview (workaround for print preview dialog crash)
 GN_FLAGS += enable_print_preview=false
 
+# Enable 256-bit re-vectorization pass in WASM compilation pipeline
+#GN_FLAGS += v8_enable_wasm_simd256_revec=true
+
+
+# Enable WebGPU
+#GN_FLAGS += skia_use_dawn=true
+
+# Disable WebGPU
+#GN_FLAGS += use_dawn=false
+
 # Enable pipewire
 GN_FLAGS += rtc_use_pipewire=true
 
@@ -91,9 +101,6 @@ GN_FLAGS += link_pulseaudio=true
 
 # Disable VA-API
 #GN_FLAGS += use_vaapi=false
-
-# Enable 256-bit re-vectorization pass in WASM compilation pipeline
-#GN_FLAGS += v8_enable_wasm_simd256_revec=true
 
 
 # Currently omitted from base (stable)

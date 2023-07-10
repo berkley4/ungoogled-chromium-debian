@@ -1,15 +1,21 @@
 ## Refer to chrome://gpu/ to see if there are any problems
 ## Note: the uncommented flags will probably work for most users
 
-# Uncomment if you're on x11 (ie not wayland)
+# For those using x11 (ie not wayland)
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --ozone-platform=x11"
 
+# WebGPU
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-unsafe-webgpu"
 
-# Uncomment when troubleshooting problems or attempting to increase performance
+# Vulkan
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-vulkan"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-vulkan-surface"
+
+
+# For troubleshooting problems or attempting to increase performance
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-gpu"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-gpu-driver-bug-workarounds"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --ignore-gpu-blocklist"
-
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --canvas-oop-rasterization"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-drdc"
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-gpu-rasterization"
@@ -17,13 +23,8 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-gpu-rasterization"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-native-gpu-memory-buffers"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-raw-draw"
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-zero-copy"
-
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --num-raster-threads=2"
 
-# Uncomment the first one to enable vulkan
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-vulkan"
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-vulkan-surface"
 
-
-# might help with eg google streetview on very old GPUs
+# This might help with eg google streetview on very old GPUs
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-accelerated-2d-canvas"

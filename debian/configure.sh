@@ -30,6 +30,8 @@ real_dir_path () (
 ## Default values ##
 ####################
 
+[ -n "$STABLE" ] || STABLE=0
+
 [ -n "$BUNDLED_CLANG" ] || BUNDLED_CLANG=0
 [ -n "$TARBALL" ] || TARBALL=0
 [ -n "$TRANSLATE" ] || TRANSLATE=0
@@ -47,12 +49,12 @@ real_dir_path () (
 [ -n "$OOP_PR" ] || OOP_PR=0
 [ -n "$PDF_JS" ] || PDF_JS=0
 [ -n "$POLICIES" ] || POLICIES=0
+[ -n "$WEBGPU" ] || WEBGPU=0
 [ -n "$WIDEVINE" ] || WIDEVINE=1
 
 [ -n "$OPENH264" ] || OPENH264=1
 [ -n "$PIPEWIRE" ] || PIPEWIRE=1
 [ -n "$PULSE" ] || PULSE=1
-[ -n "$STABLE" ] || STABLE=0
 [ -n "$VAAPI" ] || VAAPI=1
 
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
@@ -281,6 +283,14 @@ fi
 
 if [ $POLICIES -eq 1 ]; then
   INS="$INS -e \"s@^#\(.*/managed/policies\.json\)@\1@\""
+fi
+
+
+if [ $WEBGPU -eq 0 ]; then
+  # GN_FLAGS += use_dawn=false
+  gn_enable="$gn_enable use_dawn"
+else
+  gn_enable="$gn_enable skia_use_dawn"
 fi
 
 

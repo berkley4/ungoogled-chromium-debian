@@ -25,15 +25,17 @@ TRANSLATE	0		Google translate support
 DRIVER		1		Chromedriver package
 
 OOP_PR		0		Out of process printing (X11 only)
-OPENH264	1
 PDF_JS		0		PDF javascript support
 PIPEWIRE	1
 PULSE		1
-VAAPI		1
+WEBGPU		0
 WIDEVINE	1
 
 
-## System Libraries (unbundling)
+## Libraries
+
+OPENH264	1
+VAAPI		1
 
 SYS_JPEG	1
 SYS_USB		0
