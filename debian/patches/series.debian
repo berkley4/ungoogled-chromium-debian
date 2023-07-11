@@ -149,5 +149,5 @@ various/vanadium/disable-content-feed-suggestions-by-default.patch
 #optional/system/unstable/ffmpeg-first_dts.patch
 #optional/system/unstable/roll-src-third_party-ffmpeg-102.patch
 #optional/system/unstable/roll-src-third_party-ffmpeg-106.patch
+#optional/fix-clang-structured_binding.patch
 #optional/fix-missing-symbols.patch
-#optional/scope-bug.patch
