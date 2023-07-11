@@ -9,7 +9,7 @@ Subject: [PATCH] enable user agent freeze by default
 
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -3519,6 +3519,7 @@
+@@ -3642,6 +3642,7 @@
        // iOS not included as it should not send a reduced User-Agent string.
        origin_trial_os: ["android", "chromeos", "fuchsia", "linux", "mac", "win"],
        base_feature: "ReduceUserAgent",

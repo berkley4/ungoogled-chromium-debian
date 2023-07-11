@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -354,6 +354,7 @@
+@@ -383,6 +383,7 @@
  
      if (is_clang && current_cpu == "x64") {
        cflags += [ "-fcf-protection" ]

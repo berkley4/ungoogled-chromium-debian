@@ -3,7 +3,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
 
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -5326,10 +5326,6 @@
+@@ -5441,10 +5441,6 @@
        data_deps += [ "//third_party/dawn/src/dawn/tests:dawn_perf_tests" ]
      }
  
@@ -16,7 +16,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
          "//chrome/test:load_library_perf_tests",
 --- a/third_party/angle/gni/angle.gni
 +++ b/third_party/angle/gni/angle.gni
-@@ -115,7 +115,7 @@
+@@ -119,7 +119,7 @@
    }
  
    # Indicate if the rapidJSON library is available to build with in third_party/.
@@ -25,7 +25,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
  }
  
  declare_args() {
-@@ -289,10 +289,10 @@
+@@ -293,10 +293,10 @@
    angle_enable_apple_translator_workarounds =
        is_apple && (angle_enable_glsl || use_fuzzing_engine)
  
@@ -67,9 +67,9 @@ author: Michel Le Bihan <michel@lebihan.pl>
    import("angle_perftests.gni")
  
    # This test suite is for perf tests that use ANGLE's internals in some direct way.
-@@ -1708,10 +1706,10 @@
+@@ -1734,10 +1732,10 @@
    if (build_angle_trace_tests) {
-     deps += [ ":angle_trace_tests" ]
+     deps += [ ":angle_trace_perf_tests" ]
    }
 -  if (is_clang) {
 +  if (false) {

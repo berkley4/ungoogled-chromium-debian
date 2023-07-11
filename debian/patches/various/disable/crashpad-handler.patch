@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -673,14 +673,6 @@
+@@ -672,14 +672,6 @@
        ]
      }
  
@@ -17,20 +17,18 @@
      }
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -4575,10 +4575,6 @@
+@@ -4619,8 +4619,6 @@
+         "enterprise/connectors/analysis/print_content_analysis_utils.cc",
+         "enterprise/connectors/analysis/print_content_analysis_utils.h",
        ]
+-
+-      deps += [ "//third_party/crashpad/crashpad/client:common" ]
      }
  
--    if (!is_fuchsia) {
--      deps += [ "//third_party/crashpad/crashpad/client:common" ]
--    }
--
      # On Windows, the hashes are embedded in //chrome:chrome_initial rather
-     # than here in :chrome_dll.
-     if (!is_win) {
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -302,8 +302,6 @@
+@@ -311,8 +311,6 @@
            public_deps += [
              ":xdg_mime",  # Needs to be public for installer to consume files.
            ]
@@ -39,7 +37,7 @@
          }
  
          ldflags = []
-@@ -1725,7 +1723,6 @@
+@@ -1742,7 +1740,6 @@
        deps = [
          ":angle_egl_symbols",
          ":angle_gles_symbols",
@@ -47,7 +45,7 @@
          ":chrome_symbols",
        ]
        if (is_linux) {
-@@ -1749,18 +1746,6 @@
+@@ -1766,18 +1763,6 @@
  
        deps = [ ":chrome" ]
      }

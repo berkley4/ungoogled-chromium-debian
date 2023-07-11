@@ -21,7 +21,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/browser_process_impl.cc
 +++ b/chrome/browser/browser_process_impl.cc
-@@ -1043,7 +1043,7 @@
+@@ -1055,7 +1055,7 @@
  #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
  
    registry->RegisterBooleanPref(metrics::prefs::kMetricsReportingEnabled,
@@ -32,7 +32,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -75,7 +75,6 @@
+@@ -76,7 +76,6 @@
  #include "chrome/browser/hid/chrome_hid_delegate.h"
  #include "chrome/browser/interstitials/enterprise_util.h"
  #include "chrome/browser/lifetime/browser_shutdown.h"
@@ -40,7 +40,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "chrome/browser/media/audio_service_util.h"
  #include "chrome/browser/media/router/media_router_feature.h"
  #include "chrome/browser/media/webrtc/audio_debug_recordings_handler.h"
-@@ -230,7 +229,6 @@
+@@ -233,7 +232,6 @@
  #include "components/no_state_prefetch/common/no_state_prefetch_final_status.h"
  #include "components/no_state_prefetch/common/prerender_url_loader_throttle.h"
  #include "components/omnibox/common/omnibox_features.h"
@@ -48,7 +48,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "components/page_load_metrics/browser/metrics_web_contents_observer.h"
  #include "components/payments/content/payment_handler_navigation_throttle.h"
  #include "components/payments/content/payment_request_display_manager.h"
-@@ -4930,16 +4928,6 @@
+@@ -4826,16 +4824,6 @@
      content::NavigationHandle* handle) {
    std::vector<std::unique_ptr<content::NavigationThrottle>> throttles;
  
@@ -65,7 +65,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #if BUILDFLAG(ENABLE_SUPERVISED_USERS)
    MaybeAddThrottle(
        SupervisedUserNavigationThrottle::MaybeCreateThrottleFor(handle),
-@@ -5024,10 +5012,6 @@
+@@ -4920,10 +4908,6 @@
      throttle_manager->MaybeAppendNavigationThrottles(handle, &throttles);
    }
  
@@ -141,7 +141,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      "most_visited_sites.cc",
      "most_visited_sites.h",
      "ntp_tile.cc",
-@@ -92,7 +90,6 @@
+@@ -93,7 +91,6 @@
      "custom_links_manager_impl_unittest.cc",
      "custom_links_store_unittest.cc",
      "icon_cacher_impl_unittest.cc",

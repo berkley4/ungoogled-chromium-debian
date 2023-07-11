@@ -22,10 +22,10 @@
  namespace net {
 --- a/ui/base/resource/resource_bundle.cc
 +++ b/ui/base/resource/resource_bundle.cc
-@@ -31,7 +31,7 @@
- #include "build/build_config.h"
+@@ -32,7 +32,7 @@
  #include "net/filter/gzip_header.h"
  #include "skia/ext/image_operations.h"
+ #include "third_party/abseil-cpp/absl/types/variant.h"
 -#include "third_party/brotli/include/brotli/decode.h"
 +#include <brotli/decode.h>
  #include "third_party/skia/include/core/SkBitmap.h"

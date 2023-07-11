@@ -4,23 +4,24 @@ bug: http://bugs.debian.org/914487
 
 --- a/chrome/common/safe_browsing/BUILD.gn
 +++ b/chrome/common/safe_browsing/BUILD.gn
-@@ -145,8 +145,6 @@
-       "protobuf_message_log_macros.h",
-       "protobuf_message_read_macros.h",
-       "protobuf_message_write_macros.h",
--      "rar_analyzer.cc",
--      "rar_analyzer.h",
-       "seven_zip_analyzer.cc",
-       "seven_zip_analyzer.h",
-       "zip_analyzer.cc",
-@@ -162,7 +160,6 @@
+@@ -134,7 +134,6 @@
        "//components/safe_browsing/content/common:file_type_policies",
        "//components/safe_browsing/core/common",
        "//third_party/lzma_sdk/google:seven_zip_reader",
 -      "//third_party/unrar:unrar",
      ]
  
-     if (is_linux) {
+     public_deps = [
+--- a/chrome/browser/safe_browsing/cloud_content_scanning/file_analysis_request.h
++++ b/chrome/browser/safe_browsing/cloud_content_scanning/file_analysis_request.h
+@@ -11,7 +11,6 @@
+ #include "chrome/browser/enterprise/connectors/service_provider_config.h"
+ #include "chrome/browser/safe_browsing/cloud_content_scanning/binary_upload_service.h"
+ #include "chrome/common/safe_browsing/archive_analyzer_results.h"
+-#include "chrome/services/file_util/public/cpp/sandboxed_rar_analyzer.h"
+ #include "chrome/services/file_util/public/cpp/sandboxed_zip_analyzer.h"
+ 
+ namespace safe_browsing {
 --- a/chrome/browser/safe_browsing/download_protection/file_analyzer.cc
 +++ b/chrome/browser/safe_browsing/download_protection/file_analyzer.cc
 @@ -78,7 +78,10 @@
@@ -35,9 +36,29 @@ bug: http://bugs.debian.org/914487
  #if BUILDFLAG(IS_MAC)
    } else if (inspection_type == DownloadFileType::DMG) {
      StartExtractDmgFeatures();
+--- a/chrome/browser/safe_browsing/download_protection/check_client_download_request_base.h
++++ b/chrome/browser/safe_browsing/download_protection/check_client_download_request_base.h
+@@ -23,7 +23,6 @@
+ #include "chrome/browser/safe_browsing/download_protection/download_protection_util.h"
+ #include "chrome/browser/safe_browsing/download_protection/download_request_maker.h"
+ #include "chrome/browser/safe_browsing/download_protection/file_analyzer.h"
+-#include "chrome/services/file_util/public/cpp/sandboxed_rar_analyzer.h"
+ #include "chrome/services/file_util/public/cpp/sandboxed_zip_analyzer.h"
+ #include "components/history/core/browser/history_service.h"
+ #include "components/safe_browsing/content/browser/safe_browsing_navigation_observer_manager.h"
+--- a/chrome/browser/safe_browsing/download_protection/file_analyzer.h
++++ b/chrome/browser/safe_browsing/download_protection/file_analyzer.h
+@@ -12,7 +12,6 @@
+ #include "base/time/time.h"
+ #include "build/build_config.h"
+ #include "chrome/common/safe_browsing/binary_feature_extractor.h"
+-#include "chrome/services/file_util/public/cpp/sandboxed_rar_analyzer.h"
+ #include "chrome/services/file_util/public/cpp/sandboxed_seven_zip_analyzer.h"
+ #include "chrome/services/file_util/public/cpp/sandboxed_zip_analyzer.h"
+ #include "components/safe_browsing/core/common/proto/csd.pb.h"
 --- a/chrome/services/file_util/safe_archive_analyzer.cc
 +++ b/chrome/services/file_util/safe_archive_analyzer.cc
-@@ -83,9 +83,10 @@
+@@ -81,9 +81,10 @@
                                weak_factory_.GetWeakPtr());
    timeout_timer_.Start(FROM_HERE, kArchiveAnalysisTimeout, this,
                         &SafeArchiveAnalyzer::Timeout);
@@ -53,14 +74,14 @@ bug: http://bugs.debian.org/914487
  void SafeArchiveAnalyzer::AnalyzeSevenZipFile(
 --- a/chrome/services/file_util/safe_archive_analyzer.h
 +++ b/chrome/services/file_util/safe_archive_analyzer.h
-@@ -6,7 +6,6 @@
- #define CHROME_SERVICES_FILE_UTIL_SAFE_ARCHIVE_ANALYZER_H_
+@@ -7,7 +7,6 @@
  
  #include "chrome/common/safe_browsing/archive_analyzer_results.h"
--#include "chrome/common/safe_browsing/rar_analyzer.h"
- #include "chrome/common/safe_browsing/seven_zip_analyzer.h"
- #include "chrome/common/safe_browsing/zip_analyzer.h"
  #include "chrome/services/file_util/public/mojom/safe_archive_analyzer.mojom.h"
+-#include "chrome/utility/safe_browsing/rar_analyzer.h"
+ #include "chrome/utility/safe_browsing/seven_zip_analyzer.h"
+ #include "chrome/utility/safe_browsing/zip_analyzer.h"
+ #include "mojo/public/cpp/bindings/remote.h"
 @@ -63,7 +62,6 @@
    void Timeout();
  
@@ -69,25 +90,45 @@ bug: http://bugs.debian.org/914487
    safe_browsing::SevenZipAnalyzer seven_zip_analyzer_;
  #if BUILDFLAG(IS_MAC)
    safe_browsing::dmg::DMGAnalyzer dmg_analyzer_;
---- a/chrome/common/safe_browsing/zip_analyzer.cc
-+++ b/chrome/common/safe_browsing/zip_analyzer.cc
-@@ -18,7 +18,6 @@
- #include "base/time/time.h"
- #include "build/build_config.h"
- #include "chrome/common/safe_browsing/archive_analyzer_results.h"
--#include "chrome/common/safe_browsing/rar_analyzer.h"
- #include "components/safe_browsing/content/common/file_type_policies.h"
- #include "components/safe_browsing/core/common/features.h"
- #include "components/safe_browsing/core/common/proto/csd.pb.h"
---- a/chrome/common/safe_browsing/archive_analyzer.cc
-+++ b/chrome/common/safe_browsing/archive_analyzer.cc
+--- a/chrome/services/file_util/public/cpp/BUILD.gn
++++ b/chrome/services/file_util/public/cpp/BUILD.gn
+@@ -13,8 +13,6 @@
+ 
+   if (safe_browsing_mode == 1) {
+     sources = [
+-      "sandboxed_rar_analyzer.cc",
+-      "sandboxed_rar_analyzer.h",
+       "sandboxed_seven_zip_analyzer.cc",
+       "sandboxed_seven_zip_analyzer.h",
+       "sandboxed_zip_analyzer.cc",
+--- a/chrome/utility/safe_browsing/BUILD.gn
++++ b/chrome/utility/safe_browsing/BUILD.gn
+@@ -31,8 +31,6 @@
+     sources = [
+       "archive_analyzer.cc",
+       "archive_analyzer.h",
+-      "rar_analyzer.cc",
+-      "rar_analyzer.h",
+       "seven_zip_analyzer.cc",
+       "seven_zip_analyzer.h",
+       "zip_analyzer.cc",
+@@ -55,7 +53,6 @@
+       "//components/safe_browsing/content/common:file_type_policies",
+       "//components/safe_browsing/core/common",
+       "//third_party/lzma_sdk/google:seven_zip_reader",
+-      "//third_party/unrar:unrar",
+     ]
+ 
+     if (is_linux) {
+--- a/chrome/utility/safe_browsing/archive_analyzer.cc
++++ b/chrome/utility/safe_browsing/archive_analyzer.cc
 @@ -8,7 +8,6 @@
  #include "build/build_config.h"
  #include "build/buildflag.h"
  #include "chrome/common/safe_browsing/archive_analyzer_results.h"
--#include "chrome/common/safe_browsing/rar_analyzer.h"
- #include "chrome/common/safe_browsing/seven_zip_analyzer.h"
- #include "chrome/common/safe_browsing/zip_analyzer.h"
+-#include "chrome/utility/safe_browsing/rar_analyzer.h"
+ #include "chrome/utility/safe_browsing/seven_zip_analyzer.h"
+ #include "chrome/utility/safe_browsing/zip_analyzer.h"
  #include "components/safe_browsing/content/common/proto/download_file_types.pb.h"
 @@ -24,7 +23,8 @@
  std::unique_ptr<ArchiveAnalyzer> ArchiveAnalyzer::CreateForArchiveType(

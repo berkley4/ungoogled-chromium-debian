@@ -44,7 +44,7 @@
  
 --- a/net/disk_cache/simple/simple_entry_impl.cc
 +++ b/net/disk_cache/simple/simple_entry_impl.cc
-@@ -36,7 +36,7 @@
+@@ -35,7 +35,7 @@
  #include "net/disk_cache/simple/simple_util.h"
  #include "net/log/net_log.h"
  #include "net/log/net_log_source_type.h"

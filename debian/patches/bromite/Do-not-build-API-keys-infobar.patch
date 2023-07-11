@@ -9,7 +9,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/ui/BUILD.gn
 +++ b/chrome/browser/ui/BUILD.gn
-@@ -1294,8 +1294,6 @@
+@@ -1399,8 +1399,6 @@
        "singleton_tabs.h",
        "startup/automation_infobar_delegate.cc",
        "startup/automation_infobar_delegate.h",

@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2118,7 +2118,11 @@
+@@ -2208,7 +2208,11 @@
        "-polly-run-dce",
        "-mllvm",
        "-polly-invariant-load-hoisting",
@@ -12,7 +12,7 @@
    }
  }
  
-@@ -2150,6 +2154,7 @@
+@@ -2240,6 +2244,7 @@
  
  # Default "optimization on" config.
  config("optimize") {
@@ -20,7 +20,7 @@
    if (is_win) {
      if (chrome_pgo_phase != 2) {
        # Favor size over speed, /O1 must be before the common flags.
-@@ -2198,13 +2203,14 @@
+@@ -2288,13 +2293,14 @@
      rustflags = [ "-Copt-level=s" ]
    } else {
      cflags = [ "-O2" ] + common_optimize_on_cflags + polly_cflags
@@ -36,7 +36,7 @@
  }
  
  # Turn off optimizations.
-@@ -2249,6 +2255,7 @@
+@@ -2339,6 +2345,7 @@
  # optimization and link-time code generation which is very expensive and should
  # be used sparingly.
  config("optimize_max") {
@@ -44,7 +44,7 @@
    if (is_nacl && is_nacl_irt) {
      # The NaCl IRT is a special case and always wants its own config.
      # Various components do:
-@@ -2260,7 +2267,6 @@
+@@ -2350,7 +2357,6 @@
      # "default_optimization", below.
      configs = [ "//build/config/nacl:irt_optimize" ]
    } else {
@@ -52,7 +52,7 @@
      if (is_win) {
        # Favor speed over size, /O2 must be before the common flags.
        # /O2 implies /Ot, /Oi, and /GF.
-@@ -2269,7 +2275,9 @@
+@@ -2359,7 +2365,9 @@
        cflags = [ "-O1" ] + common_optimize_on_cflags
      } else {
        cflags = [ "-O2" ] + common_optimize_on_cflags + polly_cflags
@@ -62,7 +62,7 @@
      rustflags = [ "-Copt-level=3" ]
    }
  }
-@@ -2282,6 +2290,7 @@
+@@ -2372,6 +2380,7 @@
  # TODO(crbug.com/621335) - rework how all of these configs are related
  # so that we don't need this disclaimer.
  config("optimize_speed") {
@@ -70,7 +70,7 @@
    if (is_nacl && is_nacl_irt) {
      # The NaCl IRT is a special case and always wants its own config.
      # Various components do:
-@@ -2293,7 +2302,6 @@
+@@ -2383,7 +2392,6 @@
      # "default_optimization", below.
      configs = [ "//build/config/nacl:irt_optimize" ]
    } else {
@@ -78,7 +78,7 @@
      if (is_win) {
        # Favor speed over size, /O2 must be before the common flags.
        # /O2 implies /Ot, /Oi, and /GF.
-@@ -2302,7 +2310,9 @@
+@@ -2392,7 +2400,9 @@
        cflags = [ "-O1" ] + common_optimize_on_cflags
      } else {
        cflags = [ "-O3" ] + common_optimize_on_cflags + polly_cflags
