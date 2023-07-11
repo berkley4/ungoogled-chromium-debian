@@ -108,9 +108,7 @@ various/system/zlib.patch
 various/system/extra/brotli.patch
 various/system/extra/opus.patch
 various/system/extra/zlib.patch
-various/upstream/0001-Add-some-typenames-that-are-required-in-C++17.patch
 various/upstream/0003-controlledframe-Fix-start-up-crash.patch
-various/upstream/0010-sigsegv-dom.patch
 various/vanadium/disable-article-suggestions-feature-by-default.patch
 various/vanadium/disable-content-feed-suggestions-by-default.patch
 
