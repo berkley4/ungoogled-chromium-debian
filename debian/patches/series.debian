@@ -86,6 +86,7 @@ various/compiler-flags/zero-call-used-registers.patch
 various/disable/angle-perftests.patch
 various/disable/crashpad-handler.patch
 various/disable/driver-chrome-path.patch
+various/disable/evdev.patch
 various/disable/orchestrator.patch
 various/fedora/enable-hardware-accelerated-mjpeg.patch
 various/fixes/cross-origin-favicons-1.patch
