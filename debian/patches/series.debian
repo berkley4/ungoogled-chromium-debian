@@ -89,7 +89,6 @@ various/disable/driver-chrome-path.patch
 various/disable/evdev.patch
 various/disable/orchestrator.patch
 various/fedora/enable-hardware-accelerated-mjpeg.patch
-various/fixes/cross-origin-favicons-1.patch
 various/fixes/EnumTable-crash.patch
 various/fixes/fc-cache-version.patch
 various/fixes/font-rendering.patch
