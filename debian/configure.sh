@@ -62,6 +62,7 @@ real_dir_path () (
 [ -n "$PULSE" ] || PULSE=1
 [ -n "$VAAPI" ] || VAAPI=1
 
+[ -n "$SYS_FFMPEG" ] || SYS_FFMPEG=0
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
 [ -n "$SYS_USB" ] || SYS_USB=0
 
@@ -347,6 +348,17 @@ else
   optional_patches="$optional_patches system/vaapi-add-av1-support"
   optional_patches="$optional_patches system/vaapi-disable-libaom-encoding"
   optional_patches="$optional_patches system/vaapi-wayland"
+fi
+
+
+
+if [ $SYS_FFMPEG -eq 1 ]; then
+  optional_patches="$optional_patches system/unstable/ffmpeg/ffmpeg-first_dts"
+  optional_patches="$optional_patches system/unstable/ffmpeg/roll-src-third_party-ffmpeg-102"
+  optional_patches="$optional_patches system/unstable/ffmpeg/roll-src-third_party-ffmpeg-106"
+
+  sys_enable="$sys_enable ffmpeg"
+  deps_enable="$deps_enable libavutil libavcodec libavformat"
 fi
 
 
