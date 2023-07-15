@@ -10,7 +10,7 @@ sys_enable=
 deps_disable=
 deps_enable=
 
-optional_patches='custom-import-limits march mtune'
+optional_patches='custom-import-limits cpu/march cpu/mtune'
 
 MARCH_SET=0
 POLLY_EXTRA_SET=0
@@ -208,7 +208,7 @@ if [ -n "$MARCH" ] || [ -n "$MTUNE" ]; then
 
   for i in avx avx2 march mtune; do
     sed -e "s@\(march=\)[^"]*@\1$MARCH@" -e "s@\(mtune=\)[^"]*@\1$MTUNE@" \
-        -i $DEBIAN/patches/optional/$i.patch
+        -i $DEBIAN/patches/optional/cpu/$i.patch
   done
 fi
 
@@ -217,16 +217,16 @@ if [ $AVX2 -eq 1 ]; then
   AES_PCLMUL=1
   AVX=1
   V8_AVX2=1
-  optional_patches="$optional_patches avx2"
+  optional_patches="$optional_patches cpu/avx2"
 fi
 
 if [ $AVX -eq 1 ]; then
   AES_PCLMUL=1
-  optional_patches="$optional_patches avx"
+  optional_patches="$optional_patches cpu/avx"
 fi
 
 if [ $AES_PCLMUL -eq 1 ]; then
-  optional_patches="$optional_patches aes-pclmul"
+  optional_patches="$optional_patches cpu/aes-pclmul"
 fi
 
 if [ $V8_AVX2 -eq 1 ]; then

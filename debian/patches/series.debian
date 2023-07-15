@@ -114,15 +114,15 @@ various/vanadium/disable-content-feed-suggestions-by-default.patch
 
 #optional/custom-import-limits.patch
 #optional/custom-thin-lto-cache-location.patch
-#optional/aes-pclmul.patch
-#optional/march.patch
-#optional/mtune.patch
-#optional/avx.patch
-#optional/avx2.patch
 #optional/llvm-polly-vectorizer.patch
 #optional/llvm-polly-extra.patch
 #optional/llvm-polly-parallel.patch
 #optional/thinlto-jobs.patch
+#optional/cpu/aes-pclmul.patch
+#optional/cpu/march.patch
+#optional/cpu/mtune.patch
+#optional/cpu/avx.patch
+#optional/cpu/avx2.patch
 #optional/disable/atk-dbus.patch
 #optional/disable/catapult.patch
 #optional/disable/rtc-protobuf.patch
