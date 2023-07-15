@@ -313,11 +313,7 @@ if [ $QT -eq 0 ]; then
   gn_enable="$gn_enable use_qt"
   deps_disable="$deps_disable qtbase5"
 else
-  optional_patches="$optional_patches qt/0001-handle_scale_factor_changes"
-  optional_patches="$optional_patches qt/0002-fix_font_double_scaling"
-  optional_patches="$optional_patches qt/0003-printing_deps"
-  optional_patches="$optional_patches qt/0004-enable_AllowQt_feature_flag"
-  optional_patches="$optional_patches qt/0005-logical_scale_factor"
+  optional_patches="$optional_patches qt/"
 
   optional_deps="$optional_deps qtbase5"
 
@@ -345,17 +341,13 @@ if [ $VAAPI -eq 0 ]; then
   gn_enable="$gn_enable use_vaapi"
   deps_disable="$deps_disable libva"
 else
-  optional_patches="$optional_patches system/vaapi/vaapi-add-av1-support"
-  optional_patches="$optional_patches system/vaapi/vaapi-disable-libaom-encoding"
-  optional_patches="$optional_patches system/vaapi/vaapi-wayland"
+  optional_patches="$optional_patches system/vaapi/"
 fi
 
 
 
 if [ $SYS_FFMPEG -eq 1 ]; then
-  optional_patches="$optional_patches system/unstable/ffmpeg/ffmpeg-first_dts"
-  optional_patches="$optional_patches system/unstable/ffmpeg/roll-src-third_party-ffmpeg-102"
-  optional_patches="$optional_patches system/unstable/ffmpeg/roll-src-third_party-ffmpeg-106"
+  optional_patches="$optional_patches system/unstable/ffmpeg/"
 
   sys_enable="$sys_enable ffmpeg"
   deps_enable="$deps_enable libavutil libavcodec libavformat"
@@ -383,9 +375,7 @@ fi
 [ $SYS_ICU_SET -eq 1 ] && [ $SYS_ICU -eq 0 ] || SYS_ICU=1
 
 if [ $SYS_ICU -eq 1 ]; then
-  icu_patches="icu/icu icu/icu-headers"
-  icu_patches="$(echo $icu_patches | sed "s@\([^ ]*\)@system/unstable/\1@g")"
-  optional_patches="$optional_patches $icu_patches"
+  optional_patches="$optional_patches system/unstable/icu/"
 
   # SYS_LIBS += icu libxml libxslt (last two depend on icu)
   sys_enable="$sys_enable icu"
@@ -506,7 +496,15 @@ fi
 
 if [ -n "$optional_patches" ]; then
   for i in $optional_patches; do
-    SER="$SER -e \"s@^#\(optional/${i}\.patch\)@\1@\""
+    case $i in
+      */)
+        SER="$SER -e \"s@^#\(optional/${i}\)@\1@\""
+        ;;
+
+      *)
+        SER="$SER -e \"s@^#\(optional/${i}\.patch\)@\1@\""
+        ;;
+    esac
   done
 fi
 
