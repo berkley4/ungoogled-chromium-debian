@@ -383,7 +383,7 @@ fi
 [ $SYS_ICU_SET -eq 1 ] && [ $SYS_ICU -eq 0 ] || SYS_ICU=1
 
 if [ $SYS_ICU -eq 1 ]; then
-  icu_patches="icu icu-headers"
+  icu_patches="icu/icu icu/icu-headers"
   icu_patches="$(echo $icu_patches | sed "s@\([^ ]*\)@system/unstable/\1@g")"
   optional_patches="$optional_patches $icu_patches"
 
