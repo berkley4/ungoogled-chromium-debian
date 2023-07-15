@@ -135,9 +135,6 @@ various/vanadium/disable-content-feed-suggestions-by-default.patch
 #optional/qt/0005-logical_scale_factor.patch
 #optional/system/jpeg.patch
 #optional/system/libusb.patch
-#optional/system/vaapi-add-av1-support.patch
-#optional/system/vaapi-disable-libaom-encoding.patch
-#optional/system/vaapi-wayland.patch
 #optional/system/unstable/dav1d.patch
 #optional/system/unstable/dav1d-no-unbundled-libavif.patch
 #optional/system/unstable/icu.patch
@@ -147,5 +144,8 @@ various/vanadium/disable-content-feed-suggestions-by-default.patch
 #optional/system/unstable/ffmpeg/ffmpeg-first_dts.patch
 #optional/system/unstable/ffmpeg/roll-src-third_party-ffmpeg-102.patch
 #optional/system/unstable/ffmpeg/roll-src-third_party-ffmpeg-106.patch
+#optional/system/vaapi/vaapi-add-av1-support.patch
+#optional/system/vaapi/vaapi-disable-libaom-encoding.patch
+#optional/system/vaapi/vaapi-wayland.patch
 #optional/fix-clang-structured_binding.patch
 #optional/fix-missing-symbols.patch
