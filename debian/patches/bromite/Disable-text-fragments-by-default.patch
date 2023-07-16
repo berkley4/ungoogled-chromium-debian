@@ -85,7 +85,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    registry->RegisterBooleanPref(browser_ui::prefs::kWebKitForceEnableZoom,
 --- a/content/child/runtime_features.cc
 +++ b/content/child/runtime_features.cc
-@@ -287,6 +287,8 @@
+@@ -291,6 +291,8 @@
       raw_ref(autofill::features::kAutofillSharedAutofill)},
      {wf::EnableTouchDragAndContextMenu,
       raw_ref(features::kTouchDragAndContextMenu)},
@@ -137,7 +137,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    UpdateBaseURL();
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -3484,10 +3484,9 @@
+@@ -3489,10 +3489,9 @@
      },
      {
        name: "TextFragmentIdentifiers",

@@ -22,16 +22,24 @@ system/openjpeg.patch
 system/opus.patch
 system/zlib.patch
 
+bromite/00Clear-CORS-Preflight-Cache-on-clearing-data.patch
+bromite/00Deprecate-Data-URL-in-SVGUseElement.patch
+bromite/00Disable-Component-Updates.patch
+bromite/00Disable-csp-reports.patch
 bromite/Add-site-engagement-flag.patch
 bromite/AudioBuffer-AnalyserNode-fp-mitigations.patch
 bromite/Block-gateway-attacks-via-websockets.patch
+bromite/Disable-all-promo-dialogs.patch
 bromite/Disable-AsyncDNS-by-default.patch
 bromite/Disable-idle-detection.patch
 bromite/Disable-plugins-enumeration.patch
+bromite/Disable-requests-for-single-word-Omnibar-searches.patch
 bromite/Disable-some-signed-exchange-features.patch
 bromite/Disable-text-fragments-by-default.patch
 bromite/Disable-TLS-resumption.patch
 bromite/Do-not-build-API-keys-infobar.patch
+bromite/Enable-ECH-by-default.patch
+bromite/first_run-deactivate-autoupdate-globally.patch
 bromite/Hardening-against-incognito-mode-detection.patch
 bromite/Never-fetch-popular-sites.patch
 bromite/Partition-Blink-memory-cache.patch
@@ -64,6 +72,8 @@ vanadium/0051-stub-out-the-battery-status-API.patch
 vanadium/0081-Enable-strict-origin-isolation-by-default.patch
 vanadium/0084-Disable-detailed-language-settings-by-default.patch
 vanadium/0087-enable-process-isolated-sandboxed-iframes-by-default.patch
+vanadium/0109-Block-partitioned-third-party-cookies-as-well-when-b.patch
+vanadium/0110-enable-Chrome-Root-Store-by-default.patch
 
 various/fix-unbundle-script-dh-clean-interoperabilty.patch
 various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
@@ -75,6 +85,7 @@ various/bromite/Disable-all-predictors-code.patch
 various/bromite/Disable-conversion-measurement-api.patch
 various/bromite/Disable-various-metrics.patch
 various/bromite/DoH-improvements.patch
+various/bromite/webRTC-do-not-expose-local-IP-addresses.patch
 various/compiler-flags/init-stack-vars-zero.patch
 various/compiler-flags/intel-control-flow-enforcement.patch
 various/compiler-flags/no-plt.patch
@@ -89,11 +100,14 @@ various/disable/orchestrator.patch
 various/disable/tests.patch
 various/disable/unrar.patch
 various/fedora/enable-hardware-accelerated-mjpeg.patch
+various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
 various/fixes/chromedriver-BrandVersion.patch
+various/fixes/Do-not-link-with-libatomic.patch
 various/fixes/EnumTable-crash.patch
 various/fixes/fc-cache-version.patch
 various/fixes/font-rendering.patch
 various/fixes/InkDropHost-crash.patch
+various/fixes/Multi-Screen-Window-Placement-API-fix.patch
 various/fixes/remove-main-main10-profile-limit.patch
 various/fixes/revert-fix-linking-chromedriver.patch
 various/fixes/revert-fix-linking-content-shell.patch

@@ -1,0 +1,17 @@
+--- a/base/BUILD.gn
++++ b/base/BUILD.gn
+@@ -1096,14 +1096,6 @@
+     public_deps += [ ":nodebug_assertion" ]
+   }
+ 
+-  # Needed for <atomic> if using newer C++ library than sysroot, except if
+-  # building inside the cros_sdk environment - use host_toolchain as a
+-  # more robust check for this.
+-  if (!use_sysroot && (is_android || is_chromeos || (is_linux && !is_castos)) &&
+-      host_toolchain != "//build/toolchain/cros:host") {
+-    libs += [ "atomic" ]
+-  }
+-
+   if (use_allocator_shim) {
+     sources += [
+       "allocator/partition_allocator/shim/allocator_shim.cc",

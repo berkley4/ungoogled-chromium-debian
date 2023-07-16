@@ -1,0 +1,29 @@
+From: uazo <uazo@users.noreply.github.com>
+Date: Tue, 12 Jun 2018 15:09:26 +0200
+Subject: Disable all promo dialogs
+
+---
+ .../chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java      | 1 +
+ components/user_education/common/feature_promo_registry.cc       | 1 +
+ 2 files changed, 2 insertions(+)
+
+--- a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedRootUiCoordinator.java
+@@ -943,6 +943,7 @@
+     }
+ 
+     private boolean maybeShowPromo() {
++        if ((true)) return false;
+         // Only one promo can be shown in one run to avoid nagging users too much.
+         if (FullScreenSyncPromoUtil.launchPromoIfNeeded(mActivity,
+                     SyncConsentActivityLauncherImpl.get(), VersionInfo.getProductMajorVersion())) {
+--- a/components/user_education/common/feature_promo_registry.cc
++++ b/components/user_education/common/feature_promo_registry.cc
+@@ -26,6 +26,7 @@
+ }
+ 
+ void FeaturePromoRegistry::RegisterFeature(FeaturePromoSpecification spec) {
++  if ((true)) return;
+   const base::Feature* const iph_feature = spec.feature();
+   CHECK(iph_feature);
+   const auto result = feature_promo_data_.emplace(iph_feature, std::move(spec));
