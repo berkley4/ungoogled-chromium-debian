@@ -54,6 +54,7 @@ real_dir_path () (
 [ -n "$PDF_JS" ] || PDF_JS=0
 [ -n "$POLICIES" ] || POLICIES=0
 [ -n "$QT" ] || QT=1
+[ -n "$VR" ] || VR=0
 [ -n "$WEBGPU" ] || WEBGPU=0
 [ -n "$WIDEVINE" ] || WIDEVINE=1
 
@@ -290,6 +291,12 @@ fi
 
 if [ $POLICIES -eq 1 ]; then
   INS="$INS -e \"s@^#\(.*/managed/policies\.json\)@\1@\""
+fi
+
+
+if [ $VR -eq 1 ]; then
+  # GN_FLAGS += enable_vr=false enable_arcore=false ...
+  gn_disable="$gn_disable enable_vr"
 fi
 
 

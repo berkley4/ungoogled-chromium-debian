@@ -29,6 +29,7 @@ PDF_JS		0		PDF javascript support
 PIPEWIRE	1
 PULSE		1
 QT		1
+VR		0		Virtual reality hardware support
 WEBGPU		0
 WIDEVINE	1
 

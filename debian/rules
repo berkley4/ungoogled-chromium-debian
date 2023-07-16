@@ -51,7 +51,6 @@ GN_FLAGS +=                                     \
         enable_component_updater=false          \
         enable_lens_desktop=false               \
         enable_trace_logging=false              \
-        enable_vr=false                         \
         rtc_disable_metrics=true                \
         skia_enable_skshaper_tests=false        \
         use_cfi_cast=true                       \
@@ -78,6 +77,9 @@ GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
 
 # Disable print preview (workaround for print preview dialog crash)
 GN_FLAGS += enable_print_preview=false
+
+# Disable virtual reality features
+GN_FLAGS += enable_vr=false enable_arcore=false enable_openxr=false enable_cardboard=false
 
 # Enable 256-bit re-vectorization pass in WASM compilation pipeline
 #GN_FLAGS += v8_enable_wasm_simd256_revec=true
