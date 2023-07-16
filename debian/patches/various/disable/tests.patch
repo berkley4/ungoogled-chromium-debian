@@ -1,0 +1,30 @@
+--- a/components/update_client/BUILD.gn
++++ b/components/update_client/BUILD.gn
+@@ -308,8 +308,6 @@
+     "//third_party/puffin:libpuffpatch",
+     "//third_party/re2",
+   ]
+-
+-  data_deps = [ "//components/test/data/update_client/puffin_patch_test:puffin_patch_test_files" ]
+ }
+ 
+ fuzzer_test("update_client_protocol_serializer_fuzzer") {
+--- a/third_party/puffin/BUILD.gn
++++ b/third_party/puffin/BUILD.gn
+@@ -115,7 +115,6 @@
+     "src/unittest_common.cc",
+     "src/utils_unittest.cc",
+   ]
+-  data_deps = [ "//components/test/data/update_client/puffin_patch_test:puffin_patch_test_files" ]
+   deps = [
+     ":libpuffdiff",
+     ":libpuffpatch",
+--- a/chrome/test/variations/BUILD.gn
++++ b/chrome/test/variations/BUILD.gn
+@@ -32,6 +32,5 @@
+     ":test_utils",
+     "//testing:run_isolated_script_test",
+     "//testing:test_scripts_shared",
+-    "//third_party/catapult/third_party/gsutil:gsutil",
+   ]
+ }

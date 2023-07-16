@@ -6,7 +6,7 @@ initial_preferences or master_preferences doesn't conform to debian policy.
 
 --- a/chrome/browser/first_run/first_run_internal_linux.cc
 +++ b/chrome/browser/first_run/first_run_internal_linux.cc
-@@ -19,12 +19,7 @@
+@@ -19,11 +19,7 @@ bool IsOrganicFirstRun() {
  }
  
  base::FilePath InitialPrefsPath() {
@@ -15,8 +15,7 @@ initial_preferences or master_preferences doesn't conform to debian policy.
 -  if (!base::PathService::Get(base::DIR_EXE, &dir_exe)) {
 -    return base::FilePath();
 -  }
--
 +  base::FilePath dir_exe = base::FilePath("/etc/chromium");
+ 
    return installer::InitialPreferences::Path(dir_exe);
  }
- 

@@ -15,8 +15,6 @@ disable/android.patch
 disable/font-tests.patch
 disable/swiftshader.patch
 disable/swiftshader-2.patch
-disable/tests.patch
-disable/unrar.patch
 disable/widevine-cdm-cu.patch
 
 system/event.patch
@@ -88,6 +86,8 @@ various/disable/crashpad-handler.patch
 various/disable/driver-chrome-path.patch
 various/disable/evdev.patch
 various/disable/orchestrator.patch
+various/disable/tests.patch
+various/disable/unrar.patch
 various/fedora/enable-hardware-accelerated-mjpeg.patch
 various/fixes/chromedriver-BrandVersion.patch
 various/fixes/EnumTable-crash.patch
