@@ -111,7 +111,6 @@ various/fixes/Multi-Screen-Window-Placement-API-fix.patch
 various/fixes/remove-main-main10-profile-limit.patch
 various/fixes/revert-fix-linking-chromedriver.patch
 various/fixes/revert-fix-linking-content-shell.patch
-various/fixes/revert-GlobalMediaControlsCastStartStop.patch
 various/fixes/shim-fix-for-official-builds.patch
 various/fixes/skia-gamma.patch
 various/fixes/xfce-maximize.patch
