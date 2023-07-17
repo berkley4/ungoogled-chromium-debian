@@ -173,7 +173,7 @@ fi
 if [ -n "$LTO_DIR" ]; then
   optional_patches="$optional_patches custom-thin-lto-cache-location"
 
-  sed -e "s@/custom/path/to/thinlto-cache@$LTO_DIR@" \
+  sed -e "s@^\(+.*thinlto-cache-dir=\)[-_a-zA-Z0-9/]*@\1$LTO_DIR@" \
       -i $DEBIAN/patches/optional/custom-thin-lto-cache-location.patch
 
   if [ ! -d $LTO_DIR ]; then
