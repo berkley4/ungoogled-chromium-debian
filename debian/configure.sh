@@ -547,19 +547,19 @@ fi
 ##  Modify debian directory files  ##
 #####################################
 
-[ -z "$CON" ] || eval sed $CON < $DEBIAN/control.in > $DEBIAN/control
-
 [ -z "$INS" ] || eval sed $INS < $DEBIAN/$INSTALL.in > $DEBIAN/$INSTALL
 
-[ -z "$RUL" ] || eval sed $RUL -i $DEBIAN/rules
+eval sed $CON < $DEBIAN/control.in > $DEBIAN/control
 
-[ -z "$SER" ] || eval sed $SER -i $DEBIAN/patches/series.debian
+eval sed $DSB -i $UC_DIR/domain_substitution.list
 
-[ -z "$DSB" ] || eval sed $DSB -i $UC_DIR/domain_substitution.list
+eval sed $SMF -i $UC_DIR/flags.gn
 
-[ -z "$SMF" ] || eval sed $SMF -i $UC_DIR/flags.gn
+eval sed $PRU -i $UC_DIR/pruning.list
 
-[ -z "$PRU" ] || eval sed $PRU -i $UC_DIR/pruning.list
+eval sed $RUL -i $DEBIAN/rules
+
+eval sed $SER -i $DEBIAN/patches/series.debian
 
 
 
