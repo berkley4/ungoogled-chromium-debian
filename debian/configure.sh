@@ -10,6 +10,7 @@ sys_enable=
 deps_disable=
 deps_enable=
 
+arches=
 optional_patches='custom-import-limits cpu/march cpu/mtune'
 
 MARCH_SET=0
@@ -207,8 +208,15 @@ if [ -n "$MARCH" ] || [ -n "$MTUNE" ]; then
     MTUNE=generic
   fi
 
-  for i in avx avx2 march mtune; do
-    sed -e "s@\(march=\)[^"]*@\1$MARCH@" -e "s@\(mtune=\)[^"]*@\1$MTUNE@" \
+  [ $AVX -eq 0 ] || arches="avx"
+  [ $AVX2 -eq 0 ] || arches="$arches avx2"
+
+  arch_patches="march mtune"
+  [ -z $arches ] || arch_patches="$arches march mtune"
+
+  for i in $arch_patches; do
+    sed -e "s@\(march=\)[-a-z0-9]*@\1$MARCH@" \
+        -e "s@\(mtune=\)[-a-z0-9]*@\1$MTUNE@" \
         -i $DEBIAN/patches/optional/cpu/$i.patch
   done
 fi
