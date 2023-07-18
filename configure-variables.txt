@@ -28,10 +28,10 @@ OOP_PR		0		Out of process printing (X11 only)
 PDF_JS		0		PDF javascript support
 PIPEWIRE	1
 PULSE		1
-QT		1
+QT		1		Runtime autodetected (eg Gnome desktops will ignore)
 VR		0		Virtual reality hardware support
-WEBGPU		0
-WIDEVINE	1
+WEBGPU		0		Not enabled upstream on linux yet (likely beta quality)
+WIDEVINE	1		Needs various extra components to enable
 
 
 ## Libraries
@@ -39,10 +39,13 @@ WIDEVINE	1
 OPENH264	1
 VAAPI		1
 
-SYS_FFMPEG	0
 SYS_JPEG	1
-SYS_USB		0
+SYS_USB		0		Not normally needed by most people
 SYS_ICU		1
+
+SYS_FFMPEG	0		Unsupported upstream for security reasons
+				Functional issues (eg videos not playing)
+				Needs a patched version of ffmpeg to build and run
 
 
 ## CPU threading options
@@ -55,13 +58,15 @@ XZ_THREADED	0		Multi-threaded xz compression (number of threads = $JOBS)
 ## CPU architecture/instructions and optimisations
 
 MARCH		x86-64-v2
-MTUNE		generic
+MTUNE		generic		Will match MARCH if MARCH is set
 
-AES_PCLMUL	1
-AVX		1
-AVX2		0
-V8_AVX2		0		AVX for v8 javascript (can enable on non-AVX2 capable hosts)
+AES_PCLMUL	1		Intel Westmere/AMD Jaguar (might be missing on some earlier/lower end)
+AVX		1		Intel Sandybridge/AMD Bulldozer era (circa 2011) onwards
+AVX2		0		Intel Haswell/AMD Excavator or newer
+V8_AVX2		0		AVX2 for v8 javascript (can enable on non-AVX2 capable hosts)
 
 POLLY_VECTOR	1		Polly vectorisation (oportunistic vector instruction optimisation)
-POLLY_EXTRA	1		Polly further compile optimisations
+POLLY_EXTRA	1		Polly extra compile optimisations
+
 POLLY_PARALLEL	0		Polly parallisation (opportunistic multi-threading)
+				Not recommended; probably introduces bugs (especially in javascript)
