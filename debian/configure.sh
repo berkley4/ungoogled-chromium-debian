@@ -335,7 +335,7 @@ fi
 
 
 if [ $OPENH264 -eq 0 ]; then
-  opt_patch_disable="$opt_patch_disable system/unstable/openh264"
+  opt_patch_disable="$opt_patch_disable system/openh264"
 
   # GN_FLAGS += media_use_openh264=false
   gn_enable="$gn_enable media_use_openh264"
