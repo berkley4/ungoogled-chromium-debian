@@ -146,7 +146,9 @@ fi
 if [ $BUNDLED_CLANG -eq 0 ]; then
   clang_patches="fix-missing-symbols"
 
-  if [ $POLLY_VECTORIZER -eq 1 ]; then
+  if [ $POLLY_VECTORIZER -eq 0 ]; then
+    POLLY_PARALLEL=0
+  else
     clang_patches="$clang_patches llvm-polly-vectorizer"
 
     [ $POLLY_EXTRA_SET -eq 1 ] && [ $POLLY_EXTRA -eq 0 ] || POLLY_EXTRA=1
