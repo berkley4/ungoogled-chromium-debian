@@ -41,7 +41,7 @@ real_dir_path () (
 
 [ -n "$BUNDLED_CLANG" ] || BUNDLED_CLANG=0
 [ -n "$TARBALL" ] || TARBALL=0
-[ -n "$TRANSLATE" ] || TRANSLATE=0
+[ -n "$TRANSLATE" ] || TRANSLATE=1
 
 [ -n "$AES_PCLMUL" ] || AES_PCLMUL=1
 [ -n "$AVX" ] || AVX=1
@@ -248,20 +248,14 @@ if [ $V8_AVX2 -eq 1 ]; then
 fi
 
 
-if [ $TRANSLATE -eq 1 ]; then
-  cp -a $DEBIAN/misc_patches/translate-*.patch $DEBIAN/patches/
-  cp -a $DEBIAN/shims/google-translate $DEBIAN/etc/chromium.d/
+if [ $TRANSLATE -eq 0 ]; then
+  opt_patch_disable="$opt_patch_disable translate/"
 
+  INS="$INS -e \"s@^\(debian/etc/chromium.d/google-translate\)@#\1@\""
+else
   DSB="$DSB -e \"/\/translate_manager_browsertest\.cc/d\""
   DSB="$DSB -e \"/\/translate_script\.cc/d\""
   DSB="$DSB -e \"/\/translate_util\.cc/d\""
-
-  INS="$INS -e \"s@^#\(debian/etc/chromium.d/google-translate\)@\1@\""
-
-  if [ -z "$(grep ^translate-reverse $DEBIAN/patches/series.debian)" ]; then
-    SER="$SER -e \"$ a\translate-reverse-enable.patch\""
-    SER="$SER -e \"$ a\translate-stop-unsupported-switch-warning.patch\""
-  fi
 fi
 
 

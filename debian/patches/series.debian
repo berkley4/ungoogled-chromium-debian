@@ -160,5 +160,7 @@ optional/system/openh264.patch
 optional/system/vaapi/vaapi-add-av1-support.patch
 optional/system/vaapi/vaapi-disable-libaom-encoding.patch
 optional/system/vaapi/vaapi-wayland.patch
+optional/translate/translate-revert-disable.patch
+optional/translate/translate-stop-unsupported-switch-warning.patch
 #optional/fix-clang-structured_binding.patch
 #optional/fix-missing-symbols.patch
