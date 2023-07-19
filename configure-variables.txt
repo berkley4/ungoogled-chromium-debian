@@ -58,7 +58,7 @@ XZ_THREADED	0		Multi-threaded xz compression (number of threads = $JOBS)
 ## CPU architecture/instructions and optimisations
 
 MARCH		x86-64-v2
-MTUNE		generic		Will match MARCH if MARCH is set
+MTUNE		generic		Will match MARCH if MARCH is set and MTUNE is not specified
 
 AES_PCLMUL	1		Intel Westmere/AMD Jaguar (might be missing on some earlier/lower end)
 AVX		1		Intel Sandybridge/AMD Bulldozer era (circa 2011) onwards
