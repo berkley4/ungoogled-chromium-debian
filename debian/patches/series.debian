@@ -126,10 +126,10 @@ various/upstream/0003-controlledframe-Fix-start-up-crash.patch
 various/vanadium/disable-article-suggestions-feature-by-default.patch
 various/vanadium/disable-content-feed-suggestions-by-default.patch
 
-#optional/custom-thin-lto-cache-location.patch
 #optional/llvm-polly-vectorizer.patch
 #optional/llvm-polly-extra.patch
 #optional/llvm-polly-parallel.patch
+#optional/thin-lto-cache-location.patch
 #optional/thinlto-jobs.patch
 #optional/cpu/aes-pclmul.patch
 #optional/cpu/march.patch
