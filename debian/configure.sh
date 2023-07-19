@@ -13,7 +13,7 @@ deps_disable=
 deps_enable=
 
 opt_patch_disable=
-opt_patch_enable='custom-import-limits cpu/march cpu/mtune'
+opt_patch_enable='cpu/march cpu/mtune'
 
 MARCH_SET=0
 POLLY_EXTRA_SET=0

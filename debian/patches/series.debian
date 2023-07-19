@@ -86,6 +86,7 @@ various/bromite/Disable-conversion-measurement-api.patch
 various/bromite/Disable-various-metrics.patch
 various/bromite/DoH-improvements.patch
 various/bromite/webRTC-do-not-expose-local-IP-addresses.patch
+various/compiler-flags/function-import-limits.patch
 various/compiler-flags/init-stack-vars-zero.patch
 various/compiler-flags/intel-control-flow-enforcement.patch
 various/compiler-flags/no-plt.patch
@@ -125,7 +126,6 @@ various/upstream/0003-controlledframe-Fix-start-up-crash.patch
 various/vanadium/disable-article-suggestions-feature-by-default.patch
 various/vanadium/disable-content-feed-suggestions-by-default.patch
 
-#optional/custom-import-limits.patch
 #optional/custom-thin-lto-cache-location.patch
 #optional/llvm-polly-vectorizer.patch
 #optional/llvm-polly-extra.patch
