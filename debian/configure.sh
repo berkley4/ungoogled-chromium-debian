@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-arches=
+arch_patches=
 
 gn_disable=
 gn_enable=
@@ -16,6 +16,7 @@ opt_patch_disable=
 opt_patch_enable=
 
 MARCH_SET=0
+MTUNE_SET=0
 POLLY_EXTRA_SET=0
 RELEASE_SET=0
 SYS_ICU_SET=0
@@ -73,6 +74,10 @@ real_dir_path () (
 
 # SYS_ICU is enabled by default (set to zero to disable)
 [ -n "$SYS_ICU" ] && SYS_ICU_SET=1 || SYS_ICU=1
+
+# MARCH and MTUNE defaults
+[ -n "$MARCH" ] && MARCH_SET=1 || MARCH=x86-64-v2
+[ -n "$MTUNE" ] && MTUNE_SET=1 || MTUNE=generic
 
 # POLLY_EXTRA is enabled if POLLY_VECTORIZER=1 (set to zero to disable)
 [ -n "$POLLY_EXTRA" ] && POLLY_EXTRA_SET=1 || POLLY_EXTRA=0
@@ -201,23 +206,45 @@ case $LTO_JOBS in
 esac
 
 
-if [ -n "$MARCH" ] || [ -n "$MTUNE" ]; then
-  [ -n "$MARCH" ] && MARCH_SET=1 || MARCH=x86-64-v2
 
-  if [ -z "$MTUNE" ]; then
-    if [ $MARCH_SET -eq 1 ]; then
-      printf '%s\n' "WARN: setting MTUNE unspecified, using MTUNE=generic"
-    fi
+# Basic sanitisation of MARCH/MTUNE values
 
-    MTUNE=generic
+if [ $MARCH_SET -eq 1 ] || [ $MTUNE_SET -eq 1 ]; then
+  # Defaults: MARCH=x86-64-v2; MTUNE=generic (decared further above)
+  OLD_MARCH=$MARCH; OLD_MTUNE=$MTUNE
+
+  if [ $MARCH_SET -eq 1 ] && [ $MTUNE_SET -eq 0 ]; then
+    MTUNE=$MARCH
+  elif [ $MARCH_SET -eq 0 ] && [ $MTUNE_SET -eq 1 ]; then
+    # If run with MTUNE=generic (without MARCH), then don't set MARCH=generic
+    [ "$MTUNE" = "generic" ] || MARCH=$MTUNE
   fi
 
-  [ $AVX -eq 0 ] || arches="avx"
-  [ $AVX2 -eq 0 ] || arches="$arches avx2"
+  case $MARCH in
+    x86-64*)
+      MTUNE=generic ;;
 
-  arch_patches="march mtune"
-  [ -z $arches ] || arch_patches="$arches march mtune"
+    generic)
+      MARCH=x86-64-v2
+      MTUNE=generic ;;
+  esac
 
+  if [ "$OLD_MARCH" != "$MARCH" ] || [ "$OLD_MTUNE" != "$MTUNE" ]; then
+    printf '%s\n' "Using: MARCH=$MARCH MTUNE=$MTUNE"
+  fi
+fi
+
+
+# Check to see if we have any patches to alter due to non-default MARCH/MTUNE
+
+[ "$MARCH" = "x86-64-v2" ] || arch_patches="march"
+[ "$MTUNE" = "generic" ] || arch_patches="$arch_patches mtune"
+
+[ $AVX -eq 0 ] || arch_patches="$arch_patches avx"
+[ $AVX2 -eq 0 ] || arch_patches="$arch_patches avx2"
+
+
+if [ -n "$arch_patches" ]; then
   for i in $arch_patches; do
     sed -e "s@\(march=\)[-a-z0-9]*@\1$MARCH@" \
         -e "s@\(mtune=\)[-a-z0-9]*@\1$MTUNE@" \
