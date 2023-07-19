@@ -244,7 +244,7 @@ fi
 
 
 if [ $TRANSLATE -eq 1 ]; then
-  cp -a $DEBIAN/misc_patches/translate-reverse-enable.patch $DEBIAN/patches/
+  cp -a $DEBIAN/misc_patches/translate-*.patch $DEBIAN/patches/
   cp -a $DEBIAN/shims/google-translate $DEBIAN/etc/chromium.d/
 
   DSB="$DSB -e \"/\/translate_manager_browsertest\.cc/d\""
@@ -255,6 +255,7 @@ if [ $TRANSLATE -eq 1 ]; then
 
   if [ -z "$(grep ^translate-reverse $DEBIAN/patches/series.debian)" ]; then
     SER="$SER -e \"$ a\translate-reverse-enable.patch\""
+    SER="$SER -e \"$ a\translate-stop-unsupported-switch-warning.patch\""
   fi
 fi
 
