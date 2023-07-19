@@ -397,14 +397,14 @@ fi
 
 [ $SYS_ICU_SET -eq 1 ] && [ $SYS_ICU -eq 0 ] || SYS_ICU=1
 
-if [ $SYS_ICU -eq 1 ]; then
+if [ $SYS_ICU -eq 0 ]; then
+  INS="$INS -e \"s@^#\(out/Release/icudtl\.dat\)@\1@\""
+else
   opt_patch_enable="$opt_patch_enable system/unstable/icu/"
 
   # SYS_LIBS += icu libxml libxslt (last two depend on icu)
   sys_enable="$sys_enable icu"
   deps_enable="$deps_enable icu libxml libxslt"
-
-  INS="$INS -e \"s@^\(out/Release/icudtl\.dat\)@#\1@\""
 fi
 
 
