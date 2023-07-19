@@ -2,7 +2,7 @@
 ## Note: the uncommented flags will probably work for most users
 
 # For those using x11 (ie not wayland)
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --ozone-platform=x11"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --ozone-platform-hint=x11"
 
 # WebGPU
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-unsafe-webgpu"
