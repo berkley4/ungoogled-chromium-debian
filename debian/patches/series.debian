@@ -148,10 +148,10 @@ optional/qt/0004-enable_AllowQt_feature_flag.patch
 optional/qt/0005-logical_scale_factor.patch
 optional/system/jpeg.patch
 #optional/system/libusb.patch
+optional/system/openh264.patch
 #optional/system/unstable/dav1d.patch
 #optional/system/unstable/dav1d-no-unbundled-libavif.patch
 #optional/system/unstable/libaom-headers.patch
-optional/system/unstable/openh264.patch
 #optional/system/unstable/ffmpeg/ffmpeg-first_dts.patch
 #optional/system/unstable/ffmpeg/roll-src-third_party-ffmpeg-102.patch
 #optional/system/unstable/ffmpeg/roll-src-third_party-ffmpeg-106.patch
