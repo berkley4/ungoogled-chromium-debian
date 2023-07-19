@@ -8,7 +8,7 @@ out/Release/chrome_*_percent.pak                                               u
 out/Release/icudtl.dat                                                         usr/lib/chromium
 out/Release/resources.pak                                                      usr/lib/chromium
 out/Release/v8_context_snapshot.bin                                            usr/lib/chromium
-#out/Release/libqt5_shim.so                                                     usr/lib/chromium
+out/Release/libqt5_shim.so                                                     usr/lib/chromium
 out/Release/resources/en-US.pak                                                usr/lib/chromium/locales
 
 chrome/installer/linux/common/desktop.template                              => usr/share/applications/chromium.desktop

@@ -13,7 +13,7 @@ deps_disable=
 deps_enable=
 
 opt_patch_disable=
-opt_patch_enable='cpu/march cpu/mtune'
+opt_patch_enable=
 
 MARCH_SET=0
 POLLY_EXTRA_SET=0
@@ -233,13 +233,14 @@ if [ $AVX2 -eq 1 ]; then
   opt_patch_enable="$opt_patch_enable cpu/avx2"
 fi
 
-if [ $AVX -eq 1 ]; then
+if [ $AVX -eq 0 ]; then
+  opt_patch_disable="$opt_patch_disable cpu/avx"
+else
   AES_PCLMUL=1
-  opt_patch_enable="$opt_patch_enable cpu/avx"
 fi
 
-if [ $AES_PCLMUL -eq 1 ]; then
-  opt_patch_enable="$opt_patch_enable cpu/aes-pclmul"
+if [ $AES_PCLMUL -eq 0 ]; then
+  opt_patch_disable="$opt_patch_disable cpu/aes-pclmul"
 fi
 
 if [ $V8_AVX2 -eq 1 ]; then
@@ -329,13 +330,23 @@ fi
 #################
 
 if [ $QT -eq 0 ]; then
+  opt_patch_disable="$opt_patch_disable qt/"
+
   # GN_FLAGS += use_qt=false
   gn_enable="$gn_enable use_qt"
   deps_disable="$deps_disable qtbase5"
-else
-  opt_patch_enable="$opt_patch_enable qt/"
 
-  INS="$INS -e \"s@^#\(out/Release/libqt5_shim.so\)@\1@\""
+  INS="$INS -e \"s@^\(out/Release/libqt5_shim.so\)@#\1@\""
+fi
+
+
+if [ $OPENH264 -eq 0 ]; then
+  opt_patch_disable="$opt_patch_disable system/unstable/openh264"
+
+  # GN_FLAGS += media_use_openh264=false
+  gn_enable="$gn_enable media_use_openh264"
+  sys_disable="$sys_disable openh264"
+  deps_disable="$deps_disable libopenh264"
 fi
 
 
@@ -355,11 +366,11 @@ fi
 
 
 if [ $VAAPI -eq 0 ]; then
+  opt_patch_disable="$opt_patch_disable system/vaapi/"
+
   # #GN_FLAGS += use_vaapi=false
   gn_enable="$gn_enable use_vaapi"
   deps_disable="$deps_disable libva"
-else
-  opt_patch_enable="$opt_patch_enable system/vaapi/"
 fi
 
 
@@ -373,9 +384,9 @@ fi
 
 
 if [ $SYS_JPEG -eq 0 ]; then
+  opt_patch_disable="$opt_patch_disable system/jpeg"
+
   sys_disable="$sys_disable libjpeg"
-else
-  opt_patch_enable="$opt_patch_enable system/jpeg"
 fi
 
 
@@ -400,16 +411,6 @@ if [ $SYS_ICU -eq 1 ]; then
   deps_enable="$deps_enable icu libxml libxslt"
 
   INS="$INS -e \"s@^\(out/Release/icudtl\.dat\)@#\1@\""
-fi
-
-
-if [ $OPENH264 -eq 0 ]; then
-  # GN_FLAGS += media_use_openh264=false
-  gn_enable="$gn_enable media_use_openh264"
-  sys_disable="$sys_disable openh264"
-  deps_disable="$deps_disable libopenh264"
-else
-  opt_patch_enable="$opt_patch_enable system/unstable/openh264"
 fi
 
 
