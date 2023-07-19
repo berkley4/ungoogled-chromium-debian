@@ -1,6 +1,8 @@
 #!/bin/sh
 set -e
 
+arches=
+
 gn_disable=
 gn_enable=
 
@@ -10,8 +12,8 @@ sys_enable=
 deps_disable=
 deps_enable=
 
-arches=
-optional_patches='custom-import-limits cpu/march cpu/mtune'
+opt_patch_disable=
+opt_patch_enable='custom-import-limits cpu/march cpu/mtune'
 
 MARCH_SET=0
 POLLY_EXTRA_SET=0
@@ -159,7 +161,7 @@ if [ $BUNDLED_CLANG -eq 0 ]; then
     clang_patches="$clang_patches fix-clang-structured_binding"
   fi
 
-  optional_patches="$optional_patches $clang_patches"
+  opt_patch_enable="$opt_patch_enable $clang_patches"
 
   RUL="$RUL -e \"s@^#\(.*[a-z][a-z]*_toolchain\)@\1@\""
   RUL="$RUL -e \"s@^#\(export [A-Z].*llvm-\)@\1@\""
@@ -172,7 +174,7 @@ fi
 
 
 if [ -n "$LTO_DIR" ]; then
-  optional_patches="$optional_patches custom-thin-lto-cache-location"
+  opt_patch_enable="$opt_patch_enable custom-thin-lto-cache-location"
 
   sed -e "s@^\(+.*thinlto-cache-dir=\)[-_a-zA-Z0-9/]*@\1$LTO_DIR@" \
       -i $DEBIAN/patches/optional/custom-thin-lto-cache-location.patch
@@ -185,7 +187,7 @@ fi
 
 case $LTO_JOBS in
   [1-9]|[1-9][0-9])
-    optional_patches="$optional_patches thinlto-jobs"
+    opt_patch_enable="$opt_patch_enable thinlto-jobs"
 
     case $LTO_JOBS in
       [2-9]|[1-9][0-9])
@@ -226,16 +228,16 @@ if [ $AVX2 -eq 1 ]; then
   AES_PCLMUL=1
   AVX=1
   V8_AVX2=1
-  optional_patches="$optional_patches cpu/avx2"
+  opt_patch_enable="$opt_patch_enable cpu/avx2"
 fi
 
 if [ $AVX -eq 1 ]; then
   AES_PCLMUL=1
-  optional_patches="$optional_patches cpu/avx"
+  opt_patch_enable="$opt_patch_enable cpu/avx"
 fi
 
 if [ $AES_PCLMUL -eq 1 ]; then
-  optional_patches="$optional_patches cpu/aes-pclmul"
+  opt_patch_enable="$opt_patch_enable cpu/aes-pclmul"
 fi
 
 if [ $V8_AVX2 -eq 1 ]; then
@@ -266,7 +268,7 @@ fi
 ##############################
 
 if [ $ATK_DBUS -eq 0 ]; then
-  optional_patches="$optional_patches disable/atk-dbus"
+  opt_patch_enable="$opt_patch_enable disable/atk-dbus"
 
   # use_atk=false use_dbus=false
   gn_enable="$gn_enable use_atk"
@@ -274,7 +276,7 @@ fi
 
 
 if [ $CATAPULT -eq 0 ]; then
-  optional_patches="$optional_patches disable/catapult disable/rtc-protobuf"
+  opt_patch_enable="$opt_patch_enable disable/catapult disable/rtc-protobuf"
 fi
 
 
@@ -329,7 +331,7 @@ if [ $QT -eq 0 ]; then
   gn_enable="$gn_enable use_qt"
   deps_disable="$deps_disable qtbase5"
 else
-  optional_patches="$optional_patches qt/"
+  opt_patch_enable="$opt_patch_enable qt/"
 
   optional_deps="$optional_deps qtbase5"
 
@@ -357,13 +359,13 @@ if [ $VAAPI -eq 0 ]; then
   gn_enable="$gn_enable use_vaapi"
   deps_disable="$deps_disable libva"
 else
-  optional_patches="$optional_patches system/vaapi/"
+  opt_patch_enable="$opt_patch_enable system/vaapi/"
 fi
 
 
 
 if [ $SYS_FFMPEG -eq 1 ]; then
-  optional_patches="$optional_patches system/unstable/ffmpeg/"
+  opt_patch_enable="$opt_patch_enable system/unstable/ffmpeg/"
 
   sys_enable="$sys_enable ffmpeg"
   deps_enable="$deps_enable libavutil libavcodec libavformat"
@@ -373,12 +375,12 @@ fi
 if [ $SYS_JPEG -eq 0 ]; then
   sys_disable="$sys_disable libjpeg"
 else
-  optional_patches="$optional_patches system/jpeg"
+  opt_patch_enable="$opt_patch_enable system/jpeg"
 fi
 
 
 if [ $SYS_USB -eq 1 ]; then
-  optional_patches="$optional_patches system/libusb.patch"
+  opt_patch_enable="$opt_patch_enable system/libusb.patch"
 
   gn_enable="$gn_enable libusb"
   deps_enable="$deps_enable libusb"
@@ -391,7 +393,7 @@ fi
 [ $SYS_ICU_SET -eq 1 ] && [ $SYS_ICU -eq 0 ] || SYS_ICU=1
 
 if [ $SYS_ICU -eq 1 ]; then
-  optional_patches="$optional_patches system/unstable/icu/"
+  opt_patch_enable="$opt_patch_enable system/unstable/icu/"
 
   # SYS_LIBS += icu libxml libxslt (last two depend on icu)
   sys_enable="$sys_enable icu"
@@ -407,13 +409,13 @@ if [ $OPENH264 -eq 0 ]; then
   sys_disable="$sys_disable openh264"
   deps_disable="$deps_disable libopenh264"
 else
-  optional_patches="$optional_patches system/unstable/openh264"
+  opt_patch_enable="$opt_patch_enable system/unstable/openh264"
 fi
 
 
 sys_patches="libaom-headers"
 sys_patches="$(echo $sys_patches | sed "s@\([^ ]*\)@system/unstable/\1@g")"
-optional_patches="$optional_patches $sys_patches"
+opt_patch_enable="$opt_patch_enable $sys_patches"
 
 # SYS_LIBS += libaom libavif
 sys_enable="$sys_enable libaom"
@@ -424,7 +426,7 @@ deps_enable="$deps_enable libaom libavif"
 if [ $STABLE -eq 0 ]; then
   sys_patches="dav1d"
   sys_patches="$(echo $sys_patches | sed "s@\([^ ]*\)@system/unstable/\1@g")"
-  optional_patches="$optional_patches $sys_patches"
+  opt_patch_enable="$opt_patch_enable $sys_patches"
 
   sys_enable="$sys_enable dav1d"
   deps_enable="$deps_enable libdav1d"
@@ -510,8 +512,22 @@ if [ -n "$deps_enable" ]; then
 fi
 
 
-if [ -n "$optional_patches" ]; then
-  for i in $optional_patches; do
+if [ -n "$opt_patch_disable" ]; then
+  for i in $opt_patch_disable; do
+    case $i in
+      */)
+        SER="$SER -e \"s@^\(optional/${i}\)@#\1@\""
+        ;;
+
+      *)
+        SER="$SER -e \"s@^\(optional/${i}\.patch\)@#\1@\""
+        ;;
+    esac
+  done
+fi
+
+if [ -n "$opt_patch_enable" ]; then
+  for i in $opt_patch_enable; do
     case $i in
       */)
         SER="$SER -e \"s@^#\(optional/${i}\)@\1@\""
