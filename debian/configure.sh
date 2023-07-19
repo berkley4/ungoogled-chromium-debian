@@ -333,8 +333,6 @@ if [ $QT -eq 0 ]; then
 else
   opt_patch_enable="$opt_patch_enable qt/"
 
-  optional_deps="$optional_deps qtbase5"
-
   INS="$INS -e \"s@^#\(out/Release/libqt5_shim.so\)@\1@\""
 fi
 
