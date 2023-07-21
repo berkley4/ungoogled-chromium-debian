@@ -114,7 +114,6 @@ various/fixes/revert-fix-linking-chromedriver.patch
 various/fixes/revert-fix-linking-content-shell.patch
 various/fixes/shim-fix-for-official-builds.patch
 various/fixes/skia-gamma.patch
-various/fixes/xfce-maximize.patch
 various/launchpad/dont-collect-motherboard-metrics.patch
 various/system/perfetto-system-zlib.patch
 various/system/xdg-scripts.patch
