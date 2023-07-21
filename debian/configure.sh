@@ -181,10 +181,10 @@ fi
 
 
 if [ -n "$LTO_DIR" ]; then
-  opt_patch_enable="$opt_patch_enable custom-thin-lto-cache-location"
+  opt_patch_enable="$opt_patch_enable thinlto-cache-location"
 
   sed -e "s@^\(+.*thinlto-cache-dir=\)[-_a-zA-Z0-9/]*@\1$LTO_DIR@" \
-      -i $DEBIAN/patches/optional/custom-thin-lto-cache-location.patch
+      -i $DEBIAN/patches/optional/thinlto-cache-location.patch
 
   if [ ! -d $LTO_DIR ]; then
     printf '\n%s\n' "LTO_DIR: path $LTO_DIR does not exist"
