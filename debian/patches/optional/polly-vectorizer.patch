@@ -1,0 +1,27 @@
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -2195,6 +2195,15 @@
+       "-Wl,--gc-sections",
+     ]
+   }
++
++  if (is_clang) {
++    polly_cflags = [
++      "-mllvm",
++      "-polly",
++      "-mllvm",
++      "-polly-vectorizer=stripmine",
++    ]
++  }
+ }
+ 
+ config("default_stack_frames") {
+@@ -2376,7 +2385,7 @@
+     } else if (optimize_for_fuzzing) {
+       cflags = [ "-O1" ] + common_optimize_on_cflags
+     } else {
+-      cflags = [ "-O3" ] + common_optimize_on_cflags
++      cflags = [ "-O3" ] + common_optimize_on_cflags + polly_cflags
+     }
+     rustflags = [ "-Copt-level=3" ]
+   }

@@ -57,6 +57,7 @@ Architecture: i386 amd64 arm64 armhf
 Depends:
  ${misc:Depends},
  ${shlibs:Depends},
+#libgomp1,
  libgtk-3-0,
  ungoogled-chromium-libraries,
  xdg-utils,

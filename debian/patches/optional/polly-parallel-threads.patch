@@ -1,0 +1,11 @@
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -2429,6 +2429,8 @@
+   cflags = [
+     "-mllvm",
+     "-polly-parallel",
++    "-mllvm",
++    "-polly-num-threads=2",
+     "-fopenmp=libgomp",
+   ]
+ 

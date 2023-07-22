@@ -49,6 +49,7 @@ real_dir_path () (
 [ -n "$AVX2" ] || AVX2=0
 [ -n "$POLLY_VECTORIZER" ] || POLLY_VECTORIZER=1
 [ -n "$POLLY_PARALLEL" ] || POLLY_PARALLEL=0
+[ -n "$POLLY_THREADS" ] || POLLY_THREADS=0
 [ -n "$V8_AVX2" ] || V8_AVX2=0
 
 [ -n "$ATK_DBUS" ] || ATK_DBUS=1
@@ -154,18 +155,35 @@ if [ $BUNDLED_CLANG -eq 0 ]; then
   if [ $POLLY_VECTORIZER -eq 0 ]; then
     POLLY_PARALLEL=0
   else
-    clang_patches="$clang_patches llvm-polly-vectorizer"
+    clang_patches="$clang_patches polly-vectorizer"
 
     [ $POLLY_EXTRA_SET -eq 1 ] && [ $POLLY_EXTRA -eq 0 ] || POLLY_EXTRA=1
 
     if [ $POLLY_EXTRA -eq 1 ]; then
-      clang_patches="$clang_patches llvm-polly-extra"
+      clang_patches="$clang_patches polly-extra"
     fi
   fi
 
   if [ $POLLY_PARALLEL -eq 1 ]; then
-    clang_patches="$clang_patches llvm-polly-parallel"
+    clang_patches="$clang_patches polly-parallel"
     clang_patches="$clang_patches fix-clang-structured_binding"
+
+    if [ $POLLY_THREADS -ge 2 ]; then
+      case $POLLY_THREADS in
+        [2-9]|[1-9][0-9])
+          clang_patches="$clang_patches polly-parallel-threads"
+
+          case $POLLY_THREADS in
+            [3-9]|[1-9][0-9])
+              sed "s@\(polly-num-threads=\)[0-9]*@\1$POLLY_THREADS@" \
+                -i $DEBIAN/patches/optional/polly-parallel-threads.patch
+            ;;
+          esac
+        ;;
+      esac
+
+      deps_enable="$deps_enable libgomp1"
+    fi
   fi
 
   opt_patch_enable="$opt_patch_enable $clang_patches"
@@ -529,7 +547,13 @@ fi
 
 if [ -n "$deps_enable" ]; then
   for i in $deps_enable; do
-    CON="$CON -e \"s@^#\(${i}.*-dev\)@ \1@\""
+    case $i in
+      *-dev)
+        CON="$CON -e \"s@^#\(${i}.*-dev\)@ \1@\"" ;;
+
+      *)
+        CON="$CON -e \"s@^#\($i\)@ \1@\"" ;;
+    esac
   done
 fi
 
