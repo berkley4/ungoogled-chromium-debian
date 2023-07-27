@@ -132,7 +132,7 @@
  #else
 --- a/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc
 +++ b/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc
-@@ -1322,7 +1322,7 @@
+@@ -1278,7 +1278,7 @@
  // TODO: Ideally this should be handled by our feature system, so that this
  // code doesn't even compile on OSes it isn't being used on, but currently this
  // is not possible.
@@ -141,7 +141,7 @@
    base::WeakPtr<device::BluetoothLocalGattService> service =
        device::BluetoothLocalGattService::Create(
            event_router_->adapter(),
-@@ -1351,6 +1351,7 @@
+@@ -1307,6 +1307,7 @@
  }
  
  void BluetoothLowEnergyCreateCharacteristicFunction::DoWork() {
@@ -149,7 +149,7 @@
    device::BluetoothLocalGattService* service =
        event_router_->adapter()->GetGattService(params_->service_id);
    if (!service) {
-@@ -1371,6 +1372,9 @@
+@@ -1327,6 +1328,9 @@
  
    Respond(ArgumentList(apibtle::CreateCharacteristic::Results::Create(
        characteristic->GetIdentifier())));
@@ -159,7 +159,7 @@
  }
  
  // createDescriptor:
-@@ -1387,6 +1391,7 @@
+@@ -1343,6 +1347,7 @@
  }
  
  void BluetoothLowEnergyCreateDescriptorFunction::DoWork() {
@@ -167,7 +167,7 @@
    device::BluetoothLocalGattCharacteristic* characteristic =
        event_router_->GetLocalCharacteristic(params_->characteristic_id);
    if (!characteristic) {
-@@ -1402,6 +1407,9 @@
+@@ -1358,6 +1363,9 @@
  
    Respond(ArgumentList(
        apibtle::CreateDescriptor::Results::Create(descriptor->GetIdentifier())));
