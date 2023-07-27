@@ -80,6 +80,7 @@ various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
 various/silence-alsa-frames-log-msg.patch
 various/template-correction.patch
 various/addenda/0001-Ensure-unique-entries-in-frame-timing-details.patch
+various/addenda/0002-Return-early-if-search-text-directive-is-empty.patch
 various/bromite/autofill-miscellaneous.patch
 various/bromite/Disable-all-predictors-code.patch
 various/bromite/Disable-conversion-measurement-api.patch
