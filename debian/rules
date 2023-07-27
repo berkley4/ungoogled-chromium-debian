@@ -203,7 +203,7 @@ override_dh_auto_build:
 	ninja -j $(JOBS) -C $(OUT_DIR) chrome chrome_sandbox chromedriver
 	test ! -f out/Release/locales/en-US.pak || cp -a out/Release/locales/en-US.pak out/Release/resources/
 
-override_dh_prep: find_remove_pycache undo_unbundling
+override_dh_prep: undo_unbundling
 	test ! -f $(DS_CACHE) || $(UL_DIR)/domain_substitution.py revert -c $(DS_CACHE) $(RT_DIR)
 	dh_prep
 
