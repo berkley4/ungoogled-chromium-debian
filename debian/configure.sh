@@ -55,6 +55,7 @@ real_dir_path () (
 [ -n "$ATK_DBUS" ] || ATK_DBUS=1
 [ -n "$CATAPULT" ] || CATAPULT=1
 [ -n "$DRIVER" ] || DRIVER=1
+[ -n "$MUTEX_PI" ] || MUTEX_PI=1
 [ -n "$OOP_PR" ] || OOP_PR=0
 [ -n "$PDF_JS" ] || PDF_JS=0
 [ -n "$POLICIES" ] || POLICIES=0
@@ -328,6 +329,13 @@ if [ $DRIVER -eq 0 ]; then
   RUL="$RUL -e \"s@ chromedriver@@\""
 
   find $DEBIAN/ -maxdepth 1 -name ungoogled-chromium-driver.\* -delete
+fi
+
+
+if [ $MUTEX_PI -eq 1 ]; then
+  opt_patch_enable="$opt_patch_enable mutex-priority-inheritance"
+
+  gn_enable="enable_mutex_priority_inheritance"
 fi
 
 

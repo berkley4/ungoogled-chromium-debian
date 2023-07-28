@@ -24,6 +24,7 @@ TRANSLATE	0		Google translate support
 
 DRIVER		1		Chromedriver package
 
+MUTEX_PI	1		Mutex priority inheritance (see base/synchronization/lock_impl_posix.cc)
 OOP_PR		0		Out of process printing (X11 only)
 PDF_JS		0		PDF javascript support
 PIPEWIRE	1
