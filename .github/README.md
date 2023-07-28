@@ -38,6 +38,7 @@ ___Performance improvements___
 
 - Profile Guided Optimisation (PGO) - a smaller, faster chrome binary
 - PartitionAlloc pointer compression - should help reduce memory usage and help boost performance
+- Mutex Priority Inheritance - greater smoothness and responsiveness (see [here](https://lwn.net/Articles/177111/))
 - Various compiler flags aimed at improving speed
     - -march=[x86-64-v2](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels)
     - -maes - enables AES instructions
@@ -48,6 +49,7 @@ ___Performance improvements___
     - -import-instr-limit=25 and -import-hot-multiplier=16 - gives a hot import limit of 400 (25*16) vs default of 300 (30*10)
     - The following LLVM polly options are available (needs a capable toolchain) :-
         -polly-vectorizer=stripmine, -polly-run-dce, -polly-invariant-load-hoisting
+
 
 ___Security/Privacy improvements___
 
