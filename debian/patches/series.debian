@@ -79,8 +79,7 @@ various/fix-unbundle-script-dh-clean-interoperabilty.patch
 various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
 various/silence-alsa-frames-log-msg.patch
 various/template-correction.patch
-various/addenda/0001-Ensure-unique-entries-in-frame-timing-details.patch
-various/addenda/0002-Return-early-if-search-text-directive-is-empty.patch
+#various/addenda/
 various/bromite/autofill-miscellaneous.patch
 various/bromite/Disable-all-predictors-code.patch
 various/bromite/Disable-conversion-measurement-api.patch
@@ -101,6 +100,7 @@ various/disable/evdev.patch
 various/disable/orchestrator.patch
 various/disable/tests.patch
 various/disable/unrar.patch
+various/fedora/do_not_restrict_new_V4L2_decoders.v4l2.patch
 various/fedora/enable-hardware-accelerated-mjpeg.patch
 various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
 various/fixes/chromedriver-BrandVersion.patch
@@ -122,7 +122,8 @@ various/system/zlib.patch
 various/system/extra/brotli.patch
 various/system/extra/opus.patch
 various/system/extra/zlib.patch
-various/upstream/0003-controlledframe-Fix-start-up-crash.patch
+various/upstream/0001-controlledframe-Fix-start-up-crash.patch
+various/upstream/0002-Add-BoundSessionRefreshCookieFetcher-Result.patch
 various/vanadium/disable-article-suggestions-feature-by-default.patch
 various/vanadium/disable-content-feed-suggestions-by-default.patch
 

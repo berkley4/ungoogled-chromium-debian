@@ -13,11 +13,11 @@ author: Michel Le Bihan <michel@lebihan.pl>
  }
  #elif BUILDFLAG(IS_ANDROID)
  void GetApplicationDirs(std::vector<base::FilePath>* locations) {
-@@ -143,7 +140,6 @@
- #if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
-     base::FilePath(chrome::kBrowserProcessExecutablePath),
+@@ -160,7 +157,6 @@
  #elif BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
--    base::FilePath("google-chrome"),
      base::FilePath(chrome::kBrowserProcessExecutablePath),
+     base::FilePath("chrome"),  // Chrome for Testing or Google Chrome
+-    base::FilePath("google-chrome"),
      base::FilePath("chromium"),
-     base::FilePath("chromium-browser")
+     base::FilePath("chromium-browser"),
+ #else
