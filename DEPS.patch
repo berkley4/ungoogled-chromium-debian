@@ -1,0 +1,218 @@
+--- a/DEPS
++++ b/DEPS
+@@ -796,12 +796,6 @@
+     'condition': 'checkout_chromium_password_manager_test_dependencies',
+   },
+ 
+-  'src/chrome/test/data/perf/canvas_bench':
+-    Var('chromium_git') + '/chromium/canvas_bench.git' + '@' + 'a7b40ea5ae0239517d78845a5fc9b12976bfc732',
+-
+-  'src/chrome/test/data/perf/frame_rate/content':
+-    Var('chromium_git') + '/chromium/frame_rate/content.git' + '@' + 'c10272c88463efeef6bb19c9ec07c42bc8fe22b9',
+-
+   'src/chrome/test/data/safe_browsing/dmg': {
+     'packages': [
+       {
+@@ -813,9 +807,6 @@
+     'dep_type': 'cipd',
+   },
+ 
+-  'src/chrome/test/data/xr/webvr_info':
+-    Var('chromium_git') + '/external/github.com/toji/webvr.info.git' + '@' + 'c58ae99b9ff9e2aa4c524633519570bf33536248',
+-
+   'src/clank': {
+     'url': Var('chrome_git') + '/clank/internal/apps.git' + '@' +
+     '64bbf018080153bc127e967a9f9ea5ef8b6d6372',
+@@ -1206,7 +1197,7 @@
+           },
+       ],
+       # Needed on Linux for use on chromium_presubmit.
+-      'condition': 'checkout_android or checkout_linux',
++      'condition': 'checkout_android',
+       'dep_type': 'cipd',
+   },
+ 
+@@ -1317,9 +1308,6 @@
+   'src/third_party/freetype/src':
+     Var('chromium_git') + '/chromium/src/third_party/freetype2.git' + '@' + Var('freetype_revision'),
+ 
+-  'src/third_party/freetype-testing/src':
+-    Var('chromium_git') + '/external/github.com/freetype/freetype2-testing.git' + '@' + Var('freetype_testing_revision'),
+-
+   'src/third_party/fxdiv/src':
+     Var('chromium_git') + '/external/github.com/Maratyszcza/FXdiv.git' + '@' + '63058eff77e11aa15bf531df5dd34395ec3017c8',
+ 
+@@ -1457,7 +1445,7 @@
+           },
+       ],
+       # Needed on Linux for use on chromium_presubmit (for checkstyle).
+-      'condition': 'checkout_android or checkout_linux',
++      'condition': 'checkout_android',
+       'dep_type': 'cipd',
+   },
+ 
+@@ -1508,12 +1496,6 @@
+   'src/third_party/leveldatabase/src':
+     Var('chromium_git') + '/external/leveldb.git' + '@' + '068d5ee1a3ac40dabd00d211d5013af44be55bea',
+ 
+-  'src/third_party/libFuzzer/src':
+-    Var('chromium_git') + '/external/github.com/llvm/llvm-project/compiler-rt/lib/fuzzer.git' + '@' +  Var('libfuzzer_revision'),
+-
+-  'src/third_party/fuzztest/src':
+-    Var('chromium_git') + '/external/github.com/google/fuzztest.git' + '@' + Var('fuzztest_revision'),
+-
+   'src/third_party/libaddressinput/src':
+     Var('chromium_git') + '/external/libaddressinput.git' + '@' + 'e8712e415627f22d0b00ebee8db99547077f39bd',
+ 
+@@ -4673,16 +4655,6 @@
+                '--package=clangd'],
+   },
+   {
+-    # Should run after the clang hook. Used on mac, as well as for orderfile
+-    # generation and size tooling on Android. Used by
+-    # dump-static-initializers.py on linux.
+-    'name': 'objdump',
+-    'pattern': '.',
+-    'condition': 'checkout_linux or checkout_mac or checkout_android and host_os != "mac"',
+-    'action': ['python3', 'src/tools/clang/scripts/update.py',
+-               '--package=objdump'],
+-  },
+-  {
+     # Update LASTCHANGE.
+     'name': 'lastchange',
+     'pattern': '.',
+@@ -4782,18 +4754,6 @@
+                 '-o', 'src/buildtools/mac/clang-format',
+     ],
+   },
+-  {
+-    'name': 'clang_format_linux',
+-    'pattern': '.',
+-    'condition': 'host_os == "linux"',
+-    'action': [ 'python3',
+-                'src/third_party/depot_tools/download_from_google_storage.py',
+-                '--no_resume',
+-                '--no_auth',
+-                '--bucket', 'chromium-clang-format',
+-                '-s', 'src/buildtools/linux64/clang-format.sha1',
+-    ],
+-  },
+   # Pull rc binaries using checked-in hashes.
+   {
+     'name': 'rc_win',
+@@ -4831,29 +4791,6 @@
+                 '-s', 'src/build/toolchain/win/rc/linux64/rc.sha1',
+     ]
+   },
+- {
+-    'name': 'test_fonts',
+-    'pattern': '.',
+-    'action': [ 'python3',
+-                'src/third_party/depot_tools/download_from_google_storage.py',
+-                '--no_resume',
+-                '--extract',
+-                '--no_auth',
+-                '--bucket', 'chromium-fonts',
+-                '-s', 'src/third_party/test_fonts/test_fonts.tar.gz.sha1',
+-    ],
+-  },
+-  # Download test resources for opus, i.e. audio files.
+-  {
+-    'name': 'opus_test_files',
+-    'pattern': '.',
+-    'action': ['python3',
+-               'src/third_party/depot_tools/download_from_google_storage.py',
+-               '--no_auth',
+-               '--quiet',
+-               '--bucket', 'chromium-webrtc-resources',
+-               '-d', 'src/third_party/opus/tests/resources'],
+-  },
+   {
+     'name': 'apache_win32',
+     'pattern': '\\.sha1',
+@@ -4893,18 +4830,6 @@
+                 '-s', 'src/third_party/instrumented_libraries/binaries/msan-no-origins-focal.tgz.sha1',
+               ],
+   },
+-  {
+-    'name': 'wasm_fuzzer',
+-    'pattern': '.',
+-    'action': [ 'python3',
+-                'src/third_party/depot_tools/download_from_google_storage.py',
+-                '--no_resume',
+-                '--no_auth',
+-                '-u',
+-                '--bucket', 'v8-wasm-fuzzer',
+-                '-s', 'src/v8/test/fuzzer/wasm_corpus.tar.gz.sha1',
+-    ],
+-  },
+ 
+   # Pull down Node binaries for WebUI toolchain.
+   {
+@@ -5048,33 +4973,6 @@
+     ],
+   },
+ 
+-  # Download test data for Maps telemetry_gpu_integration_test.
+-  {
+-    'name': 'maps_perf_test_load_dataset',
+-    'pattern': '\\.sha1',
+-    'action': [ 'python3',
+-                'src/third_party/depot_tools/download_from_google_storage.py',
+-                '--no_resume',
+-                '--no_auth',
+-                '--bucket', 'chromium-telemetry',
+-                '-s', 'src/tools/perf/page_sets/maps_perf_test/load_dataset.sha1',
+-    ],
+-  },
+-
+-  # Pull down Zucchini test data.
+-  {
+-    'name': 'zucchini_testdata',
+-    'pattern': '.',
+-    'action': [ 'python3',
+-                'src/third_party/depot_tools/download_from_google_storage.py',
+-                '--no_resume',
+-                '--no_auth',
+-                '--num_threads=4',
+-                '--bucket', 'chromium-binary-patching/zucchini_testdata',
+-                '--recursive',
+-                '-d', 'src/components/zucchini',
+-    ],
+-  },
+   # Pull down WPR Archive files
+   {
+     'name': 'Fetch WPR archive files',
+@@ -5154,14 +5052,6 @@
+                'src/chrome/browser/resources/vr/assets/google_chrome',
+     ],
+   },
+-  # Download and unpack MediaPipe Integration tests.
+-  {
+-    'name': 'mediapipe_integration_testdata',
+-    'pattern': '.',
+-    'action': [ 'python3',
+-                'src/content/test/gpu/gpu_tests/mediapipe_update.py',
+-    ],
+-  },
+   # Download VR test APKs only if the environment variable is set
+   {
+     'name': 'vr_test_apks',
+@@ -5600,17 +5490,6 @@
+     'condition': 'host_os == "win"',
+     'action': ['python3', 'src/build/del_ninja_deps_cache.py'],
+   },
+-  # Download test resources for the style perftest.
+-  {
+-    'name': 'style_perftest_files',
+-    'pattern': '.',
+-    'action': ['python3',
+-               'src/third_party/depot_tools/download_from_google_storage.py',
+-               '--no_auth',
+-               '--quiet',
+-               '--bucket', 'chromium-style-perftest',
+-               '-d', 'src/third_party/blink/renderer/core/css/perftest_data'],
+-  },
+   # Download remote exec cfg files
+   {
+     'name': 'fetch_reclient_cfgs',

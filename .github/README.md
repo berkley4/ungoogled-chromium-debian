@@ -239,8 +239,16 @@ git checkout tags/$TAG
 
 ## Pull in chromium submodules and components
 ```
-# Update the chromium submodules
-# After cloning for the first time run in build, otherwise run from build/src.
+# Optional: patch the DEPS file to omit downloading unwanted components
+# (Tarball users can skip this step)
+patch -p1 < /path/to/DEPS.patch
+
+# Update depot_tools (you need to do this once per new chromium version)
+cd ../../depot_tools
+./update_depot_tools && export DEPOT_TOOLS_UPDATE=0
+
+# Update the chromium build tree submodules
+cd ../build/src
 gclient sync -D --force --nohooks --no-history --shallow --jobs=$JOBS
 
 # Download various build components
