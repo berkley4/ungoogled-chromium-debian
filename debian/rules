@@ -178,16 +178,8 @@ GN_FLAGS +=                           \
 %:
 	dh $@
 
-find_remove_all:
+hardclean:
 	find . \( -path .\*/.git -o -path ./.pc -o -path ./debian -o -path ./out \) -prune -o \( -name '_gclient_*' -o -name '__pycache__' -o -name '*.orig' -o -name '*.rej' \) -exec rm -rf '{}' +
-
-find_remove_most:
-	find . \( -path .\*/.git -o -path ./.pc -o -path ./debian -o -path ./out \) -prune -o \( -name '_gclient_*' -o -name '*.orig' -o -name '*.rej' \) -exec rm -rf '{}' +
-
-find_remove_pycache:
-	find . \( -path .\*/.git -o -path ./.pc -o -path ./debian -o -path ./out \) -prune -o -type d -name '__pycache__' -exec rm -rf '{}' +
-
-hardclean: find_remove_all
 	test -d $(OUT_DIR) && ninja -j $(JOBS) -C $(OUT_DIR) -g -t clean || printf '%s\n' "$(OUT_DIR) does not exist, nothing to do."
 
 undo_unbundling:
@@ -196,7 +188,7 @@ undo_unbundling:
 prune:
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list 2>/dev/null
 
-override_dh_auto_configure: find_remove_most undo_unbundling
+override_dh_auto_configure: undo_unbundling
 	test -z "$(SYS_LIBS)" || $(UB_REP_SCRIPT) --system-libraries $(SYS_LIBS)
 	test -f $(DS_CACHE) && printf '%s\n' "$(DS_CACHE) exists, aborting." || $(UL_DIR)/domain_substitution.py apply -r $(UC_DIR)/domain_regex.list -f $(UC_DIR)/domain_substitution.list -c $(DS_CACHE) $(RT_DIR)
 
