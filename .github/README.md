@@ -110,7 +110,8 @@ I found that I needed to install the NON-FREE intel-media-va-driver-non-free (as
 intel-media-va-driver), as well running with the '--disable-features=UseChromeOSDirectVideoDecoder'
 runtime flag enabled in /etc/chromium.d/hw-decoding-encoding.
 
-If that doesn't work, then Try playing around with the options in /etc/chromium.d/hw-decoding-encoding.
+If that doesn't work, then try playing around with the options in /etc/chromium.d/hw-decoding-encoding
+or uncommenting the LIBVA variable exports in /usr/bin/chromium.
 
 
 

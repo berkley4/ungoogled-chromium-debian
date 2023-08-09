@@ -12,6 +12,9 @@
 # uncommenting the line below.
 #export LIBVA_DRIVER_NAME=i965
 
+# Might be useful to help enable hardware video decoding in some setups.
+#export LIBVA_DRI3_DISABLE=1
+
 # Uncomment one of the following to possibly avoid the below error message
 # InitializeSandbox() called with multiple threads in process gpu-process.
 # If using Mesa 21.1.0 or later, uncomment the MESA_SHADER_CACHE_DISABLE line
