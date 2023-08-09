@@ -54,7 +54,6 @@ GN_FLAGS +=                                     \
         rtc_disable_metrics=true                \
         skia_enable_skshaper_tests=false        \
         use_cfi_cast=true                       \
-        use_gnome_keyring=false                 \
         use_kerberos=false                      \
         use_runtime_vlog=false                  \
         use_sysroot=false                       \
