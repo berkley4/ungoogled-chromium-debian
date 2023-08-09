@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2195,6 +2195,15 @@
+@@ -2231,6 +2231,15 @@
        "-Wl,--gc-sections",
      ]
    }
@@ -16,7 +16,7 @@
  }
  
  config("default_stack_frames") {
-@@ -2376,7 +2385,7 @@
+@@ -2412,7 +2421,7 @@
      } else if (optimize_for_fuzzing) {
        cflags = [ "-O1" ] + common_optimize_on_cflags
      } else {

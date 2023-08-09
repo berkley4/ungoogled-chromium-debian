@@ -3,7 +3,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -488,7 +488,7 @@
+@@ -491,7 +491,7 @@
        ]
      }
  
@@ -14,7 +14,7 @@ author: Michael Gilbert <mgilbert@debian.org>
          "//third_party/swiftshader/src/Vulkan:icd_file",
 --- a/third_party/angle/gni/angle.gni
 +++ b/third_party/angle/gni/angle.gni
-@@ -507,7 +507,6 @@
+@@ -504,7 +504,6 @@
                        "$angle_root:angle_common",
                        "$angle_root:includes",
                        "$angle_root/src/tests:angle_test_expectations",

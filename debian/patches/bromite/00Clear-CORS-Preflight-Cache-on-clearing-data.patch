@@ -72,7 +72,7 @@ Subject: Clear CORS Preflight Cache on clearing data
  const base::TickClock* tick_clock_for_testing = nullptr;
 --- a/services/network/network_context.cc
 +++ b/services/network/network_context.cc
-@@ -1040,6 +1040,8 @@
+@@ -1058,6 +1058,8 @@
        base::BindOnce(&NetworkContext::OnHttpCacheCleared,
                       base::Unretained(this), std::move(callback))));
  

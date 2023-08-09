@@ -151,18 +151,6 @@
  
  #include <algorithm>
  #include <limits>
---- a/third_party/tensorflow-text/src/tensorflow_text/core/kernels/wordpiece_tokenizer.cc
-+++ b/third_party/tensorflow-text/src/tensorflow_text/core/kernels/wordpiece_tokenizer.cc
-@@ -17,7 +17,8 @@
- #include "absl/strings/str_cat.h"
- #include "absl/strings/str_join.h"
- #include "absl/strings/string_view.h"
--#include "third_party/icu/source/common/unicode/utf8.h"
-+
-+#include <unicode/utf8.h>
- 
- namespace tensorflow {
- namespace text {
 --- a/ui/base/l10n/formatter.h
 +++ b/ui/base/l10n/formatter.h
 @@ -12,9 +12,9 @@

@@ -20,7 +20,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/common/chrome_features.cc
 +++ b/chrome/common/chrome_features.cc
-@@ -928,8 +928,8 @@
+@@ -920,8 +920,8 @@
  // Enables using the prediction service for permission prompts. We will keep
  // this feature in order to allow us to update the holdback chance via finch.
  BASE_FEATURE(kPermissionPredictions,
@@ -31,7 +31,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
  // The holdback chance is 30% but it can also be configured/updated
  // through finch if needed.
-@@ -940,8 +940,8 @@
+@@ -932,8 +932,8 @@
  
  // Enables using the prediction service for geolocation permission prompts.
  BASE_FEATURE(kPermissionGeolocationPredictions,
@@ -112,7 +112,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
  // This feature flag does not turn off any behavior, it is only used for
  // experiment parameters.
-@@ -438,7 +434,7 @@
+@@ -456,7 +452,7 @@
  
  bool ShouldPersistHintsToDisk() {
    return GetFieldTrialParamByFeatureAsBool(kOptimizationHints,
@@ -154,7 +154,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
               "PermissionOnDeviceGeolocationPredictions",
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -242,12 +242,8 @@
+@@ -1107,12 +1107,8 @@
  // in the first viewport after the page load and the metrics of the clicked
  // anchor element will be extracted and recorded.
  BASE_FEATURE(kNavigationPredictor,
@@ -168,4 +168,4 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +             base::FEATURE_DISABLED_BY_DEFAULT     // in Bromite
  );
  
- // Anchor Element Interaction
+ BASE_FEATURE(kNewBaseUrlInheritanceBehavior,

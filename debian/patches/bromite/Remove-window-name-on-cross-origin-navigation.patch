@@ -12,7 +12,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/third_party/blink/renderer/core/loader/document_loader.cc
 +++ b/third_party/blink/renderer/core/loader/document_loader.cc
-@@ -2567,7 +2567,7 @@
+@@ -2570,7 +2570,7 @@
      // that the name would be nulled and if the name is accessed after we will
      // fire a UseCounter. If we decide to move forward with this change, we'd
      // actually clean the name here.
@@ -21,7 +21,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      frame_->Tree().ExperimentalSetNulledName();
    }
  
-@@ -2578,6 +2578,7 @@
+@@ -2581,6 +2581,7 @@
      // TODO(shuuran): CrossSiteCrossBrowsingContextGroupSetNulledName will just
      // record the fact that the name would be nulled and if the name is accessed
      // after we will fire a UseCounter.

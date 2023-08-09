@@ -1,6 +1,6 @@
 --- a/base/BUILD.gn
 +++ b/base/BUILD.gn
-@@ -1096,14 +1096,6 @@
+@@ -1147,14 +1147,6 @@
      public_deps += [ ":nodebug_assertion" ]
    }
  

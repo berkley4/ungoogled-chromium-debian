@@ -1,0 +1,256 @@
+From 821b801395537973ec90070e053bc69ebac62093 Mon Sep 17 00:00:00 2001
+From: Jack Hsieh <chengweih@chromium.org>
+Date: Thu, 10 Aug 2023 16:16:02 +0000
+Subject: [PATCH] hid: Disable kEnableWebHidOnExtensionServiceWorker
+
+According to crbug.com/1469984, there is a race condition between the
+destruction of ServiceWorkerVersion and HidService that is causing a
+use-after-free crash. Disable this feature until a proper fix is landed.
+
+(cherry picked from commit 18384e6ba1cc606ba2c8035786cdf10cbd3fcaf5)
+
+Bug: 1469984
+Change-Id: I281d0c178bbd6b9a74c3e7a5b6e855d8ef4e1650
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4761744
+Reviewed-by: Matt Reynolds <mattreynolds@chromium.org>
+Commit-Queue: Jack Hsieh <chengweih@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1181139}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4769505
+Bot-Commit: Rubber Stamper <rubber-stamper@appspot.gserviceaccount.com>
+Cr-Commit-Position: refs/branch-heads/5845@{#1348}
+Cr-Branched-From: 5a5dff63a4a4c63b9b18589819bebb2566c85443-refs/heads/main@{#1160321}
+---
+
+--- a/chrome/browser/hid/chrome_hid_delegate_unittest.cc
++++ b/chrome/browser/hid/chrome_hid_delegate_unittest.cc
+@@ -1033,13 +1033,11 @@
+ };
+ 
+ #if BUILDFLAG(ENABLE_EXTENSIONS)
+-class DisableWebHidOnExtensionServiceWorkerHelper {
++class EnableWebHidOnExtensionServiceWorkerHelper {
+  public:
+-  DisableWebHidOnExtensionServiceWorkerHelper() {
++  EnableWebHidOnExtensionServiceWorkerHelper() {
+     scoped_feature_list_.InitWithFeatures(
+-        /*enabled_features=*/{},
+-        /*disabled_features=*/{
+-            features::kEnableWebHidOnExtensionServiceWorker});
++        {features::kEnableWebHidOnExtensionServiceWorker}, {});
+   }
+ 
+  private:
+@@ -1049,44 +1047,34 @@
+ class ChromeHidDelegateExtensionServiceWorkerTest
+     : public ChromeHidDelegateServiceWorkerTestBase {
+  public:
+-  ChromeHidDelegateExtensionServiceWorkerTest() {
+-    supports_hid_connection_tracker_ = true;
+-  }
+   // ChromeHidTestHelper
+   void SetUpOriginUrl() override { SetUpExtensionOriginUrl(); }
+ };
+ 
+-class ChromeHidDelegateExtensionServiceWorkerFeatureDisabledTest
++class ChromeHidDelegateExtensionServiceWorkerFeatureEnabledTest
+     : public ChromeHidDelegateExtensionServiceWorkerTest,
+-      public DisableWebHidOnExtensionServiceWorkerHelper {
++      public EnableWebHidOnExtensionServiceWorkerHelper {
+  public:
+-  ChromeHidDelegateExtensionServiceWorkerFeatureDisabledTest() {
+-    // There is no hid connection tracker activity when
+-    // features::kEnableWebHidOnExtensionServiceWorker is disabled.
+-    supports_hid_connection_tracker_ = false;
++  ChromeHidDelegateExtensionServiceWorkerFeatureEnabledTest() {
++    supports_hid_connection_tracker_ = true;
+   }
+ };
+ 
++class ChromeHidDelegateServiceWorkerTestFeatureEnabledTest
++    : public ChromeHidDelegateServiceWorkerTest,
++      public EnableWebHidOnExtensionServiceWorkerHelper {};
++
+ class ChromeHidDelegateExtensionRenderFrameTest
+     : public ChromeHidDelegateRenderFrameTestBase {
+  public:
+-  ChromeHidDelegateExtensionRenderFrameTest() {
+-    supports_hid_connection_tracker_ = true;
+-  }
+   // ChromeHidTestHelper
+   void SetUpOriginUrl() override { SetUpExtensionOriginUrl(); }
+ };
+ 
+-class ChromeHidDelegateExtensionRenderFrameFeatureDisabledTest
++class ChromeHidDelegateExtensionRenderFrameFeatureEnabledTest
+     : public ChromeHidDelegateExtensionRenderFrameTest,
+-      public DisableWebHidOnExtensionServiceWorkerHelper {
+- public:
+-  ChromeHidDelegateExtensionRenderFrameFeatureDisabledTest() {
+-    supports_hid_connection_tracker_ = false;
+-  }
+-  // ChromeHidTestHelper
+-  void SetUpOriginUrl() override { SetUpExtensionOriginUrl(); }
+-};
++      public EnableWebHidOnExtensionServiceWorkerHelper {};
++
+ #endif  // BUILDFLAG(ENABLE_EXTENSIONS)
+ 
+ }  // namespace
+@@ -1124,8 +1112,7 @@
+   TestConnectAndNavigateCrossDocument(web_contents());
+ }
+ 
+-TEST_F(ChromeHidDelegateExtensionServiceWorkerFeatureDisabledTest,
+-       HidServiceNotConnected) {
++TEST_F(ChromeHidDelegateExtensionServiceWorkerTest, HidServiceNotConnected) {
+   TestHidServiceNotConnected();
+ }
+ 
+@@ -1133,6 +1120,11 @@
+   TestHidServiceNotConnected();
+ }
+ 
++TEST_F(ChromeHidDelegateServiceWorkerTestFeatureEnabledTest,
++       HidServiceNotConnected) {
++  TestHidServiceNotConnected();
++}
++
+ #if BUILDFLAG(ENABLE_EXTENSIONS)
+ TEST_F(ChromeHidDelegateExtensionRenderFrameTest,
+        FidoDeviceAllowedWithPrivilegedOrigin) {
+@@ -1173,37 +1165,43 @@
+   TestConnectAndNavigateCrossDocument(web_contents());
+ }
+ 
+-TEST_F(ChromeHidDelegateExtensionRenderFrameFeatureDisabledTest,
++TEST_F(ChromeHidDelegateExtensionRenderFrameTest,
+        ConnectionTrackerOpenDeviceNoIndicatorNoNotification) {
+   TestConnectionTrackerOpenDeviceNoConnectionCountUpdate();
+ }
+ 
+-TEST_F(ChromeHidDelegateExtensionServiceWorkerTest, AddChangeRemoveDevice) {
++TEST_F(ChromeHidDelegateExtensionServiceWorkerFeatureEnabledTest,
++       AddChangeRemoveDevice) {
+   TestAddChangeRemoveDevice();
+ }
+ 
+-TEST_F(ChromeHidDelegateExtensionServiceWorkerTest, NoPermissionDevice) {
++TEST_F(ChromeHidDelegateExtensionServiceWorkerFeatureEnabledTest,
++       NoPermissionDevice) {
+   TestNoPermissionDevice();
+ }
+ 
+-TEST_F(ChromeHidDelegateExtensionServiceWorkerTest, ReconnectHidService) {
++TEST_F(ChromeHidDelegateExtensionServiceWorkerFeatureEnabledTest,
++       ReconnectHidService) {
+   TestReconnectHidService();
+ }
+ 
+-TEST_F(ChromeHidDelegateExtensionServiceWorkerTest, RevokeDevicePermission) {
++TEST_F(ChromeHidDelegateExtensionServiceWorkerFeatureEnabledTest,
++       RevokeDevicePermission) {
+   TestRevokeDevicePermission();
+ }
+ 
+-TEST_F(ChromeHidDelegateExtensionServiceWorkerTest,
++TEST_F(ChromeHidDelegateExtensionServiceWorkerFeatureEnabledTest,
+        RevokeDevicePermissionEphemeral) {
+   TestRevokeDevicePermissionEphemeral();
+ }
+ 
+-TEST_F(ChromeHidDelegateExtensionServiceWorkerTest, ConnectAndDisconnect) {
++TEST_F(ChromeHidDelegateExtensionServiceWorkerFeatureEnabledTest,
++       ConnectAndDisconnect) {
+   TestConnectAndDisconnect(/*web_contents=*/nullptr);
+ }
+ 
+-TEST_F(ChromeHidDelegateExtensionServiceWorkerTest, ConnectAndRemove) {
++TEST_F(ChromeHidDelegateExtensionServiceWorkerFeatureEnabledTest,
++       ConnectAndRemove) {
+   TestConnectAndRemove(/*web_contents=*/nullptr);
+ }
+ #endif  // BUILDFLAG(ENABLE_EXTENSIONS)
+--- a/chrome/browser/hid/hid_browsertest.cc
++++ b/chrome/browser/hid/hid_browsertest.cc
+@@ -260,6 +260,16 @@
+ #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
+ };
+ 
++// Test fixture with kEnableWebHidOnExtensionServiceWorker enabled.
++class WebHidExtensionFeatureEnabledBrowserTest
++    : public WebHidExtensionBrowserTest {
++ public:
++  WebHidExtensionFeatureEnabledBrowserTest() {
++    scoped_feature_list_.InitWithFeatures(
++        {features::kEnableWebHidOnExtensionServiceWorker}, {});
++  }
++};
++
+ // Test fixture with kEnableWebHidOnExtensionServiceWorker disabled.
+ class WebHidExtensionFeatureDisabledBrowserTest
+     : public WebHidExtensionBrowserTest {
+@@ -270,6 +280,24 @@
+   }
+ };
+ 
++IN_PROC_BROWSER_TEST_F(WebHidExtensionBrowserTest, FeatureDefaultDisabled) {
++  extensions::TestExtensionDir test_dir;
++
++  constexpr char kBackgroundJs[] = R"(
++    chrome.test.sendMessage("ready", async () => {
++      try {
++        chrome.test.assertEq(navigator.hid, undefined);
++        chrome.test.notifyPass();
++
++      } catch (e) {
++        chrome.test.fail(e.name + ':' + e.message);
++      }
++    });
++  )";
++
++  LoadExtensionAndRunTest(kBackgroundJs);
++}
++
+ IN_PROC_BROWSER_TEST_F(WebHidExtensionFeatureDisabledBrowserTest,
+                        FeatureDisabled) {
+   extensions::TestExtensionDir test_dir;
+@@ -289,7 +317,7 @@
+   LoadExtensionAndRunTest(kBackgroundJs);
+ }
+ 
+-IN_PROC_BROWSER_TEST_F(WebHidExtensionBrowserTest, GetDevices) {
++IN_PROC_BROWSER_TEST_F(WebHidExtensionFeatureEnabledBrowserTest, GetDevices) {
+   extensions::TestExtensionDir test_dir;
+ 
+   auto device = CreateTestDeviceWithInputAndOutputReports();
+@@ -310,7 +338,8 @@
+   LoadExtensionAndRunTest(kBackgroundJs);
+ }
+ 
+-IN_PROC_BROWSER_TEST_F(WebHidExtensionBrowserTest, RequestDevice) {
++IN_PROC_BROWSER_TEST_F(WebHidExtensionFeatureEnabledBrowserTest,
++                       RequestDevice) {
+   extensions::TestExtensionDir test_dir;
+ 
+   constexpr char kBackgroundJs[] = R"(
+@@ -327,7 +356,8 @@
+   LoadExtensionAndRunTest(kBackgroundJs);
+ }
+ 
+-IN_PROC_BROWSER_TEST_F(WebHidExtensionBrowserTest, HidConnectionTracker) {
++IN_PROC_BROWSER_TEST_F(WebHidExtensionFeatureEnabledBrowserTest,
++                       HidConnectionTracker) {
+   auto device = CreateTestDeviceWithInputAndOutputReports();
+   hid_manager()->AddDevice(std::move(device));
+ 
+--- a/chrome/common/chrome_features.cc
++++ b/chrome/common/chrome_features.cc
+@@ -385,7 +385,7 @@
+ // Enable WebHID on extension service workers.
+ BASE_FEATURE(kEnableWebHidOnExtensionServiceWorker,
+              "EnableWebHidOnExtensionServiceWorker",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             base::FEATURE_DISABLED_BY_DEFAULT);
+ #endif
+ 
+ // Enable WebUSB on extension service workers.

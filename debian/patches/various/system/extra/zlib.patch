@@ -11,7 +11,7 @@
  
 --- a/ui/gfx/codec/png_codec.cc
 +++ b/ui/gfx/codec/png_codec.cc
-@@ -15,7 +15,7 @@
+@@ -16,7 +16,7 @@
  #include "third_party/skia/include/core/SkColorPriv.h"
  #include "third_party/skia/include/core/SkUnPreMultiply.h"
  #include "third_party/skia/include/encode/SkPngEncoder.h"

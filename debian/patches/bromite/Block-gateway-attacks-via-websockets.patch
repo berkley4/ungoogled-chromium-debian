@@ -22,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/third_party/blink/renderer/core/execution_context/execution_context.cc
 +++ b/third_party/blink/renderer/core/execution_context/execution_context.cc
-@@ -715,4 +715,20 @@
+@@ -712,4 +712,20 @@
    proto->set_world_type(GetWorldType(*this));
  }
  
@@ -45,7 +45,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  }  // namespace blink
 --- a/third_party/blink/renderer/core/execution_context/execution_context.h
 +++ b/third_party/blink/renderer/core/execution_context/execution_context.h
-@@ -383,6 +383,7 @@
+@@ -387,6 +387,7 @@
        const String& source_file = g_empty_string) const {}
  
    HeapObserverSet<ContextLifecycleObserver>& ContextLifecycleObserverSet();
@@ -65,7 +65,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/third_party/blink/renderer/core/loader/frame_fetch_context.cc
 +++ b/third_party/blink/renderer/core/loader/frame_fetch_context.cc
-@@ -586,6 +586,26 @@
+@@ -578,6 +578,26 @@
    return should_block_request;
  }
  
@@ -208,8 +208,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +  }
 +
    if (auto* scheduler = execution_context_->GetScheduler()) {
-     feature_handle_for_scheduler_ = scheduler->RegisterFeature(
-         SchedulingPolicy::Feature::kWebSocket,
+     // Two features are registered here:
+     // - `kWebSocket`: a non-sticky feature that will disable BFCache for any
 --- a/third_party/blink/renderer/modules/websockets/websocket_common.cc
 +++ b/third_party/blink/renderer/modules/websockets/websocket_common.cc
 @@ -125,9 +125,38 @@

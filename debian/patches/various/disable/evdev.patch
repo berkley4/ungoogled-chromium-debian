@@ -9,7 +9,7 @@ Date:   Fri Jun 30 19:15:09 2023 +0200
 
 --- a/remoting/host/BUILD.gn
 +++ b/remoting/host/BUILD.gn
-@@ -240,10 +240,6 @@
+@@ -241,10 +241,6 @@
    pkg_config("xkbcommon") {
      packages = [ "xkbcommon" ]
    }
@@ -20,7 +20,7 @@ Date:   Fri Jun 30 19:15:09 2023 +0200
  }
  
  # This must be a static library instead of a source set because
-@@ -569,7 +565,6 @@
+@@ -576,7 +572,6 @@
        "x11_display_util.cc",
        "x11_display_util.h",
      ]

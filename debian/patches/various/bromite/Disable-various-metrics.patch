@@ -21,7 +21,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/browser_process_impl.cc
 +++ b/chrome/browser/browser_process_impl.cc
-@@ -1055,7 +1055,7 @@
+@@ -1033,7 +1033,7 @@
  #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
  
    registry->RegisterBooleanPref(metrics::prefs::kMetricsReportingEnabled,
@@ -32,7 +32,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -76,7 +76,6 @@
+@@ -78,7 +78,6 @@
  #include "chrome/browser/hid/chrome_hid_delegate.h"
  #include "chrome/browser/interstitials/enterprise_util.h"
  #include "chrome/browser/lifetime/browser_shutdown.h"
@@ -40,7 +40,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "chrome/browser/media/audio_service_util.h"
  #include "chrome/browser/media/router/media_router_feature.h"
  #include "chrome/browser/media/webrtc/audio_debug_recordings_handler.h"
-@@ -233,7 +232,6 @@
+@@ -234,7 +233,6 @@
  #include "components/no_state_prefetch/common/no_state_prefetch_final_status.h"
  #include "components/no_state_prefetch/common/prerender_url_loader_throttle.h"
  #include "components/omnibox/common/omnibox_features.h"
@@ -48,7 +48,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "components/page_load_metrics/browser/metrics_web_contents_observer.h"
  #include "components/payments/content/payment_handler_navigation_throttle.h"
  #include "components/payments/content/payment_request_display_manager.h"
-@@ -4826,16 +4824,6 @@
+@@ -4869,16 +4867,6 @@
      content::NavigationHandle* handle) {
    std::vector<std::unique_ptr<content::NavigationThrottle>> throttles;
  
@@ -65,7 +65,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #if BUILDFLAG(ENABLE_SUPERVISED_USERS)
    MaybeAddThrottle(
        SupervisedUserNavigationThrottle::MaybeCreateThrottleFor(handle),
-@@ -4920,10 +4908,6 @@
+@@ -4963,10 +4951,6 @@
      throttle_manager->MaybeAppendNavigationThrottles(handle, &throttles);
    }
  

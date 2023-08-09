@@ -26,5 +26,5 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +             "SignedHTTPExchange",                        // must be disabled
 +             base::FEATURE_DISABLED_BY_DEFAULT);          // in Bromite
  
- // Delays RenderProcessHost shutdown by a few seconds to allow the subframe's
- // process to be potentially reused. This aims to reduce process churn in
+ // If enabled, GetUserMedia API will only work when the concerned tab is in
+ // focus

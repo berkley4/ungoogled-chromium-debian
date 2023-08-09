@@ -1,6 +1,6 @@
 --- a/media/audio/alsa/alsa_output.cc
 +++ b/media/audio/alsa/alsa_output.cc
-@@ -658,8 +658,8 @@
+@@ -659,8 +659,8 @@
      return 0;
    }
    if (static_cast<uint32_t>(available_frames) > alsa_buffer_frames_ * 2) {

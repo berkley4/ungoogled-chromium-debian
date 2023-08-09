@@ -10,7 +10,7 @@ This also enables the Chrome Certificate Verifier.
 
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -167,7 +167,7 @@
+@@ -172,7 +172,7 @@
  #if BUILDFLAG(CHROME_ROOT_STORE_OPTIONAL)
  BASE_FEATURE(kChromeRootStoreUsed,
               "ChromeRootStoreUsed",

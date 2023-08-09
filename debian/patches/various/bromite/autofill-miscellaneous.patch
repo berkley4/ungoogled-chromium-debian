@@ -22,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -1056,11 +1056,11 @@
+@@ -1132,11 +1132,11 @@
                                     PrefRegistry::LOSSY_PREF);
  
    // Deprecated 11/2022.
@@ -39,7 +39,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    registry->RegisterBooleanPref(kAutofillWalletImportStorageCheckboxState,
 --- a/components/autofill/core/browser/browser_autofill_manager.h
 +++ b/components/autofill/core/browser/browser_autofill_manager.h
-@@ -770,9 +770,9 @@
+@@ -784,9 +784,9 @@
        credit_card_form_event_logger_;
  
    // Have we logged whether Autofill is enabled for this page load?
@@ -53,7 +53,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // Has the user manually edited at least one form field among the autofillable
 --- a/components/autofill/core/common/autofill_features.cc
 +++ b/components/autofill/core/common/autofill_features.cc
-@@ -711,8 +711,8 @@
+@@ -718,8 +718,8 @@
  // "upload" resources.
  // i.e., https://other.autofill.server:port/tbproxy/af/
  BASE_FEATURE(kAutofillServerCommunication,
@@ -66,15 +66,15 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  // element in the DOM.
 --- a/components/autofill/core/common/autofill_prefs.cc
 +++ b/components/autofill/core/common/autofill_prefs.cc
-@@ -168,7 +168,7 @@
+@@ -176,7 +176,7 @@
  
    // Deprecated prefs registered for migration.
    registry->RegisterBooleanPref(
 -      prefs::kAutofillEnabledDeprecated, true,
 +      prefs::kAutofillEnabledDeprecated, false,
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
+   registry->RegisterBooleanPref(prefs::kAutofillOrphanRowsRemoved, false);
  }
- 
 --- a/components/password_manager/core/browser/password_generation_frame_helper.cc
 +++ b/components/password_manager/core/browser/password_generation_frame_helper.cc
 @@ -85,7 +85,6 @@

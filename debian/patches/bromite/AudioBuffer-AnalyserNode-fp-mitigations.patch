@@ -22,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -3858,6 +3858,10 @@
+@@ -3859,6 +3859,10 @@
       flag_descriptions::kKioskEnableAppServiceDescription, kOsCrOS,
       FEATURE_VALUE_TYPE(features::kKioskEnableAppService)},
  #endif  // BUILDFLAG(IS_CHROMEOS)
@@ -35,7 +35,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       flag_descriptions::kWebRtcRemoteEventLogName,
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3483,6 +3483,11 @@
+@@ -3560,6 +3560,11 @@
      "When enabled, WebRTC will only use the Video Encode Accelerator for "
      "video resolutions inside those published as supported.";
  
@@ -49,7 +49,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  const char kWebUsbDeviceDetectionDescription[] =
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -1997,6 +1997,9 @@
+@@ -2040,6 +2040,9 @@
  extern const char kWebrtcUseMinMaxVEADimensionsName[];
  extern const char kWebrtcUseMinMaxVEADimensionsDescription[];
  
@@ -61,9 +61,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -716,6 +716,10 @@
- #endif
- );
+@@ -236,6 +236,10 @@
+              "BiddingAndScoringDebugReportingAPI",
+              base::FEATURE_DISABLED_BY_DEFAULT);
  
 +BASE_FEATURE(kAudioContextShuffleEnabled,
 +             "AudioContextShuffleEnabled",
@@ -74,15 +74,15 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  BASE_FEATURE(kBlinkHeapCompaction,
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -280,6 +280,8 @@
- 
- BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kWebRtcUseMinMaxVEADimensions);
+@@ -144,6 +144,8 @@
+ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kBlinkHeapIncrementalMarking);
+ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kBlinkHeapIncrementalMarkingStress);
  
 +BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kAudioContextShuffleEnabled);
 +
- // Blink garbage collection.
- BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kBlinkHeapCompaction);
- BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kBlinkHeapConcurrentMarking);
+ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(
+     kBlockingDownloadsInAdFrameWithoutUserActivation);
+ 
 --- a/third_party/blink/renderer/modules/webaudio/audio_buffer.cc
 +++ b/third_party/blink/renderer/modules/webaudio/audio_buffer.cc
 @@ -196,6 +196,20 @@
@@ -127,7 +127,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "third_party/blink/public/platform/modules/webrtc/webrtc_logging.h"
  #include "third_party/blink/public/platform/web_audio_latency_hint.h"
  #include "third_party/blink/renderer/bindings/core/v8/script_promise_resolver.h"
-@@ -575,7 +576,9 @@
+@@ -586,7 +587,9 @@
    DCHECK(IsMainThread());
    DCHECK(destination());
  
@@ -149,7 +149,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "third_party/blink/public/mojom/frame/lifecycle.mojom-shared.h"
  #include "third_party/blink/public/platform/platform.h"
 @@ -721,6 +722,17 @@
-   return window ? window->document() : nullptr;
+   return To<LocalDOMWindow>(GetExecutionContext());
  }
  
 +/*static*/
@@ -179,7 +179,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/third_party/blink/renderer/modules/webaudio/offline_audio_context.cc
 +++ b/third_party/blink/renderer/modules/webaudio/offline_audio_context.cc
-@@ -369,6 +369,7 @@
+@@ -368,6 +368,7 @@
      if (!rendered_buffer) {
        return;
      }
