@@ -1,6 +1,9 @@
 # Start with a maximised (non-fullscreen) window
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --start-maximized"
 
+# Comment to enable Qt interface elements
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=AllowQt"
+
 # Opens popups as tabs instead
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --popups-to-tabs"
 
