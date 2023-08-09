@@ -125,7 +125,6 @@ GN_FLAGS += link_pulseaudio=true
 # Interdependent : libxslt depends upon libxml; libxml depends upon icu
 #
 SYS_LIBS :=               \
-        brotli            \
         double-conversion \
         flac              \
         fontconfig        \
@@ -143,6 +142,9 @@ SYS_LIBS :=               \
 
 # Backported libraries (if you on stable)
 #SYS_LIBS +=
+
+# Enable brotli
+#SYS_LIBS += brotli
 
 # If you are building on the same distro you intend to run under
 SYS_LIBS += libjpeg

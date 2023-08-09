@@ -1,11 +1,13 @@
 --- a/net/filter/brotli_source_stream.cc
 +++ b/net/filter/brotli_source_stream.cc
-@@ -10,7 +10,7 @@
+@@ -12,8 +12,8 @@
  #include "base/memory/raw_ptr.h"
  #include "base/metrics/histogram_macros.h"
  #include "net/base/io_buffer.h"
 -#include "third_party/brotli/include/brotli/decode.h"
+-#include "third_party/brotli/include/brotli/shared_dictionary.h"
 +#include <brotli/decode.h>
++#include <brotli/shared_dictionary.h>
  
  namespace net {
  
