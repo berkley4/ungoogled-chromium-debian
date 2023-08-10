@@ -112,6 +112,12 @@ fi
 
 
 
+# Are we testing outside of a real build directory?
+TEST=1
+[ ! -d $RT_DIR/third_party ] || TEST=0
+
+
+
 #############################
 ##  Fetch/Extract Tarball  ##
 #############################
@@ -205,7 +211,7 @@ if [ -n "$LTO_DIR" ]; then
   sed -e "s@^\(+.*thinlto-cache-dir=\)[-_a-zA-Z0-9/]*@\1$LTO_DIR@" \
       -i $DEBIAN/patches/optional/thinlto-cache-location.patch
 
-  if [ ! -d $LTO_DIR ]; then
+  if [ ! -d $LTO_DIR ] && [ $TEST -eq 0 ]; then
     printf '\n%s\n' "LTO_DIR: path $LTO_DIR does not exist"
   fi
 fi
@@ -654,7 +660,7 @@ eval sed $SER -i $DEBIAN/patches/series.debian
 
 
 ## Shell launcher
-if [ ! -f $DEBIAN/shims/chromium ]; then
+if [ ! -f $DEBIAN/shims/chromium ] && [ $TEST -eq 0 ]; then
   $DEBIAN/devutils/update_launcher.sh \
     < $DEBIAN/shims/chromium.sh > $DEBIAN/shims/chromium
 fi
