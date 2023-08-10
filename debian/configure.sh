@@ -332,10 +332,10 @@ if [ $DRIVER -eq 0 ]; then
 fi
 
 
-if [ $MUTEX_PI -eq 1 ]; then
-  opt_patch_enable="$opt_patch_enable mutex-priority-inheritance"
+if [ $MUTEX_PI -eq 0 ]; then
+  opt_patch_disable="$opt_patch_disable mutex-priority-inheritance"
 
-  gn_enable="enable_mutex_priority_inheritance"
+  gn_disable="$gn_disable enable_mutex_priority_inheritance"
 fi
 
 

@@ -69,7 +69,7 @@ GN_FLAGS +=                                     \
 #GN_FLAGS += use_atk=false use_dbus=false
 
 # Enable mutex priority inheritance
-#GN_FLAGS += enable_mutex_priority_inheritance=true
+GN_FLAGS += enable_mutex_priority_inheritance=true
 
 # Diable pdfium javascript and XFA forms support
 GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
