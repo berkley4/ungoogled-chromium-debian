@@ -319,7 +319,7 @@ fi
 if [ $ATK_DBUS -eq 0 ]; then
   opt_patch_enable="$opt_patch_enable disable/atk-dbus"
 
-  # use_atk=false use_dbus=false
+  # GN_FLAGS += use_atk=false use_dbus=false
   gn_enable="$gn_enable use_atk"
 fi
 
@@ -351,7 +351,7 @@ fi
 
 
 if [ $PDF_JS -eq 1 ]; then
-  # pdf_enable_v8=false pdf_enable_xfa=false
+  # GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
   gn_disable="$gn_disable pdf_enable_v8"
 fi
 
@@ -421,7 +421,7 @@ fi
 if [ $VAAPI -eq 0 ]; then
   opt_patch_disable="$opt_patch_disable system/vaapi/"
 
-  # #GN_FLAGS += use_vaapi=false
+  # GN_FLAGS += use_vaapi=false
   gn_enable="$gn_enable use_vaapi"
   deps_disable="$deps_disable libva"
 fi
