@@ -39,9 +39,10 @@ real_dir_path () (
 ####################
 
 [ -n "$STABLE" ] || STABLE=0
+[ -n "$TARBALL" ] || TARBALL=0
+[ -n "$X11_ONLY" ] || X11_ONLY=0
 
 [ -n "$BUNDLED_CLANG" ] || BUNDLED_CLANG=0
-[ -n "$TARBALL" ] || TARBALL=0
 [ -n "$TRANSLATE" ] || TRANSLATE=1
 
 [ -n "$AES_PCLMUL" ] || AES_PCLMUL=1
@@ -57,6 +58,7 @@ real_dir_path () (
 [ -n "$DRIVER" ] || DRIVER=1
 [ -n "$MUTEX_PI" ] || MUTEX_PI=1
 [ -n "$OOP_PR" ] || OOP_PR=0
+[ -n "$OZONE_WAYLAND" ] || OZONE_WAYLAND=1
 [ -n "$PDF_JS" ] || PDF_JS=0
 [ -n "$POLICIES" ] || POLICIES=0
 [ -n "$QT" ] || QT=1
@@ -316,6 +318,12 @@ fi
 ##  Non-library components  ##
 ##############################
 
+if [ $X11_ONLY -eq 1 ]; then
+  OOP_PR=1
+  OZONE_WAYLAND=0
+fi
+
+
 if [ $ATK_DBUS -eq 0 ]; then
   opt_patch_enable="$opt_patch_enable disable/atk-dbus"
 
@@ -347,6 +355,12 @@ fi
 
 if [ $OOP_PR -eq 1 ]; then
   gn_enable="$gn_enable enable_oop_basic_print_dialog"
+fi
+
+
+if [ $OZONE_WAYLAND -eq 0 ]; then
+  # GN_FLAGS += ozone_platform_wayland=false
+  gn_enable="$gn_enable ozone_platform_wayland"
 fi
 
 

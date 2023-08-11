@@ -73,11 +73,14 @@ GN_FLAGS +=                                     \
 # Enable mutex priority inheritance
 GN_FLAGS += enable_mutex_priority_inheritance=true
 
-# Diable pdfium javascript and XFA forms support
-GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
+# Disable wayland ozone platform (X11 only)
+#GN_FLAGS += ozone_platform_wayland=false
 
 # Enable an out-of-process print dialog (X11 only)
 #GN_FLAGS += enable_oop_basic_print_dialog=true
+
+# Diable pdfium javascript and XFA forms support
+GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
 
 # Disable print preview (workaround for print preview dialog crash)
 GN_FLAGS += enable_print_preview=false
