@@ -69,8 +69,9 @@ MTUNE		generic		Matches MARCH if MARCH is set and MTUNE is not specified
 
 AES_PCLMUL	1		Intel Westmere/AMD Jaguar (might be missing on some earlier/lower end)
 AVX		1		Intel Sandybridge/AMD Bulldozer era (circa 2011) onwards
-AVX2		0		Intel Haswell/AMD Excavator or newer
-V8_AVX2		0		AVX2 for v8 javascript (can enable on non-AVX2 capable hosts)
+AVX2		1		Intel Haswell/AMD Excavator or newer
+RTC_AVX2	1		AVX2 for RTC (builds and runs on non-AVX2 capable hosts)
+V8_AVX2		1		AVX2 for v8 javascript (builds and runs on non-AVX2 capable hosts)
 
 POLLY_VECTOR	1		Polly vectorisation (oportunistic vector instruction optimisation)
 POLLY_EXTRA	1		Polly extra compile optimisations

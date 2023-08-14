@@ -88,8 +88,11 @@ GN_FLAGS += enable_print_preview=false
 # Disable virtual reality features
 GN_FLAGS += enable_vr=false enable_arcore=false enable_openxr=false enable_cardboard=false
 
+# Disable RTC AVX2 instructions
+#GN_FLAGS += rtc_enable_avx2=false
+
 # Enable 256-bit re-vectorization pass in WASM compilation pipeline
-#GN_FLAGS += v8_enable_wasm_simd256_revec=true
+GN_FLAGS += v8_enable_wasm_simd256_revec=true
 
 
 # Enable WebGPU

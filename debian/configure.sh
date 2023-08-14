@@ -51,7 +51,8 @@ real_dir_path () (
 [ -n "$POLLY_VECTORIZER" ] || POLLY_VECTORIZER=1
 [ -n "$POLLY_PARALLEL" ] || POLLY_PARALLEL=0
 [ -n "$POLLY_THREADS" ] || POLLY_THREADS=0
-[ -n "$V8_AVX2" ] || V8_AVX2=0
+[ -n "$RTC_AVX2" ] || RTC_AVX2=1
+[ -n "$V8_AVX2" ] || V8_AVX2=1
 
 [ -n "$ATK_DBUS" ] || ATK_DBUS=1
 [ -n "$CATAPULT" ] || CATAPULT=1
@@ -283,7 +284,6 @@ fi
 if [ $AVX2 -eq 1 ]; then
   AES_PCLMUL=1
   AVX=1
-  V8_AVX2=1
   opt_patch_enable="$opt_patch_enable cpu/avx2"
 fi
 
@@ -297,8 +297,14 @@ if [ $AES_PCLMUL -eq 0 ]; then
   opt_patch_disable="$opt_patch_disable cpu/aes-pclmul"
 fi
 
-if [ $V8_AVX2 -eq 1 ]; then
-  gn_enable="$gn_enable v8_enable_wasm_simd256_revec"
+if [ $RTC_AVX2 -eq 0 ]; then
+  # GN_FLAGS += rtc_enable_avx2=false
+  gn_enable="$gn_enable rtc_enable_avx2"
+fi
+
+if [ $V8_AVX2 -eq 0 ]; then
+  # GN_FLAGS += v8_enable_wasm_simd256_revec=true
+  gn_disable="$gn_disable v8_enable_wasm_simd256_revec"
 fi
 
 
