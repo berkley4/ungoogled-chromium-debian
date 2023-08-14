@@ -29,7 +29,7 @@ bromite/00Disable-csp-reports.patch
 bromite/Add-site-engagement-flag.patch
 bromite/AudioBuffer-AnalyserNode-fp-mitigations.patch
 bromite/Block-gateway-attacks-via-websockets.patch
-bromite/Disable-all-promo-dialogs.patch
+#bromite/Disable-all-promo-dialogs.patch
 bromite/Disable-AsyncDNS-by-default.patch
 bromite/Disable-idle-detection.patch
 bromite/Disable-plugins-enumeration.patch
