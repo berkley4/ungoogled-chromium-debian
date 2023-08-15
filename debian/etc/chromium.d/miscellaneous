@@ -7,9 +7,6 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --no-default-browser-check"
 # Do not hide any extensions in the about:extensions dialog
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --show-component-extension-options"
 
-# Allow extensions to be loaded remotely
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-remote-extensions"
-
 # For those on slow machines
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-low-end-device-mode"
 
