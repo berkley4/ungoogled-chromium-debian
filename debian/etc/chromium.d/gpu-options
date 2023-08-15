@@ -1,7 +1,7 @@
 ## Refer to chrome://gpu/ to see if there are any problems
 ## Note: the uncommented flags will probably work for most users
 
-# For those using x11 (ie not wayland)
+# For those using wayland (not X11)
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --ozone-platform-hint=wayland"
 
 # WebGPU
