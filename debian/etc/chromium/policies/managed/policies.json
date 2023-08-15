@@ -1,11 +1,13 @@
 {
   "AudioCaptureAllowed": false,
   "BackgroundModeEnabled": false,
+  "BlockExternalExtensions": true,
   "BrowserNetworkTimeQueriesEnabled": false,
   "CloudPrintProxyEnabled": false,
   "CrossOriginWebAssemblyModuleSharingEnabled": false,
   "DefaultSearchProviderContextMenuAccessAllowed": false,
   "DefaultWebBluetoothGuardSetting": 2,
+  "DefaultWebHidGuardSetting": 2,
   "DefaultWebUsbGuardSetting": 2,
   "DnsOverHttpsMode": "off",
   "EnableMediaRouter": false,
