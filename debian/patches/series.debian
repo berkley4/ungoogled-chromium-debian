@@ -84,6 +84,7 @@ various/bromite/Disable-conversion-measurement-api.patch
 various/bromite/Disable-various-metrics.patch
 various/bromite/DoH-improvements.patch
 various/bromite/webRTC-do-not-expose-local-IP-addresses.patch
+various/compiler-flags/Do-not-link-with-libatomic.patch
 various/compiler-flags/function-import-limits.patch
 various/compiler-flags/init-stack-vars-zero.patch
 various/compiler-flags/intel-control-flow-enforcement.patch
@@ -102,7 +103,6 @@ various/fedora/do_not_restrict_new_V4L2_decoders.v4l2.patch
 various/fedora/enable-hardware-accelerated-mjpeg.patch
 various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
 various/fixes/chromedriver-BrandVersion.patch
-various/fixes/Do-not-link-with-libatomic.patch
 various/fixes/EnumTable-crash.patch
 various/fixes/fc-cache-version.patch
 various/fixes/font-rendering.patch
