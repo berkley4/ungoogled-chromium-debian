@@ -141,6 +141,7 @@ optional/cpu/avx.patch
 #optional/disable/rtc-protobuf.patch
 #optional/legacy-i386/angle-lockfree.patch
 #optional/legacy-i386/support-i386.patch
+#optional/system/dav1d-bundled-header.patch
 optional/system/jpeg.patch
 #optional/system/libusb.patch
 optional/system/openh264.patch

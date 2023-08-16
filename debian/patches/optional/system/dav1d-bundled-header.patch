@@ -1,0 +1,11 @@
+--- a/third_party/dav1d/libdav1d/include/dav1d/dav1d.h
++++ b/third_party/dav1d/libdav1d/include/dav1d/dav1d.h
+@@ -34,7 +34,7 @@
+ #include "common.h"
+ #include "picture.h"
+ #include "data.h"
+-#include "version.h"
++#include "third_party/dav1d/version/version.h"
+ 
+ #ifdef __cplusplus
+ extern "C" {

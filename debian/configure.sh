@@ -504,6 +504,8 @@ if [ $STABLE -eq 0 ]; then
 
   sys_enable="$sys_enable dav1d"
   deps_enable="$deps_enable libdav1d"
+else
+  opt_patch_enable="$opt_patch_enable system/dav1d-bundled-header"
 fi
 
 
