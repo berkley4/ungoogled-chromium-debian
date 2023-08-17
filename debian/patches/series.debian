@@ -161,9 +161,5 @@ optional/translate/translate-stop-unsupported-switch-warning.patch
 #optional/fix-clang-structured_binding.patch
 #optional/fix-missing-symbols.patch
 
-addenda/0001-c9ce2a9.patch
-addenda/0002-9e359de.patch
-addenda/0003-b461f49.patch
-addenda/0004-9b53f13.patch
-addenda/0005-821b801.patch
-addenda/0006-662d419.patch
+addenda/0001-28759f24.diff
+addenda/0002-34e544e.diff
