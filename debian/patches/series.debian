@@ -120,6 +120,7 @@ various/system/perfetto-system-zlib.patch
 various/system/xdg-scripts.patch
 various/system/zlib.patch
 #various/system/extra/brotli.patch
+various/system/extra/libdrm.patch
 various/system/extra/opus.patch
 various/system/extra/zlib.patch
 #various/upstream/
