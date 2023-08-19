@@ -114,6 +114,8 @@ various/fixes/revert-fix-linking-content-shell.patch
 various/fixes/shim-fix-for-official-builds.patch
 various/fixes/skia-gamma.patch
 various/launchpad/dont-collect-motherboard-metrics.patch
+various/system/libusb.patch
+various/system/libusb-api.patch
 various/system/perfetto-system-zlib.patch
 various/system/xdg-scripts.patch
 various/system/zlib.patch
@@ -143,7 +145,6 @@ optional/cpu/avx.patch
 #optional/legacy-i386/support-i386.patch
 #optional/system/dav1d-bundled-header.patch
 optional/system/jpeg.patch
-#optional/system/libusb.patch
 optional/system/openh264.patch
 #optional/system/unstable/dav1d.patch
 #optional/system/unstable/dav1d-no-unbundled-libavif.patch

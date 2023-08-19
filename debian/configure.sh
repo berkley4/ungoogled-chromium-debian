@@ -74,7 +74,6 @@ real_dir_path () (
 
 [ -n "$SYS_FFMPEG" ] || SYS_FFMPEG=0
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
-[ -n "$SYS_USB" ] || SYS_USB=0
 
 
 # SYS_ICU is enabled by default (set to zero to disable)
@@ -460,14 +459,6 @@ if [ $SYS_JPEG -eq 0 ]; then
   opt_patch_disable="$opt_patch_disable system/jpeg"
 
   sys_disable="$sys_disable libjpeg"
-fi
-
-
-if [ $SYS_USB -eq 1 ]; then
-  opt_patch_enable="$opt_patch_enable system/libusb.patch"
-
-  gn_enable="$gn_enable libusb"
-  deps_enable="$deps_enable libusb"
 fi
 
 

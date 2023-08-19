@@ -140,6 +140,7 @@ SYS_LIBS :=               \
         libdrm            \
         libevent          \
         libpng            \
+        libusb            \
         libwebp           \
         libXNVCtrl        \
         opus              \
@@ -167,9 +168,6 @@ SYS_LIBS += openh264
 # TESTING/UNSTABLE libraries
 #SYS_LIBS += dav1d
 
-
-# Enable only if really needed (not normally a compiled target)
-#SYS_LIBS += libusb
 
 # If your system ffmpeg is self-built with patches from system_ffmpeg
 #SYS_LIBS += ffmpeg
