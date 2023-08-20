@@ -130,6 +130,17 @@
      BUILDFLAG(IS_APPLE) || BUILDFLAG(IS_WIN)
    return true;
  #else
+@@ -112,7 +112,7 @@ void BluetoothAdapterFactory::GetClassicAdapter(AdapterCallback callback) {
+ #endif  // BUILDFLAG(IS_WIN)
+ }
+ 
+-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
++#if (BUILDFLAG(IS_LINUX) && defined(USE_DBUS)) || BUILDFLAG(IS_CHROMEOS)
+ // static
+ void BluetoothAdapterFactory::Shutdown() {
+   if (Get()->adapter_)
+diff --git a/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc b/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc
+index 7d48f41..870a49f 100644
 --- a/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc
 +++ b/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc
 @@ -1278,7 +1278,7 @@
