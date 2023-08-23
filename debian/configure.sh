@@ -125,28 +125,26 @@ TEST=1
 #############################
 
 if [ $TARBALL -eq 1 ]; then
-  TB_DIR=$(dirname $DEBIAN)
-
-  if [ "$TB_DIR" != "tarball" ]; then
+  if [ "$RT_DIR" != "tarball" ]; then
     printf '%s\n' "Cannot run outside of tarball directory"
     exit 1
   fi
 
-  find $TB_DIR/ -mindepth 1 -maxdepth 1 \
+  find $RT_DIR/ -mindepth 1 -maxdepth 1 \
     -type d \( -name debian -o -name out \) -prune -o -exec rm -rf "{}" +
 
-  [ -d $TB_DIR/../download_cache ] || mkdir -p $TB_DIR/../download_cache
+  [ -d $RT_DIR/../download_cache ] || mkdir -p $RT_DIR/../download_cache
 
-  if [ ! -f $TB_DIR/base/BUILD.gn ]; then
+  if [ ! -f $RT_DIR/base/BUILD.gn ]; then
     $UC_DIR/utils/downloads.py retrieve \
       -i $UC_DIR/downloads.ini -c $DEBIAN/../../download_cache
 
     $UC_DIR/utils/downloads.py unpack \
-      -i $UC_DIR/downloads.ini -c $TB_DIR/../download_cache $TB_DIR
+      -i $UC_DIR/downloads.ini -c $RT_DIR/../download_cache $RT_DIR
   fi
 
-  if [ ! -d $TB_DIR/chrome/build/pgo_profiles ]; then
-    $TB_DIR/tools/update_pgo_profiles.py \
+  if [ ! -d $RT_DIR/chrome/build/pgo_profiles ]; then
+    $RT_DIR/tools/update_pgo_profiles.py \
       --target linux update \
       --gs-url-base=chromium-optimization-profiles/pgo_profiles
   fi
