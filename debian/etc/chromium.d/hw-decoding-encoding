@@ -4,28 +4,14 @@
 
 # Disable hardware decoding/encoding
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=VaapiVideoDecoder"
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-accelerated-video-decode"
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-accelerated-video-encode"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoEncoder"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-webrtc-hw-decoding"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-webrtc-hw-encoding"
 
-# Enable VAAPI hardware decoding
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoDecoder"
-
-# Enable VAAPI hardware encoding
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoEncoder"
-
-
-# Deprecated method (seems to work for many)
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=UseChromeOSDirectVideoDecoder"
-
-# Might be needed
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoDecodeLinuxGL"
-
-
-# Possibly needed if using vulkan (this is probably unnecessary)
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VulkanFromANGLE,DefaultANGLEVulkan"
+# Enable hardware decoding
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoDecodeLinuxGL"
 
 # It might be worth trying one or both of these if all else fails
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiIgnoreDriverChecks"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VulkanFromANGLE,DefaultANGLEVulkan"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=UseSkiaRenderer"
