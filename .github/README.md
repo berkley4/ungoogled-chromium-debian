@@ -68,7 +68,7 @@ ___Security/Privacy improvements___
 ___Other features___
 
 - Lots of extra runtime flags (via the flag files in /etc/chromium.d)
-- Google translate - optional build support via a patch to re-enable this functionality
+- Google translate - can be enabled via an edit to /etc/chromium.d/google-translate (builders can disable outright)
 - Patches for -march/-mtune and various other CPU instructions
 - Various patches to disable components (eg atk/dbus) and enable system libraries (eg icu)
 
