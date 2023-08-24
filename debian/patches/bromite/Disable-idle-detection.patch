@@ -21,7 +21,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  BASE_FEATURE(kInMemoryCodeCache,
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -2014,10 +2014,9 @@
+@@ -2016,10 +2016,9 @@
        base_feature: "none",
      },
      {

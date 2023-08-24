@@ -8,7 +8,7 @@ Subject: Deprecate Data URL in SVGUseElement
 
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -2956,8 +2956,8 @@
+@@ -2958,8 +2958,8 @@
        base_feature: "none",
      },
      {

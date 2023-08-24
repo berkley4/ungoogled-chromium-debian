@@ -17,7 +17,7 @@
      }
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -4595,10 +4595,6 @@
+@@ -4598,10 +4598,6 @@
        ]
      }
  

@@ -160,6 +160,3 @@ optional/translate/translate-revert-disable.patch
 optional/translate/translate-stop-unsupported-switch-warning.patch
 #optional/fix-clang-structured_binding.patch
 #optional/fix-missing-symbols.patch
-
-addenda/0001-28759f24.diff
-addenda/0002-34e544e.diff
