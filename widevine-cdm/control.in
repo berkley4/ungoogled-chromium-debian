@@ -1,0 +1,7 @@
+Package: widevine-cdm
+Version: @@W_VERSION@@
+Architecture: amd64
+Maintainer: Chrome Linux Team <chromium-dev@chromium.org>
+Section: web
+Priority: optional
+Description: The Widevine CDM library from Google

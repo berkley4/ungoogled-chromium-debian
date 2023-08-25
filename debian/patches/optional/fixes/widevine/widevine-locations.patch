@@ -1,13 +1,15 @@
-description: try alternative locations for libwidevinecdm.so
-  - $HOME/.local/lib/ (snap-friendly, see https://launchpad.net/bugs/1738149)
-author: Olivier Tilloy <olivier.tilloy@canonical.com>
-
 --- a/chrome/common/chrome_paths.cc
 +++ b/chrome/common/chrome_paths.cc
-@@ -316,6 +316,11 @@
+@@ -316,6 +316,17 @@
  
  #if BUILDFLAG(ENABLE_WIDEVINE)
      case chrome::DIR_BUNDLED_WIDEVINE_CDM:
++      // A modified version of the Fedora patch
++      // Prefer /usr/lib/WidevineCdm package path with $HOME/.local/lib as a fallback
++      if (base::PathExists(base::FilePath(FILE_PATH_LITERAL("/usr/lib/WidevineCdm/_platform_specific/linux_x64/libwidevinecdm.so")))) {
++        cur = base::FilePath(FILE_PATH_LITERAL("/usr/lib/WidevineCdm"));
++        break;
++      }
 +      base::PathService::Get(base::DIR_HOME, &cur);
 +      cur = cur.Append(FILE_PATH_LITERAL(".local/lib/libwidevinecdm.so"));
 +      if (base::PathExists(cur)) {

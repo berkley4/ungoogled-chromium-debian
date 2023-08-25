@@ -25,6 +25,7 @@ XZ_EXTREME_SET=0
 DEBIAN=$(dirname $0)
 RT_DIR=$(dirname $DEBIAN)
 UC_DIR=$DEBIAN/submodules/ungoogled-chromium
+W_DIR=$RT_DIR/../widevine-cdm
 
 INSTALL=ungoogled-chromium.install
 PRUNE_PATCH=$DEBIAN/misc_patches/no-exit-if-pruned.patch
@@ -123,7 +124,6 @@ TEST=1
 
 # Make download cache a level above the build directory
 if [ $TARBALL -eq 1 ]; then
-  DL_CACHE=$RT_DIR/../download_cache
   [ -d $DL_CACHE ] || mkdir -p $DL_CACHE
 fi
 
@@ -399,7 +399,6 @@ fi
 
 if [ $WIDEVINE -eq 0 ]; then
   opt_patch_disable="$opt_patch_disable fixes/widevine/"
-
   SMF="$SMF -e \"s@^\(enable_widevine=\)true@\1false@\""
 fi
 
@@ -722,7 +721,6 @@ sed -e "s;@@VERSION@@;$VERSION;" \
     -e "s;@@DATETIME@@;$(date -R);" \
   < $DEBIAN/changelog.in \
   > $DEBIAN/changelog
-
 
 
 exit $?
