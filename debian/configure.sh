@@ -38,6 +38,8 @@ real_dir_path () (
 ## Default values ##
 ####################
 
+[ -n "$DL_CACHE" ] || DL_CACHE=$RT_DIR/../download_cache
+
 [ -n "$STABLE" ] || STABLE=0
 [ -n "$TARBALL" ] || TARBALL=0
 [ -n "$X11_ONLY" ] || X11_ONLY=0
@@ -119,6 +121,13 @@ TEST=1
 [ ! -d $RT_DIR/third_party ] || TEST=0
 
 
+# Make download cache a level above the build directory
+if [ $TARBALL -eq 1 ]; then
+  DL_CACHE=$RT_DIR/../download_cache
+  [ -d $DL_CACHE ] || mkdir -p $DL_CACHE
+fi
+
+
 
 #############################
 ##  Fetch/Extract Tarball  ##
@@ -131,16 +140,15 @@ if [ $TARBALL -eq 1 ]; then
   fi
 
   find $RT_DIR/ -mindepth 1 -maxdepth 1 \
-    -type d \( -name debian -o -name out \) -prune -o -exec rm -rf "{}" +
-
-  [ -d $RT_DIR/../download_cache ] || mkdir -p $RT_DIR/../download_cache
+    -type d \( -name debian -o -name out -o -name .pc \) -prune \
+      -o -exec rm -rf "{}" +
 
   if [ ! -f $RT_DIR/base/BUILD.gn ]; then
     $UC_DIR/utils/downloads.py retrieve \
-      -i $UC_DIR/downloads.ini -c $DEBIAN/../../download_cache
+      -i $UC_DIR/downloads.ini -c $DL_CACHE
 
     $UC_DIR/utils/downloads.py unpack \
-      -i $UC_DIR/downloads.ini -c $RT_DIR/../download_cache $RT_DIR
+      -i $UC_DIR/downloads.ini -c $DL_CACHE $RT_DIR
   fi
 
   if [ ! -d $RT_DIR/chrome/build/pgo_profiles ]; then
