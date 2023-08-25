@@ -8,8 +8,6 @@
 debianization/master-preferences.patch
 
 fixes/ps-print.patch
-fixes/widevine-enable-version-string.patch
-fixes/widevine-locations.patch
 
 disable/android.patch
 disable/font-tests.patch
@@ -142,6 +140,8 @@ optional/cpu/avx.patch
 #optional/disable/atk-dbus.patch
 #optional/disable/catapult.patch
 #optional/disable/rtc-protobuf.patch
+optional/fixes/widevine/widevine-enable-version-string.patch
+optional/fixes/widevine/widevine-locations.patch
 #optional/legacy-i386/angle-lockfree.patch
 #optional/legacy-i386/support-i386.patch
 #optional/system/dav1d-bundled-header.patch

@@ -398,6 +398,8 @@ fi
 
 
 if [ $WIDEVINE -eq 0 ]; then
+  opt_patch_disable="$opt_patch_disable fixes/widevine/"
+
   SMF="$SMF -e \"s@^\(enable_widevine=\)true@\1false@\""
 fi
 
