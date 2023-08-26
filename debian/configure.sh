@@ -60,6 +60,7 @@ real_dir_path () (
 [ -n "$ATK_DBUS" ] || ATK_DBUS=1
 [ -n "$CATAPULT" ] || CATAPULT=1
 [ -n "$DRIVER" ] || DRIVER=1
+[ -n "$EXT_TOOLS_MENU" ] || EXT_TOOLS_MENU=1
 [ -n "$MUTEX_PI" ] || MUTEX_PI=1
 [ -n "$OOP_PR" ] || OOP_PR=0
 [ -n "$OZONE_WAYLAND" ] || OZONE_WAYLAND=1
@@ -354,6 +355,11 @@ if [ $DRIVER -eq 0 ]; then
   RUL="$RUL -e \"s@ chromedriver@@\""
 
   find $DEBIAN/ -maxdepth 1 -name ungoogled-chromium-driver.\* -delete
+fi
+
+
+if [ $EXT_TOOLS_MENU -eq 0 ]; then
+  opt_patch_disable="$opt_patch_disable disable/extensions-in-tools-menu"
 fi
 
 

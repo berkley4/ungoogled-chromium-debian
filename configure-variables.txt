@@ -26,6 +26,7 @@ TRANSLATE	0		Google translate support
 
 DRIVER		1		Chromedriver package
 
+EXT_TOOLS_MENU	1		Move the extensions menu to the 'More tools' menu
 MUTEX_PI	1		Mutex priority inheritance
 OOP_PR		0		Out of process printing (X11 only)
 OZONE_WAYLAND	1		Wayland ozone platform
