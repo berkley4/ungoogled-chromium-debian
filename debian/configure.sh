@@ -365,7 +365,6 @@ fi
 
 if [ $MUTEX_PI -eq 0 ]; then
   opt_patch_disable="$opt_patch_disable mutex-priority-inheritance"
-
   gn_disable="$gn_disable enable_mutex_priority_inheritance"
 fi
 
@@ -444,6 +443,7 @@ fi
 if [ $PULSE -eq 0 ]; then
   # GN_FLAGS += link_pulseaudio=true
   gn_disable="$gn_disable link_pulseaudio"
+
   # GN_FLAGS += use_pulseaudio=false
   gn_enable="$gn_enable use_pulseaudio"
   deps_disable="$deps_disable libpulse"
@@ -470,7 +470,6 @@ fi
 
 if [ $SYS_JPEG -eq 0 ]; then
   opt_patch_disable="$opt_patch_disable system/jpeg"
-
   sys_disable="$sys_disable libjpeg"
 fi
 
