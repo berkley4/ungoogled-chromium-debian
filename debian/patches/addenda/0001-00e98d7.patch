@@ -1,0 +1,41 @@
+From 00e98d7120c65eb23a782bb4c30ee2f142c410ad Mon Sep 17 00:00:00 2001
+From: David Bertoni <dbertoni@chromium.org>
+Date: Fri, 25 Aug 2023 20:30:05 +0000
+Subject: [PATCH] Don't call GURL::spec() if the instance isn't valid.
+
+This code path trips NOTREACHED in GURL::spec(). This fix preserves
+the current behavior if NOTREACHED is a no-op.
+
+(cherry picked from commit ffebb297a2960ce17698b42a89bff613fd4e22d6)
+
+Bug: 1451357
+Change-Id: If50500efe814da93be4fa62f668d2f7a2bb1404f
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4756089
+Commit-Queue: John Lee <johntlee@chromium.org>
+Reviewed-by: John Lee <johntlee@chromium.org>
+Auto-Submit: David Bertoni <dbertoni@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1181142}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4814297
+Auto-Submit: Daniel Yip <danielyip@google.com>
+Owners-Override: Daniel Yip <danielyip@google.com>
+Commit-Queue: Srinivas Sista <srinivassista@chromium.org>
+Reviewed-by: Srinivas Sista <srinivassista@chromium.org>
+Cr-Commit-Position: refs/branch-heads/5845@{#1617}
+Cr-Branched-From: 5a5dff63a4a4c63b9b18589819bebb2566c85443-refs/heads/main@{#1160321}
+---
+
+--- a/chrome/browser/ui/webui/settings/settings_startup_pages_handler.cc
++++ b/chrome/browser/ui/webui/settings/settings_startup_pages_handler.cc
+@@ -82,7 +82,11 @@
+   for (size_t i = 0; i < page_count; ++i) {
+     base::Value::Dict entry;
+     entry.Set("title", startup_custom_pages_table_model_.GetText(i, 0));
+-    entry.Set("url", urls[i].spec());
++    std::string spec;
++    if (urls[i].is_valid()) {
++      spec = urls[i].spec();
++    }
++    entry.Set("url", std::move(spec));
+     entry.Set("tooltip", startup_custom_pages_table_model_.GetTooltip(i));
+     entry.Set("modelIndex", base::checked_cast<int>(i));
+     startup_pages.Append(std::move(entry));

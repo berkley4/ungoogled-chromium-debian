@@ -28,7 +28,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "components/shared_highlighting/core/common/shared_highlighting_features.h"
  #include "components/signin/core/browser/dice_account_reconcilor_delegate.h"
  #include "components/signin/public/base/signin_buildflags.h"
-@@ -9320,6 +9321,11 @@
+@@ -9324,6 +9325,11 @@
                                      kLargeFaviconFromGoogleVariations,
                                      "LargeFaviconFromGoogle")},
  
@@ -42,7 +42,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       flag_descriptions::kForceOffTextAutosizingName,
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3640,6 +3640,11 @@
+@@ -3643,6 +3643,11 @@
      "Skips starting the service worker and run the fetch handler if the fetch "
      "handler is recognized as skippable.";
  
@@ -56,7 +56,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      "The WebSQL API is enabled by default, but can be disabled here.";
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -2097,6 +2097,9 @@
+@@ -2100,6 +2100,9 @@
  extern const char kSkipServiceWorkerFetchHandlerName[];
  extern const char kSkipServiceWorkerFetchHandlerDescription[];
  
