@@ -50,4 +50,5 @@ The files are installed to /usr/lib/WidevineCdm, and you can
 test to see if things are working be going to the following urls :-
 
 [https://bitmovin.com/demos/drm](https://bitmovin.com/demos/drm)
-[https://demo.castlabs.com/#/player/demo](https://demo.castlabs.com/#/player/demo) [try the 'Protected' links]
+
+[https://demo.castlabs.com/#/player/demo](https://demo.castlabs.com/#/player/demo) [click on the 'Protected' links]
