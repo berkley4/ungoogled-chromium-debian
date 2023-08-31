@@ -9,7 +9,8 @@ W_DIR=$(dirname $0)
 [ -n "$DL_CACHE" ] || DL_CACHE=$W_DIR/../download_cache
 
 if [ -z "$CHROME_VER" ]; then
-  printf '%s\n' "You must specify the VERSION variable"
+  printf '%s\n' "You must specify the CHROME_VER variable"
+  exit 1
 fi
 
 
