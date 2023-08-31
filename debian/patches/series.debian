@@ -73,7 +73,6 @@ vanadium/0109-enable-Chrome-Root-Store-by-default.patch
 
 various/fix-unbundle-script-dh-clean-interoperabilty.patch
 various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
-various/silence-alsa-frames-log-msg.patch
 various/template-correction.patch
 various/bromite/autofill-miscellaneous.patch
 various/bromite/Disable-all-predictors-code.patch
@@ -109,6 +108,7 @@ various/fixes/remove-main-main10-profile-limit.patch
 various/fixes/revert-fix-linking-chromedriver.patch
 various/fixes/revert-fix-linking-content-shell.patch
 various/fixes/shim-fix-for-official-builds.patch
+various/fixes/silence-alsa-frames-log-msg.patch
 various/fixes/skia-gamma.patch
 various/launchpad/dont-collect-motherboard-metrics.patch
 various/system/libusb.patch
