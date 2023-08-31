@@ -22,7 +22,7 @@ CATAPULT	1		Catapult profiling support
 TRANSLATE	0		Google translate support
 
 
-## Enable/Disable components
+## Enable/Disable features/components/patches
 
 DRIVER		1		Chromedriver package
 
@@ -34,6 +34,7 @@ PDF_JS		0		PDF javascript support
 PIPEWIRE	1
 PULSE		1
 QT		1		Runtime autodetected (eg Gnome desktops will ignore)
+SKIA_GAMMA	0		Use a gamma value of 2.2 for text blitting
 VR		0		Virtual reality hardware support
 WEBGPU		0		Not enabled upstream on linux yet (likely beta quality)
 WIDEVINE	1		Needs various extra components to enable

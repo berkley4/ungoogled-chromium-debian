@@ -67,6 +67,7 @@ real_dir_path () (
 [ -n "$PDF_JS" ] || PDF_JS=0
 [ -n "$POLICIES" ] || POLICIES=0
 [ -n "$QT" ] || QT=1
+[ -n "$SKIA_GAMMA" ] || SKIA_GAMMA=0
 [ -n "$VR" ] || VR=0
 [ -n "$WEBGPU" ] || WEBGPU=0
 [ -n "$WIDEVINE" ] || WIDEVINE=1
@@ -388,6 +389,11 @@ fi
 
 if [ $POLICIES -eq 1 ]; then
   INS="$INS -e \"s@^#\(.*/managed/policies\.json\)@\1@\""
+fi
+
+
+if [ $SKIA_GAMMA -eq 1 ]; then
+  opt_patch_enable="$opt_patch_enable skia-gamma"
 fi
 
 
