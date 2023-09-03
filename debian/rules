@@ -50,6 +50,7 @@ GN_FLAGS +=                                     \
         dawn_use_swiftshader=false              \
         enable_component_updater=false          \
         enable_lens_desktop=false               \
+        enable_mse_mpeg2ts_stream_parser=true   \
         enable_trace_logging=false              \
         enterprise_cloud_content_analysis=false \
         enterprise_local_content_analysis=false \
