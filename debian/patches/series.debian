@@ -26,7 +26,6 @@ bromite/00Disable-Component-Updates.patch
 bromite/00Disable-csp-reports.patch
 bromite/Add-site-engagement-flag.patch
 bromite/AudioBuffer-AnalyserNode-fp-mitigations.patch
-bromite/Block-gateway-attacks-via-websockets.patch
 bromite/Disable-AsyncDNS-by-default.patch
 bromite/Disable-idle-detection.patch
 bromite/Disable-plugins-enumeration.patch
@@ -48,7 +47,6 @@ bromite/Remove-segmentation-platform.patch
 bromite/Remove-window-name-on-cross-origin-navigation.patch
 bromite/Replace-DoH-probe-domain-with-RIPE-domain.patch
 bromite/Revert-Permit-blocking-of-view-source.patch
-bromite/Revert-removal-of-execution-context-address-space.patch
 bromite/updater-disable-updater-pings.patch
 
 vanadium/0003-switch-to-fstack-protector-strong.patch
