@@ -120,8 +120,8 @@ fi
 
 
 # Are we testing outside of a real build directory?
-TEST=1
-[ ! -d $RT_DIR/third_party ] || TEST=0
+TEST=0
+[ -d $RT_DIR/third_party ] || TEST=1
 
 
 # Make download cache a level above the build directory
