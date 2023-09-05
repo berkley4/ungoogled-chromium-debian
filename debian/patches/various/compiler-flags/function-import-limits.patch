@@ -5,10 +5,10 @@
          # of import_instr_limit 30 with a binary size hit smaller than ~2 MiB.
          import_instr_limit = 5
 +      } else if (is_linux) {
-+        # Use a slightly lower import_instr_limit value of 25 for linux and
-+        # raise the import-hot-multiplier from the default of 10 to 16.
-+        import_instr_limit = 25
-+        ldflags += [ "-Wl,-mllvm,-import-hot-multiplier=16" ]
++        # Use a slightly lower import_instr_limit value of 24 for linux and
++        # raise the import-hot-multiplier from the default of 10 to 15.
++        import_instr_limit = 24
++        ldflags += [ "-Wl,-mllvm,-import-hot-multiplier=15" ]
        }
  
        ldflags += [ "-Wl,-mllvm,-import-instr-limit=$import_instr_limit" ]
