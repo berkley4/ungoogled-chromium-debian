@@ -17,7 +17,7 @@ opt_patch_enable=
 
 MARCH_SET=0
 MTUNE_SET=0
-POLLY_EXTRA_SET=0
+POLLY_EXT_SET=0
 RELEASE_SET=0
 SYS_ICU_SET=0
 XZ_EXTREME_SET=0
@@ -51,8 +51,8 @@ real_dir_path () (
 [ -n "$AES_PCLMUL" ] || AES_PCLMUL=1
 [ -n "$AVX" ] || AVX=1
 [ -n "$AVX2" ] || AVX2=0
-[ -n "$POLLY_VECTORIZER" ] || POLLY_VECTORIZER=1
-[ -n "$POLLY_PARALLEL" ] || POLLY_PARALLEL=0
+[ -n "$POLLY_VEC" ] || POLLY_VEC=1
+[ -n "$POLLY_PAR" ] || POLLY_PAR=0
 [ -n "$POLLY_THREADS" ] || POLLY_THREADS=0
 [ -n "$RTC_AVX2" ] || RTC_AVX2=1
 [ -n "$V8_AVX2" ] || V8_AVX2=1
@@ -88,8 +88,8 @@ real_dir_path () (
 [ -n "$MARCH" ] && MARCH_SET=1 || MARCH=x86-64-v2
 [ -n "$MTUNE" ] && MTUNE_SET=1 || MTUNE=generic
 
-# POLLY_EXTRA is enabled if POLLY_VECTORIZER=1 (set to zero to disable)
-[ -n "$POLLY_EXTRA" ] && POLLY_EXTRA_SET=1 || POLLY_EXTRA=0
+# POLLY_EXT is enabled if POLLY_VEC=1 (set to zero to disable)
+[ -n "$POLLY_EXT" ] && POLLY_EXT_SET=1 || POLLY_EXT=0
 
 # LTO Jobs (patch = 1; chromium default = all)
 [ -n "$LTO_JOBS" ] || LTO_JOBS=0
@@ -169,19 +169,19 @@ fi
 if [ $BUNDLED_CLANG -eq 0 ]; then
   clang_patches="fix-missing-symbols"
 
-  if [ $POLLY_VECTORIZER -eq 0 ]; then
-    POLLY_PARALLEL=0
+  if [ $POLLY_VEC -eq 0 ]; then
+    POLLY_PAR=0
   else
     clang_patches="$clang_patches polly-vectorizer"
 
-    [ $POLLY_EXTRA_SET -eq 1 ] && [ $POLLY_EXTRA -eq 0 ] || POLLY_EXTRA=1
+    [ $POLLY_EXT_SET -eq 1 ] && [ $POLLY_EXT -eq 0 ] || POLLY_EXT=1
 
-    if [ $POLLY_EXTRA -eq 1 ]; then
+    if [ $POLLY_EXT -eq 1 ]; then
       clang_patches="$clang_patches polly-extra"
     fi
   fi
 
-  if [ $POLLY_PARALLEL -eq 1 ]; then
+  if [ $POLLY_PAR -eq 1 ]; then
     clang_patches="$clang_patches polly-parallel"
     clang_patches="$clang_patches fix-clang-structured_binding"
 
