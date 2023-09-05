@@ -15,12 +15,15 @@ deps_enable=
 opt_patch_disable=
 opt_patch_enable=
 
+BUNDLED_CLANG_SET=0
 MARCH_SET=0
 MTUNE_SET=0
-POLLY_EXT_SET=0
 RELEASE_SET=0
 SYS_ICU_SET=0
 XZ_EXTREME_SET=0
+
+POLLY=1
+POLLY_EXT_SET=0
 
 DEBIAN=$(dirname $0)
 RT_DIR=$(dirname $DEBIAN)
@@ -43,10 +46,8 @@ real_dir_path () (
 
 [ -n "$STABLE" ] || STABLE=0
 [ -n "$TARBALL" ] || TARBALL=0
-[ -n "$X11_ONLY" ] || X11_ONLY=0
-
-[ -n "$BUNDLED_CLANG" ] || BUNDLED_CLANG=0
 [ -n "$TRANSLATE" ] || TRANSLATE=1
+[ -n "$X11_ONLY" ] || X11_ONLY=0
 
 [ -n "$AES_PCLMUL" ] || AES_PCLMUL=1
 [ -n "$AVX" ] || AVX=1
@@ -81,6 +82,9 @@ real_dir_path () (
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
 
 
+# Option to force BUNDLED_CLANG and evade clang autodetection
+[ -n "$BUNDLED_CLANG" ] && BUNDLED_CLANG_SET=1 || BUNDLED_CLANG=1
+
 # SYS_ICU is enabled by default (set to zero to disable)
 [ -n "$SYS_ICU" ] && SYS_ICU_SET=1 || SYS_ICU=1
 
@@ -90,6 +94,9 @@ real_dir_path () (
 
 # POLLY_EXT is enabled if POLLY_VEC=1 (set to zero to disable)
 [ -n "$POLLY_EXT" ] && POLLY_EXT_SET=1 || POLLY_EXT=0
+
+# Set POLLY=0 if none of the polly options are set
+[ $POLLY_VEC -eq 1 ] || [ $POLLY_EXT -eq 1 ] || [ $POLLY_PAR -eq 1 ] || POLLY=0
 
 # LTO Jobs (patch = 1; chromium default = all)
 [ -n "$LTO_JOBS" ] || LTO_JOBS=0
@@ -162,6 +169,18 @@ fi
 
 
 
+
+# Assume non-bundled clang if clang is detected in /usr/local/bin
+# System clang packages are not supported (modified d/rules likely required)
+if [ $BUNDLED_CLANG_SET -eq 0 ]; then
+  case $(readlink -f $(which clang)) in
+    /usr/local/bin/clang*)
+      BUNDLED_CLANG=0
+      ;;
+  esac
+fi
+
+
 #######################
 ##  Customise build  ##
 #######################
@@ -169,37 +188,40 @@ fi
 if [ $BUNDLED_CLANG -eq 0 ]; then
   clang_patches="fix-missing-symbols"
 
-  if [ $POLLY_VEC -eq 0 ]; then
-    POLLY_PAR=0
-  else
-    clang_patches="$clang_patches polly-vectorizer"
+  if [ $POLLY -eq 1 ]; then
+    if [ $POLLY_VEC -eq 0 ]; then
+      printf '%s\n' "WARN: POLLY_VEC-0, turning off polly parallelisation."
+      POLLY_PAR=0
+    else
+      clang_patches="$clang_patches polly-vectorizer"
 
-    [ $POLLY_EXT_SET -eq 1 ] && [ $POLLY_EXT -eq 0 ] || POLLY_EXT=1
+      [ $POLLY_EXT_SET -eq 1 ] && [ $POLLY_EXT -eq 0 ] || POLLY_EXT=1
 
-    if [ $POLLY_EXT -eq 1 ]; then
-      clang_patches="$clang_patches polly-extra"
+      if [ $POLLY_EXT -eq 1 ]; then
+        clang_patches="$clang_patches polly-extra"
+      fi
     fi
-  fi
 
-  if [ $POLLY_PAR -eq 1 ]; then
-    clang_patches="$clang_patches polly-parallel"
-    clang_patches="$clang_patches fix-clang-structured_binding"
+    if [ $POLLY_PAR -eq 1 ]; then
+      clang_patches="$clang_patches polly-parallel"
+      clang_patches="$clang_patches fix-clang-structured_binding"
 
-    if [ $POLLY_THREADS -ge 2 ]; then
-      case $POLLY_THREADS in
-        [2-9]|[1-9][0-9])
-          clang_patches="$clang_patches polly-parallel-threads"
+      if [ $POLLY_THREADS -ge 2 ]; then
+        case $POLLY_THREADS in
+          [2-9]|[1-9][0-9])
+            clang_patches="$clang_patches polly-parallel-threads"
 
-          case $POLLY_THREADS in
-            [3-9]|[1-9][0-9])
-              sed "s@\(polly-num-threads=\)[0-9]*@\1$POLLY_THREADS@" \
-                -i $DEBIAN/patches/optional/polly-parallel-threads.patch
-            ;;
-          esac
-        ;;
-      esac
+            case $POLLY_THREADS in
+              [3-9]|[1-9][0-9])
+                sed "s@\(polly-num-threads=\)[0-9]*@\1$POLLY_THREADS@" \
+                  -i $DEBIAN/patches/optional/polly-parallel-threads.patch
+              ;;
+            esac
+          ;;
+        esac
 
-      deps_enable="$deps_enable libgomp1"
+        deps_enable="$deps_enable libgomp1"
+      fi
     fi
   fi
 
