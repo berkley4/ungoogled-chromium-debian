@@ -86,7 +86,7 @@ real_dir_path () (
 [ -n "$BUNDLED_CLANG" ] && BUNDLED_CLANG_SET=1 || BUNDLED_CLANG=1
 
 # SYS_ICU is enabled by default (set to zero to disable)
-[ -n "$SYS_ICU" ] && SYS_ICU_SET=1 || SYS_ICU=1
+[ -n "$SYS_ICU" ] && SYS_ICU_SET=1 || SYS_ICU=0
 
 # MARCH and MTUNE defaults
 [ -n "$MARCH" ] && MARCH_SET=1 || MARCH=x86-64-v2
@@ -505,16 +505,22 @@ fi
 
 ## Items which are likely to become unstable-only as stable ages
 
-[ $SYS_ICU_SET -eq 1 ] && [ $SYS_ICU -eq 0 ] || SYS_ICU=1
+[ $SYS_ICU_SET -eq 1 ] && [ $SYS_ICU -eq 1 ] || SYS_ICU=0
+
+# System icu is unlikely to be an option for stable users anytime soon
+[ $STABLE -eq 0 ] || SYS_ICU=0
 
 if [ $SYS_ICU -eq 0 ]; then
-  INS="$INS -e \"s@^#\(out/Release/icudtl\.dat\)@\1@\""
-else
-  opt_patch_enable="$opt_patch_enable system/unstable/icu/"
+  opt_patch_disable="$opt_patch_disable system/unstable/icu/"
 
-  # SYS_LIBS += icu libxml libxslt (last two depend on icu)
-  sys_enable="$sys_enable icu"
-  deps_enable="$deps_enable icu libxml libxslt"
+  # SYS_LIBS += icu libxml libxslt
+  sys_disable="$sys_disable icu"
+
+  # libxslt1-dev will pull in libxml2-dev, which pulls in libicu-dev
+  # It's not unreasonable to include libicu-dev so that it can be versioned
+  deps_disable="$deps_disable libicu libxslt1"
+
+  INS="$INS -e \"s@^#\(out/Release/icudtl\.dat\)@\1@\""
 fi
 
 

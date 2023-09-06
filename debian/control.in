@@ -50,7 +50,8 @@ Build-Depends:
 #libaom-dev,
 #libavif-dev,
 #libdav1d-dev,
-#libxslt1-dev
+ libicu-dev {>= 73),
+ libxslt1-dev
 
 Package: ungoogled-chromium
 Architecture: i386 amd64 arm64 armhf

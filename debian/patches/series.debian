@@ -151,8 +151,8 @@ optional/system/openh264.patch
 #optional/system/unstable/ffmpeg/ffmpeg-first_dts.patch
 #optional/system/unstable/ffmpeg/roll-src-third_party-ffmpeg-102.patch
 #optional/system/unstable/ffmpeg/roll-src-third_party-ffmpeg-106.patch
-#optional/system/unstable/icu/icu.patch
-#optional/system/unstable/icu/icu-headers.patch
+optional/system/unstable/icu/icu.patch
+optional/system/unstable/icu/icu-headers.patch
 optional/system/vaapi/vaapi-disable-libaom-encoding.patch
 optional/translate/translate-revert-disable.patch
 optional/translate/translate-stop-unsupported-switch-warning.patch

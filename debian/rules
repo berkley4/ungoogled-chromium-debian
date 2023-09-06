@@ -163,7 +163,7 @@ SYS_LIBS += libjpeg
 SYS_LIBS += openh264
 
 # (System icu listed with libraries which depend on it)
-#SYS_LIBS += icu libxml libxslt
+SYS_LIBS += icu libxml libxslt
 #SYS_LIBS += libaom libavif
 
 # TESTING/UNSTABLE libraries
