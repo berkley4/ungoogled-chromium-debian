@@ -91,7 +91,6 @@ various/disable/crashpad-handler.patch
 various/disable/driver-chrome-path.patch
 various/disable/evdev.patch
 various/disable/orchestrator.patch
-various/disable/tests.patch
 various/disable/unrar.patch
 various/fedora/do_not_restrict_new_V4L2_decoders.v4l2.patch
 various/fedora/enable-hardware-accelerated-mjpeg.patch
