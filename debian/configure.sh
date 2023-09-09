@@ -169,6 +169,37 @@ fi
 
 
 
+#######################
+##  Customise build  ##
+#######################
+
+if [ -n "$LTO_DIR" ]; then
+  if [ ! -d $LTO_DIR ] && [ $TEST -eq 0 ]; then
+    printf '\n%s\n' "LTO_DIR: path $LTO_DIR does not exist"
+    exit 1
+  fi
+
+  opt_patch_enable="$opt_patch_enable thinlto-cache-location"
+
+  sed -e "s@^\(+.*thinlto-cache-dir=\)[-_a-zA-Z0-9/]*@\1$LTO_DIR@" \
+      -i $DEBIAN/patches/optional/thinlto-cache-location.patch
+fi
+
+
+case $LTO_JOBS in
+  [1-9]|[1-9][0-9])
+    opt_patch_enable="$opt_patch_enable thinlto-jobs"
+
+    case $LTO_JOBS in
+      [2-9]|[1-9][0-9])
+        sed "s@\(thinlto-jobs=\)1@\1$LTO_JOBS@" \
+          -i $DEBIAN/patches/optional/thinlto-jobs.patch
+        ;;
+    esac
+    ;;
+esac
+
+
 
 # Assume non-bundled clang if clang is detected in /usr/local/bin
 # System clang packages are not supported (modified d/rules likely required)
@@ -180,10 +211,6 @@ if [ $BUNDLED_CLANG_SET -eq 0 ]; then
   esac
 fi
 
-
-#######################
-##  Customise build  ##
-#######################
 
 if [ $BUNDLED_CLANG -eq 0 ]; then
   clang_patches="fix-missing-symbols"
@@ -235,32 +262,6 @@ else
   PRU="$PRU -e \"/^third_party\/llvm/d\""
   PRU="$PRU -e \"/^tools\/clang/d\""
 fi
-
-
-if [ -n "$LTO_DIR" ]; then
-  opt_patch_enable="$opt_patch_enable thinlto-cache-location"
-
-  sed -e "s@^\(+.*thinlto-cache-dir=\)[-_a-zA-Z0-9/]*@\1$LTO_DIR@" \
-      -i $DEBIAN/patches/optional/thinlto-cache-location.patch
-
-  if [ ! -d $LTO_DIR ] && [ $TEST -eq 0 ]; then
-    printf '\n%s\n' "LTO_DIR: path $LTO_DIR does not exist"
-  fi
-fi
-
-
-case $LTO_JOBS in
-  [1-9]|[1-9][0-9])
-    opt_patch_enable="$opt_patch_enable thinlto-jobs"
-
-    case $LTO_JOBS in
-      [2-9]|[1-9][0-9])
-        sed "s@\(thinlto-jobs=\)1@\1$LTO_JOBS@" \
-          -i $DEBIAN/patches/optional/thinlto-jobs.patch
-        ;;
-    esac
-    ;;
-esac
 
 
 
