@@ -68,7 +68,9 @@ ln -sf $LLVM_DIR/lld x86_64-linux-gnu-ld
 You can optionally add the following feature flags to the command below :-
 
 -DLLVM_ENABLE_FFI=ON for libffi support
+
 -DLLVM_ENABLE_RTTI=ON to enable RTTI (needed by mesa)
+
 -DLLVM_PARALLEL_LINK_JOBS=1 if you are thread/ram limited
 
 Now copy and edit the text below into a single line and execute inside the git root directory :-
