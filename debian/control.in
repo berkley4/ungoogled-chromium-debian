@@ -50,7 +50,7 @@ Build-Depends:
 #libaom-dev,
 #libavif-dev,
 #libdav1d-dev,
- libicu-dev {>= 73),
+ libicu-dev (>= 73),
  libxslt1-dev
 
 Package: ungoogled-chromium
