@@ -56,9 +56,9 @@
 --- a/net/disk_cache/simple/simple_synchronous_entry.cc
 +++ b/net/disk_cache/simple/simple_synchronous_entry.cc
 @@ -33,7 +33,7 @@
- #include "net/disk_cache/simple/simple_histogram_enums.h"
  #include "net/disk_cache/simple/simple_histogram_macros.h"
  #include "net/disk_cache/simple/simple_util.h"
+ #include "third_party/abseil-cpp/absl/container/inlined_vector.h"
 -#include "third_party/zlib/zlib.h"
 +#include <zlib.h>
  
@@ -132,10 +132,10 @@
  namespace v8 {
 --- a/chrome/browser/media/webrtc/webrtc_event_log_manager_common.cc
 +++ b/chrome/browser/media/webrtc/webrtc_event_log_manager_common.cc
-@@ -23,7 +23,7 @@
- #include "content/public/browser/browser_context.h"
+@@ -24,7 +24,7 @@
  #include "content/public/browser/browser_thread.h"
  #include "content/public/browser/render_process_host.h"
+ #include "third_party/abseil-cpp/absl/strings/ascii.h"
 -#include "third_party/zlib/zlib.h"
 +#include <zlib.h>
  

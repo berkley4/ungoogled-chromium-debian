@@ -4,7 +4,7 @@ bug: http://bugs.debian.org/914487
 
 --- a/chrome/common/safe_browsing/BUILD.gn
 +++ b/chrome/common/safe_browsing/BUILD.gn
-@@ -134,7 +134,6 @@
+@@ -137,7 +137,6 @@
        "//components/safe_browsing/content/common:file_type_policies",
        "//components/safe_browsing/core/common",
        "//third_party/lzma_sdk/google:seven_zip_reader",
@@ -58,11 +58,12 @@ bug: http://bugs.debian.org/914487
  #include "components/safe_browsing/core/common/proto/csd.pb.h"
 --- a/chrome/services/file_util/safe_archive_analyzer.cc
 +++ b/chrome/services/file_util/safe_archive_analyzer.cc
-@@ -81,9 +81,10 @@
-                               weak_factory_.GetWeakPtr());
-   timeout_timer_.Start(FROM_HERE, kArchiveAnalysisTimeout, this,
+@@ -87,10 +87,10 @@
                         &SafeArchiveAnalyzer::Timeout);
+   // TODO(crbug/1466287): Update RAR analyzer to use passwords and provide the
+   // password here.
 -  rar_analyzer_.Analyze(std::move(rar_file), base::FilePath(),
+-                        /*password=*/absl::nullopt,
 -                        std::move(analysis_finished_callback),
 -                        std::move(temp_file_getter_callback), &results_);
 +  LOG(ERROR) << "AnalyzeRarFile is disabled in this build";
@@ -82,7 +83,7 @@ bug: http://bugs.debian.org/914487
  #include "chrome/utility/safe_browsing/seven_zip_analyzer.h"
  #include "chrome/utility/safe_browsing/zip_analyzer.h"
  #include "mojo/public/cpp/bindings/remote.h"
-@@ -63,7 +62,6 @@
+@@ -65,7 +64,6 @@
    void Timeout();
  
    safe_browsing::ZipAnalyzer zip_analyzer_;
@@ -117,9 +118,9 @@ bug: http://bugs.debian.org/914487
        "//components/safe_browsing/core/common",
        "//third_party/lzma_sdk/google:seven_zip_reader",
 -      "//third_party/unrar:unrar",
+       "//third_party/zlib",
      ]
  
-     if (is_linux) {
 --- a/chrome/utility/safe_browsing/archive_analyzer.cc
 +++ b/chrome/utility/safe_browsing/archive_analyzer.cc
 @@ -8,7 +8,6 @@

@@ -21,12 +21,12 @@
            std::move(resource_request),
 --- a/components/translate/core/common/translate_util.cc
 +++ b/components/translate/core/common/translate_util.cc
-@@ -21,7 +21,7 @@
+@@ -13,7 +13,7 @@
  
- }  // namespace
+ namespace translate {
  
 -const char kSecurityOrigin[] = "trk:220:https://translate.googleapis.com/";
 +const char kSecurityOrigin[] = "https://translate.googleapis.com/";
  
- BASE_FEATURE(kTranslateSubFrames,
-              "TranslateSubFrames",
+ // The feature is explicitly disabled on Webview and Weblayer.
+ // TODO(crbug.com/1292622): Enable the feature on Webview.

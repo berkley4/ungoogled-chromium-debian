@@ -9,7 +9,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -85,12 +85,12 @@
+@@ -94,12 +94,12 @@
               base::FEATURE_DISABLED_BY_DEFAULT);
  
  BASE_FEATURE(kEncryptedClientHello,

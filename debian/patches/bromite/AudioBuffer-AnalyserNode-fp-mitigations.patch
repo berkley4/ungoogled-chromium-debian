@@ -22,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -3859,6 +3859,10 @@
+@@ -3890,6 +3890,10 @@
       flag_descriptions::kKioskEnableAppServiceDescription, kOsCrOS,
       FEATURE_VALUE_TYPE(features::kKioskEnableAppService)},
  #endif  // BUILDFLAG(IS_CHROMEOS)
@@ -35,9 +35,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       flag_descriptions::kWebRtcRemoteEventLogName,
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3563,6 +3563,11 @@
-     "When enabled, WebRTC will only use the Video Encode Accelerator for "
-     "video resolutions inside those published as supported.";
+@@ -3634,6 +3634,11 @@
+     "When enabled, removes the requirement that all certificates used for "
+     "WebTransport over HTTP/3 are issued by a known certificate root.";
  
 +const char kAudioContextShuffleEnabledName[] =
 +    "Enable Audio Context fingerprint deception";
@@ -49,9 +49,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  const char kWebUsbDeviceDetectionDescription[] =
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -2043,6 +2043,9 @@
- extern const char kWebrtcUseMinMaxVEADimensionsName[];
- extern const char kWebrtcUseMinMaxVEADimensionsDescription[];
+@@ -2095,6 +2095,9 @@
+ extern const char kWebTransportDeveloperModeName[];
+ extern const char kWebTransportDeveloperModeDescription[];
  
 +extern const char kAudioContextShuffleEnabledName[];
 +extern const char kAudioContextShuffleEnabledDescription[];
@@ -61,7 +61,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -236,6 +236,10 @@
+@@ -246,6 +246,10 @@
               "BiddingAndScoringDebugReportingAPI",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -74,7 +74,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  BASE_FEATURE(kBlinkHeapCompaction,
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -144,6 +144,8 @@
+@@ -151,6 +151,8 @@
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kBlinkHeapIncrementalMarking);
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kBlinkHeapIncrementalMarkingStress);
  

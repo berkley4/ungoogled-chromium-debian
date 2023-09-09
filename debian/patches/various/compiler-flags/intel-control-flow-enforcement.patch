@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -382,6 +382,10 @@
+@@ -381,6 +381,10 @@
        cflags += [ "-fwrapv" ]
      }
  

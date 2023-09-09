@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1109,6 +1109,7 @@
+@@ -1108,6 +1108,7 @@
          "-maes",
          "-mpclmul",
          "-march=x86-64-v2",

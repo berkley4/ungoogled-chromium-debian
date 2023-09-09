@@ -9,7 +9,7 @@ Subject: [PATCH] enable partitioning connections by default
 
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -115,27 +115,27 @@
+@@ -124,27 +124,27 @@
  
  BASE_FEATURE(kSplitHostCacheByNetworkIsolationKey,
               "SplitHostCacheByNetworkIsolationKey",
@@ -40,6 +40,6 @@ Subject: [PATCH] enable partitioning connections by default
               "EnableCrossSiteFlagNetworkIsolationKey",
 -             base::FEATURE_DISABLED_BY_DEFAULT);
 +             base::FEATURE_ENABLED_BY_DEFAULT);
- 
- BASE_FEATURE(kTLS13KeyUpdate,
-              "TLS13KeyUpdate",
+ BASE_FEATURE(kEnableFrameSiteSharedOpaqueNetworkIsolationKey,
+              "EnableFrameSiteSharedOpaqueNetworkIsolationKey",
+              base::FEATURE_DISABLED_BY_DEFAULT);

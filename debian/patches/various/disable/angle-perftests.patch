@@ -3,7 +3,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
 
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -5475,10 +5475,6 @@
+@@ -5618,10 +5618,6 @@
        data_deps += [ "//third_party/dawn/src/dawn/tests:dawn_perf_tests" ]
      }
  
@@ -50,7 +50,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
  }
  
  declare_args() {
-@@ -188,7 +187,6 @@
+@@ -193,7 +192,6 @@
  
    deps = [
      ":angle_test_expectations",
@@ -58,7 +58,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
      "$angle_root:angle_static",
      "$angle_root:libfeature_support",
      "$angle_root/util:angle_util_static",
-@@ -401,7 +399,7 @@
+@@ -407,7 +405,7 @@
    test_utils = ":angle_common_test_utils_static"
  }
  
@@ -67,9 +67,9 @@ author: Michel Le Bihan <michel@lebihan.pl>
    import("angle_perftests.gni")
  
    # This test suite is for perf tests that use ANGLE's internals in some direct way.
-@@ -1747,10 +1745,10 @@
-   if (build_angle_trace_tests) {
+@@ -1799,10 +1797,10 @@
      deps += [ ":angle_trace_perf_tests" ]
+     deps += [ "capture_tests:angle_capture_tests_trace" ]
    }
 -  if (is_clang) {
 +  if (false) {

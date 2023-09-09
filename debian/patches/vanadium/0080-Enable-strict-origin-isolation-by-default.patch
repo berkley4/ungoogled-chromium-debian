@@ -16,7 +16,7 @@ for more detail.
 
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
-@@ -1256,7 +1256,7 @@
+@@ -1252,7 +1252,7 @@
  // eTLD+1.
  BASE_FEATURE(kStrictOriginIsolation,
               "StrictOriginIsolation",

@@ -54,7 +54,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
  BASE_FEATURE(kSegmentationPlatformUkmEngine,
               "SegmentationPlatformUkmEngine",
-@@ -38,11 +38,7 @@
+@@ -42,11 +42,7 @@
  
  BASE_FEATURE(kSegmentationPlatformFeedSegmentFeature,
               "SegmentationPlatformFeedSegmentFeature",

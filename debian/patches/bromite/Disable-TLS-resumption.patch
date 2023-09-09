@@ -38,7 +38,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5210,6 +5210,12 @@
+@@ -5273,6 +5273,12 @@
      {"enable-tls13-kyber", flag_descriptions::kEnableTLS13KyberName,
       flag_descriptions::kEnableTLS13KyberDescription, kOsAll,
       FEATURE_VALUE_TYPE(net::features::kPostQuantumKyber)},
@@ -49,11 +49,11 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +     flag_descriptions::kLogTLSResumptionDescription, kOsAll,
 +     FEATURE_VALUE_TYPE(net::features::kLogTLSResumption)},
  #if BUILDFLAG(IS_ANDROID)
-     {"feed-bottom-sync-banner", flag_descriptions::kFeedBottomSyncBannerName,
-      flag_descriptions::kFeedBottomSyncBannerDescription, kOsAndroid,
+     {"feed-boc-signin-interstitial",
+      flag_descriptions::kFeedBoCSigninInterstitialName,
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -1072,6 +1072,14 @@
+@@ -1106,6 +1106,14 @@
      "shortcut (docked magnifier, screen magnifier and high contrast) to time "
      "out instead of remaining pinned.";
  
@@ -70,7 +70,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      "This option enables the experimental Accessibility Service and runs some "
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -609,6 +609,12 @@
+@@ -630,6 +630,12 @@
  extern const char kEnableTLS13EarlyDataName[];
  extern const char kEnableTLS13EarlyDataDescription[];
  
@@ -85,7 +85,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -64,6 +64,14 @@
+@@ -65,6 +65,14 @@
      &kUseDnsHttpsSvcb, "UseDnsHttpsSvcbSecureExtraTimeMin",
      base::Milliseconds(5)};
  
@@ -102,7 +102,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
               base::FEATURE_DISABLED_BY_DEFAULT);
 --- a/net/base/features.h
 +++ b/net/base/features.h
-@@ -96,6 +96,12 @@
+@@ -104,6 +104,12 @@
  // Enables TLS 1.3 early data.
  NET_EXPORT BASE_DECLARE_FEATURE(kEnableTLS13EarlyData);
  
@@ -117,7 +117,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  NET_EXPORT BASE_DECLARE_FEATURE(kEncryptedClientHello);
 --- a/net/http/http_network_session.cc
 +++ b/net/http/http_network_session.cc
-@@ -213,6 +213,7 @@
+@@ -208,6 +208,7 @@
  
    next_protos_.push_back(kProtoHTTP11);
  
@@ -127,7 +127,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    http_server_properties_->SetBrokenAlternativeServicesDelayParams(
 --- a/net/quic/quic_stream_factory.cc
 +++ b/net/quic/quic_stream_factory.cc
-@@ -71,6 +71,7 @@
+@@ -70,6 +70,7 @@
  #include "net/third_party/quiche/src/quiche/quic/core/quic_utils.h"
  #include "net/third_party/quiche/src/quiche/quic/platform/api/quic_flags.h"
  #include "third_party/boringssl/src/include/openssl/aead.h"
@@ -135,7 +135,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "url/gurl.h"
  #include "url/scheme_host_port.h"
  #include "url/url_constants.h"
-@@ -197,6 +198,38 @@
+@@ -196,6 +197,38 @@
  
  }  // namespace
  
@@ -174,7 +174,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  // Refcounted class that owns quic::QuicCryptoClientConfig and tracks how many
  // consumers are using it currently. When the last reference is freed, the
  // QuicCryptoClientConfigHandle informs the owning QuicStreamFactory, moves it
-@@ -2365,7 +2398,7 @@
+@@ -2355,7 +2388,7 @@
                sct_auditing_delegate_,
                HostsFromOrigins(params_.origins_to_force_quic_on),
                actual_network_anonymization_key),
@@ -182,7 +182,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +          std::make_unique<BromiteSessionCache>(), this);
  
    quic::QuicCryptoClientConfig* crypto_config = crypto_config_owner->config();
-   crypto_config->set_user_agent_id(params_.user_agent_id);
+   crypto_config->AddCanonicalSuffix(".c.youtube.com");
 --- a/net/socket/ssl_client_socket_impl.cc
 +++ b/net/socket/ssl_client_socket_impl.cc
 @@ -381,7 +381,33 @@
@@ -264,7 +264,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    UMA_HISTOGRAM_ENUMERATION("Net.SSLHandshakeDetails", details);
  
    // Measure TLS connections that implement the renegotiation_info extension.
-@@ -1747,6 +1804,8 @@
+@@ -1735,6 +1792,8 @@
  }
  
  bool SSLClientSocketImpl::IsCachingEnabled() const {

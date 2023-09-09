@@ -32,7 +32,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    DCHECK(GetExecutionContext()->IsContextThread());
  
    const String host = Host();
-@@ -250,6 +251,7 @@
+@@ -248,6 +249,7 @@
  }
  
  void NetworkInformation::StartObserving() {
@@ -40,7 +40,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    if (!IsObserving() && !context_stopped_) {
      type_ = GetNetworkStateNotifier().ConnectionType();
      DCHECK(!connection_observer_handle_);
-@@ -260,6 +262,7 @@
+@@ -258,6 +260,7 @@
  }
  
  void NetworkInformation::StopObserving() {

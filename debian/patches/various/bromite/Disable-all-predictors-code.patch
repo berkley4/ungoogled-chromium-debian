@@ -20,7 +20,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/common/chrome_features.cc
 +++ b/chrome/common/chrome_features.cc
-@@ -920,8 +920,8 @@
+@@ -956,8 +956,8 @@
  // Enables using the prediction service for permission prompts. We will keep
  // this feature in order to allow us to update the holdback chance via finch.
  BASE_FEATURE(kPermissionPredictions,
@@ -31,7 +31,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
  // The holdback chance is 30% but it can also be configured/updated
  // through finch if needed.
-@@ -932,8 +932,8 @@
+@@ -968,8 +968,8 @@
  
  // Enables using the prediction service for geolocation permission prompts.
  BASE_FEATURE(kPermissionGeolocationPredictions,
@@ -44,7 +44,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      kPermissionGeolocationPredictionsHoldbackChance(
 --- a/components/optimization_guide/core/optimization_guide_features.cc
 +++ b/components/optimization_guide/core/optimization_guide_features.cc
-@@ -87,17 +87,17 @@
+@@ -90,17 +90,17 @@
  // Enables the syncing of the Optimization Hints component, which provides
  // hints for what optimizations can be applied on a page load.
  BASE_FEATURE(kOptimizationHints,
@@ -68,7 +68,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
  // Enables performance info in the context menu and fetching from a remote
  // Optimization Guide Service.
-@@ -107,17 +107,13 @@
+@@ -110,17 +110,13 @@
  
  // Enables the prediction of optimization targets.
  BASE_FEATURE(kOptimizationTargetPrediction,
@@ -90,7 +90,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  );
  
  // Enables page content to be annotated.
-@@ -127,8 +123,8 @@
+@@ -130,8 +126,8 @@
  
  // Enables fetching page metadata from the remote Optimization Guide service.
  BASE_FEATURE(kRemotePageMetadata,
@@ -101,7 +101,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
  // Enables the page entities model to be annotated on every page load.
  BASE_FEATURE(kPageEntitiesPageContentAnnotations,
-@@ -152,8 +148,8 @@
+@@ -155,8 +151,8 @@
  
  // Enables push notification of hints.
  BASE_FEATURE(kPushNotifications,
@@ -112,7 +112,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
  // This feature flag does not turn off any behavior, it is only used for
  // experiment parameters.
-@@ -456,7 +452,7 @@
+@@ -468,7 +464,7 @@
  
  bool ShouldPersistHintsToDisk() {
    return GetFieldTrialParamByFeatureAsBool(kOptimizationHints,
@@ -120,7 +120,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +                                           "persist_hints_to_disk", false);
  }
  
- bool ShouldOverrideOptimizationTargetDecisionForMetricsPurposes(
+ bool EnabledPersonalizedMetadata(proto::RequestContext request_context) {
 --- a/components/optimization_guide/features.gni
 +++ b/components/optimization_guide/features.gni
 @@ -11,8 +11,7 @@
@@ -135,7 +135,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  declare_args() {
 --- a/components/permissions/features.cc
 +++ b/components/permissions/features.cc
-@@ -82,12 +82,12 @@
+@@ -92,12 +92,12 @@
  // When enabled, use the value of the `service_url` FeatureParam as the url
  // for the Web Permission Predictions Service.
  BASE_FEATURE(kPermissionPredictionServiceUseUrlOverride,
@@ -154,7 +154,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
               "PermissionOnDeviceGeolocationPredictions",
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -1107,12 +1107,8 @@
+@@ -1181,12 +1181,8 @@
  // in the first viewport after the page load and the metrics of the clicked
  // anchor element will be extracted and recorded.
  BASE_FEATURE(kNavigationPredictor,

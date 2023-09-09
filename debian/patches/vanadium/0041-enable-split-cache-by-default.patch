@@ -9,7 +9,7 @@ Subject: [PATCH] enable split cache by default
 
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -107,11 +107,11 @@
+@@ -116,11 +116,11 @@
  
  BASE_FEATURE(kSplitCacheByNetworkIsolationKey,
               "SplitCacheByNetworkIsolationKey",

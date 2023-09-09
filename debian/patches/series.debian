@@ -51,7 +51,6 @@ bromite/updater-disable-updater-pings.patch
 
 vanadium/0003-switch-to-fstack-protector-strong.patch
 vanadium/0004-enable-fwrapv-in-Clang-for-non-UBSan-builds.patch
-vanadium/0020-disable-contextual-search-by-default.patch
 vanadium/0024-disable-showing-popular-sites-by-default.patch
 vanadium/0027-disable-sensors-access-by-default.patch
 vanadium/0030-disable-background-sync-by-default.patch
@@ -64,10 +63,8 @@ vanadium/0043-enable-new-third-party-storage-partitioning.patch
 vanadium/0046-disable-component-updater-pings-by-default.patch
 vanadium/0050-stub-out-the-battery-status-API.patch
 vanadium/0080-Enable-strict-origin-isolation-by-default.patch
-vanadium/0083-Disable-detailed-language-settings-by-default.patch
 vanadium/0086-enable-process-isolated-sandboxed-iframes-by-default.patch
 vanadium/0108-Block-partitioned-third-party-cookies-as-well-when-b.patch
-vanadium/0109-enable-Chrome-Root-Store-by-default.patch
 
 various/fix-unbundle-script-dh-clean-interoperabilty.patch
 various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
@@ -89,10 +86,8 @@ various/compiler-flags/zero-call-used-registers.patch
 various/disable/angle-perftests.patch
 various/disable/crashpad-handler.patch
 various/disable/driver-chrome-path.patch
-various/disable/evdev.patch
 various/disable/orchestrator.patch
 various/disable/unrar.patch
-various/fedora/do_not_restrict_new_V4L2_decoders.v4l2.patch
 various/fedora/enable-hardware-accelerated-mjpeg.patch
 various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
 various/fixes/chromedriver-BrandVersion.patch
@@ -100,7 +95,6 @@ various/fixes/EnumTable-crash.patch
 various/fixes/fc-cache-version.patch
 various/fixes/font-rendering.patch
 various/fixes/InkDropHost-crash.patch
-various/fixes/Multi-Screen-Window-Placement-API-fix.patch
 various/fixes/remove-main-main10-profile-limit.patch
 various/fixes/revert-fix-linking-chromedriver.patch
 various/fixes/revert-fix-linking-content-shell.patch

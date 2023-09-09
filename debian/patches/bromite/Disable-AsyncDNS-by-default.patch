@@ -12,7 +12,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/common/chrome_features.cc
 +++ b/chrome/common/chrome_features.cc
-@@ -66,13 +66,8 @@
+@@ -67,13 +67,8 @@
  
  // Enables the built-in DNS resolver.
  BASE_FEATURE(kAsyncDns,

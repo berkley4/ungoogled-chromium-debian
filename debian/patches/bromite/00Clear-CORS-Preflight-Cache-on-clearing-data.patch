@@ -37,7 +37,7 @@ Subject: Clear CORS Preflight Cache on clearing data
  
 --- a/services/network/cors/preflight_controller.cc
 +++ b/services/network/cors/preflight_controller.cc
-@@ -674,6 +674,10 @@
+@@ -803,6 +803,10 @@
    cache_.ClearCache(std::move(url_filter));
  }
  
@@ -50,9 +50,9 @@ Subject: Clear CORS Preflight Cache on clearing data
    DCHECK(it != loaders_.end());
 --- a/services/network/cors/preflight_controller.h
 +++ b/services/network/cors/preflight_controller.h
-@@ -139,6 +139,8 @@
-       const net::NetLogWithSource& net_log,
-       bool acam_preflight_spec_conformant);
+@@ -141,6 +141,8 @@
+       mojo::PendingRemote<mojom::URLLoaderNetworkServiceObserver>
+           url_loader_network_service_observer);
  
 +  void ClearCache();
 +
@@ -72,7 +72,7 @@ Subject: Clear CORS Preflight Cache on clearing data
  const base::TickClock* tick_clock_for_testing = nullptr;
 --- a/services/network/network_context.cc
 +++ b/services/network/network_context.cc
-@@ -1069,6 +1069,8 @@
+@@ -1083,6 +1083,8 @@
        base::BindOnce(&NetworkContext::OnHttpCacheCleared,
                       base::Unretained(this), std::move(callback))));
  
