@@ -4,26 +4,28 @@ The bundled Clang/LLVM toolchain does not support LLVM Polly optimisations, so i
 you want to enable the llvm-polly-* patches then a different toolchain is required.
 
 To build a PGO-optimised chromium (using the bundled PGO profile) a sufficiently new
-version of clang is required, whereby at least the major version equals that of the
-bundled toolchain.
+version of clang is required, whereby the major version (eg 18) equals or exceeds
+that of the bundled toolchain.
 
-The clang/llvm packages from Debian experimental normally suffice, however these
-can be several months old. The llvm repo (apt.llvm.org) offers up-to-date
-snapshots for both stable and unstable.
+The clang/llvm packages from debian experimental often suffice, however these can be
+several months old. Versions of clang from stable or unstable almost always require
+extra patches, while the llvm repo (apt.llvm.org) offers up-to-date snapshots for
+both stable and unstable.
 
-Building your own Clang/LLVM toolchain offers some advantages over installing from
-debian or apt.llvm.org :-
+Building your own Clang/LLVM toolchain offers a certain advantages over installing
+from debian or apt.llvm.org :-
 
-- The ability to customise what gets installed (less bloat, possibly faster)
-- You can build with native cpu optimisation (-march=native)
-- Build an LTO, PGO and Bolt-optimised toolchain (definitely faster)
+- The ability to customise what gets installed (ie less bloat)
+- One can match the exact version (even the git commit) of the bundled version
+- Build an LTO, PGO and Bolt-optimised toolchain
 
 With building chromium taking some hours on an older PC, the best argument is
 probably speed. As far as I know, the packages from the debian and llvm repos
 are not bolt-optimised (which gives a significant speed boost).
 
 Below are the steps needed to build and install. Compilation time should be no
-more than a couple of hours on a cpu from the last decade or so.
+more than a couple of hours on a cpu from the last decade or so, probably half
+that or less on anything relatively new.
 
 
 ___Clone___
@@ -63,22 +65,10 @@ cd /usr/bin
 ln -sf $LLVM_DIR/lld x86_64-linux-gnu-ld
 ```
 
-If you want extra CFLAGS/LDFLAGS optimisation then we need to patch the CMakeLists.txt files
-before generating the cmake build configuration. (This is necessary in order to propagate
-flags beyond the initial build stage, to reliably set LDFLAGS and to avoid de-duplication
-issues or problems with flags which contain spaces).
-
-Navigate to the level above your git root directory and copy optimise.sh and
-build_options.txt to this location. Then run :-
-
-```sh
-./optimise.sh
-```
-
 You can optionally add the following feature flags to the command below :-
 
 -DLLVM_ENABLE_FFI=ON for libffi support
--DLLVM_ENABLE_RTTI=ON to enable RTTI (needed to build mesa)
+-DLLVM_ENABLE_RTTI=ON to enable RTTI (needed by mesa)
 -DLLVM_PARALLEL_LINK_JOBS=1 if you are thread/ram limited
 
 Now copy and edit the text below into a single line and execute inside the git root directory :-
@@ -118,15 +108,6 @@ Default install target is /usr/local, so do this as root :-
 
 ```sh
 ninja -j4 install/strip
-```
-
-
-___Reverse the CFLAGS/LDFLAGS patching___
-
-This is to prevent untracked files from persisting in the source tree.
-
-```sh
-./optimise.sh r
 ```
 
 
