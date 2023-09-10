@@ -22,7 +22,6 @@ RELEASE_SET=0
 SYS_ICU_SET=0
 XZ_EXTREME_SET=0
 
-POLLY=1
 POLLY_EXT_SET=0
 
 DEBIAN=$(dirname $0)
@@ -52,9 +51,6 @@ real_dir_path () (
 [ -n "$AES_PCLMUL" ] || AES_PCLMUL=1
 [ -n "$AVX" ] || AVX=1
 [ -n "$AVX2" ] || AVX2=0
-[ -n "$POLLY_VEC" ] || POLLY_VEC=1
-[ -n "$POLLY_PAR" ] || POLLY_PAR=0
-[ -n "$POLLY_THREADS" ] || POLLY_THREADS=0
 [ -n "$RTC_AVX2" ] || RTC_AVX2=1
 [ -n "$V8_AVX2" ] || V8_AVX2=1
 
@@ -93,11 +89,11 @@ real_dir_path () (
 [ -n "$MTUNE" ] && MTUNE_SET=1 || MTUNE=generic
 
 
+[ -n "$POLLY_VEC" ] || POLLY_VEC=1
+
 # POLLY_EXT is enabled if POLLY_VEC=1 (set to zero to disable)
 [ -n "$POLLY_EXT" ] && POLLY_EXT_SET=1 || POLLY_EXT=0
 
-# Set POLLY=0 if none of the polly options are set
-[ $POLLY_VEC -eq 1 ] || [ $POLLY_EXT -eq 1 ] || [ $POLLY_PAR -eq 1 ] || POLLY=0
 
 # LTO Jobs (patch = 1; chromium default = all)
 [ -n "$LTO_JOBS" ] || LTO_JOBS=0
@@ -214,34 +210,8 @@ fi
 
 
 if [ $BUNDLED_CLANG -eq 0 ]; then
-  if [ $POLLY -eq 1 ]; then
-    if [ $POLLY_VEC -eq 0 ]; then
-      printf '%s\n' "WARN: POLLY_VEC=0, turning off polly parallelisation."
-      POLLY_PAR=0
-    else
-      [ $POLLY_EXT_SET -eq 1 ] && [ $POLLY_EXT -eq 0 ] || POLLY_EXT=1
-    fi
-
-    if [ $POLLY_PAR -eq 1 ]; then
-      op_enable="$op_enable polly-parallel fix-clang-structured_binding"
-
-      if [ $POLLY_THREADS -ge 2 ]; then
-        case $POLLY_THREADS in
-          [2-9]|[1-9][0-9])
-            op_enable="$op_enable polly-parallel-threads"
-
-            case $POLLY_THREADS in
-              [3-9]|[1-9][0-9])
-                sed "s@\(polly-num-threads=\)[0-9]*@\1$POLLY_THREADS@" \
-                  -i $DEBIAN/patches/optional/polly-parallel-threads.patch
-              ;;
-            esac
-          ;;
-        esac
-
-        deps_enable="$deps_enable libgomp1"
-      fi
-    fi
+  if [ $POLLY_VEC -eq 1 ]; then
+    [ $POLLY_EXT_SET -eq 1 ] && [ $POLLY_EXT -eq 0 ] || POLLY_EXT=1
   fi
 
   RUL="$RUL -e \"s@^#\(.*[a-z][a-z]*_toolchain\)@\1@\""

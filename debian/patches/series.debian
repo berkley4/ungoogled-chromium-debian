@@ -117,8 +117,6 @@ various/vanadium/disable-content-feed-suggestions-by-default.patch
 optional/mutex-priority-inheritance.patch
 optional/polly-vectorizer.patch
 optional/polly-extra.patch
-#optional/polly-parallel.patch
-#optional/polly-parallel-threads.patch
 #optional/thinlto-cache-location.patch
 #optional/thinlto-jobs.patch
 optional/cpu/aes-pclmul.patch
@@ -149,5 +147,4 @@ optional/system/unstable/icu/icu-headers.patch
 optional/system/vaapi/vaapi-disable-libaom-encoding.patch
 optional/translate/translate-revert-disable.patch
 optional/translate/translate-stop-unsupported-switch-warning.patch
-#optional/fix-clang-structured_binding.patch
 optional/fix-missing-symbols.patch

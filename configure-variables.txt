@@ -78,7 +78,3 @@ V8_AVX2		1		AVX2 for v8 javascript (builds and runs on non-AVX2 capable hosts)
 
 POLLY_VEC	1		Polly vectorisation (oportunistic vector instruction optimisation)
 POLLY_EXT	1		Polly extra compile optimisations
-
-POLLY_PAR	0		Polly parallisation (opportunistic multi-threading)
-				Not recommended; probably introduces bugs (especially in javascript)
-POLLY_THREADS	0		Set to 2 or more to enable the --polly-num-threads=<n> compile option
