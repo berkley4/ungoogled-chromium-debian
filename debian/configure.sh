@@ -12,8 +12,8 @@ sys_enable=
 deps_disable=
 deps_enable=
 
-opt_patch_disable=
-opt_patch_enable=
+op_disable=
+op_enable=
 
 BUNDLED_CLANG_SET=0
 MARCH_SET=0
@@ -179,7 +179,7 @@ if [ -n "$LTO_DIR" ]; then
     exit 1
   fi
 
-  opt_patch_enable="$opt_patch_enable thinlto-cache-location"
+  op_enable="$op_enable thinlto-cache-location"
 
   sed -e "s@^\(+.*thinlto-cache-dir=\)[-_a-zA-Z0-9/]*@\1$LTO_DIR@" \
       -i $DEBIAN/patches/optional/thinlto-cache-location.patch
@@ -188,7 +188,7 @@ fi
 
 case $LTO_JOBS in
   [1-9]|[1-9][0-9])
-    opt_patch_enable="$opt_patch_enable thinlto-jobs"
+    op_enable="$op_enable thinlto-jobs"
 
     case $LTO_JOBS in
       [2-9]|[1-9][0-9])
@@ -250,14 +250,14 @@ if [ $BUNDLED_CLANG -eq 0 ]; then
     fi
   fi
 
-  opt_patch_enable="$opt_patch_enable $clang_patches"
+  op_enable="$op_enable $clang_patches"
 
   RUL="$RUL -e \"s@^#\(.*[a-z][a-z]*_toolchain\)@\1@\""
   RUL="$RUL -e \"s@^#\(export [A-Z].*llvm-\)@\1@\""
   RUL="$RUL -e \"s@^#\(export [A-Z].*clang\)@\1@\""
   RUL="$RUL -e \"s@^#\(export DEB_C[_A-Z]*FLAGS_MAINT_SET\)@\1@\""
 else
-  opt_patch_disable="$opt_patch_disable fix-missing-symbols"
+  op_disable="$op_disable fix-missing-symbols"
 
   PRU="$PRU -e \"/^third_party\/llvm/d\""
   PRU="$PRU -e \"/^tools\/clang/d\""
@@ -314,17 +314,17 @@ fi
 if [ $AVX2 -eq 1 ]; then
   AES_PCLMUL=1
   AVX=1
-  opt_patch_enable="$opt_patch_enable cpu/avx2"
+  op_enable="$op_enable cpu/avx2"
 fi
 
 if [ $AVX -eq 0 ]; then
-  opt_patch_disable="$opt_patch_disable cpu/avx"
+  op_disable="$op_disable cpu/avx"
 else
   AES_PCLMUL=1
 fi
 
 if [ $AES_PCLMUL -eq 0 ]; then
-  opt_patch_disable="$opt_patch_disable cpu/aes-pclmul"
+  op_disable="$op_disable cpu/aes-pclmul"
 fi
 
 if [ $RTC_AVX2 -eq 0 ]; then
@@ -339,7 +339,7 @@ fi
 
 
 if [ $TRANSLATE -eq 0 ]; then
-  opt_patch_disable="$opt_patch_disable translate/"
+  op_disable="$op_disable translate/"
 
   INS="$INS -e \"s@^\(debian/etc/chromium.d/google-translate\)@#\1@\""
 else
@@ -361,7 +361,7 @@ fi
 
 
 if [ $ATK_DBUS -eq 0 ]; then
-  opt_patch_enable="$opt_patch_enable disable/atk-dbus"
+  op_enable="$op_enable disable/atk-dbus"
 
   # GN_FLAGS += use_atk=false use_dbus=false
   gn_enable="$gn_enable use_atk"
@@ -369,7 +369,7 @@ fi
 
 
 if [ $CATAPULT -eq 0 ]; then
-  opt_patch_enable="$opt_patch_enable disable/catapult disable/rtc-protobuf"
+  op_enable="$op_enable disable/catapult disable/rtc-protobuf"
 fi
 
 
@@ -383,12 +383,12 @@ fi
 
 
 if [ $EXT_TOOLS_MENU -eq 0 ]; then
-  opt_patch_disable="$opt_patch_disable disable/extensions-in-tools-menu"
+  op_disable="$op_disable disable/extensions-in-tools-menu"
 fi
 
 
 if [ $MUTEX_PI -eq 0 ]; then
-  opt_patch_disable="$opt_patch_disable mutex-priority-inheritance"
+  op_disable="$op_disable mutex-priority-inheritance"
   gn_disable="$gn_disable enable_mutex_priority_inheritance"
 fi
 
@@ -416,7 +416,7 @@ fi
 
 
 if [ $SKIA_GAMMA -eq 1 ]; then
-  opt_patch_enable="$opt_patch_enable skia-gamma"
+  op_enable="$op_enable skia-gamma"
 fi
 
 
@@ -432,7 +432,7 @@ fi
 
 
 if [ $WIDEVINE -eq 0 ]; then
-  opt_patch_disable="$opt_patch_disable fixes/widevine/"
+  op_disable="$op_disable fixes/widevine/"
   SMF="$SMF -e \"s@^\(enable_widevine=\)true@\1false@\""
 fi
 
@@ -443,7 +443,7 @@ fi
 #################
 
 if [ $QT -eq 0 ]; then
-  opt_patch_disable="$opt_patch_disable qt/"
+  op_disable="$op_disable qt/"
 
   # GN_FLAGS += use_qt=false
   gn_enable="$gn_enable use_qt"
@@ -454,7 +454,7 @@ fi
 
 
 if [ $OPENH264 -eq 0 ]; then
-  opt_patch_disable="$opt_patch_disable system/openh264"
+  op_disable="$op_disable system/openh264"
 
   # GN_FLAGS += media_use_openh264=false
   gn_enable="$gn_enable media_use_openh264"
@@ -480,7 +480,7 @@ fi
 
 
 if [ $VAAPI -eq 0 ]; then
-  opt_patch_disable="$opt_patch_disable system/vaapi/"
+  op_disable="$op_disable system/vaapi/"
 
   # GN_FLAGS += use_vaapi=false
   gn_enable="$gn_enable use_vaapi"
@@ -490,7 +490,7 @@ fi
 
 
 if [ $SYS_FFMPEG -eq 1 ]; then
-  opt_patch_enable="$opt_patch_enable system/unstable/ffmpeg/"
+  op_enable="$op_enable system/unstable/ffmpeg/"
 
   sys_enable="$sys_enable ffmpeg"
   deps_enable="$deps_enable libavutil libavcodec libavformat"
@@ -498,7 +498,7 @@ fi
 
 
 if [ $SYS_JPEG -eq 0 ]; then
-  opt_patch_disable="$opt_patch_disable system/jpeg"
+  op_disable="$op_disable system/jpeg"
   sys_disable="$sys_disable libjpeg"
 fi
 
@@ -512,7 +512,7 @@ fi
 [ $STABLE -eq 0 ] || SYS_ICU=0
 
 if [ $SYS_ICU -eq 0 ]; then
-  opt_patch_disable="$opt_patch_disable system/unstable/icu/"
+  op_disable="$op_disable system/unstable/icu/"
 
   # SYS_LIBS += icu libxml libxslt
   sys_disable="$sys_disable icu"
@@ -531,12 +531,12 @@ deps_enable="$deps_enable libaom libavif"
 
 
 if [ $STABLE -eq 0 ]; then
-  opt_patch_enable="$opt_patch_enable system/unstable/dav1d"
+  op_enable="$op_enable system/unstable/dav1d"
 
   sys_enable="$sys_enable dav1d"
   deps_enable="$deps_enable libdav1d"
 else
-  opt_patch_enable="$opt_patch_enable system/dav1d-bundled-header"
+  op_enable="$op_enable system/dav1d-bundled-header"
 fi
 
 
@@ -625,8 +625,8 @@ if [ -n "$deps_enable" ]; then
 fi
 
 
-if [ -n "$opt_patch_disable" ]; then
-  for i in $opt_patch_disable; do
+if [ -n "$op_disable" ]; then
+  for i in $op_disable; do
     case $i in
       */)
         SER="$SER -e \"s@^\(optional/${i}\)@#\1@\""
@@ -639,8 +639,8 @@ if [ -n "$opt_patch_disable" ]; then
   done
 fi
 
-if [ -n "$opt_patch_enable" ]; then
-  for i in $opt_patch_enable; do
+if [ -n "$op_enable" ]; then
+  for i in $op_enable; do
     case $i in
       */)
         SER="$SER -e \"s@^#\(optional/${i}\)@\1@\""
