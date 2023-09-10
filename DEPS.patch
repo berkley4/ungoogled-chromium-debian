@@ -1,6 +1,6 @@
 --- a/DEPS
 +++ b/DEPS
-@@ -796,12 +796,6 @@
+@@ -815,12 +815,6 @@
      'condition': 'checkout_chromium_password_manager_test_dependencies',
    },
  
@@ -13,7 +13,7 @@
    'src/chrome/test/data/safe_browsing/dmg': {
      'packages': [
        {
-@@ -813,9 +807,6 @@
+@@ -832,9 +826,6 @@
      'dep_type': 'cipd',
    },
  
@@ -22,8 +22,8 @@
 -
    'src/clank': {
      'url': Var('chrome_git') + '/clank/internal/apps.git' + '@' +
-     '64bbf018080153bc127e967a9f9ea5ef8b6d6372',
-@@ -1206,7 +1197,7 @@
+     '2ff932f12a8624b79d25df04115d4f9891084260',
+@@ -1225,7 +1216,7 @@
            },
        ],
        # Needed on Linux for use on chromium_presubmit.
@@ -32,7 +32,7 @@
        'dep_type': 'cipd',
    },
  
-@@ -1317,9 +1308,6 @@
+@@ -1339,9 +1330,6 @@
    'src/third_party/freetype/src':
      Var('chromium_git') + '/chromium/src/third_party/freetype2.git' + '@' + Var('freetype_revision'),
  
@@ -42,7 +42,7 @@
    'src/third_party/fxdiv/src':
      Var('chromium_git') + '/external/github.com/Maratyszcza/FXdiv.git' + '@' + '63058eff77e11aa15bf531df5dd34395ec3017c8',
  
-@@ -1457,7 +1445,7 @@
+@@ -1479,7 +1467,7 @@
            },
        ],
        # Needed on Linux for use on chromium_presubmit (for checkstyle).
@@ -51,7 +51,7 @@
        'dep_type': 'cipd',
    },
  
-@@ -1508,12 +1496,6 @@
+@@ -1530,12 +1518,6 @@
    'src/third_party/leveldatabase/src':
      Var('chromium_git') + '/external/leveldb.git' + '@' + '068d5ee1a3ac40dabd00d211d5013af44be55bea',
  
@@ -64,7 +64,7 @@
    'src/third_party/libaddressinput/src':
      Var('chromium_git') + '/external/libaddressinput.git' + '@' + 'e8712e415627f22d0b00ebee8db99547077f39bd',
  
-@@ -4673,16 +4655,6 @@
+@@ -4701,16 +4683,6 @@
                 '--package=clangd'],
    },
    {
@@ -81,7 +81,7 @@
      # Update LASTCHANGE.
      'name': 'lastchange',
      'pattern': '.',
-@@ -4782,18 +4754,6 @@
+@@ -4810,18 +4782,6 @@
                  '-o', 'src/buildtools/mac/clang-format',
      ],
    },
@@ -100,7 +100,7 @@
    # Pull rc binaries using checked-in hashes.
    {
      'name': 'rc_win',
-@@ -4831,29 +4791,6 @@
+@@ -4859,29 +4819,6 @@
                  '-s', 'src/build/toolchain/win/rc/linux64/rc.sha1',
      ]
    },
@@ -130,7 +130,7 @@
    {
      'name': 'apache_win32',
      'pattern': '\\.sha1',
-@@ -4893,18 +4830,6 @@
+@@ -4921,18 +4858,6 @@
                  '-s', 'src/third_party/instrumented_libraries/binaries/msan-no-origins-focal.tgz.sha1',
                ],
    },
@@ -149,10 +149,23 @@
  
    # Pull down Node binaries for WebUI toolchain.
    {
-@@ -5048,33 +4973,6 @@
+@@ -5076,46 +5001,6 @@
      ],
    },
  
+-  # Download test data for Perfetto diff tests
+-  {
+-    'name': 'perfetto_testdata',
+-    'condition': 'host_os == "linux"',
+-    'pattern': '\\.sha256',
+-    'action': [ 'python3',
+-                'src/third_party/perfetto/tools/test_data',
+-                '--dir',
+-                'src/base/tracing/test/data',
+-                'download',
+-    ],
+-  },
+-
 -  # Download test data for Maps telemetry_gpu_integration_test.
 -  {
 -    'name': 'maps_perf_test_load_dataset',
@@ -183,7 +196,7 @@
    # Pull down WPR Archive files
    {
      'name': 'Fetch WPR archive files',
-@@ -5154,14 +5052,6 @@
+@@ -5195,14 +5080,6 @@
                 'src/chrome/browser/resources/vr/assets/google_chrome',
      ],
    },
@@ -198,7 +211,7 @@
    # Download VR test APKs only if the environment variable is set
    {
      'name': 'vr_test_apks',
-@@ -5600,17 +5490,6 @@
+@@ -5638,17 +5515,6 @@
      'condition': 'host_os == "win"',
      'action': ['python3', 'src/build/del_ninja_deps_cache.py'],
    },
