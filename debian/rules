@@ -2,7 +2,6 @@
 
 RT_DIR   := $(CURDIR)
 DB_DIR   := $(RT_DIR)/debian
-MP_DIR   := $(DB_DIR)/misc_patches
 UC_DIR   := $(DB_DIR)/submodules/ungoogled-chromium
 UL_DIR   := $(UC_DIR)/utils
 DS_CACHE := $(DB_DIR)/domsubcache.tar.gz
@@ -14,7 +13,7 @@ UB_REP_SCRIPT := build/linux/unbundle/replace_gn_files.py
 GN_FLAGS := $(shell tr "\n" " " < $(UC_DIR)/flags.gn | sed 's/"/\\"/g')
 
 # Custom toolchain (needed if enabling optional/llvm-polly-* patches)
-# The llvm version needs to match that of chromium for PGO builds to work
+# The llvm major version needs to at least match chromium's for PGO to work
 #
 #GN_FLAGS += custom_toolchain=\"//build/toolchain/linux/unbundle:default\" \
 #            host_toolchain=\"//build/toolchain/linux/unbundle:default\"
@@ -191,7 +190,7 @@ hardclean:
 	test -d $(OUT_DIR) && ninja -j $(JOBS) -C $(OUT_DIR) -g -t clean || printf '%s\n' "$(OUT_DIR) does not exist, nothing to do."
 
 undo_unbundling:
-	find base/third_party/ third_party/ -type f -name \*.bundled -print | while read f; do mv $$f $${f%.bundled}; done
+	find base/third_party/ third_party/ -type f -name \*.bundled | while read f; do mv $$f $${f%.bundled}; done
 
 prune:
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list 2>/dev/null

@@ -149,9 +149,12 @@ echo "kernel.unprivileged_userns_clone = 0" > /etc/systctl.d/userns
 
 # LLVM/Clang (for those wanting to self-compile)
 
-At a minimum you need a recent enough clang for PGO profile compatibility purposes.
+You will need llvm/clang where at least the major version matches that of the bundled
+version in order to avoid PGO-related build errors. Ideally, the same major version
+should be used, or even a version built from the same upstream commit.
 
-This means (in-tree) bundled clang, debian experimental or the apt.llvm.org snapshot branch.
+Getting a version of clang to do the job means (in-tree) bundled clang, a matching
+version via the apt.llvm.org snapshot branch, or perhaps debian experimental.
 
 Howver, bundled clang lacks support LLVM Polly optimisations, and debian experimental
 packages are often months old and unsuitable for debian stable. Bundled clang has LTO and

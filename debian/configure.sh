@@ -27,7 +27,6 @@ POLLY_EXT_SET=0
 DEBIAN=$(dirname $0)
 RT_DIR=$(dirname $DEBIAN)
 UC_DIR=$DEBIAN/submodules/ungoogled-chromium
-W_DIR=$RT_DIR/../widevine-cdm
 
 INSTALL=ungoogled-chromium.install
 PRUNE_PATCH=$DEBIAN/misc_patches/no-exit-if-pruned.patch
