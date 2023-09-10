@@ -92,6 +92,7 @@ real_dir_path () (
 [ -n "$MARCH" ] && MARCH_SET=1 || MARCH=x86-64-v2
 [ -n "$MTUNE" ] && MTUNE_SET=1 || MTUNE=generic
 
+
 # POLLY_EXT is enabled if POLLY_VEC=1 (set to zero to disable)
 [ -n "$POLLY_EXT" ] && POLLY_EXT_SET=1 || POLLY_EXT=0
 
@@ -215,26 +216,19 @@ fi
 if [ $BUNDLED_CLANG -eq 0 ]; then
   if [ $POLLY -eq 1 ]; then
     if [ $POLLY_VEC -eq 0 ]; then
-      printf '%s\n' "WARN: POLLY_VEC-0, turning off polly parallelisation."
+      printf '%s\n' "WARN: POLLY_VEC=0, turning off polly parallelisation."
       POLLY_PAR=0
     else
-      clang_patches="$clang_patches polly-vectorizer"
-
       [ $POLLY_EXT_SET -eq 1 ] && [ $POLLY_EXT -eq 0 ] || POLLY_EXT=1
-
-      if [ $POLLY_EXT -eq 1 ]; then
-        clang_patches="$clang_patches polly-extra"
-      fi
     fi
 
     if [ $POLLY_PAR -eq 1 ]; then
-      clang_patches="$clang_patches polly-parallel"
-      clang_patches="$clang_patches fix-clang-structured_binding"
+      op_enable="$op_enable polly-parallel fix-clang-structured_binding"
 
       if [ $POLLY_THREADS -ge 2 ]; then
         case $POLLY_THREADS in
           [2-9]|[1-9][0-9])
-            clang_patches="$clang_patches polly-parallel-threads"
+            op_enable="$op_enable polly-parallel-threads"
 
             case $POLLY_THREADS in
               [3-9]|[1-9][0-9])
@@ -250,8 +244,6 @@ if [ $BUNDLED_CLANG -eq 0 ]; then
     fi
   fi
 
-  op_enable="$op_enable $clang_patches"
-
   RUL="$RUL -e \"s@^#\(.*[a-z][a-z]*_toolchain\)@\1@\""
   RUL="$RUL -e \"s@^#\(export [A-Z].*llvm-\)@\1@\""
   RUL="$RUL -e \"s@^#\(export [A-Z].*clang\)@\1@\""
@@ -261,6 +253,15 @@ else
 
   PRU="$PRU -e \"/^third_party\/llvm/d\""
   PRU="$PRU -e \"/^tools\/clang/d\""
+fi
+
+
+if [ $POLLY_VEC -eq 0 ]; then
+  op_disable="$op_disable polly-vectorizer"
+fi
+
+if [ $POLLY_EXT -eq 0 ]; then
+  op_disable="$op_disable polly-extra"
 fi
 
 
