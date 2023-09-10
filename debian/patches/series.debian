@@ -136,7 +136,7 @@ optional/fixes/widevine/widevine-locations.patch
 #optional/system/dav1d-bundled-header.patch
 optional/system/jpeg.patch
 optional/system/openh264.patch
-#optional/system/unstable/dav1d.patch
+optional/system/unstable/dav1d.patch
 #optional/system/unstable/dav1d-no-unbundled-libavif.patch
 optional/system/unstable/libaom-headers.patch
 #optional/system/unstable/ffmpeg/ffmpeg-first_dts.patch

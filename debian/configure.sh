@@ -496,18 +496,12 @@ if [ $SYS_ICU -eq 0 ]; then
 fi
 
 
-# SYS_LIBS += libaom libavif
-sys_enable="$sys_enable libaom"
-deps_enable="$deps_enable libaom libavif"
-
-
-if [ $STABLE -eq 0 ]; then
-  op_enable="$op_enable system/unstable/dav1d"
-
-  sys_enable="$sys_enable dav1d"
-  deps_enable="$deps_enable libdav1d"
-else
+if [ $STABLE -eq 1 ]; then
+  op_disable="$op_disable system/unstable/dav1d"
   op_enable="$op_enable system/dav1d-bundled-header"
+
+  sys_disable="$sys_disable dav1d"
+  deps_disable="$deps_disable libdav1d"
 fi
 
 

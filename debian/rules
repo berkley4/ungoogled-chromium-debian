@@ -164,10 +164,10 @@ SYS_LIBS += openh264
 
 # (System icu listed with libraries which depend on it)
 SYS_LIBS += icu libxml libxslt
-#SYS_LIBS += libaom libavif
+SYS_LIBS += libaom libavif
 
 # TESTING/UNSTABLE libraries
-#SYS_LIBS += dav1d
+SYS_LIBS += dav1d
 
 
 # If your system ffmpeg is self-built with patches from system_ffmpeg

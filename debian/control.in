@@ -47,9 +47,9 @@ Build-Depends:
 #libavutil-dev,
 #libavcodec-dev (>= 7:5.1),
 #libavformat-dev,
-#libaom-dev,
-#libavif-dev,
-#libdav1d-dev,
+ libaom-dev,
+ libavif-dev,
+ libdav1d-dev,
  libicu-dev (>= 73),
  libxslt1-dev
 
