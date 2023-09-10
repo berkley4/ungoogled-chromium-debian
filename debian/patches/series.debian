@@ -140,7 +140,7 @@ optional/system/jpeg.patch
 optional/system/openh264.patch
 #optional/system/unstable/dav1d.patch
 #optional/system/unstable/dav1d-no-unbundled-libavif.patch
-#optional/system/unstable/libaom-headers.patch
+optional/system/unstable/libaom-headers.patch
 #optional/system/unstable/ffmpeg/ffmpeg-first_dts.patch
 #optional/system/unstable/ffmpeg/roll-src-third_party-ffmpeg-102.patch
 #optional/system/unstable/ffmpeg/roll-src-third_party-ffmpeg-106.patch
@@ -150,4 +150,4 @@ optional/system/vaapi/vaapi-disable-libaom-encoding.patch
 optional/translate/translate-revert-disable.patch
 optional/translate/translate-stop-unsupported-switch-warning.patch
 #optional/fix-clang-structured_binding.patch
-#optional/fix-missing-symbols.patch
+optional/fix-missing-symbols.patch

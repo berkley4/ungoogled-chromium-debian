@@ -213,8 +213,6 @@ fi
 
 
 if [ $BUNDLED_CLANG -eq 0 ]; then
-  clang_patches="fix-missing-symbols"
-
   if [ $POLLY -eq 1 ]; then
     if [ $POLLY_VEC -eq 0 ]; then
       printf '%s\n' "WARN: POLLY_VEC-0, turning off polly parallelisation."
@@ -259,6 +257,8 @@ if [ $BUNDLED_CLANG -eq 0 ]; then
   RUL="$RUL -e \"s@^#\(export [A-Z].*clang\)@\1@\""
   RUL="$RUL -e \"s@^#\(export DEB_C[_A-Z]*FLAGS_MAINT_SET\)@\1@\""
 else
+  opt_patch_disable="$opt_patch_disable fix-missing-symbols"
+
   PRU="$PRU -e \"/^third_party\/llvm/d\""
   PRU="$PRU -e \"/^tools\/clang/d\""
 fi
@@ -525,20 +525,13 @@ if [ $SYS_ICU -eq 0 ]; then
 fi
 
 
-sys_patches="libaom-headers"
-sys_patches="$(echo $sys_patches | sed "s@\([^ ]*\)@system/unstable/\1@g")"
-opt_patch_enable="$opt_patch_enable $sys_patches"
-
 # SYS_LIBS += libaom libavif
 sys_enable="$sys_enable libaom"
-
 deps_enable="$deps_enable libaom libavif"
 
 
 if [ $STABLE -eq 0 ]; then
-  sys_patches="dav1d"
-  sys_patches="$(echo $sys_patches | sed "s@\([^ ]*\)@system/unstable/\1@g")"
-  opt_patch_enable="$opt_patch_enable $sys_patches"
+  opt_patch_enable="$opt_patch_enable system/unstable/dav1d"
 
   sys_enable="$sys_enable dav1d"
   deps_enable="$deps_enable libdav1d"
