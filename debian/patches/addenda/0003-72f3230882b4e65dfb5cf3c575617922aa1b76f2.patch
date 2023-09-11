@@ -1,0 +1,64 @@
+From 72f3230882b4e65dfb5cf3c575617922aa1b76f2 Mon Sep 17 00:00:00 2001
+From: "Steinar H. Gunderson" <sesse@chromium.org>
+Date: Tue, 5 Sep 2023 12:34:32 +0000
+Subject: [PATCH] Fix a false positive in the MPC check around
+ InheritedVariables.
+
+This is normally masked due to another bug (operator== ignores
+InheritedVariables, so DebugDiff normally fastpaths out before doing
+the actual comparison), but shows up in some crash reports,
+and if that bug is fixed, is triggered by
+external/wpt/css/css-contain/container-queries/style-container-for-shadow-dom.html.
+
+Bug: 1469858, 1470253, 1470406, 1470689
+Change-Id: I5e8ffdf5ea0cccf1358f9486a960b5dc1f04ce0d
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4839805
+Reviewed-by: Anders Hartvoll Ruud <andruud@chromium.org>
+Commit-Queue: Steinar H Gunderson <sesse@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1192391}
+---
+ .../core/style/style_inherited_variables.cc   | 19 +++++++++++++++++--
+ .../core/style/style_inherited_variables.h    |  2 ++
+ 2 files changed, 19 insertions(+), 2 deletions(-)
+
+--- a/third_party/blink/renderer/core/style/style_inherited_variables.cc
++++ b/third_party/blink/renderer/core/style/style_inherited_variables.cc
+@@ -10,10 +10,25 @@
+ 
+ namespace blink {
+ 
++bool StyleInheritedVariables::HasEquivalentRoots(
++    const StyleInheritedVariables& other) const {
++  if (base::ValuesEquivalent(root_, other.root_)) {
++    return true;
++  }
++  // A non-null root pointer can be semantically the same as
++  // a null root pointer; normalize them and try comparing again.
++  if (root_ == nullptr) {
++    return other.root_->variables_ == other.variables_;
++  } else if (other.root_ == nullptr) {
++    return root_->variables_ == variables_;
++  } else {
++    return false;
++  }
++}
++
+ bool StyleInheritedVariables::operator==(
+     const StyleInheritedVariables& other) const {
+-  return base::ValuesEquivalent(root_, other.root_) &&
+-         variables_ == other.variables_;
++  return HasEquivalentRoots(other) && variables_ == other.variables_;
+ }
+ 
+ StyleInheritedVariables::StyleInheritedVariables() : root_(nullptr) {}
+--- a/third_party/blink/renderer/core/style/style_inherited_variables.h
++++ b/third_party/blink/renderer/core/style/style_inherited_variables.h
+@@ -57,6 +57,8 @@
+   StyleInheritedVariables();
+   StyleInheritedVariables(StyleInheritedVariables& other);
+ 
++  bool HasEquivalentRoots(const StyleInheritedVariables& other) const;
++
+   StyleVariables variables_;
+   scoped_refptr<StyleInheritedVariables> root_;
+ 

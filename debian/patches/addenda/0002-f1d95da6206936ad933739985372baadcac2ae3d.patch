@@ -1,0 +1,58 @@
+From f1d95da6206936ad933739985372baadcac2ae3d Mon Sep 17 00:00:00 2001
+From: sisidovski <sisidovski@chromium.org>
+Date: Mon, 4 Sep 2023 04:57:58 +0000
+Subject: [PATCH] RaceNetworkRequest is triggered only when the scheme is HTTP
+ or HTTPS
+
+This CL limits BestEffortServiceWorker and AutoPreload to be enabled
+only when the request scheme is HTTP or HTTPS.
+
+We've seen some crashes in crbug.com/1477990 but still not sure when it
+happens. According to the logs, it seems that the crash happens while
+processing the request to the extension resource. We'd like to see if we
+still see crashes or not by disabling the feature for extension
+resources.
+
+Bug: 1477990
+Change-Id: I1eddfd311af4b2fb2f26d7cacb5f158ae7894ec2
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4837601
+Reviewed-by: Minoru Chikamune <chikamune@chromium.org>
+Reviewed-by: Yoshisato Yanagisawa <yyanagisawa@chromium.org>
+Reviewed-by: Kouhei Ueno <kouhei@chromium.org>
+Commit-Queue: Yoshisato Yanagisawa <yyanagisawa@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1191942}
+---
+ .../service_worker/service_worker_main_resource_loader.cc   | 6 ++++++
+ .../service_worker/service_worker_subresource_loader.cc     | 6 ++++++
+ 2 files changed, 12 insertions(+)
+
+--- a/content/browser/service_worker/service_worker_main_resource_loader.cc
++++ b/content/browser/service_worker/service_worker_main_resource_loader.cc
+@@ -403,6 +403,12 @@
+     return false;
+   }
+ 
++  // RaceNetworkRequest is triggered only if the scheme is HTTP or HTTPS.
++  // crbug.com/1477990
++  if (!resource_request_.url.SchemeIsHTTPOrHTTPS()) {
++    return false;
++  }
++
+   // Create URLLoader related assets to handle the request triggered by
+   // RaceNetworkRequset.
+   mojo::PendingRemote<network::mojom::URLLoaderClient> forwarding_client;
+--- a/content/renderer/service_worker/service_worker_subresource_loader.cc
++++ b/content/renderer/service_worker/service_worker_subresource_loader.cc
+@@ -215,6 +215,12 @@
+     return false;
+   }
+ 
++  // RaceNetworkRequest is triggered only if the scheme is HTTP or HTTPS.
++  // crbug.com/1477990
++  if (!resource_request_.url.SchemeIsHTTPOrHTTPS()) {
++    return false;
++  }
++
+   // Create URLLoader related assets to handle the request triggered by
+   // RaceNetworkRequset.
+   mojo::PendingRemote<network::mojom::URLLoaderClient> forwarding_client;
