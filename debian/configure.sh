@@ -74,6 +74,7 @@ real_dir_path () (
 [ -n "$VAAPI" ] || VAAPI=1
 
 [ -n "$SYS_FFMPEG" ] || SYS_FFMPEG=0
+[ -n "$SYS_FREETYPE" ] || SYS_FREETYPE=0
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
 
 
@@ -467,6 +468,19 @@ if [ $SYS_FFMPEG -eq 1 ]; then
 fi
 
 
+if [ $SYS_FREETYPE -eq 0 ]; then
+  # GN_FLAGS += pdf_bundle_freetype=false use_system_freetype=false
+  gn_enable="$gn_enable pdf_bundle_freetype"
+
+  # SYS_LIBS += fontconfig freetype brotli libpng
+  sys_disable="$sys_disable fontconfig"
+  deps_disable="$deps_disable libfontconfig brotli"
+
+  ## System libpng must be enabled separately when SYS_FREETYPE=0
+  sys_enable="$sys_enable libpng"
+fi
+
+
 if [ $SYS_JPEG -eq 0 ]; then
   op_disable="$op_disable system/jpeg"
   sys_disable="$sys_disable libjpeg"
@@ -496,7 +510,7 @@ fi
 
 
 if [ $STABLE -eq 1 ]; then
-  op_disable="$op_disable system/unstable/dav1d"
+  op_disable="$op_disable system/unstable/dav1d/"
   op_enable="$op_enable system/dav1d-bundled-header"
 
   sys_disable="$sys_disable dav1d"
@@ -575,7 +589,13 @@ fi
 
 if [ -n "$deps_disable" ]; then
   for i in $deps_disable; do
-    CON="$CON -e \"s@^[ ]*\(${i}.*-dev\)@#\1@\""
+    case $i in
+      *-dev)
+        CON="$CON -e \"s@^[ ]*\(${i}.*-dev\)@#\1@\"" ;;
+
+      *)
+        CON="$CON -e \"s@^[ ]*\($i\)@#\1@\"" ;;
+    esac
   done
 fi
 

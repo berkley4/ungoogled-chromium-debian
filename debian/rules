@@ -122,64 +122,87 @@ GN_FLAGS += link_pulseaudio=true
 
 # Currently omitted from base (stable)
 #
-# Note: jsoncpp, re2, snappy and woff2 cannot be
-#       unbundled when use_custom_libcxx=true because
-#       custom (ie bundled) libcxx is needed for CFI.
+# Note: libyuv, jsoncpp, re2, snappy and woff2 cannot be unbundled due to
+#       their dependency on the libstdc++ system library. We need to build
+#       with use_custom_libcxx=true for CFI to function correctly.
 #
-# Extra work     : ffmpeg
-# Stable too old : dav1d
-# Compile issues : jsoncpp, re2, snappy, woff2
+# Extra work     : ffmpeg (problematic too)
+# Compile issues : libyuv, jsoncpp, re2, snappy, woff2 (see above note)
 # Problematic    : harfbuzz-ng, libvpx, libyuv
-# Interdependent : libxslt depends upon libxml; libxml depends upon icu
 #
+# Interdependent : libxslt depends on libxml; libxml depends on icu
+#                  libavif depends on libaom and dav1d
+#                  libaom depends on libyuv (see compile issues above)
+#                  fontconfig depends on freetype
+#                  freetype depends on brotli and libpng
+#                  libtiff depends on libwebp
+#
+# We cannot unbundle libavif or libaom (indirect dependency on libstc++)
+# Unbundled libjpeg = packages not be installable on both debian and ubuntu
+#
+# If we use bundled icu, we must also use bundled libxml and libxslt.
+# If we unbundle fontconfig, we must also unbundle freetype, brotli and libpng.
+# If we unbundle freetype, we must also unbundle brotli and libpng.
+# If we unbundle libtiff, we must also unbundle libwebp.
+
 SYS_LIBS :=               \
         double-conversion \
         flac              \
-        fontconfig        \
-        freetype          \
         libdrm            \
         libevent          \
-        libpng            \
         libusb            \
-        libwebp           \
         libXNVCtrl        \
         opus              \
         zlib
 
 # The below is best configured via debian/configure.sh, ehich is better
-# suited to automatically deal with any of the dependent patches.
+# suited to automatically deal with any of the dependency issues
 
-# Backported libraries (if you on stable)
-#SYS_LIBS +=
 
-# Enable brotli
-#SYS_LIBS += brotli
+# Enable dav1d (debian testing/unstable or equivalent)
+SYS_LIBS += dav1d
 
-# If you are building on the same distro you intend to run under
+# Enable libjpeg (the debs will not be installable on both debian and unbuntu)
 SYS_LIBS += libjpeg
 
 # Enable openh264
 SYS_LIBS += openh264
 
-# (System icu listed with libraries which depend on it)
+# Backported libraries (stable users can insert below)
+#SYS_LIBS +=
+
+
+### DEPENDENCY CHAINS
+
+# Enable icu (at least unstable is needed, maybe experimental)
 SYS_LIBS += icu libxml libxslt
-SYS_LIBS += libaom libavif
 
-# TESTING/UNSTABLE libraries
-SYS_LIBS += dav1d
+# Enable libwebp (also libtiff which depends on it)
+SYS_LIBS += libwebp
+GN_FLAGS += use_system_libtiff=true
 
+# Disable freetype
+#GN_FLAGS += pdf_bundle_freetype=false use_system_freetype=false
+
+# Enable freetype (a dependency of fontconfig)
+SYS_LIBS += fontconfig freetype brotli libpng
+
+# Enable if either of fontconfig or freetype above are not enabled
+#SYS_LIBS += libpng
+
+
+### UNSUPPORTED - unbundling ffmeg is buggy/problematic
 
 # If your system ffmpeg is self-built with patches from system_ffmpeg
 #SYS_LIBS += ffmpeg
 
+
 # Add extra flags for system libs
 GN_FLAGS +=                           \
         perfetto_use_system_zlib=true \
-        use_system_freetype=true      \
         use_system_lcms2=true         \
         use_system_libopenjpeg2=true  \
         use_system_libpng=true        \
-        use_system_libtiff=true       \
         use_system_zlib=true
 
 %:

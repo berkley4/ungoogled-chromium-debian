@@ -46,12 +46,16 @@ X11_ONLY	0		When enabled is an alias for OOP_PR=1 and OZONE_WAYLAND=0
 OPENH264	1
 VAAPI		1
 
-SYS_JPEG	1
+SYS_FREETYPE	0		Needed for system fontconfig; dependencies: brotli and libpng
 SYS_ICU		1
+SYS_JPEG	1
+
+
+# Unsupported
 
 SYS_FFMPEG	0		Unsupported upstream for security reasons
-				Functional issues (eg videos not playing)
-				Needs a patched version of ffmpeg to build and run
+				Functional issues (eg media not playing)
+				Only enable if you have patched and rebuilt your system ffmpeg
 
 
 ## CPU threading options

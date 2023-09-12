@@ -22,7 +22,6 @@ Build-Depends:
  libkrb5-dev,
  libcurl4-openssl-dev,
  libgtk-3-dev,
- libfontconfig-dev,
  libx11-xcb-dev,
  libxshmfence-dev,
  libgbm-dev,
@@ -47,9 +46,8 @@ Build-Depends:
 #libavutil-dev,
 #libavcodec-dev (>= 7:5.1),
 #libavformat-dev,
- libaom-dev,
- libavif-dev,
  libdav1d-dev,
+ libfontconfig-dev,
  libicu-dev (>= 73),
  libxslt1-dev
 
