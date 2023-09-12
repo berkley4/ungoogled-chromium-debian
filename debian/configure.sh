@@ -501,6 +501,9 @@ if [ $STABLE -eq 1 ]; then
 
   sys_disable="$sys_disable dav1d"
   deps_disable="$deps_disable libdav1d"
+
+  # Build error since v117 seemingly only affecting stable
+  op_enable="$op_enable no-ELOC_PROTO-mnemonic"
 fi
 
 
