@@ -100,6 +100,7 @@ various/fixes/revert-fix-linking-chromedriver.patch
 various/fixes/revert-fix-linking-content-shell.patch
 various/fixes/shim-fix-for-official-builds.patch
 various/fixes/silence-alsa-frames-log-msg.patch
+various/fixes/xdg-basedir.patch
 various/launchpad/dont-collect-motherboard-metrics.patch
 various/system/libusb.patch
 various/system/libusb-api.patch
