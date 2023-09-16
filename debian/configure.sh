@@ -31,6 +31,8 @@ UC_DIR=$DEBIAN/submodules/ungoogled-chromium
 INSTALL=ungoogled-chromium.install
 PRUNE_PATCH=$DEBIAN/misc_patches/no-exit-if-pruned.patch
 
+TRANSLATE_FILE=debian/etc/chromium.d/google-translate
+
 real_dir_path () (
   OLDPWD=- CDPATH= cd -P -- $1 && pwd
 )
@@ -312,11 +314,15 @@ fi
 if [ $TRANSLATE -eq 0 ]; then
   op_disable="$op_disable translate/"
 
-  INS="$INS -e \"s@^\(debian/etc/chromium.d/google-translate\)@#\1@\""
+  INS="$INS -e \"s@^\($TRANSLATE_FILE\)@#\1@\""
 else
   DSB="$DSB -e \"/\/translate_manager_browsertest\.cc/d\""
   DSB="$DSB -e \"/\/translate_script\.cc/d\""
   DSB="$DSB -e \"/\/translate_util\.cc/d\""
+
+  if [ $TRANSLATE -ge 2 ]; then
+    sed 's@^#\(export.*translate-script-url=\)@\1@' -i $DEBIAN/$TRANSLATE_FILE
+  fi
 fi
 
 

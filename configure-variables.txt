@@ -19,7 +19,10 @@ STABLE		0		By default an unstable version is built
 
 ATK_DBUS	1		D-Bus support (for bluetooth)
 CATAPULT	1		Catapult profiling support
-TRANSLATE	0		Google translate support
+TRANSLATE	1		Google translate support
+				0 - disable
+				1 - enable (need to edit /etc/chromium.d/google-translate)
+				2 - enable completely
 
 
 ## Enable/Disable features/components/patches

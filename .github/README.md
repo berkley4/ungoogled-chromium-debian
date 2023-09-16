@@ -91,13 +91,18 @@ ___Build system___
 
 ___Google Translate___
 
-You just need to edit /etc/chromium.d/google-translate and uncomment the
+To enable, you just need to edit /etc/chromium.d/google-translate and uncomment the
 line containing the '--translate-script-url' runtime switch.
+
+To build with everything enabled (no need to edit the above flag file), pass TRANSLATE=2
+to the configure script :-
+
+TRANSLATE=2 ./debian/configure.sh
 
 To build with translate disabled, include TRANSLATE=0 in your configure
 variables :-
 
-TRANSLATE=1 ./debian/configure.sh
+TRANSLATE=0 ./debian/configure.sh
 
 
 
