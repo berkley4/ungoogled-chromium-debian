@@ -7,6 +7,7 @@ These should run on CPUs which support AVX instructions, which should encompass 
 There's also a patch which can be used by builders to enable AVX2 support (cat /proc/cpuinfo is your friend here).
 
 There are currently two release branches: stable and unstable
+
 Currently there are deb packages for unstable, with build support for stable.
 
 
@@ -46,62 +47,61 @@ ___Performance improvements___
     - -mavx - enables AVX instructions (AVX2 is available via an optional patch)
     - -fno-plt - (see [here](https://patchwork.ozlabs.org/project/gcc/patch/alpine.LNX.2.11.1505061730460.22867@monopod.intra.ispras.ru/))
     - -ftrivial-auto-var-init set to zero - see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html)
-    - -import-instr-limit=25 and -import-hot-multiplier=16 - gives a hot import limit of 400 (25*16) vs default of 300 (30*10)
-    - The following LLVM polly options are available (needs a capable toolchain) :-
-        -polly-vectorizer=stripmine, -polly-run-dce, -polly-invariant-load-hoisting
+    - -import-instr-limit=24 and -import-hot-multiplier=15
+        - gives a hot import limit of 360 (24x15) vs default of 300 (30x10)
+    - The following LLVM polly options are available (needs a capable toolchain)
+        - -polly-vectorizer=stripmine, -polly-run-dce, -polly-invariant-load-hoisting
 
 
 ___Security/Privacy improvements___
 
 - Stack clash protection (-fstack-clash-protection) - see [here](https://blog.llvm.org/posts/2021-01-05-stack-clash-protection/)
-- Intel control flow enforcement technology (-fcf-protection) - cpu-based control flow integrity (see [here](https://wiki.ubuntu.com/ToolChain/CompilerFlags#A-fcf-protection))
+- Intel control flow enforcement technology (-fcf-protection) - cpu-based [control flow integrity](https://wiki.ubuntu.com/ToolChain/CompilerFlags#A-fcf-protection)
 - ROP exploit mitigation (-fzero-call-used-regs=used-gpr) - see [here](https://www.jerkeby.se/newsletter/posts/rop-reduction-zero-call-user-regs/)
 - Bad Cast Checking (via use_cfi_cast=true build flag) - see [here](https://clang.llvm.org/docs/ControlFlowIntegrity.html#bad-cast-checking)
 - Extra Bromite and Vanadium patches, the later of which includes the following clang options
     - -fstack-protector-strong - chromium's default is the less-strict -fstack-protector
     - -ftrivial-auto-var-init=zero - see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html)
     - -fwrapv - see [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1031653) and [here](https://gitlab.e.foundation/e/apps/browser/-/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch)
-- An example policy file is in the repo (install manually or edit ungoogled-chromium.install.in at build time4)
-- Some security/privacy themed flag files are installed to /etc/chromium.d (strict isolation is enabled by default)
+- An example policy file is in the repo (install manually or configure with POLICIES=1)
+- Some security/privacy themed flag files are installed to /etc/chromium.d
 
 
 ___Other features___
 
 - Lots of extra runtime flags (via the flag files in /etc/chromium.d)
-- Google translate - can be enabled via an edit to /etc/chromium.d/google-translate (builders can disable outright)
+- Google translate - can be enabled via an edit to /etc/chromium.d/google-translate
 - Patches for -march/-mtune and various other CPU instructions
-- Various patches to disable components (eg atk/dbus) and enable system libraries (eg icu)
+- Various patches to disable components (eg atk/dbus) and enable system libraries
 
 
 ___Build system___
 
 - Predominantly uses git to obtain and update source (release tarballs are not actively supported)
-- System clang/llvm is preferred for building (upstream llvm is best to ensure compatibility with the PGO profile)
-- A configure script is provided to enable customisation of the build
-- Ungoogled Chromium patches are merged into debian's build system with a variety of other patches
-- Debug optimisation is now handled by building with -fdebug-types-section (instead of dwz)
+- Using git often avoids compatibility/availabilty issues associated with tarball sources
+- Self-built BOLT/LTO/PGO optimised and polly-enabled clang/llvm is preferred for building
+    - requiring a recent version of clang often means fewer build headaches
+- A configure shell script is provided to enable easy customisation of the build
+    - it takes out much of the complexity might otherwise be present in debian/rules
+    - it handles dependencies, patches, enabling/disabling system libraries and components
+    - set variables when running the script eg PIPEWIRE=0 PULSE=0 QT=0 ./debian/configure.sh
 
 - - - -
-
-
-The following are optional features :-
 
 
 ___Google Translate___
 
-Not enabled by default in the binaries, you need to build it yourself.
+You just need to edit /etc/chromium.d/google-translate and uncomment the
+line containing the '--translate-script-url' runtime switch.
 
-To build with translate enabled, include TRANSLATE=1 in your configure
-variables (this is done immediately after copying over the debian
-directory into your build tree). For example :-
+To build with translate disabled, include TRANSLATE=0 in your configure
+variables :-
 
 TRANSLATE=1 ./debian/configure.sh
 
 
-- - - -
 
-
-# VAAPI (hardware video decoding/encoding)
+___VAAPI (hardware video decoding/encoding)___
 
 To test whether hardware decoding is functional, have a look at chrome://media-internals/
 (or the newer media tab in devtools).
@@ -164,7 +164,7 @@ packages.
 Compiling your own toolchain has speed advantages due to being able compile with BOLT
 optimisation in addition to LTO and PGO.
 
-Rough instructions for self-building are available [here]([Toolchain.md](https://github.com/berkley4/ungoogled-chromium-debian/blob/unstable/Toolchain.md).
+Rough instructions for self-building are available [here](https://github.com/berkley4/ungoogled-chromium-debian/blob/unstable/Toolchain.md).
 
 
 
