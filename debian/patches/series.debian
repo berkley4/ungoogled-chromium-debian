@@ -154,4 +154,7 @@ addenda/0001-296317621c2311f9838f88d6e09d351217c47bae.patch
 addenda/0002-f1d95da6206936ad933739985372baadcac2ae3d.patch
 addenda/0003-72f3230882b4e65dfb5cf3c575617922aa1b76f2.patch
 addenda/0004-M117-0623eab.diff
+addenda/0005-M117-b77f22a.diff
+addenda/0006-M117-bc7ae76a.diff
+addenda/0007-M117-ca326311.diff
 addenda/gpu-Fix-potential-CurrentGL-dangling-pointer.patch

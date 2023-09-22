@@ -1,0 +1,80 @@
+From b77f22afe8f17ec08137249ebc98b5f2ba869d99 Mon Sep 17 00:00:00 2001
+From: Daniel Brinkers <brinky@chromium.org>
+Date: Sat, 16 Sep 2023 01:16:08 +0000
+Subject: [PATCH] dlp: Expect download item having an invalid GURL
+
+There are cases in which DownloadItem::GetURL() returns an invalid GURL.
+In this case we cannot perform a dlp check. If there is actually a dlp
+restriction, keeping the default path, could lead to dlp blocking the
+actual save operation. In this case the user could not successfully save
+the file. So we prompt for the save dialog so the user can chose a path.
+This might be unexpected as there is no real reason for prompting. But
+this only happens to users using dlp.
+
+BUG=b:300605501
+
+(cherry picked from commit 4b4e8703a4a3a1db5136be5ef5b81fa0eaf00923)
+
+Change-Id: I05dd59d2ece389b6d11f22e31e020eca86951756
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4868374
+Reviewed-by: Sergey Poromov <poromov@chromium.org>
+Reviewed-by: Min Qin <qinmin@chromium.org>
+Commit-Queue: Daniel Brinkers <brinky@google.com>
+Cr-Original-Commit-Position: refs/heads/main@{#1197229}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4868379
+Auto-Submit: Daniel Brinkers <brinky@google.com>
+Bot-Commit: Rubber Stamper <rubber-stamper@appspot.gserviceaccount.com>
+Commit-Queue: Min Qin <qinmin@chromium.org>
+Cr-Commit-Position: refs/branch-heads/5938@{#1313}
+Cr-Branched-From: 2b50cb4bcc2318034581a816714d9535dc38966d-refs/heads/main@{#1181205}
+---
+
+--- a/chrome/browser/download/download_target_determiner.cc
++++ b/chrome/browser/download/download_target_determiner.cc
+@@ -1232,6 +1232,9 @@
+     return false;
+   const GURL authority_url = download::BaseFile::GetEffectiveAuthorityURL(
+       download_->GetURL(), download_->GetReferrerUrl());
++  if (!authority_url.is_valid()) {
++    return true;
++  }
+   return files_controller->ShouldPromptBeforeDownload(
+       policy::DlpFileDestination(authority_url), download_path);
+ #else
+--- a/chrome/browser/download/download_target_determiner_unittest.cc
++++ b/chrome/browser/download/download_target_determiner_unittest.cc
+@@ -2911,6 +2911,34 @@
+   std::unique_ptr<MockFilesController> mock_files_controller_ = nullptr;
+ };
+ 
++// Download URL might be invalid. Dlp must not crash in that case
++// (b/300605501).
++TEST_F(DownloadTargetDeterminerDlpTest, InvalidUrl) {
++  SetupRulesManager();
++
++  const DownloadTestCase kManagedPathTestCase = {
++      AUTOMATIC,
++      download::DOWNLOAD_DANGER_TYPE_NOT_DANGEROUS,
++      DownloadFileType::NOT_DANGEROUS,
++      "",
++      "text/plain",
++      FILE_PATH_LITERAL(""),
++
++      FILE_PATH_LITERAL("download.txt"),
++      DownloadItem::TARGET_DISPOSITION_PROMPT,
++
++      EXPECT_CRDOWNLOAD};
++
++  SetManagedDownloadPath(test_download_dir());
++  ASSERT_TRUE(download_prefs()->IsDownloadPathManaged());
++  EXPECT_CALL(*delegate(),
++              RequestConfirmation_(
++                  _, GetPathInDownloadDir(FILE_PATH_LITERAL("download.txt")),
++                  DownloadConfirmationReason::DLP_BLOCKED, _));
++  EXPECT_CALL(*mock_files_controller_, ShouldPromptBeforeDownload).Times(0);
++  RunTestCasesWithActiveItem(&kManagedPathTestCase, 1);
++}
++
+ // Even if the download path is managed, we should prompt if the download path
+ // is blocked by DLP.
+ TEST_F(DownloadTargetDeterminerDlpTest, ManagedPath_ShouldPrompt) {
