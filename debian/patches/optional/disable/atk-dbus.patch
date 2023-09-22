@@ -80,7 +80,7 @@
  const char kMethodListActivatableNames[] = "ListActivatableNames";
  const char kMethodNameHasOwner[] = "NameHasOwner";
  
-@@ -288,6 +293,7 @@
+@@ -289,6 +294,7 @@
    base::CallbackListSubscription browser_shutdown_subscription_;
    base::WeakPtrFactory<ShowItemHelper> weak_ptr_factory_{this};
  };
@@ -88,7 +88,7 @@
  
  void RunCommand(const std::string& command,
                  const base::FilePath& working_directory,
-@@ -354,8 +360,10 @@
+@@ -355,8 +361,10 @@
  }  // namespace internal
  
  void ShowItemInFolder(Profile* profile, const base::FilePath& full_path) {
@@ -141,7 +141,7 @@
    if (Get()->adapter_)
 --- a/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc
 +++ b/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc
-@@ -1278,7 +1278,7 @@
+@@ -1271,7 +1271,7 @@
  // TODO: Ideally this should be handled by our feature system, so that this
  // code doesn't even compile on OSes it isn't being used on, but currently this
  // is not possible.
@@ -150,7 +150,7 @@
    base::WeakPtr<device::BluetoothLocalGattService> service =
        device::BluetoothLocalGattService::Create(
            event_router_->adapter(),
-@@ -1307,6 +1307,7 @@
+@@ -1300,6 +1300,7 @@
  }
  
  void BluetoothLowEnergyCreateCharacteristicFunction::DoWork() {
@@ -158,7 +158,7 @@
    device::BluetoothLocalGattService* service =
        event_router_->adapter()->GetGattService(params_->service_id);
    if (!service) {
-@@ -1327,6 +1328,9 @@
+@@ -1320,6 +1321,9 @@
  
    Respond(ArgumentList(apibtle::CreateCharacteristic::Results::Create(
        characteristic->GetIdentifier())));
@@ -168,7 +168,7 @@
  }
  
  // createDescriptor:
-@@ -1343,6 +1347,7 @@
+@@ -1336,6 +1340,7 @@
  }
  
  void BluetoothLowEnergyCreateDescriptorFunction::DoWork() {
@@ -176,7 +176,7 @@
    device::BluetoothLocalGattCharacteristic* characteristic =
        event_router_->GetLocalCharacteristic(params_->characteristic_id);
    if (!characteristic) {
-@@ -1358,6 +1363,9 @@
+@@ -1351,6 +1356,9 @@
  
    Respond(ArgumentList(
        apibtle::CreateDescriptor::Results::Create(descriptor->GetIdentifier())));
