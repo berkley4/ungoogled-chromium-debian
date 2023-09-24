@@ -107,7 +107,6 @@ various/system/libusb-api.patch
 various/system/perfetto-system-zlib.patch
 various/system/xdg-scripts.patch
 various/system/zlib.patch
-#various/system/extra/brotli.patch
 various/system/extra/libdrm.patch
 various/system/extra/opus.patch
 various/system/extra/zlib.patch
@@ -139,6 +138,7 @@ optional/system/jpeg.patch
 optional/system/openh264.patch
 optional/system/unstable/dav1d/dav1d.patch
 optional/system/unstable/dav1d/dav1d-bundled-libavif.patch
+optional/system/unstable/extra/brotli.patch
 #optional/system/unstable/ffmpeg/ffmpeg-first_dts.patch
 #optional/system/unstable/ffmpeg/roll-src-third_party-ffmpeg-102.patch
 #optional/system/unstable/ffmpeg/roll-src-third_party-ffmpeg-106.patch
