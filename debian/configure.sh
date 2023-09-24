@@ -19,7 +19,6 @@ BUNDLED_CLANG_SET=0
 MARCH_SET=0
 MTUNE_SET=0
 RELEASE_SET=0
-SYS_ICU_SET=0
 XZ_EXTREME_SET=0
 
 POLLY_EXT_SET=0
@@ -77,14 +76,13 @@ real_dir_path () (
 
 [ -n "$SYS_FFMPEG" ] || SYS_FFMPEG=0
 [ -n "$SYS_FREETYPE" ] || SYS_FREETYPE=0
+[ -n "$SYS_ICU" ] || SYS_ICU=0
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
 
 
 # Option to force BUNDLED_CLANG and evade clang autodetection
 [ -n "$BUNDLED_CLANG" ] && BUNDLED_CLANG_SET=1 || BUNDLED_CLANG=1
 
-# SYS_ICU is enabled by default (set to zero to disable)
-[ -n "$SYS_ICU" ] && SYS_ICU_SET=1 || SYS_ICU=0
 
 # MARCH and MTUNE defaults
 [ -n "$MARCH" ] && MARCH_SET=1 || MARCH=x86-64-v2
@@ -474,6 +472,30 @@ if [ $SYS_FFMPEG -eq 1 ]; then
 fi
 
 
+if [ $SYS_JPEG -eq 0 ]; then
+  op_disable="$op_disable system/jpeg"
+  sys_disable="$sys_disable libjpeg"
+fi
+
+
+
+## Items which are (or are likely to become) unstable-only
+
+if [ $STABLE -eq 1 ]; then
+  SYS_FREETYPE=0
+  SYS_ICU=0
+
+  op_disable="$op_disable system/unstable/dav1d/"
+  op_enable="$op_enable system/dav1d-bundled-header"
+
+  sys_disable="$sys_disable dav1d"
+  deps_disable="$deps_disable libdav1d"
+
+  # Build error since v117 seemingly only affecting stable
+  op_enable="$op_enable no-ELOC_PROTO-mnemonic"
+fi
+
+
 if [ $SYS_FREETYPE -eq 0 ]; then
   op_disable="$op_disable system/unstable/extra/brotli"
 
@@ -489,20 +511,6 @@ if [ $SYS_FREETYPE -eq 0 ]; then
 fi
 
 
-if [ $SYS_JPEG -eq 0 ]; then
-  op_disable="$op_disable system/jpeg"
-  sys_disable="$sys_disable libjpeg"
-fi
-
-
-
-## Items which are likely to become unstable-only as stable ages
-
-[ $SYS_ICU_SET -eq 1 ] && [ $SYS_ICU -eq 1 ] || SYS_ICU=0
-
-# System icu is unlikely to be an option for stable users anytime soon
-[ $STABLE -eq 0 ] || SYS_ICU=0
-
 if [ $SYS_ICU -eq 0 ]; then
   op_disable="$op_disable system/unstable/icu/"
 
@@ -514,18 +522,6 @@ if [ $SYS_ICU -eq 0 ]; then
   deps_disable="$deps_disable libicu libxslt1"
 
   INS="$INS -e \"s@^#\(out/Release/icudtl\.dat\)@\1@\""
-fi
-
-
-if [ $STABLE -eq 1 ]; then
-  op_disable="$op_disable system/unstable/dav1d/"
-  op_enable="$op_enable system/dav1d-bundled-header"
-
-  sys_disable="$sys_disable dav1d"
-  deps_disable="$deps_disable libdav1d"
-
-  # Build error since v117 seemingly only affecting stable
-  op_enable="$op_enable no-ELOC_PROTO-mnemonic"
 fi
 
 
