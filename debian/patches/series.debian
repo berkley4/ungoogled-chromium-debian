@@ -158,3 +158,4 @@ addenda/0005-M117-b77f22a.diff
 addenda/0006-M117-bc7ae76a.diff
 addenda/0007-M117-ca326311.diff
 addenda/gpu-Fix-potential-CurrentGL-dangling-pointer.patch
+addenda/GL-Free-the-X11-pixmap-in-the-NativePixmapEGLX11Binding.patch
