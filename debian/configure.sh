@@ -530,8 +530,10 @@ fi
 ##  PGO profile path  ##
 ########################
 
-PGO_PROF=$(cat $RT_DIR/chrome/build/linux.pgo.txt)
-PGO_PATH=$(real_dir_path $RT_DIR/chrome/build/pgo_profiles)/$PGO_PROF
+if [ $TEST -eq 0 ]; then
+  PGO_PROF=$(cat $RT_DIR/chrome/build/linux.pgo.txt)
+  PGO_PATH=$(real_dir_path $RT_DIR/chrome/build/pgo_profiles)/$PGO_PROF
+fi
 
 
 
