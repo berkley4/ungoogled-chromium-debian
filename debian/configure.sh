@@ -678,6 +678,9 @@ fi
 ##  Modify debian directory files  ##
 #####################################
 
+SERIES_DEBIAN="$(eval sed $SER $DEBIAN/patches/series.debian)"
+echo "$(cat $UC_DIR/patches/series)" "$SERIES_DEBIAN" > $DEBIAN/patches/series
+
 [ -z "$INS" ] || eval sed $INS < $DEBIAN/$INSTALL.in > $DEBIAN/$INSTALL
 
 eval sed $CON < $DEBIAN/control.in > $DEBIAN/control
@@ -689,8 +692,6 @@ eval sed $SMF -i $UC_DIR/flags.gn
 eval sed $PRU -i $UC_DIR/pruning.list
 
 eval sed $RUL -i $DEBIAN/rules
-
-eval sed $SER -i $DEBIAN/patches/series.debian
 
 
 
@@ -712,7 +713,7 @@ if [ ! -f $DEBIAN/shims/chromium ] && [ $TEST -eq 0 ]; then
 fi
 
 
-## Merge upstream UC patches
+## Copy upstream UC patches into debian/patches
 if [ ! -d $DEBIAN/patches/core ] || [ ! -d $DEBIAN/patches/extra ]; then
   UC_PATCH_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
   if [ -d $UC_DIR/patches/upstream ]; then
@@ -721,9 +722,6 @@ if [ ! -d $DEBIAN/patches/core ] || [ ! -d $DEBIAN/patches/extra ]; then
 
   cp -a $UC_PATCH_DIRS $DEBIAN/patches/
 fi
-
-cat $UC_DIR/patches/series $DEBIAN/patches/series.debian \
-  > $DEBIAN/patches/series
 
 
 ## Allow overriding VERSION
