@@ -179,9 +179,6 @@ SYS_LIBS += icu libxml libxslt
 SYS_LIBS += libwebp
 GN_FLAGS += use_system_libtiff=true
 
-# Disable freetype
-#GN_FLAGS += pdf_bundle_freetype=false use_system_freetype=false
-
 # Enable freetype (a dependency of fontconfig)
 SYS_LIBS += fontconfig freetype brotli libpng
 
@@ -214,7 +211,7 @@ prune:
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list 2>/dev/null
 
 override_dh_auto_configure:
-	test -f $(DS_CACHE) && printf '%s\n' "$(DS_CACHE) exists, not re-doing unbundling." || find base/third_party/ third_party/ -type f -name \*.bundled | while read f; do mv $$f $${f%.bundled}; done
+	test -f $(DS_CACHE) && printf '%s\n' "$(DS_CACHE) exists, not re-doing unbundling." || find base/third_party/ third_party/ build/config/ -type f -name \*.bundled | while read f; do mv $$f $${f%.bundled}; done
 	test -f $(DS_CACHE) || test -z "$(SYS_LIBS)" || $(UB_REP_SCRIPT) --system-libraries $(SYS_LIBS)
 	test -f $(DS_CACHE) || $(UL_DIR)/domain_substitution.py apply -r $(UC_DIR)/domain_regex.list -f $(UC_DIR)/domain_substitution.list -c $(DS_CACHE) $(RT_DIR)
 	gn gen $(OUT_DIR) --args="$(GN_FLAGS)" --fail-on-unused-args
@@ -225,7 +222,7 @@ override_dh_auto_build:
 
 override_dh_prep:
 	test ! -f $(DS_CACHE) || $(UL_DIR)/domain_substitution.py revert -c $(DS_CACHE) $(RT_DIR)
-	find base/third_party/ third_party/ -type f -name \*.bundled | while read f; do mv $$f $${f%.bundled}; done
+	find base/third_party/ third_party/ build/config/ -type f -name \*.bundled | while read f; do mv $$f $${f%.bundled}; done
 	dh_prep
 
 override_dh_auto_install-arch:

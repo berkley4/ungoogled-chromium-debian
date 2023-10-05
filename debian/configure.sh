@@ -499,9 +499,6 @@ fi
 if [ $SYS_FREETYPE -eq 0 ]; then
   op_disable="$op_disable system/unstable/extra/brotli"
 
-  # GN_FLAGS += pdf_bundle_freetype=false use_system_freetype=false
-  gn_enable="$gn_enable pdf_bundle_freetype"
-
   # SYS_LIBS += fontconfig freetype brotli libpng
   sys_disable="$sys_disable fontconfig"
   deps_disable="$deps_disable libfontconfig brotli"
