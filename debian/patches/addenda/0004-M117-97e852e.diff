@@ -1,0 +1,34 @@
+From 97e852ed1c05ab77301c844ef0c8a6b2bf60fe4b Mon Sep 17 00:00:00 2001
+From: William Liu <liuwilliam@chromium.org>
+Date: Mon, 02 Oct 2023 17:46:18 +0000
+Subject: [PATCH] [M117 branch 5938] kInvalidateLocalSurfaceIdPreCommit
+
+https://crrev.com/c/4702023 has introduced breakage in stable
+(http://b/302490197).
+
+(cherry picked from commit 7803f67e4d3abffed798c7a9566e1a6f0900f1e4)
+
+Bug: 1487799
+Change-Id: I277ac7f271f2b66871ed928c6f51f2df4ff34e73
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4903085
+Commit-Queue: William Liu <liuwilliam@chromium.org>
+Reviewed-by: Bo Liu <boliu@chromium.org>
+Reviewed-by: Jonathan Ross <jonross@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1203323}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4902200
+Commit-Queue: Krishna Govind <govind@chromium.org>
+Cr-Commit-Position: refs/branch-heads/5938@{#1547}
+Cr-Branched-From: 2b50cb4bcc2318034581a816714d9535dc38966d-refs/heads/main@{#1181205}
+---
+
+--- a/components/viz/common/features.cc
++++ b/components/viz/common/features.cc
+@@ -317,7 +317,7 @@
+ // cases in production.
+ BASE_FEATURE(kInvalidateLocalSurfaceIdPreCommit,
+              "InvalidateLocalSurfaceIdPreCommit",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             base::FEATURE_DISABLED_BY_DEFAULT);
+ 
+ bool IsDelegatedCompositingEnabled() {
+   return base::FeatureList::IsEnabled(kDelegatedCompositing);
