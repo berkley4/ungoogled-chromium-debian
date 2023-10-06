@@ -396,7 +396,6 @@ fi
 
 
 if [ $VR -eq 1 ]; then
-  # GN_FLAGS += enable_vr=false enable_arcore=false ...
   gn_disable="$gn_disable enable_vr"
 fi
 
