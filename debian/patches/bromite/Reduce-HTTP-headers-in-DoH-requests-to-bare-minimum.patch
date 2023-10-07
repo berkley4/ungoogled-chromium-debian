@@ -4,17 +4,18 @@ Subject: Reduce HTTP headers in DoH requests to bare minimum
 
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- net/base/load_flags_list.h              | 5 +++++
- net/dns/dns_transaction.cc              | 2 +-
- net/url_request/url_request_http_job.cc | 8 ++++++--
- 3 files changed, 12 insertions(+), 3 deletions(-)
+ net/base/load_flags_list.h              |  6 ++++++
+ net/dns/dns_transaction.cc              |  2 +-
+ net/url_request/url_request_http_job.cc | 10 +++++++---
+ 3 files changed, 14 insertions(+), 4 deletions(-)
 
 --- a/net/base/load_flags_list.h
 +++ b/net/base/load_flags_list.h
-@@ -110,3 +110,8 @@
+@@ -110,3 +110,9 @@
  // Indicates that CAN_USE_SHARED_DICTIONARY must be disabled after a redirect to
  // another origin.
  LOAD_FLAG(DISABLE_SHARED_DICTIONARY_AFTER_CROSS_ORIGIN_REDIRECT, 1 << 18)
++
 +// This load will not send Accept-Language or User-Agent headers, and not
 +// advertise brotli encoding.
 +// Used to comply with IETF (draft) DNS-over-HTTPS:
@@ -33,7 +34,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    }
 --- a/net/url_request/url_request_http_job.cc
 +++ b/net/url_request/url_request_http_job.cc
-@@ -350,6 +350,7 @@
+@@ -379,6 +379,7 @@
    // fields in the referrer.
    GURL referrer(request_->referrer());
  
@@ -41,7 +42,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // Our consumer should have made sure that this is a safe referrer (e.g. via
    // URLRequestJob::ComputeReferrerForPolicy).
    if (referrer.is_valid()) {
-@@ -357,11 +358,14 @@
+@@ -386,11 +387,14 @@
      request_info_.extra_headers.SetHeader(HttpRequestHeaders::kReferer,
                                            referer_value);
    }
@@ -56,7 +57,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
    AddExtraHeaders();
  
-@@ -618,10 +622,10 @@
+@@ -647,10 +651,10 @@
  void URLRequestHttpJob::AddExtraHeaders() {
    request_info_.extra_headers.SetAcceptEncodingIfMissing(
        request()->url(), request()->accepted_stream_types(),

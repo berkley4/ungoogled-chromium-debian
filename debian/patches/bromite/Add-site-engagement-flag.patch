@@ -2,7 +2,7 @@ From: uazo <uazo@users.noreply.github.com>
 Date: Mon, 2 May 2022 11:48:03 +0000
 Subject: Add site engagement flag
 
-Enabled by default.
+Disabled by default.
 
 Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
@@ -20,7 +20,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -143,6 +143,7 @@
+@@ -145,6 +145,7 @@
  #include "components/segmentation_platform/public/features.h"
  #include "components/send_tab_to_self/features.h"
  #include "components/services/heap_profiling/public/cpp/switches.h"
@@ -28,7 +28,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "components/shared_highlighting/core/common/shared_highlighting_features.h"
  #include "components/signin/core/browser/dice_account_reconcilor_delegate.h"
  #include "components/signin/public/base/signin_buildflags.h"
-@@ -9439,6 +9440,11 @@
+@@ -9497,6 +9498,11 @@
                                      kLargeFaviconFromGoogleVariations,
                                      "LargeFaviconFromGoogle")},
  
@@ -42,7 +42,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       flag_descriptions::kForceOffTextAutosizingName,
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3714,6 +3714,11 @@
+@@ -3722,6 +3722,11 @@
      "Skips starting the service worker and run the fetch handler if the fetch "
      "handler is recognized as skippable.";
  
@@ -56,7 +56,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      "The WebSQL API is enabled by default, but can be disabled here.";
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -2152,6 +2152,9 @@
+@@ -2163,6 +2163,9 @@
  extern const char kSkipServiceWorkerFetchHandlerName[];
  extern const char kSkipServiceWorkerFetchHandlerDescription[];
  
@@ -132,7 +132,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +namespace features {
 +
 +const base::Feature kSiteEngagement{"SiteEngagement",
-+                                    base::FEATURE_ENABLED_BY_DEFAULT};
++                                    base::FEATURE_DISABLED_BY_DEFAULT};
 +
 +}  // namespace features
 +}  // namespace site_engagement

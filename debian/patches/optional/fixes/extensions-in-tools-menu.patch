@@ -1,6 +1,6 @@
 --- a/chrome/browser/ui/ui_features.cc
 +++ b/chrome/browser/ui/ui_features.cc
-@@ -46,7 +46,7 @@
+@@ -55,7 +55,7 @@
  // with submenu to manage extensions and visit chrome web store.
  BASE_FEATURE(kExtensionsMenuInAppMenu,
               "ExtensionsMenuInAppMenu",

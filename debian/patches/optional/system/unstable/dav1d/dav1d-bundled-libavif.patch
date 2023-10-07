@@ -1,6 +1,6 @@
 --- a/third_party/libavif/BUILD.gn
 +++ b/third_party/libavif/BUILD.gn
-@@ -37,8 +37,7 @@
+@@ -43,8 +43,7 @@
  
    if (enable_dav1d_decoder) {
      sources += [ "src/src/codec_dav1d.c" ]

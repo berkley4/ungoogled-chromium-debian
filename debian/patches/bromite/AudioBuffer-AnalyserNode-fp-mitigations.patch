@@ -22,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -3890,6 +3890,10 @@
+@@ -3878,6 +3878,10 @@
       flag_descriptions::kKioskEnableAppServiceDescription, kOsCrOS,
       FEATURE_VALUE_TYPE(features::kKioskEnableAppService)},
  #endif  // BUILDFLAG(IS_CHROMEOS)
@@ -35,7 +35,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       flag_descriptions::kWebRtcRemoteEventLogName,
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3634,6 +3634,11 @@
+@@ -3642,6 +3642,11 @@
      "When enabled, removes the requirement that all certificates used for "
      "WebTransport over HTTP/3 are issued by a known certificate root.";
  
@@ -49,19 +49,19 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  const char kWebUsbDeviceDetectionDescription[] =
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -2095,6 +2095,9 @@
- extern const char kWebTransportDeveloperModeName[];
- extern const char kWebTransportDeveloperModeDescription[];
+@@ -2103,6 +2103,9 @@
+ extern const char kWebrtcUseMinMaxVEADimensionsName[];
+ extern const char kWebrtcUseMinMaxVEADimensionsDescription[];
  
 +extern const char kAudioContextShuffleEnabledName[];
 +extern const char kAudioContextShuffleEnabledDescription[];
 +
- extern const char kWebUsbDeviceDetectionName[];
- extern const char kWebUsbDeviceDetectionDescription[];
+ extern const char kWebTransportDeveloperModeName[];
+ extern const char kWebTransportDeveloperModeDescription[];
  
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -246,6 +246,10 @@
+@@ -254,6 +254,10 @@
               "BiddingAndScoringDebugReportingAPI",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -74,7 +74,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  BASE_FEATURE(kBlinkHeapCompaction,
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -151,6 +151,8 @@
+@@ -157,6 +157,8 @@
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kBlinkHeapIncrementalMarking);
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kBlinkHeapIncrementalMarkingStress);
  

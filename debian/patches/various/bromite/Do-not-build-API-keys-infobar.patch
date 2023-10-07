@@ -4,12 +4,13 @@ Subject: Do not build API keys infobar
 
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- chrome/browser/ui/BUILD.gn | 2 --
- 1 file changed, 2 deletions(-)
+ chrome/browser/ui/BUILD.gn                 | 2 --
+ chrome/browser/ui/startup/infobar_utils.cc | 3 ---
+ 2 files changed, 5 deletions(-)
 
 --- a/chrome/browser/ui/BUILD.gn
 +++ b/chrome/browser/ui/BUILD.gn
-@@ -1352,8 +1352,6 @@
+@@ -1361,8 +1361,6 @@
        "singleton_tabs.h",
        "startup/automation_infobar_delegate.cc",
        "startup/automation_infobar_delegate.h",

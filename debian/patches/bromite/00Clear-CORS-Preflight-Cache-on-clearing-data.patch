@@ -2,6 +2,7 @@ From: uazo <uazo@users.noreply.github.com>
 Date: Wed, 19 Apr 2023 09:59:18 +0000
 Subject: Clear CORS Preflight Cache on clearing data
 
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  services/network/cors/preflight_cache.cc      | 4 ++++
  services/network/cors/preflight_cache.h       | 2 ++
@@ -13,7 +14,7 @@ Subject: Clear CORS Preflight Cache on clearing data
 
 --- a/services/network/cors/preflight_cache.cc
 +++ b/services/network/cors/preflight_cache.cc
-@@ -201,6 +201,10 @@
+@@ -200,6 +200,10 @@
    MayPurge(max_entries, purge_unit);
  }
  
@@ -37,7 +38,7 @@ Subject: Clear CORS Preflight Cache on clearing data
  
 --- a/services/network/cors/preflight_controller.cc
 +++ b/services/network/cors/preflight_controller.cc
-@@ -803,6 +803,10 @@
+@@ -804,6 +804,10 @@
    cache_.ClearCache(std::move(url_filter));
  }
  
@@ -72,7 +73,7 @@ Subject: Clear CORS Preflight Cache on clearing data
  const base::TickClock* tick_clock_for_testing = nullptr;
 --- a/services/network/network_context.cc
 +++ b/services/network/network_context.cc
-@@ -1083,6 +1083,8 @@
+@@ -1128,6 +1128,8 @@
        base::BindOnce(&NetworkContext::OnHttpCacheCleared,
                       base::Unretained(this), std::move(callback))));
  

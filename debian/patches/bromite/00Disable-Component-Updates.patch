@@ -10,7 +10,7 @@ Subject: Disable Component Updates
 
 --- a/chrome/browser/component_updater/registration.cc
 +++ b/chrome/browser/component_updater/registration.cc
-@@ -101,6 +101,7 @@
+@@ -100,6 +100,7 @@
  namespace component_updater {
  
  void RegisterComponentsForUpdate() {
