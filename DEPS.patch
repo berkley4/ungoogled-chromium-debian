@@ -130,7 +130,7 @@
    {
      'name': 'apache_win32',
      'pattern': '\\.sha1',
-@@ -4941,18 +4878,6 @@
+@@ -4941,31 +4878,6 @@
                  '-s', 'src/third_party/instrumented_libraries/binaries/msan-no-origins-focal.tgz.sha1',
                ],
    },
@@ -146,10 +146,23 @@
 -                '-s', 'src/v8/test/fuzzer/wasm_corpus.tar.gz.sha1',
 -    ],
 -  },
-   # Download selected models from TFHub as testdata.
+-  # Download selected models from TFHub as testdata.
+-  {
+-    'name': 'download_tfhub_models',
+-    'pattern': '.',
+-    'action': [ 'python3',
+-                'src/third_party/depot_tools/download_from_google_storage.py',
+-                '--no_resume',
+-                '--extract',
+-                '--bucket', 'chromium-tfhub-models',
+-                '-s', 'src/third_party/tfhub_models/models.tar.gz.sha1',
+-    ],
+-  },
+-
+   # Pull down Node binaries for WebUI toolchain.
    {
-     'name': 'download_tfhub_models',
-@@ -5108,46 +5033,6 @@
+     'name': 'node_linux64',
+@@ -5108,46 +5020,6 @@
      ],
    },
  
@@ -196,7 +209,7 @@
    # Pull down WPR Archive files
    {
      'name': 'Fetch WPR archive files',
-@@ -5227,14 +5112,6 @@
+@@ -5227,14 +5099,6 @@
                 'src/chrome/browser/resources/vr/assets/google_chrome',
      ],
    },
@@ -211,7 +224,7 @@
    # Download VR test APKs only if the environment variable is set
    {
      'name': 'vr_test_apks',
-@@ -5681,17 +5558,6 @@
+@@ -5681,17 +5545,6 @@
      'condition': 'host_os == "win"',
      'action': ['python3', 'src/build/del_ninja_deps_cache.py'],
    },
