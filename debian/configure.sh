@@ -459,6 +459,8 @@ if [ $VAAPI -eq 0 ]; then
   # GN_FLAGS += use_vaapi=false
   gn_enable="$gn_enable use_vaapi"
   deps_disable="$deps_disable libva"
+
+  INS="$INS -e \"s@^\(debian/.*/drirc\.d/10-chromium\.conf\)@#\1@\""
 fi
 
 
