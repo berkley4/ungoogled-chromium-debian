@@ -135,6 +135,7 @@ optional/fixes/widevine/widevine-locations.patch
 #optional/legacy-i386/angle-lockfree.patch
 #optional/legacy-i386/support-i386.patch
 #optional/system/dav1d-bundled-header.patch
+#optional/system/freetype-COLRV1.patch
 optional/system/jpeg.patch
 optional/system/openh264.patch
 optional/system/unstable/dav1d/dav1d.patch

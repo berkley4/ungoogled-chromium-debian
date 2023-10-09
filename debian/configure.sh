@@ -483,7 +483,6 @@ fi
 ## Items which are (or are likely to become) unstable-only
 
 if [ $STABLE -eq 1 ]; then
-  SYS_FREETYPE=0
   SYS_ICU=0
 
   op_disable="$op_disable system/unstable/dav1d/"
@@ -494,6 +493,10 @@ if [ $STABLE -eq 1 ]; then
 
   # Build error since v117 seemingly only affecting stable
   op_enable="$op_enable no-ELOC_PROTO-mnemonic"
+
+  if [ $SYS_FREETYPE -eq 1 ]; then
+    op_enable="$op_enable system/freetype-COLRV1"
+  fi
 fi
 
 
