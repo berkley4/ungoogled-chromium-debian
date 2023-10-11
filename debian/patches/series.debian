@@ -85,6 +85,7 @@ various/compiler-flags/optimize-debug-info.patch
 various/compiler-flags/stack-clash-protection.patch
 various/compiler-flags/zero-call-used-registers.patch
 various/disable/angle-perftests.patch
+various/disable/CollectWebGPUSupportMetrics.patch
 various/disable/crashpad-handler.patch
 various/disable/driver-chrome-path.patch
 various/disable/orchestrator.patch
@@ -156,3 +157,6 @@ addenda/0001-RaceNetworkRequest-is-triggered-only-when-the-scheme-is-HTTP-or-HTT
 addenda/0002-gpu-Fix-potential-CurrentGL-dangling-pointer.patch
 addenda/0003-GL-Free-the-X11-pixmap-in-the-NativePixmapEGLX11Binding.patch
 addenda/0004-Add-check-for-use_system_freetype-when-importing-private-freetype-header.patch
+addenda/0005-M118-86f0cf02.diff
+addenda/0006-M118-36f40e1.diff
+addenda/0007-M118-438cb68.diff

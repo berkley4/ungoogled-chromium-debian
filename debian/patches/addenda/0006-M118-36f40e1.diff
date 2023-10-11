@@ -1,0 +1,43 @@
+From 36f40e1a6f2565f666bc92963aecbf68df5ee19e Mon Sep 17 00:00:00 2001
+From: Benjamin Beaudry <benjamin.beaudry@microsoft.com>
+Date: Tue, 10 Oct 2023 19:48:39 +0000
+Subject: [PATCH] [a11y] Return early if no node in AXObject::PerformAction
+
+(cherry picked from commit 5158661abbe23dbefd5286d58914fa283a8d8913)
+
+Fixed: 1486913
+Change-Id: I55b0553d85ab04e115f503fa4f057ab286f96bb8
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4894843
+Reviewed-by: Nektarios Paisios <nektar@chromium.org>
+Owners-Override: Nektarios Paisios <nektar@chromium.org>
+Commit-Queue: Nektarios Paisios <nektar@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1201780}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4926931
+Commit-Queue: Benjamin Beaudry <benjamin.beaudry@microsoft.com>
+Reviewed-by: Aaron Leventhal <aleventhal@chromium.org>
+Cr-Commit-Position: refs/branch-heads/5993@{#1237}
+Cr-Branched-From: 511350718e646be62331ae9d7213d10ec320d514-refs/heads/main@{#1192594}
+---
+
+--- a/third_party/blink/renderer/modules/accessibility/ax_object.cc
++++ b/third_party/blink/renderer/modules/accessibility/ax_object.cc
+@@ -6518,6 +6518,9 @@
+   Node* node = GetNode();
+   if (!node) {
+     node = GetClosestElement();
++    if (!node) {
++      return false;
++    }
+   }
+ 
+   // In most cases, UpdateAllLifecyclePhasesExceptPaint() is enough, but if
+@@ -6703,6 +6706,9 @@
+   Node* node = GetNode();
+   if (!node) {
+     node = GetClosestElement();
++    if (!node) {
++      return false;
++    }
+   }
+ 
+   // In most cases, UpdateAllLifecyclePhasesExceptPaint() is enough, but if
