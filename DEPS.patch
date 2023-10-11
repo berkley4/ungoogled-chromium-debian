@@ -1,6 +1,17 @@
 --- a/DEPS
 +++ b/DEPS
-@@ -827,12 +827,6 @@
+@@ -475,10 +475,6 @@
+   # and whatever else without interference from each other.
+   'libavifinfo_revision': '707919b2f8ac1920b2f7ae252c233f9c6dcf84e1',
+   # Three lines of non-changing comments so that
+-  # the commit queue can handle CLs rolling Speedometer v3.0
+-  # and whatever else without interference from each other.
+-  'speedometer_3.0_revision': '5107c739c1b2a008e7293e3b489c4f80a8fb2e01',
+-  # Three lines of non-changing comments so that
+   # the commit queue can handle CLs rolling nearby
+   # and whatever else without interference from each other.
+   'nearby_revision': '8725391822b8901784b379a4573ab8828e7091d3',
+@@ -827,12 +823,6 @@
      'condition': 'checkout_chromium_password_manager_test_dependencies',
    },
  
@@ -13,7 +24,7 @@
    'src/chrome/test/data/safe_browsing/dmg': {
      'packages': [
        {
-@@ -844,9 +838,6 @@
+@@ -844,9 +834,6 @@
      'dep_type': 'cipd',
    },
  
@@ -23,7 +34,7 @@
    'src/clank': {
      'url': Var('chrome_git') + '/clank/internal/apps.git' + '@' +
      '256d55244f0c48892677b6707e5d08dbe680e042',
-@@ -1248,7 +1239,7 @@
+@@ -1248,7 +1235,7 @@
            },
        ],
        # Needed on Linux for use on chromium_presubmit.
@@ -32,7 +43,7 @@
        'dep_type': 'cipd',
    },
  
-@@ -1362,9 +1353,6 @@
+@@ -1362,9 +1349,6 @@
    'src/third_party/freetype/src':
      Var('chromium_git') + '/chromium/src/third_party/freetype2.git' + '@' + Var('freetype_revision'),
  
@@ -42,7 +53,7 @@
    'src/third_party/fxdiv/src':
      Var('chromium_git') + '/external/github.com/Maratyszcza/FXdiv.git' + '@' + '63058eff77e11aa15bf531df5dd34395ec3017c8',
  
-@@ -1502,7 +1490,7 @@
+@@ -1502,7 +1486,7 @@
            },
        ],
        # Needed on Linux for use on chromium_presubmit (for checkstyle).
@@ -51,7 +62,7 @@
        'dep_type': 'cipd',
    },
  
-@@ -1553,12 +1541,6 @@
+@@ -1553,12 +1537,6 @@
    'src/third_party/leveldatabase/src':
      Var('chromium_git') + '/external/leveldb.git' + '@' + '068d5ee1a3ac40dabd00d211d5013af44be55bea',
  
@@ -64,7 +75,17 @@
    'src/third_party/libaddressinput/src':
      Var('chromium_git') + '/external/libaddressinput.git' + '@' + 'e8712e415627f22d0b00ebee8db99547077f39bd',
  
-@@ -4721,16 +4703,6 @@
+@@ -1580,9 +1558,6 @@
+   'src/third_party/securemessage/src':
+     Var('chromium_git') + '/external/github.com/google/securemessage.git' + '@' + Var('securemessage_revision'),
+ 
+-  'src/third_party/speedometer/v3.0':
+-    Var('chromium_git') + '/external/github.com/WebKit/Speedometer.git' + '@' + Var('speedometer_3.0_revision'),
+-
+   'src/third_party/ukey2/src':
+     Var('chromium_git') + '/external/github.com/google/ukey2.git' + '@' + Var('ukey2_revision'),
+ 
+@@ -4721,16 +4696,6 @@
                 '--package=clangd'],
    },
    {
@@ -81,7 +102,7 @@
      # Update LASTCHANGE.
      'name': 'lastchange',
      'pattern': '.',
-@@ -4830,18 +4802,6 @@
+@@ -4830,18 +4795,6 @@
                  '-o', 'src/buildtools/mac/clang-format',
      ],
    },
@@ -100,7 +121,7 @@
    # Pull rc binaries using checked-in hashes.
    {
      'name': 'rc_win',
-@@ -4879,29 +4839,6 @@
+@@ -4879,29 +4832,6 @@
                  '-s', 'src/build/toolchain/win/rc/linux64/rc.sha1',
      ]
    },
@@ -130,7 +151,7 @@
    {
      'name': 'apache_win32',
      'pattern': '\\.sha1',
-@@ -4941,31 +4878,6 @@
+@@ -4941,31 +4871,6 @@
                  '-s', 'src/third_party/instrumented_libraries/binaries/msan-no-origins-focal.tgz.sha1',
                ],
    },
@@ -162,7 +183,7 @@
    # Pull down Node binaries for WebUI toolchain.
    {
      'name': 'node_linux64',
-@@ -5108,46 +5020,6 @@
+@@ -5108,46 +5013,6 @@
      ],
    },
  
@@ -209,7 +230,7 @@
    # Pull down WPR Archive files
    {
      'name': 'Fetch WPR archive files',
-@@ -5227,14 +5099,6 @@
+@@ -5227,14 +5092,6 @@
                 'src/chrome/browser/resources/vr/assets/google_chrome',
      ],
    },
@@ -224,7 +245,7 @@
    # Download VR test APKs only if the environment variable is set
    {
      'name': 'vr_test_apks',
-@@ -5681,17 +5545,6 @@
+@@ -5681,17 +5538,6 @@
      'condition': 'host_os == "win"',
      'action': ['python3', 'src/build/del_ninja_deps_cache.py'],
    },
