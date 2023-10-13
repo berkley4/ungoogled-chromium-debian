@@ -1,0 +1,11 @@
+--- a/third_party/blink/renderer/modules/canvas/canvas2d/base_rendering_context_2d.cc
++++ b/third_party/blink/renderer/modules/canvas/canvas2d/base_rendering_context_2d.cc
+@@ -2874,7 +2874,7 @@
+                                            GetState().GetTextAlign(), text);
+ 
+   // Scale text metrics if enabled
+-  if (RuntimeEnabledFeatures::FingerprintingCanvasMeasureTextNoiseEnabled()) {
++  if (canvas && RuntimeEnabledFeatures::FingerprintingCanvasMeasureTextNoiseEnabled()) {
+     text_metrics->Shuffle(canvas->GetDocument().GetNoiseFactorX());
+   }
+   return text_metrics;
