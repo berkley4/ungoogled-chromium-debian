@@ -25,10 +25,14 @@ POLLY_EXT_SET=0
 
 DEBIAN=$(dirname $0)
 RT_DIR=$(dirname $DEBIAN)
+
+MP_DIR=$DEBIAN/misc_patches
 UC_DIR=$DEBIAN/submodules/ungoogled-chromium
 
 INSTALL=ungoogled-chromium.install
-PRUNE_PATCH=$DEBIAN/misc_patches/no-exit-if-pruned.patch
+
+DOMSUB_PATCH=$MP_DIR/revert-New-unpack-arg-to-skip-unused-dirs.patch
+PRUNE_PATCH=$MP_DIR/no-exit-if-pruned.patch
 
 TRANSLATE_FILE=debian/etc/chromium.d/google-translate
 
@@ -569,10 +573,6 @@ fi
 PRU="$PRU -e \"/^chrome\/build\/pgo_profiles/d\""
 PRU="$PRU -e \"/^third_party\/depot_tools/d\""
 
-if ! patch -R -p1 -f --dry-run < $PRUNE_PATCH >/dev/null 2>&1; then
-  patch -p1 < $PRUNE_PATCH >/dev/null
-fi
-
 
 if [ $XZ_THREADED -eq 1 ]; then
   if [ -z "$(grep "dh_builddeb.*--threads-max=" $DEBIAN/rules)" ]; then
@@ -746,6 +746,16 @@ sed -e "s;@@VERSION@@;$VERSION;" \
     -e "s;@@DATETIME@@;$(date -R);" \
   < $DEBIAN/changelog.in \
   > $DEBIAN/changelog
+
+
+## Submodule patching
+if ! patch -R -p1 -f --dry-run < $PRUNE_PATCH >/dev/null 2>&1; then
+  patch -p1 < $PRUNE_PATCH >/dev/null
+fi
+
+if ! patch -p1 -f --dry-run < $DOMSUB_PATCH >/dev/null 2>&1; then
+  patch -R -p1 < $DOMSUB_PATCH >/dev/null
+fi
 
 
 exit $?
