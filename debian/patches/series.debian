@@ -83,7 +83,6 @@ various/compiler-flags/intel-control-flow-enforcement.patch
 various/compiler-flags/no-plt.patch
 various/compiler-flags/optimize-debug-info.patch
 various/compiler-flags/stack-clash-protection.patch
-various/compiler-flags/zero-call-used-registers.patch
 various/disable/angle-perftests.patch
 various/disable/CollectWebGPUSupportMetrics.patch
 various/disable/crashpad-handler.patch
