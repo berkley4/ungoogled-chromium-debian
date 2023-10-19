@@ -1,0 +1,60 @@
+From 52d9436d82975ae366306dd2db526a81f1b2bdd4 Mon Sep 17 00:00:00 2001
+From: Aaron Leventhal <aleventhal@chromium.org>
+Date: Wed, 18 Oct 2023 05:22:51 +0000
+Subject: [PATCH] M118: Make MarkDocumentDirty() operate at safe time
+
+This is a partial cherry pick of crrev.com/c/4852930.
+It only takes the part that ensures MarkDocumentDirty() performs all work at a safe time. (The image annotation part of that CL had
+caused crbug.com/1482478, which we want to avoid in this cherry pick).
+
+(cherry picked from commit ccb31ab5fef4576e0ee16698cdb3c14c1712bade)
+
+Fixed: 1480675, b/305236511, b/305967411, 1493459
+Change-Id: I80d3fd25600eaef3822c4039ac053fa554c1f1d1
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4852930
+Reviewed-by: Chris Harrelson <chrishtr@chromium.org>
+Auto-Submit: Aaron Leventhal <aleventhal@chromium.org>
+Commit-Queue: Aaron Leventhal <aleventhal@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1195084}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4951970
+Reviewed-by: Benjamin Beaudry <benjamin.beaudry@microsoft.com>
+Commit-Queue: Benjamin Beaudry <benjamin.beaudry@microsoft.com>
+Cr-Commit-Position: refs/branch-heads/5993@{#1334}
+Cr-Branched-From: 511350718e646be62331ae9d7213d10ec320d514-refs/heads/main@{#1192594}
+---
+
+--- a/third_party/blink/renderer/modules/accessibility/ax_object_cache_impl.cc
++++ b/third_party/blink/renderer/modules/accessibility/ax_object_cache_impl.cc
+@@ -4216,15 +4216,6 @@
+ void AXObjectCacheImpl::MarkDocumentDirty() {
+   CHECK(!IsFrozen());
+   mark_all_dirty_ = true;
+-  // Assume all nodes in the tree need to recompute their properties.
+-  // Note that objects can remain in the tree without being re-created.
+-  // However, they will be dropped if they are no longer needed as the tree
+-  // structure is rebuilt from the top down.
+-  for (auto& entry : objects_) {
+-    AXObject* object = entry.value;
+-    DCHECK(!object->IsDetached());
+-    object->InvalidateCachedValues();
+-  }
+ 
+   ScheduleAXUpdate();
+ }
+@@ -4236,6 +4227,16 @@
+   DCHECK(mark_all_dirty_);
+   mark_all_dirty_ = false;
+ 
++  // Assume all nodes in the tree need to recompute their properties.
++  // Note that objects can remain in the tree without being re-created.
++  // However, they will be dropped if they are no longer needed as the tree
++  // structure is rebuilt from the top down.
++  for (auto& entry : objects_) {
++    AXObject* object = entry.value;
++    DCHECK(!object->IsDetached());
++    object->InvalidateCachedValues();
++  }
++
+   // Don't keep previous parent-child relationships.
+   // This loop operates on a copy of values in the objects_ map, because some
+   // entries may be removed from objects_ while iterating.

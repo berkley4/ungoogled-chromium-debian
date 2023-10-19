@@ -1,0 +1,39 @@
+From 70a91a298946bb8800e13eac173d8d78886fe4df Mon Sep 17 00:00:00 2001
+From: Abigail Klein <abigailbklein@google.com>
+Date: Tue, 17 Oct 2023 19:12:25 +0000
+Subject: [PATCH] [Merge 118][Read Anything] Add destructor for ColorInfo.
+
+(cherry picked from commit 7828602b49b03c35f6ac24c68c883c7c9f6886b7)
+
+Fixed: 1488867
+Change-Id: Icd5d002905f84de9333d80832e14bf63caaf3210
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4908670
+Reviewed-by: Jocelyn Tran <jocelyntran@google.com>
+Commit-Queue: Abigail Klein <abigailbklein@google.com>
+Cr-Original-Commit-Position: refs/heads/main@{#1204843}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4947271
+Bot-Commit: Rubber Stamper <rubber-stamper@appspot.gserviceaccount.com>
+Cr-Commit-Position: refs/branch-heads/5993@{#1328}
+Cr-Branched-From: 511350718e646be62331ae9d7213d10ec320d514-refs/heads/main@{#1192594}
+---
+
+--- a/chrome/browser/ui/views/side_panel/read_anything/read_anything_model.cc
++++ b/chrome/browser/ui/views/side_panel/read_anything/read_anything_model.cc
+@@ -326,6 +326,7 @@
+ ReadAnythingColorsModel::ColorInfo::operator=(const ColorInfo&) = default;
+ ReadAnythingColorsModel::ColorInfo&
+ ReadAnythingColorsModel::ColorInfo::operator=(ColorInfo&&) = default;
++ReadAnythingColorsModel::ColorInfo::~ColorInfo() = default;
+ 
+ ReadAnythingColorsModel::ReadAnythingColorsModel() {
+   // Define the possible sets of colors available to the user.
+--- a/chrome/browser/ui/views/side_panel/read_anything/read_anything_model.h
++++ b/chrome/browser/ui/views/side_panel/read_anything/read_anything_model.h
+@@ -109,6 +109,7 @@
+     ColorInfo(ColorInfo&&);
+     ColorInfo& operator=(const ColorInfo&);
+     ColorInfo& operator=(ColorInfo&&);
++    ~ColorInfo();
+ 
+     // The name of the colors, e.g. Default, Light, Dark.
+     std::u16string name;

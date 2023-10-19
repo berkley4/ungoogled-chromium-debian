@@ -1,11 +1,11 @@
 --- a/gpu/config/gpu_info_collector.cc
 +++ b/gpu/config/gpu_info_collector.cc
-@@ -346,7 +346,7 @@
- void ReportWebGPUSupportMetrics(dawn::native::Instance* instance) {
-   static BASE_FEATURE(kCollectWebGPUSupportMetrics,
-                       "CollectWebGPUSupportMetrics",
+@@ -349,7 +349,7 @@
+ #if BUILDFLAG(IS_WIN)
+                       base::FEATURE_DISABLED_BY_DEFAULT);
+ #else
 -                      base::FEATURE_ENABLED_BY_DEFAULT);
 +                      base::FEATURE_DISABLED_BY_DEFAULT);
+ #endif
    if (!base::FeatureList::IsEnabled(kCollectWebGPUSupportMetrics)) {
      return;
-   }

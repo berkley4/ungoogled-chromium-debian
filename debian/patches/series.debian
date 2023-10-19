@@ -89,7 +89,6 @@ various/disable/crashpad-handler.patch
 various/disable/driver-chrome-path.patch
 various/disable/orchestrator.patch
 various/disable/unrar.patch
-various/fedora/enable-hardware-accelerated-mjpeg.patch
 various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
 various/fixes/chromedriver-BrandVersion.patch
 various/fixes/EnumTable-crash.patch
@@ -149,13 +148,15 @@ optional/system/unstable/extra/brotli.patch
 #optional/system/unstable/ffmpeg/roll-src-third_party-ffmpeg-106.patch
 optional/system/unstable/icu/icu.patch
 optional/system/unstable/icu/icu-headers.patch
+optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
 optional/system/vaapi/vaapi-disable-libaom-encoding.patch
 optional/translate/translate-revert-disable.patch
 optional/translate/translate-stop-unsupported-switch-warning.patch
 optional/fix-missing-symbols.patch
 #optional/no-ELOC_PROTO-mnemonic.patch
 
-addenda/0005-M118-86f0cf02.diff
-addenda/0006-M118-36f40e1.diff
-addenda/0007-M118-438cb68.diff
-addenda/0008-MR2552.patch
+addenda/0001-2b8b577a.diff
+addenda/0002-70a91a2.diff
+addenda/0003-52d9436.diff
+addenda/0004-78067df.diff
+addenda/0005-5190268.diff
