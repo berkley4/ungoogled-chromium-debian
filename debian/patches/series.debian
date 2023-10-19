@@ -111,7 +111,10 @@ various/system/zlib.patch
 various/system/extra/libdrm.patch
 various/system/extra/opus.patch
 various/system/extra/zlib.patch
-#various/upstream/
+various/upstream/0001-RaceNetworkRequest-is-triggered-only-when-the-scheme-is-HTTP-or-HTTPS.patch
+various/upstream/0002-gpu-Fix-potential-CurrentGL-dangling-pointer.patch
+various/upstream/0003-GL-Free-the-X11-pixmap-in-the-NativePixmapEGLX11Binding.patch
+various/upstream/0004-Add-check-for-use_system_freetype-when-importing-private-freetype-header.patch
 various/vanadium/disable-article-suggestions-feature-by-default.patch
 various/vanadium/disable-content-feed-suggestions-by-default.patch
 
@@ -152,10 +155,6 @@ optional/translate/translate-stop-unsupported-switch-warning.patch
 optional/fix-missing-symbols.patch
 #optional/no-ELOC_PROTO-mnemonic.patch
 
-addenda/0001-RaceNetworkRequest-is-triggered-only-when-the-scheme-is-HTTP-or-HTTPS.patch
-addenda/0002-gpu-Fix-potential-CurrentGL-dangling-pointer.patch
-addenda/0003-GL-Free-the-X11-pixmap-in-the-NativePixmapEGLX11Binding.patch
-addenda/0004-Add-check-for-use_system_freetype-when-importing-private-freetype-header.patch
 addenda/0005-M118-86f0cf02.diff
 addenda/0006-M118-36f40e1.diff
 addenda/0007-M118-438cb68.diff
