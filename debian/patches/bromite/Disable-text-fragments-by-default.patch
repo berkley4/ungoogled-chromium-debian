@@ -21,7 +21,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -6912,6 +6912,11 @@
+@@ -6913,6 +6913,11 @@
       flag_descriptions::kLegacyTechReportTopLevelUrlDescription, kOsAll,
       FEATURE_VALUE_TYPE(features::kLegacyTechReportTopLevelUrl)},
  

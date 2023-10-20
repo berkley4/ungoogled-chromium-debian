@@ -22,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -3878,6 +3878,10 @@
+@@ -3879,6 +3879,10 @@
       flag_descriptions::kKioskEnableAppServiceDescription, kOsCrOS,
       FEATURE_VALUE_TYPE(features::kKioskEnableAppService)},
  #endif  // BUILDFLAG(IS_CHROMEOS)

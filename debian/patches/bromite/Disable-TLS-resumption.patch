@@ -38,7 +38,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5303,6 +5303,12 @@
+@@ -5304,6 +5304,12 @@
      {"enable-tls13-kyber", flag_descriptions::kEnableTLS13KyberName,
       flag_descriptions::kEnableTLS13KyberDescription, kOsAll,
       FEATURE_VALUE_TYPE(net::features::kPostQuantumKyber)},
