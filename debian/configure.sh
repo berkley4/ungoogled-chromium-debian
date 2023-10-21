@@ -126,6 +126,32 @@ if [ $STABLE -eq 1 ]; then
 fi
 
 
+## Allow overriding VERSION
+if [ -n "$VERSION" ]; then
+  case $VERSION in
+    -|-[0-9]|*-)
+      printf '%s\n' "Malformed VERSION variable: $VERSION"
+      exit 1
+      ;;
+
+    "")
+      printf '%s\n' "VERSION variable is blank"
+      exit 1
+      ;;
+  esac
+else
+  VER=$(cat $UC_DIR/chromium_version.txt)
+  REV=$(cat $UC_DIR/revision.txt)
+
+  case $RELEASE in
+    stable)
+      REV=stable$REV ;;
+  esac
+
+  VERSION=$VER-$REV
+fi
+
+
 
 # Are we testing outside of a real build directory?
 TEST=0
@@ -722,20 +748,6 @@ if [ ! -d $DEBIAN/patches/core ] || [ ! -d $DEBIAN/patches/extra ]; then
   fi
 
   cp -a $UC_PATCH_DIRS $DEBIAN/patches/
-fi
-
-
-## Allow overriding VERSION
-if [ -z "$VERSION" ]; then
-  VER=$(cat $UC_DIR/chromium_version.txt)
-  REV=$(cat $UC_DIR/revision.txt)
-
-  case $RELEASE in
-    stable)
-      REV=stable$REV ;;
-  esac
-
-  VERSION=$VER-$REV
 fi
 
 
