@@ -16,6 +16,7 @@ SYS_CLANG	0		Use in-tree chromium clang/llvm binaries
 C_VER		<version>	Override the default clang version (for use with SYS_CLANG > 0)
 				The script default is hardcoded to that of the bundled copy
 
+PGO		1		Enable/disable building with PGO profile optimisation
 POLICIES	0		Install /etc/chromium/policies/managed/policies.json
 TARBALL		0		Use tarball download instead of git
 STABLE		0		By default an unstable version is built

@@ -46,6 +46,7 @@ real_dir_path () (
 
 [ -n "$DL_CACHE" ] || DL_CACHE=$RT_DIR/../download_cache
 
+[ -n "$PGO" ] || PGO=1
 [ -n "$STABLE" ] || STABLE=0
 [ -n "$TARBALL" ] || TARBALL=0
 [ -n "$TRANSLATE" ] || TRANSLATE=1
@@ -87,6 +88,12 @@ real_dir_path () (
 C_VER_ORIG=$(sed -n 's@[ #]lld-\([^,]*\).*@\1@p' $DEBIAN/control.in)
 
 [ -n "$C_VER" ] && C_VER_SET=1 || C_VER=$C_VER_ORIG
+
+if [ $C_VER_SET -eq 1 ] && [ $C_VER -lt $C_VER_ORIG ]; then
+  printf '%s\n' "WARN: Clang versions below $C_VER_ORIG are not supported"
+  printf '%s\n' "Disabling PGO support"
+  PGO=0
+fi
 
 
 # MARCH and MTUNE defaults
@@ -188,7 +195,7 @@ if [ $TARBALL -eq 1 ]; then
       -i $UC_DIR/downloads.ini -c $DL_CACHE $RT_DIR
   fi
 
-  if [ ! -d $RT_DIR/chrome/build/pgo_profiles ]; then
+  if [ $PGO -eq 1 ] && [ ! -d $RT_DIR/chrome/build/pgo_profiles ]; then
     $RT_DIR/tools/update_pgo_profiles.py \
       --target linux update \
       --gs-url-base=chromium-optimization-profiles/pgo_profiles
@@ -242,10 +249,6 @@ else
   op_enable="$op_enable system/clang/rust-clanglib-local"
 
   CL_PATCH=$DEBIAN/patches/optional/system/clang/rust-clanglib-local.patch
-
-  if [ $C_VER_SET -eq 1 ] && [ $C_VER -lt $C_VER_ORIG ]; then
-    printf '%s\n' "WARN: Clang versions below $C_VER are not supported"
-  fi
 
   if [ $SYS_CLANG -eq 1 ]; then
     # Grab the clang version used in rust-clanglib-local.patch
@@ -621,7 +624,7 @@ fi
 ##  PGO profile path  ##
 ########################
 
-if [ $TEST -eq 0 ]; then
+if [ $PGO -eq 1 ] && [ $TEST -eq 0 ]; then
   PGO_PROF=$(cat $RT_DIR/chrome/build/linux.pgo.txt)
   PGO_PATH=$(real_dir_path $RT_DIR/chrome/build/pgo_profiles)/$PGO_PROF
 fi
@@ -641,7 +644,6 @@ DSB="$DSB -e \"/^tools\/clang\//d\""
 
 ## Submodule flags
 SMF="$SMF -e \"/^build_with_tflite_lib/d\""
-SMF="$SMF -e \"/^chrome_pgo_phase/d\""
 SMF="$SMF -e \"/^enable_hangout_services_extension/d\""
 SMF="$SMF -e \"/^enable_nacl/d\""
 SMF="$SMF -e \"/^enable_service_discovery/d\""
@@ -650,13 +652,16 @@ SMF="$SMF -e \"/^google_api_key/d\""
 SMF="$SMF -e \"/^google_default_client_id/d\""
 SMF="$SMF -e \"/^google_default_client_secret/d\""
 
-if [ -z "$(grep ^pgo_data_path $UC_DIR/flags.gn)" ]; then
-  SMF="$SMF -e \"$ a\pgo_data_path=\x22$PGO_PATH\x22\""
+if [ $PGO -eq 1 ]; then
+  SMF="$SMF -e \"/^chrome_pgo_phase/d\""
+  if [ -z "$(grep ^pgo_data_path $UC_DIR/flags.gn)" ]; then
+    SMF="$SMF -e \"$ a\pgo_data_path=\x22$PGO_PATH\x22\""
+  fi
 fi
 
 
 ## Pruning
-PRU="$PRU -e \"/^chrome\/build\/pgo_profiles/d\""
+[ $PGO -eq 0 ] || PRU="$PRU -e \"/^chrome\/build\/pgo_profiles/d\""
 PRU="$PRU -e \"/^third_party\/depot_tools/d\""
 
 
