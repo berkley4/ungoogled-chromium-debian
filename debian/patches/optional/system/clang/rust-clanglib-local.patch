@@ -1,0 +1,11 @@
+--- a/build/config/clang/BUILD.gn
++++ b/build/config/clang/BUILD.gn
+@@ -154,7 +154,7 @@
+         assert(false)  # Unhandled target platform
+       }
+ 
+-      _clang_lib_dir = "$clang_base_path/lib/clang/$clang_version/lib"
++      _clang_lib_dir = "/usr/local/lib/clang/17/lib"
+       _lib_file = "${_prefix}clang_rt.${_libname}${_suffix}.${_ext}"
+       libs = [ "$_clang_lib_dir/$_dir/$_lib_file" ]
+     }

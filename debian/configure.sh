@@ -15,13 +15,12 @@ deps_enable=
 op_disable=
 op_enable=
 
-BUNDLED_CLANG_SET=0
+C_VER_SET=0
 MARCH_SET=0
 MTUNE_SET=0
+POLLY_EXT_SET=0
 RELEASE_SET=0
 XZ_EXTREME_SET=0
-
-POLLY_EXT_SET=0
 
 DEBIAN=$(dirname $0)
 RT_DIR=$(dirname $DEBIAN)
@@ -78,14 +77,16 @@ real_dir_path () (
 [ -n "$PULSE" ] || PULSE=1
 [ -n "$VAAPI" ] || VAAPI=1
 
+[ -n "$SYS_CLANG" ] || SYS_CLANG=0
 [ -n "$SYS_FFMPEG" ] || SYS_FFMPEG=0
 [ -n "$SYS_FREETYPE" ] || SYS_FREETYPE=0
 [ -n "$SYS_ICU" ] || SYS_ICU=0
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
 
 
-# Option to force BUNDLED_CLANG and evade clang autodetection
-[ -n "$BUNDLED_CLANG" ] && BUNDLED_CLANG_SET=1 || BUNDLED_CLANG=1
+C_VER_ORIG=$(sed -n 's@[ #]lld-\([^,]*\).*@\1@p' $DEBIAN/control.in)
+
+[ -n "$C_VER" ] && C_VER_SET=1 || C_VER=$C_VER_ORIG
 
 
 # MARCH and MTUNE defaults
@@ -93,7 +94,7 @@ real_dir_path () (
 [ -n "$MTUNE" ] && MTUNE_SET=1 || MTUNE=generic
 
 
-[ -n "$POLLY_VEC" ] || POLLY_VEC=1
+[ -n "$POLLY_VEC" ] && POLLY_VEC_SET=1 || POLLY_VEC=1
 
 # POLLY_EXT is enabled if POLLY_VEC=1 (set to zero to disable)
 [ -n "$POLLY_EXT" ] && POLLY_EXT_SET=1 || POLLY_EXT=0
@@ -229,30 +230,89 @@ esac
 
 
 # Assume non-bundled clang if clang is detected in /usr/local/bin
-# System clang packages are not supported (modified d/rules likely required)
-if [ $BUNDLED_CLANG_SET -eq 0 ]; then
-  case $(readlink -f $(which clang)) in
-    /usr/local/bin/clang*)
-      BUNDLED_CLANG=0
-      ;;
-  esac
-fi
+# System clang packages (eg from apt.llvm.org) are not fully supported
 
+if [ $SYS_CLANG -eq 0 ]; then
+  # Stop bundled toolchain directories from being pruned
+  PRU="$PRU -e \"/^third_party\/llvm/d\""
+  PRU="$PRU -e \"/^tools\/clang/d\""
+else
+  op_enable="$op_enable system/clang/fix-missing-symbols"
+  op_enable="$op_enable system/clang/clang-version-check"
+  op_enable="$op_enable system/clang/rust-clanglib-local"
 
-if [ $BUNDLED_CLANG -eq 0 ]; then
+  CL_PATCH=$DEBIAN/patches/optional/system/clang/rust-clanglib-local.patch
+
+  if [ $C_VER_SET -eq 1 ] && [ $C_VER -lt $C_VER_ORIG ]; then
+    printf '%s\n' "WARN: Clang versions below $C_VER are not supported"
+  fi
+
+  if [ $SYS_CLANG -eq 1 ]; then
+    # Grab the clang version used in rust-clanglib-local.patch
+    CP_VER=$(sed -n 's@.*clang/\([0-9]*\)/lib.*@\1@p' $CL_PATCH)
+
+    # We can autodetect C_VER if it's not explicity set
+    C_PATH=$(realpath $(command -v clang))
+    if [ $C_VER_SET -eq 0 ]; then
+      C_VER=$(echo $C_PATH | sed 's@/usr/local/bin/clang-@@')
+    fi
+
+    # Change clang version in the patch if it differs from installed version
+    if [ $C_VER -ne $CP_VER ]; then
+      sed "s@\(/usr/local/lib/clang/\)[^/]*\(/lib\)@\1$C_VER\2@" -i $CL_PATCH
+    fi
+  else
+    # Check that package version $C_VER is actually installed on the system
+    if [ ! -f /usr/lib/llvm-$C_VER/bin/clang ]; then
+      printf '%s\n' "Cannot find /usr/lib/llvm-${C_VER}/bin/clang"
+      exit 1
+    fi
+
+    # Path to libclang_rt.builtins.a
+    C_LIB_DIR=/usr/lib/llvm-$C_VER/lib/clang/$C_VER/lib/linux
+
+    # Alter patch to use $C_LIB_DIR instead of the /usr/local/lib default
+    sed "s@/usr/local/lib/clang/[^/]*/lib@$C_LIB_DIR@" -i $CL_PATCH
+
+    deps_enable="$deps_enable lld clang libclang-rt"
+    op_enable="$op_enable system/clang/rust-clanglib"
+
+    # Grab the clang version used in debian/control.in and debian/rules
+    CC_VER=$C_VER_ORIG
+    CR_VER=$(sed -n 's@.*LLVM_DIR.*/llvm-\([^/]*\)/bin@\1@p' $DEBIAN/rules)
+
+    # Clang/LLVM version sanity chack
+    if [ $CC_VER -ne $CR_VER ]; then
+      printf '%s\n' "Clang/LLVM version mismatch in d/control.in and d/rules"
+      exit 1
+    fi
+
+    # Change clang version in d/rules and d/control if we override version
+    if [ $C_VER -ne $CR_VER ]; then
+      CON="$CON -e \"s@\(lld-\)$CC_VER@\1$C_VER@\""
+      CON="$CON -e \"s@\(clang-\)$CC_VER@\1$C_VER@\""
+      CON="$CON -e \"s@\(libclang-rt-\)$CC_VER\(-dev\)@\1$C_VER\2@\""
+
+      RUL="$RUL -e \"s@\(.*LLVM_DIR.*/llvm-\)$CR_VER\(/bin\)@\1$C_VER\2@\""
+    fi
+
+    # Uncomment the export of LLVM_DIR path variable
+    RUL="$RUL -e \"s@^#\(export LLVM_DIR\)@\1@\""
+
+    # Prefix clang, clang++ and llvm-{ar,nm,ranlib} with $LLVM_DIR path
+    RUL="$RUL -e \"s@^\(#export [ANR].*\)\(llvm-.*\)@\1\$LLVM_DIR/\2@\""
+    RUL="$RUL -e \"s@^\(#export C[CX].*\)\(clang.*\)@\1\$LLVM_DIR/\2@\""
+  fi
+
+  # Enable the local clang/llvm tool chain
+  RUL="$RUL -e \"s@^#\(.*_toolchain=\)@\1@\""
+  RUL="$RUL -e \"s@^#\(export [ANR].*llvm-\)@\1@\""
+  RUL="$RUL -e \"s@^#\(export C[CX].*clang\)@\1@\""
+  RUL="$RUL -e \"s@^#\(export DEB_C[FX].*\)@\1@\""
+
   if [ $POLLY_VEC -eq 1 ]; then
     [ $POLLY_EXT_SET -eq 1 ] && [ $POLLY_EXT -eq 0 ] || POLLY_EXT=1
   fi
-
-  RUL="$RUL -e \"s@^#\(.*[a-z][a-z]*_toolchain\)@\1@\""
-  RUL="$RUL -e \"s@^#\(export [A-Z].*llvm-\)@\1@\""
-  RUL="$RUL -e \"s@^#\(export [A-Z].*clang\)@\1@\""
-  RUL="$RUL -e \"s@^#\(export DEB_C[_A-Z]*FLAGS_MAINT_SET\)@\1@\""
-else
-  op_disable="$op_disable fix-missing-symbols"
-
-  PRU="$PRU -e \"/^third_party\/llvm/d\""
-  PRU="$PRU -e \"/^tools\/clang/d\""
 fi
 
 

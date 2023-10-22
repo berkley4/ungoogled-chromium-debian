@@ -136,22 +136,7 @@
    'src/third_party/ukey2/src':
      Var('chromium_git') + '/external/github.com/google/ukey2.git' + '@' + Var('ukey2_revision'),
  
-@@ -4669,14 +4614,6 @@
-     'action': ['python3', 'src/build/mac_toolchain.py'],
-   },
-   {
--    # Update the prebuilt clang toolchain.
--    # Note: On Win, this should run after win_toolchain, as it may use it.
--    'name': 'clang',
--    'pattern': '.',
--    'condition': 'not llvm_force_head_revision',
--    'action': ['python3', 'src/tools/clang/scripts/update.py'],
--  },
--  {
-     # Update prebuilt Rust toolchain.
-     'name': 'rust-toolchain',
-     'pattern': '.',
-@@ -4721,16 +4658,6 @@
+@@ -4721,16 +4666,6 @@
                 '--package=clangd'],
    },
    {
@@ -168,7 +153,7 @@
      # Update LASTCHANGE.
      'name': 'lastchange',
      'pattern': '.',
-@@ -4830,18 +4757,6 @@
+@@ -4830,18 +4765,6 @@
                  '-o', 'src/buildtools/mac/clang-format',
      ],
    },
@@ -187,7 +172,7 @@
    # Pull rc binaries using checked-in hashes.
    {
      'name': 'rc_win',
-@@ -4879,29 +4794,6 @@
+@@ -4879,29 +4802,6 @@
                  '-s', 'src/build/toolchain/win/rc/linux64/rc.sha1',
      ]
    },
@@ -217,7 +202,7 @@
    {
      'name': 'apache_win32',
      'pattern': '\\.sha1',
-@@ -4941,31 +4833,6 @@
+@@ -4941,31 +4841,6 @@
                  '-s', 'src/third_party/instrumented_libraries/binaries/msan-no-origins-focal.tgz.sha1',
                ],
    },
@@ -249,7 +234,7 @@
    # Pull down Node binaries for WebUI toolchain.
    {
      'name': 'node_linux64',
-@@ -5108,46 +4975,6 @@
+@@ -5108,46 +4983,6 @@
      ],
    },
  
@@ -296,7 +281,7 @@
    # Pull down WPR Archive files
    {
      'name': 'Fetch WPR archive files',
-@@ -5227,14 +5054,6 @@
+@@ -5227,14 +5062,6 @@
                 'src/chrome/browser/resources/vr/assets/google_chrome',
      ],
    },
@@ -311,7 +296,7 @@
    # Download VR test APKs only if the environment variable is set
    {
      'name': 'vr_test_apks',
-@@ -5681,17 +5500,6 @@
+@@ -5681,17 +5508,6 @@
      'condition': 'host_os == "win"',
      'action': ['python3', 'src/build/del_ninja_deps_cache.py'],
    },

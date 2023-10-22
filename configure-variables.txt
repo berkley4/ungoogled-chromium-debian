@@ -9,7 +9,13 @@ VERSION		<version>
 DL_CACHE	<dir>		Default is $RT_DIR/../download_cache (RT_DIR = root directory)
 LTO_DIR		<dir>		Default iis <source root>/out/Release/thinlto-cache
 
-BUNDLED_CLANG	0		Use in-tree chromium clang/llvm binaries
+SYS_CLANG	0		Use in-tree chromium clang/llvm binaries
+		1		Use clang installed in /usr/local (self built)
+		2		Use a system clang package (eg from apt.llvm.org)
+
+C_VER		<version>	Override the default clang version (for use with SYS_CLANG > 0)
+				The script default is hardcoded to that of the bundled copy
+
 POLICIES	0		Install /etc/chromium/policies/managed/policies.json
 TARBALL		0		Use tarball download instead of git
 STABLE		0		By default an unstable version is built
