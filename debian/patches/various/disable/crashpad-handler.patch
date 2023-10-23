@@ -1,33 +1,14 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -673,14 +673,6 @@
+@@ -673,7 +673,7 @@
        ]
      }
  
 -    if (is_mac || is_win || is_android || is_linux || is_chromeos) {
--      deps += [
--        "//third_party/crashpad/crashpad:crashpad_tests",
--        "//third_party/crashpad/crashpad/handler:crashpad_handler",
--        "//third_party/crashpad/crashpad/tools:crashpad_database_util",
--      ]
--    }
--
-     if (enable_message_center) {
-       deps += [ "//ui/message_center:message_center_unittests" ]
-     }
---- a/chrome/browser/BUILD.gn
-+++ b/chrome/browser/BUILD.gn
-@@ -4700,10 +4700,6 @@
-       ]
-     }
- 
--    if (!is_fuchsia) {
--      deps += [ "//third_party/crashpad/crashpad/client:common" ]
--    }
--
-     # On Windows, the hashes are embedded in //chrome:chrome_initial rather
-     # than here in :chrome_dll.
-     if (!is_win) {
++    if (is_mac || is_win || is_android || is_chromeos) {
+       deps += [
+         "//third_party/crashpad/crashpad:crashpad_tests",
+         "//third_party/crashpad/crashpad/handler:crashpad_handler",
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
 @@ -309,8 +309,6 @@
@@ -66,16 +47,25 @@
  if (false) {
      extract_symbols("swiftshader_vk_symbols") {
        binary = "$root_out_dir/libvk_swiftshader.so"
+--- a/chrome/browser/BUILD.gn
++++ b/chrome/browser/BUILD.gn
+@@ -4700,7 +4700,7 @@
+       ]
+     }
+ 
+-    if (!is_fuchsia) {
++    if (!is_fuchsia && !is_linux) {
+       deps += [ "//third_party/crashpad/crashpad/client:common" ]
+     }
+ 
 --- a/headless/BUILD.gn
 +++ b/headless/BUILD.gn
-@@ -543,10 +543,6 @@
+@@ -543,7 +543,7 @@
      deps += [ "//sandbox" ]
    }
  
 -  if (is_linux || is_chromeos) {
--    data_deps += [ "//components/crash/core/app:chrome_crashpad_handler" ]
--  }
--
-   # Normally set to false (see build/args/headless.gn), but we can optionally
-   # use external v8 startup data too.
-   if ((!is_win || is_component_build) && v8_use_external_startup_data) {
++  if (is_chromeos) {
+     data_deps += [ "//components/crash/core/app:chrome_crashpad_handler" ]
+   }
+ 

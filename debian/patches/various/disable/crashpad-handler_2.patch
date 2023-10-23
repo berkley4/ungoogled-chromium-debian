@@ -1,0 +1,104 @@
+--- a/chrome/test/BUILD.gn
++++ b/chrome/test/BUILD.gn
+@@ -471,10 +471,6 @@
+     data_deps += [ "//chrome:chrome(//build/toolchain/linux:lacros_clang_x64)" ]
+   }
+ 
+-  if (is_linux) {
+-    data_deps += [ "//components/crash/core/app:chrome_crashpad_handler" ]
+-  }
+-
+   if (is_android) {
+     public_deps += [
+       ":test_support_ui_android",
+--- a/components/crash/core/app/BUILD.gn
++++ b/components/crash/core/app/BUILD.gn
+@@ -236,7 +236,7 @@
+   }
+ }
+ 
+-if (is_mac || is_android || is_linux || is_chromeos) {
++if (is_mac || is_android || is_chromeos) {
+   # We build a chromium-specific crashpad_handler executable so that we can
+   # define custom UserStreamDataSources.
+   executable("chrome_crashpad_handler") {
+--- a/content/shell/BUILD.gn
++++ b/content/shell/BUILD.gn
+@@ -689,7 +689,7 @@
+     if (is_win) {
+       data_deps +=
+           [ "//third_party/crashpad/crashpad/handler:crashpad_handler" ]
+-    } else if (is_linux || is_chromeos) {
++    } else if (is_chromeos) {
+       data_deps += [ "//components/crash/core/app:chrome_crashpad_handler" ]
+     }
+ 
+--- a/third_party/crashpad/crashpad/client/crash_report_database.h
++++ b/third_party/crashpad/crashpad/client/crash_report_database.h
+@@ -24,12 +24,12 @@
+ #include <vector>
+ 
+ #include "base/files/file_path.h"
+-#include "util/file/file_io.h"
+-#include "util/file/file_reader.h"
+-#include "util/file/file_writer.h"
+-#include "util/file/scoped_remove_file.h"
+-#include "util/misc/metrics.h"
+-#include "util/misc/uuid.h"
++#include "third_party/crashpad/crashpad/util/file/file_io.h"
++#include "third_party/crashpad/crashpad/util/file/file_reader.h"
++#include "third_party/crashpad/crashpad/util/file/file_writer.h"
++#include "third_party/crashpad/crashpad/util/file/scoped_remove_file.h"
++#include "third_party/crashpad/crashpad/util/misc/metrics.h"
++#include "third_party/crashpad/crashpad/util/misc/uuid.h"
+ 
+ namespace crashpad {
+ 
+--- a/third_party/crashpad/crashpad/util/file/file_reader.h
++++ b/third_party/crashpad/crashpad/util/file/file_reader.h
+@@ -18,8 +18,8 @@
+ #include <sys/types.h>
+ 
+ #include "base/files/file_path.h"
+-#include "util/file/file_io.h"
+-#include "util/file/file_seeker.h"
++#include "third_party/crashpad/crashpad/util/file/file_io.h"
++#include "third_party/crashpad/crashpad/util/file/file_seeker.h"
+ 
+ namespace crashpad {
+ 
+--- a/third_party/crashpad/crashpad/util/file/file_seeker.h
++++ b/third_party/crashpad/crashpad/util/file/file_seeker.h
+@@ -15,7 +15,7 @@
+ #ifndef CRASHPAD_UTIL_FILE_FILE_SEEKER_H_
+ #define CRASHPAD_UTIL_FILE_FILE_SEEKER_H_
+ 
+-#include "util/file/file_io.h"
++#include "third_party/crashpad/crashpad/util/file/file_io.h"
+ 
+ namespace crashpad {
+ 
+--- a/third_party/crashpad/crashpad/util/file/file_writer.h
++++ b/third_party/crashpad/crashpad/util/file/file_writer.h
+@@ -21,8 +21,8 @@
+ 
+ #include "base/files/file_path.h"
+ #include "build/build_config.h"
+-#include "util/file/file_io.h"
+-#include "util/file/file_seeker.h"
++#include "third_party/crashpad/crashpad/util/file/file_io.h"
++#include "third_party/crashpad/crashpad/util/file/file_seeker.h"
+ 
+ namespace crashpad {
+ 
+--- a/third_party/crashpad/crashpad/util/misc/metrics.h
++++ b/third_party/crashpad/crashpad/util/misc/metrics.h
+@@ -18,7 +18,7 @@
+ #include <inttypes.h>
+ 
+ #include "build/build_config.h"
+-#include "util/file/file_io.h"
++#include "third_party/crashpad/crashpad/util/file/file_io.h"
+ 
+ #if BUILDFLAG(IS_IOS)
+ #include "util/ios/ios_intermediate_dump_format.h"
