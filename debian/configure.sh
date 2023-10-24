@@ -579,7 +579,7 @@ if [ $STABLE -eq 1 ]; then
   SYS_ICU=0
 
   op_disable="$op_disable system/unstable/dav1d/"
-  op_enable="$op_enable system/dav1d-bundled-header"
+  op_enable="system/dav1d-bundled-header"
 
   sys_disable="$sys_disable dav1d"
   deps_disable="$deps_disable libdav1d"
@@ -607,6 +607,7 @@ fi
 
 if [ $SYS_ICU -eq 0 ]; then
   op_disable="$op_disable system/unstable/icu/"
+  op_enable="$op_enable system/convertutf-bundled"
 
   # SYS_LIBS += icu libxml libxslt
   sys_disable="$sys_disable icu"

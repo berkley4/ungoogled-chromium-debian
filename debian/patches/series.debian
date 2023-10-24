@@ -138,6 +138,7 @@ optional/fixes/widevine/widevine-enable-version-string.patch
 optional/fixes/widevine/widevine-locations.patch
 #optional/legacy-i386/angle-lockfree.patch
 #optional/legacy-i386/support-i386.patch
+#optional/system/convertutf-bundled.patch
 #optional/system/dav1d-bundled-header.patch
 #optional/system/freetype-COLRV1.patch
 optional/system/jpeg.patch
@@ -152,6 +153,7 @@ optional/system/unstable/extra/brotli.patch
 #optional/system/unstable/ffmpeg/ffmpeg-first_dts.patch
 #optional/system/unstable/ffmpeg/roll-src-third_party-ffmpeg-102.patch
 #optional/system/unstable/ffmpeg/roll-src-third_party-ffmpeg-106.patch
+optional/system/unstable/icu/convertutf.patch
 optional/system/unstable/icu/icu.patch
 optional/system/unstable/icu/icu-headers.patch
 optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
