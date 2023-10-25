@@ -162,8 +162,6 @@ optional/translate/translate-revert-disable.patch
 optional/translate/translate-stop-unsupported-switch-warning.patch
 #optional/no-ELOC_PROTO-mnemonic.patch
 
-addenda/0001-2b8b577a.diff
-addenda/0002-70a91a2.diff
-addenda/0003-52d9436.diff
-addenda/0004-78067df.diff
-addenda/0005-5190268.diff
+addenda/0001-b4480b3.diff
+addenda/0002-f536dbe.diff
+addenda/0003-1083844.diff

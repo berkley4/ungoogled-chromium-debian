@@ -1,0 +1,37 @@
+From b4480b3cf9d1a1b9cfc9caa7c529df5d26ad21b0 Mon Sep 17 00:00:00 2001
+From: Duncan Mercer <mercerd@google.com>
+Date: Mon, 23 Oct 2023 23:14:57 +0000
+Subject: [PATCH] [CP M118][CSC] Use CrossSite for Lens Preconnect
+
+(cherry picked from commit e96864b6b89094d88ff2904b98223bd2b455b5b1)
+
+Bug: b:305990237, 1479730
+Change-Id: Ifa4d74eb8d420c8d9920f47c7102c463191bc927
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4951049
+Reviewed-by: Tarun Bansal <tbansal@chromium.org>
+Commit-Queue: Duncan Mercer <mercerd@google.com>
+Reviewed-by: Avi Drissman <avi@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1212257}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4968076
+Cr-Commit-Position: refs/branch-heads/5993@{#1409}
+Cr-Branched-From: 511350718e646be62331ae9d7213d10ec320d514-refs/heads/main@{#1192594}
+---
+
+--- a/chrome/browser/renderer_context_menu/render_view_context_menu.cc
++++ b/chrome/browser/renderer_context_menu/render_view_context_menu.cc
+@@ -1028,11 +1028,12 @@
+ 
+   GURL anonymization_key_gurl(anonymization_key_url);
+   net::SchemefulSite anonymization_key_schemeful_site(anonymization_key_gurl);
+-  auto network_anonymziation_key = net::NetworkAnonymizationKey::CreateSameSite(
+-      anonymization_key_schemeful_site);
++  auto network_anonymization_key =
++      net::NetworkAnonymizationKey::CreateCrossSite(
++          anonymization_key_schemeful_site);
+   loading_predictor->PreconnectURLIfAllowed(GURL(preconnect_url),
+                                             /*allow_credentials=*/true,
+-                                            network_anonymziation_key);
++                                            network_anonymization_key);
+ }
+ 
+ bool RenderViewContextMenu::IsInProgressiveWebApp() const {
