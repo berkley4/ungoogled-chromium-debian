@@ -101,7 +101,7 @@ fi
 [ -n "$MTUNE" ] && MTUNE_SET=1 || MTUNE=generic
 
 
-[ -n "$POLLY_VEC" ] && POLLY_VEC_SET=1 || POLLY_VEC=1
+[ -n "$POLLY_VEC" ] && POLLY_VEC=1
 
 # POLLY_EXT is enabled if POLLY_VEC=1 (set to zero to disable)
 [ -n "$POLLY_EXT" ] && POLLY_EXT_SET=1 || POLLY_EXT=0
@@ -240,6 +240,9 @@ esac
 # System clang packages (eg from apt.llvm.org) are not fully supported
 
 if [ $SYS_CLANG -eq 0 ]; then
+  # Polly not available on bundled toolchain
+  POLLY_VEC=0
+
   # Stop bundled toolchain directories from being pruned
   PRU="$PRU -e \"/^third_party\/llvm/d\""
   PRU="$PRU -e \"/^tools\/clang/d\""
