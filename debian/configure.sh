@@ -121,30 +121,34 @@ if [ $STABLE -eq 1 ]; then
 fi
 
 
-## Allow overriding VERSION
-if [ -n "$VERSION" ]; then
-  case $VERSION in
-    -|-[0-9]|*-)
-      printf '%s\n' "Malformed VERSION variable: $VERSION"
-      exit 1
-      ;;
+## Set VERSION automatically from submodule files or manually via environment
+case $VERSION in
+  "")
+    VER=$(cat $UC_DIR/chromium_version.txt)
+    REV=$(cat $UC_DIR/revision.txt)
 
-    "")
-      printf '%s\n' "VERSION variable is blank"
-      exit 1
-      ;;
-  esac
-else
-  VER=$(cat $UC_DIR/chromium_version.txt)
-  REV=$(cat $UC_DIR/revision.txt)
+    case $RELEASE in
+      stable)
+        REV=stable$REV ;;
+    esac
 
-  case $RELEASE in
-    stable)
-      REV=stable$REV ;;
-  esac
+    VERSION=$VER-$REV
+    ;;
 
-  VERSION=$VER-$REV
-fi
+  *)
+    case $VERSION in
+      -|-[0-9]|*-)
+        printf '%s\n' "Malformed VERSION variable: $VERSION"
+        exit 1
+        ;;
+
+      "")
+        printf '%s\n' "VERSION variable is blank"
+        exit 1
+        ;;
+    esac
+    ;;
+esac
 
 
 ## Set default (minimum supported) clang version from debian/control.in
