@@ -353,8 +353,7 @@ if [ $MARCH_SET -eq 1 ] || [ $MTUNE_SET -eq 1 ]; then
   if [ $MARCH_SET -eq 1 ] && [ $MTUNE_SET -eq 0 ]; then
     MTUNE=$MARCH
   elif [ $MARCH_SET -eq 0 ] && [ $MTUNE_SET -eq 1 ]; then
-    # If MTUNE is set to generic then don't set MARCH=generic
-    [ "$MTUNE" = "generic" ] || MARCH=$MTUNE
+    MARCH=$MTUNE
   fi
 
   # Catch any quirks
