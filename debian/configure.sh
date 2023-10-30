@@ -83,39 +83,42 @@ real_dir_path () (
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
 
 
-# MARCH and MTUNE defaults
+## MARCH and MTUNE defaults
 [ -n "$MARCH" ] && MARCH_SET=1 || MARCH=x86-64-v2
 [ -n "$MTUNE" ] && MTUNE_SET=1 || MTUNE=generic
 
-
-[ -n "$POLLY_VEC" ] && POLLY_VEC=1
-
-# POLLY_EXT is enabled if POLLY_VEC=1 (set to zero to disable)
+## POLLY_EXT is disabled if POLLY_VEC=0 or POLLY_EXT=0 (or both)
 [ -n "$POLLY_EXT" ] && POLLY_EXT_SET=1 || POLLY_EXT=0
+[ -n "$POLLY_VEC" ] || POLLY_VEC=1
 
-
-# LTO Jobs (patch = 1; chromium default = all)
+## LTO Jobs (patch = 1; chromium default = all)
 [ -n "$LTO_JOBS" ] || LTO_JOBS=0
 
-# xz 'extreme' compression strategy (set to zero to disable if XZ_THREADED=1)
+## xz 'extreme' compression strategy (set to zero to disable if XZ_THREADED=1)
 [ -n "$XZ_EXTREME" ] && XZ_EXTREME_SET=1 || XZ_EXTREME=0
 
-# xz threaded compression (enabled if XZ_THREADED=1)
+## xz threaded compression (enabled if XZ_THREADED=1)
 [ -n "$XZ_THREADED" ] || XZ_THREADED=0
 
 
-# Allow overriding AUTHOR
+
+#########################
+## Changelog variables ##
+#########################
+
+## Allow overriding AUTHOR
 if [ -z "$AUTHOR" ]; then
   AUTHOR='ungoogled-chromium Maintainers <github@null.invalid>'
 fi
 
+## Also need to set AUTHOR in debian/control
 CON="$CON -e \"s;@@AUTHOR@@;$AUTHOR;\""
 
 
-# By default RELEASE has a value of unstable if not explicitly set
+## Set default RELEASE to unstable (if not explicitly set)
 [ -n "$RELEASE" ] && RELEASE_SET=1 || RELEASE=unstable
 
-# If STABLE=1 then set RELEASE to stable (if not explicity set)
+## If STABLE=1 then set RELEASE to stable (if not explicity set)
 if [ $STABLE -eq 1 ]; then
   [ $RELEASE_SET -eq 1 ] && [ "$RELEASE" != "stable" ] || RELEASE=stable
 fi
@@ -151,11 +154,20 @@ case $VERSION in
 esac
 
 
-## Set default (minimum supported) clang version from debian/control.in
+
+################################################
+##  Test mode | Clang versioning | PGO | LTO  ##
+################################################
+
+## Enter test mode if $RT_DIR/third_party does not exist
+[ -d $RT_DIR/third_party ] && TEST=0 || TEST=1
+
+
+## Get/set/override default clang version
 C_VER_ORIG=$(sed -n 's@[ #]lld-\([^,]*\).*@\1@p' $DEBIAN/control.in)
+
 [ -n "$C_VER" ] && C_VER_SET=1 || C_VER=$C_VER_ORIG
 
-## Warn if setting version below the default
 if [ $C_VER_SET -eq 1 ] && [ $C_VER -lt $C_VER_ORIG ]; then
   printf '%s\n' "WARN: Clang versions below $C_VER_ORIG are not supported"
   printf '%s\n' "Disabling PGO support"
@@ -163,10 +175,39 @@ if [ $C_VER_SET -eq 1 ] && [ $C_VER -lt $C_VER_ORIG ]; then
 fi
 
 
+## Set LTO cache directory and number of LTO jobs
+if [ -n "$LTO_DIR" ]; then
+  if [ ! -d $LTO_DIR ] && [ $TEST -eq 0 ]; then
+    printf '\n%s\n' "LTO_DIR: path $LTO_DIR does not exist"
+    exit 1
+  fi
 
-# Are we testing outside of a real build directory?
-TEST=0
-[ -d $RT_DIR/third_party ] || TEST=1
+  op_enable="$op_enable thinlto-cache-location"
+
+  sed -e "s@^\(+.*thinlto-cache-dir=\)[-_a-zA-Z0-9/]*@\1$LTO_DIR@" \
+      -i $DEBIAN/patches/optional/thinlto-cache-location.patch
+fi
+
+case $LTO_JOBS in
+  [1-9]|[1-9][0-9])
+    op_enable="$op_enable thinlto-jobs"
+
+    case $LTO_JOBS in
+      [2-9]|[1-9][0-9])
+        sed "s@\(thinlto-jobs=\)1@\1$LTO_JOBS@" \
+          -i $DEBIAN/patches/optional/thinlto-jobs.patch
+        ;;
+    esac
+    ;;
+esac
+
+
+## Set path to PGO profile
+if [ $PGO -eq 1 ] && [ $TEST -eq 0 ]; then
+  PGO_PROF=$(cat $RT_DIR/chrome/build/linux.pgo.txt)
+  PGO_PATH=$(real_dir_path $RT_DIR/chrome/build/pgo_profiles)/$PGO_PROF
+fi
+
 
 
 
@@ -204,40 +245,9 @@ fi
 
 
 
-#######################
-##  Customise build  ##
-#######################
-
-if [ -n "$LTO_DIR" ]; then
-  if [ ! -d $LTO_DIR ] && [ $TEST -eq 0 ]; then
-    printf '\n%s\n' "LTO_DIR: path $LTO_DIR does not exist"
-    exit 1
-  fi
-
-  op_enable="$op_enable thinlto-cache-location"
-
-  sed -e "s@^\(+.*thinlto-cache-dir=\)[-_a-zA-Z0-9/]*@\1$LTO_DIR@" \
-      -i $DEBIAN/patches/optional/thinlto-cache-location.patch
-fi
-
-
-case $LTO_JOBS in
-  [1-9]|[1-9][0-9])
-    op_enable="$op_enable thinlto-jobs"
-
-    case $LTO_JOBS in
-      [2-9]|[1-9][0-9])
-        sed "s@\(thinlto-jobs=\)1@\1$LTO_JOBS@" \
-          -i $DEBIAN/patches/optional/thinlto-jobs.patch
-        ;;
-    esac
-    ;;
-esac
-
-
-
-# Assume non-bundled clang if clang is detected in /usr/local/bin
-# System clang packages (eg from apt.llvm.org) are not fully supported
+###############################
+## Clang/Polly configuration ##
+###############################
 
 if [ $SYS_CLANG -eq 0 ]; then
   # Polly not available on bundled toolchain
@@ -332,19 +342,22 @@ fi
 
 
 
-# Basic sanitisation of MARCH/MTUNE values
+#######################
+## CPU optimisations ##
+#######################
 
 if [ $MARCH_SET -eq 1 ] || [ $MTUNE_SET -eq 1 ]; then
-  # Defaults: MARCH=x86-64-v2; MTUNE=generic (decared further above)
+  # Save initial (default) values
   OLD_MARCH=$MARCH; OLD_MTUNE=$MTUNE
 
   if [ $MARCH_SET -eq 1 ] && [ $MTUNE_SET -eq 0 ]; then
     MTUNE=$MARCH
   elif [ $MARCH_SET -eq 0 ] && [ $MTUNE_SET -eq 1 ]; then
-    # If run with MTUNE=generic (without MARCH), then don't set MARCH=generic
+    # If MTUNE is set to generic then don't set MARCH=generic
     [ "$MTUNE" = "generic" ] || MARCH=$MTUNE
   fi
 
+  # Catch any quirks
   case $MARCH in
     x86-64*)
       MTUNE=generic ;;
@@ -360,7 +373,7 @@ if [ $MARCH_SET -eq 1 ] || [ $MTUNE_SET -eq 1 ]; then
 fi
 
 
-# Check to see if we have any patches to alter due to non-default MARCH/MTUNE
+## Check if we have any patches to alter due to non-default cpu options
 
 [ "$MARCH" = "x86-64-v2" ] || arch_patches="march"
 [ "$MTUNE" = "generic" ] || arch_patches="$arch_patches mtune"
@@ -404,20 +417,6 @@ if [ $V8_AVX2 -eq 0 ]; then
   gn_disable="$gn_disable v8_enable_wasm_simd256_revec"
 fi
 
-
-if [ $TRANSLATE -eq 0 ]; then
-  op_disable="$op_disable translate/"
-
-  INS="$INS -e \"s@^\($TRANSLATE_FILE\)@#\1@\""
-else
-  DSB="$DSB -e \"/\/translate_manager_browsertest\.cc/d\""
-  DSB="$DSB -e \"/\/translate_script\.cc/d\""
-  DSB="$DSB -e \"/\/translate_util\.cc/d\""
-
-  if [ $TRANSLATE -ge 2 ]; then
-    sed 's@^#\(export.*translate-script-url=\)@\1@' -i $DEBIAN/$TRANSLATE_FILE
-  fi
-fi
 
 
 
@@ -491,6 +490,21 @@ if [ $SKIA_GAMMA -eq 1 ]; then
 fi
 
 
+if [ $TRANSLATE -eq 0 ]; then
+  op_disable="$op_disable translate/"
+
+  INS="$INS -e \"s@^\($TRANSLATE_FILE\)@#\1@\""
+else
+  DSB="$DSB -e \"/\/translate_manager_browsertest\.cc/d\""
+  DSB="$DSB -e \"/\/translate_script\.cc/d\""
+  DSB="$DSB -e \"/\/translate_util\.cc/d\""
+
+  if [ $TRANSLATE -ge 2 ]; then
+    sed 's@^#\(export.*translate-script-url=\)@\1@' -i $DEBIAN/$TRANSLATE_FILE
+  fi
+fi
+
+
 if [ $VR -eq 1 ]; then
   gn_disable="$gn_disable enable_vr"
 fi
@@ -504,6 +518,21 @@ fi
 if [ $WIDEVINE -eq 0 ]; then
   op_disable="$op_disable fixes/widevine/"
   SMF="$SMF -e \"s@^\(enable_widevine=\)true@\1false@\""
+fi
+
+
+if [ $XZ_THREADED -eq 1 ]; then
+  if [ -z "$(grep "dh_builddeb.*--threads-max=" $DEBIAN/rules)" ]; then
+    RUL="$RUL -e \"s@^\([ \t]*dh_builddeb.*\)@\1 --threads-max=\x24(JOBS)@\""
+  fi
+
+  [ $XZ_EXTREME_SET -eq 1 ] && [ $XZ_EXTREME -eq 0 ] || XZ_EXTREME=1
+fi
+
+if [ $XZ_EXTREME -eq 1 ]; then
+  if [ -z "$(grep "dh_builddeb.*-S extreme" $DEBIAN/rules)" ]; then
+    RUL="$RUL -e \"s@^\([ \t]*dh_builddeb.*\)@\1 -S extreme@\""
+  fi
 fi
 
 
@@ -624,20 +653,10 @@ fi
 
 
 
-########################
-##  PGO profile path  ##
-########################
 
-if [ $PGO -eq 1 ] && [ $TEST -eq 0 ]; then
-  PGO_PROF=$(cat $RT_DIR/chrome/build/linux.pgo.txt)
-  PGO_PATH=$(real_dir_path $RT_DIR/chrome/build/pgo_profiles)/$PGO_PROF
-fi
-
-
-
-############################################################
-##  Domain substitution, flags, pruning list and other items
-############################################################
+##################################################
+##  Domain substitution, flags and pruning list ##
+##################################################
 
 ## Domain substitution
 DSB="$DSB -e \"/^chrome\/browser\/flag_descriptions\.cc/d\""
@@ -669,25 +688,13 @@ fi
 PRU="$PRU -e \"/^third_party\/depot_tools/d\""
 
 
-if [ $XZ_THREADED -eq 1 ]; then
-  if [ -z "$(grep "dh_builddeb.*--threads-max=" $DEBIAN/rules)" ]; then
-    RUL="$RUL -e \"s@^\([ \t]*dh_builddeb.*\)@\1 --threads-max=\x24(JOBS)@\""
-  fi
-
-  [ $XZ_EXTREME_SET -eq 1 ] && [ $XZ_EXTREME -eq 0 ] || XZ_EXTREME=1
-fi
-
-if [ $XZ_EXTREME -eq 1 ]; then
-  if [ -z "$(grep "dh_builddeb.*-S extreme" $DEBIAN/rules)" ]; then
-    RUL="$RUL -e \"s@^\([ \t]*dh_builddeb.*\)@\1 -S extreme@\""
-  fi
-fi
-
 
 
 ##############################
 ##  Aggregate sed commands  ##
 ##############################
+
+## dependencies
 
 if [ -n "$deps_disable" ]; then
   for i in $deps_disable; do
@@ -713,6 +720,8 @@ if [ -n "$deps_enable" ]; then
   done
 fi
 
+
+## optional patches
 
 if [ -n "$op_disable" ]; then
   for i in $op_disable; do
@@ -743,6 +752,8 @@ if [ -n "$op_enable" ]; then
 fi
 
 
+## Build flags (GN_FLAGS)
+
 if [ -n "$gn_disable" ]; then
   for i in $gn_disable; do
     RUL="$RUL -e \"s@^\(GN_FLAGS += ${i}=\)@#\1@\""
@@ -755,6 +766,8 @@ if [ -n "$gn_enable" ]; then
   done
 fi
 
+
+## System libraries (SYS_LIBS)
 
 if [ -n "$sys_disable" ]; then
   for i in $sys_disable; do
@@ -773,6 +786,13 @@ fi
 #####################################
 ##  Modify debian directory files  ##
 #####################################
+
+sed -e "s;@@VERSION@@;$VERSION;" \
+    -e "s;@@RELEASE@@;$RELEASE;" \
+    -e "s;@@AUTHOR@@;$AUTHOR;" \
+    -e "s;@@DATETIME@@;$(date -R);" \
+  < $DEBIAN/changelog.in \
+  > $DEBIAN/changelog
 
 SERIES_DEBIAN="$(eval sed $SER $DEBIAN/patches/series.debian)"
 echo "$(cat $UC_DIR/patches/series)" "$SERIES_DEBIAN" > $DEBIAN/patches/series
@@ -818,15 +838,6 @@ if [ ! -d $DEBIAN/patches/core ] || [ ! -d $DEBIAN/patches/extra ]; then
 
   cp -a $UC_PATCH_DIRS $DEBIAN/patches/
 fi
-
-
-## Produce changelog from template
-sed -e "s;@@VERSION@@;$VERSION;" \
-    -e "s;@@RELEASE@@;$RELEASE;" \
-    -e "s;@@AUTHOR@@;$AUTHOR;" \
-    -e "s;@@DATETIME@@;$(date -R);" \
-  < $DEBIAN/changelog.in \
-  > $DEBIAN/changelog
 
 
 ## Submodule patching
