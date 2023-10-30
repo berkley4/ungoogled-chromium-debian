@@ -83,17 +83,6 @@ real_dir_path () (
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
 
 
-C_VER_ORIG=$(sed -n 's@[ #]lld-\([^,]*\).*@\1@p' $DEBIAN/control.in)
-
-[ -n "$C_VER" ] && C_VER_SET=1 || C_VER=$C_VER_ORIG
-
-if [ $C_VER_SET -eq 1 ] && [ $C_VER -lt $C_VER_ORIG ]; then
-  printf '%s\n' "WARN: Clang versions below $C_VER_ORIG are not supported"
-  printf '%s\n' "Disabling PGO support"
-  PGO=0
-fi
-
-
 # MARCH and MTUNE defaults
 [ -n "$MARCH" ] && MARCH_SET=1 || MARCH=x86-64-v2
 [ -n "$MTUNE" ] && MTUNE_SET=1 || MTUNE=generic
@@ -155,6 +144,18 @@ else
   esac
 
   VERSION=$VER-$REV
+fi
+
+
+## Set default (minimum supported) clang version from debian/control.in
+C_VER_ORIG=$(sed -n 's@[ #]lld-\([^,]*\).*@\1@p' $DEBIAN/control.in)
+[ -n "$C_VER" ] && C_VER_SET=1 || C_VER=$C_VER_ORIG
+
+## Warn if setting version below the default
+if [ $C_VER_SET -eq 1 ] && [ $C_VER -lt $C_VER_ORIG ]; then
+  printf '%s\n' "WARN: Clang versions below $C_VER_ORIG are not supported"
+  printf '%s\n' "Disabling PGO support"
+  PGO=0
 fi
 
 
