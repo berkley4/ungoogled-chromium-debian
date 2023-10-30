@@ -44,8 +44,6 @@ real_dir_path () (
 ## Default values ##
 ####################
 
-[ -n "$DL_CACHE" ] || DL_CACHE=$RT_DIR/../download_cache
-
 [ -n "$PGO" ] || PGO=1
 [ -n "$STABLE" ] || STABLE=0
 [ -n "$TARBALL" ] || TARBALL=0
@@ -166,12 +164,6 @@ TEST=0
 [ -d $RT_DIR/third_party ] || TEST=1
 
 
-# Make download cache a level above the build directory
-if [ $TARBALL -eq 1 ]; then
-  [ -d $DL_CACHE ] || mkdir -p $DL_CACHE
-fi
-
-
 
 #############################
 ##  Fetch/Extract Tarball  ##
@@ -182,6 +174,9 @@ if [ $TARBALL -eq 1 ]; then
     printf '%s\n' "Cannot run outside of tarball directory"
     exit 1
   fi
+
+  [ -n "$DL_CACHE" ] || DL_CACHE=$RT_DIR/../download_cache
+  [ -d $DL_CACHE ] || mkdir -p $DL_CACHE
 
   find $RT_DIR/ -mindepth 1 -maxdepth 1 \
     -type d \( -name debian -o -name out -o -name .pc \) -prune \
