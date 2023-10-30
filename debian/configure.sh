@@ -20,7 +20,7 @@ MARCH_SET=0
 MTUNE_SET=0
 POLLY_EXT_SET=0
 RELEASE_SET=0
-XZ_EXTREME_SET=0
+XZ_THREADED_SET=0
 
 DEBIAN=$(dirname $0)
 RT_DIR=$(dirname $DEBIAN)
@@ -94,11 +94,11 @@ real_dir_path () (
 ## LTO Jobs (patch = 1; chromium default = all)
 [ -n "$LTO_JOBS" ] || LTO_JOBS=0
 
-## xz 'extreme' compression strategy (set to zero to disable if XZ_THREADED=1)
-[ -n "$XZ_EXTREME" ] && XZ_EXTREME_SET=1 || XZ_EXTREME=0
 
-## xz threaded compression (enabled if XZ_THREADED=1)
-[ -n "$XZ_THREADED" ] || XZ_THREADED=0
+## Package (deb) compression options
+## XZ_THREADED is disabled If XZ_EXTREME=0 or XZ_THREADED=0 (or both)
+[ -n "$XZ_EXTREME" ] || XZ_EXTREME=0
+[ -n "$XZ_THREADED" ] && XZ_THREADED_SET=1 || XZ_THREADED=0
 
 
 
@@ -520,17 +520,17 @@ if [ $WIDEVINE -eq 0 ]; then
 fi
 
 
-if [ $XZ_THREADED -eq 1 ]; then
-  if [ -z "$(grep "dh_builddeb.*--threads-max=" $DEBIAN/rules)" ]; then
-    RUL="$RUL -e \"s@^\([ \t]*dh_builddeb.*\)@\1 --threads-max=\x24(JOBS)@\""
-  fi
-
-  [ $XZ_EXTREME_SET -eq 1 ] && [ $XZ_EXTREME -eq 0 ] || XZ_EXTREME=1
-fi
-
 if [ $XZ_EXTREME -eq 1 ]; then
   if [ -z "$(grep "dh_builddeb.*-S extreme" $DEBIAN/rules)" ]; then
     RUL="$RUL -e \"s@^\([ \t]*dh_builddeb.*\)@\1 -S extreme@\""
+  fi
+
+  [ $XZ_THREADED_SET -eq 1 ] && [ $XZ_THREADED -eq 0 ] || XZ_THREADED=1
+fi
+
+if [ $XZ_THREADED -eq 1 ]; then
+  if [ -z "$(grep "dh_builddeb.*--threads-max=" $DEBIAN/rules)" ]; then
+    RUL="$RUL -e \"s@^\([ \t]*dh_builddeb.*\)@\1 --threads-max=\x24(JOBS)@\""
   fi
 fi
 
