@@ -10,18 +10,18 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
-@@ -566,7 +566,7 @@
+@@ -443,7 +443,7 @@
  // This is intended as a kill switch for the Idle Detection feature. To enable
  // this feature, the experimental web platform features flag should be set,
  // or the site should obtain an Origin Trial token.
 -BASE_FEATURE(kIdleDetection, "IdleDetection", base::FEATURE_ENABLED_BY_DEFAULT);
 +BASE_FEATURE(kIdleDetection, "IdleDetection", base::FEATURE_DISABLED_BY_DEFAULT);
  
- // A feature flag for the memory-backed code cache.
- BASE_FEATURE(kInMemoryCodeCache,
+ // Kill switch for the GetInstalledRelatedApps API.
+ BASE_FEATURE(kInstalledApp, "InstalledApp", base::FEATURE_ENABLED_BY_DEFAULT);
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -2050,10 +2050,9 @@
+@@ -2077,10 +2077,9 @@
        base_feature: "none",
      },
      {
@@ -34,4 +34,4 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +      base_feature: "none",   // default
      },
      {
-       // TODO(crbug.com/1406358): Remove after the origin trial ends in M113.
+       name: "ImplicitRootScroller",

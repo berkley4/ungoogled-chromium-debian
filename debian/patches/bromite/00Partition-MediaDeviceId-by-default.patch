@@ -2,9 +2,13 @@ From: uazo <uazo@users.noreply.github.com>
 Date: Thu, 28 Sep 2023 07:56:11 +0000
 Subject: Partition MediaDeviceId by default
 
+and, in windows, hide the presence of the webcam if the user has not given permission
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  components/media_device_salt/media_device_salt_service.cc | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ .../browser/renderer_host/media/media_devices_manager.cc  | 5 +++++
+ content/common/features.cc                                | 4 ++--
+ 3 files changed, 11 insertions(+), 6 deletions(-)
 
 --- a/components/media_device_salt/media_device_salt_service.cc
 +++ b/components/media_device_salt/media_device_salt_service.cc
@@ -24,3 +28,30 @@ Subject: Partition MediaDeviceId by default
  
  namespace {
  
+--- a/content/browser/renderer_host/media/media_devices_manager.cc
++++ b/content/browser/renderer_host/media/media_devices_manager.cc
+@@ -763,6 +763,11 @@
+           has_permissions[i], salt_and_origin, device_info));
+     }
+   }
++#if !BUILDFLAG(IS_ANDROID)
++  int video_input_index = static_cast<size_t>(MediaDeviceType::kMediaVideoInput);
++  if (requested_types[video_input_index] && !has_permissions[video_input_index])
++    translation[video_input_index].clear();
++#endif
+ 
+   GetAudioInputCapabilities(video_input_capabilities_requested,
+                             audio_input_capabilities_requested,
+--- a/content/common/features.cc
++++ b/content/common/features.cc
+@@ -164,8 +164,8 @@
+ // media-device enumeration will provide at most one device per type and the
+ // device IDs will not be available.
+ BASE_FEATURE(kEnumerateDevicesHideDeviceIDs,
+-             "EnumerateDevicesHideDeviceIDs",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             "EnumerateDevicesHideDeviceIDs",    // keep
++             base::FEATURE_ENABLED_BY_DEFAULT);  // enabled
+ 
+ // Content counterpart of ExperimentalContentSecurityPolicyFeatures in
+ // third_party/blink/renderer/platform/runtime_enabled_features.json5. Enables

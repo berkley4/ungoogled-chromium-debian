@@ -20,7 +20,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -146,6 +146,7 @@
+@@ -147,6 +147,7 @@
  #include "components/segmentation_platform/public/features.h"
  #include "components/send_tab_to_self/features.h"
  #include "components/services/heap_profiling/public/cpp/switches.h"
@@ -28,7 +28,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "components/shared_highlighting/core/common/shared_highlighting_features.h"
  #include "components/signin/core/browser/dice_account_reconcilor_delegate.h"
  #include "components/signin/public/base/signin_buildflags.h"
-@@ -9498,6 +9499,11 @@
+@@ -9794,6 +9795,11 @@
                                      kLargeFaviconFromGoogleVariations,
                                      "LargeFaviconFromGoogle")},
  
@@ -42,7 +42,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       flag_descriptions::kForceOffTextAutosizingName,
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3722,6 +3722,11 @@
+@@ -3768,6 +3768,11 @@
      "Skips starting the service worker and run the fetch handler if the fetch "
      "handler is recognized as skippable.";
  
@@ -53,10 +53,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +
  const char kWebSQLAccessName[] = "Allows access to WebSQL APIs";
  const char kWebSQLAccessDescription[] =
-     "The WebSQL API is enabled by default, but can be disabled here.";
+     "The WebSQL API is disabled by default, but can be enabled here.";
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -2163,6 +2163,9 @@
+@@ -2191,6 +2191,9 @@
  extern const char kSkipServiceWorkerFetchHandlerName[];
  extern const char kSkipServiceWorkerFetchHandlerDescription[];
  

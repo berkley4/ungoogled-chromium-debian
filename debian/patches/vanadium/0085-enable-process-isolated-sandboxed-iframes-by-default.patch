@@ -10,7 +10,7 @@ Signed-off-by: June <june@eridan.me>
 
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -997,7 +997,7 @@
+@@ -999,7 +999,7 @@
  // sandboxes are isolated.
  BASE_FEATURE(kIsolateSandboxedIframes,
               "IsolateSandboxedIframes",

@@ -38,7 +38,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5304,6 +5304,12 @@
+@@ -5566,6 +5566,12 @@
      {"enable-tls13-kyber", flag_descriptions::kEnableTLS13KyberName,
       flag_descriptions::kEnableTLS13KyberDescription, kOsAll,
       FEATURE_VALUE_TYPE(net::features::kPostQuantumKyber)},
@@ -53,7 +53,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       flag_descriptions::kFeedBackToTopDescription, kOsAndroid,
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -1102,6 +1102,14 @@
+@@ -1111,6 +1111,14 @@
      "shortcut (docked magnifier, screen magnifier and high contrast) to time "
      "out instead of remaining pinned.";
  
@@ -70,7 +70,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      "This option enables the experimental Accessibility Service and runs some "
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -629,6 +629,12 @@
+@@ -638,6 +638,12 @@
  extern const char kEnableTLS13EarlyDataName[];
  extern const char kEnableTLS13EarlyDataDescription[];
  
@@ -135,7 +135,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "url/gurl.h"
  #include "url/scheme_host_port.h"
  #include "url/url_constants.h"
-@@ -196,6 +197,38 @@
+@@ -195,6 +196,38 @@
  
  }  // namespace
  
@@ -174,7 +174,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  // Refcounted class that owns quic::QuicCryptoClientConfig and tracks how many
  // consumers are using it currently. When the last reference is freed, the
  // QuicCryptoClientConfigHandle informs the owning QuicStreamFactory, moves it
-@@ -2354,7 +2387,7 @@
+@@ -2353,7 +2386,7 @@
                sct_auditing_delegate_,
                HostsFromOrigins(params_.origins_to_force_quic_on),
                actual_network_anonymization_key),

@@ -4,20 +4,26 @@ Subject: Disable some signed exchange features
 
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- content/public/common/content_features.cc | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ content/common/features.cc                | 4 ++--
+ content/public/common/content_features.cc | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
---- a/content/public/common/content_features.cc
-+++ b/content/public/common/content_features.cc
-@@ -1216,14 +1216,14 @@
+--- a/content/common/features.cc
++++ b/content/common/features.cc
+@@ -432,8 +432,8 @@
  // Signed Exchange Reporting for distributors
  // https://www.chromestatus.com/feature/5687904902840320
  BASE_FEATURE(kSignedExchangeReportingForDistributors,
 -             "SignedExchangeReportingForDistributors",
 -             base::FEATURE_ENABLED_BY_DEFAULT);
-+             "SignedExchangeReportingForDistributors",    // must be disabled
-+             base::FEATURE_DISABLED_BY_DEFAULT);          // in Bromite
++             "SignedExchangeReportingForDistributors",  // disabled
++             base::FEATURE_DISABLED_BY_DEFAULT);        // by default
  
+ // When enabled, ensures that an unlocked process cannot access data for
+ // sites that require a dedicated process.
+--- a/content/public/common/content_features.cc
++++ b/content/public/common/content_features.cc
+@@ -934,8 +934,8 @@
  // Origin-Signed HTTP Exchanges (for WebPackage Loading)
  // https://www.chromestatus.com/feature/5745285984681984
  BASE_FEATURE(kSignedHTTPExchange,

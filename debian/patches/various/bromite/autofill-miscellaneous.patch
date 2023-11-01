@@ -22,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -1072,11 +1072,11 @@
+@@ -1127,11 +1127,11 @@
                                     PrefRegistry::LOSSY_PREF);
  
    // Deprecated 11/2022.
@@ -39,7 +39,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    registry->RegisterBooleanPref(kAutofillWalletImportStorageCheckboxState,
 --- a/components/autofill/core/browser/browser_autofill_manager.h
 +++ b/components/autofill/core/browser/browser_autofill_manager.h
-@@ -740,9 +740,9 @@
+@@ -766,9 +766,9 @@
        autocomplete_unrecognized_fallback_logger_;
  
    // Have we logged whether Autofill is enabled for this page load?
@@ -53,7 +53,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // Has the user manually edited at least one form field among the autofillable
 --- a/components/autofill/core/common/autofill_features.cc
 +++ b/components/autofill/core/common/autofill_features.cc
-@@ -837,8 +837,8 @@
+@@ -797,8 +797,8 @@
  // "upload" resources.
  // i.e., https://other.autofill.server:port/tbproxy/af/
  BASE_FEATURE(kAutofillServerCommunication,
@@ -66,18 +66,27 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  // element in the DOM.
 --- a/components/autofill/core/common/autofill_prefs.cc
 +++ b/components/autofill/core/common/autofill_prefs.cc
-@@ -189,7 +189,7 @@
+@@ -159,7 +159,7 @@
+       prefs::kAutofillCreditCardEnabled, false,
+       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
+   registry->RegisterBooleanPref(
+-      prefs::kAutofillPaymentCvcStorage, true,
++      prefs::kAutofillPaymentCvcStorage, false,
+       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
+ 
+   // Non-synced prefs. Used for per-device choices, e.g., signin promo.
+@@ -201,7 +201,7 @@
+ #endif
  
    // Deprecated prefs registered for migration.
-   registry->RegisterBooleanPref(
--      prefs::kAutofillEnabledDeprecated, true,
-+      prefs::kAutofillEnabledDeprecated, false,
-       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
+-  registry->RegisterBooleanPref(prefs::kAutofillEnabledDeprecated, true);
++  registry->RegisterBooleanPref(prefs::kAutofillEnabledDeprecated, false);
    registry->RegisterBooleanPref(prefs::kAutofillOrphanRowsRemoved, false);
+   registry->RegisterBooleanPref(prefs::kAutofillIbanEnabled, true);
  
 --- a/components/password_manager/core/browser/password_generation_frame_helper.cc
 +++ b/components/password_manager/core/browser/password_generation_frame_helper.cc
-@@ -101,7 +101,6 @@
+@@ -95,7 +95,6 @@
  // In order for password generation to be enabled, we need to make sure:
  // (1) Password sync is enabled, and
  // (2) Password saving is enabled
@@ -85,7 +94,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  bool PasswordGenerationFrameHelper::IsGenerationEnabled(
      bool log_debug_data) const {
    std::unique_ptr<Logger> logger;
-@@ -111,9 +110,6 @@
+@@ -105,9 +104,6 @@
    }
  
    GURL url = driver_->GetLastCommittedURL();

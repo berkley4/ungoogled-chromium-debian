@@ -1,0 +1,660 @@
+From 2be8105dff3857263fb3d0a17ae25be894c02f5b Mon Sep 17 00:00:00 2001
+From: Nohemi Fernandez <fernandex@chromium.org>
+Date: Mon, 30 Oct 2023 20:37:56 +0000
+Subject: [PATCH] [M119] Fix trigger condition that controls extensions permissions for Desktop.
+
+(cherry picked from commit f0628f69f26db97dfd044b7d30b98800639f46ba)
+
+Bug: 1493374
+Change-Id: I314a9ae157868c10823f1b17e7b856fe6c457ee4
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4965361
+Reviewed-by: Mihai Sardarescu <msarda@chromium.org>
+Reviewed-by: David Roger <droger@chromium.org>
+Commit-Queue: Nohemi Fernandez <fernandex@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1214248}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4988250
+Reviewed-by: Alex Ilin <alexilin@chromium.org>
+Cr-Commit-Position: refs/branch-heads/6045@{#1117}
+Cr-Branched-From: 905e8bdd32d891451d94d1ec71682e989da2b0a1-refs/heads/main@{#1204232}
+---
+
+--- a/chrome/browser/extensions/api/developer_private/extension_info_generator_unittest.cc
++++ b/chrome/browser/extensions/api/developer_private/extension_info_generator_unittest.cc
+@@ -1082,16 +1082,11 @@
+ // Tests for supervised users (child accounts). Supervised users are not allowed
+ // to install apps or extensions unless their parent approves.
+ class ExtensionInfoGeneratorUnitTestSupervised
+-    : public ExtensionInfoGeneratorUnitTest,
+-      public testing::WithParamInterface<bool> {
++    : public ExtensionInfoGeneratorUnitTest {
+  public:
+   ExtensionInfoGeneratorUnitTestSupervised() = default;
+   ~ExtensionInfoGeneratorUnitTestSupervised() override = default;
+ 
+-  SupervisedUserExtensionsDelegate* GetSupervisedUserExtensionsDelegate() {
+-    return supervised_user_extensions_delegate_.get();
+-  }
+-
+   // ExtensionInfoGeneratorUnitTest:
+   ExtensionServiceInitParams GetExtensionServiceInitParams() override {
+     ExtensionServiceInitParams params =
+@@ -1110,39 +1105,29 @@
+     supervised_user_test_util::
+         SetSupervisedUserExtensionsMayRequestPermissionsPref(profile(), true);
+ 
+-    supervised_user_extensions_delegate_ =
+-        std::make_unique<SupervisedUserExtensionsDelegateImpl>(profile());
+   }
+ 
+   void TearDown() override {
+-    supervised_user_extensions_delegate_.reset();
+     ExtensionInfoGeneratorUnitTest::TearDown();
+   }
+-
+- private:
+-  std::unique_ptr<SupervisedUserExtensionsDelegate>
+-      supervised_user_extensions_delegate_;
+ };
+ 
+ // Tests that when an extension is disabled pending permission updates, and the
+ // parent has turned off the "Permissions for sites, apps and extensions"
+ // toggle, then supervised users will see a kite error icon with a tooltip.
+-TEST_P(ExtensionInfoGeneratorUnitTestSupervised,
++TEST_F(ExtensionInfoGeneratorUnitTestSupervised,
+        ParentDisabledPermissionsForSupervisedUsers) {
+-  // Preconditions.
++  // Extension permissions for supervised users is already enabled on ChromeOS.
++#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN)
+   base::test::ScopedFeatureList feature_list;
+-  bool extensions_permissions_for_supervised_users_on_desktop = GetParam();
+-  if (extensions_permissions_for_supervised_users_on_desktop) {
+-    feature_list.InitAndEnableFeature(
+-        supervised_user::
+-            kEnableExtensionsPermissionsForSupervisedUsersOnDesktop);
+-  } else {
+-    feature_list.InitAndDisableFeature(
+-        supervised_user::
+-            kEnableExtensionsPermissionsForSupervisedUsersOnDesktop);
+-  }
++  feature_list.InitAndEnableFeature(
++      supervised_user::kEnableExtensionsPermissionsForSupervisedUsersOnDesktop);
++#endif
+   ASSERT_TRUE(profile()->IsChild());
+ 
++  std::unique_ptr<SupervisedUserExtensionsDelegate>
++      supervised_user_extensions_delegate =
++          std::make_unique<SupervisedUserExtensionsDelegateImpl>(profile());
+   base::FilePath base_path = data_dir().AppendASCII("permissions_increase");
+   base::FilePath pem_path = base_path.AppendASCII("permissions.pem");
+   base::FilePath path = base_path.AppendASCII("v1");
+@@ -1160,7 +1145,7 @@
+       extension_id, disable_reason::DISABLE_CUSTODIAN_APPROVAL_REQUIRED));
+ 
+   // Simulate parent approval for the extension installation.
+-  GetSupervisedUserExtensionsDelegate()->AddExtensionApproval(*extension);
++  supervised_user_extensions_delegate->AddExtensionApproval(*extension);
+   // The extension should be enabled now.
+   EXPECT_TRUE(registry()->enabled_extensions().Contains(extension_id));
+ 
+@@ -1184,22 +1169,7 @@
+ 
+   // Verify that the kite icon error tooltip appears for supervised users on
+   // platforms where extensions are enabled for supervised users.
+-
+-  if (extensions_permissions_for_supervised_users_on_desktop) {
+-    EXPECT_TRUE(info->disable_reasons.parent_disabled_permissions);
+-  } else {
+-#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_CHROMEOS)
+-    EXPECT_TRUE(info->disable_reasons.parent_disabled_permissions);
+-#else
+-    EXPECT_FALSE(info->disable_reasons.parent_disabled_permissions);
+-#endif
+-  }
++  EXPECT_TRUE(info->disable_reasons.parent_disabled_permissions);
+ }
+-
+-INSTANTIATE_TEST_SUITE_P(
+-    ExtensionsPermissionsForSupervisedUsersOnDesktopFeature,
+-    ExtensionInfoGeneratorUnitTestSupervised,
+-    testing::Bool());
+-
+ #endif  // BUILDFLAG(ENABLE_SUPERVISED_USERS)
+ }  // namespace extensions
+--- /dev/null
++++ b/chrome/browser/supervised_user/linux_mac_windows/supervised_user_extension_browsertest.cc
+@@ -0,0 +1,154 @@
++// Copyright 2020 The Chromium Authors
++// Use of this source code is governed by a BSD-style license that can be
++// found in the LICENSE file.
++
++#include "base/files/file_path.h"
++#include "base/test/scoped_feature_list.h"
++#include "chrome/browser/extensions/extension_browsertest.h"
++#include "chrome/browser/supervised_user/supervised_user_test_util.h"
++#include "chrome/test/base/in_process_browser_test.h"
++#include "chrome/test/base/mixin_based_in_process_browser_test.h"
++#include "chrome/test/supervised_user/supervision_mixin.h"
++#include "components/supervised_user/core/common/features.h"
++#include "content/public/test/browser_test.h"
++#include "content/public/test/test_launcher.h"
++#include "extensions/browser/disable_reason.h"
++#include "extensions/browser/extension_prefs.h"
++#include "extensions/browser/extension_registry.h"
++#include "extensions/common/extension.h"
++
++namespace {
++constexpr char kGoodCrxId[] = "ldnnhddmnhbkjipkidpdiheffobcpfmf";
++}  // namespace
++
++namespace extensions {
++
++// Tests interaction between supervised users and extensions after the optional
++// supervision is removed from the account.
++class SupervisionRemovalExtensionTest : public ExtensionBrowserTest {
++ public:
++  SupervisionRemovalExtensionTest() {
++    scoped_feature_list_.InitAndEnableFeature(
++        supervised_user::
++            kEnableExtensionsPermissionsForSupervisedUsersOnDesktop);
++  }
++
++  ~SupervisionRemovalExtensionTest() override { scoped_feature_list_.Reset(); }
++
++  // We have to essentially replicate what MixinBasedInProcessBrowserTest does
++  // here because ExtensionBrowserTest doesn't inherit from that class.
++  void SetUp() override {
++    mixin_host_.SetUp();
++    ExtensionBrowserTest::SetUp();
++  }
++
++  void SetUpCommandLine(base::CommandLine* command_line) override {
++    mixin_host_.SetUpCommandLine(command_line);
++    ExtensionBrowserTest::SetUpCommandLine(command_line);
++  }
++
++  void SetUpDefaultCommandLine(base::CommandLine* command_line) override {
++    mixin_host_.SetUpDefaultCommandLine(command_line);
++    ExtensionBrowserTest::SetUpDefaultCommandLine(command_line);
++  }
++
++  bool SetUpUserDataDirectory() override {
++    return mixin_host_.SetUpUserDataDirectory() &&
++           ExtensionBrowserTest::SetUpUserDataDirectory();
++  }
++
++  void SetUpInProcessBrowserTestFixture() override {
++    mixin_host_.SetUpInProcessBrowserTestFixture();
++    ExtensionBrowserTest::SetUpInProcessBrowserTestFixture();
++  }
++
++  void CreatedBrowserMainParts(
++      content::BrowserMainParts* browser_main_parts) override {
++    mixin_host_.CreatedBrowserMainParts(browser_main_parts);
++    ExtensionBrowserTest::CreatedBrowserMainParts(browser_main_parts);
++  }
++
++  void SetUpOnMainThread() override {
++    mixin_host_.SetUpOnMainThread();
++    ExtensionBrowserTest::SetUpOnMainThread();
++  }
++
++  void TearDownOnMainThread() override {
++    mixin_host_.TearDownOnMainThread();
++    ExtensionBrowserTest::TearDownOnMainThread();
++  }
++
++  void TearDownInProcessBrowserTestFixture() override {
++    mixin_host_.TearDownInProcessBrowserTestFixture();
++    ExtensionBrowserTest::TearDownInProcessBrowserTestFixture();
++  }
++
++  void TearDown() override {
++    mixin_host_.TearDown();
++    ExtensionBrowserTest::TearDown();
++  }
++
++ protected:
++  bool IsDisabledForCustodianApproval(const std::string& extension_id) {
++    ExtensionPrefs* extension_prefs = ExtensionPrefs::Get(profile());
++    return extension_prefs->HasDisableReason(
++        extension_id,
++        extensions::disable_reason::DISABLE_CUSTODIAN_APPROVAL_REQUIRED);
++  }
++
++ private:
++  base::test::ScopedFeatureList scoped_feature_list_;
++  InProcessBrowserTestMixinHost mixin_host_;
++
++  // In order to simulate supervision removal and re-authentication use
++  // supervised account in the PRE test and regular account afterwards.
++  supervised_user::SupervisionMixin supervision_mixin_{
++      mixin_host_,
++      this,
++      {.sign_in_mode =
++           content::IsPreTest()
++               ? supervised_user::SupervisionMixin::SignInMode::kSupervised
++               : supervised_user::SupervisionMixin::SignInMode::kRegular}};
++};
++
++// Removing supervision should also remove associated disable reasons, such as
++// DISABLE_CUSTODIAN_APPROVAL_REQUIRED. Extensions should become enabled again
++// after removing supervision. Prevents a regression to crbug/1045625.
++IN_PROC_BROWSER_TEST_F(SupervisionRemovalExtensionTest,
++                       PRE_RemoveCustodianApprovalRequirement) {
++  supervised_user_test_util::
++      SetSupervisedUserExtensionsMayRequestPermissionsPref(profile(), true);
++
++  ASSERT_TRUE(profile()->IsChild());
++
++  base::FilePath path = test_data_dir_.AppendASCII("good.crx");
++  EXPECT_FALSE(LoadExtension(path));
++  const Extension* extension =
++      extension_registry()->GetInstalledExtension(kGoodCrxId);
++  EXPECT_TRUE(extension);
++
++  // This extension is a supervised user initiated install and should remain
++  // disabled.
++  EXPECT_TRUE(extension_registry()->disabled_extensions().Contains(kGoodCrxId));
++  EXPECT_TRUE(IsDisabledForCustodianApproval(kGoodCrxId));
++}
++
++IN_PROC_BROWSER_TEST_F(SupervisionRemovalExtensionTest,
++                       RemoveCustodianApprovalRequirement) {
++  ASSERT_FALSE(profile()->IsChild());
++
++  // The extension should still be installed since we are sharing the same data
++  // directory as the PRE test.
++  const Extension* extension =
++      extension_registry()->GetInstalledExtension(kGoodCrxId);
++  EXPECT_TRUE(extension);
++
++  // The extension should be enabled now after removing supervision.
++  EXPECT_TRUE(extension_registry()->enabled_extensions().Contains(kGoodCrxId));
++  EXPECT_FALSE(
++      extension_registry()->disabled_extensions().Contains(kGoodCrxId));
++
++  EXPECT_FALSE(IsDisabledForCustodianApproval(kGoodCrxId));
++}
++
++}  // namespace extensions
+\ No newline at end of file
+--- a/chrome/browser/supervised_user/supervised_user_extension_browsertest.cc
++++ /dev/null
+@@ -1,145 +0,0 @@
+-// Copyright 2020 The Chromium Authors
+-// Use of this source code is governed by a BSD-style license that can be
+-// found in the LICENSE file.
+-
+-#include "base/files/file_path.h"
+-#include "base/test/scoped_feature_list.h"
+-#include "chrome/browser/extensions/extension_browsertest.h"
+-#include "chrome/browser/supervised_user/supervised_user_test_util.h"
+-#include "chrome/test/base/in_process_browser_test.h"
+-#include "chrome/test/base/mixin_based_in_process_browser_test.h"
+-#include "chrome/test/supervised_user/supervision_mixin.h"
+-#include "components/supervised_user/core/common/features.h"
+-#include "content/public/test/browser_test.h"
+-#include "content/public/test/test_launcher.h"
+-#include "extensions/browser/disable_reason.h"
+-#include "extensions/browser/extension_prefs.h"
+-#include "extensions/browser/extension_registry.h"
+-#include "extensions/common/extension.h"
+-
+-namespace {
+-constexpr char kGoodCrxId[] = "ldnnhddmnhbkjipkidpdiheffobcpfmf";
+-}  // namespace
+-
+-namespace extensions {
+-
+-// Tests interaction between supervised users and extensions after the optional
+-// supervision is removed from the account.
+-class SupervisionRemovalExtensionTest : public ExtensionBrowserTest {
+- public:
+-  // We have to essentially replicate what MixinBasedInProcessBrowserTest does
+-  // here because ExtensionBrowserTest doesn't inherit from that class.
+-  void SetUp() override {
+-    mixin_host_.SetUp();
+-    ExtensionBrowserTest::SetUp();
+-  }
+-
+-  void SetUpCommandLine(base::CommandLine* command_line) override {
+-    mixin_host_.SetUpCommandLine(command_line);
+-    ExtensionBrowserTest::SetUpCommandLine(command_line);
+-  }
+-
+-  void SetUpDefaultCommandLine(base::CommandLine* command_line) override {
+-    mixin_host_.SetUpDefaultCommandLine(command_line);
+-    ExtensionBrowserTest::SetUpDefaultCommandLine(command_line);
+-  }
+-
+-  bool SetUpUserDataDirectory() override {
+-    return mixin_host_.SetUpUserDataDirectory() &&
+-           ExtensionBrowserTest::SetUpUserDataDirectory();
+-  }
+-
+-  void SetUpInProcessBrowserTestFixture() override {
+-    mixin_host_.SetUpInProcessBrowserTestFixture();
+-    ExtensionBrowserTest::SetUpInProcessBrowserTestFixture();
+-  }
+-
+-  void CreatedBrowserMainParts(
+-      content::BrowserMainParts* browser_main_parts) override {
+-    mixin_host_.CreatedBrowserMainParts(browser_main_parts);
+-    ExtensionBrowserTest::CreatedBrowserMainParts(browser_main_parts);
+-  }
+-
+-  void SetUpOnMainThread() override {
+-    mixin_host_.SetUpOnMainThread();
+-    ExtensionBrowserTest::SetUpOnMainThread();
+-  }
+-
+-  void TearDownOnMainThread() override {
+-    mixin_host_.TearDownOnMainThread();
+-    ExtensionBrowserTest::TearDownOnMainThread();
+-  }
+-
+-  void TearDownInProcessBrowserTestFixture() override {
+-    mixin_host_.TearDownInProcessBrowserTestFixture();
+-    ExtensionBrowserTest::TearDownInProcessBrowserTestFixture();
+-  }
+-
+-  void TearDown() override {
+-    mixin_host_.TearDown();
+-    ExtensionBrowserTest::TearDown();
+-  }
+-
+- protected:
+-  bool IsDisabledForCustodianApproval(const std::string& extension_id) {
+-    ExtensionPrefs* extension_prefs = ExtensionPrefs::Get(profile());
+-    return extension_prefs->HasDisableReason(
+-        extension_id,
+-        extensions::disable_reason::DISABLE_CUSTODIAN_APPROVAL_REQUIRED);
+-  }
+-
+- private:
+-  InProcessBrowserTestMixinHost mixin_host_;
+-
+-  // In order to simulate supervision removal and re-authentication use
+-  // supervised account in the PRE test and regular account afterwards.
+-  supervised_user::SupervisionMixin supervision_mixin_{
+-      mixin_host_,
+-      this,
+-      {.sign_in_mode =
+-           content::IsPreTest()
+-               ? supervised_user::SupervisionMixin::SignInMode::kSupervised
+-               : supervised_user::SupervisionMixin::SignInMode::kRegular}};
+-};
+-
+-// Removing supervision should also remove associated disable reasons, such as
+-// DISABLE_CUSTODIAN_APPROVAL_REQUIRED. Extensions should become enabled again
+-// after removing supervision. Prevents a regression to crbug/1045625.
+-IN_PROC_BROWSER_TEST_F(SupervisionRemovalExtensionTest,
+-                       PRE_RemoveCustodianApprovalRequirement) {
+-  supervised_user_test_util::
+-      SetSupervisedUserExtensionsMayRequestPermissionsPref(profile(), true);
+-
+-  ASSERT_TRUE(profile()->IsChild());
+-
+-  base::FilePath path = test_data_dir_.AppendASCII("good.crx");
+-  EXPECT_FALSE(LoadExtension(path));
+-  const Extension* extension =
+-      extension_registry()->GetInstalledExtension(kGoodCrxId);
+-  EXPECT_TRUE(extension);
+-
+-  // This extension is a supervised user initiated install and should remain
+-  // disabled.
+-  EXPECT_TRUE(extension_registry()->disabled_extensions().Contains(kGoodCrxId));
+-  EXPECT_TRUE(IsDisabledForCustodianApproval(kGoodCrxId));
+-}
+-
+-IN_PROC_BROWSER_TEST_F(SupervisionRemovalExtensionTest,
+-                       RemoveCustodianApprovalRequirement) {
+-  ASSERT_FALSE(profile()->IsChild());
+-
+-  // The extension should still be installed since we are sharing the same data
+-  // directory as the PRE test.
+-  const Extension* extension =
+-      extension_registry()->GetInstalledExtension(kGoodCrxId);
+-  EXPECT_TRUE(extension);
+-
+-  // The extension should be enabled now after removing supervision.
+-  EXPECT_TRUE(extension_registry()->enabled_extensions().Contains(kGoodCrxId));
+-  EXPECT_FALSE(
+-      extension_registry()->disabled_extensions().Contains(kGoodCrxId));
+-
+-  EXPECT_FALSE(IsDisabledForCustodianApproval(kGoodCrxId));
+-}
+-
+-}  // namespace extensions
+--- a/chrome/browser/supervised_user/supervised_user_extension_unittest.cc
++++ b/chrome/browser/supervised_user/supervised_user_extension_unittest.cc
+@@ -36,19 +36,18 @@
+ 
+ namespace extensions {
+ 
+-class SupervisedUserExtensionTest : public ExtensionServiceTestWithInstall,
+-                                    public testing::WithParamInterface<bool> {
++class SupervisedUserExtensionTest : public ExtensionServiceTestWithInstall {
+  public:
+   SupervisedUserExtensionTest() {
+-    if (extensions_permissions_for_supervised_users_on_desktop()) {
+-      feature.InitAndEnableFeature(
+-          supervised_user::
+-              kEnableExtensionsPermissionsForSupervisedUsersOnDesktop);
+-    } else {
+-      feature.InitAndDisableFeature(
+-          supervised_user::
+-              kEnableExtensionsPermissionsForSupervisedUsersOnDesktop);
+-    }
++    // This test suite assumes the extensions permissions feature is enabled for
++    // Desktop users except in tests where it is explicitly disabled.
++    // Extension permissions for supervised users are already enabled on
++    // ChromeOS.
++#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN)
++    feature_list_.InitAndEnableFeature(
++        supervised_user::
++            kEnableExtensionsPermissionsForSupervisedUsersOnDesktop);
++#endif
+   }
+ 
+  protected:
+@@ -128,15 +127,7 @@
+   const Extension* CheckDisabledForCustodianApproval(
+       const std::string& extension_id) {
+     EXPECT_TRUE(registry()->disabled_extensions().Contains(extension_id));
+-    if (extensions_permissions_for_supervised_users_on_desktop()) {
+-      EXPECT_TRUE(IsPendingCustodianApproval(extension_id));
+-    } else {
+-#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_CHROMEOS)
+-      EXPECT_TRUE(IsPendingCustodianApproval(extension_id));
+-#else
+-      EXPECT_FALSE(IsPendingCustodianApproval(extension_id));
+-#endif
+-    }
++    EXPECT_TRUE(IsPendingCustodianApproval(extension_id));
+     ExtensionPrefs* extension_prefs = ExtensionPrefs::Get(profile());
+     EXPECT_TRUE(extension_prefs->HasDisableReason(
+         extension_id, disable_reason::DISABLE_CUSTODIAN_APPROVAL_REQUIRED));
+@@ -145,15 +136,7 @@
+   const Extension* CheckDisabledForPermissionsIncrease(
+       const std::string& extension_id) {
+     EXPECT_TRUE(registry()->disabled_extensions().Contains(extension_id));
+-    if (extensions_permissions_for_supervised_users_on_desktop()) {
+-      EXPECT_TRUE(IsPendingCustodianApproval(extension_id));
+-    } else {
+-#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_CHROMEOS)
+-      EXPECT_TRUE(IsPendingCustodianApproval(extension_id));
+-#else
+-      EXPECT_FALSE(IsPendingCustodianApproval(extension_id));
+-#endif
+-    }
++    EXPECT_TRUE(IsPendingCustodianApproval(extension_id));
+     ExtensionPrefs* extension_prefs = ExtensionPrefs::Get(profile());
+     EXPECT_TRUE(extension_prefs->HasDisableReason(
+         extension_id, disable_reason::DISABLE_PERMISSIONS_INCREASE));
+@@ -164,10 +147,6 @@
+     return supervised_user_extensions_delegate_.get();
+   }
+ 
+-  bool extensions_permissions_for_supervised_users_on_desktop() const {
+-    return GetParam();
+-  }
+-
+  private:
+   // Returns true if the extension has disable reason permissions_increase or
+   // custodian_approval_required. Tests the Webstore Private Api.
+@@ -193,11 +172,11 @@
+   std::unique_ptr<SupervisedUserExtensionsDelegateImpl>
+       supervised_user_extensions_delegate_;
+ 
+-  base::test::ScopedFeatureList feature;
++  base::test::ScopedFeatureList feature_list_;
+ };
+ 
+ // Tests that regular users are not affecting supervised user UMA metrics.
+-TEST_P(SupervisedUserExtensionTest,
++TEST_F(SupervisedUserExtensionTest,
+        RegularUsersNotAffectingSupervisedUserMetrics) {
+   InitServices(/*profile_is_supervised=*/false);
+ 
+@@ -220,7 +199,7 @@
+ 
+ // Tests that simulating custodian approval for regular users doesn't cause any
+ // unexpected behavior.
+-TEST_P(SupervisedUserExtensionTest,
++TEST_F(SupervisedUserExtensionTest,
+        CustodianApprovalDoesNotAffectRegularUsers) {
+   InitServices(/*profile_is_supervised=*/false);
+   supervised_user_test_util::
+@@ -243,7 +222,7 @@
+ 
+ // Tests that adding supervision to a regular account (Gellerization) disables
+ // previously installed extensions.
+-TEST_P(SupervisedUserExtensionTest, ExtensionsDisabledAfterGellerization) {
++TEST_F(SupervisedUserExtensionTest, ExtensionsDisabledAfterGellerization) {
+   InitServices(/*profile_is_supervised=*/false);
+   supervised_user_test_util::
+       SetSupervisedUserExtensionsMayRequestPermissionsPref(profile(), true);
+@@ -278,7 +257,7 @@
+ // Tests that a child user is allowed to install extensions when pref
+ // kSupervisedUserExtensionsMayRequestPermissions is set to true, but that
+ // newly-installed extensions are disabled until approved by the parent.
+-TEST_P(SupervisedUserExtensionTest,
++TEST_F(SupervisedUserExtensionTest,
+        InstallAllowedButDisabledForSupervisedUser) {
+   InitServices(/*profile_is_supervised=*/true);
+   supervised_user_test_util::
+@@ -307,7 +286,7 @@
+ 
+ // Tests that supervised users may approve permission updates without parent
+ // approval if kSupervisedUserExtensionsMayRequestPermissions is true.
+-TEST_P(SupervisedUserExtensionTest, UpdateWithPermissionsIncrease) {
++TEST_F(SupervisedUserExtensionTest, UpdateWithPermissionsIncrease) {
+   InitServices(/*profile_is_supervised=*/true);
+   supervised_user_test_util::
+       SetSupervisedUserExtensionsMayRequestPermissionsPref(profile(), true);
+@@ -383,7 +362,7 @@
+ // disabled, resulting in the pref
+ // kSupervisedUserExtensionsMayRequestPermissions set to false, then child users
+ // cannot approve permission updates.
+-TEST_P(SupervisedUserExtensionTest,
++TEST_F(SupervisedUserExtensionTest,
+        ChildUserCannotApproveAdditionalPermissions) {
+   InitServices(/*profile_is_supervised=*/true);
+   // Keep the toggle on initially just to install the extension.
+@@ -442,7 +421,7 @@
+ 
+ // Tests that if an approved extension is updated to a newer version that
+ // doesn't require additional permissions, it is still enabled.
+-TEST_P(SupervisedUserExtensionTest, UpdateWithoutPermissionIncrease) {
++TEST_F(SupervisedUserExtensionTest, UpdateWithoutPermissionIncrease) {
+   InitServices(/*profile_is_supervised=*/true);
+   supervised_user_test_util::
+       SetSupervisedUserExtensionsMayRequestPermissionsPref(profile(), true);
+@@ -489,7 +468,7 @@
+ 
+ // Tests that the kApprovalGranted UMA metric only increments once without
+ // duplication for the same extension id.
+-TEST_P(SupervisedUserExtensionTest, DontTriggerMetricsIfAlreadyApproved) {
++TEST_F(SupervisedUserExtensionTest, DontTriggerMetricsIfAlreadyApproved) {
+   InitServices(/*profile_is_supervised=*/true);
+   supervised_user_test_util::
+       SetSupervisedUserExtensionsMayRequestPermissionsPref(profile(), true);
+@@ -547,7 +526,7 @@
+ // disabled, resulting in the pref
+ // kSupervisedUserExtensionsMayRequestPermissions set to false, then child users
+ // cannot install new extensions.
+-TEST_P(SupervisedUserExtensionTest, SupervisedUserCannotInstallExtension) {
++TEST_F(SupervisedUserExtensionTest, SupervisedUserCannotInstallExtension) {
+   InitServices(/*profile_is_supervised=*/true);
+   supervised_user_test_util::
+       SetSupervisedUserExtensionsMayRequestPermissionsPref(profile(), false);
+@@ -560,7 +539,7 @@
+ 
+ // Tests that disabling the "Permissions for sites, apps and extensions" toggle
+ // has no effect on regular users.
+-TEST_P(SupervisedUserExtensionTest, RegularUserCanInstallExtension) {
++TEST_F(SupervisedUserExtensionTest, RegularUserCanInstallExtension) {
+   InitServices(/*profile_is_supervised=*/false);
+   supervised_user_test_util::
+       SetSupervisedUserExtensionsMayRequestPermissionsPref(profile(), false);
+@@ -576,7 +555,7 @@
+ // disabled, resulting in the pref
+ // kSupervisedUserExtensionsMayRequestPermissions set to false, previously
+ // approved extensions are still enabled.
+-TEST_P(SupervisedUserExtensionTest, ToggleOffDoesNotAffectAlreadyEnabled) {
++TEST_F(SupervisedUserExtensionTest, ToggleOffDoesNotAffectAlreadyEnabled) {
+   InitServices(/*profile_is_supervised=*/true);
+   supervised_user_test_util::
+       SetSupervisedUserExtensionsMayRequestPermissionsPref(profile(), true);
+@@ -602,7 +581,7 @@
+ 
+ // Tests the case when the extension approval arrives through sync before the
+ // extension itself is installed.
+-TEST_P(SupervisedUserExtensionTest, ExtensionApprovalBeforeInstallation) {
++TEST_F(SupervisedUserExtensionTest, ExtensionApprovalBeforeInstallation) {
+   InitServices(/*profile_is_supervised=*/true);
+   supervised_user_test_util::
+       SetSupervisedUserExtensionsMayRequestPermissionsPref(profile(), true);
+@@ -622,7 +601,7 @@
+ // Tests that parent approval is necessary but not sufficient to enable
+ // extensions when both disable reasons custodian_approval_required and
+ // permissions_increase are present.
+-TEST_P(SupervisedUserExtensionTest, ParentApprovalNecessaryButNotSufficient) {
++TEST_F(SupervisedUserExtensionTest, ParentApprovalNecessaryButNotSufficient) {
+   InitServices(/*profile_is_supervised=*/true);
+   supervised_user_test_util::
+       SetSupervisedUserExtensionsMayRequestPermissionsPref(profile(), true);
+@@ -653,9 +632,5 @@
+   // The extension should be enabled.
+   CheckEnabled(id);
+ }
+-INSTANTIATE_TEST_SUITE_P(
+-    ExtensionsPermissionsForSupervisedUsersOnDesktopFeature,
+-    SupervisedUserExtensionTest,
+-    testing::Bool());
+ 
+ }  // namespace extensions
+--- a/chrome/browser/supervised_user/supervised_user_extensions_manager.cc
++++ b/chrome/browser/supervised_user/supervised_user_extensions_manager.cc
+@@ -276,7 +276,8 @@
+   supervised_user::SupervisedUserService* supervised_user_service =
+       SupervisedUserServiceFactory::GetForBrowserContext(context_);
+   is_active_policy_for_supervised_users_ =
+-      supervised_user_service->IsSubjectToParentalControls();
++      supervised_user_service &&
++      supervised_user_service->AreExtensionsPermissionsEnabled();
+ }
+ 
+ void SupervisedUserExtensionsManager::
+--- a/chrome/test/BUILD.gn
++++ b/chrome/test/BUILD.gn
+@@ -4032,7 +4032,7 @@
+       ]
+       if (enable_extensions) {
+         sources += [
+-          "../browser/supervised_user/supervised_user_extension_browsertest.cc",
++          "../browser/supervised_user/linux_mac_windows/supervised_user_extension_browsertest.cc",
+           "../browser/ui/views/supervised_user/extension_install_blocked_by_parent_dialog_browsertest.cc",
+           "../browser/ui/views/supervised_user/parent_permission_dialog_view_browsertest.cc",
+           "../browser/ui/views/supervised_user/parent_permission_extension_flow_view_browsertest.cc",

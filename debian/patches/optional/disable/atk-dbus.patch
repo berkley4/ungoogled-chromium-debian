@@ -188,7 +188,7 @@
  // registerService:
 --- a/services/device/wake_lock/power_save_blocker/BUILD.gn
 +++ b/services/device/wake_lock/power_save_blocker/BUILD.gn
-@@ -87,6 +87,9 @@
+@@ -88,6 +88,9 @@
      visibility = [ ":power_save_blocker" ]
      sources = java_sources_needing_jni
    }
@@ -208,15 +208,11 @@
        "//ui/linux:linux_ui",
      ]
      if (use_dbus) {
-@@ -64,7 +63,10 @@
-         "select_file_dialog_linux_portal.cc",
+@@ -65,7 +64,6 @@
          "select_file_dialog_linux_portal.h",
        ]
--      deps += [ "//dbus" ]
-+      deps += [
-+        "//components/dbus/thread_linux",
-+        "//dbus",
-+      ]
+       deps += [
+-        "//dbus",
+         "//ui/views",
+       ]
      }
-   }
- 

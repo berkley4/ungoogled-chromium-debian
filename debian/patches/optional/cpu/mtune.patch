@@ -1,10 +1,10 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1111,6 +1111,7 @@
-         "-maes",
-         "-mpclmul",
-         "-march=x86-64-v2",
-+        "-mtune=generic",
-       ]
-       ldflags += [ "-m64" ]
-     } else if (current_cpu == "x86") {
+@@ -1136,6 +1136,7 @@
+           "-maes",
+           "-mpclmul",
+           "-march=x86-64-v2",
++          "-mtune=generic",
+         ]
+       }
+ 

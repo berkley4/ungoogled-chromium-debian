@@ -1,12 +1,14 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1108,7 +1108,8 @@
-     if (current_cpu == "x64") {
-       cflags += [
-         "-m64",
--        "-msse3",
-+        "-maes",
-+        "-mpclmul",
-       ]
+@@ -1132,7 +1132,10 @@
+       if (is_chromeos_lacros) {
+         cflags += [ "-msse4.2" ]
+       } else {
+-        cflags += [ "-msse3" ]
++        cflags += [
++          "-maes",
++          "-mpclmul",
++        ]
+       }
+ 
        ldflags += [ "-m64" ]
-     } else if (current_cpu == "x86") {

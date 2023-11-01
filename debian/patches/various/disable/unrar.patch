@@ -4,7 +4,7 @@ bug: http://bugs.debian.org/914487
 
 --- a/chrome/common/safe_browsing/BUILD.gn
 +++ b/chrome/common/safe_browsing/BUILD.gn
-@@ -137,7 +137,6 @@
+@@ -143,7 +143,6 @@
        "//components/safe_browsing/content/common:file_type_policies",
        "//components/safe_browsing/core/common",
        "//third_party/lzma_sdk/google:seven_zip_reader",
@@ -93,7 +93,7 @@ bug: http://bugs.debian.org/914487
    safe_browsing::dmg::DMGAnalyzer dmg_analyzer_;
 --- a/chrome/services/file_util/public/cpp/BUILD.gn
 +++ b/chrome/services/file_util/public/cpp/BUILD.gn
-@@ -13,8 +13,6 @@
+@@ -14,8 +14,6 @@
  
    if (safe_browsing_mode == 1) {
      sources = [

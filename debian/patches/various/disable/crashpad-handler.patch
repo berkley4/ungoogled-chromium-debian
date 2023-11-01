@@ -20,7 +20,7 @@
          }
  
          ldflags = []
-@@ -1755,7 +1753,6 @@
+@@ -1751,7 +1749,6 @@
        deps = [
          ":angle_egl_symbols",
          ":angle_gles_symbols",
@@ -28,7 +28,7 @@
          ":chrome_symbols",
        ]
        if (is_linux) {
-@@ -1779,18 +1776,6 @@
+@@ -1775,18 +1772,6 @@
  
        deps = [ ":chrome" ]
      }
@@ -49,7 +49,7 @@
        binary = "$root_out_dir/libvk_swiftshader.so"
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -4700,7 +4700,7 @@
+@@ -4775,7 +4775,7 @@
        ]
      }
  
@@ -60,7 +60,7 @@
  
 --- a/headless/BUILD.gn
 +++ b/headless/BUILD.gn
-@@ -543,7 +543,7 @@
+@@ -539,7 +539,7 @@
      deps += [ "//sandbox" ]
    }
  

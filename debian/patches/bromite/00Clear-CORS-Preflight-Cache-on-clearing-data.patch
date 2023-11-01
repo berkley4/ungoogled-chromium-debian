@@ -73,7 +73,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  const base::TickClock* tick_clock_for_testing = nullptr;
 --- a/services/network/network_context.cc
 +++ b/services/network/network_context.cc
-@@ -1128,6 +1128,8 @@
+@@ -1125,6 +1125,8 @@
        base::BindOnce(&NetworkContext::OnHttpCacheCleared,
                       base::Unretained(this), std::move(callback))));
  

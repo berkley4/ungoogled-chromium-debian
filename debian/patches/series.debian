@@ -7,6 +7,7 @@
 
 debianization/master-preferences.patch
 
+fixes/atspi.patch
 fixes/ps-print.patch
 
 disable/android.patch
@@ -24,6 +25,7 @@ bromite/00Clear-CORS-Preflight-Cache-on-clearing-data.patch
 bromite/00Deprecate-Data-URL-in-SVGUseElement.patch
 bromite/00Disable-Component-Updates.patch
 bromite/00Disable-csp-reports.patch
+bromite/00Keep-Manta-Service-Disabled.patch
 bromite/00Partition-MediaDeviceId-by-default.patch
 bromite/Add-site-engagement-flag.patch
 bromite/AudioBuffer-AnalyserNode-fp-mitigations.patch
@@ -52,6 +54,7 @@ bromite/updater-disable-updater-pings.patch
 vanadium/0003-switch-to-fstack-protector-strong.patch
 vanadium/0004-enable-fwrapv-in-Clang-for-non-UBSan-builds.patch
 vanadium/0024-disable-showing-popular-sites-by-default.patch
+vanadium/0025-disable-article-suggestions-feature-by-default.patch
 vanadium/0027-disable-sensors-access-by-default.patch
 vanadium/0030-disable-background-sync-by-default.patch
 vanadium/0032-disable-media-router-media-remoting-by-default.patch
@@ -59,18 +62,15 @@ vanadium/0033-disable-media-router-by-default.patch
 vanadium/0039-disable-media-DRM-preprovisioning-by-default.patch
 vanadium/0041-enable-split-cache-by-default.patch
 vanadium/0042-enable-partitioning-connections-by-default.patch
-vanadium/0043-enable-new-third-party-storage-partitioning.patch
-vanadium/0046-disable-component-updater-pings-by-default.patch
-vanadium/0050-stub-out-the-battery-status-API.patch
-vanadium/0080-Enable-strict-origin-isolation-by-default.patch
-vanadium/0086-enable-process-isolated-sandboxed-iframes-by-default.patch
-vanadium/0108-Block-partitioned-third-party-cookies-as-well-when-b.patch
+vanadium/0045-disable-component-updater-pings-by-default.patch
+vanadium/0049-stub-out-the-battery-status-API.patch
+vanadium/0079-Enable-strict-origin-isolation-by-default.patch
+vanadium/0085-enable-process-isolated-sandboxed-iframes-by-default.patch
 
 various/fix-unbundle-script-dh-clean-interoperabilty.patch
 various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
 various/template-correction.patch
 various/bromite/autofill-miscellaneous.patch
-various/bromite/Disable-all-predictors-code.patch
 various/bromite/Disable-conversion-measurement-api.patch
 various/bromite/Disable-various-metrics.patch
 various/bromite/Do-not-build-API-keys-infobar.patch
@@ -113,10 +113,6 @@ various/system/extra/libdrm.patch
 various/system/extra/opus.patch
 various/system/extra/zlib.patch
 various/upstream/0001-RaceNetworkRequest-is-triggered-only-when-the-scheme-is-HTTP-or-HTTPS.patch
-various/upstream/0002-gpu-Fix-potential-CurrentGL-dangling-pointer.patch
-various/upstream/0003-GL-Free-the-X11-pixmap-in-the-NativePixmapEGLX11Binding.patch
-various/upstream/0004-Add-check-for-use_system_freetype-when-importing-private-freetype-header.patch
-various/vanadium/disable-article-suggestions-feature-by-default.patch
 various/vanadium/disable-content-feed-suggestions-by-default.patch
 
 optional/mutex-priority-inheritance.patch
@@ -162,6 +158,5 @@ optional/translate/translate-revert-disable.patch
 optional/translate/translate-stop-unsupported-switch-warning.patch
 #optional/no-ELOC_PROTO-mnemonic.patch
 
-addenda/0001-b4480b3.diff
-addenda/0002-f536dbe.diff
-addenda/0003-1083844.diff
+addenda/0001-2be8105.diff
+addenda/0002-63a7678.diff

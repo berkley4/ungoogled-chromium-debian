@@ -28,7 +28,7 @@ Cr-Commit-Position: refs/heads/main@{#1191942}
 
 --- a/content/browser/service_worker/service_worker_main_resource_loader.cc
 +++ b/content/browser/service_worker/service_worker_main_resource_loader.cc
-@@ -496,6 +496,12 @@
+@@ -499,6 +499,12 @@
      return false;
    }
  
@@ -43,7 +43,7 @@ Cr-Commit-Position: refs/heads/main@{#1191942}
    mojo::PendingRemote<network::mojom::URLLoaderClient> forwarding_client;
 --- a/content/renderer/service_worker/service_worker_subresource_loader.cc
 +++ b/content/renderer/service_worker/service_worker_subresource_loader.cc
-@@ -229,6 +229,12 @@
+@@ -230,6 +230,12 @@
      return false;
    }
  
