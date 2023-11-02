@@ -610,7 +610,7 @@ if [ $STABLE -eq 1 ]; then
   SYS_ICU=0
 
   op_disable="$op_disable system/unstable/dav1d/"
-  op_enable="system/dav1d-bundled-header"
+  op_enable="$op_enable system/dav1d-bundled-header"
 
   sys_disable="$sys_disable dav1d"
   deps_disable="$deps_disable libdav1d"
