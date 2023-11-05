@@ -515,7 +515,7 @@ fi
 
 
 if [ $XZ_EXTREME -eq 1 ]; then
-  if [ -z "$(grep "dh_builddeb.*-S extreme" $DEBIAN/rules.in)" ]; then
+  if [ -z "$(sed -n '/dh_builddeb.*-S extreme/p' $DEBIAN/rules.in)" ]; then
     RUL="$RUL -e \"s@^\([ \t]*dh_builddeb.*\)@\1 -S extreme@\""
   fi
 
@@ -523,7 +523,7 @@ if [ $XZ_EXTREME -eq 1 ]; then
 fi
 
 if [ $XZ_THREADED -eq 1 ]; then
-  if [ -z "$(grep "dh_builddeb.*--threads-max=" $DEBIAN/rules.in)" ]; then
+  if [ -z "$(sed -n '/dh_builddeb.*--threads-max=/p' $DEBIAN/rules.in)" ]; then
     RUL="$RUL -e \"s@^\([ \t]*dh_builddeb.*\)@\1 --threads-max=\x24(JOBS)@\""
   fi
 fi
@@ -670,7 +670,7 @@ SMF="$SMF -e \"/^google_default_client_secret/d\""
 
 if [ $PGO -eq 1 ]; then
   SMF="$SMF -e \"/^chrome_pgo_phase/d\""
-  if [ -z "$(grep ^pgo_data_path $UC_DIR/flags.gn)" ]; then
+  if [ -z "$(sed -n '/^pgo_data_path/p' $UC_DIR/flags.gn)" ]; then
     SMF="$SMF -e \"$ a\pgo_data_path=\x22$PGO_PATH\x22\""
   fi
 fi
