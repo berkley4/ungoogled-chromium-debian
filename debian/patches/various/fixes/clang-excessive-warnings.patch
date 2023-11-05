@@ -1,0 +1,20 @@
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -1793,6 +1793,17 @@
+       "-Wno-unused-parameter",  # Unused function parameters.
+     ]
+ 
++    if (is_linux && is_clang) {
++      cflags += [
++        # Clang 18 excessive warnings
++        "-Wno-deprecated-copy",
++        "-Wno-include-angled-in-module-purview",
++        "-Wno-invalid-offsetof",
++        "-Wno-thread-safety-reference-return",
++        "-Wno-vla-cxx-extension",
++      ]
++    }
++
+     if (!is_nacl || is_nacl_saigo) {
+       cflags += [
+         # An ABI compat warning we don't care about, https://crbug.com/1102157
