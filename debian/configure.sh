@@ -27,6 +27,7 @@ RT_DIR=$(dirname $DEBIAN)
 
 MP_DIR=$DEBIAN/misc_patches
 UC_DIR=$DEBIAN/submodules/ungoogled-chromium
+UC_PATCH_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 
 INSTALL=ungoogled-chromium.install
 
@@ -830,7 +831,6 @@ fi
 
 ## Copy upstream UC patches into debian/patches
 if [ ! -d $DEBIAN/patches/core ] || [ ! -d $DEBIAN/patches/extra ]; then
-  UC_PATCH_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
   if [ -d $UC_DIR/patches/upstream ]; then
     UC_PATCH_DIRS="$UC_PATCH_DIRS $UC_DIR/patches/upstream"
   fi
