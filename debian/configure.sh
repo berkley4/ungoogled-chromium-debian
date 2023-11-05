@@ -3,17 +3,10 @@ set -e
 
 arch_patches=
 
-gn_disable=
-gn_enable=
-
-sys_disable=
-sys_enable=
-
-deps_disable=
-deps_enable=
-
-op_disable=
-op_enable=
+deps_disable=; deps_enable=
+gn_disable=; gn_enable=
+op_disable=; op_enable=
+sys_disable=; sys_enable=
 
 C_VER_SET=0
 MARCH_SET=0
