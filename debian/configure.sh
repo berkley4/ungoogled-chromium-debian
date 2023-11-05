@@ -287,13 +287,13 @@ else
     deps_enable="$deps_enable lld clang libclang-rt"
     op_enable="$op_enable system/clang/rust-clanglib"
 
-    # Grab the clang version used in debian/control.in and debian/rules
+    # Grab the clang version used in debian/control.in and debian/rules.in
     CC_VER=$C_VER_ORIG
-    CR_VER=$(sed -n 's@.*LLVM_DIR.*/llvm-\([^/]*\)/bin@\1@p' $DEBIAN/rules)
+    CR_VER=$(sed -n 's@.*LLVM_DIR.*/llvm-\([^/]*\)/bin@\1@p' $DEBIAN/rules.in)
 
     # Clang/LLVM version sanity chack
     if [ $CC_VER -ne $CR_VER ]; then
-      printf '%s\n' "Clang/LLVM version mismatch in d/control.in and d/rules"
+      printf '%s\n' "Clang/LLVM version mismatch in d/control.in and d/rules.in"
       exit 1
     fi
 
@@ -515,7 +515,7 @@ fi
 
 
 if [ $XZ_EXTREME -eq 1 ]; then
-  if [ -z "$(grep "dh_builddeb.*-S extreme" $DEBIAN/rules)" ]; then
+  if [ -z "$(grep "dh_builddeb.*-S extreme" $DEBIAN/rules.in)" ]; then
     RUL="$RUL -e \"s@^\([ \t]*dh_builddeb.*\)@\1 -S extreme@\""
   fi
 
@@ -523,7 +523,7 @@ if [ $XZ_EXTREME -eq 1 ]; then
 fi
 
 if [ $XZ_THREADED -eq 1 ]; then
-  if [ -z "$(grep "dh_builddeb.*--threads-max=" $DEBIAN/rules)" ]; then
+  if [ -z "$(grep "dh_builddeb.*--threads-max=" $DEBIAN/rules.in)" ]; then
     RUL="$RUL -e \"s@^\([ \t]*dh_builddeb.*\)@\1 --threads-max=\x24(JOBS)@\""
   fi
 fi
@@ -794,13 +794,13 @@ echo "$(cat $UC_DIR/patches/series)" "$SERIES_DEBIAN" > $DEBIAN/patches/series
 
 eval sed $CON < $DEBIAN/control.in > $DEBIAN/control
 
+eval sed $RUL < $DEBIAN/rules.in > $DEBIAN/rules
+
 eval sed $DSB -i $UC_DIR/domain_substitution.list
 
 eval sed $SMF -i $UC_DIR/flags.gn
 
 eval sed $PRU -i $UC_DIR/pruning.list
-
-eval sed $RUL -i $DEBIAN/rules
 
 
 
@@ -808,10 +808,13 @@ eval sed $RUL -i $DEBIAN/rules
 ##  Prepare miscellaneous files  ##
 ###################################
 
-## Create control and ungoogled-chromium.install if they don't yet exist
+## Create control, rules and ungoogled-chromium.install if they don't yet exist
 [ -f $DEBIAN/control ] || cp -a $DEBIAN/control.in $DEBIAN/control
-
+[ -f $DEBIAN/rules ] || cp -a $DEBIAN/rules.in $DEBIAN/rules
 [ -f $DEBIAN/$INSTALL ] || cp -a $DEBIAN/$INSTALL.in $DEBIAN/$INSTALL
+
+# Make sure rules and ungoogled-chromium.install are executable
+[ -x $DEBIAN/rules ] || chmod 0700 $DEBIAN/rules
 [ -x $DEBIAN/$INSTALL ] || chmod 0700 $DEBIAN/$INSTALL
 
 
