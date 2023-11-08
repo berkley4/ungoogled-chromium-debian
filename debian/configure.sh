@@ -13,6 +13,7 @@ MARCH_SET=0
 MTUNE_SET=0
 POLLY_EXT_SET=0
 RELEASE_SET=0
+SYS_FREETYPE_SET=0
 XZ_THREADED_SET=0
 
 DEBIAN=$(dirname $0)
@@ -72,10 +73,11 @@ real_dir_path () (
 
 [ -n "$SYS_CLANG" ] || SYS_CLANG=0
 [ -n "$SYS_FFMPEG" ] || SYS_FFMPEG=0
-[ -n "$SYS_FREETYPE" ] || SYS_FREETYPE=0
 [ -n "$SYS_ICU" ] || SYS_ICU=0
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
 
+# Allow freetype setting to be force-enabled (for stable builds)
+[ -n "$SYS_FREETYPE" ] && SYS_FREETYPE_SET=1 || SYS_FREETYPE=1
 
 ## MARCH and MTUNE defaults
 [ -n "$MARCH" ] && MARCH_SET=1 || MARCH=x86-64-v2
@@ -602,6 +604,9 @@ fi
 
 if [ $STABLE -eq 1 ]; then
   SYS_ICU=0
+
+  # Disable by default if not force-enabled
+  [ $SYS_FREETYPE_SET -eq 1 ] && [ $SYS_FREETYPE -eq 1 ] || SYS_FREETYPE=0
 
   op_disable="$op_disable system/unstable/dav1d/"
   op_enable="$op_enable system/dav1d-bundled-header"
