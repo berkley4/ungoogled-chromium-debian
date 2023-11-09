@@ -8,7 +8,7 @@
  #include "media/gpu/vaapi/h264_vaapi_video_encoder_delegate.h"
  #include "media/gpu/vaapi/va_surface.h"
  #include "media/gpu/vaapi/vaapi_common.h"
-@@ -199,7 +198,7 @@
+@@ -207,7 +206,7 @@
  
    const VideoCodec codec = VideoCodecProfileToVideoCodec(config.output_profile);
    if (codec != VideoCodec::kH264 && codec != VideoCodec::kVP8 &&
@@ -17,7 +17,7 @@
      MEDIA_LOG(ERROR, media_log.get())
          << "Unsupported profile: " << GetProfileName(config.output_profile);
      return false;
-@@ -292,7 +291,6 @@
+@@ -300,7 +299,6 @@
          break;
        case VideoCodec::kVP8:
        case VideoCodec::kVP9:
@@ -25,7 +25,7 @@
          mode = VaapiWrapper::kEncodeConstantQuantizationParameter;
          break;
        default:
-@@ -355,12 +353,6 @@
+@@ -363,12 +361,6 @@
              vaapi_wrapper_, error_cb);
        }
        break;
@@ -38,7 +38,7 @@
      default:
        NOTREACHED() << "Unsupported codec type " << GetCodecName(output_codec_);
        return;
-@@ -832,10 +824,6 @@
+@@ -840,10 +832,6 @@
      case VideoCodec::kVP9:
        picture = new VaapiVP9Picture(std::move(reconstructed_surface));
        break;
@@ -51,7 +51,7 @@
    }
 --- a/media/gpu/BUILD.gn
 +++ b/media/gpu/BUILD.gn
-@@ -374,10 +374,7 @@
+@@ -378,10 +378,7 @@
        "vp9_svc_layers.h",
      ]
      configs += [ "//third_party/libvpx:libvpx_config" ]
@@ -65,7 +65,7 @@
      sources += [
 --- a/media/gpu/vaapi/BUILD.gn
 +++ b/media/gpu/vaapi/BUILD.gn
-@@ -34,8 +34,6 @@
+@@ -38,8 +38,6 @@
    sources = [
      "av1_vaapi_video_decoder_delegate.cc",
      "av1_vaapi_video_decoder_delegate.h",
@@ -74,7 +74,7 @@
      "h264_vaapi_video_decoder_delegate.cc",
      "h264_vaapi_video_decoder_delegate.h",
      "h264_vaapi_video_encoder_delegate.cc",
-@@ -97,7 +95,6 @@
+@@ -101,7 +99,6 @@
      "//media/gpu/chromeos:common",
      "//media/parsers",
      "//mojo/public/cpp/bindings",
