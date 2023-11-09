@@ -630,8 +630,6 @@ fi
 
 
 if [ $SYS_FREETYPE -eq 0 ]; then
-  op_disable="$op_disable system/unstable/extra/brotli"
-
   # SYS_LIBS += fontconfig freetype brotli libpng
   sys_disable="$sys_disable fontconfig"
   deps_disable="$deps_disable libfontconfig brotli"

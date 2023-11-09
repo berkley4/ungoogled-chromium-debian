@@ -16,9 +16,7 @@ disable/swiftshader.patch
 disable/swiftshader-2.patch
 disable/widevine-cdm-cu.patch
 
-system/event.patch
 system/openjpeg.patch
-system/opus.patch
 system/zlib.patch
 
 bromite/00Clear-CORS-Preflight-Cache-on-clearing-data.patch
@@ -110,10 +108,8 @@ various/system/libusb-api.patch
 various/system/minizip.patch
 various/system/perfetto-system-zlib.patch
 various/system/xdg-scripts.patch
+various/system/libdrm.patch
 various/system/zlib.patch
-various/system/extra/libdrm.patch
-various/system/extra/opus.patch
-various/system/extra/zlib.patch
 various/upstream/0001-RaceNetworkRequest-is-triggered-only-when-the-scheme-is-HTTP-or-HTTPS.patch
 various/vanadium/disable-content-feed-suggestions-by-default.patch
 
@@ -148,13 +144,11 @@ optional/system/openh264.patch
 #optional/system/clang/rust-clanglib.patch
 optional/system/unstable/dav1d/dav1d.patch
 optional/system/unstable/dav1d/dav1d-bundled-libavif.patch
-optional/system/unstable/extra/brotli.patch
 #optional/system/unstable/ffmpeg/ffmpeg-first_dts.patch
 #optional/system/unstable/ffmpeg/roll-src-third_party-ffmpeg-102.patch
 #optional/system/unstable/ffmpeg/roll-src-third_party-ffmpeg-106.patch
 optional/system/unstable/icu/convertutf.patch
 optional/system/unstable/icu/icu.patch
-optional/system/unstable/icu/icu-headers.patch
 optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
 optional/system/vaapi/vaapi-disable-libaom-encoding.patch
 optional/translate/translate-revert-disable.patch
