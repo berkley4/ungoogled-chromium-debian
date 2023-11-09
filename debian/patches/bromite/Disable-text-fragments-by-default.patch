@@ -21,7 +21,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -7186,6 +7186,11 @@
+@@ -7203,6 +7203,11 @@
       flag_descriptions::kLegacyTechReportTopLevelUrlDescription, kOsAll,
       FEATURE_VALUE_TYPE(features::kLegacyTechReportTopLevelUrl)},
  
@@ -35,7 +35,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       flag_descriptions::kEnableWebAuthenticationChromeOSAuthenticatorName,
 --- a/chrome/browser/flag-metadata.json
 +++ b/chrome/browser/flag-metadata.json
-@@ -3247,6 +3247,11 @@
+@@ -3252,6 +3252,11 @@
      "expiry_milestone": 130
    },
    {

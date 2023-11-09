@@ -1,0 +1,41 @@
+From 1e397bbaaeddaee77b2381a4cd9e030c6948301c Mon Sep 17 00:00:00 2001
+From: Nidhi Jaju <nidhijaju@chromium.org>
+Date: Wed, 08 Nov 2023 06:37:19 +0000
+Subject: [PATCH] [Merge to M119] Make URLSearchParams persistent to avoid UaF
+
+The URLSearchParams::Create() function returns an on-heap object, but it
+can be garbage collected, so making it a persistent variable in
+DidFetchDataLoadedString() mitigates the issue.
+
+(cherry picked from commit 8b1bd7726a1394e2fe287f6a882822d8ee9d4e96)
+
+Bug: 1497997
+Change-Id: I3c27ba18b9c46d22d841e06f4a91bcc360aad287
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4996929
+Reviewed-by: Adam Rice <ricea@chromium.org>
+Commit-Queue: Nidhi Jaju <nidhijaju@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1218682}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5009227
+Commit-Queue: Adam Rice <ricea@chromium.org>
+Auto-Submit: Nidhi Jaju <nidhijaju@chromium.org>
+Cr-Commit-Position: refs/branch-heads/6045@{#1260}
+Cr-Branched-From: 905e8bdd32d891451d94d1ec71682e989da2b0a1-refs/heads/main@{#1204232}
+---
+
+--- a/third_party/blink/renderer/core/fetch/body.cc
++++ b/third_party/blink/renderer/core/fetch/body.cc
+@@ -135,8 +135,13 @@
+ 
+   void DidFetchDataLoadedString(const String& string) override {
+     auto* formData = MakeGarbageCollected<FormData>();
+-    for (const auto& pair : URLSearchParams::Create(string)->Params())
++    // URLSearchParams::Create() returns an on-heap object, but it can be
++    // garbage collected, so making it a persistent variable on the stack
++    // mitigates use-after-free scenarios. See crbug.com/1497997.
++    Persistent<URLSearchParams> search_params = URLSearchParams::Create(string);
++    for (const auto& pair : search_params->Params()) {
+       formData->append(pair.first, pair.second);
++    }
+     DidFetchDataLoadedFormData(formData);
+   }
+ };

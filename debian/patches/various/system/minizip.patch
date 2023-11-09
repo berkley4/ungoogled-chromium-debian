@@ -1,0 +1,60 @@
+--- a/third_party/tflite_support/src/tensorflow_lite_support/metadata/cc/metadata_extractor.cc
++++ b/third_party/tflite_support/src/tensorflow_lite_support/metadata/cc/metadata_extractor.cc
+@@ -28,9 +28,8 @@
+ #include "tensorflow_lite_support/cc/port/status_macros.h"
+ #include "tensorflow_lite_support/metadata/cc/utils/zip_readonly_mem_file.h"
+ #include "tensorflow_lite_support/metadata/metadata_schema_generated.h"
+-#include "third_party/zlib/contrib/minizip/ioapi.h"
+-#include "third_party/zlib/contrib/minizip/unzip.h"
+-
++#include <minizip/ioapi.h>
++#include <minizip/unzip.h>
+ 
+ namespace tflite {
+ namespace metadata {
+--- a/third_party/tflite_support/src/tensorflow_lite_support/metadata/cc/metadata_populator.cc
++++ b/third_party/tflite_support/src/tensorflow_lite_support/metadata/cc/metadata_populator.cc
+@@ -26,8 +26,8 @@
+ #include "tensorflow_lite_support/cc/port/statusor.h"
+ #include "tensorflow_lite_support/metadata/cc/utils/zip_writable_mem_file.h"
+ #include "tensorflow_lite_support/metadata/metadata_schema_generated.h"
+-#include "third_party/zlib/contrib/minizip/ioapi.h"
+-#include "third_party/zlib/contrib/minizip/unzip.h"
++#include <minizip/ioapi.h>
++#include <minizip/zip.h>
+ 
+ namespace tflite {
+ namespace metadata {
+--- a/third_party/tflite_support/src/tensorflow_lite_support/metadata/cc/utils/zip_readonly_mem_file.cc
++++ b/third_party/tflite_support/src/tensorflow_lite_support/metadata/cc/utils/zip_readonly_mem_file.cc
+@@ -19,7 +19,7 @@
+ #include <cstdio>
+ 
+ #include "absl/strings/string_view.h"  // from @com_google_absl
+-#include "third_party/zlib/contrib/minizip/ioapi.h"
++#include <minizip/ioapi.h>
+ 
+ namespace tflite {
+ namespace metadata {
+--- a/third_party/tflite_support/src/tensorflow_lite_support/metadata/cc/utils/zip_writable_mem_file.cc
++++ b/third_party/tflite_support/src/tensorflow_lite_support/metadata/cc/utils/zip_writable_mem_file.cc
+@@ -19,7 +19,7 @@
+ #include <cstdio>
+ 
+ #include "absl/strings/string_view.h"  // from @com_google_absl
+-#include "third_party/zlib/contrib/minizip/ioapi.h"
++#include <minizip/ioapi.h>
+ 
+ namespace tflite {
+ namespace metadata {
+--- a/third_party/tflite_support/src/tensorflow_lite_support/metadata/cc/utils/zip_writable_mem_file.h
++++ b/third_party/tflite_support/src/tensorflow_lite_support/metadata/cc/utils/zip_writable_mem_file.h
+@@ -19,7 +19,7 @@
+ #include <cstdlib>
+ 
+ #include "absl/strings/string_view.h"  // from @com_google_absl
+-#include "third_party/zlib/contrib/minizip/ioapi.h"
++#include <minizip/ioapi.h>
+ 
+ namespace tflite {
+ namespace metadata {

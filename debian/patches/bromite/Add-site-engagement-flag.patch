@@ -28,7 +28,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "components/shared_highlighting/core/common/shared_highlighting_features.h"
  #include "components/signin/core/browser/dice_account_reconcilor_delegate.h"
  #include "components/signin/public/base/signin_buildflags.h"
-@@ -9794,6 +9795,11 @@
+@@ -9815,6 +9816,11 @@
                                      kLargeFaviconFromGoogleVariations,
                                      "LargeFaviconFromGoogle")},
  

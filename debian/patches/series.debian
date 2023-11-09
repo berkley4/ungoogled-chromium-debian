@@ -107,6 +107,7 @@ various/fixes/xdg-basedir.patch
 various/launchpad/dont-collect-motherboard-metrics.patch
 various/system/libusb.patch
 various/system/libusb-api.patch
+various/system/minizip.patch
 various/system/perfetto-system-zlib.patch
 various/system/xdg-scripts.patch
 various/system/zlib.patch
@@ -159,5 +160,4 @@ optional/translate/translate-revert-disable.patch
 optional/translate/translate-stop-unsupported-switch-warning.patch
 #optional/no-ELOC_PROTO-mnemonic.patch
 
-addenda/0001-2be8105.diff
-addenda/0002-63a7678.diff
+addenda/0001-1e397bb.diff
