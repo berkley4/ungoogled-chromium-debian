@@ -42,6 +42,7 @@ DRIVER		1		Chromedriver package
 
 EXT_TOOLS_MENU	1		Move the extensions menu to the 'More tools' menu
 MUTEX_PI	1		Mutex priority inheritance
+OAUTH2		0		Enable OAuth 2.0 client switches
 OOP_PR		0		Out of process printing (X11 only)
 OZONE_WAYLAND	1		Wayland ozone platform
 PDF_JS		0		PDF javascript support

@@ -56,6 +56,7 @@ real_dir_path () (
 [ -n "$DRIVER" ] || DRIVER=1
 [ -n "$EXT_TOOLS_MENU" ] || EXT_TOOLS_MENU=1
 [ -n "$MUTEX_PI" ] || MUTEX_PI=1
+[ -n "$OAUTH2" ] || OAUTH2=0
 [ -n "$OOP_PR" ] || OOP_PR=0
 [ -n "$OZONE_WAYLAND" ] || OZONE_WAYLAND=1
 [ -n "$PDF_JS" ] || PDF_JS=0
@@ -455,6 +456,11 @@ fi
 if [ $MUTEX_PI -eq 0 ]; then
   op_disable="$op_disable mutex-priority-inheritance"
   gn_disable="$gn_disable enable_mutex_priority_inheritance"
+fi
+
+
+if [ $OAUTH2 -eq 1 ]; then
+  op_enable="$op_enable use-oauth2-client-switches-as-default"
 fi
 
 
