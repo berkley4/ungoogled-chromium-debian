@@ -758,8 +758,8 @@ fi
 if [ -n "$op_disable" ]; then
   for i in $op_disable; do
     case $i in
-      */)
-        SER="$SER -e \"s@^\(optional/${i}\)@#\1@\""
+      */|*.patch)
+        SER="$SER -e \"s@^\(optional/$i\)@#\1@\""
         ;;
 
       *)
@@ -772,8 +772,8 @@ fi
 if [ -n "$op_enable" ]; then
   for i in $op_enable; do
     case $i in
-      */)
-        SER="$SER -e \"s@^#\(optional/${i}\)@\1@\""
+      */|*.patch)
+        SER="$SER -e \"s@^#\(optional/$i\)@\1@\""
         ;;
 
       *)
