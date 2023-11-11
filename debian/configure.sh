@@ -788,13 +788,29 @@ fi
 
 if [ -n "$gn_disable" ]; then
   for i in $gn_disable; do
-    RUL="$RUL -e \"s@^\(GN_FLAGS += ${i}=\)@#\1@\""
+    case $i in
+      *=true|*=false)
+        RUL="$RUL -e \"s@^\(GN_FLAGS += $i\)@#\1@\""
+        ;;
+
+      *)
+        RUL="$RUL -e \"s@^\(GN_FLAGS += ${i}=\)@#\1@\""
+        ;;
+    esac
   done
 fi
 
 if [ -n "$gn_enable" ]; then
   for i in $gn_enable; do
-    RUL="$RUL -e \"s@^#\(GN_FLAGS += ${i}=\)@\1@\""
+    case $i in
+      *=true|*=false)
+        RUL="$RUL -e \"s@^#\(GN_FLAGS += $i\)@\1@\""
+        ;;
+
+      *)
+        RUL="$RUL -e \"s@^#\(GN_FLAGS += ${i}=\)@\1@\""
+        ;;
+    esac
   done
 fi
 
