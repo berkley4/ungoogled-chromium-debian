@@ -75,8 +75,20 @@ GN_FLAGS +=                                     \
 # Disable atk/dbus
 #GN_FLAGS += use_atk=false use_dbus=false
 
+# Disable click-to-call
+#GN_FLAGS += enable_click_to_call=false
+
+# Disable feed v2
+#GN_FLAGS += enable_feed_v2=false
+
 # Enable mutex priority inheritance
 GN_FLAGS += enable_mutex_priority_inheritance=true
+
+# Disable speech service
+#GN_FLAGS += enable_speech_service=false
+
+# Disable system notifications
+#GN_FLAGS += enable_system_notifications=false
 
 # Disable wayland ozone platform (X11 only)
 #GN_FLAGS += ozone_platform_wayland=false

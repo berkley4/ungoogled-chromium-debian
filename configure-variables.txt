@@ -40,8 +40,11 @@ TRANSLATE	1		Google translate support
 
 DRIVER		1		Chromedriver package
 
+CLICK_TO_CALL	1		Feature for using chromium to make a call via an android phone
 EXT_TOOLS_MENU	1		Move the extensions menu to the 'More tools' menu
+FEED		1		WebFeed (News feed) support
 MUTEX_PI	1		Mutex priority inheritance
+NOTIFICATIONS	1		System notifications
 OAUTH2		0		Enable OAuth 2.0 client switches
 OOP_PR		0		Out of process printing (X11 only)
 OZONE_WAYLAND	1		Wayland ozone platform
@@ -50,6 +53,7 @@ PIPEWIRE	1
 PULSE		1
 QT		1		Runtime autodetected (eg Gnome desktops will ignore)
 SKIA_GAMMA	0		Use a gamma value of 2.2 for text blitting
+SPEECH		1		Speech service (voice recognition)
 VR		0		Virtual reality hardware support
 WEBGPU		0		Not enabled upstream on linux yet (likely beta quality)
 WIDEVINE	1		Needs various extra components to enable

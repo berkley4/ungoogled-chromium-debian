@@ -53,8 +53,10 @@ real_dir_path () (
 
 [ -n "$ATK_DBUS" ] || ATK_DBUS=1
 [ -n "$CATAPULT" ] || CATAPULT=1
+[ -n "$CLICK_TO_CALL" ] || CLICK_TO_CALL=1
 [ -n "$DRIVER" ] || DRIVER=1
 [ -n "$EXT_TOOLS_MENU" ] || EXT_TOOLS_MENU=1
+[ -n "$FEED" ] || FEED=1
 [ -n "$MUTEX_PI" ] || MUTEX_PI=1
 [ -n "$OAUTH2" ] || OAUTH2=0
 [ -n "$OOP_PR" ] || OOP_PR=0
@@ -63,6 +65,8 @@ real_dir_path () (
 [ -n "$POLICIES" ] || POLICIES=0
 [ -n "$QT" ] || QT=1
 [ -n "$SKIA_GAMMA" ] || SKIA_GAMMA=0
+[ -n "$SPEECH" ] || SPEECH=1
+[ -n "$NOTIFICATIONS" ] || NOTIFICATIONS=1
 [ -n "$VR" ] || VR=0
 [ -n "$WEBGPU" ] || WEBGPU=0
 [ -n "$WIDEVINE" ] || WIDEVINE=1
@@ -439,6 +443,14 @@ if [ $CATAPULT -eq 0 ]; then
 fi
 
 
+if [ $CLICK_TO_CALL -eq 0 ]; then
+  op_enable="$op_enable disable/click-to-call"
+
+  # GN_FLAGS += enable_click_to_call=false
+  gn_enable="$gn_enable enable_click_to_call"
+fi
+
+
 if [ $DRIVER -eq 0 ]; then
   CON="$CON -e \"/^Package: ungoogled-chromium-driver/,/^Package:/{//!d}\""
   CON="$CON -e \"/^Package: ungoogled-chromium-driver/d\""
@@ -450,6 +462,12 @@ fi
 
 if [ $EXT_TOOLS_MENU -eq 0 ]; then
   op_disable="$op_disable disable/extensions-in-tools-menu"
+fi
+
+
+if [ $FEED -eq 0 ]; then
+  # GN_FLAGS += enable_feed_v2=false
+  gn_enable="$gn_enable enable_feed_v2"
 fi
 
 
@@ -488,6 +506,18 @@ fi
 
 if [ $SKIA_GAMMA -eq 1 ]; then
   op_enable="$op_enable skia-gamma"
+fi
+
+
+if [ $SPEECH -eq 0 ]; then
+  # GN_FLAGS += enable_speech_service=false
+  gn_enable="$gn_enable enable_speech_service"
+fi
+
+
+if [ $NOTIFICATIONS -eq 0 ]; then
+  # GN_FLAGS += enable_system_notifications=false
+  gn_enable="$gn_enable enable_system_notifications"
 fi
 
 
