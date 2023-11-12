@@ -279,20 +279,8 @@ else
       sed "s@\(/usr/local/lib/clang/\)[^/]*\(/lib\)@\1$C_VER\2@" -i $CL_PATCH
     fi
   else
-    # Check that package version $C_VER is actually installed on the system
-    if [ ! -f /usr/lib/llvm-$C_VER/bin/clang ]; then
-      printf '%s\n' "Cannot find /usr/lib/llvm-${C_VER}/bin/clang"
-      exit 1
-    fi
-
     # Path to libclang_rt.builtins.a
     C_LIB_DIR=/usr/lib/llvm-$C_VER/lib/clang/$C_VER/lib/linux
-
-    # Alter patch to use $C_LIB_DIR instead of the /usr/local/lib default
-    sed "s@/usr/local/lib/clang/[^/]*/lib@$C_LIB_DIR@" -i $CL_PATCH
-
-    deps_enable="$deps_enable lld clang libclang-rt"
-    op_enable="$op_enable system/clang/rust-clanglib"
 
     # Grab the clang version used in debian/rules.in
     CR_VER=$(sed -n 's@.*LLVM_DIR.*/llvm-\([^/]*\)/bin@\1@p' $DEBIAN/rules.in)
@@ -302,6 +290,18 @@ else
       printf '%s\n' "Clang/LLVM version mismatch in d/control.in and d/rules.in"
       exit 1
     fi
+
+    # Check that package version $C_VER is actually installed on the system
+    if [ ! -f /usr/lib/llvm-$C_VER/bin/clang ]; then
+      printf '%s\n' "Cannot find /usr/lib/llvm-${C_VER}/bin/clang"
+      exit 1
+    fi
+
+    # Alter patch to use $C_LIB_DIR instead of the /usr/local/lib default
+    sed "s@/usr/local/lib/clang/[^/]*/lib@$C_LIB_DIR@" -i $CL_PATCH
+
+    deps_enable="$deps_enable lld clang libclang-rt"
+    op_enable="$op_enable system/clang/rust-clanglib"
 
     # Change clang version in d/rules and d/control if we override version
     if [ $C_VER -ne $CR_VER ]; then
