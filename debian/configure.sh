@@ -165,12 +165,12 @@ esac
 
 
 ## Get/set/override default clang version
-C_VER_ORIG=$(sed -n 's@[ #]lld-\([^,]*\).*@\1@p' $DEBIAN/control.in)
+CC_VER=$(sed -n 's@[ #]lld-\([^,]*\).*@\1@p' $DEBIAN/control.in)
 
-[ -n "$C_VER" ] && C_VER_SET=1 || C_VER=$C_VER_ORIG
+[ -n "$C_VER" ] && C_VER_SET=1 || C_VER=$CC_VER
 
-if [ $C_VER_SET -eq 1 ] && [ $C_VER -lt $C_VER_ORIG ]; then
-  printf '%s\n' "WARN: Clang versions below $C_VER_ORIG are not supported"
+if [ $C_VER_SET -eq 1 ] && [ $C_VER -lt $CC_VER ]; then
+  printf '%s\n' "WARN: Clang versions below $CC_VER are not supported"
   printf '%s\n' "Disabling PGO support"
   PGO=0
 fi
@@ -294,8 +294,7 @@ else
     deps_enable="$deps_enable lld clang libclang-rt"
     op_enable="$op_enable system/clang/rust-clanglib"
 
-    # Grab the clang version used in debian/control.in and debian/rules.in
-    CC_VER=$C_VER_ORIG
+    # Grab the clang version used in debian/rules.in
     CR_VER=$(sed -n 's@.*LLVM_DIR.*/llvm-\([^/]*\)/bin@\1@p' $DEBIAN/rules.in)
 
     # Clang/LLVM version sanity chack
