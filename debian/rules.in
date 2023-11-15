@@ -69,8 +69,8 @@ GN_FLAGS +=                                     \
         enable_pointer_compression_support=true \
         v8_enable_zone_compression=false
 
-# The below is best configured via debian/configure.sh (which
-# needs to be run anyway when self-compiling).
+# The items below are best configured via debian/configure.sh
+# (this needs to be run anyway when self-compiling).
 
 # Disable atk/dbus
 #GN_FLAGS += use_atk=false use_dbus=false
@@ -84,39 +84,11 @@ GN_FLAGS +=                                     \
 # Enable mutex priority inheritance
 GN_FLAGS += enable_mutex_priority_inheritance=true
 
-# Disable speech service
-#GN_FLAGS += enable_speech_service=false
-
-# Disable system notifications
-#GN_FLAGS += enable_system_notifications=false
-
-# Disable wayland ozone platform (X11 only)
-#GN_FLAGS += ozone_platform_wayland=false
-
-# Enable an out-of-process print dialog (X11 only)
-#GN_FLAGS += enable_oop_basic_print_dialog=true
-
 # Diable pdfium javascript and XFA forms support
 GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
 
 # Disable print preview (workaround for print preview dialog crash)
 GN_FLAGS += enable_print_preview=false
-
-# Disable virtual reality features
-GN_FLAGS += enable_vr=false
-
-# Disable RTC AVX2 instructions
-#GN_FLAGS += rtc_enable_avx2=false
-
-# Enable 256-bit re-vectorization pass in WASM compilation pipeline
-GN_FLAGS += v8_enable_wasm_simd256_revec=true
-
-
-# Enable WebGPU
-#GN_FLAGS += skia_use_dawn=true
-
-# Disable WebGPU
-GN_FLAGS += use_dawn=false
 
 # Disable openh264
 #GN_FLAGS += media_use_openh264=false
@@ -133,8 +105,41 @@ GN_FLAGS += link_pulseaudio=true
 # Disable Qt
 #GN_FLAGS += use_qt=false
 
+# Disable speech service
+#GN_FLAGS += enable_speech_service=false
+
+# Disable system notifications
+#GN_FLAGS += enable_system_notifications=false
+
 # Disable VA-API
 #GN_FLAGS += use_vaapi=false
+
+# Disable virtual reality features
+GN_FLAGS += enable_vr=false
+
+# Enable WebGPU
+#GN_FLAGS += skia_use_dawn=true
+
+# Disable WebGPU
+GN_FLAGS += use_dawn=false
+
+
+### AVX2 intructions
+
+# Disable RTC AVX2 instructions
+#GN_FLAGS += rtc_enable_avx2=false
+
+# Enable 256-bit re-vectorization pass in WASM compilation pipeline
+GN_FLAGS += v8_enable_wasm_simd256_revec=true
+
+
+### X11 Only
+
+# Enable an out-of-process print dialog
+#GN_FLAGS += enable_oop_basic_print_dialog=true
+
+# Disable wayland ozone platform
+#GN_FLAGS += ozone_platform_wayland=false
 
 
 # Currently omitted from base (stable)
