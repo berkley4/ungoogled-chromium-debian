@@ -37,7 +37,7 @@ env CHROME_VER=116.0.5845.110-1 DL_CACHE=/tmp /bin/sh ./widevine-cdm/widevine-cd
 ```
 
 The 'env' bit, plus the /bin/sh might be useful to those working on a noexec mounted
-drive/partition. If this doesn't affect you, then a simpler evivalent command is :-
+drive/partition. If this doesn't affect you, then a simpler equivalent command is :-
 
 ```sh
 CHROME_VER=116.0.5845.110-1 DL_CACHE=/tmp ./widevine-cdm/widevine-cdm.sh
