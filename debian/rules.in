@@ -84,6 +84,9 @@ GN_FLAGS +=                                     \
 # Enable mutex priority inheritance
 GN_FLAGS += enable_mutex_priority_inheritance=true
 
+# Disable notifications (system notifications)
+#GN_FLAGS += enable_system_notifications=false
+
 # Diable pdfium javascript and XFA forms support
 GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
 
@@ -107,9 +110,6 @@ GN_FLAGS += link_pulseaudio=true
 
 # Disable speech service
 #GN_FLAGS += enable_speech_service=false
-
-# Disable system notifications
-#GN_FLAGS += enable_system_notifications=false
 
 # Disable VA-API
 #GN_FLAGS += use_vaapi=false
