@@ -857,20 +857,19 @@ eval sed $SMF -i $UC_DIR/flags.gn
 eval sed $PRU -i $UC_DIR/pruning.list
 
 
+for file in control rules $INSTALL; do
+  ## Ensure d/control, d/rules and d/ungoogled-chromium.install exist
+  [ -f $DEBIAN/$file ] || cp -a $DEBIAN/${file}.in $DEBIAN/$file
+
+  ## Make d/rules and d/ungoogled-chromium.install executable
+  [ "$file" = "control" ] || chmod 0700 $DEBIAN/$file
+done
+
+
 
 ###################################
 ##  Prepare miscellaneous files  ##
 ###################################
-
-## Create control, rules and ungoogled-chromium.install if they don't yet exist
-[ -f $DEBIAN/control ] || cp -a $DEBIAN/control.in $DEBIAN/control
-[ -f $DEBIAN/rules ] || cp -a $DEBIAN/rules.in $DEBIAN/rules
-[ -f $DEBIAN/$INSTALL ] || cp -a $DEBIAN/$INSTALL.in $DEBIAN/$INSTALL
-
-# Make sure rules and ungoogled-chromium.install are executable
-[ -x $DEBIAN/rules ] || chmod 0700 $DEBIAN/rules
-[ -x $DEBIAN/$INSTALL ] || chmod 0700 $DEBIAN/$INSTALL
-
 
 ## Shell launcher
 if [ ! -f $DEBIAN/shims/chromium ] && [ $TEST -eq 0 ]; then
