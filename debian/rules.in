@@ -111,6 +111,9 @@ GN_FLAGS += link_pulseaudio=true
 # Disable speech service
 #GN_FLAGS += enable_speech_service=false
 
+# Disable supervised users (parental control)
+GN_FLAGS += enable_supervised_users=false
+
 # Disable VA-API
 #GN_FLAGS += use_vaapi=false
 

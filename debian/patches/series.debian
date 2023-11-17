@@ -128,6 +128,7 @@ optional/cpu/avx.patch
 #optional/disable/catapult.patch
 #optional/disable/click-to-call.patch
 #optional/disable/rtc-protobuf.patch
+optional/disable/supervised-users.patch
 optional/fixes/extensions-in-tools-menu.patch
 #optional/fixes/skia-gamma.patch
 optional/fixes/widevine/widevine-enable-version-string.patch

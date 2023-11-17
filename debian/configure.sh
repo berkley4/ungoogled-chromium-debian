@@ -67,6 +67,7 @@ real_dir_path () (
 [ -n "$QT" ] || QT=1
 [ -n "$SKIA_GAMMA" ] || SKIA_GAMMA=0
 [ -n "$SPEECH" ] || SPEECH=1
+[ -n "$SUPERVISED_USER" ] || SUPERVISED_USER=0
 [ -n "$VR" ] || VR=0
 [ -n "$WEBGPU" ] || WEBGPU=0
 [ -n "$WIDEVINE" ] || WIDEVINE=1
@@ -517,6 +518,14 @@ fi
 if [ $SPEECH -eq 0 ]; then
   # GN_FLAGS += enable_speech_service=false
   gn_enable="$gn_enable enable_speech_service"
+fi
+
+
+if [ $SUPERVISED_USER -eq 1 ]; then
+  op_disable="$op_disable disable/supervised-users"
+
+  # GN_FLAGS += enable_supervised_users=false
+  gn_disable="$gn_disable enable_supervised_users"
 fi
 
 

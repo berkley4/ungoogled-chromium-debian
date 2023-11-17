@@ -54,6 +54,7 @@ PULSE		1
 QT		1		Runtime autodetected (eg Gnome desktops will ignore)
 SKIA_GAMMA	0		Use a gamma value of 2.2 for text blitting
 SPEECH		1		Speech service (voice recognition)
+SUPERVISED_USER	0		Parental control related component
 VR		0		Virtual reality hardware support
 WEBGPU		0		Not enabled upstream on linux yet (likely beta quality)
 WIDEVINE	1		Needs various extra components to enable
