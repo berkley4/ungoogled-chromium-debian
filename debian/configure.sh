@@ -759,7 +759,7 @@ if [ -n "$op_disable" ]; then
         ;;
 
       *)
-        SER="$SER -e \"s@^\(optional/${i}\.patch\)@#\1@\""
+        SER="$SER -e \"s@^\(optional/$i\.patch\)@#\1@\""
         ;;
     esac
   done
@@ -773,7 +773,7 @@ if [ -n "$op_enable" ]; then
         ;;
 
       *)
-        SER="$SER -e \"s@^#\(optional/${i}\.patch\)@\1@\""
+        SER="$SER -e \"s@^#\(optional/$i\.patch\)@\1@\""
         ;;
     esac
   done
@@ -784,13 +784,13 @@ fi
 
 if [ -n "$gn_disable" ]; then
   for i in $gn_disable; do
-    RUL="$RUL -e \"s@^\(GN_FLAGS += ${i}=*\)@#\1@\""
+    RUL="$RUL -e \"s@^\(GN_FLAGS += $i=*\)@#\1@\""
   done
 fi
 
 if [ -n "$gn_enable" ]; then
   for i in $gn_enable; do
-    RUL="$RUL -e \"s@^#\(GN_FLAGS += ${i}=*\)@\1@\""
+    RUL="$RUL -e \"s@^#\(GN_FLAGS += $i=*\)@\1@\""
   done
 fi
 
@@ -799,13 +799,13 @@ fi
 
 if [ -n "$sys_disable" ]; then
   for i in $sys_disable; do
-    RUL="$RUL -e \"s@^\(SYS_LIBS += ${i}\)@#\1@\""
+    RUL="$RUL -e \"s@^\(SYS_LIBS += $i\)@#\1@\""
   done
 fi
 
 if [ -n "$sys_enable" ]; then
   for i in $sys_enable; do
-    RUL="$RUL -e \"s@^#\(SYS_LIBS += ${i}\)@\1@\""
+    RUL="$RUL -e \"s@^#\(SYS_LIBS += $i\)@\1@\""
   done
 fi
 
