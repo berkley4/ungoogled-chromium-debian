@@ -738,25 +738,13 @@ PRU="$PRU -e \"/^third_party\/depot_tools/d\""
 
 if [ -n "$deps_disable" ]; then
   for i in $deps_disable; do
-    case $i in
-      *-dev)
-        CON="$CON -e \"s@^[ ]*\(${i}.*-dev\)@#\1@\"" ;;
-
-      *)
-        CON="$CON -e \"s@^[ ]*\($i\)@#\1@\"" ;;
-    esac
+    CON="$CON -e \"s@^[ ]*\($i\)@#\1@\""
   done
 fi
 
 if [ -n "$deps_enable" ]; then
   for i in $deps_enable; do
-    case $i in
-      *-dev)
-        CON="$CON -e \"s@^[ ]*#[ ]*\(${i}.*-dev\)@ \1@\"" ;;
-
-      *)
-        CON="$CON -e \"s@^[ ]*#[ ]*\($i\)@ \1@\"" ;;
-    esac
+    CON="$CON -e \"s@^[ ]*#[ ]*\($i\)@ \1@\""
   done
 fi
 
