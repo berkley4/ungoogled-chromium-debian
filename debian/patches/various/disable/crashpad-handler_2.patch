@@ -1,16 +1,3 @@
---- a/chrome/test/BUILD.gn
-+++ b/chrome/test/BUILD.gn
-@@ -486,10 +486,6 @@
-     data_deps += [ "//chrome:chrome(//build/toolchain/linux:lacros_clang_x64)" ]
-   }
- 
--  if (is_linux) {
--    data_deps += [ "//components/crash/core/app:chrome_crashpad_handler" ]
--  }
--
-   if (is_android) {
-     public_deps += [
-       ":test_support_ui_android",
 --- a/components/crash/core/app/BUILD.gn
 +++ b/components/crash/core/app/BUILD.gn
 @@ -236,7 +236,7 @@
