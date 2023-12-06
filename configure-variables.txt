@@ -88,6 +88,8 @@ XZ_THREADED	0		Multi-threaded xz compression (number of threads = $JOBS)
 
 ## CPU architecture/instructions and optimisations
 
+INTEL_CET	1		Intel Control-flow Enforcement Technology (Tiger Lake or newer CPUs)
+
 MARCH		x86-64-v2	Matches MTUNE if MTUNE is set and MARCH is not specified
 				Will not match MTUNE if MTUNE is set to generic
 				Setting MARCH to generic will reset MARCH and MTUNE to their defaults

@@ -68,7 +68,6 @@ various/bromite/webRTC-do-not-expose-local-IP-addresses.patch
 various/compiler-flags/Do-not-link-with-libatomic.patch
 various/compiler-flags/function-import-limits.patch
 various/compiler-flags/init-stack-vars-zero.patch
-various/compiler-flags/intel-control-flow-enforcement.patch
 various/compiler-flags/no-plt.patch
 various/compiler-flags/optimize-debug-info.patch
 various/compiler-flags/stack-clash-protection.patch
@@ -109,6 +108,7 @@ optional/polly-extra.patch
 #optional/thinlto-cache-location.patch
 #optional/thinlto-jobs.patch
 #optional/use-oauth2-client-switches-as-default.patch
+optional/cpu/intel-control-flow-enforcement.patch
 optional/cpu/aes-pclmul.patch
 optional/cpu/march.patch
 optional/cpu/mtune.patch

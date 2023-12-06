@@ -85,7 +85,8 @@ real_dir_path () (
 # Allow freetype setting to be force-enabled (for stable builds)
 [ -n "$SYS_FREETYPE" ] && SYS_FREETYPE_SET=1 || SYS_FREETYPE=1
 
-## MARCH and MTUNE defaults
+## Intel CET, MARCH and MTUNE defaults
+[ -n "$INTEL_CET" ] || INTEL_CET=1
 [ -n "$MARCH" ] && MARCH_SET=1 || MARCH=x86-64-v2
 [ -n "$MTUNE" ] && MTUNE_SET=1 || MTUNE=generic
 
@@ -343,9 +344,14 @@ fi
 
 
 
-#######################
-## CPU optimisations ##
-#######################
+##################
+## CPU features ##
+##################
+
+if [ $INTEL_CET -eq 0 ]; then
+  op_disable="$op_disable cpu/intel-control-flow-enforcement"
+fi
+
 
 if [ $MARCH_SET -eq 1 ] || [ $MTUNE_SET -eq 1 ]; then
   # Save initial (default) values
