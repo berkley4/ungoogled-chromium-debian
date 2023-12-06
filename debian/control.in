@@ -43,6 +43,7 @@ Build-Depends:
  libopenh264-dev,
  libpipewire-0.3-dev,
  libpulse-dev,
+ libsecret-1-dev,
  libusb-1.0-0-dev,
  libva-dev,
  qtbase5-dev,

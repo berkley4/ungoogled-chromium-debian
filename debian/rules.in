@@ -175,6 +175,7 @@ SYS_LIBS :=               \
         flac              \
         libdrm            \
         libevent          \
+        libsecret         \
         libusb            \
         libXNVCtrl        \
         opus              \
