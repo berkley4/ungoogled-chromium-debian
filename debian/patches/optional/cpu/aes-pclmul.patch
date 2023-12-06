@@ -1,14 +1,12 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1132,7 +1132,10 @@
-       if (is_chromeos_lacros) {
-         cflags += [ "-msse4.2" ]
-       } else {
--        cflags += [ "-msse3" ]
-+        cflags += [
-+          "-maes",
-+          "-mpclmul",
-+        ]
-       }
+@@ -1164,7 +1164,8 @@
+     if (current_cpu == "x64") {
+       cflags += [
+         "-m64",
+-        "-msse3",
++        "-maes",
++        "-mpclmul",
+       ]
  
-       ldflags += [ "-m64" ]
+       # Minimum SIMD support for devices running lacros.

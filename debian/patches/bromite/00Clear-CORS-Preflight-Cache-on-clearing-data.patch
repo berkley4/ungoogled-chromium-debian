@@ -38,7 +38,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  
 --- a/services/network/cors/preflight_controller.cc
 +++ b/services/network/cors/preflight_controller.cc
-@@ -804,6 +804,10 @@
+@@ -789,6 +789,10 @@
    cache_.ClearCache(std::move(url_filter));
  }
  
@@ -73,7 +73,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  const base::TickClock* tick_clock_for_testing = nullptr;
 --- a/services/network/network_context.cc
 +++ b/services/network/network_context.cc
-@@ -1125,6 +1125,8 @@
+@@ -1128,6 +1128,8 @@
        base::BindOnce(&NetworkContext::OnHttpCacheCleared,
                       base::Unretained(this), std::move(callback))));
  

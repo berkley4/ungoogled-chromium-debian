@@ -11,7 +11,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 
 --- a/chrome/browser/component_updater/registration.cc
 +++ b/chrome/browser/component_updater/registration.cc
-@@ -98,6 +98,7 @@
+@@ -100,6 +100,7 @@
  namespace component_updater {
  
  void RegisterComponentsForUpdate() {
@@ -31,7 +31,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
    task_runner_ = base::ThreadPool::CreateSequencedTaskRunner(
 --- a/components/component_updater/component_updater_service.cc
 +++ b/components/component_updater/component_updater_service.cc
-@@ -520,7 +520,7 @@
+@@ -522,7 +522,7 @@
  // Register prefs required by the component update service.
  void RegisterComponentUpdateServicePrefs(PrefRegistrySimple* registry) {
    // The component updates are enabled by default, if the preference is not set.

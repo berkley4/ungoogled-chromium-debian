@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2314,6 +2314,15 @@
+@@ -2359,6 +2359,15 @@
        "-Wl,-O2",
        "-Wl,--gc-sections",
      ]
@@ -16,7 +16,7 @@
    }
  
    # We cannot rely on errno being set after math functions,
-@@ -2504,7 +2513,7 @@
+@@ -2549,7 +2558,7 @@
      } else if (optimize_for_fuzzing) {
        cflags = [ "-O1" ] + common_optimize_on_cflags
      } else {

@@ -9,7 +9,7 @@
  #include "chrome/browser/sharing/click_to_call/click_to_call_ui_controller.h"
  #include "chrome/browser/sharing/click_to_call/click_to_call_utils.h"
  #endif
-@@ -241,7 +241,7 @@
+@@ -226,7 +226,7 @@
  
    // On ChromeOS, Click to Call is integrated into the external protocol dialog.
  #if !BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_FUCHSIA) && \
@@ -20,7 +20,7 @@
      // Handle tel links by opening the Click to Call dialog. This will call back
 --- a/chrome/browser/renderer_context_menu/render_view_context_menu.cc
 +++ b/chrome/browser/renderer_context_menu/render_view_context_menu.cc
-@@ -1722,7 +1722,7 @@
+@@ -1736,7 +1736,7 @@
                                  /*add_separator*/ false);
      }
  
@@ -29,7 +29,7 @@
      AppendClickToCallItem();
  #endif
  
-@@ -2431,7 +2431,7 @@
+@@ -2461,7 +2461,7 @@
    size_t items_before_sharing = menu_model_.GetItemCount();
    bool starting_separator_added = items_before_sharing > items_initial;
  
@@ -38,7 +38,7 @@
    AppendClickToCallItem();
  #endif
  
-@@ -2444,7 +2444,7 @@
+@@ -2474,7 +2474,7 @@
      menu_model_.RemoveItemAt(items_initial);
  }
  
@@ -47,7 +47,7 @@
  void RenderViewContextMenu::AppendClickToCallItem() {
    SharingClickToCallEntryPoint entry_point;
    absl::optional<std::string> phone_number;
-@@ -2471,7 +2471,7 @@
+@@ -2501,7 +2501,7 @@
    click_to_call_context_menu_observer_->BuildMenu(*phone_number, selection_text,
                                                    entry_point);
  }

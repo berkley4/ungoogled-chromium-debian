@@ -1,6 +1,6 @@
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -1501,7 +1501,7 @@
+@@ -1515,7 +1515,7 @@
      ]
    }
  
@@ -11,7 +11,7 @@
  }
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -6681,7 +6681,6 @@
+@@ -6727,7 +6727,6 @@
      ]
      deps += [
        "//components/crash/content/browser",
@@ -43,7 +43,7 @@
  }
 --- a/chrome/browser/ui/BUILD.gn
 +++ b/chrome/browser/ui/BUILD.gn
-@@ -748,7 +748,7 @@
+@@ -764,7 +764,7 @@
      ]
    }
  
@@ -54,7 +54,7 @@
  
 --- a/chrome/common/BUILD.gn
 +++ b/chrome/common/BUILD.gn
-@@ -352,7 +352,7 @@
+@@ -355,7 +355,7 @@
      ]
    }
  

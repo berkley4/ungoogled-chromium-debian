@@ -3,7 +3,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/skia/BUILD.gn
 +++ b/skia/BUILD.gn
-@@ -884,7 +884,7 @@
+@@ -886,7 +886,7 @@
    if (is_apple) {
      deps += [ ":test_fonts_bundle_data" ]
      data_deps += [ ":test_fonts_bundle_data" ]

@@ -11,7 +11,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/ui/omnibox/chrome_omnibox_navigation_observer.cc
 +++ b/chrome/browser/ui/omnibox/chrome_omnibox_navigation_observer.cc
-@@ -76,6 +76,7 @@
+@@ -74,6 +74,7 @@
    return origin_with_https == destination;
  }
  
@@ -19,7 +19,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  // Choose the appropriate URLLoaderFactory: either an explicitly specified or a
  // default for the given profile.
  network::mojom::URLLoaderFactory* GetURLLoaderFactory(
-@@ -87,6 +88,7 @@
+@@ -85,6 +86,7 @@
        ->GetURLLoaderFactoryForBrowserProcess()
        .get();
  }
@@ -27,7 +27,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
  // Helper to keep ChromeOmniboxNavigationObserver alive while the initiated
  // navigation is pending.
-@@ -252,13 +254,6 @@
+@@ -250,13 +252,6 @@
        profile_(profile),
        show_infobar_(std::move(show_infobar)) {
    NavigationUserData::CreateForNavigationHandle(navigation, this);

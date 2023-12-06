@@ -1,6 +1,6 @@
 --- a/gpu/config/gpu_info_collector.cc
 +++ b/gpu/config/gpu_info_collector.cc
-@@ -349,7 +349,7 @@
+@@ -365,7 +365,7 @@
  #if BUILDFLAG(IS_WIN)
                        base::FEATURE_DISABLED_BY_DEFAULT);
  #else

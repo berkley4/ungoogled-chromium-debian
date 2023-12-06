@@ -1,10 +1,10 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1136,6 +1136,7 @@
-           "-maes",
-           "-mpclmul",
-           "-march=x86-64-v2",
-+          "-mtune=generic",
-         ]
-       }
+@@ -1167,6 +1167,7 @@
+         "-maes",
+         "-mpclmul",
+         "-march=x86-64-v2",
++        "-mtune=generic",
+       ]
  
+       # Minimum SIMD support for devices running lacros.

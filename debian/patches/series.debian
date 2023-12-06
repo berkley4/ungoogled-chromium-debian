@@ -20,12 +20,8 @@ system/openjpeg.patch
 system/zlib.patch
 
 bromite/00Clear-CORS-Preflight-Cache-on-clearing-data.patch
-bromite/00Deprecate-Data-URL-in-SVGUseElement.patch
 bromite/00Disable-Component-Updates.patch
 bromite/00Disable-csp-reports.patch
-bromite/00Keep-Manta-Service-Disabled.patch
-bromite/00Partition-MediaDeviceId-by-default.patch
-bromite/Add-site-engagement-flag.patch
 bromite/AudioBuffer-AnalyserNode-fp-mitigations.patch
 bromite/Disable-AsyncDNS-by-default.patch
 bromite/Disable-idle-detection.patch
@@ -33,11 +29,8 @@ bromite/Disable-plugins-enumeration.patch
 bromite/Disable-requests-for-single-word-Omnibar-searches.patch
 bromite/Disable-some-signed-exchange-features.patch
 bromite/Disable-text-fragments-by-default.patch
-bromite/Disable-TLS-resumption.patch
-bromite/Enable-ECH-by-default.patch
 bromite/first_run-deactivate-autoupdate-globally.patch
 bromite/Hardening-against-incognito-mode-detection.patch
-bromite/Never-fetch-popular-sites.patch
 bromite/Partition-Blink-memory-cache.patch
 bromite/Partition-blobs-by-top-frame-URL.patch
 bromite/profile-resetter-disable-send-settings.patch
@@ -46,8 +39,6 @@ bromite/Remove-navigator.connection-info.patch
 bromite/Remove-segmentation-platform.patch
 bromite/Remove-window-name-on-cross-origin-navigation.patch
 bromite/Replace-DoH-probe-domain-with-RIPE-domain.patch
-bromite/Revert-Permit-blocking-of-view-source.patch
-bromite/updater-disable-updater-pings.patch
 
 vanadium/0003-switch-to-fstack-protector-strong.patch
 vanadium/0004-enable-fwrapv-in-Clang-for-non-UBSan-builds.patch
@@ -103,7 +94,6 @@ various/fixes/shim-fix-for-official-builds.patch
 various/fixes/silence-alsa-frames-log-msg.patch
 various/fixes/xdg-basedir.patch
 various/launchpad/dont-collect-motherboard-metrics.patch
-various/system/libusb.patch
 various/system/libusb-api.patch
 various/system/minizip.patch
 various/system/perfetto-system-zlib.patch

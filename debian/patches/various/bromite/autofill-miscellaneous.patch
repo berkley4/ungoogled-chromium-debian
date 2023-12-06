@@ -22,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -1127,11 +1127,11 @@
+@@ -1106,11 +1106,11 @@
                                     PrefRegistry::LOSSY_PREF);
  
    // Deprecated 11/2022.
@@ -39,21 +39,21 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    registry->RegisterBooleanPref(kAutofillWalletImportStorageCheckboxState,
 --- a/components/autofill/core/browser/browser_autofill_manager.h
 +++ b/components/autofill/core/browser/browser_autofill_manager.h
-@@ -766,9 +766,9 @@
+@@ -744,9 +744,9 @@
        autocomplete_unrecognized_fallback_logger_;
  
    // Have we logged whether Autofill is enabled for this page load?
 -  bool has_logged_autofill_enabled_ = false;
 +  bool has_logged_autofill_enabled_ = true;
-   // Have we logged an address suggestions count metric for this page?
--  bool has_logged_address_suggestions_count_ = false;
-+  bool has_logged_address_suggestions_count_ = true;
    // Have we shown Autofill suggestions at least once?
-   bool did_show_suggestions_ = false;
+-  bool did_show_suggestions_ = false;
++  bool did_show_suggestions_ = true;
    // Has the user manually edited at least one form field among the autofillable
+   // ones?
+   bool user_did_type_ = false;
 --- a/components/autofill/core/common/autofill_features.cc
 +++ b/components/autofill/core/common/autofill_features.cc
-@@ -797,8 +797,8 @@
+@@ -829,8 +829,8 @@
  // "upload" resources.
  // i.e., https://other.autofill.server:port/tbproxy/af/
  BASE_FEATURE(kAutofillServerCommunication,
@@ -66,7 +66,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  // element in the DOM.
 --- a/components/autofill/core/common/autofill_prefs.cc
 +++ b/components/autofill/core/common/autofill_prefs.cc
-@@ -159,7 +159,7 @@
+@@ -156,7 +156,7 @@
        prefs::kAutofillCreditCardEnabled, false,
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
    registry->RegisterBooleanPref(
@@ -75,7 +75,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
  
    // Non-synced prefs. Used for per-device choices, e.g., signin promo.
-@@ -201,7 +201,7 @@
+@@ -196,7 +196,7 @@
  #endif
  
    // Deprecated prefs registered for migration.
@@ -83,7 +83,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +  registry->RegisterBooleanPref(prefs::kAutofillEnabledDeprecated, false);
    registry->RegisterBooleanPref(prefs::kAutofillOrphanRowsRemoved, false);
    registry->RegisterBooleanPref(prefs::kAutofillIbanEnabled, true);
- 
+   registry->RegisterIntegerPref(
 --- a/components/password_manager/core/browser/password_generation_frame_helper.cc
 +++ b/components/password_manager/core/browser/password_generation_frame_helper.cc
 @@ -95,7 +95,6 @@

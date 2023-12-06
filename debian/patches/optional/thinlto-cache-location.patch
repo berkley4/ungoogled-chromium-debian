@@ -1,13 +1,19 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -745,9 +745,7 @@
-           "-Wcrl,object_path_lto",
-         ]
-       } else {
--        ldflags +=
--            [ "-Wl,--thinlto-cache-dir=" +
--              rebase_path("$root_out_dir/thinlto-cache", root_build_dir) ]
-+        ldflags += [ "-Wl,--thinlto-cache-dir=/custom/path/to/thinlto-cache" ]
+@@ -752,7 +752,6 @@
+       # available disk space, 40GB and 100000 files.
+       cache_policy =
+           "cache_size=10%:cache_size_bytes=40g:cache_size_files=100000"
+-      cache_dir = rebase_path("$root_out_dir/thinlto-cache", root_build_dir)
+       if (is_win) {
+         ldflags += [
+           "/lldltocache:$cache_dir",
+@@ -762,7 +761,7 @@
+         if (is_apple) {
+           ldflags += [ "-Wl,-cache_path_lto,$cache_dir" ]
+         } else {
+-          ldflags += [ "-Wl,--thinlto-cache-dir=$cache_dir" ]
++          ldflags += [ "-Wl,--thinlto-cache-dir=/path/to/thinlto-cache" ]
+         }
+         ldflags += [ "-Wl,--thinlto-cache-policy=$cache_policy" ]
        }
- 
-       ldflags += [ "-Wl,--thinlto-cache-policy=$cache_policy" ]

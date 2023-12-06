@@ -10,7 +10,7 @@ Subject: [PATCH] disable content feed suggestions by default
 
 --- a/components/feed/feed_feature_list.cc
 +++ b/components/feed/feed_feature_list.cc
-@@ -21,7 +21,7 @@
+@@ -23,7 +23,7 @@
  // changed, please update the cached one's default value in CachedFeatureFlags.
  BASE_FEATURE(kInterestFeedV2,
               "InterestFeedV2",

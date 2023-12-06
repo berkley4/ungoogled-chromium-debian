@@ -13,7 +13,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
-@@ -170,8 +170,8 @@
+@@ -175,8 +175,8 @@
  // Clear the window.name property for the top-level cross-site navigations that
  // swap BrowsingContextGroups(BrowsingInstances).
  BASE_FEATURE(kClearCrossSiteCrossBrowsingContextGroupWindowName,
@@ -26,7 +26,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
               "CompositeBGColorAnimation",
 --- a/third_party/blink/renderer/core/loader/document_loader.cc
 +++ b/third_party/blink/renderer/core/loader/document_loader.cc
-@@ -2640,7 +2640,7 @@
+@@ -2703,7 +2703,7 @@
      // that the name would be nulled and if the name is accessed after we will
      // fire a UseCounter. If we decide to move forward with this change, we'd
      // actually clean the name here.
@@ -35,7 +35,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      frame_->Tree().ExperimentalSetNulledName();
    }
  
-@@ -2651,6 +2651,7 @@
+@@ -2714,6 +2714,7 @@
      // TODO(shuuran): CrossSiteCrossBrowsingContextGroupSetNulledName will just
      // record the fact that the name would be nulled and if the name is accessed
      // after we will fire a UseCounter.

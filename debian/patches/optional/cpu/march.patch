@@ -1,10 +1,10 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1135,6 +1135,7 @@
-         cflags += [
-           "-maes",
-           "-mpclmul",
-+          "-march=x86-64-v2",
-         ]
-       }
+@@ -1166,6 +1166,7 @@
+         "-m64",
+         "-maes",
+         "-mpclmul",
++        "-march=x86-64-v2",
+       ]
  
+       # Minimum SIMD support for devices running lacros.

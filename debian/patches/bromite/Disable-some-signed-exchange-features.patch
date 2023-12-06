@@ -10,7 +10,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/content/common/features.cc
 +++ b/content/common/features.cc
-@@ -432,8 +432,8 @@
+@@ -474,8 +474,8 @@
  // Signed Exchange Reporting for distributors
  // https://www.chromestatus.com/feature/5687904902840320
  BASE_FEATURE(kSignedExchangeReportingForDistributors,
@@ -23,7 +23,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  // sites that require a dedicated process.
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
-@@ -934,8 +934,8 @@
+@@ -973,8 +973,8 @@
  // Origin-Signed HTTP Exchanges (for WebPackage Loading)
  // https://www.chromestatus.com/feature/5745285984681984
  BASE_FEATURE(kSignedHTTPExchange,

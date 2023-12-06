@@ -24,7 +24,7 @@ bug: http://bugs.debian.org/914487
  
 --- a/chrome/browser/safe_browsing/download_protection/file_analyzer.cc
 +++ b/chrome/browser/safe_browsing/download_protection/file_analyzer.cc
-@@ -78,7 +78,10 @@
+@@ -80,7 +80,10 @@
    if (inspection_type == DownloadFileType::ZIP) {
      StartExtractZipFeatures();
    } else if (inspection_type == DownloadFileType::RAR) {
