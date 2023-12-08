@@ -28,7 +28,6 @@ bromite/Disable-idle-detection.patch
 bromite/Disable-plugins-enumeration.patch
 bromite/Disable-requests-for-single-word-Omnibar-searches.patch
 bromite/Disable-some-signed-exchange-features.patch
-bromite/Disable-text-fragments-by-default.patch
 bromite/first_run-deactivate-autoupdate-globally.patch
 bromite/Hardening-against-incognito-mode-detection.patch
 bromite/Partition-Blink-memory-cache.patch

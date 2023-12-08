@@ -63,7 +63,7 @@ real_dir_path () (
 [ -n "$OOP_PR" ] || OOP_PR=0
 [ -n "$OZONE_WAYLAND" ] || OZONE_WAYLAND=1
 [ -n "$PDF_JS" ] || PDF_JS=0
-[ -n "$POLICIES" ] || POLICIES=0
+[ -n "$POLICIES" ] || POLICIES=1
 [ -n "$QT" ] || QT=1
 [ -n "$SKIA_GAMMA" ] || SKIA_GAMMA=0
 [ -n "$SPEECH" ] || SPEECH=1
@@ -511,8 +511,8 @@ if [ $PDF_JS -eq 1 ]; then
 fi
 
 
-if [ $POLICIES -eq 1 ]; then
-  INS="$INS -e \"s@^#\(.*/managed/policies\.json\)@\1@\""
+if [ $POLICIES -eq 0 ]; then
+  INS="$INS -e \"s@^\(.*/managed/policies\.json\)@#\1@\""
 fi
 
 

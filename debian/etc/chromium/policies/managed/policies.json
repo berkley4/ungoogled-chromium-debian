@@ -17,6 +17,7 @@
   "RemoteDebuggingAllowed": false,
   "SandboxExternalProtocolBlocked": false,
   "ScreenCaptureAllowed": false,
+  "ScrollToTextFragmentEnabled": false,
   "SearchSuggestEnabled": false,
   "SyncDisabled": true,
   "VideoCaptureAllowed": false,

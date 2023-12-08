@@ -62,7 +62,7 @@ ___Security/Privacy improvements___
     - -fstack-protector-strong - chromium's default is the less-strict -fstack-protector
     - -ftrivial-auto-var-init=zero - see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html)
     - -fwrapv - see [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1031653) and [here](https://gitlab.e.foundation/e/apps/browser/-/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch)
-- An example policy file is in the repo (install manually or configure with POLICIES=1)
+- A policy file is installed to help lock down the browser (use [this](https://chromeenterprise.google/policies/) as a reference guide)
 - Some security/privacy themed flag files are installed to /etc/chromium.d
 
 

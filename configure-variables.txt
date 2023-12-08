@@ -18,7 +18,7 @@ C_VER		<version>	Override the default clang version (for use with SYS_CLANG > 0)
 				The script default is hardcoded to that of the bundled copy
 
 PGO		1		Enable/disable building with PGO profile optimisation
-POLICIES	0		Install /etc/chromium/policies/managed/policies.json
+POLICIES	1		Install /etc/chromium/policies/managed/policies.json
 STABLE		0		By default an unstable version is built
 
 TARBALL		0		Use tarball download instead of git
