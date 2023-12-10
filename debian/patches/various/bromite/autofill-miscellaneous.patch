@@ -84,23 +84,3 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    registry->RegisterBooleanPref(prefs::kAutofillOrphanRowsRemoved, false);
    registry->RegisterBooleanPref(prefs::kAutofillIbanEnabled, true);
    registry->RegisterIntegerPref(
---- a/components/password_manager/core/browser/password_generation_frame_helper.cc
-+++ b/components/password_manager/core/browser/password_generation_frame_helper.cc
-@@ -95,7 +95,6 @@
- // In order for password generation to be enabled, we need to make sure:
- // (1) Password sync is enabled, and
- // (2) Password saving is enabled
--// (3) The current page is not *.google.com.
- bool PasswordGenerationFrameHelper::IsGenerationEnabled(
-     bool log_debug_data) const {
-   std::unique_ptr<Logger> logger;
-@@ -105,9 +104,6 @@
-   }
- 
-   GURL url = driver_->GetLastCommittedURL();
--  if (url.DomainIs("google.com"))
--    return false;
--
-   if (!client_->IsSavingAndFillingEnabled(url)) {
-     if (logger)
-       logger->LogMessage(Logger::STRING_GENERATION_DISABLED_SAVING_DISABLED);
