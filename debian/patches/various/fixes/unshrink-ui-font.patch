@@ -1,0 +1,11 @@
+--- a/ui/webui/resources/css/text_defaults_md.css
++++ b/ui/webui/resources/css/text_defaults_md.css
+@@ -21,7 +21,7 @@
+ 
+ body {
+   font-family: $i18nRaw{fontfamilyMd};
+-  font-size: 81.25%;
++  font-size: 100.00%;
+ }
+ 
+ button {
