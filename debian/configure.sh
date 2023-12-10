@@ -9,6 +9,7 @@ op_disable=; op_enable=
 sys_disable=; sys_enable=
 
 C_VER_SET=0
+DNS_BUILTIN_SET=0
 MARCH_SET=0
 MTUNE_SET=0
 POLLY_EXT_SET=0
@@ -20,6 +21,7 @@ DEBIAN=$(dirname $0)
 RT_DIR=$(dirname $DEBIAN)
 
 MP_DIR=$DEBIAN/misc_patches
+PF_DIR=$DEBIAN/etc/chromium/policies/managed
 UC_DIR=$DEBIAN/submodules/ungoogled-chromium
 UC_PATCH_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 
@@ -81,6 +83,10 @@ real_dir_path () (
 [ -n "$SYS_FFMPEG" ] || SYS_FFMPEG=0
 [ -n "$SYS_ICU" ] || SYS_ICU=0
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
+
+# Allow forcing off DNS_BUILTIN and turning off DNS interception checks
+[ -n "$DNS_BUILTIN" ] && DNS_BUILTIN_SET=1 || DNS_BUILTIN=0
+[ -n "$DNS_INTERCEPT" ] || DNS_INTERCEPT=1
 
 # Allow freetype setting to be force-enabled (for stable builds)
 [ -n "$SYS_FREETYPE" ] && SYS_FREETYPE_SET=1 || SYS_FREETYPE=1
@@ -507,6 +513,19 @@ fi
 
 if [ $POLICIES -eq 0 ]; then
   INS="$INS -e \"s@^\(.*/managed/policies\.json\)@#\1@\""
+else
+  if [ -n "$DNS_HOST" ]; then
+    [ $DNS_BUILTIN_SET -eq 1 ] && [ $DNS_BUILTIN -eq 0 ] || DNS_BUILTIN=1
+    POL="$POL -e \"/doh.opendns.com/s@doh.opendns.com@$DNS_HOST@\""
+  fi
+
+  if [ $DNS_INTERCEPT -eq 0 ]; then
+    POL="$POL -e \"/DNSInterceptionChecksEnabled/s@true@false@\""
+  fi
+
+  if [ $DNS_BUILTIN -eq 1 ]; then
+    POL="$POL -e \"/BuiltInDnsClientEnabled/s@false@true@\""
+  fi
 fi
 
 
@@ -832,6 +851,8 @@ SERIES_DEBIAN="$(eval sed $SER $DEBIAN/patches/series.debian)"
 echo "$(cat $UC_DIR/patches/series)" "$SERIES_DEBIAN" > $DEBIAN/patches/series
 
 [ -z "$INS" ] || eval sed $INS < $DEBIAN/$INSTALL.in > $DEBIAN/$INSTALL
+
+[ -z "$POL" ] || eval sed $POL < $PF_DIR/policies.json.in > $PF_DIR/policies.json
 
 eval sed $CON < $DEBIAN/control.in > $DEBIAN/control
 

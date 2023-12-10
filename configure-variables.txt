@@ -38,6 +38,11 @@ TRANSLATE	1		Google translate support
 
 ## Enable/Disable features/components/patches
 
+DNS_BUILTIN	0		Internal chromium DNS-over-HTTPS client
+DNS_INTERCEPT	1		DNS interception checking (helps protect against hijacking/poisoning)
+DNS_HOST	<hostname>	To set https://dns.example.net/dns-query{?dns} as DNS-over-HTTPS
+				resolver, run: DNS_HOST=dns.example.net ./debian/configure.sh
+
 DRIVER		1		Chromedriver package
 
 CLICK_TO_CALL	1		Feature for using chromium to make a call via an android phone
