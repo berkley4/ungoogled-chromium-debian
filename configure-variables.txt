@@ -46,10 +46,10 @@ FEED		1		WebFeed (News feed) support
 MUTEX_PI	1		Mutex priority inheritance
 NOTIFICATIONS	1		System notifications
 OAUTH2		0		Enable OAuth 2.0 client switches
-OOP_PR		0		Out of process printing (X11 only)
 OZONE_WAYLAND	1		Wayland ozone platform
 PDF_JS		0		PDF javascript support
 PIPEWIRE	1
+PRINT_PREVIEW	0
 PULSE		1
 QT		1		Runtime autodetected (eg Gnome desktops will ignore)
 SKIA_GAMMA	0		Use a gamma value of 2.2 for text blitting
@@ -58,7 +58,7 @@ SUPERVISED_USER	0		Parental control related component
 VR		0		Virtual reality hardware support
 WEBGPU		0		Not enabled upstream on linux yet (likely beta quality)
 WIDEVINE	1		Needs various extra components to enable
-X11_ONLY	0		When enabled is an alias for OOP_PR=1 and OZONE_WAYLAND=0
+X11_ONLY	0		When enabled is an alias for OZONE_WAYLAND=0
 
 
 ## Libraries

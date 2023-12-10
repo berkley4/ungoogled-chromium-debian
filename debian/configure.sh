@@ -60,10 +60,10 @@ real_dir_path () (
 [ -n "$MUTEX_PI" ] || MUTEX_PI=1
 [ -n "$NOTIFICATIONS" ] || NOTIFICATIONS=1
 [ -n "$OAUTH2" ] || OAUTH2=0
-[ -n "$OOP_PR" ] || OOP_PR=0
 [ -n "$OZONE_WAYLAND" ] || OZONE_WAYLAND=1
 [ -n "$PDF_JS" ] || PDF_JS=0
 [ -n "$POLICIES" ] || POLICIES=1
+[ -n "$PRINT_PREVIEW" ] || PRINT_PREVIEW=0
 [ -n "$QT" ] || QT=1
 [ -n "$SKIA_GAMMA" ] || SKIA_GAMMA=0
 [ -n "$SPEECH" ] || SPEECH=1
@@ -431,7 +431,6 @@ fi
 ##############################
 
 if [ $X11_ONLY -eq 1 ]; then
-  OOP_PR=1
   OZONE_WAYLAND=0
 fi
 
@@ -494,11 +493,6 @@ if [ $OAUTH2 -eq 1 ]; then
 fi
 
 
-if [ $OOP_PR -eq 1 ]; then
-  gn_enable="$gn_enable enable_oop_basic_print_dialog"
-fi
-
-
 if [ $OZONE_WAYLAND -eq 0 ]; then
   # GN_FLAGS += ozone_platform_wayland=false
   gn_enable="$gn_enable ozone_platform_wayland"
@@ -513,6 +507,12 @@ fi
 
 if [ $POLICIES -eq 0 ]; then
   INS="$INS -e \"s@^\(.*/managed/policies\.json\)@#\1@\""
+fi
+
+
+if [ $PRINT_PREVIEW -eq 1 ]; then
+  # GN_FLAGS += enable_print_preview=false enable_oop_printing=false
+  gn_disable="$gn_disable enable_print_preview"
 fi
 
 
