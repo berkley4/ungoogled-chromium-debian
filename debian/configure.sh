@@ -865,13 +865,14 @@ eval sed $SMF -i $UC_DIR/flags.gn
 eval sed $PRU -i $UC_DIR/pruning.list
 
 
-for file in control rules $INSTALL; do
-  ## Ensure d/control, d/rules and d/ungoogled-chromium.install exist
+for file in control rules $INSTALL etc/chromium/policies/managed/policies.json; do
+  ## Ensure control, rules, ungoogled-chromium.install and policies.json exist
   [ -f $DEBIAN/$file ] || cp -a $DEBIAN/${file}.in $DEBIAN/$file
-
-  ## Make d/rules and d/ungoogled-chromium.install executable
-  [ "$file" = "control" ] || chmod 0700 $DEBIAN/$file
 done
+
+## Make d/rules and d/ungoogled-chromium.install executable
+chmod 0700 $DEBIAN/rules
+chmod 0700 $DEBIAN/ungoogled-chromium.install
 
 
 
