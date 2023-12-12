@@ -1,0 +1,11 @@
+--- a/third_party/blink/renderer/core/frame/local_frame.cc
++++ b/third_party/blink/renderer/core/frame/local_frame.cc
+@@ -2055,7 +2055,7 @@ WebContentSettingsClient* LocalFrame::GetContentSettingsClient() {
+ PluginData* LocalFrame::GetPluginData() const {
+   if (!Loader().AllowPlugins())
+     return nullptr;
+-  return GetPage()->GetPluginData();
++  return nullptr;
+ }
+ 
+ void LocalFrame::SetAdTrackerForTesting(AdTracker* ad_tracker) {

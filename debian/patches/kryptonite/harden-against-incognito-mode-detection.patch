@@ -1,0 +1,14 @@
+--- a/storage/browser/quota/quota_settings.cc
++++ b/storage/browser/quota/quota_settings.cc
+@@ -60,11 +60,6 @@
+   base::ScopedBlockingCall scoped_blocking_call(FROM_HERE,
+                                                 base::BlockingType::MAY_BLOCK);
+ 
+-  if (is_incognito) {
+-    return CalculateIncognitoDynamicSettings(
+-        device_info_helper->AmountOfPhysicalMemory());
+-  }
+-
+   // The fraction of the device's storage the browser is willing to use for
+   // temporary storage.
+   const double kTemporaryPoolSizeRatio = features::kPoolSizeRatio.Get();
