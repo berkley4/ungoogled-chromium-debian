@@ -1,0 +1,15 @@
+--- a/components/embedder_support/origin_trials/features.cc
++++ b/components/embedder_support/origin_trials/features.cc
+@@ -15,10 +15,10 @@
+ // from the origin trial.
+ BASE_FEATURE(kOriginTrialsSampleAPIThirdPartyAlternativeUsage,
+              "OriginTrialsSampleAPIThirdPartyAlternativeUsage",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             base::FEATURE_DISABLED_BY_DEFAULT);
+ 
+ BASE_FEATURE(kConversionMeasurementAPIAlternativeUsage,
+              "ConversionMeasurementAPIAlternativeUsage",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             base::FEATURE_DISABLED_BY_DEFAULT);
+ 
+ }  // namespace embedder_support

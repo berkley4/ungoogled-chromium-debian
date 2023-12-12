@@ -1,25 +1,3 @@
-From: csagan5 <32685696+csagan5@users.noreply.github.com>
-Date: Mon, 11 Apr 2022 23:29:29 +0200
-Subject: autofill: miscellaneous
-
-Make sure that autofill is disabled by default (Jan Engelhardt <jengelh@inai.de>)
-Disable autofill download manager (Jan Engelhardt <jengelh@inai.de>)
-Disable autofill assistant and CC (csagan5)
-Disable autofill server communication by default (Daniel Micay <danielmicay@gmail.com>)
-Do not skip google.com domains for password generation (csagan5)
-
-License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
----
- chrome/browser/prefs/browser_prefs.cc         |  6 +--
- .../ui/autofill/chrome_autofill_client.cc     |  7 +--
- .../core/browser/autofill_download_manager.cc | 49 +++----------------
- .../core/browser/autofill_download_manager.h  |  2 -
- .../core/browser/browser_autofill_manager.h   |  4 +-
- .../autofill/core/common/autofill_features.cc |  4 +-
- .../autofill/core/common/autofill_prefs.cc    |  8 +--
- .../password_generation_frame_helper.cc       |  4 --
- 8 files changed, 19 insertions(+), 65 deletions(-)
-
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
 @@ -1106,11 +1106,11 @@
@@ -59,8 +37,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  BASE_FEATURE(kAutofillServerCommunication,
 -             "AutofillServerCommunication",
 -             base::FEATURE_ENABLED_BY_DEFAULT);
-+             "AutofillServerCommunication",       // disabled by default
-+             base::FEATURE_DISABLED_BY_DEFAULT);  // in Bromite
++             "AutofillServerCommunication",
++             base::FEATURE_DISABLED_BY_DEFAULT);
  
  // Controls attaching the autofill type predictions to their respective
  // element in the DOM.
