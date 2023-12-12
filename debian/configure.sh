@@ -110,6 +110,14 @@ real_dir_path () (
 [ -n "$XZ_THREADED" ] && XZ_THREADED_SET=1 || XZ_THREADED=0
 
 
+## Disable non-free stuff if NON_FREE=0
+[ -n "$NON_FREE" ] || NON_FREE=1
+if [ $NON_FREE -eq 0 ]; then
+  SER="$SER -e \"s@^\(bromite/\)@#\1@\" -e \"s@^\(vanadium/\)@#\1@\""
+  SUPERVISED_USER=1  # Needs a bromite patch
+fi
+
+
 
 #########################
 ## Changelog variables ##

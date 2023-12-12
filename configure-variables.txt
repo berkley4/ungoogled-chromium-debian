@@ -17,6 +17,9 @@ SYS_CLANG	0		Use in-tree chromium clang/llvm binaries
 C_VER		<version>	Override the default clang version (for use with SYS_CLANG > 0)
 				The script default is hardcoded to that of the bundled copy
 
+NON_FREE	1		Anyone distributing built debs must configure with NON_FREE=0
+				which will disable OpenH264 and the bromite and vanadium patches
+
 PGO		1		Enable/disable building with PGO profile optimisation
 POLICIES	1		Install /etc/chromium/policies/managed/policies.json
 STABLE		0		By default an unstable version is built

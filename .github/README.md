@@ -46,7 +46,6 @@ ___Performance improvements___
     - -mpclmul - enables CLMUL instructions
     - -mavx - enables AVX instructions (AVX2 is available via an optional patch)
     - -fno-plt - (see [here](https://patchwork.ozlabs.org/project/gcc/patch/alpine.LNX.2.11.1505061730460.22867@monopod.intra.ispras.ru/))
-    - -ftrivial-auto-var-init set to zero - see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html)
     - -import-instr-limit=24 and -import-hot-multiplier=15
         - gives a hot import limit of 360 (24x15) vs default of 300 (30x10)
     - The following LLVM polly options are available (needs a capable toolchain)
@@ -57,11 +56,10 @@ ___Security/Privacy improvements___
 
 - Stack clash protection (-fstack-clash-protection) - see [here](https://blog.llvm.org/posts/2021-01-05-stack-clash-protection/)
 - Intel control flow enforcement technology (-fcf-protection) - cpu-based [control flow integrity](https://wiki.ubuntu.com/ToolChain/CompilerFlags#A-fcf-protection)
-- Bad Cast Checking (via use_cfi_cast=true build flag) - see [here](https://clang.llvm.org/docs/ControlFlowIntegrity.html#bad-cast-checking)
-- Extra Bromite and Vanadium patches, the later of which includes the following clang options
-    - -fstack-protector-strong - chromium's default is the less-strict -fstack-protector
-    - -ftrivial-auto-var-init=zero - see [here](https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html)
-    - -fwrapv - see [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1031653) and [here](https://gitlab.e.foundation/e/apps/browser/-/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch)
+- Bad Cast Checking (use_cfi_cast=true) - see [here](https://clang.llvm.org/docs/ControlFlowIntegrity.html#bad-cast-checking)
+- Enhanced stack protection (-fstack-protector-strong; chromium's default is the less-strict -fstack-protector)
+- Overflow prevention (-fwrapv) - see [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1031653) and [here](https://gitlab.e.foundation/e/apps/browser/-/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch)
+- Extra Bromite and Vanadium patches (and generic patches derived from these projects)
 - A policy file is installed to help lock down the browser (use [this](https://chromeenterprise.google/policies/) as a reference guide)
 - Some security/privacy themed flag files are installed to /etc/chromium.d
 
