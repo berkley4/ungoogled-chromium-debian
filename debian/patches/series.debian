@@ -45,21 +45,23 @@ kryptonite/remove-window-name-on-cross-origin-navigation.patch
 kryptonite/replace-dns-probe-hostname-with-example-com.patch
 kryptonite/stop-omnibar-searches-triggering-dns-requests.patch
 
-vanadium/0003-switch-to-fstack-protector-strong.patch
-vanadium/0004-enable-fwrapv-in-Clang-for-non-UBSan-builds.patch
-vanadium/0024-disable-showing-popular-sites-by-default.patch
-vanadium/0025-disable-article-suggestions-feature-by-default.patch
-vanadium/0027-disable-sensors-access-by-default.patch
-vanadium/0030-disable-background-sync-by-default.patch
-vanadium/0032-disable-media-router-media-remoting-by-default.patch
-vanadium/0033-disable-media-router-by-default.patch
-vanadium/0039-disable-media-DRM-preprovisioning-by-default.patch
-vanadium/0041-enable-split-cache-by-default.patch
-vanadium/0042-enable-partitioning-connections-by-default.patch
-vanadium/0045-disable-component-updater-pings-by-default.patch
 vanadium/0049-stub-out-the-battery-status-API.patch
-vanadium/0079-Enable-strict-origin-isolation-by-default.patch
-vanadium/0085-enable-process-isolated-sandboxed-iframes-by-default.patch
+
+vanadinite/0001-switch-to-fstack-protector-strong.patch
+vanadinite/0002-enable-fwrapv-in-Clang-for-non-UBSan-builds.patch
+vanadinite/0003-disable-showing-popular-sites-by-default.patch
+vanadinite/0004-disable-article-suggestions-feature-by-default.patch
+vanadinite/0005-disable-content-feed-suggestions-by-default.patch
+vanadinite/0006-disable-sensors-access-by-default.patch
+vanadinite/0007-disable-background-sync-by-default.patch
+vanadinite/0008-disable-media-router-media-remoting-by-default.patch
+vanadinite/0009-disable-media-router-by-default.patch
+vanadinite/0010-disable-media-DRM-preprovisioning-by-default.patch
+vanadinite/0011-enable-split-cache-by-default.patch
+vanadinite/0012-enable-partitioning-connections-by-default.patch
+vanadinite/0013-disable-component-updater-pings-by-default.patch
+vanadinite/0014-Enable-strict-origin-isolation-by-default.patch
+vanadinite/0015-enable-process-isolated-sandboxed-iframes-by-default.patch
 
 various/fix-unbundle-script-dh-clean-interoperabilty.patch
 various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
@@ -100,7 +102,6 @@ various/system/xdg-scripts.patch
 various/system/libdrm.patch
 various/system/zlib.patch
 various/upstream/0001-RaceNetworkRequest-is-triggered-only-when-the-scheme-is-HTTP-or-HTTPS.patch
-various/vanadium/disable-content-feed-suggestions-by-default.patch
 
 optional/mutex-priority-inheritance.patch
 optional/polly-vectorizer.patch

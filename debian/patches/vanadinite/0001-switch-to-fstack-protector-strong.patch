@@ -1,0 +1,11 @@
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -385,7 +385,7 @@ config("compiler") {
+           cflags += [ "-fno-stack-protector" ]
+         } else if (current_os != "aix") {
+           # Not available on aix.
+-          cflags += [ "-fstack-protector" ]
++          cflags += [ "-fstack-protector-strong" ]
+         }
+       }
+     }

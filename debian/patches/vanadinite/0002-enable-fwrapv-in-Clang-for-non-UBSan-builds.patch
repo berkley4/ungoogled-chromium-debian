@@ -1,0 +1,13 @@
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -388,6 +388,10 @@ config("compiler") {
+       }
+     }
+ 
++    if (is_clang && !is_ubsan && !is_ubsan_security) {
++      cflags += [ "-fwrapv" ]
++    }
++
+     if (use_lld) {
+       ldflags += [ "-fuse-ld=lld" ]
+       if (lld_path != "") {

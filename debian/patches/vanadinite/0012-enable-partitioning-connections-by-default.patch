@@ -1,15 +1,6 @@
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Daniel Micay <danielmicay@gmail.com>
-Date: Mon, 8 Mar 2021 16:53:47 -0500
-Subject: [PATCH] enable partitioning connections by default
-
----
- net/base/features.cc | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -120,27 +120,27 @@
+@@ -118,27 +118,27 @@ BASE_FEATURE(kSplitCodeCacheByNetworkIsolationKey,
  
  BASE_FEATURE(kSplitHostCacheByNetworkIsolationKey,
               "SplitHostCacheByNetworkIsolationKey",
