@@ -1,6 +1,6 @@
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -110,11 +110,11 @@ BASE_FEATURE(kSplitCacheByIncludeCredentials,
+@@ -112,11 +112,11 @@
  
  BASE_FEATURE(kSplitCacheByNetworkIsolationKey,
               "SplitCacheByNetworkIsolationKey",

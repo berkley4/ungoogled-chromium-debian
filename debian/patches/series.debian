@@ -147,3 +147,7 @@ optional/system/vaapi/vaapi-disable-libaom-encoding.patch
 optional/translate/translate-revert-disable.patch
 optional/translate/translate-stop-unsupported-switch-warning.patch
 #optional/no-ELOC_PROTO-mnemonic.patch
+
+addenda/0001-5b2fdda.diff
+addenda/0002-1a8e198.diff
+addenda/0003-116b470.diff

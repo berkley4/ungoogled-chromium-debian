@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -388,6 +388,10 @@ config("compiler") {
+@@ -390,6 +390,10 @@
        }
      }
  

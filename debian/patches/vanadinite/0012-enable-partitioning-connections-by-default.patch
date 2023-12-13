@@ -1,6 +1,6 @@
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -118,27 +118,27 @@ BASE_FEATURE(kSplitCodeCacheByNetworkIsolationKey,
+@@ -120,27 +120,27 @@
  
  BASE_FEATURE(kSplitHostCacheByNetworkIsolationKey,
               "SplitHostCacheByNetworkIsolationKey",

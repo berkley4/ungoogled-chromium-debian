@@ -1,6 +1,6 @@
 --- a/third_party/blink/renderer/core/frame/local_frame.cc
 +++ b/third_party/blink/renderer/core/frame/local_frame.cc
-@@ -2055,7 +2055,7 @@ WebContentSettingsClient* LocalFrame::GetContentSettingsClient() {
+@@ -2081,7 +2081,7 @@
  PluginData* LocalFrame::GetPluginData() const {
    if (!Loader().AllowPlugins())
      return nullptr;

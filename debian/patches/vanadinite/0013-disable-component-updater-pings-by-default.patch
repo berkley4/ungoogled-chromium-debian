@@ -1,6 +1,6 @@
 --- a/components/component_updater/component_updater_command_line_config_policy.h
 +++ b/components/component_updater/component_updater_command_line_config_policy.h
-@@ -42,7 +42,7 @@ class ComponentUpdaterCommandLineConfigPolicy final
+@@ -42,7 +42,7 @@
    bool background_downloads_enabled_ = false;
    bool deltas_enabled_ = true;
    bool fast_update_ = false;

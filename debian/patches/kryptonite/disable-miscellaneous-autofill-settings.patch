@@ -31,13 +31,11 @@
    bool user_did_type_ = false;
 --- a/components/autofill/core/common/autofill_features.cc
 +++ b/components/autofill/core/common/autofill_features.cc
-@@ -829,8 +829,8 @@
- // "upload" resources.
+@@ -830,7 +830,7 @@
  // i.e., https://other.autofill.server:port/tbproxy/af/
  BASE_FEATURE(kAutofillServerCommunication,
--             "AutofillServerCommunication",
+              "AutofillServerCommunication",
 -             base::FEATURE_ENABLED_BY_DEFAULT);
-+             "AutofillServerCommunication",
 +             base::FEATURE_DISABLED_BY_DEFAULT);
  
  // Controls attaching the autofill type predictions to their respective

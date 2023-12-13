@@ -1,6 +1,6 @@
 --- a/services/network/cors/preflight_result.cc
 +++ b/services/network/cors/preflight_result.cc
-@@ -37,7 +37,7 @@ constexpr base::TimeDelta kDefaultTimeout = base::Seconds(5);
+@@ -37,7 +37,7 @@
  // Maximum cache expiry time. Even if a CORS-preflight response contains
  // Access-Control-Max-Age header that specifies a longer expiry time, this
  // maximum time is applied.
