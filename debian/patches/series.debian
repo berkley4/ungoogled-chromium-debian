@@ -33,7 +33,6 @@ kryptonite/disable-conversion-measurement-api.patch
 kryptonite/disable-extension-autoupdate.patch
 kryptonite/disable-idle-detection.patch
 kryptonite/disable-miscellaneous-autofill-settings.patch
-kryptonite/disable-plugin-enumeration.patch
 kryptonite/disable-signed-exchange-reporting.patch
 kryptonite/do-not-build-API-keys-infobar.patch
 kryptonite/do-not-expose-local-IP-addresses-via-webRTC.patch

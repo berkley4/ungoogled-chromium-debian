@@ -65,7 +65,7 @@ real_dir_path () (
 [ -n "$OZONE_WAYLAND" ] || OZONE_WAYLAND=1
 [ -n "$PDF_JS" ] || PDF_JS=0
 [ -n "$POLICIES" ] || POLICIES=1
-[ -n "$PRINT_PREVIEW" ] || PRINT_PREVIEW=0
+[ -n "$PRINT_PREVIEW" ] || PRINT_PREVIEW=1
 [ -n "$QT" ] || QT=1
 [ -n "$SKIA_GAMMA" ] || SKIA_GAMMA=0
 [ -n "$SPEECH" ] || SPEECH=1
@@ -537,9 +537,9 @@ else
 fi
 
 
-if [ $PRINT_PREVIEW -eq 1 ]; then
+if [ $PRINT_PREVIEW -eq 0 ]; then
   # GN_FLAGS += enable_print_preview=false enable_oop_printing=false
-  gn_disable="$gn_disable enable_print_preview"
+  gn_enable="$gn_enable enable_print_preview"
 fi
 
 
