@@ -16,6 +16,24 @@
    }
  
    # We cannot rely on errno being set after math functions,
+@@ -2443,7 +2452,7 @@
+     # vectorization while otherwise optimizing for size.
+     rustflags = [ "-Copt-level=s" ]
+   } else {
+-    cflags = [ "-O2" ] + common_optimize_on_cflags
++    cflags = [ "-O2" ] + common_optimize_on_cflags + polly_cflags
+ 
+     # The `-O3` for clang turns on extra optimizations compared to the standard
+     # `-O2`. But for rust, `-Copt-level=3` is the default and is thus reliable
+@@ -2514,7 +2523,7 @@
+     } else if (optimize_for_fuzzing) {
+       cflags = [ "-O1" ] + common_optimize_on_cflags
+     } else {
+-      cflags = [ "-O2" ] + common_optimize_on_cflags
++      cflags = [ "-O2" ] + common_optimize_on_cflags + polly_cflags
+     }
+     rustflags = [ "-Copt-level=3" ]
+   }
 @@ -2547,7 +2556,7 @@
      } else if (optimize_for_fuzzing) {
        cflags = [ "-O1" ] + common_optimize_on_cflags
