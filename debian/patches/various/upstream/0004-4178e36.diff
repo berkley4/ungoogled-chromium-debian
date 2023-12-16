@@ -1,0 +1,37 @@
+From 4178e369978d840981cbb446bb5cb861858f9ad2 Mon Sep 17 00:00:00 2001
+From: Olivier Li Shing Tat-Dupuis <olivierli@chromium.org>
+Date: Thu, 14 Dec 2023 18:41:58 +0000
+Subject: [PATCH] Remove CHECK for missing cached cookie
+
+The point of the check was to validate what was assumed an invariant. Crash
+reports are coming in at a rate that is high for crashes but extremely
+low in the context of the number of cookie operations. This is caused
+by the mojo operation returning a null string which can happen.
+
+If a null value is detected the code now falls back on using an IPC to request a new value.
+
+Bug: 1393050, 1511021
+Change-Id: I0bc52eed3799b95d73ec1f1c4c01665356b11f31
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5119481
+Reviewed-by: Nate Chapin <japhet@chromium.org>
+Commit-Queue: Olivier Li <olivierli@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1237641}
+---
+
+--- a/third_party/blink/renderer/core/loader/cookie_jar.cc
++++ b/third_party/blink/renderer/core/loader/cookie_jar.cc
+@@ -177,8 +177,12 @@
+     return true;
+   }
+ 
+-  // If there is a cached version, there should also be a cached string.
+-  CHECK(!last_cookies_.IsNull());
++  // |last_cookies_| can be null when converting the raw mojo payload failed.
++  // (See ConvertUTF8ToUTF16() for details.) In that case use an IPC to request
++  // another string to be safe.
++  if (last_cookies_.IsNull()) {
++    return true;
++  }
+ 
+   // Cookie string has changed.
+   if (last_version_ < GetSharedCookieVersion()) {
