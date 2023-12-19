@@ -155,18 +155,9 @@ case $VERSION in
     VERSION=$VER-$REV
     ;;
 
-  *)
-    case $VERSION in
-      -|-[0-9]|*-)
-        printf '%s\n' "Malformed VERSION variable: $VERSION"
-        exit 1
-        ;;
-
-      "")
-        printf '%s\n' "VERSION variable is blank"
-        exit 1
-        ;;
-    esac
+  -|-[1-9]|-stable[1-9]|*-)
+    printf '%s\n' "Malformed VERSION variable: $VERSION"
+    exit 1
     ;;
 esac
 
