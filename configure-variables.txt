@@ -17,12 +17,14 @@ SYS_CLANG	0		Use in-tree chromium clang/llvm binaries
 C_VER		<version>	Override the default clang version (for use with SYS_CLANG > 0)
 				The script default is hardcoded to that of the bundled copy
 
-NON_FREE	1		Anyone distributing built debs must configure with NON_FREE=0
-				which will disable OpenH264 and the bromite and vanadium patches
-
 PGO		1		Enable/disable building with PGO profile optimisation
 POLICIES	1		Install /etc/chromium/policies/managed/policies.json
 STABLE		0		By default an unstable version is built
+
+NON_FREE	1		Anyone distributing built debs should configure with NON_FREE=0
+				in order to comply with licencing laws. This variable will disable
+                                all bromite and vanadium patches, plus set SUPERVISED_USER=1 and
+                                force-enable SYS_OPENH264 if OPENH264 is enabled.
 
 TARBALL		0		Use tarball download instead of git
 DL_CACHE	<dir>		Default is ../download_cache (relative to root of source tree)
@@ -62,7 +64,7 @@ PULSE		1		Pulseaudio
 QT		1		Runtime autodetected (eg Gnome desktops will ignore)
 SKIA_GAMMA	0		Use a gamma value of 2.2 for text blitting
 SPEECH		1		Speech service (voice recognition)
-SUPERVISED_USER	0		Parental control related component
+SUPERVISED_USER	0		Parental control related component (relies on a bromite patch)
 VR		0		Virtual reality hardware support
 WEBGPU		0		Not enabled upstream on linux yet (likely beta quality)
 WIDEVINE	1		Needs various extra components to enable
@@ -71,13 +73,15 @@ X11_ONLY	0		When enabled is an alias for OZONE_WAYLAND=0
 
 ## Libraries
 
-OPENH264	1
-VAAPI		1
+OPENH264	1		Used for software h264 media encoding and webrtc h264 encoding/decoding
+				Enable building with OpenH264 support
+
+VAAPI		1		Used for hardware encoding/decoding
 
 SYS_FREETYPE	0		Needed for system fontconfig; dependencies: brotli and libpng
 SYS_ICU		1
 SYS_JPEG	1
-
+SYS_OPENH264	1		The bundled OpenH264 library (SYS_OPENH264=0) cannot be redistributed
 
 # Unsupported
 

@@ -74,7 +74,6 @@ real_dir_path () (
 [ -n "$WEBGPU" ] || WEBGPU=0
 [ -n "$WIDEVINE" ] || WIDEVINE=1
 
-[ -n "$OPENH264" ] || OPENH264=1
 [ -n "$PIPEWIRE" ] || PIPEWIRE=1
 [ -n "$PULSE" ] || PULSE=1
 [ -n "$VAAPI" ] || VAAPI=1
@@ -90,6 +89,10 @@ real_dir_path () (
 
 # Allow freetype setting to be force-enabled (for stable builds)
 [ -n "$SYS_FREETYPE" ] && SYS_FREETYPE_SET=1 || SYS_FREETYPE=1
+
+# OpenH254 support
+[ -n "$OPENH264" ] && [ $OPENH264 -eq 0 ] && SYS_OPENH264=0 || OPENH264=1
+[ -n "$SYS_OPENH264" ] || SYS_OPENH264=1
 
 ## Intel CET, MARCH and MTUNE defaults
 [ -n "$INTEL_CET" ] || INTEL_CET=1
@@ -114,7 +117,12 @@ real_dir_path () (
 [ -n "$NON_FREE" ] || NON_FREE=1
 if [ $NON_FREE -eq 0 ]; then
   SER="$SER -e \"s@^\(bromite/\)@#\1@\" -e \"s@^\(vanadium/\)@#\1@\""
-  SUPERVISED_USER=1  # Needs a bromite patch
+  SUPERVISED_USER=1  # Setting this to zero requires a (non-free) bromite patch
+  if [ $OPENH264 -eq 1 ] && [ $SYS_OPENH264 -eq 0 ]; then
+    printf '%s\n' "WARN: Not a non-free build - disabling bundled OpenH264"
+    printf '%s\n' "WARN: Enabling system OpenH264 library instea"
+    SYS_OPENH264=1
+  fi
 fi
 
 
@@ -616,12 +624,8 @@ fi
 
 
 if [ $OPENH264 -eq 0 ]; then
-  op_disable="$op_disable system/openh264"
-
-  # GN_FLAGS += media_use_openh264=false
+  # GN_FLAGS += media_use_openh264=false rtc_use_h264=false
   gn_enable="$gn_enable media_use_openh264"
-  sys_disable="$sys_disable openh264"
-  deps_disable="$deps_disable libopenh264"
 fi
 
 
@@ -664,6 +668,13 @@ fi
 if [ $SYS_JPEG -eq 0 ]; then
   op_disable="$op_disable system/jpeg"
   sys_disable="$sys_disable libjpeg"
+fi
+
+
+if [ $SYS_OPENH264 -eq 0 ]; then
+  op_disable="$op_disable system/openh264"
+  sys_disable="$sys_disable openh264"
+  deps_disable="$deps_disable libopenh264"
 fi
 
 

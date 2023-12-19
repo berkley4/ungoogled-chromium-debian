@@ -91,7 +91,7 @@ GN_FLAGS += enable_mutex_priority_inheritance=true
 GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
 
 # Disable openh264
-#GN_FLAGS += media_use_openh264=false
+#GN_FLAGS += media_use_openh264=false rtc_use_h264=false
 
 # Enable pipewire
 GN_FLAGS += rtc_use_pipewire=true
