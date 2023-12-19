@@ -96,7 +96,7 @@ real_dir_path () (
 [ -n "$MARCH" ] && MARCH_SET=1 || MARCH=x86-64-v2
 [ -n "$MTUNE" ] && MTUNE_SET=1 || MTUNE=generic
 
-## POLLY_EXT is disabled if POLLY_VEC=0 or POLLY_EXT=0 (or both)
+## Allow forcing POLLY_EXT=0 to stop auto-enablement later on
 [ -n "$POLLY_EXT" ] && POLLY_EXT_SET=1 || POLLY_EXT=0
 [ -n "$POLLY_VEC" ] || POLLY_VEC=1
 
