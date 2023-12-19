@@ -30,6 +30,8 @@ TARBALL		0		Use tarball download instead of git
 DL_CACHE	<dir>		Default is ../download_cache (relative to root of source tree)
 				Active when TARBALL=1.
 
+X11_ONLY	0		When enabled is an alias for OZONE_WAYLAND=0
+				Wayland users can also enable (the ozone wayland platform is experimental)
 
 ## Components that can be enabled/disabled via patches
 
@@ -56,7 +58,7 @@ FEED		1		WebFeed (News feed) support
 MUTEX_PI	1		Mutex priority inheritance
 NOTIFICATIONS	1		System notifications
 OAUTH2		0		Enable OAuth 2.0 client switches
-OZONE_WAYLAND	1		Wayland ozone platform
+OZONE_WAYLAND	1		Wayland ozone platform (experimental; can be disabled by wayland users)
 PDF_JS		0		PDF javascript support
 PIPEWIRE	1
 PRINT_PREVIEW	1		Can be disabled to replace the print dialogue with the system one
@@ -68,7 +70,6 @@ SUPERVISED_USER	0		Parental control related component (relies on a bromite patch
 VR		0		Virtual reality hardware support
 WEBGPU		0		Not enabled upstream on linux yet (likely beta quality)
 WIDEVINE	1		Needs various extra components to enable
-X11_ONLY	0		When enabled is an alias for OZONE_WAYLAND=0
 
 
 ## Libraries

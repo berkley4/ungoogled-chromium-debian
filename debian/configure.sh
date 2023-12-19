@@ -45,7 +45,6 @@ real_dir_path () (
 [ -n "$STABLE" ] || STABLE=0
 [ -n "$TARBALL" ] || TARBALL=0
 [ -n "$TRANSLATE" ] || TRANSLATE=1
-[ -n "$X11_ONLY" ] || X11_ONLY=0
 
 [ -n "$AES_PCLMUL" ] || AES_PCLMUL=1
 [ -n "$AVX" ] || AVX=1
@@ -123,6 +122,15 @@ if [ $NON_FREE -eq 0 ]; then
     printf '%s\n' "WARN: Enabling system OpenH264 library instea"
     SYS_OPENH264=1
   fi
+fi
+
+
+## X11_ONLY=1 is an alias for OZONE_WAYLAND=0
+## Note that OZONE_WAYLAND=1 is experimental and wayland users
+## can also set X11_ONLY=1 (or alternatively OZONE_WAYLAND=0)
+[ -n "$X11_ONLY" ] || X11_ONLY=0
+if [ $X11_ONLY -eq 1 ]; then
+  OZONE_WAYLAND=0
 fi
 
 
@@ -442,11 +450,6 @@ fi
 ##############################
 ##  Non-library components  ##
 ##############################
-
-if [ $X11_ONLY -eq 1 ]; then
-  OZONE_WAYLAND=0
-fi
-
 
 if [ $ATK_DBUS -eq 0 ]; then
   op_enable="$op_enable disable/atk-dbus"
