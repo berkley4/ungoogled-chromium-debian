@@ -460,7 +460,7 @@ fi
 
 
 if [ $CATAPULT -eq 0 ]; then
-  op_enable="$op_enable disable/catapult disable/rtc-protobuf"
+  op_enable="$op_enable disable/catapult"
 fi
 
 

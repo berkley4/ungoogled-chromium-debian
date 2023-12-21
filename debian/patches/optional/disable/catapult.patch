@@ -239,27 +239,6 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
 -    "//third_party/catapult/third_party/typ/",
    ]
  }
---- a/third_party/webrtc/test/BUILD.gn
-+++ b/third_party/webrtc/test/BUILD.gn
-@@ -395,10 +395,6 @@
-   ]
-   if (rtc_enable_protobuf) {
-     sources += [ "testsupport/perf_test_histogram_writer.cc" ]
--    deps += [
--      "//third_party/catapult/tracing/tracing:histogram",
--      "//third_party/catapult/tracing/tracing:reserved_infos",
--    ]
-   } else {
-     sources += [ "testsupport/perf_test_histogram_writer_no_protobuf.cc" ]
-   }
-@@ -785,7 +781,6 @@
- 
-       if (rtc_enable_protobuf) {
-         sources += [ "testsupport/perf_test_histogram_writer_unittest.cc" ]
--        deps += [ "//third_party/catapult/tracing/tracing:histogram" ]
-       }
- 
-       data = test_support_unittests_resources
 --- a/tools/perf/core/perfetto_binary_roller/BUILD.gn
 +++ b/tools/perf/core/perfetto_binary_roller/BUILD.gn
 @@ -7,7 +7,6 @@
