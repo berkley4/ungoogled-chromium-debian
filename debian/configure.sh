@@ -21,11 +21,12 @@ DEBIAN=$(dirname $0)
 RT_DIR=$(dirname $DEBIAN)
 
 MP_DIR=$DEBIAN/misc_patches
-PF_DIR=$DEBIAN/etc/chromium/policies/managed
 UC_DIR=$DEBIAN/submodules/ungoogled-chromium
+
 UC_PATCH_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 
 INSTALL=ungoogled-chromium.install
+P_FILE=etc/chromium/policies/managed/policies.json
 
 DOMSUB_PATCH=$MP_DIR/revert-New-unpack-arg-to-skip-unused-dirs.patch
 PRUNE_PATCH=$MP_DIR/no-exit-if-pruned.patch
@@ -865,7 +866,7 @@ echo "$(cat $UC_DIR/patches/series)" "$SERIES_DEBIAN" > $DEBIAN/patches/series
 
 [ -z "$INS" ] || eval sed $INS < $DEBIAN/$INSTALL.in > $DEBIAN/$INSTALL
 
-[ -z "$POL" ] || eval sed $POL < $PF_DIR/policies.json.in > $PF_DIR/policies.json
+[ -z "$POL" ] || eval sed $POL < $DEBIAN/$P_FILE > $DEBIAN/$P_FILE.in
 
 eval sed $CON < $DEBIAN/control.in > $DEBIAN/control
 
@@ -878,9 +879,9 @@ eval sed $SMF -i $UC_DIR/flags.gn
 eval sed $PRU -i $UC_DIR/pruning.list
 
 
-for file in control rules $INSTALL etc/chromium/policies/managed/policies.json; do
-  ## Ensure control, rules, ungoogled-chromium.install and policies.json exist
-  [ -f $DEBIAN/$file ] || cp -a $DEBIAN/${file}.in $DEBIAN/$file
+## Ensure control, rules, ungoogled-chromium.install and policies.json exist
+for file in control rules $INSTALL $P_FILE; do
+  [ -f $DEBIAN/$file ] || cp -a $DEBIAN/$file.in $DEBIAN/$file
 done
 
 ## Make d/rules and d/ungoogled-chromium.install executable
