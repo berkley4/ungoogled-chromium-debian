@@ -35,7 +35,6 @@ kryptonite/disable-idle-detection.patch
 kryptonite/disable-miscellaneous-autofill-settings.patch
 kryptonite/disable-signed-exchange-reporting.patch
 kryptonite/do-not-build-API-keys-infobar.patch
-kryptonite/do-not-expose-local-IP-addresses-via-webRTC.patch
 kryptonite/force-dns-over-https-secure-mode.patch
 kryptonite/harden-against-incognito-mode-detection.patch
 kryptonite/profile-resetter-disable-send-settings.patch
