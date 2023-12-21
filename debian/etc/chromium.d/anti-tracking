@@ -31,10 +31,11 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-tls-grease"
 # Limit referrer headers (choices: MinimalReferrers, NoCrossOriginReferrers, NoReferrers)
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=MinimalReferrers"
 
-# WebRTC IP privacy (builtin default is disable_non_proxied_udp)
+# WebRTC IP privacy
+# The builtin default (via an UC patch) is disable_non_proxied_udp)
 # Choices: default, default_public_and_private_interfaces,
-#          default_public_interface_only or  disable_non_proxied_udp
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --webrtc-ip-handling-policy=default_public_interface_only"
+#          default_public_interface_only or disable_non_proxied_udp
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --webrtc-ip-handling-policy=disable_non_proxied_udp"
 
 
 # Disable OpenGL ES 3 APIs (prevents gpu info leakage; will also disable WebGL2)
