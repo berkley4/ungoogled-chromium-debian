@@ -8,6 +8,7 @@
   "CloudPrintProxyEnabled": false,
   "CrossOriginWebAssemblyModuleSharingEnabled": false,
   "DefaultSearchProviderContextMenuAccessAllowed": false,
+  "DefaultSerialGuardSetting": 2,
   "DefaultWebBluetoothGuardSetting": 2,
   "DefaultWebHidGuardSetting": 2,
   "DefaultWebUsbGuardSetting": 2,
