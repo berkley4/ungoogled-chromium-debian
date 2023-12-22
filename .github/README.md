@@ -61,6 +61,7 @@ ___Security/Privacy improvements___
 - Overflow prevention (-fwrapv) - see [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1031653) and [here](https://gitlab.e.foundation/e/apps/browser/-/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch)
 - Extra Bromite and Vanadium patches (and generic patches derived from these projects)
 - A policy file is installed to help lock down the browser (use [this](https://chromeenterprise.google/policies/) as a reference guide)
+- The Web Bluetooth/HID/USB APIs are disabled, and the audio/video/screen capture APIs can be disabled via the policy file
 - Some security/privacy themed flag files are installed to /etc/chromium.d
 
 
