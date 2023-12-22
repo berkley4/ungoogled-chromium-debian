@@ -1,6 +1,6 @@
 {
   "AdditionalDnsQueryTypesEnabled": true,
-  "AudioCaptureAllowed": false,
+  "AudioCaptureAllowed": true,
   "BackgroundModeEnabled": false,
   "BlockExternalExtensions": true,
   "BrowserNetworkTimeQueriesEnabled": false,
@@ -21,10 +21,10 @@
   "PromotionalTabsEnabled": false,
   "RemoteDebuggingAllowed": false,
   "SandboxExternalProtocolBlocked": false,
-  "ScreenCaptureAllowed": false,
+  "ScreenCaptureAllowed": true,
   "ScrollToTextFragmentEnabled": false,
   "SearchSuggestEnabled": false,
   "SyncDisabled": true,
-  "VideoCaptureAllowed": false,
+  "VideoCaptureAllowed": true,
   "WPADQuickCheckEnabled": false
 }

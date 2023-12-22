@@ -33,22 +33,30 @@ DL_CACHE	<dir>		Default is ../download_cache (relative to root of source tree)
 X11_ONLY	0		When enabled is an alias for OZONE_WAYLAND=0
 				Wayland users can also enable (the ozone wayland platform is experimental)
 
-## Components that can be enabled/disabled via patches
+## Components/features that can be enabled/disabled exclusively via patches
 
-ATK_DBUS	1		D-Bus support (for bluetooth)
+ATK_DBUS	1		Accessibility/D-Bus support (d-bus is only used for bluetooth)
 CATAPULT	1		Catapult profiling support
+OAUTH2		0		Enable OAuth 2.0 client switches
+SKIA_GAMMA	0		Use a gamma value of 2.2 for text blitting
+SUPERVISED_USER	0		Parental control related component (relies on a bromite patch)
 TRANSLATE	1		Google translate support
 				0 - disable
 				1 - enable (need to edit /etc/chromium.d/google-translate)
 				2 - enable completely
 
-
-## Enable/Disable features/components/patches
-
+## Managed Browser Policy Settings
 DNS_BUILTIN	0		Internal chromium DNS-over-HTTPS client
 DNS_INTERCEPT	1		DNS interception checking (helps protect against hijacking/poisoning)
 DNS_HOST	<hostname>	To set https://dns.example.net/dns-query{?dns} as DNS-over-HTTPS
 				resolver, run: DNS_HOST=dns.example.net ./debian/configure.sh
+
+CAP		1		Toggle for all capture features (needed for WebRTC)
+CAP_AUD		1		Audio capture
+CAP_SCR		1		Screen capture (desktop sharing)
+CAP_VID		1		Video capture
+
+## Enable/Disable features/components/patches
 
 DRIVER		1		Chromedriver package
 
@@ -57,16 +65,13 @@ EXT_TOOLS_MENU	1		Move the extensions menu to the 'More tools' menu
 FEED		1		WebFeed (News feed) support
 MUTEX_PI	1		Mutex priority inheritance
 NOTIFICATIONS	1		System notifications
-OAUTH2		0		Enable OAuth 2.0 client switches
 OZONE_WAYLAND	1		Wayland ozone platform (experimental; can be disabled by wayland users)
 PDF_JS		0		PDF javascript support
 PIPEWIRE	1
 PRINT_PREVIEW	1		Can be disabled to replace the print dialogue with the system one
 PULSE		1		Pulseaudio
 QT		1		Runtime autodetected (eg Gnome desktops will ignore)
-SKIA_GAMMA	0		Use a gamma value of 2.2 for text blitting
 SPEECH		1		Speech service (voice recognition)
-SUPERVISED_USER	0		Parental control related component (relies on a bromite patch)
 VR		0		Virtual reality hardware support
 WEBGPU		0		Not enabled upstream on linux yet (likely beta quality)
 WIDEVINE	1		Needs various extra components to enable

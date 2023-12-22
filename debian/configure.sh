@@ -83,16 +83,29 @@ real_dir_path () (
 [ -n "$SYS_ICU" ] || SYS_ICU=0
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
 
-# Allow forcing off DNS_BUILTIN and turning off DNS interception checks
-[ -n "$DNS_BUILTIN" ] && DNS_BUILTIN_SET=1 || DNS_BUILTIN=0
-[ -n "$DNS_INTERCEPT" ] || DNS_INTERCEPT=1
 
-# Allow freetype setting to be force-enabled (for stable builds)
+## Allow freetype setting to be force-enabled (for stable builds)
 [ -n "$SYS_FREETYPE" ] && SYS_FREETYPE_SET=1 || SYS_FREETYPE=1
 
-# OpenH254 support
+## OpenH254 support
 [ -n "$OPENH264" ] && [ $OPENH264 -eq 0 ] && SYS_OPENH264=0 || OPENH264=1
 [ -n "$SYS_OPENH264" ] || SYS_OPENH264=1
+
+
+## Managed Browser Policy Settings
+if [ $POLICIES -eq 1 ]; then
+  # Capture of audio/video/screen (eg for WebRTC)
+  [ -n "$CAP" ] && [ $CAP -eq 0 ] || CAP=1
+  [ -n "$CAP_AUD" ] || CAP_AUD=1
+  [ -n "$CAP_SCR" ] || CAP_SCR=1
+  [ -n "$CAP_VID" ] || CAP_VID=1
+
+  # Setting DNS_HOST will enable DNS_BUILTIN unless the latter is set to zero
+  [ -n "$DNS_BUILTIN" ] && DNS_BUILTIN_SET=1 || DNS_BUILTIN=0
+  [ -n "$DNS_HOST" ] || DNS_HOST=
+  [ -n "$DNS_INTERCEPT" ] || DNS_INTERCEPT=1
+fi
+
 
 ## Intel CET, MARCH and MTUNE defaults
 [ -n "$INTEL_CET" ] || INTEL_CET=1
@@ -525,6 +538,12 @@ fi
 if [ $POLICIES -eq 0 ]; then
   INS="$INS -e \"s@^\(.*/managed/policies\.json\)@#\1@\""
 else
+  if [ $CAP -eq 1 ]; then
+    [ $CAP_AUD -eq 1 ] || POL="$POL -e \"/AudioCaptureAllowed/s@true@false@\""
+    [ $CAP_SCR -eq 1 ] || POL="$POL -e \"/ScreenCaptureAllowed/s@true@false@\""
+    [ $CAP_VID -eq 1 ] || POL="$POL -e \"/VideoCaptureAllowed/s@true@false@\""
+  fi
+
   if [ -n "$DNS_HOST" ]; then
     [ $DNS_BUILTIN_SET -eq 1 ] && [ $DNS_BUILTIN -eq 0 ] || DNS_BUILTIN=1
     POL="$POL -e \"/doh.opendns.com/s@doh.opendns.com@$DNS_HOST@\""
