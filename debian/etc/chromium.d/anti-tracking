@@ -14,9 +14,6 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-search-engine-collection"
 # See https://github.com/ungoogled-software/ungoogled-chromium/issues/783 for more details
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-tls-grease"
 
-# Disable TLS resumption for all HTTPS and QUIC connections
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-tls-resumption"
-
 # Disable frequently-visited sites in the new tab page
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-top-sites"
 
