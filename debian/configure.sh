@@ -643,6 +643,8 @@ if [ $QT -eq 0 ]; then
   deps_disable="$deps_disable qtbase5"
 
   INS="$INS -e \"s@^\(out/Release/libqt5_shim.so\)@#\1@\""
+else
+  sed '/disable-features=AllowQt/s@^@#@' -i $DEBIAN/etc/chromium.d/ui
 fi
 
 
