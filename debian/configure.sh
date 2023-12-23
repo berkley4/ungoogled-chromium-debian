@@ -95,7 +95,7 @@ real_dir_path () (
 ## Managed Browser Policy Settings
 if [ $POLICIES -eq 1 ]; then
   # Capture of audio/video/screen (eg for WebRTC)
-  [ -n "$CAP" ] && [ $CAP -eq 0 ] || CAP=1
+  [ -n "$CAP" ] && [ $CAP -eq 0 ] && CAP_AUD=0 && CAP_SCR=0 && CAP_VID=0 || CAP=1
   [ -n "$CAP_AUD" ] || CAP_AUD=1
   [ -n "$CAP_SCR" ] || CAP_SCR=1
   [ -n "$CAP_VID" ] || CAP_VID=1
@@ -538,11 +538,9 @@ fi
 if [ $POLICIES -eq 0 ]; then
   INS="$INS -e \"s@^\(.*/managed/policies\.json\)@#\1@\""
 else
-  if [ $CAP -eq 1 ]; then
-    [ $CAP_AUD -eq 1 ] || POL="$POL -e \"/AudioCaptureAllowed/s@true@false@\""
-    [ $CAP_SCR -eq 1 ] || POL="$POL -e \"/ScreenCaptureAllowed/s@true@false@\""
-    [ $CAP_VID -eq 1 ] || POL="$POL -e \"/VideoCaptureAllowed/s@true@false@\""
-  fi
+  [ $CAP_AUD -eq 1 ] || POL="$POL -e \"/AudioCaptureAllowed/s@true@false@\""
+  [ $CAP_SCR -eq 1 ] || POL="$POL -e \"/ScreenCaptureAllowed/s@true@false@\""
+  [ $CAP_VID -eq 1 ] || POL="$POL -e \"/VideoCaptureAllowed/s@true@false@\""
 
   if [ -n "$DNS_HOST" ]; then
     [ $DNS_BUILTIN_SET -eq 1 ] && [ $DNS_BUILTIN -eq 0 ] || DNS_BUILTIN=1
