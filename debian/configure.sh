@@ -887,7 +887,7 @@ echo "$(cat $UC_DIR/patches/series)" "$SERIES_DEBIAN" > $DEBIAN/patches/series
 
 [ -z "$INS" ] || eval sed $INS < $DEBIAN/$INSTALL.in > $DEBIAN/$INSTALL
 
-[ -z "$POL" ] || eval sed $POL < $DEBIAN/$P_FILE > $DEBIAN/$P_FILE.in
+[ -z "$POL" ] || eval sed $POL < $DEBIAN/$P_FILE.in > $DEBIAN/$P_FILE
 
 eval sed $CON < $DEBIAN/control.in > $DEBIAN/control
 
