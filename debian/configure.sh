@@ -154,9 +154,11 @@ fi
 #########################
 
 ## Allow overriding AUTHOR
-if [ -z "$AUTHOR" ]; then
-  AUTHOR='ungoogled-chromium Maintainers <github@null.invalid>'
-fi
+case $AUTHOR in
+  "")
+    AUTHOR='ungoogled-chromium Maintainers <github@null.invalid>'
+    ;;
+esac
 
 ## Also need to set AUTHOR in debian/control
 CON="$CON -e \"s;@@AUTHOR@@;$AUTHOR;\""
