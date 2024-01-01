@@ -176,8 +176,8 @@ fi
 ## Set VERSION automatically from submodule files or manually via environment
 case $VERSION in
   "")
-    VER=$(cat $UC_DIR/chromium_version.txt)
-    REV=$(cat $UC_DIR/revision.txt)
+    read VER < $UC_DIR/chromium_version.txt
+    read REV < $UC_DIR/revision.txt
 
     case $RELEASE in
       stable)
@@ -244,7 +244,7 @@ esac
 
 ## Set path to PGO profile
 if [ $PGO -eq 1 ] && [ $TEST -eq 0 ]; then
-  PGO_PROF=$(cat $RT_DIR/chrome/build/linux.pgo.txt)
+  read PGO_PROF < $RT_DIR/chrome/build/linux.pgo.txt
   PGO_PATH=$(real_dir_path $RT_DIR/chrome/build/pgo_profiles)/$PGO_PROF
 fi
 
