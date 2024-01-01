@@ -133,7 +133,7 @@ if [ $NON_FREE -eq 0 ]; then
   SUPERVISED_USER=1  # Setting this to zero requires a (non-free) bromite patch
   if [ $OPENH264 -eq 1 ] && [ $SYS_OPENH264 -eq 0 ]; then
     printf '%s\n' "WARN: Not a non-free build - disabling bundled OpenH264"
-    printf '%s\n' "WARN: Enabling system OpenH264 library instea"
+    printf '%s\n' "WARN: Enabling system OpenH264 library instead"
     SYS_OPENH264=1
   fi
 fi
@@ -142,10 +142,7 @@ fi
 ## X11_ONLY=1 is an alias for OZONE_WAYLAND=0
 ## Note that OZONE_WAYLAND=1 is experimental and wayland users
 ## can also set X11_ONLY=1 (or alternatively OZONE_WAYLAND=0)
-[ -n "$X11_ONLY" ] || X11_ONLY=0
-if [ $X11_ONLY -eq 1 ]; then
-  OZONE_WAYLAND=0
-fi
+[ -n "$X11_ONLY" ] && [ $X11_ONLY -eq 1 ] && OZONE_WAYLAND=0 || X11_ONLY=0
 
 
 
