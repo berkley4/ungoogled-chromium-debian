@@ -14,43 +14,9 @@ author: Michel Le Bihan <michel@lebihan.pl>
      if (!is_android && !is_chromeos_lacros) {
        data_deps += [
          "//chrome/test:load_library_perf_tests",
---- a/third_party/angle/gni/angle.gni
-+++ b/third_party/angle/gni/angle.gni
-@@ -121,7 +121,7 @@
-   }
- 
-   # Indicate if the rapidJSON library is available to build with in third_party/.
--  angle_has_rapidjson = angle_has_build
-+  angle_has_rapidjson = false
- }
- 
- declare_args() {
-@@ -296,10 +296,10 @@
-   angle_enable_apple_translator_workarounds =
-       is_apple && (angle_enable_glsl || use_fuzzing_engine)
- 
--  angle_has_histograms = angle_has_build
-+  angle_has_histograms = false
- 
-   # True if we want to build the ANGLE test suites. On by default in most configs.
--  angle_build_tests = angle_has_build
-+  angle_build_tests = false
- }
- 
- declare_args() {
 --- a/third_party/angle/src/tests/BUILD.gn
 +++ b/third_party/angle/src/tests/BUILD.gn
-@@ -10,8 +10,7 @@
- declare_args() {
-   build_angle_gles1_conform_tests = checkout_angle_internal
-   build_angle_trace_perf_tests = false
--  build_angle_perftests =
--      is_win || is_linux || is_chromeos || is_android || is_apple || is_fuchsia
-+  build_angle_perftests = false
- }
- 
- declare_args() {
-@@ -196,7 +195,6 @@
+@@ -196,7 +196,6 @@
  
    deps = [
      ":angle_test_expectations",
@@ -58,7 +24,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
      "$angle_root:angle_static",
      "$angle_root:libfeature_support",
      "$angle_root/util:angle_util_static",
-@@ -410,7 +408,7 @@
+@@ -410,7 +409,7 @@
    test_utils = ":angle_common_test_utils_static"
  }
  
@@ -67,7 +33,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
    import("angle_perftests.gni")
  
    # This test suite is for perf tests that use ANGLE's internals in some direct way.
-@@ -1845,10 +1843,10 @@
+@@ -1845,10 +1844,10 @@
      deps += [ ":angle_trace_perf_tests" ]
      deps += [ "capture_tests:angle_capture_tests_trace" ]
    }
