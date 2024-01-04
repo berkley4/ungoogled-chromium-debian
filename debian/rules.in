@@ -51,6 +51,7 @@ GN_FLAGS +=                                     \
         angle_has_rapidjson=false               \
         build_angle_perftests=false             \
         build_dawn_tests=false                  \
+        build_with_tflite_lib=false             \
         dawn_use_swiftshader=false              \
         enable_component_updater=false          \
         enable_lens_desktop=false               \
