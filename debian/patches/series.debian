@@ -102,7 +102,6 @@ various/system/zlib.patch
 various/upstream/0001-RaceNetworkRequest-is-triggered-only-when-the-scheme-is-HTTP-or-HTTPS.patch
 various/upstream/0002-ee55694.diff
 various/upstream/0003-c5680eb6.diff
-various/upstream/0004-4178e36.diff
 various/upstream/0005-446d33d.diff
 various/upstream/0006-c39bb52.diff
 
@@ -149,9 +148,3 @@ optional/system/vaapi/vaapi-disable-libaom-encoding.patch
 optional/translate/translate-revert-disable.patch
 optional/translate/translate-stop-unsupported-switch-warning.patch
 #optional/no-ELOC_PROTO-mnemonic.patch
-
-addenda/0001-5b2fdda.diff
-addenda/0002-1a8e198.diff
-addenda/0003-116b470.diff
-addenda/0004-c5f8184.diff
-addenda/0005-d913e7e.diff
