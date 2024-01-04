@@ -107,7 +107,7 @@ GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
 # Enable pipewire
 GN_FLAGS += rtc_use_pipewire=true
 
-# Disable print preview (workaround for print preview dialog crash)
+# Disable print preview (replace with simpler system print dialog)
 #GN_FLAGS += enable_print_preview=false enable_oop_printing=false
 
 # Disable pulseaudio
