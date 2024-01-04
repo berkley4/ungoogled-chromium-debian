@@ -17,8 +17,9 @@ RELEASE_SET=0
 SYS_FREETYPE_SET=0
 XZ_THREADED_SET=0
 
-DEBIAN=$(dirname $0)
-RT_DIR=$(dirname $DEBIAN)
+# ${example%/*} = $(dirname example)
+DEBIAN=${0%/*}
+RT_DIR=${DEBIAN%/*}
 
 MP_DIR=$DEBIAN/misc_patches
 UC_DIR=$DEBIAN/submodules/ungoogled-chromium
