@@ -299,20 +299,6 @@ else
   CL_PATCH=$DEBIAN/patches/optional/system/clang/rust-clanglib-local.patch
 
   if [ $SYS_CLANG -eq 1 ]; then
-    # Grab the clang version used in rust-clanglib-local.patch
-    CP_VER=$(sed -n 's@.*clang/\([0-9]*\)/lib.*@\1@p' $CL_PATCH)
-
-    # We can autodetect C_VER if it's not explicity set
-    C_PATH=$(realpath $(command -v clang))
-    if [ $C_VER_SET -eq 0 ]; then
-      C_VER=$(echo $C_PATH | sed 's@/usr/local/bin/clang-@@')
-    fi
-
-    # Change clang version in the patch if it differs from installed version
-    if [ $C_VER -ne $CP_VER ]; then
-      sed "s@\(/usr/local/lib/clang/\)[^/]*\(/lib\)@\1$C_VER\2@" -i $CL_PATCH
-    fi
-  else
     # Path to libclang_rt.builtins.a
     C_LIB_DIR=/usr/lib/llvm-$C_VER/lib/clang/$C_VER/lib/linux
 
@@ -352,6 +338,20 @@ else
     # Prefix clang, clang++ and llvm-{ar,nm,ranlib} with $LLVM_DIR path
     RUL="$RUL -e \"s@^\(#export [ANR].*\)\(llvm-.*\)@\1\$LLVM_DIR/\2@\""
     RUL="$RUL -e \"s@^\(#export C[CX].*\)\(clang.*\)@\1\$LLVM_DIR/\2@\""
+  else
+    # Grab the clang version used in rust-clanglib-local.patch
+    CP_VER=$(sed -n 's@.*clang/\([0-9]*\)/lib.*@\1@p' $CL_PATCH)
+
+    # We can autodetect C_VER if it's not explicity set
+    C_PATH=$(realpath $(command -v clang))
+    if [ $C_VER_SET -eq 0 ]; then
+      C_VER=$(echo $C_PATH | sed 's@/usr/local/bin/clang-@@')
+    fi
+
+    # Change clang version in the patch if it differs from installed version
+    if [ $C_VER -ne $CP_VER ]; then
+      sed "s@\(/usr/local/lib/clang/\)[^/]*\(/lib\)@\1$C_VER\2@" -i $CL_PATCH
+    fi
   fi
 
   # Enable the local clang/llvm tool chain
