@@ -890,7 +890,7 @@ eval sed $PRU -i $UC_DIR/pruning.list
 
 ## Ensure control, rules, ungoogled-chromium.install and policies.json exist
 for file in control rules $INSTALL $P_FILE; do
-  [ -f $DEBIAN/$file ] || cp -a $DEBIAN/$file.in $DEBIAN/$file
+  [ -f $DEBIAN/$file ] || mv $DEBIAN/$file.in $DEBIAN/$file
 done
 
 ## Make d/rules and d/ungoogled-chromium.install executable
@@ -904,26 +904,22 @@ chmod 0700 $DEBIAN/ungoogled-chromium.install
 ###################################
 
 ## Shell launcher
-if [ ! -f $DEBIAN/shims/chromium ] && [ $TEST -eq 0 ]; then
+if [ $TEST -eq 0 ]; then
   $DEBIAN/devutils/update_launcher.sh \
     < $DEBIAN/shims/chromium.sh > $DEBIAN/shims/chromium
 fi
 
 
 ## Copy upstream UC patches into debian/patches
-if [ ! -d $DEBIAN/patches/core ] || [ ! -d $DEBIAN/patches/extra ]; then
-  if [ -d $UC_DIR/patches/upstream ]; then
-    UC_PATCH_DIRS="$UC_PATCH_DIRS $UC_DIR/patches/upstream"
-  fi
-
-  cp -a $UC_PATCH_DIRS $DEBIAN/patches/
+if [ -d $UC_DIR/patches/upstream ]; then
+  UC_PATCH_DIRS="$UC_PATCH_DIRS $UC_DIR/patches/upstream"
 fi
+
+mv $UC_PATCH_DIRS $DEBIAN/patches/
 
 
 ## Submodule patching
-if ! patch -R -p1 -f --dry-run < $PRUNE_PATCH >/dev/null 2>&1; then
-  patch -p1 < $PRUNE_PATCH >/dev/null
-fi
+patch -p1 < $PRUNE_PATCH >/dev/null
 
 
 exit $?
