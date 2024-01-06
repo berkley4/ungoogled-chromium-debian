@@ -755,7 +755,9 @@ DSB="$DSB -e \"/^third_party\/depot_tools\//d\""
 DSB="$DSB -e \"/^tools\/clang\//d\""
 
 
-## Submodule flags
+## Pruning/Submodule flags
+PRU="$PRU -e \"/^third_party\/depot_tools/d\""
+
 SMF="$SMF -e \"/^build_with_tflite_lib/d\""
 SMF="$SMF -e \"/^enable_hangout_services_extension/d\""
 SMF="$SMF -e \"/^enable_nacl/d\""
@@ -766,14 +768,11 @@ SMF="$SMF -e \"/^google_default_client_id/d\""
 SMF="$SMF -e \"/^google_default_client_secret/d\""
 
 if [ $PGO -eq 1 ]; then
+  PRU="$PRU -e \"/^chrome\/build\/pgo_profiles/d\""
+
   SMF="$SMF -e \"/^chrome_pgo_phase/d\""
   SMF="$SMF -e \"$ a\pgo_data_path=\x22$PGO_PATH\x22\""
 fi
-
-
-## Pruning
-[ $PGO -eq 0 ] || PRU="$PRU -e \"/^chrome\/build\/pgo_profiles/d\""
-PRU="$PRU -e \"/^third_party\/depot_tools/d\""
 
 
 
