@@ -311,10 +311,12 @@ else
       exit 1
     fi
 
-    # Check that package version $C_VER is actually installed on the system
-    if [ ! -f /usr/lib/llvm-$C_VER/bin/clang ]; then
-      printf '%s\n' "Cannot find /usr/lib/llvm-${C_VER}/bin/clang"
-      exit 1
+    if [ $TEST -eq 0 ]; then
+      # Check that package version $C_VER is actually installed on the system
+      if [ ! -f /usr/lib/llvm-$C_VER/bin/clang ]; then
+        printf '%s\n' "Cannot find /usr/lib/llvm-${C_VER}/bin/clang"
+        exit 1
+      fi
     fi
 
     # Alter patch to use $C_LIB_DIR instead of the /usr/local/lib default
@@ -342,15 +344,16 @@ else
     # Grab the clang version used in rust-clanglib-local.patch
     CP_VER=$(sed -n 's@.*clang/\([0-9]*\)/lib.*@\1@p' $CL_PATCH)
 
-    # We can autodetect C_VER if it's not explicity set
-    C_PATH=$(realpath $(command -v clang))
-    if [ $C_VER_SET -eq 0 ]; then
-      C_VER=$(echo $C_PATH | sed 's@/usr/local/bin/clang-@@')
-    fi
+    if [ $TEST -eq 0 ]; then
+      # Autodetect C_VER if it's not explicity set
+      if [ $C_VER_SET -eq 0 ]; then
+        C_VER=$(echo $(realpath $(command -v clang)) | sed 's@/usr/local/bin/clang-@@')
+      fi
 
-    # Change clang version in the patch if it differs from installed version
-    if [ $C_VER -ne $CP_VER ]; then
-      sed "s@\(/usr/local/lib/clang/\)[^/]*\(/lib\)@\1$C_VER\2@" -i $CL_PATCH
+      # Change clang version in the patch if it differs from installed version
+      if [ $C_VER -ne $CP_VER ]; then
+        sed "s@\(/usr/local/lib/clang/\)[^/]*\(/lib\)@\1$C_VER\2@" -i $CL_PATCH
+      fi
     fi
   fi
 
