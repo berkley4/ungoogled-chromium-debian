@@ -174,7 +174,7 @@ GN_FLAGS += v8_enable_wasm_simd256_revec=true
 #
 # We cannot unbundle libavif or libaom (indirect dependency on libstc++)
 #
-# Unbundled libjpeg = packages not be installable on both debian and ubuntu
+# Unbundled libjpeg = packages cannot be installed on debian or ubuntu
 #
 # Some general rules of thumb :-
 #
