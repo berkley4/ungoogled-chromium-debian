@@ -57,6 +57,7 @@ GN_FLAGS +=                                     \
         enable_lens_desktop=false               \
         enable_mse_mpeg2ts_stream_parser=true   \
         enable_perfetto_unittests=false         \
+        enable_ppapi=false                      \
         enable_rust_crash=false                 \
         enable_rust_gtest_interop=false         \
         enable_screen_ai_service=false          \
