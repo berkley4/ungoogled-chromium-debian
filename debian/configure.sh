@@ -761,7 +761,6 @@ DSB="$DSB -e \"/^tools\/clang\//d\""
 ## Pruning/Submodule flags
 PRU="$PRU -e \"/^third_party\/depot_tools/d\""
 
-SMF="$SMF -e \"/^build_with_tflite_lib/d\""
 SMF="$SMF -e \"/^enable_hangout_services_extension/d\""
 SMF="$SMF -e \"/^enable_nacl/d\""
 SMF="$SMF -e \"/^enable_service_discovery/d\""
