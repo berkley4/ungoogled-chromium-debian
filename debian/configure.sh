@@ -190,9 +190,9 @@ esac
 
 
 
-################################################
-##  Test mode | Clang versioning | PGO | LTO  ##
-################################################
+##########################################
+##  Test mode | Clang versioning | LTO  ##
+##########################################
 
 ## Enter test mode if $RT_DIR/third_party does not exist
 [ -d $RT_DIR/third_party ] && TEST=0 || TEST=1
@@ -237,17 +237,10 @@ case $LTO_JOBS in
 esac
 
 
-## Set path to PGO profile
-if [ $PGO -eq 1 ] && [ $TEST -eq 0 ]; then
-  read PGO_PROF < $RT_DIR/chrome/build/linux.pgo.txt
-  PGO_PATH=$(real_dir_path $RT_DIR/chrome/build/pgo_profiles)/$PGO_PROF
-fi
-
-
 
 
 #############################
-##  Fetch/Extract Tarball  ##
+##  Tarball Fetch/Extract  ##
 #############################
 
 if [ $TARBALL -eq 1 ]; then
@@ -277,6 +270,16 @@ if [ $TARBALL -eq 1 ]; then
       --gs-url-base=chromium-optimization-profiles/pgo_profiles
   fi
 fi
+
+
+
+
+## Set path to PGO profile
+if [ $PGO -eq 1 ] && [ $TEST -eq 0 ]; then
+  read PGO_PROF < $RT_DIR/chrome/build/linux.pgo.txt
+  PGO_PATH=$(real_dir_path $RT_DIR/chrome/build/pgo_profiles)/$PGO_PROF
+fi
+
 
 
 
