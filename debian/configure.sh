@@ -51,6 +51,9 @@ real_dir_path () (
 [ -n "$RTC_AVX2" ] || RTC_AVX2=1
 [ -n "$V8_AVX2" ] || V8_AVX2=1
 
+[ -n "$INTEL_CET" ] || INTEL_CET=1
+[ -n "$MF_SPLIT" ] || MF_SPLIT=1
+
 [ -n "$ATK_DBUS" ] || ATK_DBUS=1
 [ -n "$CATAPULT" ] || CATAPULT=1
 [ -n "$CLICK_TO_CALL" ] || CLICK_TO_CALL=1
@@ -105,8 +108,7 @@ if [ $POLICIES -eq 1 ]; then
 fi
 
 
-## Intel CET, MARCH and MTUNE defaults
-[ -n "$INTEL_CET" ] || INTEL_CET=1
+## MARCH and MTUNE defaults
 [ -n "$MARCH" ] && MARCH_SET=1 || MARCH=x86-64-v2
 [ -n "$MTUNE" ] && MTUNE_SET=1 || MTUNE=generic
 
@@ -275,9 +277,14 @@ fi
 
 
 ## Set path to PGO profile
-if [ $PGO -eq 1 ] && [ $TEST -eq 0 ]; then
-  read PGO_PROF < $RT_DIR/chrome/build/linux.pgo.txt
-  PGO_PATH=$(real_dir_path $RT_DIR/chrome/build/pgo_profiles)/$PGO_PROF
+if [ $PGO -eq 0 ]; then
+  # Machine function splitting relies on PGO being enabled
+  MF_SPLIT=0
+else
+  if [ $TEST -eq 0 ]; then
+    read PGO_PROF < $RT_DIR/chrome/build/linux.pgo.txt
+    PGO_PATH=$(real_dir_path $RT_DIR/chrome/build/pgo_profiles)/$PGO_PROF
+  fi
 fi
 
 
@@ -382,12 +389,16 @@ fi
 
 
 
-##################
-## CPU features ##
-##################
+#####################################################
+## CPU architecture/instructions and optimisations ##
+#####################################################
 
 if [ $INTEL_CET -eq 0 ]; then
   op_disable="$op_disable cpu/intel-control-flow-enforcement"
+fi
+
+if [ $MF_SPLIT -eq 0 ]; then
+  op_disable="$op_disable machine-function-splitting"
 fi
 
 
@@ -464,9 +475,9 @@ fi
 
 
 
-##############################
-##  Non-library components  ##
-##############################
+#############################################
+## Non-library features/components/patches ##
+#############################################
 
 if [ $ATK_DBUS -eq 0 ]; then
   op_enable="$op_enable disable/atk-dbus"

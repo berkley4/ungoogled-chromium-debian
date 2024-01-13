@@ -105,6 +105,7 @@ various/upstream/0003-c5680eb6.diff
 various/upstream/0005-446d33d.diff
 various/upstream/0006-c39bb52.diff
 
+optional/machine-function-splitting.patch
 optional/mutex-priority-inheritance.patch
 optional/polly-vectorizer.patch
 optional/polly-extra.patch
