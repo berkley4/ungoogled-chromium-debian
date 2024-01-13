@@ -491,7 +491,7 @@ if [ $DRIVER -eq 0 ]; then
   CON="$CON -e \"/^Package: ungoogled-chromium-driver/d\""
   RUL="$RUL -e \"s@ chromedriver@@\""
 
-  find $DEBIAN/ -maxdepth 1 -name ungoogled-chromium-driver.\* -delete
+  rm $DEBIAN/ungoogled-chromium-driver.*
 fi
 
 
