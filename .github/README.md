@@ -13,13 +13,10 @@ Currently there are deb packages for unstable, with build support for stable.
 
 # Installation
 
-The ungoogled-chromium and ungoogled-chromium-libraries packages are mandatory.
-
-The other debs are :-
+The ungoogled-chromium package is mandatory. The other debs are :-
 
 * *-sandbox_*   : suid sandbox, recommended (see the [Sandbox](https://github.com/berkley4/ungoogled-chromium-debian/blob/stable/.github/README.md#sandbox) section below).
 * *-l10n_*      : language localisation, needed if you want a non US English UI.
-* *-libraries_* : contains files such as libEGL.so, libGLESv2.so.
 * *-driver_*    : chromedriver, not normally needed.
 * *-dbgsym_*    : not normally needed (unless you need to debug).
 
