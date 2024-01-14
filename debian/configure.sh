@@ -40,6 +40,9 @@ real_dir_path () (
 ## Default values ##
 ####################
 
+[ -n "$SYMBOLS" ] || SYMBOLS=0
+[ -n "$SYMBOLS_BLINK" ] || SYMBOLS_BLINK=0
+
 [ -n "$PGO" ] || PGO=1
 [ -n "$STABLE" ] || STABLE=0
 [ -n "$TARBALL" ] || TARBALL=0
@@ -274,6 +277,22 @@ if [ $TARBALL -eq 1 ]; then
 fi
 
 
+
+
+#########################
+## Symbol levels | PGO ##
+#########################
+
+## Set Symbol levels
+case $SYMBOLS in
+  -1|[1-2])
+    RUL="$RUL -e \"s@^\([ \t]*symbol_level=\)0@\1$SYMBOLS@\"" ;;
+esac
+
+case $SYMBOLS_BLINK in
+  -1|[1-2])
+    RUL="$RUL -e \"s@^\([ \t]*blink_symbol_level=\)0@\1$SYMBOLS_BLINK@\"" ;;
+esac
 
 
 ## Set path to PGO profile
