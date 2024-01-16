@@ -322,7 +322,6 @@ if [ $SYS_CLANG -eq 0 ]; then
   PRU="$PRU -e \"/^third_party\/llvm/d\""
   PRU="$PRU -e \"/^tools\/clang/d\""
 else
-  op_enable="$op_enable system/clang/fix-missing-symbols"
   op_enable="$op_enable system/clang/clang-version-check"
   op_enable="$op_enable system/clang/rust-clanglib-local"
 
