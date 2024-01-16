@@ -68,6 +68,7 @@ EXT_TOOLS_MENU	1		Move the extensions menu to the 'More tools' menu
 FEED		1		WebFeed (News feed) support
 MUTEX_PI	1		Mutex priority inheritance
 NOTIFICATIONS	1		System notifications
+OPENTYPE_SVG	1		Opentype SVG support
 OZONE_WAYLAND	1		Wayland ozone platform (experimental; can be disabled by wayland users)
 PDF_JS		0		PDF javascript support
 PIPEWIRE	1

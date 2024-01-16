@@ -66,6 +66,7 @@ real_dir_path () (
 [ -n "$MUTEX_PI" ] || MUTEX_PI=1
 [ -n "$NOTIFICATIONS" ] || NOTIFICATIONS=1
 [ -n "$OAUTH2" ] || OAUTH2=0
+[ -n "$OPENTYPE_SVG" ] || OPENTYPE_SVG=1
 [ -n "$OZONE_WAYLAND" ] || OZONE_WAYLAND=1
 [ -n "$PDF_JS" ] || PDF_JS=0
 [ -n "$POLICIES" ] || POLICIES=1
@@ -553,6 +554,11 @@ fi
 
 if [ $OAUTH2 -eq 1 ]; then
   op_enable="$op_enable use-oauth2-client-switches-as-default"
+fi
+
+
+if [ $OPENTYPE_SVG -eq 0 ]; then
+  op_disable="$op_disable optional/opentype-svg/"
 fi
 
 
