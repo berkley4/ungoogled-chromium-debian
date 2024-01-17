@@ -60,6 +60,7 @@ ___Security/Privacy improvements___
 - Extra Bromite and Vanadium patches (and generic patches derived from these projects)
 - A policy file is installed to help lock down the browser (use [this](https://chromeenterprise.google/policies/) as a reference guide)
 - The Web Bluetooth/HID/Serial/USB APIs are disabled, and the audio/video/screen capture APIs can be disabled via the policy file
+- Text fragments are disabled by default via the opilcy file (see [here](https://xsleaks.dev/docs/attacks/experiments/scroll-to-text-fragment/) for more info)
 - Some security/privacy themed flag files are installed to /etc/chromium.d
 
 
@@ -69,6 +70,7 @@ ___Other features___
 - Google translate - can be enabled via an edit to /etc/chromium.d/google-translate
 - Patches for -march/-mtune and various other CPU instructions
 - Various patches to disable components (eg atk/dbus) and enable system libraries
+- Experimental Opentype SVG support via third party patches
 
 
 ___Build system___
@@ -81,6 +83,7 @@ ___Build system___
     - it takes out much of the complexity might otherwise be present in debian/rules
     - it handles dependencies, patches, enabling/disabling system libraries and components
     - set variables when running the script eg PIPEWIRE=0 PULSE=0 QT=0 ./debian/configure.sh
+- A script is provided to automate the building of a Widevine CDM deb package
 
 - - - -
 
