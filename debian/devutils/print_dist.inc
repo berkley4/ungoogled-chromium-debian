@@ -7,6 +7,9 @@ print_dist()
             devuan) ID=Devuan ;;
             ubuntu) ID=Ubuntu ;;
         esac
-        echo "$ID $VERSION_CODENAME/$VERSION_ID"
+        case "$VERSION_ID" in
+            "") echo "$ID $VERSION_CODENAME" ;;
+            *) echo "$ID $VERSION_CODENAME/$VERSION_ID" ;;
+        esac
     )
 }
