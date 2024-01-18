@@ -43,7 +43,7 @@ ___Performance improvements___
     - -mpclmul - enables CLMUL instructions
     - -mavx - enables AVX instructions (AVX2 is available via an optional patch)
     - -fno-plt - (see [here](https://patchwork.ozlabs.org/project/gcc/patch/alpine.LNX.2.11.1505061730460.22867@monopod.intra.ispras.ru/))
-    - -fsplit-machine-functions - (see [here](https://groups.google.com/g/llvm-dev/c/RUegaMg-iqc/m/wFAVxa6fCgAJ)]
+    - -fsplit-machine-functions - (see [here](https://groups.google.com/g/llvm-dev/c/RUegaMg-iqc/m/wFAVxa6fCgAJ))
     - -import-instr-limit=24 and -import-hot-multiplier=15
         - gives a hot import limit of 360 (24x15) vs default of 300 (30x10)
     - The following LLVM polly options are available (needs a capable toolchain)
