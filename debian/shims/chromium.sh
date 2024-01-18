@@ -28,6 +28,16 @@ BINNAME=chrome
 GDB=/usr/bin/gdb
 LIBDIR=/usr/lib/$APPNAME
 
+output_error() {
+  case "$DISPLAY" in
+    "")
+      echo "$@" 1>&2 ;;
+
+    *)
+      xmessage "$@" ;;
+  esac
+}
+
 usage () {
   echo "$APPNAME [-h|--help] [-g|--debug] [--temp-profile] [options] [URL]"
   echo
@@ -50,9 +60,9 @@ For more information, please go to https://crbug.com/1123353."
 
 case $(uname -m) in
   i386|i586|i686|x86_64)
-    # Check whether this system supports sse3
-    if ! grep -q sse3 /proc/cpuinfo; then
-      xmessage "$nosse3"
+    # Check whether this system supports SSE3 (or PNI)
+    if ! grep -q 'sse3\|pni' /proc/cpuinfo; then
+      output_error "$nosse3"
       exit 1
     fi ;;
 esac
