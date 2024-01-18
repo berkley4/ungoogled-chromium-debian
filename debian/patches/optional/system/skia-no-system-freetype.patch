@@ -1,0 +1,18 @@
+--- a/third_party/skia/third_party/freetype2/BUILD.gn
++++ b/third_party/skia/third_party/freetype2/BUILD.gn
+@@ -3,13 +3,14 @@
+ # Use of this source code is governed by a BSD-style license that can be
+ # found in the LICENSE file.
+ 
++import("//build/config/freetype/freetype.gni")
+ import("../zlib/zlib.gni")
+ 
+ declare_args() {
+   # TODO: build from source all the time for testing?
+   skia_use_system_freetype2 =
+       (is_official_build || !(is_android || sanitize == "MSAN")) &&
+-      !is_fuchsia && !is_wasm
++      use_system_freetype && !is_fuchsia && !is_wasm
+   skia_system_freetype2_include_path = "/usr/include/freetype2"
+   skia_system_freetype2_lib = "freetype"
+ 

@@ -739,6 +739,10 @@ if [ $STABLE -eq 1 ]; then
   # Disable by default if not force-enabled
   [ $SYS_FREETYPE_SET -eq 1 ] && [ $SYS_FREETYPE -eq 1 ] || SYS_FREETYPE=0
 
+  if [ $SYS_FREETYPE -eq 0 ]; then
+    op_enable="$op_enable system/freetype-COLRV1"
+  fi
+
   op_disable="$op_disable system/unstable/dav1d/"
   op_enable="$op_enable system/dav1d-bundled-header"
 
@@ -747,10 +751,6 @@ if [ $STABLE -eq 1 ]; then
 
   # Build error since v117 seemingly only affecting stable
   op_enable="$op_enable no-ELOC_PROTO-mnemonic"
-
-  if [ $SYS_FREETYPE -eq 1 ]; then
-    op_enable="$op_enable system/freetype-COLRV1"
-  fi
 fi
 
 
@@ -760,6 +760,8 @@ fi
 
 
 if [ $SYS_FREETYPE -eq 0 ]; then
+  op_enable="$op_enable system/skia-no-system-freetype"
+
   # SYS_LIBS += fontconfig freetype brotli libpng
   sys_disable="$sys_disable fontconfig"
   deps_disable="$deps_disable libfontconfig brotli"
