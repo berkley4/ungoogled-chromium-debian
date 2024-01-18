@@ -40,6 +40,9 @@ real_dir_path () (
 ## Default values ##
 ####################
 
+[ -n "$SYMBOLS" ] || SYMBOLS=0
+[ -n "$SYMBOLS_BLINK" ] || SYMBOLS_BLINK=0
+
 [ -n "$PGO" ] || PGO=1
 [ -n "$STABLE" ] || STABLE=0
 [ -n "$TARBALL" ] || TARBALL=0
@@ -51,6 +54,9 @@ real_dir_path () (
 [ -n "$RTC_AVX2" ] || RTC_AVX2=1
 [ -n "$V8_AVX2" ] || V8_AVX2=1
 
+[ -n "$INTEL_CET" ] || INTEL_CET=1
+[ -n "$MF_SPLIT" ] || MF_SPLIT=1
+
 [ -n "$ATK_DBUS" ] || ATK_DBUS=1
 [ -n "$CATAPULT" ] || CATAPULT=1
 [ -n "$CLICK_TO_CALL" ] || CLICK_TO_CALL=1
@@ -60,6 +66,7 @@ real_dir_path () (
 [ -n "$MUTEX_PI" ] || MUTEX_PI=1
 [ -n "$NOTIFICATIONS" ] || NOTIFICATIONS=1
 [ -n "$OAUTH2" ] || OAUTH2=0
+[ -n "$OPENTYPE_SVG" ] || OPENTYPE_SVG=1
 [ -n "$OZONE_WAYLAND" ] || OZONE_WAYLAND=1
 [ -n "$PDF_JS" ] || PDF_JS=0
 [ -n "$POLICIES" ] || POLICIES=1
@@ -105,8 +112,7 @@ if [ $POLICIES -eq 1 ]; then
 fi
 
 
-## Intel CET, MARCH and MTUNE defaults
-[ -n "$INTEL_CET" ] || INTEL_CET=1
+## MARCH and MTUNE defaults
 [ -n "$MARCH" ] && MARCH_SET=1 || MARCH=x86-64-v2
 [ -n "$MTUNE" ] && MTUNE_SET=1 || MTUNE=generic
 
@@ -190,9 +196,9 @@ esac
 
 
 
-################################################
-##  Test mode | Clang versioning | PGO | LTO  ##
-################################################
+##########################################
+##  Test mode | Clang versioning | LTO  ##
+##########################################
 
 ## Enter test mode if $RT_DIR/third_party does not exist
 [ -d $RT_DIR/third_party ] && TEST=0 || TEST=1
@@ -237,17 +243,10 @@ case $LTO_JOBS in
 esac
 
 
-## Set path to PGO profile
-if [ $PGO -eq 1 ] && [ $TEST -eq 0 ]; then
-  read PGO_PROF < $RT_DIR/chrome/build/linux.pgo.txt
-  PGO_PATH=$(real_dir_path $RT_DIR/chrome/build/pgo_profiles)/$PGO_PROF
-fi
-
-
 
 
 #############################
-##  Fetch/Extract Tarball  ##
+##  Tarball Fetch/Extract  ##
 #############################
 
 if [ $TARBALL -eq 1 ]; then
@@ -280,6 +279,37 @@ fi
 
 
 
+
+#########################
+## Symbol levels | PGO ##
+#########################
+
+## Set Symbol levels
+case $SYMBOLS in
+  -1|[1-2])
+    RUL="$RUL -e \"s@^\([ \t]*symbol_level=\)0@\1$SYMBOLS@\"" ;;
+esac
+
+case $SYMBOLS_BLINK in
+  -1|[1-2])
+    RUL="$RUL -e \"s@^\([ \t]*blink_symbol_level=\)0@\1$SYMBOLS_BLINK@\"" ;;
+esac
+
+
+## Set path to PGO profile
+if [ $PGO -eq 0 ]; then
+  # Machine function splitting relies on PGO being enabled
+  MF_SPLIT=0
+else
+  if [ $TEST -eq 0 ]; then
+    read PGO_PROF < $RT_DIR/chrome/build/linux.pgo.txt
+    PGO_PATH=$(real_dir_path $RT_DIR/chrome/build/pgo_profiles)/$PGO_PROF
+  fi
+fi
+
+
+
+
 ###############################
 ## Clang/Polly configuration ##
 ###############################
@@ -292,7 +322,6 @@ if [ $SYS_CLANG -eq 0 ]; then
   PRU="$PRU -e \"/^third_party\/llvm/d\""
   PRU="$PRU -e \"/^tools\/clang/d\""
 else
-  op_enable="$op_enable system/clang/fix-missing-symbols"
   op_enable="$op_enable system/clang/clang-version-check"
   op_enable="$op_enable system/clang/rust-clanglib-local"
 
@@ -379,12 +408,16 @@ fi
 
 
 
-##################
-## CPU features ##
-##################
+#####################################################
+## CPU architecture/instructions and optimisations ##
+#####################################################
 
 if [ $INTEL_CET -eq 0 ]; then
   op_disable="$op_disable cpu/intel-control-flow-enforcement"
+fi
+
+if [ $MF_SPLIT -eq 0 ]; then
+  op_disable="$op_disable machine-function-splitting"
 fi
 
 
@@ -461,9 +494,9 @@ fi
 
 
 
-##############################
-##  Non-library components  ##
-##############################
+#############################################
+## Non-library features/components/patches ##
+#############################################
 
 if [ $ATK_DBUS -eq 0 ]; then
   op_enable="$op_enable disable/atk-dbus"
@@ -491,7 +524,7 @@ if [ $DRIVER -eq 0 ]; then
   CON="$CON -e \"/^Package: ungoogled-chromium-driver/d\""
   RUL="$RUL -e \"s@ chromedriver@@\""
 
-  find $DEBIAN/ -maxdepth 1 -name ungoogled-chromium-driver.\* -delete
+  rm $DEBIAN/ungoogled-chromium-driver.*
 fi
 
 
@@ -700,6 +733,7 @@ fi
 ## Items which are (or are likely to become) unstable-only
 
 if [ $STABLE -eq 1 ]; then
+  OPENTYPE_SVG=0
   SYS_ICU=0
 
   # Disable by default if not force-enabled
@@ -717,6 +751,11 @@ if [ $STABLE -eq 1 ]; then
   if [ $SYS_FREETYPE -eq 1 ]; then
     op_enable="$op_enable system/freetype-COLRV1"
   fi
+fi
+
+
+if [ $OPENTYPE_SVG -eq 0 ]; then
+  op_disable="$op_disable optional/opentype-svg/"
 fi
 
 
@@ -761,7 +800,6 @@ DSB="$DSB -e \"/^tools\/clang\//d\""
 ## Pruning/Submodule flags
 PRU="$PRU -e \"/^third_party\/depot_tools/d\""
 
-SMF="$SMF -e \"/^build_with_tflite_lib/d\""
 SMF="$SMF -e \"/^enable_hangout_services_extension/d\""
 SMF="$SMF -e \"/^enable_nacl/d\""
 SMF="$SMF -e \"/^enable_service_discovery/d\""

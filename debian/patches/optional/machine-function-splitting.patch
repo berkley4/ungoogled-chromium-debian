@@ -1,0 +1,16 @@
+--- a/build/config/compiler/pgo/BUILD.gn
++++ b/build/config/compiler/pgo/BUILD.gn
+@@ -137,6 +137,13 @@
+       "-Wno-backend-plugin",
+     ]
+ 
++    # Split machine functions using profile information. This groups all cold
++    # blocks across functions together, aiming to decrease fragmentation and
++    # improve icache and itlb utilization.
++    if (is_linux && current_cpu == "x64") {
++      cflags += [ "-fsplit-machine-functions" ]
++    }
++
+     # Enable basic block layout based on the extended TSP problem. This aims to
+     # improve icache utilization and reduce the binary size.
+     if (use_thin_lto) {

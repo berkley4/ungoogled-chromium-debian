@@ -17,6 +17,9 @@ SYS_CLANG	0		Use in-tree chromium clang/llvm binaries
 C_VER		<version>	Override the default clang version (for use with SYS_CLANG > 0)
 				The script default is hardcoded to that of the bundled copy
 
+SYMBOLS		0		symbol_level build flag: -1 = auto-set; 0 = none; 1 = minimal; 2 = regular
+SYMBOLS_BLINK	0		blink_symbol_level build flag: -1 = auto-set; 0 = minimal; 1 = medium; 2 = regular
+
 PGO		1		Enable/disable building with PGO profile optimisation
 POLICIES	1		Install /etc/chromium/policies/managed/policies.json
 STABLE		0		By default an unstable version is built
@@ -65,6 +68,7 @@ EXT_TOOLS_MENU	1		Move the extensions menu to the 'More tools' menu
 FEED		1		WebFeed (News feed) support
 MUTEX_PI	1		Mutex priority inheritance
 NOTIFICATIONS	1		System notifications
+OPENTYPE_SVG	1		Opentype SVG support
 OZONE_WAYLAND	1		Wayland ozone platform (experimental; can be disabled by wayland users)
 PDF_JS		0		PDF javascript support
 PIPEWIRE	1
@@ -107,6 +111,7 @@ XZ_THREADED	0		Multi-threaded xz compression (number of threads = $JOBS)
 ## CPU architecture/instructions and optimisations
 
 INTEL_CET	1		Intel Control-flow Enforcement Technology (Tiger Lake or newer CPUs)
+MF_SPLIT	1		Machine function splitting (requires PGO=1)
 
 MARCH		x86-64-v2	Matches MTUNE if MTUNE is set and MARCH is not specified
 				Will not match MTUNE if MTUNE is set to generic

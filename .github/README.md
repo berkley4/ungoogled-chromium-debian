@@ -13,13 +13,10 @@ Currently there are deb packages for unstable, with build support for stable.
 
 # Installation
 
-The ungoogled-chromium and ungoogled-chromium-libraries packages are mandatory.
-
-The other debs are :-
+The ungoogled-chromium package is mandatory. The other debs are :-
 
 * *-sandbox_*   : suid sandbox, recommended (see the [Sandbox](https://github.com/berkley4/ungoogled-chromium-debian/blob/stable/.github/README.md#sandbox) section below).
 * *-l10n_*      : language localisation, needed if you want a non US English UI.
-* *-libraries_* : contains files such as libEGL.so, libGLESv2.so.
 * *-driver_*    : chromedriver, not normally needed.
 * *-dbgsym_*    : not normally needed (unless you need to debug).
 
@@ -46,6 +43,7 @@ ___Performance improvements___
     - -mpclmul - enables CLMUL instructions
     - -mavx - enables AVX instructions (AVX2 is available via an optional patch)
     - -fno-plt - (see [here](https://patchwork.ozlabs.org/project/gcc/patch/alpine.LNX.2.11.1505061730460.22867@monopod.intra.ispras.ru/))
+    - -fsplit-machine-functions - (see [here](https://groups.google.com/g/llvm-dev/c/RUegaMg-iqc/m/wFAVxa6fCgAJ))
     - -import-instr-limit=24 and -import-hot-multiplier=15
         - gives a hot import limit of 360 (24x15) vs default of 300 (30x10)
     - The following LLVM polly options are available (needs a capable toolchain)
@@ -62,6 +60,7 @@ ___Security/Privacy improvements___
 - Extra Bromite and Vanadium patches (and generic patches derived from these projects)
 - A policy file is installed to help lock down the browser (use [this](https://chromeenterprise.google/policies/) as a reference guide)
 - The Web Bluetooth/HID/Serial/USB APIs are disabled, and the audio/video/screen capture APIs can be disabled via the policy file
+- Text fragments are disabled by default via the opilcy file (see [here](https://xsleaks.dev/docs/attacks/experiments/scroll-to-text-fragment/) for more info)
 - Some security/privacy themed flag files are installed to /etc/chromium.d
 
 
@@ -71,6 +70,7 @@ ___Other features___
 - Google translate - can be enabled via an edit to /etc/chromium.d/google-translate
 - Patches for -march/-mtune and various other CPU instructions
 - Various patches to disable components (eg atk/dbus) and enable system libraries
+- Experimental Opentype SVG support via third party patches
 
 
 ___Build system___
@@ -83,6 +83,7 @@ ___Build system___
     - it takes out much of the complexity might otherwise be present in debian/rules
     - it handles dependencies, patches, enabling/disabling system libraries and components
     - set variables when running the script eg PIPEWIRE=0 PULSE=0 QT=0 ./debian/configure.sh
+- A script is provided to automate the building of a Widevine CDM deb package
 
 - - - -
 

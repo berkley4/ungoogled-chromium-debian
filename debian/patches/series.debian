@@ -74,7 +74,6 @@ various/disable/angle-perftests.patch
 various/disable/CollectWebGPUSupportMetrics.patch
 various/disable/crashpad-handler.patch
 various/disable/crashpad-handler_2.patch
-#various/disable/crashpad-handler_3.patch
 various/disable/driver-chrome-path.patch
 various/disable/orchestrator.patch
 various/disable/unrar.patch
@@ -105,6 +104,7 @@ various/upstream/0003-c5680eb6.diff
 various/upstream/0005-446d33d.diff
 various/upstream/0006-c39bb52.diff
 
+optional/machine-function-splitting.patch
 optional/mutex-priority-inheritance.patch
 optional/polly-vectorizer.patch
 optional/polly-extra.patch
@@ -127,13 +127,14 @@ optional/fixes/widevine/widevine-enable-version-string.patch
 optional/fixes/widevine/widevine-locations.patch
 #optional/legacy-i386/angle-lockfree.patch
 #optional/legacy-i386/support-i386.patch
+optional/opentype-svg/0001-m120-OT-SVG-hook.patch
+optional/opentype-svg/0002-m120-use-FreeType-for-non-Linux.patch
 #optional/system/convertutf-bundled.patch
 #optional/system/dav1d-bundled-header.patch
 #optional/system/freetype-COLRV1.patch
 optional/system/jpeg.patch
 optional/system/openh264.patch
 #optional/system/clang/clang-version-check.patch
-#optional/system/clang/fix-missing-symbols.patch
 #optional/system/clang/rust-clanglib-local.patch
 #optional/system/clang/rust-clanglib.patch
 optional/system/unstable/dav1d/dav1d.patch
