@@ -57,7 +57,7 @@ ___Security/Privacy improvements___
 - Bad Cast Checking (use_cfi_cast=true) - see [here](https://clang.llvm.org/docs/ControlFlowIntegrity.html#bad-cast-checking)
 - Enhanced stack protection (-fstack-protector-strong; chromium's default is the less-strict -fstack-protector)
 - Overflow prevention (-fwrapv) - see [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1031653) and [here](https://gitlab.e.foundation/e/apps/browser/-/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch)
-- Extra Bromite and Vanadium patches (and generic patches derived from these projects)
+- Extra cromite and vanadium patches (and generic copies of patches derived from these projects)
 - A policy file is installed to help lock down the browser (use [this](https://chromeenterprise.google/policies/) as a reference guide)
 - The Web Bluetooth/HID/Serial/USB APIs are disabled, and the audio/video/screen capture APIs can be disabled via the policy file
 - Text fragments are disabled by default via the opilcy file (see [here](https://xsleaks.dev/docs/attacks/experiments/scroll-to-text-fragment/) for more info)

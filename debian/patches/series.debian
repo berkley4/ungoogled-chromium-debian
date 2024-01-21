@@ -19,12 +19,12 @@ disable/widevine-cdm-cu.patch
 system/openjpeg.patch
 system/zlib.patch
 
-bromite/00Disable-csp-reports.patch
-bromite/AudioBuffer-AnalyserNode-fp-mitigations.patch
-bromite/Partition-Blink-memory-cache.patch
-bromite/Partition-blobs-by-top-frame-URL.patch
-bromite/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
-bromite/Remove-navigator.connection-info.patch
+cromite/00Disable-csp-reports.patch
+cromite/AudioBuffer-AnalyserNode-fp-mitigations.patch
+cromite/Partition-Blink-memory-cache.patch
+cromite/Partition-blobs-by-top-frame-URL.patch
+cromite/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
+cromite/Remove-navigator.connection-info.patch
 
 kryptonite/CORS-preflight-max-age-600s.patch
 kryptonite/disable-async-dns.patch
