@@ -744,7 +744,7 @@ if [ $STABLE -eq 1 ]; then
   fi
 
   op_disable="$op_disable system/unstable/dav1d/"
-  op_enable="$op_enable system/dav1d-bundled-header"
+  op_enable="$op_enable system/dav1d-bundled-header system/libxml2"
 
   sys_disable="$sys_disable dav1d"
   deps_disable="$deps_disable libdav1d"

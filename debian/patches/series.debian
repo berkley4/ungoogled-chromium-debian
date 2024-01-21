@@ -130,6 +130,7 @@ optional/opentype-svg/0002-m121-use-FreeType-for-non-Linux-OT-SVG-support.patch
 #optional/system/dav1d-bundled-header.patch
 #optional/system/freetype-COLRV1.patch
 optional/system/jpeg.patch
+optional/system/libxml2.patch
 optional/system/openh264.patch
 #optional/system/skia-no-system-freetype.patch
 #optional/system/clang/clang-version-check.patch
