@@ -1,6 +1,6 @@
 --- a/DEPS
 +++ b/DEPS
-@@ -466,10 +466,6 @@
+@@ -447,10 +447,6 @@
    # and whatever else without interference from each other.
    'libavifinfo_revision': 'b496868f7c3fd17dfeeecc0364fe37e19edd548a',
    # Three lines of non-changing comments so that
@@ -10,8 +10,8 @@
 -  # Three lines of non-changing comments so that
    # the commit queue can handle CLs rolling nearby
    # and whatever else without interference from each other.
-   'nearby_revision': '629e7ba7c964a62c97f6a882bffaec3c8490bb1e',
-@@ -554,16 +550,6 @@
+   'nearby_revision': '91197f36839fa7241d89b7c589abd5e1eda591ee',
+@@ -535,16 +531,6 @@
      Var('chromium_git') +
      '/external/github.com/llvm/llvm-project/clang/tools/clang-format.git@' +
      Var('clang_format_revision'),
@@ -28,7 +28,7 @@
    'src/buildtools/mac': {
      'packages': [
        {
-@@ -584,15 +570,6 @@
+@@ -565,15 +551,6 @@
      'dep_type': 'cipd',
      'condition': 'host_os == "win"',
    },
@@ -44,7 +44,7 @@
  
    # We don't know target_cpu at deps time. At least until there's a universal
    # binary of httpd-php, pull both intel and arm versions in DEPS and then pick
-@@ -618,17 +595,6 @@
+@@ -599,17 +576,6 @@
      'condition': '(host_os == "mac")',
    },
  
@@ -62,7 +62,7 @@
    'src/third_party/apache-windows-arm64': {
      'packages': [
          {
-@@ -818,12 +784,6 @@
+@@ -799,12 +765,6 @@
      'condition': 'checkout_chromium_password_manager_test_dependencies',
    },
  
@@ -75,7 +75,7 @@
    'src/chrome/test/data/safe_browsing/dmg': {
      'packages': [
        {
-@@ -835,9 +795,6 @@
+@@ -816,9 +776,6 @@
      'dep_type': 'cipd',
    },
  
@@ -84,8 +84,8 @@
 -
    'src/clank': {
      'url': Var('chrome_git') + '/clank/internal/apps.git' + '@' +
-     '8d90e3f36eebad4977a754b25818ccc76de473b2',
-@@ -1195,7 +1152,7 @@
+     '9b63c452155e22ce71e8a717cb8b7a5632de468c',
+@@ -1142,7 +1099,7 @@
            },
        ],
        # Needed on Linux for use on chromium_presubmit.
@@ -94,7 +94,17 @@
        'dep_type': 'cipd',
    },
  
-@@ -1309,9 +1266,6 @@
+@@ -1183,9 +1140,6 @@
+       'condition': 'checkout_linux or checkout_chromeos',
+   },
+ 
+-  'src/third_party/crossbench':
+-    Var('chromium_git') + '/crossbench.git' + '@' + Var('crossbench_revision'),
+-
+ 
+   'src/third_party/crubit/src': {
+       'url': Var('chromium_git') + '/external/github.com/google/crubit.git' + '@' + Var('crubit_revision'),
+@@ -1256,9 +1210,6 @@
    'src/third_party/freetype/src':
      Var('chromium_git') + '/chromium/src/third_party/freetype2.git' + '@' + Var('freetype_revision'),
  
@@ -104,7 +114,7 @@
    'src/third_party/fxdiv/src':
      Var('chromium_git') + '/external/github.com/Maratyszcza/FXdiv.git' + '@' + '63058eff77e11aa15bf531df5dd34395ec3017c8',
  
-@@ -1398,7 +1352,7 @@
+@@ -1345,7 +1296,7 @@
            },
        ],
        # Needed on Linux for use on chromium_presubmit.
@@ -113,7 +123,7 @@
        'dep_type': 'cipd',
    },
  
-@@ -1454,7 +1408,7 @@
+@@ -1401,7 +1352,7 @@
            },
        ],
        # Needed on Linux for use on chromium_presubmit (for checkstyle).
@@ -122,7 +132,7 @@
        'dep_type': 'cipd',
    },
  
-@@ -1505,12 +1459,6 @@
+@@ -1452,12 +1403,6 @@
    'src/third_party/leveldatabase/src':
      Var('chromium_git') + '/external/leveldb.git' + '@' + '068d5ee1a3ac40dabd00d211d5013af44be55bea',
  
@@ -135,7 +145,7 @@
    'src/third_party/libaddressinput/src':
      Var('chromium_git') + '/external/libaddressinput.git' + '@' + 'e8712e415627f22d0b00ebee8db99547077f39bd',
  
-@@ -1532,9 +1480,6 @@
+@@ -1479,15 +1424,9 @@
    'src/third_party/securemessage/src':
      Var('chromium_git') + '/external/github.com/google/securemessage.git' + '@' + Var('securemessage_revision'),
  
@@ -145,7 +155,13 @@
    'src/third_party/ukey2/src':
      Var('chromium_git') + '/external/github.com/google/ukey2.git' + '@' + Var('ukey2_revision'),
  
-@@ -4530,16 +4475,6 @@
+-  'src/third_party/cros-components/src':
+-    Var('chromium_git') + '/external/google3/cros_components.git' + '@' + Var('cros_components_revision'),
+-
+   # Userspace interface to kernel DRM services.
+   'src/third_party/libdrm/src': {
+       'url': Var('chromium_git') + '/chromiumos/third_party/libdrm.git' + '@' + '98e1db501173303e58ef6a1def94ab7a2d84afc1',
+@@ -4490,16 +4429,6 @@
                 '--package=clangd'],
    },
    {
@@ -162,7 +178,7 @@
      # Update LASTCHANGE.
      'name': 'lastchange',
      'pattern': '.',
-@@ -4639,18 +4574,6 @@
+@@ -4599,18 +4528,6 @@
                  '-o', 'src/buildtools/mac/clang-format',
      ],
    },
@@ -181,7 +197,7 @@
    # Pull rc binaries using checked-in hashes.
    {
      'name': 'rc_win',
-@@ -4688,29 +4611,6 @@
+@@ -4648,29 +4565,6 @@
                  '-s', 'src/build/toolchain/win/rc/linux64/rc.sha1',
      ]
    },
@@ -211,7 +227,7 @@
    {
      'name': 'apache_win32',
      'pattern': '\\.sha1',
-@@ -4750,31 +4650,6 @@
+@@ -4710,31 +4604,6 @@
                  '-s', 'src/third_party/instrumented_libraries/binaries/msan-no-origins-focal.tgz.sha1',
                ],
    },
@@ -243,7 +259,7 @@
    # Pull down Node binaries for WebUI toolchain.
    # The Linux binary is always downloaded regardless of host os and architecture
    # since remote node actions run on Linux worker.
-@@ -4919,46 +4794,6 @@
+@@ -4879,46 +4748,6 @@
      ],
    },
  
@@ -290,7 +306,7 @@
    # Pull down WPR Archive files
    {
      'name': 'Fetch WPR archive files',
-@@ -5038,14 +4873,6 @@
+@@ -4998,14 +4827,6 @@
                 'src/chrome/browser/resources/vr/assets/google_chrome',
      ],
    },
@@ -305,7 +321,7 @@
    # Download VR test APKs only if the environment variable is set
    {
      'name': 'vr_test_apks',
-@@ -5492,17 +5319,6 @@
+@@ -5452,17 +5273,6 @@
      'condition': 'host_os == "win"',
      'action': ['python3', 'src/build/del_ninja_deps_cache.py'],
    },
