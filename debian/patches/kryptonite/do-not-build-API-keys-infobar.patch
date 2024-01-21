@@ -1,6 +1,6 @@
 --- a/chrome/browser/ui/BUILD.gn
 +++ b/chrome/browser/ui/BUILD.gn
-@@ -1411,8 +1411,6 @@
+@@ -1422,8 +1422,6 @@
        "singleton_tabs.h",
        "startup/automation_infobar_delegate.cc",
        "startup/automation_infobar_delegate.h",

@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -3000,6 +3000,16 @@
+@@ -2999,6 +2999,16 @@
    }
  }
  
@@ -26,4 +26,4 @@
 +  "//build/config/compiler:default_stack_clash_prot",
    "//build/config/compiler:default_stack_frames",
    "//build/config/compiler:default_symbols",
-   "//build/config/compiler:export_dynamic",
+   "//build/config/compiler:no_exceptions",

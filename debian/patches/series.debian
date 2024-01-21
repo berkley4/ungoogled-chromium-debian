@@ -31,7 +31,6 @@ kryptonite/disable-async-dns.patch
 kryptonite/disable-component-updates.patch
 kryptonite/disable-conversion-measurement-api.patch
 kryptonite/disable-extension-autoupdate.patch
-kryptonite/disable-idle-detection.patch
 kryptonite/disable-miscellaneous-autofill-settings.patch
 kryptonite/disable-signed-exchange-reporting.patch
 kryptonite/do-not-build-API-keys-infobar.patch
@@ -43,7 +42,7 @@ kryptonite/remove-window-name-on-cross-origin-navigation.patch
 kryptonite/replace-dns-probe-hostname-with-example-com.patch
 kryptonite/stop-omnibar-searches-triggering-dns-requests.patch
 
-vanadium/0049-stub-out-the-battery-status-API.patch
+vanadium/0050-stub-out-the-battery-status-API.patch
 
 vanadinite/0001-switch-to-fstack-protector-strong.patch
 vanadinite/0002-enable-fwrapv-in-Clang-for-non-UBSan-builds.patch
@@ -92,15 +91,13 @@ various/fixes/silence-alsa-frames-log-msg.patch
 various/fixes/unshrink-ui-font.patch
 various/fixes/xdg-basedir.patch
 various/launchpad/dont-collect-motherboard-metrics.patch
+various/system/libdrm.patch
 various/system/libusb-api.patch
 various/system/minizip.patch
 various/system/perfetto-system-zlib.patch
 various/system/xdg-scripts.patch
-various/system/libdrm.patch
 various/system/zlib.patch
 various/upstream/0001-RaceNetworkRequest-is-triggered-only-when-the-scheme-is-HTTP-or-HTTPS.patch
-various/upstream/0002-ee55694.diff
-various/upstream/0003-c5680eb6.diff
 various/upstream/0005-446d33d.diff
 various/upstream/0006-c39bb52.diff
 
@@ -127,8 +124,8 @@ optional/fixes/widevine/widevine-enable-version-string.patch
 optional/fixes/widevine/widevine-locations.patch
 #optional/legacy-i386/angle-lockfree.patch
 #optional/legacy-i386/support-i386.patch
-optional/opentype-svg/0001-m120-OT-SVG-hook.patch
-optional/opentype-svg/0002-m120-use-FreeType-for-non-Linux.patch
+optional/opentype-svg/0001-m121-OT-SVG-hook.patch
+optional/opentype-svg/0002-m121-use-FreeType-for-non-Linux-OT-SVG-support.patch
 #optional/system/convertutf-bundled.patch
 #optional/system/dav1d-bundled-header.patch
 #optional/system/freetype-COLRV1.patch

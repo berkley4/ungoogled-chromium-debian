@@ -1,0 +1,68 @@
+From c1d77cdc1fdd471763e23e86a80c630d5685ed2a Mon Sep 17 00:00:00 2001
+From: Hin-Tak Leung <htl10@users.sourceforge.net>
+Date: Wed, 10 Jan 2024 21:06:55 +0000
+Subject: [PATCH 2/2] m121 use FreeType for non-Linux OT-SVG support
+
+Ported onto 121.0.6167.51
+
+Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
+---
+ .../renderer/platform/fonts/opentype/font_format_check.cc   | 6 +++++-
+ .../renderer/platform/fonts/opentype/font_format_check.h    | 1 +
+ .../renderer/platform/fonts/web_font_typeface_factory.cc    | 2 ++
+ .../renderer/platform/fonts/web_font_typeface_factory.h     | 3 ++-
+ 4 files changed, 10 insertions(+), 2 deletions(-)
+
+--- a/third_party/blink/renderer/platform/fonts/opentype/font_format_check.cc
++++ b/third_party/blink/renderer/platform/fonts/opentype/font_format_check.cc
+@@ -93,12 +93,16 @@
+   return table_tags_.size() && table_tags_.Contains(HB_TAG('s', 'b', 'i', 'x'));
+ }
+ 
++bool FontFormatCheck::IsSvgColorFont() const {
++  return table_tags_.size() && table_tags_.Contains(HB_TAG('S', 'V', 'G', ' '));
++}
++
+ bool FontFormatCheck::IsCff2OutlineFont() const {
+   return table_tags_.size() && table_tags_.Contains(HB_TAG('C', 'F', 'F', '2'));
+ }
+ 
+ bool FontFormatCheck::IsColorFont() const {
+-  return IsCbdtCblcColorFont() || IsColrCpalColorFont() || IsSbixColorFont();
++  return IsCbdtCblcColorFont() || IsColrCpalColorFont() || IsSbixColorFont() || IsSvgColorFont();
+ }
+ 
+ FontFormatCheck::VariableFontSubType FontFormatCheck::ProbeVariableFont(
+--- a/third_party/blink/renderer/platform/fonts/opentype/font_format_check.h
++++ b/third_party/blink/renderer/platform/fonts/opentype/font_format_check.h
+@@ -29,6 +29,7 @@
+   virtual bool IsColrCpalColorFontV1() const;
+   bool IsVariableColrV0Font() const;
+   virtual bool IsSbixColorFont() const;
++  virtual bool IsSvgColorFont() const;
+   virtual bool IsCff2OutlineFont() const;
+   bool IsColorFont() const;
+ 
+--- a/third_party/blink/renderer/platform/fonts/web_font_typeface_factory.cc
++++ b/third_party/blink/renderer/platform/fonts/web_font_typeface_factory.cc
+@@ -178,6 +178,8 @@
+        InstantiationResult::kSuccessColrV1Font, absl::nullopt},
+       {&FontFormatCheck::IsSbixColorFont, &MakeSbixTypeface,
+        InstantiationResult::kSuccessSbixFont, absl::nullopt},
++      {&FontFormatCheck::IsSvgColorFont, &MakeUseFallbackIfNeeded,
++       InstantiationResult::kSuccessSvgFont, absl::nullopt},
+       {&FontFormatCheck::IsCff2OutlineFont, &MakeUseFallbackIfNeeded,
+        InstantiationResult::kSuccessCff2Font, absl::nullopt},
+       // We need to special case variable COLRv0 for backend instantiation as
+--- a/third_party/blink/renderer/platform/fonts/web_font_typeface_factory.h
++++ b/third_party/blink/renderer/platform/fonts/web_font_typeface_factory.h
+@@ -50,7 +50,8 @@
+     kSuccessSbixFont = 5,
+     kSuccessColrCpalFont = 6,
+     kSuccessColrV1Font = 7,
+-    kMaxValue = kSuccessColrV1Font
++    kSuccessSvgFont = 8,
++    kMaxValue = kSuccessSvgFont
+   };
+ 
+   static void ReportInstantiationResult(InstantiationResult);

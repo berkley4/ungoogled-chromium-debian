@@ -55,7 +55,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
    AddExtraHeaders();
  
-@@ -687,10 +691,10 @@
+@@ -682,10 +686,10 @@
  void URLRequestHttpJob::AddExtraHeaders() {
    request_info_.extra_headers.SetAcceptEncodingIfMissing(
        request()->url(), request()->accepted_stream_types(),

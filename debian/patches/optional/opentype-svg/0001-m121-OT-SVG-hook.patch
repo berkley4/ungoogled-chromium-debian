@@ -1,21 +1,23 @@
-From 82dd31016d92df02a9d2c095eecc305284fb7123 Mon Sep 17 00:00:00 2001
+From f04792948a14790bbef394f0581e17d53360b9e6 Mon Sep 17 00:00:00 2001
 From: Hin-Tak Leung <htl10@users.sourceforge.net>
-Date: Sun, 24 Dec 2023 00:22:06 +0000
-Subject: [PATCH 1/2] m118-OT-SVG-hook
+Date: Wed, 10 Jan 2024 20:47:54 +0000
+Subject: [PATCH 1/2] m121 OT-SVG hook
+
+Rebased onto 121.0.6167.51
 
 Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
 ---
- skia/BUILD.gn                | 14 +++++++++++---
- .../chromium/skia/ext/fontmgr_default_linux.cc     |  3 +++
- .../renderer/platform/fonts/web_font_decoder.cc    |  2 ++
- .../chromium/third_party/ots/src/src/ots.cc        |  1 +
- .../skia/src/ports/SkFontHost_FreeType.cpp         |  6 ++++++
- .../skia/src/ports/SkScalerContext_win_dw.cpp      |  4 ++++
- 6 files changed, 27 insertions(+), 3 deletions(-)
+ skia/BUILD.gn                                               | 5 ++---
+ skia/ext/fontmgr_default_linux.cc                           | 3 +++
+ .../blink/renderer/platform/fonts/web_font_decoder.cc       | 2 ++
+ third_party/ots/src/src/ots.cc                              | 1 +
+ third_party/skia/src/ports/SkFontHost_FreeType.cpp          | 6 ++++++
+ third_party/skia/src/ports/SkScalerContext_win_dw.cpp       | 4 ++++
+ 6 files changed, 18 insertions(+), 3 deletions(-)
 
 --- a/skia/BUILD.gn
 +++ b/skia/BUILD.gn
-@@ -424,9 +424,6 @@
+@@ -406,9 +406,6 @@
      defines += [ "SK_CODEC_DECODES_JPEG_GAINMAPS" ]
    }
  
@@ -25,7 +27,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
    if (is_win) {
      libs = [ "fontsub.lib" ]
    }
-@@ -662,6 +659,8 @@
+@@ -643,6 +640,8 @@
      sources += skia_sksg_sources
      sources += skia_shaper_primitive_sources
    }
@@ -89,7 +91,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
  using namespace skia_private;
  
  namespace {
-@@ -999,9 +1001,13 @@
+@@ -1000,9 +1002,13 @@
          // FT_LOAD_COLOR with scalable fonts means allow SVG.
          // It also implies attempt to render COLR if available, but this is not used.
  #if defined(FT_CONFIG_OPTION_SVG)
@@ -114,7 +116,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
  #include <dwrite.h>
  #include <dwrite_1.h>
  #include <dwrite_3.h>
-@@ -2275,6 +2277,8 @@
+@@ -2274,6 +2276,8 @@
          return false;
      }
  

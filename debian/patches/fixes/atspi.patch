@@ -11,5 +11,5 @@ builds with atspi >= 2.50. This fixes it.
      micro = atspi_version[2]
 +    not_needed(["major", "micro"])
  
-     # ATSPI 2.49.90 now defines these for us and it's an error for us to
-     # redefine them on the compiler command line.
+     # These aren't necessarily used if atspi is not old enough to require them.
+     # Also, gn considers variables unused if the only use of them is

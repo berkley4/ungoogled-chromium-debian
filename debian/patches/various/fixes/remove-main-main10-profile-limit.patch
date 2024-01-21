@@ -1,6 +1,6 @@
 --- a/media/base/supported_types.cc
 +++ b/media/base/supported_types.cc
-@@ -216,33 +216,7 @@
+@@ -222,33 +222,7 @@
  #endif  // !BUILDFLAG(USE_PROPRIETARY_CODECS)
  
  bool IsHevcProfileSupported(const VideoType& type) {

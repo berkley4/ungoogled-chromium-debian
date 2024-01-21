@@ -1,6 +1,6 @@
 --- a/base/nix/xdg_util.cc
 +++ b/base/nix/xdg_util.cc
-@@ -30,6 +30,8 @@
+@@ -32,6 +32,8 @@
  const char kXdgConfigHomeEnvVar[] = "XDG_CONFIG_HOME";
  const char kXdgCurrentDesktopEnvVar[] = "XDG_CURRENT_DESKTOP";
  const char kXdgSessionTypeEnvVar[] = "XDG_SESSION_TYPE";
@@ -11,7 +11,7 @@
                           const char* fallback_dir) {
 --- a/base/nix/xdg_util.h
 +++ b/base/nix/xdg_util.h
-@@ -62,6 +62,12 @@
+@@ -64,6 +64,12 @@
  // The XDG session type environment variable.
  BASE_EXPORT extern const char kXdgSessionTypeEnvVar[];
  

@@ -188,7 +188,7 @@
  // registerService:
 --- a/services/device/wake_lock/power_save_blocker/BUILD.gn
 +++ b/services/device/wake_lock/power_save_blocker/BUILD.gn
-@@ -88,6 +88,9 @@
+@@ -90,6 +90,9 @@
      visibility = [ ":power_save_blocker" ]
      sources = java_sources_needing_jni
    }

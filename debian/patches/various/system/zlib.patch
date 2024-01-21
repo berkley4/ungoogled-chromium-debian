@@ -44,10 +44,10 @@
  
 --- a/net/disk_cache/simple/simple_entry_impl.cc
 +++ b/net/disk_cache/simple/simple_entry_impl.cc
-@@ -35,7 +35,7 @@
- #include "net/disk_cache/simple/simple_util.h"
+@@ -36,7 +36,7 @@
  #include "net/log/net_log.h"
  #include "net/log/net_log_source_type.h"
+ #include "third_party/abseil-cpp/absl/types/optional.h"
 -#include "third_party/zlib/zlib.h"
 +#include <zlib.h>
  
@@ -55,10 +55,10 @@
  namespace {
 --- a/net/disk_cache/simple/simple_synchronous_entry.cc
 +++ b/net/disk_cache/simple/simple_synchronous_entry.cc
-@@ -33,7 +33,7 @@
- #include "net/disk_cache/simple/simple_histogram_macros.h"
+@@ -34,7 +34,7 @@
  #include "net/disk_cache/simple/simple_util.h"
  #include "third_party/abseil-cpp/absl/container/inlined_vector.h"
+ #include "third_party/abseil-cpp/absl/types/optional.h"
 -#include "third_party/zlib/zlib.h"
 +#include <zlib.h>
  
@@ -105,9 +105,9 @@
  
 +#include <zlib.h>
 +
+ #include "base/trace_event/typed_macros.h"
  #include "third_party/blink/renderer/bindings/core/v8/script_promise.h"
  #include "third_party/blink/renderer/bindings/core/v8/v8_binding_for_core.h"
- #include "third_party/blink/renderer/bindings/core/v8/v8_typedefs.h"
 --- a/third_party/blink/renderer/modules/compression/inflate_transformer.cc
 +++ b/third_party/blink/renderer/modules/compression/inflate_transformer.cc
 @@ -8,6 +8,8 @@
@@ -116,9 +116,9 @@
  
 +#include <zlib.h>
 +
+ #include "base/trace_event/typed_macros.h"
  #include "third_party/blink/renderer/bindings/core/v8/script_promise.h"
  #include "third_party/blink/renderer/bindings/core/v8/v8_binding_for_core.h"
- #include "third_party/blink/renderer/bindings/core/v8/v8_typedefs.h"
 --- a/v8/src/snapshot/snapshot-utils.cc
 +++ b/v8/src/snapshot/snapshot-utils.cc
 @@ -7,7 +7,7 @@

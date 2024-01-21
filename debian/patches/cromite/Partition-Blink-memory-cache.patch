@@ -43,15 +43,15 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 @@ -413,7 +413,7 @@
      KURL url = document->CompleteURL(
          StripLeadingAndTrailingHTMLSpaces(image_candidates[i]->Url()));
-     if (MemoryCache::Get()->ResourceForURL(
--            url, document->Fetcher()->GetCacheIdentifier(url)) ||
-+            url, document->Fetcher()->GetCacheIdentifier(url, document->TopFrameOrigin())) ||
-         url.ProtocolIsData())
+     auto* resource = MemoryCache::Get()->ResourceForURL(
+-        url, document->Fetcher()->GetCacheIdentifier(url));
++        url, document->Fetcher()->GetCacheIdentifier(url, document->TopFrameOrigin()));
+     if ((resource && resource->IsLoaded()) || url.ProtocolIsData()) {
        return i;
-   }
+     }
 --- a/third_party/blink/renderer/core/inspector/inspector_network_agent.cc
 +++ b/third_party/blink/renderer/core/inspector/inspector_network_agent.cc
-@@ -2318,7 +2318,7 @@
+@@ -2320,7 +2320,7 @@
    Resource* cached_resource = document->Fetcher()->CachedResource(url);
    if (!cached_resource) {
      cached_resource = MemoryCache::Get()->ResourceForURL(
@@ -76,7 +76,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      cached_resource = loader->ResourceForURL(url);
 --- a/third_party/blink/renderer/core/loader/image_loader.cc
 +++ b/third_party/blink/renderer/core/loader/image_loader.cc
-@@ -729,7 +729,8 @@
+@@ -731,7 +731,8 @@
    // content when style recalc is over and DOM mutation is allowed again.
    if (!url.IsNull()) {
      Resource* resource = MemoryCache::Get()->ResourceForURL(
@@ -165,7 +165,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      kAutomaticPrune,
 --- a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc
 +++ b/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc
-@@ -799,7 +799,8 @@
+@@ -805,7 +805,8 @@
    if (!archive_ && factory.GetType() == ResourceType::kRaw)
      return nullptr;
  
@@ -175,7 +175,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // Most off-main-thread resource fetches use Resource::kRaw and don't reach
    // this point, but off-main-thread module fetches might.
    if (IsMainThread()) {
-@@ -1150,7 +1151,9 @@
+@@ -1156,7 +1157,9 @@
          resource = nullptr;
        } else {
          resource = MemoryCache::Get()->ResourceForURL(
@@ -186,7 +186,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        }
        if (resource) {
          policy = DetermineRevalidationPolicy(resource_type, params, *resource,
-@@ -1258,6 +1261,8 @@
+@@ -1264,6 +1267,8 @@
      if (resource_cache_remote_.is_bound()) {
        resource_cache_remote_->Contains(
            params.Url(),
@@ -195,7 +195,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
            WTF::BindOnce(&ResourceFetcher::OnResourceCacheContainsFinished,
                          WrapWeakPersistent(this), base::TimeTicks::Now(),
                          resource_request.GetRequestDestination()));
-@@ -1412,7 +1417,8 @@
+@@ -1418,7 +1423,8 @@
      const FetchParameters& params,
      const ResourceFactory& factory) {
    const String cache_identifier =
@@ -205,7 +205,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    if (!base::FeatureList::IsEnabled(
            blink::features::kScopeMemoryCachePerContext)) {
      DCHECK(!IsMainThread() || params.IsStaleRevalidation() ||
-@@ -2418,10 +2424,13 @@
+@@ -2424,10 +2430,13 @@
    to_be_removed.clear();
  }
  
@@ -221,7 +221,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    }
  
    // Requests that can be satisfied via `archive_` (i.e. MHTML) or
-@@ -2434,7 +2443,7 @@
+@@ -2440,7 +2449,7 @@
    if (bundle)
      return bundle->GetCacheIdentifier();
  
@@ -232,7 +232,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  absl::optional<base::UnguessableToken>
 --- a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.h
 +++ b/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.h
-@@ -259,7 +259,8 @@
+@@ -260,7 +260,8 @@
                           uint32_t inflight_keepalive_bytes);
    blink::mojom::ControllerServiceWorkerMode IsControlledByServiceWorker() const;
  

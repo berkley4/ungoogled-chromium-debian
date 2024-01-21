@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2328,8 +2328,10 @@
+@@ -2327,8 +2327,10 @@
      common_optimize_on_cflags += [
        # Put data and code in their own sections, so that unused symbols
        # can be removed at link time with --gc-sections.
