@@ -75,6 +75,7 @@ various/disable/crashpad-handler.patch
 various/disable/crashpad-handler_2.patch
 various/disable/driver-chrome-path.patch
 various/disable/orchestrator.patch
+various/disable/screen-ai-service.patch
 various/disable/unrar.patch
 various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
 various/fixes/chromedriver-BrandVersion.patch
