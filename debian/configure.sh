@@ -794,7 +794,7 @@ fi
 
 ## Domain substitution
 DSB="$DSB -e \"/^chrome\/browser\/flag_descriptions\.cc/d\""
-DSB="$DSB -e \"/^content\/browser\/resources\/gpu\/info_view\.js/d\""
+DSB="$DSB -e \"/^content\/browser\/resources\/gpu\/info_view\.ts/d\""
 DSB="$DSB -e \"/^third_party\/depot_tools\//d\""
 DSB="$DSB -e \"/^tools\/clang\//d\""
 
