@@ -98,8 +98,12 @@ various/system/perfetto-system-zlib.patch
 various/system/xdg-scripts.patch
 various/system/zlib.patch
 various/upstream/0001-RaceNetworkRequest-is-triggered-only-when-the-scheme-is-HTTP-or-HTTPS.patch
-various/upstream/0005-446d33d.diff
-various/upstream/0006-c39bb52.diff
+various/upstream/0002-c39bb52.diff
+various/upstream/0003-446d33d.diff
+various/upstream/0004-838b931.diff
+various/upstream/0005-63a8936.diff
+various/upstream/0006-f20cde03.diff
+various/upstream/0007-d4a197e.diff
 
 optional/machine-function-splitting.patch
 optional/mutex-priority-inheritance.patch

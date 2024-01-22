@@ -1,0 +1,77 @@
+From 838b9315ce4819d6806f963286f892a29348295a Mon Sep 17 00:00:00 2001
+From: Xianzhu Wang <wangxianzhu@chromium.org>
+Date: Wed, 20 Dec 2023 16:19:12 +0000
+Subject: [PATCH] Correct output clip for ScrollCornerEffect
+
+Like *ScrollbarEffect, ScrollCornerEffect's output clip should also
+skip the current OverflowClip and InnerBoderRadiusClip because the
+scroll corner isn't clipped by these clips.
+
+This avoids the DLOG(ERROR) in paint_chunks_to_cc_layer.cc when a
+paint chunk's clip escapes the current effect's output clip.
+
+Test coverage:
+virtual/view-transition/external/wpt/css/css-view-transitions/iframe-old-has-scrollbar.html
+won't crash if we change the DLOG(ERROR) to CHECK.
+
+Bug: 803649
+Change-Id: Iab30bdfb65243b0fbaef5db0600ae26b16926473
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5136741
+Auto-Submit: Xianzhu Wang <wangxianzhu@chromium.org>
+Commit-Queue: Vladimir Levin <vmpstr@chromium.org>
+Reviewed-by: Vladimir Levin <vmpstr@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1239700}
+---
+
+--- a/third_party/blink/renderer/core/paint/paint_property_tree_builder.cc
++++ b/third_party/blink/renderer/core/paint/paint_property_tree_builder.cc
+@@ -2573,8 +2573,18 @@
+           object_.IsLayoutView() &&
+           ViewTransitionUtils::GetTransition(object_.GetDocument());
+ 
++      // Overflow controls are not clipped by InnerBorderRadiusClip or
++      // OverflowClip, so the output clip should skip them.
++      const auto* overflow_control_effect_output_clip = context_.current.clip;
++      if (const auto* clip_to_skip = properties_->InnerBorderRadiusClip()
++                                         ? properties_->InnerBorderRadiusClip()
++                                         : properties_->OverflowClip()) {
++        overflow_control_effect_output_clip = clip_to_skip->Parent();
++      }
++
+       auto setup_scrollbar_effect_node =
+-          [this, scrollable_area, transition_forces_scrollbar_effect_nodes](
++          [this, scrollable_area, transition_forces_scrollbar_effect_nodes,
++           overflow_control_effect_output_clip](
+               ScrollbarOrientation orientation) {
+             Scrollbar* scrollbar = scrollable_area->GetScrollbar(orientation);
+ 
+@@ -2588,19 +2598,7 @@
+             if (needs_effect_node) {
+               EffectPaintPropertyNode::State effect_state;
+               effect_state.local_transform_space = context_.current.transform;
+-
+-              // Scrollbars are not clipped by InnerBorderRadiusClip or
+-              // OverflowClip, so the output clip should skip them.
+-              auto* clip_to_skip = properties_->InnerBorderRadiusClip();
+-              if (!clip_to_skip) {
+-                clip_to_skip = properties_->OverflowClip();
+-              }
+-              if (clip_to_skip) {
+-                effect_state.output_clip = clip_to_skip->Parent();
+-              } else {
+-                effect_state.output_clip = context_.current.clip;
+-              }
+-
++              effect_state.output_clip = overflow_control_effect_output_clip;
+               effect_state.compositor_element_id =
+                   scrollable_area->GetScrollbarElementId(orientation);
+ 
+@@ -2646,7 +2644,7 @@
+         // are only painted for non-overlay scrollbars.
+         EffectPaintPropertyNode::State effect_state;
+         effect_state.local_transform_space = context_.current.transform;
+-        effect_state.output_clip = context_.current.clip;
++        effect_state.output_clip = overflow_control_effect_output_clip;
+         effect_state.compositor_element_id =
+             scrollable_area->GetScrollCornerElementId();
+         OnUpdateEffect(properties_->UpdateScrollCornerEffect(
