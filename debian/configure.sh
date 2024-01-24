@@ -35,6 +35,11 @@ real_dir_path () (
   OLDPWD=- CDPATH= cd -P -- $1 && pwd
 )
 
+sanitise_op () {
+  printf '%s\n' "Unnecessary optional prefix: $i"
+  i=$(echo $i | sed 's@^optional/@@')
+}
+
 
 ####################
 ## Default values ##
@@ -755,7 +760,7 @@ fi
 
 
 if [ $OPENTYPE_SVG -eq 0 ]; then
-  op_disable="$op_disable optional/opentype-svg/"
+  op_disable="$op_disable opentype-svg/"
 fi
 
 
@@ -844,6 +849,11 @@ fi
 if [ -n "$op_disable" ]; then
   for i in $op_disable; do
     case $i in
+      optional/*)
+        sanitise_op ;;
+    esac
+
+    case $i in
       */|*.patch)
         SER="$SER -e \"s@^\(optional/$i\)@#\1@\""
         ;;
@@ -857,6 +867,11 @@ fi
 
 if [ -n "$op_enable" ]; then
   for i in $op_enable; do
+    case $i in
+      optional/*)
+        sanitise_op ;;
+    esac
+
     case $i in
       */|*.patch)
         SER="$SER -e \"s@^#\(optional/$i\)@\1@\""
