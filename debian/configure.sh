@@ -561,6 +561,11 @@ if [ $OAUTH2 -eq 1 ]; then
 fi
 
 
+if [ $OPENTYPE_SVG -eq 0 ]; then
+  op_disable="$op_disable optional/opentype-svg/"
+fi
+
+
 if [ $OZONE_WAYLAND -eq 0 ]; then
   # GN_FLAGS += ozone_platform_wayland=false
   gn_enable="$gn_enable ozone_platform_wayland"
@@ -738,7 +743,6 @@ fi
 ## Items which are (or are likely to become) unstable-only
 
 if [ $STABLE -eq 1 ]; then
-  OPENTYPE_SVG=0
   SYS_ICU=0
 
   # Disable by default if not force-enabled
@@ -756,11 +760,6 @@ if [ $STABLE -eq 1 ]; then
 
   # Build error since v117 seemingly only affecting stable
   op_enable="$op_enable no-ELOC_PROTO-mnemonic"
-fi
-
-
-if [ $OPENTYPE_SVG -eq 0 ]; then
-  op_disable="$op_disable opentype-svg/"
 fi
 
 
