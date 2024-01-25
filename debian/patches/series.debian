@@ -125,6 +125,8 @@ optional/cpu/avx.patch
 #optional/disable/click-to-call.patch
 optional/disable/supervised-users.patch
 optional/fixes/extensions-in-tools-menu.patch
+#optional/fixes/opentype-svg-on-bundled-freetype.patch
+#optional/fixes/skia-allow-bundled-freetype.patch
 #optional/fixes/skia-gamma.patch
 optional/fixes/widevine/widevine-enable-version-string.patch
 optional/fixes/widevine/widevine-locations.patch
@@ -138,7 +140,6 @@ optional/opentype-svg/0002-m121-use-FreeType-for-non-Linux-OT-SVG-support.patch
 optional/system/jpeg.patch
 optional/system/libxml2.patch
 optional/system/openh264.patch
-#optional/system/skia-no-system-freetype.patch
 #optional/system/clang/clang-version-check.patch
 #optional/system/clang/rust-clanglib-local.patch
 #optional/system/clang/rust-clanglib.patch

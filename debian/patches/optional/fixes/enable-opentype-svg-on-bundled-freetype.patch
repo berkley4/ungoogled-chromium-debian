@@ -1,0 +1,11 @@
+--- a/third_party/freetype/include/freetype-custom/freetype/config/ftoption.h
++++ b/third_party/freetype/include/freetype-custom/freetype/config/ftoption.h
+@@ -540,7 +540,7 @@
+    *
+    *   More details on the hooks can be found in file `otsvg.h`.
+    */
+-/* #define FT_CONFIG_OPTION_SVG */
++#define FT_CONFIG_OPTION_SVG
+ 
+ 
+   /**************************************************************************

@@ -764,7 +764,11 @@ fi
 
 
 if [ $SYS_FREETYPE -eq 0 ]; then
-  op_enable="$op_enable system/skia-no-system-freetype"
+  op_enable="$op_enable fixes/skia-allow-bundled-freetype"
+
+  if [ $OPENTYPE_SVG -eq 1 ]; then
+    op_enable="$op_enable fixes/opentype-svg-on-bundled-freetype"
+  fi
 
   # SYS_LIBS += fontconfig freetype brotli libpng
   sys_disable="$sys_disable fontconfig"
