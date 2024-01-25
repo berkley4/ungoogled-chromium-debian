@@ -105,7 +105,6 @@ various/upstream/0003-446d33d.diff
 various/upstream/0004-838b931.diff
 various/upstream/0005-63a8936.diff
 various/upstream/0006-f20cde03.diff
-various/upstream/0007-d4a197e.diff
 
 optional/machine-function-splitting.patch
 optional/mutex-priority-inheritance.patch
@@ -155,3 +154,9 @@ optional/system/vaapi/vaapi-disable-libaom-encoding.patch
 optional/translate/translate-revert-disable.patch
 optional/translate/translate-stop-unsupported-switch-warning.patch
 #optional/no-ELOC_PROTO-mnemonic.patch
+
+addenda/0001-377578b6.diff
+addenda/0002-6d78ec9.diff
+addenda/0003-e321f354.diff
+addenda/0004-99594f83.diff
+addenda/0005-db6bc96.diff

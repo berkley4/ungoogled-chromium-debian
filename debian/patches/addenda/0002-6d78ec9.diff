@@ -1,0 +1,134 @@
+From 6d78ec940eedd457e23d38a90ae3f6cba5b832b0 Mon Sep 17 00:00:00 2001
+From: Aaron Leventhal <aleventhal@google.com>
+Date: Tue, 23 Jan 2024 21:44:48 +0000
+Subject: [PATCH] M121: [A11y] Don't try to create objects unless processing deferred events
+
+This fixes an issue that no longer occurs in 122 but cherry picking
+some parts of CL:5123413, which prevents AXObjects from being
+created unless processing deferred events. Attempting to create
+AXObjects while the tree is frozen was triggering
+RepairChildrenOfIncludedParent(), which was in turn calling
+SetNeedsToUpdateChildren(), which checks that we are not in a frozen
+state.
+
+This is a safer, more limited of CL:5123413.
+- It directly changes several GetOrCreate() calls into
+Get() calls. However, CL:5123413 contains a lot more of this, and is
+overall too large of a change for this stage of 121,and would likely
+set off other issues.
+- This CL also removes the offending checks.
+- This CL also creates an early return for GetOrCreate() when
+  not processing deferred events, changing it to a simple Get().
+
+Bug: 1519805
+Change-Id: I83bb062ec0eb0fd41124e61b6a1150a55b22d6dc
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5228640
+Commit-Queue: Krishna Govind <govind@chromium.org>
+Reviewed-by: Chris Harrelson <chrishtr@chromium.org>
+Cr-Commit-Position: refs/branch-heads/6167@{#1618}
+Cr-Branched-From: 222e786949e76e342d325ea0d008b4b6273f3a89-refs/heads/main@{#1233107}
+---
+
+diff --git a/third_party/blink/renderer/modules/accessibility/ax_object.cc b/third_party/blink/renderer/modules/accessibility/ax_object.cc
+index 386ad63..a7b997f 100644
+--- a/third_party/blink/renderer/modules/accessibility/ax_object.cc
++++ b/third_party/blink/renderer/modules/accessibility/ax_object.cc
+@@ -1191,6 +1191,12 @@
+ 
+   Node* parent_node = GetParentNodeForComputeParent(cache, current_node);
+ 
++  // If the tree is not currently mutable, then new AXObjects cannot be created.
++  // Return the AXObject for the parent only if it is already part of the tree.
++  if (!cache.IsProcessingDeferredEvents()) {
++    return cache.Get(parent_node);
++  }
++
+   // Will not create an object if no valid parent node is found. This occurs
+   // when a DOM child isn't visited by LayoutTreeBuilderTraversal, such as an
+   // element child of a <textarea>, which only supports plain text.
+@@ -5718,7 +5724,6 @@
+ void AXObject::SetNeedsToUpdateChildren() const {
+   CHECK(!IsDetached()) << "Cannot update children on a detached node: "
+                        << ToString(true, true);
+-  CHECK(!AXObjectCache().IsFrozen());
+   CHECK(!AXObjectCache().HasBeenDisposed());
+ #if defined(AX_FAIL_FAST_BUILD)
+   SANITIZER_CHECK(!is_adding_children_)
+@@ -5743,8 +5748,6 @@
+     return;
+   }
+ 
+-  CHECK(!AXObjectCache().UpdatingTree());
+-
+   children_dirty_ = true;
+   SetAncestorsHaveDirtyDescendants();
+ }
+diff --git a/third_party/blink/renderer/modules/accessibility/ax_object_cache_impl.cc b/third_party/blink/renderer/modules/accessibility/ax_object_cache_impl.cc
+index 5dee07a7..938b14be 100644
+--- a/third_party/blink/renderer/modules/accessibility/ax_object_cache_impl.cc
++++ b/third_party/blink/renderer/modules/accessibility/ax_object_cache_impl.cc
+@@ -1362,6 +1362,10 @@
+ 
+ AXObject* AXObjectCacheImpl::GetOrCreate(Node* node,
+                                          AXObject* parent_if_known) {
++  if (!IsProcessingDeferredEvents()) {
++    return Get(node);
++  }
++
+   if (!node)
+     return nullptr;
+ 
+diff --git a/third_party/blink/renderer/modules/accessibility/ax_object_test.cc b/third_party/blink/renderer/modules/accessibility/ax_object_test.cc
+index 13aba0f..dfaf1d5fa 100644
+--- a/third_party/blink/renderer/modules/accessibility/ax_object_test.cc
++++ b/third_party/blink/renderer/modules/accessibility/ax_object_test.cc
+@@ -1163,7 +1163,7 @@
+ 
+   AXObject* ax_select = GetAXObjectByElementId("sel");
+   ax_select->SetNeedsToUpdateChildren();
+-  ax_select->UpdateChildrenIfNecessary();
++  GetAXObjectCache().UpdateAXForAllDocuments();
+ 
+   ASSERT_EQ(
+       ax_select->FirstChildIncludingIgnored()->ChildCountIncludingIgnored(), 1);
+diff --git a/third_party/blink/renderer/modules/accessibility/ax_sparse_attribute_setter.cc b/third_party/blink/renderer/modules/accessibility/ax_sparse_attribute_setter.cc
+index 65f16e5..09a97390c 100644
+--- a/third_party/blink/renderer/modules/accessibility/ax_sparse_attribute_setter.cc
++++ b/third_party/blink/renderer/modules/accessibility/ax_sparse_attribute_setter.cc
+@@ -61,7 +61,7 @@
+   if (!target)
+     return;
+ 
+-  AXObject* ax_target = object->AXObjectCache().GetOrCreate(target);
++  AXObject* ax_target = object->AXObjectCache().Get(target);
+   if (!ax_target)
+     return;
+   if (attribute == ax::mojom::blink::IntAttribute::kActivedescendantId &&
+@@ -91,8 +91,7 @@
+   std::vector<int32_t> ax_ids;
+ 
+   for (const auto& associated_element : *attr_associated_elements) {
+-    AXObject* ax_element =
+-        object->AXObjectCache().GetOrCreate(associated_element);
++    AXObject* ax_element = object->AXObjectCache().Get(associated_element);
+     if (!ax_element)
+       continue;
+     if (!ax_element->AccessibilityIsIgnored())
+@@ -248,7 +247,7 @@
+   }
+ 
+   Element* target = value.element();
+-  AXObject* ax_target = ax_object_cache_->GetOrCreate(target);
++  AXObject* ax_target = ax_object_cache_->Get(target);
+   if (!ax_target)
+     return;
+ 
+@@ -281,7 +280,7 @@
+     AccessibleNode* accessible_node = relations.item(i);
+     if (accessible_node) {
+       Element* element = accessible_node->element();
+-      AXObject* ax_element = ax_object_cache_->GetOrCreate(element);
++      AXObject* ax_element = ax_object_cache_->Get(element);
+       if (ax_element && !ax_element->AccessibilityIsIgnored())
+         ax_ids.push_back(ax_element->AXObjectID());
+     }
