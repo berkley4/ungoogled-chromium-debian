@@ -562,7 +562,7 @@ fi
 
 
 if [ $OPENTYPE_SVG -eq 0 ]; then
-  op_disable="$op_disable optional/opentype-svg/"
+  op_disable="$op_disable opentype-svg/"
 fi
 
 
