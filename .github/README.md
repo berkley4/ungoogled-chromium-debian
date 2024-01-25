@@ -61,15 +61,17 @@ ___Security/Privacy improvements___
 - A policy file is installed to help lock down the browser (use [this](https://chromeenterprise.google/policies/) as a reference guide)
 - The Web Bluetooth/HID/Serial/USB APIs are disabled, and the audio/video/screen capture APIs can be disabled via the policy file
 - Text fragments are disabled by default via the opilcy file (see [here](https://xsleaks.dev/docs/attacks/experiments/scroll-to-text-fragment/) for more info)
+- Built without possibly privacy unfriendly Lens Desktop and Screen AI Service components
 - Some security/privacy themed flag files are installed to /etc/chromium.d
 
 
 ___Other features___
 
 - Lots of extra runtime flags (via the flag files in /etc/chromium.d)
+- Lots of extra build flags to try and prevent the building of unneeded testing/debug features
+- The crashpad handler binary is redundant on Ungoogled Chromium and has been patched out
 - Google translate - can be enabled via an edit to /etc/chromium.d/google-translate
-- Patches for -march/-mtune and various other CPU instructions
-- Various patches to disable components (eg atk/dbus) and enable system libraries
+- Various patches to disable several potentially unwanted components/enable system libraries
 - Experimental Opentype SVG support via third party patches
 
 
