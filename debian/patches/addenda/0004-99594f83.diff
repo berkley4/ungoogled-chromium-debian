@@ -30,8 +30,6 @@ Cr-Commit-Position: refs/branch-heads/6167@{#1631}
 Cr-Branched-From: 222e786949e76e342d325ea0d008b4b6273f3a89-refs/heads/main@{#1233107}
 ---
 
-diff --git a/third_party/blink/renderer/modules/peerconnection/rtc_peer_connection_handler.cc b/third_party/blink/renderer/modules/peerconnection/rtc_peer_connection_handler.cc
-index 015c5ab..3afc707 100644
 --- a/third_party/blink/renderer/modules/peerconnection/rtc_peer_connection_handler.cc
 +++ b/third_party/blink/renderer/modules/peerconnection/rtc_peer_connection_handler.cc
 @@ -1056,15 +1056,19 @@
@@ -71,8 +69,6 @@ index 015c5ab..3afc707 100644
    TRACE_EVENT0("webrtc", "RTCPeerConnectionHandler::OnIceCandidateImpl");
    // This line can cause garbage collection.
    auto* platform_candidate = MakeGarbageCollected<RTCIceCandidatePlatform>(
-diff --git a/third_party/blink/renderer/modules/peerconnection/rtc_peer_connection_handler_test.cc b/third_party/blink/renderer/modules/peerconnection/rtc_peer_connection_handler_test.cc
-index eb44aab..ee703c4 100644
 --- a/third_party/blink/renderer/modules/peerconnection/rtc_peer_connection_handler_test.cc
 +++ b/third_party/blink/renderer/modules/peerconnection/rtc_peer_connection_handler_test.cc
 @@ -602,7 +602,7 @@

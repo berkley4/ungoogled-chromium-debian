@@ -1,6 +1,6 @@
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -1033,7 +1033,7 @@
+@@ -1037,7 +1037,7 @@
  // sandboxes are isolated.
  BASE_FEATURE(kIsolateSandboxedIframes,
               "IsolateSandboxedIframes",

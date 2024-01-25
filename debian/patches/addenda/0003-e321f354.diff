@@ -25,8 +25,6 @@ Cr-Commit-Position: refs/branch-heads/6167@{#1621}
 Cr-Branched-From: 222e786949e76e342d325ea0d008b4b6273f3a89-refs/heads/main@{#1233107}
 ---
 
-diff --git a/services/network/public/cpp/source_stream_to_data_pipe.cc b/services/network/public/cpp/source_stream_to_data_pipe.cc
-index f1dca731..c3700ab 100644
 --- a/services/network/public/cpp/source_stream_to_data_pipe.cc
 +++ b/services/network/public/cpp/source_stream_to_data_pipe.cc
 @@ -55,9 +55,9 @@
@@ -42,8 +40,6 @@ index f1dca731..c3700ab 100644
  
    if (result != net::ERR_IO_PENDING)
      DidRead(result);
-diff --git a/services/network/public/cpp/source_stream_to_data_pipe_unittest.cc b/services/network/public/cpp/source_stream_to_data_pipe_unittest.cc
-index 7061418..54159df 100644
 --- a/services/network/public/cpp/source_stream_to_data_pipe_unittest.cc
 +++ b/services/network/public/cpp/source_stream_to_data_pipe_unittest.cc
 @@ -6,7 +6,9 @@

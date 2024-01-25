@@ -14,8 +14,6 @@ Cr-Commit-Position: refs/branch-heads/6167@{#1632}
 Cr-Branched-From: 222e786949e76e342d325ea0d008b4b6273f3a89-refs/heads/main@{#1233107}
 ---
 
-diff --git a/third_party/blink/renderer/modules/accessibility/ax_object.cc b/third_party/blink/renderer/modules/accessibility/ax_object.cc
-index a7b997f..68020cb 100644
 --- a/third_party/blink/renderer/modules/accessibility/ax_object.cc
 +++ b/third_party/blink/renderer/modules/accessibility/ax_object.cc
 @@ -1342,8 +1342,6 @@
@@ -51,8 +49,6 @@ index a7b997f..68020cb 100644
  String AXObject::ToString(bool verbose, bool cached_values_only) const {
    // Build a friendly name for debugging the object.
    // If verbose, build a longer name name in the form of:
-diff --git a/third_party/blink/renderer/modules/accessibility/ax_object.h b/third_party/blink/renderer/modules/accessibility/ax_object.h
-index a6fd19f..b5b67e4 100644
 --- a/third_party/blink/renderer/modules/accessibility/ax_object.h
 +++ b/third_party/blink/renderer/modules/accessibility/ax_object.h
 @@ -1379,9 +1379,6 @@

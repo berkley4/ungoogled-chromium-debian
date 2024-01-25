@@ -29,8 +29,6 @@ Cr-Commit-Position: refs/branch-heads/6167@{#1618}
 Cr-Branched-From: 222e786949e76e342d325ea0d008b4b6273f3a89-refs/heads/main@{#1233107}
 ---
 
-diff --git a/third_party/blink/renderer/modules/accessibility/ax_object.cc b/third_party/blink/renderer/modules/accessibility/ax_object.cc
-index 386ad63..a7b997f 100644
 --- a/third_party/blink/renderer/modules/accessibility/ax_object.cc
 +++ b/third_party/blink/renderer/modules/accessibility/ax_object.cc
 @@ -1191,6 +1191,12 @@
@@ -63,8 +61,6 @@ index 386ad63..a7b997f 100644
    children_dirty_ = true;
    SetAncestorsHaveDirtyDescendants();
  }
-diff --git a/third_party/blink/renderer/modules/accessibility/ax_object_cache_impl.cc b/third_party/blink/renderer/modules/accessibility/ax_object_cache_impl.cc
-index 5dee07a7..938b14be 100644
 --- a/third_party/blink/renderer/modules/accessibility/ax_object_cache_impl.cc
 +++ b/third_party/blink/renderer/modules/accessibility/ax_object_cache_impl.cc
 @@ -1362,6 +1362,10 @@
@@ -78,8 +74,6 @@ index 5dee07a7..938b14be 100644
    if (!node)
      return nullptr;
  
-diff --git a/third_party/blink/renderer/modules/accessibility/ax_object_test.cc b/third_party/blink/renderer/modules/accessibility/ax_object_test.cc
-index 13aba0f..dfaf1d5fa 100644
 --- a/third_party/blink/renderer/modules/accessibility/ax_object_test.cc
 +++ b/third_party/blink/renderer/modules/accessibility/ax_object_test.cc
 @@ -1163,7 +1163,7 @@
@@ -91,8 +85,6 @@ index 13aba0f..dfaf1d5fa 100644
  
    ASSERT_EQ(
        ax_select->FirstChildIncludingIgnored()->ChildCountIncludingIgnored(), 1);
-diff --git a/third_party/blink/renderer/modules/accessibility/ax_sparse_attribute_setter.cc b/third_party/blink/renderer/modules/accessibility/ax_sparse_attribute_setter.cc
-index 65f16e5..09a97390c 100644
 --- a/third_party/blink/renderer/modules/accessibility/ax_sparse_attribute_setter.cc
 +++ b/third_party/blink/renderer/modules/accessibility/ax_sparse_attribute_setter.cc
 @@ -61,7 +61,7 @@
