@@ -100,6 +100,9 @@ GN_FLAGS +=                                     \
 # Disable feed v2
 #GN_FLAGS += enable_feed_v2=false
 
+# Disable media remoting
+#GN_FLAGS += enable_media_remoting=false enable_media_remoting_rpc=false
+
 # Enable mutex priority inheritance
 GN_FLAGS += enable_mutex_priority_inheritance=true
 
