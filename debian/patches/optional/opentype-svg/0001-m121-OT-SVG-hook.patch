@@ -27,9 +27,9 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
    if (is_win) {
      libs = [ "fontsub.lib" ]
    }
-@@ -643,6 +640,8 @@
-     sources += skia_sksg_sources
+@@ -644,6 +641,8 @@
      sources += skia_shaper_primitive_sources
+     defines += [ "SKOTTIE_TRIVIAL_FONTRUN_ITER" ]
    }
 +  import("//third_party/skia/modules/svg/svg.gni")
 +  sources += skia_svg_sources

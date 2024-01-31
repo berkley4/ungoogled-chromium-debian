@@ -51,8 +51,8 @@
    }
 --- a/media/gpu/BUILD.gn
 +++ b/media/gpu/BUILD.gn
-@@ -388,10 +388,7 @@
-       "vp9_svc_layers.h",
+@@ -391,10 +391,7 @@
+       "vp9_svc_layers_stateful.h",
      ]
      configs += [ "//third_party/libvpx:libvpx_config" ]
 -    deps += [
