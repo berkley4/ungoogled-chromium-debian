@@ -84,8 +84,8 @@
 -
    'src/clank': {
      'url': Var('chrome_git') + '/clank/internal/apps.git' + '@' +
-     '9b63c452155e22ce71e8a717cb8b7a5632de468c',
-@@ -1142,7 +1099,7 @@
+     '844fd8643c299bc3af2c6bcc856549146e20e552',
+@@ -1142,7 +1102,7 @@
            },
        ],
        # Needed on Linux for use on chromium_presubmit.
@@ -161,22 +161,7 @@
    # Userspace interface to kernel DRM services.
    'src/third_party/libdrm/src': {
        'url': Var('chromium_git') + '/chromiumos/third_party/libdrm.git' + '@' + '98e1db501173303e58ef6a1def94ab7a2d84afc1',
-@@ -4438,14 +4377,6 @@
-     'action': ['python3', 'src/build/mac_toolchain.py'],
-   },
-   {
--    # Update the prebuilt clang toolchain.
--    # Note: On Win, this should run after win_toolchain, as it may use it.
--    'name': 'clang',
--    'pattern': '.',
--    'condition': 'not llvm_force_head_revision',
--    'action': ['python3', 'src/tools/clang/scripts/update.py'],
--  },
--  {
-     # Update prebuilt Rust toolchain.
-     'name': 'rust-toolchain',
-     'pattern': '.',
-@@ -4490,16 +4421,6 @@
+@@ -4490,16 +4429,6 @@
                 '--package=clangd'],
    },
    {
@@ -193,7 +178,7 @@
      # Update LASTCHANGE.
      'name': 'lastchange',
      'pattern': '.',
-@@ -4599,18 +4520,6 @@
+@@ -4599,18 +4528,6 @@
                  '-o', 'src/buildtools/mac/clang-format',
      ],
    },
@@ -212,7 +197,7 @@
    # Pull rc binaries using checked-in hashes.
    {
      'name': 'rc_win',
-@@ -4648,29 +4557,6 @@
+@@ -4648,29 +4565,6 @@
                  '-s', 'src/build/toolchain/win/rc/linux64/rc.sha1',
      ]
    },
@@ -242,7 +227,7 @@
    {
      'name': 'apache_win32',
      'pattern': '\\.sha1',
-@@ -4710,31 +4596,6 @@
+@@ -4710,31 +4604,6 @@
                  '-s', 'src/third_party/instrumented_libraries/binaries/msan-no-origins-focal.tgz.sha1',
                ],
    },
@@ -274,7 +259,7 @@
    # Pull down Node binaries for WebUI toolchain.
    # The Linux binary is always downloaded regardless of host os and architecture
    # since remote node actions run on Linux worker.
-@@ -4879,46 +4740,6 @@
+@@ -4879,46 +4748,6 @@
      ],
    },
  
@@ -321,7 +306,7 @@
    # Pull down WPR Archive files
    {
      'name': 'Fetch WPR archive files',
-@@ -4998,14 +4819,6 @@
+@@ -4998,14 +4827,6 @@
                 'src/chrome/browser/resources/vr/assets/google_chrome',
      ],
    },
@@ -336,7 +321,7 @@
    # Download VR test APKs only if the environment variable is set
    {
      'name': 'vr_test_apks',
-@@ -5452,17 +5265,6 @@
+@@ -5452,17 +5273,6 @@
      'condition': 'host_os == "win"',
      'action': ['python3', 'src/build/del_ninja_deps_cache.py'],
    },

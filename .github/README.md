@@ -249,9 +249,19 @@ git checkout tags/$TAG
 
 ## Pull in chromium submodules and components
 ```
-# Optional: patch the DEPS file to omit downloading unwanted components
-# (Tarball users can skip this step)
-patch -p1 < /path/to/DEPS.patch
+# Optional: patch the DEPS file to omit unwanted components
+# (the patches are located at the root of the ungoogled-chromium-debian git tree)
+
+# Remove unwanted/unneeded dependencies
+patch -p1 < DEPS.patch
+
+# Do not download chromium's pre-built clang toolchain
+patch -p1 < DEPS-no-clang.patch
+
+# To omit downloading the pre-built rust toolchain add
+# the following to the custom_vars section of build/.gclient
+"checkout_rust": False,
+
 
 # Update the chromium build tree submodules
 cd ../build/src
