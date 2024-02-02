@@ -82,7 +82,6 @@ various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
 various/fixes/chromedriver-BrandVersion.patch
 various/fixes/clang-excessive-warnings.patch
 various/fixes/EnumTable-crash.patch
-various/fixes/fc-cache-version.patch
 various/fixes/font-rendering.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/remove-main-main10-profile-limit.patch
