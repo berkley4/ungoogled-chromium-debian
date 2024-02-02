@@ -758,11 +758,11 @@ if [ $STABLE -eq 1 ]; then
   [ $SYS_FREETYPE_SET -eq 1 ] && [ $SYS_FREETYPE -eq 1 ] || SYS_FREETYPE=0
 
   if [ $SYS_FREETYPE -eq 0 ]; then
-    op_enable="$op_enable system/freetype-COLRV1"
+    op_enable="$op_enable fixes/freetype-COLRV1"
   fi
 
   op_disable="$op_disable system/unstable/dav1d/"
-  op_enable="$op_enable system/dav1d-bundled-header system/libxml2"
+  op_enable="$op_enable fixes/dav1d-bundled-header system/libxml2"
 
   sys_disable="$sys_disable dav1d"
   deps_disable="$deps_disable libdav1d"
@@ -788,7 +788,7 @@ fi
 
 if [ $SYS_ICU -eq 0 ]; then
   op_disable="$op_disable system/unstable/icu/"
-  op_enable="$op_enable system/convertutf-bundled"
+  op_enable="$op_enable fixes/convertutf-bundled"
 
   # SYS_LIBS += icu libxml libxslt
   sys_disable="$sys_disable icu"
