@@ -12,6 +12,7 @@ Build-Depends:
 #lld-17,
 #clang-17,
 #libclang-rt-17-dev,
+#rustc (>= 1.70.0),
  python-is-python3,
  generate-ninja,
  ninja-build,

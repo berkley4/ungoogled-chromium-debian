@@ -140,6 +140,7 @@ optional/opentype-svg/0002-m121-use-FreeType-for-non-Linux-OT-SVG-support.patch
 optional/system/jpeg.patch
 optional/system/libxml2.patch
 optional/system/openh264.patch
+#optional/system/rust.patch
 #optional/system/clang/clang-version-check.patch
 #optional/system/clang/rust-clanglib-local.patch
 #optional/system/clang/rust-clanglib.patch

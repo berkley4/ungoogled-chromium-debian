@@ -92,6 +92,14 @@ GN_FLAGS +=                                     \
 # The items below are best configured via debian/configure.sh
 # (this needs to be run anyway when self-compiling).
 
+### Rust toolchain
+
+#export RUSTC_BOOTSTRAP=1
+#GN_FLAGS += rust_sysroot_absolute=RUST_PATH rustc_version=RUST_DASHV
+
+
+### General components
+
 # Disable atk/dbus
 #GN_FLAGS += use_atk=false use_dbus=false
 

@@ -47,6 +47,9 @@ sanitise_op () {
 
 [ -n "$SYMBOLS" ] || SYMBOLS=0
 [ -n "$SYMBOLS_BLINK" ] || SYMBOLS_BLINK=0
+[ -n "$SYS_CLANG" ] || SYS_CLANG=0
+[ -n "$SYS_RUST" ] || SYS_RUST=0
+[ -n "$SYS_RUST_FORCE" ] || SYS_RUST_FORCE=0
 
 [ -n "$PGO" ] || PGO=1
 [ -n "$STABLE" ] || STABLE=0
@@ -89,7 +92,6 @@ sanitise_op () {
 [ -n "$PULSE" ] || PULSE=1
 [ -n "$VAAPI" ] || VAAPI=1
 
-[ -n "$SYS_CLANG" ] || SYS_CLANG=0
 [ -n "$SYS_FFMPEG" ] || SYS_FFMPEG=0
 [ -n "$SYS_ICU" ] || SYS_ICU=0
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
@@ -316,9 +318,9 @@ fi
 
 
 
-###############################
-## Clang/Polly configuration ##
-###############################
+####################################
+## Clang/Polly/Rust configuration ##
+####################################
 
 if [ $SYS_CLANG -eq 0 ]; then
   # Polly not available on bundled toolchain
@@ -410,6 +412,44 @@ fi
 
 if [ $POLLY_EXT -eq 0 ]; then
   op_disable="$op_disable polly-extra"
+fi
+
+
+if [ $SYS_RUST -gt 0 ]; then
+  # GN_FLAGS += rust_sysroot_absolute=RUST_PATH rustc_version=RUST_DASHV
+  gn_enable="$gn_enable rust_sysroot_absolute"
+
+  RUST_NEW_PATH="$HOME/.cargo"
+
+  if [ $SYS_RUST -eq 1 ]; then
+    if [ $SYS_RUST -eq 1 ] && [ $SYS_RUST_FORCE -eq 0 ]; then
+        # We exit here (unless SYS_RUST_FORCE=1) as system rust is usually too old
+        printf '%s\n' "WARN: your system rust is too old"
+        printf '%s\n' "INFO: configure with SYS_RUST=0 (bundled) or SYS_RUST=2 (upstream rust)"
+        exit 1
+    fi
+
+    op_enable="$op_enable system/rust"
+    deps_enable="$deps_enable rustc"
+
+    RUST_NEW_PATH="/usr"
+  fi
+
+  RUST="$RUST_NEW_PATH/bin/rustc"
+  RUST_VER="rustc TEST"
+
+  if [ $TEST -eq 0 ]; then
+    if [ ! -x $RUST ]; then
+      printf '%s\n' "$RUST does not exist (or is not executable)"
+      exit 1
+    fi
+
+    RUST_VER="$($RUST -V)"
+  fi
+
+  RUL="$RUL -e \"s@^#\(export RUSTC_BOOTSTRAP=1\)@\1@\""
+  RUL="$RUL -e \"s@\(rust_sysroot_absolute=\)RUST_PATH@\1\x5c\x22$RUST_NEW_PATH\x5c\x22@\""
+  RUL="$RUL -e \"s@\(rustc_version=\)RUST_DASHV@\1\x5c\x22$RUST_VER\x5c\x22@\""
 fi
 
 
