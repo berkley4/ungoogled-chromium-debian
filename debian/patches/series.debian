@@ -90,6 +90,7 @@ various/fixes/revert-fix-linking-chromedriver.patch
 various/fixes/revert-fix-linking-content-shell.patch
 various/fixes/shim-fix-for-official-builds.patch
 various/fixes/silence-alsa-frames-log-msg.patch
+various/fixes/skia-allow-bundled-freetype-harfbuzz.patch
 various/fixes/unshrink-ui-font.patch
 various/fixes/xdg-basedir.patch
 various/launchpad/dont-collect-motherboard-metrics.patch
@@ -127,7 +128,6 @@ optional/cpu/avx.patch
 optional/disable/supervised-users.patch
 optional/fixes/extensions-in-tools-menu.patch
 #optional/fixes/opentype-svg-on-bundled-freetype.patch
-#optional/fixes/skia-allow-bundled-freetype.patch
 #optional/fixes/skia-gamma.patch
 optional/fixes/widevine/widevine-enable-version-string.patch
 optional/fixes/widevine/widevine-locations.patch
