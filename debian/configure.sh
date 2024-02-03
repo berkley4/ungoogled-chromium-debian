@@ -45,16 +45,14 @@ sanitise_op () {
 ## Default values ##
 ####################
 
+[ -n "$PGO" ] || PGO=1
+[ -n "$STABLE" ] || STABLE=0
 [ -n "$SYMBOLS" ] || SYMBOLS=0
 [ -n "$SYMBOLS_BLINK" ] || SYMBOLS_BLINK=0
 [ -n "$SYS_CLANG" ] || SYS_CLANG=0
 [ -n "$SYS_RUST" ] || SYS_RUST=0
 [ -n "$SYS_RUST_FORCE" ] || SYS_RUST_FORCE=0
-
-[ -n "$PGO" ] || PGO=1
-[ -n "$STABLE" ] || STABLE=0
 [ -n "$TARBALL" ] || TARBALL=0
-[ -n "$TRANSLATE" ] || TRANSLATE=1
 
 [ -n "$AES_PCLMUL" ] || AES_PCLMUL=1
 [ -n "$AVX" ] || AVX=1
@@ -78,19 +76,19 @@ sanitise_op () {
 [ -n "$OPENTYPE_SVG" ] || OPENTYPE_SVG=1
 [ -n "$OZONE_WAYLAND" ] || OZONE_WAYLAND=1
 [ -n "$PDF_JS" ] || PDF_JS=0
+[ -n "$PIPEWIRE" ] || PIPEWIRE=1
+[ -n "$PULSE" ] || PULSE=1
 [ -n "$POLICIES" ] || POLICIES=1
 [ -n "$PRINT_PREVIEW" ] || PRINT_PREVIEW=1
 [ -n "$QT" ] || QT=1
 [ -n "$SKIA_GAMMA" ] || SKIA_GAMMA=0
 [ -n "$SPEECH" ] || SPEECH=1
 [ -n "$SUPERVISED_USER" ] || SUPERVISED_USER=0
+[ -n "$TRANSLATE" ] || TRANSLATE=1
 [ -n "$VR" ] || VR=0
 [ -n "$WEBGPU" ] || WEBGPU=0
-[ -n "$WIDEVINE" ] || WIDEVINE=1
-
-[ -n "$PIPEWIRE" ] || PIPEWIRE=1
-[ -n "$PULSE" ] || PULSE=1
 [ -n "$VAAPI" ] || VAAPI=1
+[ -n "$WIDEVINE" ] || WIDEVINE=1
 
 [ -n "$SYS_FFMPEG" ] || SYS_FFMPEG=0
 [ -n "$SYS_ICU" ] || SYS_ICU=0

@@ -7,7 +7,18 @@ RELEASE		unstable
 VERSION		<version>	When unset the version is made via chromium_version.txt and
 				revision.txt from debian/submodules/ungoogled-chromium
 
-LTO_DIR		<dir>		Default iis <source root>/out/Release/thinlto-cache
+STABLE		0		By default an unstable version is built
+
+NON_FREE	1		Anyone distributing built debs should configure with NON_FREE=0
+				in order to comply with licencing laws. This variable will disable
+                                all bromite and vanadium patches, plus set SUPERVISED_USER=1 and
+                                force-enable SYS_OPENH264 if OPENH264 is enabled.
+
+SYMBOLS		0		symbol_level build flag: -1 = auto-set; 0 = none; 1 = minimal; 2 = regular
+SYMBOLS_BLINK	0		blink_symbol_level build flag: -1 = auto-set; 0 = minimal; 1 = medium; 2 = regular
+
+C_VER		<version>	Override the default clang version (for use with SYS_CLANG > 0)
+				The script default is hardcoded to that of the bundled copy
 
 SYS_CLANG	0		Use in-tree chromium clang/llvm binaries
 		1		Use a system clang package (eg from apt.llvm.org)
@@ -19,27 +30,17 @@ SYS_RUST	0		Use in-tree chromium rust binaries
 
 SYS_RUST_FORCE	0		This forces SYS_RUST=1 when your packaged version is roughly as new as upstream
 
-C_VER		<version>	Override the default clang version (for use with SYS_CLANG > 0)
-				The script default is hardcoded to that of the bundled copy
-
-SYMBOLS		0		symbol_level build flag: -1 = auto-set; 0 = none; 1 = minimal; 2 = regular
-SYMBOLS_BLINK	0		blink_symbol_level build flag: -1 = auto-set; 0 = minimal; 1 = medium; 2 = regular
+LTO_DIR		<dir>		Default iis <source root>/out/Release/thinlto-cache
 
 PGO		1		Enable/disable building with PGO profile optimisation
+
 POLICIES	1		Install /etc/chromium/policies/managed/policies.json
-STABLE		0		By default an unstable version is built
-
-NON_FREE	1		Anyone distributing built debs should configure with NON_FREE=0
-				in order to comply with licencing laws. This variable will disable
-                                all bromite and vanadium patches, plus set SUPERVISED_USER=1 and
-                                force-enable SYS_OPENH264 if OPENH264 is enabled.
-
-TARBALL		0		Use tarball download instead of git
-DL_CACHE	<dir>		Default is ../download_cache (relative to root of source tree)
-				Active when TARBALL=1.
 
 X11_ONLY	0		When enabled is an alias for OZONE_WAYLAND=0
 				Wayland users can also enable (the ozone wayland platform is experimental)
+
+TARBALL		0		Use tarball download instead of git
+DL_CACHE	<dir>		Default is ../download_cache (one level up from source tree; active when TARBALL=1)
 
 ## Components/features that can be enabled/disabled exclusively via patches
 
