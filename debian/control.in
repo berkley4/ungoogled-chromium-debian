@@ -53,6 +53,7 @@ Build-Depends:
 #libavformat-dev,
  libdav1d-dev,
  libfontconfig-dev,
+ libharfbuzz-dev,
  libicu-dev (>= 73),
  libxslt1-dev
 

@@ -109,6 +109,9 @@ GN_FLAGS +=                                     \
 # Disable feed v2
 #GN_FLAGS += enable_feed_v2=false
 
+# Enable harfbuzz
+GN_FLAGS += use_system_harfbuzz=true
+
 # Disable media remoting
 #GN_FLAGS += enable_media_remoting=false enable_media_remoting_rpc=false
 
@@ -182,13 +185,12 @@ GN_FLAGS += v8_enable_wasm_simd256_revec=true
 # libstdc++ issue : crc32c, flatbuffers, highway, libyuv
 #                   jsoncpp, re2, snappy and woff2
 #
-# Extra work      : ffmpeg (problematic too)
-# Problematic     : harfbuzz-ng, libvpx
+# Problematic     : ffmpeg, libvpx
 #
 # Interdependent  : libxslt depends on libxml; libxml depends on icu
 #                   libavif depends on libaom and dav1d
 #                   libaom depends on libyuv (see compile issues above)
-#                   fontconfig depends on freetype
+#                   fontconfig/harfbuzz depend on freetype
 #                   freetype depends on brotli and libpng
 #                   libtiff depends on libwebp
 #
@@ -218,10 +220,10 @@ SYS_LIBS :=               \
 # suited to automatically deal with any of the dependency issues
 
 
-# Enable dav1d (debian testing/unstable or equivalent)
+# Enable dav1d (debian testing/unstable)
 SYS_LIBS += dav1d
 
-# Enable libjpeg (the debs will not be installable on both debian and unbuntu)
+# Enable libjpeg (debs won't be installable on both debian and unbuntu)
 SYS_LIBS += libjpeg
 
 # Enable openh264
@@ -240,7 +242,10 @@ SYS_LIBS += icu libxml libxslt
 SYS_LIBS += libwebp
 GN_FLAGS += use_system_libtiff=true
 
-# Enable freetype (a dependency of fontconfig)
+# Enable harfbuzz (freetype is a dependency)
+SYS_LIBS += harfbuzz-ng
+
+# Enable fontconfig and dependencies
 SYS_LIBS += fontconfig freetype brotli libpng
 
 # Enable if either of fontconfig or freetype above are not enabled

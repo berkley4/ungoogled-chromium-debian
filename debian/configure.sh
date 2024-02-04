@@ -15,6 +15,7 @@ MTUNE_SET=0
 POLLY_EXT_SET=0
 RELEASE_SET=0
 SYS_FREETYPE_SET=0
+SYS_HARFBUZZ_SET=0
 XZ_THREADED_SET=0
 
 # ${example%/*} = $(dirname example)
@@ -95,8 +96,11 @@ sanitise_op () {
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
 
 
-## Allow freetype setting to be force-enabled (for stable builds)
+## Allow freetype to be force-enabled (for stable builds)
 [ -n "$SYS_FREETYPE" ] && SYS_FREETYPE_SET=1 || SYS_FREETYPE=1
+
+## Allow harfbuzz to be force-enabled (for stable builds)
+[ -n "$SYS_HARFBUZZ" ] && SYS_HARFBUZZ_SET=1 || SYS_HARFBUZZ=1
 
 ## OpenH254 support
 [ -n "$OPENH264" ] && [ $OPENH264 -eq 0 ] && SYS_OPENH264=0 || OPENH264=1
@@ -795,6 +799,15 @@ if [ $STABLE -eq 1 ]; then
   # Disable by default if not force-enabled
   [ $SYS_FREETYPE_SET -eq 1 ] && [ $SYS_FREETYPE -eq 1 ] || SYS_FREETYPE=0
 
+  # harfbuzz and freetpye need brotli 1.1 (see d/rules for dependency chain info)
+  if [ $SYS_HARFBUZZ_SET -eq 1 ] && [ $SYS_HARFBUZZ -eq 1 ]; then
+    # Force-enable freetype if harfbuzz has been force-enabled
+    SYS_FREETYPE=1
+  else
+    # Disable harfbuzz by default on stable
+    SYS_HARFBUZZ=0
+  fi
+
   if [ $SYS_FREETYPE -eq 0 ]; then
     op_enable="$op_enable fixes/freetype-COLRV1"
   fi
@@ -821,6 +834,12 @@ if [ $SYS_FREETYPE -eq 0 ]; then
 
   ## System libpng must be enabled separately when SYS_FREETYPE=0
   sys_enable="$sys_enable libpng"
+fi
+
+
+if [ $SYS_HARFBUZZ -eq 0 ]; then
+  sys_disable="$sys_disable harfbuzz-ng"
+  deps_disable="$deps_disable libharfbuzz"
 fi
 
 
