@@ -61,7 +61,6 @@ Architecture: i386 amd64 arm64 armhf
 Depends:
  ${misc:Depends},
  ${shlibs:Depends},
-#libgomp1,
  libgtk-3-0,
  xdg-utils,
 Recommends:
