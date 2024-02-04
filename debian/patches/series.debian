@@ -99,6 +99,7 @@ various/system/minizip.patch
 various/system/perfetto-system-zlib.patch
 various/system/xdg-scripts.patch
 various/system/zlib.patch
+various/system/zstd.patch
 various/upstream/0001-RaceNetworkRequest-is-triggered-only-when-the-scheme-is-HTTP-or-HTTPS.patch
 various/upstream/0002-c39bb52.diff
 various/upstream/0003-446d33d.diff

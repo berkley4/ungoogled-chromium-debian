@@ -46,6 +46,7 @@ Build-Depends:
  libpulse-dev,
  libsecret-1-dev,
  libusb-1.0-0-dev,
+ libzstd-dev,
  libva-dev,
  qtbase5-dev,
 #libavutil-dev,

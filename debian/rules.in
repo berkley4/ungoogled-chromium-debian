@@ -214,7 +214,8 @@ SYS_LIBS :=               \
         libusb            \
         libXNVCtrl        \
         opus              \
-        zlib
+        zlib              \
+        zstd
 
 # The below is best configured via debian/configure.sh, ehich is better
 # suited to automatically deal with any of the dependency issues
