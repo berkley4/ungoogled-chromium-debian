@@ -32,10 +32,6 @@ PRUNE_PATCH=$DEBIAN/misc_patches/no-exit-if-pruned.patch
 
 TRANSLATE_FILE=debian/etc/chromium.d/google-translate
 
-real_dir_path () (
-  OLDPWD=- CDPATH= cd -P -- $1 && pwd
-)
-
 sanitise_op () {
   printf '%s\n' "Unnecessary optional prefix: $i"
   i=$(echo $i | sed 's@^optional/@@')
@@ -306,16 +302,9 @@ case $SYMBOLS_BLINK in
 esac
 
 
-## Set path to PGO profile
-if [ $PGO -eq 0 ]; then
-  # Machine function splitting relies on PGO being enabled
-  MF_SPLIT=0
-else
-  if [ $TEST -eq 0 ]; then
-    read PGO_PROF < $RT_DIR/chrome/build/linux.pgo.txt
-    PGO_PATH=$(real_dir_path $RT_DIR/chrome/build/pgo_profiles)/$PGO_PROF
-  fi
-fi
+
+# Machine function splitting relies on PGO being enabled
+[ $PGO -eq 1 ] || MF_SPLIT=0
 
 
 
@@ -874,6 +863,11 @@ DSB="$DSB -e \"/^tools\/clang\//d\""
 ## Pruning/Submodule flags
 PRU="$PRU -e \"/^third_party\/depot_tools/d\""
 
+if [ $PGO -eq 1 ]; then
+  PRU="$PRU -e \"/^chrome\/build\/pgo_profiles/d\""
+  SMF="$SMF -e \"/^chrome_pgo_phase/d\""
+fi
+
 SMF="$SMF -e \"/^enable_hangout_services_extension/d\""
 SMF="$SMF -e \"/^enable_nacl/d\""
 SMF="$SMF -e \"/^enable_service_discovery/d\""
@@ -881,13 +875,6 @@ SMF="$SMF -e \"/^exclude_unwind_tables/d\""
 SMF="$SMF -e \"/^google_api_key/d\""
 SMF="$SMF -e \"/^google_default_client_id/d\""
 SMF="$SMF -e \"/^google_default_client_secret/d\""
-
-if [ $PGO -eq 1 ]; then
-  PRU="$PRU -e \"/^chrome\/build\/pgo_profiles/d\""
-
-  SMF="$SMF -e \"/^chrome_pgo_phase/d\""
-  SMF="$SMF -e \"$ a\pgo_data_path=\x22$PGO_PATH\x22\""
-fi
 
 
 
