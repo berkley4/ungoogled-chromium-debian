@@ -58,6 +58,12 @@ The hardware on this system lacks support for the sse3 instruction set.
 The upstream chromium project no longer supports this configuration.
 For more information, please go to https://crbug.com/1123353."
 
+case $USER in
+  root)
+    output_error "Run this script as an unprivileged user"
+    exit 1 ;;
+esac
+
 case $(uname -m) in
   i386|i586|i686|x86_64)
     # Check whether this system supports SSE3 (or PNI)

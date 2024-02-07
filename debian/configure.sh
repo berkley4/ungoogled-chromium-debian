@@ -1,6 +1,13 @@
 #!/bin/sh
 set -e
 
+case $USER in
+  root)
+    printf '%s\n' "Run this script as an unprivileged user"
+    exit 1 ;;
+esac
+
+
 arch_patches=
 
 deps_disable=; deps_enable=
