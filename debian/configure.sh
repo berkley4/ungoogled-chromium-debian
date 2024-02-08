@@ -29,6 +29,8 @@ XZ_THREADED_SET=0
 DEBIAN=${0%/*}
 RT_DIR=${DEBIAN%/*}
 
+OP_DIR=$DEBIAN/patches/optional
+
 UC_DIR=$DEBIAN/submodules/ungoogled-chromium
 UC_PATCH_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 
@@ -209,9 +211,9 @@ esac
 
 
 
-##########################################
-##  Test mode | Clang versioning | LTO  ##
-##########################################
+#####################################################
+## Test mode | Clang versioning | LTO | Skia Gamma ##
+#####################################################
 
 ## Enter test mode if $RT_DIR/third_party does not exist
 [ -d $RT_DIR/third_party ] && TEST=0 || TEST=1
@@ -229,6 +231,7 @@ if [ $C_VER_SET -eq 1 ] && [ $C_VER -lt $CC_VER ]; then
 fi
 
 
+
 ## Set LTO cache directory and number of LTO jobs
 if [ -n "$LTO_DIR" ]; then
   if [ ! -d $LTO_DIR ] && [ $TEST -eq 0 ]; then
@@ -239,7 +242,7 @@ if [ -n "$LTO_DIR" ]; then
   op_enable="$op_enable thinlto-cache-location"
 
   sed -e "s@^\(+.*thinlto-cache-dir=\)[-_a-zA-Z0-9/]*@\1$LTO_DIR@" \
-      -i $DEBIAN/patches/optional/thinlto-cache-location.patch
+      -i $OP_DIR/thinlto-cache-location.patch
 fi
 
 case $LTO_JOBS in
@@ -249,9 +252,31 @@ case $LTO_JOBS in
     case $LTO_JOBS in
       [2-9]|[1-9][0-9])
         sed "s@\(thinlto-jobs=\)1@\1$LTO_JOBS@" \
-          -i $DEBIAN/patches/optional/thinlto-jobs.patch
+          -i $OP_DIR/thinlto-jobs.patch
         ;;
     esac
+    ;;
+esac
+
+
+
+# Range is 1.0 to 3.0. Make 2 and 3 become 2.0 and 3.0.
+case $SKIA_GAMMA in
+  [23])
+    # Ensure skia gamma values have one decimal place
+    SKIA_GAMMA=${SKIA_GAMMA}.0 ;;
+esac
+
+# A value of 1 (not 1.0) just enables the patch
+case $SKIA_GAMMA in
+  1|[12].[0-9]|3.0)
+    case $SKIA_GAMMA in
+      [12].[0-9]|3.0)
+        sed "s@2\.2@$SKIA_GAMMA@" -i $OP_DIR/fixes/skia-gamma.patch
+        ;;
+    esac
+
+    op_enable="$op_enable skia-gamma"
     ;;
 esac
 
@@ -331,7 +356,7 @@ else
   op_enable="$op_enable system/clang/clang-version-check"
   op_enable="$op_enable system/clang/rust-clanglib-local"
 
-  CL_PATCH=$DEBIAN/patches/optional/system/clang/rust-clanglib-local.patch
+  CL_PATCH=$OP_DIR/system/clang/rust-clanglib-local.patch
 
   if [ $SYS_CLANG -eq 1 ]; then
     # Path to libclang_rt.builtins.a
@@ -504,7 +529,7 @@ if [ -n "$arch_patches" ]; then
   for i in $arch_patches; do
     sed -e "s@\(march=\)[-a-z0-9]*@\1$MARCH@" \
         -e "s@\(mtune=\)[-a-z0-9]*@\1$MTUNE@" \
-        -i $DEBIAN/patches/optional/cpu/$i.patch
+        -i $OP_DIR/cpu/$i.patch
   done
 fi
 
@@ -650,11 +675,6 @@ fi
 if [ $PRINT_PREVIEW -eq 0 ]; then
   # GN_FLAGS += enable_print_preview=false enable_oop_printing=false
   gn_enable="$gn_enable enable_print_preview"
-fi
-
-
-if [ $SKIA_GAMMA -eq 1 ]; then
-  op_enable="$op_enable skia-gamma"
 fi
 
 

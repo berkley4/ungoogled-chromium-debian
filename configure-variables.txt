@@ -36,6 +36,10 @@ PGO		1		Enable/disable building with PGO profile optimisation
 
 POLICIES	1		Install /etc/chromium/policies/managed/policies.json
 
+SKIA_GAMMA	0		Set the gamma value for text blitting
+				Set to 1 to set a gamma value of 2.2
+				Set within the range 1.0 - 3.0 (always give one decimal place) for other values
+
 X11_ONLY	0		When enabled is an alias for OZONE_WAYLAND=0
 				Wayland users can also enable (the ozone wayland platform is experimental)
 
@@ -47,7 +51,6 @@ DL_CACHE	<dir>		Default is ../download_cache (one level up from source tree; act
 ATK_DBUS	1		Accessibility/D-Bus support (d-bus is only used for bluetooth)
 CATAPULT	1		Catapult profiling support
 OAUTH2		0		Enable OAuth 2.0 client switches
-SKIA_GAMMA	0		Use a gamma value of 2.2 for text blitting
 SUPERVISED_USER	0		Parental control related component (relies on a bromite patch)
 TRANSLATE	1		Google translate support
 				0 - disable
