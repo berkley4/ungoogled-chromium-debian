@@ -66,7 +66,7 @@ sanitise_op () {
 [ -n "$RTC_AVX2" ] || RTC_AVX2=1
 [ -n "$V8_AVX2" ] || V8_AVX2=1
 
-[ -n "$INTEL_CET" ] || INTEL_CET=1
+[ -n "$INTEL_CET" ] || INTEL_CET=0
 [ -n "$MF_SPLIT" ] || MF_SPLIT=1
 
 [ -n "$ATK_DBUS" ] || ATK_DBUS=1
@@ -481,8 +481,8 @@ fi
 ## CPU architecture/instructions and optimisations ##
 #####################################################
 
-if [ $INTEL_CET -eq 0 ]; then
-  op_disable="$op_disable cpu/intel-control-flow-enforcement"
+if [ $INTEL_CET -eq 1 ]; then
+  op_enable="$op_enable cpu/intel-cet/"
 fi
 
 if [ $MF_SPLIT -eq 0 ]; then

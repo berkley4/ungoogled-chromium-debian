@@ -1,0 +1,17 @@
+--- a/v8/src/builtins/x64/builtins-x64.cc
++++ b/v8/src/builtins/x64/builtins-x64.cc
+@@ -4238,14 +4238,12 @@
+     __ CallCFunction(find_handler, 3);
+   }
+ 
+-#ifdef V8_ENABLE_CET_SHADOW_STACK
+   // Drop frames from the shadow stack.
+   ER num_frames_above_pending_handler_address = ER::Create(
+       IsolateAddressId::kNumFramesAbovePendingHandlerAddress, masm->isolate());
+   __ movq(rcx, masm->ExternalReferenceAsOperand(
+                    num_frames_above_pending_handler_address));
+   __ IncsspqIfSupported(rcx, kScratchRegister);
+-#endif  // V8_ENABLE_CET_SHADOW_STACK
+ 
+   // Retrieve the handler context, SP and FP.
+   __ movq(rsi,

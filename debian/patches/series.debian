@@ -115,12 +115,13 @@ optional/polly-extra.patch
 #optional/thinlto-cache-location.patch
 #optional/thinlto-jobs.patch
 #optional/use-oauth2-client-switches-as-default.patch
-optional/cpu/intel-control-flow-enforcement.patch
 optional/cpu/aes-pclmul.patch
 optional/cpu/march.patch
 optional/cpu/mtune.patch
 optional/cpu/avx.patch
 #optional/cpu/avx2.patch
+#optional/cpu/intel-cet/intel-control-flow-enforcement.patch
+#optional/cpu/intel-cet/intel-cet-v8-drop-frames.patch
 #optional/disable/atk-dbus.patch
 #optional/disable/catapult.patch
 #optional/disable/click-to-call.patch
