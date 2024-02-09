@@ -12,7 +12,7 @@
    skia_use_system_freetype2 =
        (is_official_build || !(is_android || sanitize == "MSAN")) &&
 -      !is_fuchsia && !is_wasm
-+      use_system_freetype !is_fuchsia && !is_wasm
++      use_system_freetype && !is_fuchsia && !is_wasm
    skia_system_freetype2_include_path = "/usr/include/freetype2"
    skia_system_freetype2_lib = "freetype"
  
