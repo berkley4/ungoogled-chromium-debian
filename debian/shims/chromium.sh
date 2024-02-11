@@ -28,8 +28,10 @@ want_temp=0
 APP_NAME=chromium
 BIN_NAME=chrome
 
-GDB=/usr/bin/gdb
 LIBDIR=/usr/lib/$APP_NAME
+CHROMIUM=$LIBDIR/$BIN_NAME
+
+GDB=/usr/bin/gdb
 
 output_error() {
   case "$DISPLAY" in
@@ -157,12 +159,12 @@ if [ $want_debug -eq 1 ]; then
   echo "#                PATH=$PATH"
   echo "#            GTK_PATH=$GTK_PATH"
   echo "#      CHROMIUM_FLAGS=$CHROMIUM_FLAGS"
-  echo "$GDB $LIBDIR/$BINNAME -x $tmpfile"
-  $GDB "$LIBDIR/$BINNAME" -x $tmpfile
+  echo "$GDB $CHROMIUM -x $tmpfile"
+  $GDB "$CHROMIUM" -x $tmpfile
 else
   # Use exec here as we will have no $TEMP_PROFILE to later delete
-  [ $want_temp -eq 1 ] || exec $LIBDIR/$BINNAME $CHROMIUM_FLAGS "$@"
-  $LIBDIR/$BINNAME $CHROMIUM_FLAGS "$@"
+  [ $want_temp -eq 1 ] || exec $CHROMIUM $CHROMIUM_FLAGS "$@"
+  $CHROMIUM $CHROMIUM_FLAGS "$@"
 fi
 
 [ $want_temp -eq 0 ] || rm -rf $TEMP_PROFILE
