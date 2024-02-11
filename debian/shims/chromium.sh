@@ -145,13 +145,12 @@ if [ $want_debug -eq 1 ] && [ ! -x $GDB ]; then
 fi
 
 if [ $want_temp -eq 1 ]; then
-  TEMP_PROFILE=$(mktemp -d)
+  TEMP_PROFILE=$(mktemp -d) && echo "Temporary profile: $TEMP_PROFILE" || exit 1
   CHROMIUM_FLAGS="$CHROMIUM_FLAGS --user-data-dir=$TEMP_PROFILE"
-  echo "Using temporary profile: $TEMP_PROFILE"
 fi
 
 if [ $want_debug -eq 1 ]; then
-  tmpfile=$(mktemp /tmp/chromiumargs.XXXXXX) || { echo "Cannot create temporary file" >&2; exit 1; }
+  tmpfile=$(mktemp /tmp/chromiumargs.XXXXXX 2>/dev/null) || exit 1
   trap " [ -f \"$tmpfile\" ] && /bin/rm -f -- \"$tmpfile\"" 0 1 2 3 13 15
   echo "set args $CHROMIUM_FLAGS --single-process ${1+"$@"}" > $tmpfile
   echo "# Env:"
@@ -162,9 +161,8 @@ if [ $want_debug -eq 1 ]; then
   echo "$GDB $CHROMIUM -x $tmpfile"
   $GDB "$CHROMIUM" -x $tmpfile
 else
-  # Use exec here as we will have no $TEMP_PROFILE to later delete
-  [ $want_temp -eq 1 ] || exec $CHROMIUM $CHROMIUM_FLAGS "$@"
-  $CHROMIUM $CHROMIUM_FLAGS "$@"
+  # Only use exec if we have no $TEMP_PROFILE to later delete
+  [ $want_temp -eq 0 ] && exec $CHROMIUM $CHROMIUM_FLAGS "$@" || $CHROMIUM $CHROMIUM_FLAGS "$@"
 fi
 
 [ $want_temp -eq 0 ] || rm -rf $TEMP_PROFILE
