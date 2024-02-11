@@ -44,7 +44,7 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=AllowQt"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-sharing-hub"
 
 # Hide the side panel button
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --hide-sidepanel-button"
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --hide-sidepanel-button"
 
 # Hide tab close buttons
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --hide-tab-close-buttons"
