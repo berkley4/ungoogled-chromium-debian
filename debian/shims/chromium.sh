@@ -22,11 +22,14 @@
 #export MESA_GLSL_CACHE_DISABLE=true
 #export MESA_SHADER_CACHE_DISABLE=true
 
-APPNAME=chromium
-BINNAME=chrome
+want_debug=0
+want_temp=0
+
+APP_NAME=chromium
+BIN_NAME=chrome
 
 GDB=/usr/bin/gdb
-LIBDIR=/usr/lib/$APPNAME
+LIBDIR=/usr/lib/$APP_NAME
 
 output_error() {
   case "$DISPLAY" in
@@ -38,8 +41,8 @@ output_error() {
   esac
 }
 
-usage () {
-  echo "$APPNAME [-h|--help] [-g|--debug] [--temp-profile] [options] [URL]"
+usage() {
+  echo "$APP_NAME [-h|--help] [-g|--debug] [--temp-profile] [options] [URL]"
   echo
   echo "        -g or --debug              Start within $GDB"
   echo "        -h or --help               This help screen"
@@ -73,6 +76,7 @@ case $(uname -m) in
     fi ;;
 esac
 
+
 # Source additional settings
 for file in /etc/chromium.d/*; do
   case $file in
@@ -85,16 +89,18 @@ done
 # Use the /usr/bin helper script for generated launchers
 case "$CHROME_WRAPPER" in
   "")
-    export CHROME_WRAPPER="/usr/bin/$APPNAME" ;;
+    export CHROME_WRAPPER="/usr/bin/$APP_NAME" ;;
 esac
 
 # Set the correct file name for the desktop file
 export CHROME_DESKTOP="chromium.desktop"
 
+
 # Set CHROME_VERSION_EXTRA text, which is displayed in the About dialog
 DIST=$(print_dist)
 BUILD_DIST="@BUILD_DIST@"
 export CHROME_VERSION_EXTRA="built on $BUILD_DIST, running on $DIST"
+
 
 # Add LIBDIR to LD_LIBRARY_PATH to load libffmpeg.so (if built as a component)
 case "${LD_LIBRARY_PATH:+nonempty}" in
@@ -107,8 +113,7 @@ esac
 
 export LD_LIBRARY_PATH
 
-want_debug=0
-want_temp_profile=0
+
 while [ $# -gt 0 ]; do
   case "$1" in
     -h | --help | -help )
@@ -118,7 +123,7 @@ while [ $# -gt 0 ]; do
       want_debug=1
       shift ;;
     --temp-profile )
-      want_temp_profile=1
+      want_temp=1
       shift ;;
     --enable-remote-extensions )
       CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-remote-extensions"
@@ -131,12 +136,13 @@ while [ $# -gt 0 ]; do
   esac
 done
 
+
 if [ $want_debug -eq 1 ] && [ ! -x $GDB ]; then
   echo "Sorry, can't find usable $GDB. Please install it."
   exit 1
 fi
 
-if [ $want_temp_profile -eq 1 ]; then
+if [ $want_temp -eq 1 ]; then
   TEMP_PROFILE=$(mktemp -d)
   CHROMIUM_FLAGS="$CHROMIUM_FLAGS --user-data-dir=$TEMP_PROFILE"
   echo "Using temporary profile: $TEMP_PROFILE"
@@ -155,10 +161,11 @@ if [ $want_debug -eq 1 ]; then
   $GDB "$LIBDIR/$BINNAME" -x $tmpfile
 else
   # Use exec here as we will have no $TEMP_PROFILE to later delete
-  [ $want_temp_profile -eq 1 ] || exec $LIBDIR/$BINNAME $CHROMIUM_FLAGS "$@"
+  [ $want_temp -eq 1 ] || exec $LIBDIR/$BINNAME $CHROMIUM_FLAGS "$@"
   $LIBDIR/$BINNAME $CHROMIUM_FLAGS "$@"
 fi
 
-[ $want_temp_profile -eq 0 ] || rm -rf $TEMP_PROFILE
+[ $want_temp -eq 0 ] || rm -rf $TEMP_PROFILE
+
 
 exit $?
