@@ -107,6 +107,7 @@ various/upstream/0004-838b931.diff
 various/upstream/0005-63a8936.diff
 various/upstream/0006-f20cde03.diff
 various/upstream/0007-9c5c8ca.diff
+various/upstream/0008-00d4a11.diff
 
 optional/machine-function-splitting.patch
 optional/mutex-priority-inheritance.patch

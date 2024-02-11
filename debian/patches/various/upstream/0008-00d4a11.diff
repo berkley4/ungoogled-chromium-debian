@@ -1,0 +1,79 @@
+From 00d4a1121cd9c183fc111937f9334a0f35f6dc78 Mon Sep 17 00:00:00 2001
+From: Marshall Greenblatt <marshall@chromium.org>
+Date: Tue, 12 Dec 2023 19:35:28 +0000
+Subject: [PATCH] linux: Fix crash after x11::Connection destruction
+
+Reset the WindowEventManager in ~Connection so that ~WindowEventManager
+doesn't try to access the already-deleted Connection object.
+
+BUG=1510935
+
+Change-Id: I4bfcd565e7a01ce2c8e16d05eeb685634ada10f3
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5115482
+Commit-Queue: Marshall Greenblatt <marshall@chromium.org>
+Reviewed-by: Thomas Anderson <thomasanderson@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1236508}
+---
+
+--- a/ui/gfx/x/connection.cc
++++ b/ui/gfx/x/connection.cc
+@@ -183,6 +183,7 @@
+ Connection::~Connection() {
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+ 
++  window_event_manager_.Reset();
+   platform_event_source.reset();
+ }
+ 
+--- a/ui/gfx/x/window_event_manager.cc
++++ b/ui/gfx/x/window_event_manager.cc
+@@ -113,10 +113,18 @@
+     : connection_(connection) {}
+ 
+ WindowEventManager::~WindowEventManager() {
++  Reset();
++}
++
++void WindowEventManager::Reset() {
++  if (!connection_) {
++    return;
++  }
+   // Clear events still requested by not-yet-deleted ScopedEventSelectors.
+   for (const auto& mask_pair : mask_map_) {
+     SetEventMask(connection_, mask_pair.first, EventMask::NoEvent);
+   }
++  connection_ = nullptr;
+ }
+ 
+ void WindowEventManager::SelectEvents(Window window, EventMask event_mask) {
+@@ -143,7 +151,9 @@
+     return;
+   }
+ 
+-  SetEventMask(connection_, window, new_mask);
++  if (connection_) {
++    SetEventMask(connection_, window, new_mask);
++  }
+ 
+   if (new_mask == EventMask::NoEvent) {
+     mask_map_.erase(window);
+--- a/ui/gfx/x/window_event_manager.h
++++ b/ui/gfx/x/window_event_manager.h
+@@ -53,6 +53,8 @@
+ 
+   ~WindowEventManager();
+ 
++  void Reset();
++
+  private:
+   friend class ScopedEventSelector;
+ 
+@@ -70,7 +72,7 @@
+   // necessary.
+   void AfterMaskChanged(Window window, EventMask old_mask);
+ 
+-  const raw_ptr<Connection> connection_;
++  raw_ptr<Connection> connection_;
+ 
+   std::map<Window, std::unique_ptr<MultiMask>> mask_map_;
+ };
