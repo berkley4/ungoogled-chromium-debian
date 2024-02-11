@@ -68,6 +68,7 @@ Depends:
 Recommends:
  libgles2,
  ungoogled-chromium-sandbox,
+ gxmessage | x11-utils,
 Suggests:
  ungoogled-chromium-l10n,
  ungoogled-chromium-driver,
