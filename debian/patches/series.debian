@@ -59,6 +59,7 @@ vanadinite/0012-enable-partitioning-connections-by-default.patch
 vanadinite/0013-disable-component-updater-pings-by-default.patch
 vanadinite/0014-Enable-strict-origin-isolation-by-default.patch
 vanadinite/0015-enable-process-isolated-sandboxed-iframes-by-default.patch
+vanadinite/0016-enable-partitioning-third-party-storage.patch
 
 various/fix-unbundle-script-dh-clean-interoperabilty.patch
 various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch

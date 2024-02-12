@@ -1,0 +1,31 @@
+--- a/third_party/blink/common/features.cc
++++ b/third_party/blink/common/features.cc
+@@ -674,7 +674,7 @@ BASE_FEATURE(kDiscardInputEventsToRecentlyMovedFrames,
+ 
+ BASE_FEATURE(kDisableThirdPartyStoragePartitioningDeprecationTrial,
+              "DisableThirdPartyStoragePartitioningDeprecationTrial",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             base::FEATURE_DISABLED_BY_DEFAULT);
+ 
+ // When enabled, the beforeunload handler is dispatched when a frame is frozen.
+ // This allows the browser to know whether discarding the frame could result in
+--- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
++++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
+@@ -1374,7 +1374,7 @@
+       origin_trial_feature_name: "DisableThirdPartySessionStoragePartitioningAfterGeneralPartitioning",
+       origin_trial_type: "deprecation",
+       origin_trial_allows_insecure: true,
+-      status: "experimental",
++      origin_trial_os: ["linux"],
+       base_feature: "none",
+     },
+     // This feature will represent the deprecation trial that allows first
+@@ -1386,9 +1386,9 @@
+       origin_trial_type: "deprecation",
+       origin_trial_allows_insecure: true,
+       origin_trial_allows_third_party: true,
+-      status: "experimental",
++      origin_trial_os: ["linux"],
+       base_feature: "none",
+       browser_process_read_write_access: true,
+     },
