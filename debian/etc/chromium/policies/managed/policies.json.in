@@ -1,5 +1,6 @@
 {
   "AdditionalDnsQueryTypesEnabled": true,
+  "AlternateErrorPagesEnabled": false,
   "AudioCaptureAllowed": true,
   "BackgroundModeEnabled": false,
   "BlockExternalExtensions": true,
