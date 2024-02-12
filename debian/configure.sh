@@ -824,8 +824,8 @@ if [ $STABLE -eq 1 ]; then
     SYS_HARFBUZZ=0
   fi
 
-  if [ $SYS_FREETYPE -eq 0 ]; then
-    op_enable="$op_enable fixes/freetype-COLRV1"
+  if [ $SYS_FREETYPE -eq 1 ]; then
+    op_enable="$op_enable system/freetype-COLRV1"
   fi
 
   op_disable="$op_disable system/unstable/dav1d/"
