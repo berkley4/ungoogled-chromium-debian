@@ -95,6 +95,7 @@ various/fixes/xdg-basedir.patch
 various/launchpad/dont-collect-motherboard-metrics.patch
 various/system/libdrm.patch
 various/system/libusb-api.patch
+various/system/libxml2.patch
 various/system/minizip.patch
 various/system/perfetto-system-zlib.patch
 various/system/xdg-scripts.patch
@@ -141,7 +142,6 @@ optional/opentype-svg/0001-m121-OT-SVG-hook.patch
 optional/opentype-svg/0002-m121-use-FreeType-for-non-Linux-OT-SVG-support.patch
 #optional/system/freetype-COLRV1.patch
 optional/system/jpeg.patch
-optional/system/libxml2.patch
 optional/system/openh264.patch
 #optional/system/rust.patch
 #optional/system/clang/clang-version-check.patch
