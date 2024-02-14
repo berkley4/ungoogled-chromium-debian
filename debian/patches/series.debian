@@ -23,6 +23,7 @@ cromite/00Disable-csp-reports.patch
 cromite/AudioBuffer-AnalyserNode-fp-mitigations.patch
 cromite/Partition-Blink-memory-cache.patch
 cromite/Partition-blobs-by-top-frame-URL.patch
+cromite/Partition-HSTS-cache-by-NAK.patch
 cromite/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
 cromite/Remove-navigator.connection-info.patch
 
