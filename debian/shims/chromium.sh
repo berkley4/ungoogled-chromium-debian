@@ -159,7 +159,7 @@ if [ $want_temp -eq 1 ]; then
 fi
 
 if [ $want_debug -eq 1 ]; then
-  tmpfile=$(mktemp /tmp/chromiumargs.XXXXXX 2>/dev/null) || exit 1
+  tmpfile=$(mktemp /tmp/chromiumargs.XXXXXX) || exit 1
   trap " [ -f \"$tmpfile\" ] && /bin/rm -f -- \"$tmpfile\"" 0 1 2 3 13 15
   echo "set args $CHROMIUM_FLAGS --single-process ${1+"$@"}" > $tmpfile
   echo "# Env:"
