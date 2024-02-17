@@ -154,11 +154,8 @@ GN_FLAGS += enable_supervised_users=false
 # Disable virtual reality features
 GN_FLAGS += enable_vr=false
 
-# Enable WebGPU
-#GN_FLAGS += skia_use_dawn=true
-
 # Disable WebGPU
-GN_FLAGS += use_dawn=false
+GN_FLAGS += use_dawn=false skia_use_dawn=false
 
 # Disable zstd
 GN_FLAGS += disable_zstd_filter=true

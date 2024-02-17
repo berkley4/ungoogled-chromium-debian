@@ -715,7 +715,10 @@ fi
 
 
 if [ $WEBGPU -eq 1 ]; then
-  gn_enable="$gn_enable skia_use_dawn"
+  # GN_FLAGS += use_dawn=false skia_use_dawn=false
+  gn_disable="$gn_disable use_dawn"
+
+  sed 's@^#\(.*enable-unsafe-webgpu\)@\1@' -i $DEBIAN/etc/chromium.d/gpu-options
 fi
 
 
