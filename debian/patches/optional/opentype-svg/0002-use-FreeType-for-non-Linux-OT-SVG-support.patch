@@ -1,9 +1,9 @@
-From c1d77cdc1fdd471763e23e86a80c630d5685ed2a Mon Sep 17 00:00:00 2001
+From 440fe1247e52231b5691b026b0efaea0c0eeef09 Mon Sep 17 00:00:00 2001
 From: Hin-Tak Leung <htl10@users.sourceforge.net>
 Date: Wed, 10 Jan 2024 21:06:55 +0000
-Subject: [PATCH 2/2] m121 use FreeType for non-Linux OT-SVG support
+Subject: [PATCH 2/2] m122 use FreeType for non-Linux OT-SVG support
 
-Ported onto 121.0.6167.51
+Adjusted for 122.0.6236.0
 
 Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
 ---

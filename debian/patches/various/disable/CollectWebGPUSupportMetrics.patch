@@ -1,6 +1,6 @@
 --- a/gpu/config/gpu_info_collector.cc
 +++ b/gpu/config/gpu_info_collector.cc
-@@ -365,7 +365,7 @@
+@@ -367,7 +367,7 @@
  #if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_LINUX)
                        base::FEATURE_DISABLED_BY_DEFAULT);
  #else

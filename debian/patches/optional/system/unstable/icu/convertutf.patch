@@ -185,7 +185,7 @@ author: Michael Gilbert <mgilbert@debian.org>
  
 --- a/third_party/breakpad/BUILD.gn
 +++ b/third_party/breakpad/BUILD.gn
-@@ -610,8 +610,6 @@
+@@ -618,8 +618,6 @@
        "breakpad/src/client/minidump_file_writer-inl.h",
        "breakpad/src/client/minidump_file_writer.cc",
        "breakpad/src/client/minidump_file_writer.h",
@@ -194,7 +194,7 @@ author: Michael Gilbert <mgilbert@debian.org>
        "breakpad/src/common/linux/breakpad_getcontext.S",
        "breakpad/src/common/linux/elf_core_dump.cc",
        "breakpad/src/common/linux/elf_core_dump.h",
-@@ -657,6 +655,7 @@
+@@ -665,6 +663,7 @@
        "breakpad/src",
        "breakpad/src/client",
        "breakpad/src/third_party/linux/include",

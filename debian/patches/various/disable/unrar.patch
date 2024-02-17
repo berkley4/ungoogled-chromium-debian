@@ -38,7 +38,7 @@ bug: http://bugs.debian.org/914487
      StartExtractDmgFeatures();
 --- a/chrome/browser/safe_browsing/download_protection/check_client_download_request_base.h
 +++ b/chrome/browser/safe_browsing/download_protection/check_client_download_request_base.h
-@@ -23,7 +23,6 @@
+@@ -24,7 +24,6 @@
  #include "chrome/browser/safe_browsing/download_protection/download_protection_util.h"
  #include "chrome/browser/safe_browsing/download_protection/download_request_maker.h"
  #include "chrome/browser/safe_browsing/download_protection/file_analyzer.h"
@@ -75,7 +75,7 @@ bug: http://bugs.debian.org/914487
  void SafeArchiveAnalyzer::AnalyzeSevenZipFile(
 --- a/chrome/services/file_util/safe_archive_analyzer.h
 +++ b/chrome/services/file_util/safe_archive_analyzer.h
-@@ -7,7 +7,6 @@
+@@ -9,7 +9,6 @@
  
  #include "chrome/common/safe_browsing/archive_analyzer_results.h"
  #include "chrome/services/file_util/public/mojom/safe_archive_analyzer.mojom.h"
@@ -83,7 +83,7 @@ bug: http://bugs.debian.org/914487
  #include "chrome/utility/safe_browsing/seven_zip_analyzer.h"
  #include "chrome/utility/safe_browsing/zip_analyzer.h"
  #include "mojo/public/cpp/bindings/remote.h"
-@@ -66,7 +65,6 @@
+@@ -67,7 +66,6 @@
    void Timeout();
  
    safe_browsing::ZipAnalyzer zip_analyzer_;

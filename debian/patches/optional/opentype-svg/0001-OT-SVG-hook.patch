@@ -1,14 +1,14 @@
-From f04792948a14790bbef394f0581e17d53360b9e6 Mon Sep 17 00:00:00 2001
+From c55008eb090b24f6ba6751b8fd99493a36b4b45c Mon Sep 17 00:00:00 2001
 From: Hin-Tak Leung <htl10@users.sourceforge.net>
-Date: Wed, 10 Jan 2024 20:47:54 +0000
-Subject: [PATCH 1/2] m121 OT-SVG hook
+Date: Wed, 10 Jan 2024 21:25:00 +0000
+Subject: [PATCH 1/2] m122 OT-SVG hook
 
-Rebased onto 121.0.6167.51
+Adjusted for 122.0.6236.0
 
 Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
 ---
  skia/BUILD.gn                                               | 5 ++---
- skia/ext/fontmgr_default_linux.cc                           | 3 +++
+ skia/ext/font_utils.cc                                      | 3 +++
  .../blink/renderer/platform/fonts/web_font_decoder.cc       | 2 ++
  third_party/ots/src/src/ots.cc                              | 1 +
  third_party/skia/src/ports/SkFontHost_FreeType.cpp          | 6 ++++++
@@ -17,7 +17,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
 
 --- a/skia/BUILD.gn
 +++ b/skia/BUILD.gn
-@@ -406,9 +406,6 @@
+@@ -401,9 +401,6 @@
      defines += [ "SK_CODEC_DECODES_JPEG_GAINMAPS" ]
    }
  
@@ -27,31 +27,34 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
    if (is_win) {
      libs = [ "fontsub.lib" ]
    }
-@@ -644,6 +641,8 @@
+@@ -621,6 +618,8 @@
+     sources += skia_sksg_sources
      sources += skia_shaper_primitive_sources
-     defines += [ "SKOTTIE_TRIVIAL_FONTRUN_ITER" ]
    }
 +  import("//third_party/skia/modules/svg/svg.gni")
 +  sources += skia_svg_sources
  }
  
  # Template for things that are logically part of :skia, but need to be split out
---- a/skia/ext/fontmgr_default_linux.cc
-+++ b/skia/ext/fontmgr_default_linux.cc
-@@ -7,10 +7,13 @@
+--- a/skia/ext/font_utils.cc
++++ b/skia/ext/font_utils.cc
+@@ -10,6 +10,8 @@
  #include "third_party/skia/include/core/SkFontMgr.h"
- #include "third_party/skia/include/ports/SkFontConfigInterface.h"
- #include "third_party/skia/include/ports/SkFontMgr_FontConfigInterface.h"
+ #include "third_party/skia/include/core/SkRefCnt.h"
+ #include "third_party/skia/include/core/SkTypeface.h"
 +#include "third_party/skia/include/core/SkGraphics.h"
 +#include "third_party/skia/modules/svg/include/SkSVGOpenTypeSVGDecoder.h"
  
- namespace skia {
- 
- SK_API sk_sp<SkFontMgr> CreateDefaultSkFontMgr() {
-+  SkGraphics::SetOpenTypeSVGDecoderFactory(SkSVGOpenTypeSVGDecoder::Make);
-   sk_sp<SkFontConfigInterface> fci(SkFontConfigInterface::RefGlobal());
-   return fci ? SkFontMgr_New_FCI(std::move(fci)) : nullptr;
- }
+ #if BUILDFLAG(IS_ANDROID)
+ #include "third_party/skia/include/ports/SkFontMgr_android.h"
+@@ -80,6 +82,7 @@
+   static std::once_flag flag;
+   static sk_sp<SkFontMgr> mgr;
+   std::call_once(flag, [] {
++    SkGraphics::SetOpenTypeSVGDecoderFactory(SkSVGOpenTypeSVGDecoder::Make);
+     mgr = fontmgr_factory();
+     g_factory_called = true;
+   });
 --- a/third_party/blink/renderer/platform/fonts/web_font_decoder.cc
 +++ b/third_party/blink/renderer/platform/fonts/web_font_decoder.cc
 @@ -104,6 +104,7 @@
@@ -82,7 +85,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
    }
 --- a/third_party/skia/src/ports/SkFontHost_FreeType.cpp
 +++ b/third_party/skia/src/ports/SkFontHost_FreeType.cpp
-@@ -60,6 +60,8 @@
+@@ -63,6 +63,8 @@
  #include <freetype/t1tables.h>
  #include <freetype/ftfntfmt.h>
  
@@ -91,7 +94,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
  using namespace skia_private;
  
  namespace {
-@@ -1000,9 +1002,13 @@
+@@ -1007,9 +1009,13 @@
          // FT_LOAD_COLOR with scalable fonts means allow SVG.
          // It also implies attempt to render COLR if available, but this is not used.
  #if defined(FT_CONFIG_OPTION_SVG)
@@ -116,7 +119,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
  #include <dwrite.h>
  #include <dwrite_1.h>
  #include <dwrite_3.h>
-@@ -2274,6 +2276,8 @@
+@@ -2271,6 +2273,8 @@
          return false;
      }
  

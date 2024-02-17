@@ -22,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -4037,6 +4037,10 @@
+@@ -3866,6 +3866,10 @@
       FEATURE_VALUE_TYPE(
           ash::standalone_browser::features::kWebKioskEnableLacros)},
  #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
@@ -35,7 +35,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       flag_descriptions::kWebRtcRemoteEventLogName,
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3765,6 +3765,11 @@
+@@ -3756,6 +3756,11 @@
      "When enabled, removes the requirement that all certificates used for "
      "WebTransport over HTTP/3 are issued by a known certificate root.";
  
@@ -61,7 +61,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -263,6 +263,10 @@
+@@ -278,6 +278,10 @@
               "BiddingAndScoringDebugReportingAPI",
               base::FEATURE_ENABLED_BY_DEFAULT);
  
@@ -74,9 +74,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  BASE_FEATURE(kBlinkHeapCompaction,
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -169,6 +169,8 @@
- BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kBlinkHeapIncrementalMarking);
- BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kBlinkHeapIncrementalMarkingStress);
+@@ -178,6 +178,8 @@
+ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(
+     kBlinkSchedulerPrioritizeNavigationIPCs);
  
 +BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kAudioContextShuffleEnabled);
 +
@@ -189,15 +189,15 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      // promise too.
 --- a/third_party/blink/renderer/modules/webaudio/realtime_analyser.cc
 +++ b/third_party/blink/renderer/modules/webaudio/realtime_analyser.cc
-@@ -29,6 +29,7 @@
- #include <algorithm>
+@@ -31,6 +31,7 @@
+ #include <bit>
  #include <complex>
  
 +#include "third_party/blink/renderer/modules/webaudio/base_audio_context.h"
  #include "third_party/blink/renderer/platform/audio/audio_bus.h"
  #include "third_party/blink/renderer/platform/audio/audio_utilities.h"
  #include "third_party/blink/renderer/platform/audio/vector_math.h"
-@@ -154,6 +155,7 @@
+@@ -155,6 +156,7 @@
            input_buffer[(i + write_index - fft_size + kInputBufferSize) %
                         kInputBufferSize];
  
@@ -205,7 +205,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        destination[i] = value;
      }
    }
-@@ -181,6 +183,8 @@
+@@ -182,6 +184,8 @@
            input_buffer[(i + write_index - fft_size + kInputBufferSize) %
                         kInputBufferSize];
  
@@ -214,7 +214,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        // Scale from nominal -1 -> +1 to unsigned byte.
        double scaled_value = 128 * (value + 1);
  
-@@ -300,6 +304,8 @@
+@@ -301,6 +305,8 @@
        double scaled_value =
            UCHAR_MAX * (db_mag - min_decibels) * range_scale_factor;
  
@@ -223,7 +223,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        // Clip to valid range.
        destination[i] =
            static_cast<unsigned char>(ClampTo(scaled_value, 0, UCHAR_MAX));
-@@ -319,6 +325,7 @@
+@@ -320,6 +326,7 @@
        float linear_value = source[i];
        double db_mag = audio_utilities::LinearToDecibels(linear_value);
        destination[i] = static_cast<float>(db_mag);

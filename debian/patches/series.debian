@@ -83,9 +83,7 @@ various/disable/screen-ai-service.patch
 various/disable/unrar.patch
 various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
 various/fixes/chromedriver-BrandVersion.patch
-various/fixes/clang-excessive-warnings.patch
 various/fixes/EnumTable-crash.patch
-various/fixes/font-rendering.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/remove-main-main10-profile-limit.patch
 various/fixes/revert-fix-linking-chromedriver.patch
@@ -104,13 +102,9 @@ various/system/perfetto-system-zlib.patch
 various/system/xdg-scripts.patch
 various/system/zlib.patch
 various/upstream/0001-RaceNetworkRequest-is-triggered-only-when-the-scheme-is-HTTP-or-HTTPS.patch
-various/upstream/0002-c39bb52.diff
-various/upstream/0003-446d33d.diff
-various/upstream/0004-838b931.diff
-various/upstream/0005-63a8936.diff
-various/upstream/0006-f20cde03.diff
-various/upstream/0007-9c5c8ca.diff
-various/upstream/0008-00d4a11.diff
+various/upstream/0002-9c5c8ca.diff
+various/warnings/clang-excessive-warnings.patch
+various/warnings/silence-unknown-warning.patch
 
 optional/machine-function-splitting.patch
 optional/mutex-priority-inheritance.patch
@@ -140,8 +134,8 @@ optional/fixes/widevine/widevine-enable-version-string.patch
 optional/fixes/widevine/widevine-locations.patch
 #optional/legacy-i386/angle-lockfree.patch
 #optional/legacy-i386/support-i386.patch
-optional/opentype-svg/0001-m121-OT-SVG-hook.patch
-optional/opentype-svg/0002-m121-use-FreeType-for-non-Linux-OT-SVG-support.patch
+optional/opentype-svg/0001-OT-SVG-hook.patch
+optional/opentype-svg/0002-use-FreeType-for-non-Linux-OT-SVG-support.patch
 #optional/system/freetype-COLRV1.patch
 optional/system/jpeg.patch
 optional/system/openh264.patch

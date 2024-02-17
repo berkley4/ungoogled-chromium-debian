@@ -1,6 +1,6 @@
 --- a/net/disk_cache/simple/simple_util.cc
 +++ b/net/disk_cache/simple/simple_util.cc
-@@ -16,7 +16,7 @@
+@@ -18,7 +18,7 @@
  #include "base/threading/thread_restrictions.h"
  #include "base/time/time.h"
  #include "net/disk_cache/simple/simple_entry_format.h"
@@ -11,7 +11,7 @@
  
 --- a/net/filter/gzip_source_stream.cc
 +++ b/net/filter/gzip_source_stream.cc
-@@ -16,7 +16,7 @@
+@@ -15,7 +15,7 @@
  #include "base/notreached.h"
  #include "base/numerics/checked_math.h"
  #include "net/base/io_buffer.h"
@@ -107,7 +107,7 @@
 +
  #include "base/trace_event/typed_macros.h"
  #include "third_party/blink/renderer/bindings/core/v8/script_promise.h"
- #include "third_party/blink/renderer/bindings/core/v8/v8_binding_for_core.h"
+ #include "third_party/blink/renderer/bindings/core/v8/to_v8_traits.h"
 --- a/third_party/blink/renderer/modules/compression/inflate_transformer.cc
 +++ b/third_party/blink/renderer/modules/compression/inflate_transformer.cc
 @@ -8,6 +8,8 @@
@@ -118,7 +118,7 @@
 +
  #include "base/trace_event/typed_macros.h"
  #include "third_party/blink/renderer/bindings/core/v8/script_promise.h"
- #include "third_party/blink/renderer/bindings/core/v8/v8_binding_for_core.h"
+ #include "third_party/blink/renderer/bindings/core/v8/to_v8_traits.h"
 --- a/v8/src/snapshot/snapshot-utils.cc
 +++ b/v8/src/snapshot/snapshot-utils.cc
 @@ -7,7 +7,7 @@

@@ -14,30 +14,16 @@ See also:
 Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- .../public/mojom/loader/resource_cache.mojom  |  2 +-
  .../core/html/parser/html_srcset_parser.cc    |  2 +-
  .../core/inspector/inspector_network_agent.cc |  2 +-
  .../core/inspector/inspector_page_agent.cc    |  4 ++--
  .../renderer/core/loader/image_loader.cc      |  3 ++-
- .../core/loader/resource_cache_impl.cc        |  4 ++--
- .../core/loader/resource_cache_impl.h         |  2 +-
  .../platform/loader/fetch/memory_cache.cc     |  7 ++-----
  .../platform/loader/fetch/memory_cache.h      |  4 ++--
  .../platform/loader/fetch/resource_fetcher.cc | 21 +++++++++++++------
  .../platform/loader/fetch/resource_fetcher.h  |  3 ++-
  11 files changed, 31 insertions(+), 23 deletions(-)
 
---- a/third_party/blink/public/mojom/loader/resource_cache.mojom
-+++ b/third_party/blink/public/mojom/loader/resource_cache.mojom
-@@ -18,7 +18,7 @@
- // histograms.
- interface ResourceCache {
-   // Checks whether there is a cached resource for `url`.
--  Contains(url.mojom.Url url) => (ResourceCacheContainsResult result);
-+  Contains(url.mojom.Url url, string cache_identifier) => (ResourceCacheContainsResult result);
- };
- 
- // A result of Contains() method.
 --- a/third_party/blink/renderer/core/html/parser/html_srcset_parser.cc
 +++ b/third_party/blink/renderer/core/html/parser/html_srcset_parser.cc
 @@ -413,7 +413,7 @@
@@ -51,7 +37,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      }
 --- a/third_party/blink/renderer/core/inspector/inspector_network_agent.cc
 +++ b/third_party/blink/renderer/core/inspector/inspector_network_agent.cc
-@@ -2320,7 +2320,7 @@
+@@ -2367,7 +2367,7 @@
    Resource* cached_resource = document->Fetcher()->CachedResource(url);
    if (!cached_resource) {
      cached_resource = MemoryCache::Get()->ResourceForURL(
@@ -76,7 +62,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      cached_resource = loader->ResourceForURL(url);
 --- a/third_party/blink/renderer/core/loader/image_loader.cc
 +++ b/third_party/blink/renderer/core/loader/image_loader.cc
-@@ -731,7 +731,8 @@
+@@ -718,7 +718,8 @@
    // content when style recalc is over and DOM mutation is allowed again.
    if (!url.IsNull()) {
      Resource* resource = MemoryCache::Get()->ResourceForURL(
@@ -86,40 +72,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
      if (resource && !resource->ErrorOccurred() &&
          CanReuseFromListOfAvailableImages(
---- a/third_party/blink/renderer/core/loader/resource_cache_impl.cc
-+++ b/third_party/blink/renderer/core/loader/resource_cache_impl.cc
-@@ -65,7 +65,7 @@
-   visitor->Trace(receivers_);
- }
- 
--void ResourceCacheImpl::Contains(const KURL& url, ContainsCallback callback) {
-+void ResourceCacheImpl::Contains(const KURL& url, const String& cache_identifier, ContainsCallback callback) {
-   Document* document = frame_->GetDocument();
-   DCHECK(document);
-   auto result = mojom::blink::ResourceCacheContainsResult::New();
-@@ -77,7 +77,7 @@
-     return;
-   }
- 
--  result->is_in_cache = MemoryCache::Get()->ResourceForURL(url) != nullptr;
-+  result->is_in_cache = MemoryCache::Get()->ResourceForURL(url, cache_identifier) != nullptr;
-   result->is_visible = document->IsPageVisible();
-   result->lifecycle_state =
-       ConvertFrameLifecycleState(context->ContextPauseState());
---- a/third_party/blink/renderer/core/loader/resource_cache_impl.h
-+++ b/third_party/blink/renderer/core/loader/resource_cache_impl.h
-@@ -36,7 +36,7 @@
- 
-  private:
-   // mojom::blink::ResourceCache implementations:
--  void Contains(const KURL& url, ContainsCallback callback) override;
-+  void Contains(const KURL& url, const String& cache_identifier, ContainsCallback callback) override;
- 
-   Member<LocalFrame> frame_;
-   HeapMojoReceiverSet<mojom::blink::ResourceCache, ResourceCacheImpl>
 --- a/third_party/blink/renderer/platform/loader/fetch/memory_cache.cc
 +++ b/third_party/blink/renderer/platform/loader/fetch/memory_cache.cc
-@@ -204,7 +204,7 @@
+@@ -207,7 +207,7 @@
  }
  
  bool MemoryCache::Contains(const Resource* resource) const {
@@ -128,7 +83,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      return false;
  
    const auto resource_maps_it =
-@@ -220,12 +220,9 @@
+@@ -223,12 +223,9 @@
    return resource == resources_it->value->GetResource();
  }
  
@@ -144,7 +99,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      return nullptr;
 --- a/third_party/blink/renderer/platform/loader/fetch/memory_cache.h
 +++ b/third_party/blink/renderer/platform/loader/fetch/memory_cache.h
-@@ -118,9 +118,7 @@
+@@ -119,9 +119,7 @@
      TypeStatistic other;
    };
  
@@ -154,7 +109,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
    void Add(Resource*);
    void Remove(Resource*);
-@@ -170,6 +168,8 @@
+@@ -173,6 +171,8 @@
        base::MemoryPressureListener::MemoryPressureLevel) override;
  
   private:
@@ -165,7 +120,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      kAutomaticPrune,
 --- a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc
 +++ b/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc
-@@ -805,7 +805,8 @@
+@@ -802,7 +802,8 @@
    if (!archive_ && factory.GetType() == ResourceType::kRaw)
      return nullptr;
  
@@ -175,7 +130,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // Most off-main-thread resource fetches use Resource::kRaw and don't reach
    // this point, but off-main-thread module fetches might.
    if (IsMainThread()) {
-@@ -1156,7 +1157,9 @@
+@@ -1160,7 +1161,9 @@
          resource = nullptr;
        } else {
          resource = MemoryCache::Get()->ResourceForURL(
@@ -186,16 +141,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        }
        if (resource) {
          policy = DetermineRevalidationPolicy(resource_type, params, *resource,
-@@ -1264,6 +1267,8 @@
-     if (resource_cache_remote_.is_bound()) {
-       resource_cache_remote_->Contains(
-           params.Url(),
-+          GetCacheIdentifier(params.Url(),
-+                        params.GetResourceRequest().TopFrameOrigin()),
-           WTF::BindOnce(&ResourceFetcher::OnResourceCacheContainsFinished,
-                         WrapWeakPersistent(this), base::TimeTicks::Now(),
-                         resource_request.GetRequestDestination()));
-@@ -1418,7 +1423,8 @@
+@@ -1449,7 +1452,8 @@
      const FetchParameters& params,
      const ResourceFactory& factory) {
    const String cache_identifier =
@@ -205,7 +151,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    if (!base::FeatureList::IsEnabled(
            blink::features::kScopeMemoryCachePerContext)) {
      DCHECK(!IsMainThread() || params.IsStaleRevalidation() ||
-@@ -2424,10 +2430,13 @@
+@@ -2480,10 +2484,13 @@
    to_be_removed.clear();
  }
  
@@ -221,7 +167,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    }
  
    // Requests that can be satisfied via `archive_` (i.e. MHTML) or
-@@ -2440,7 +2449,7 @@
+@@ -2496,7 +2503,7 @@
    if (bundle)
      return bundle->GetCacheIdentifier();
  
@@ -232,7 +178,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  absl::optional<base::UnguessableToken>
 --- a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.h
 +++ b/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.h
-@@ -260,7 +260,8 @@
+@@ -272,7 +272,8 @@
                           uint32_t inflight_keepalive_bytes);
    blink::mojom::ControllerServiceWorkerMode IsControlledByServiceWorker() const;
  

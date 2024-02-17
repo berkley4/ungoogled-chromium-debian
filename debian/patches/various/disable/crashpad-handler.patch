@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -670,7 +670,7 @@
+@@ -678,7 +678,7 @@
        ]
      }
  
@@ -11,7 +11,7 @@
          "//third_party/crashpad/crashpad/handler:crashpad_handler",
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -310,8 +310,6 @@
+@@ -305,8 +305,6 @@
            public_deps += [
              ":xdg_mime",  # Needs to be public for installer to consume files.
            ]
@@ -20,7 +20,7 @@
          }
  
          ldflags = []
-@@ -1745,7 +1743,6 @@
+@@ -1724,7 +1722,6 @@
        deps = [
          ":angle_egl_symbols",
          ":angle_gles_symbols",
@@ -28,7 +28,7 @@
          ":chrome_symbols",
        ]
        if (is_linux) {
-@@ -1769,18 +1766,6 @@
+@@ -1748,18 +1745,6 @@
  
        deps = [ ":chrome" ]
      }
@@ -49,7 +49,7 @@
        binary = "$root_out_dir/libvk_swiftshader.so"
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -4795,7 +4795,7 @@
+@@ -4742,7 +4742,7 @@
        ]
      }
  
@@ -60,7 +60,7 @@
  
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -563,10 +563,6 @@
+@@ -568,10 +568,6 @@
      ]
    }
  

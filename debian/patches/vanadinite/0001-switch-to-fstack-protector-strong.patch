@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -385,7 +385,7 @@
+@@ -387,7 +387,7 @@
            cflags += [ "-fno-stack-protector" ]
          } else if (current_os != "aix") {
            # Not available on aix.

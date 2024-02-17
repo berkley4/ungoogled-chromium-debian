@@ -20,7 +20,7 @@
      // Handle tel links by opening the Click to Call dialog. This will call back
 --- a/chrome/browser/renderer_context_menu/render_view_context_menu.cc
 +++ b/chrome/browser/renderer_context_menu/render_view_context_menu.cc
-@@ -1792,7 +1792,7 @@
+@@ -1830,7 +1830,7 @@
                                  /*add_separator*/ false);
      }
  
@@ -29,7 +29,7 @@
      AppendClickToCallItem();
  #endif
  
-@@ -2525,7 +2525,7 @@
+@@ -2589,7 +2589,7 @@
    size_t items_before_sharing = menu_model_.GetItemCount();
    bool starting_separator_added = items_before_sharing > items_initial;
  
@@ -38,7 +38,7 @@
    AppendClickToCallItem();
  #endif
  
-@@ -2538,7 +2538,7 @@
+@@ -2602,7 +2602,7 @@
      menu_model_.RemoveItemAt(items_initial);
  }
  
@@ -46,8 +46,8 @@
 +#if !BUILDFLAG(IS_FUCHSIA) && BUILDFLAG(ENABLE_CLICK_TO_CALL)
  void RenderViewContextMenu::AppendClickToCallItem() {
    SharingClickToCallEntryPoint entry_point;
-   absl::optional<std::string> phone_number;
-@@ -2565,7 +2565,7 @@
+   std::optional<std::string> phone_number;
+@@ -2629,7 +2629,7 @@
    click_to_call_context_menu_observer_->BuildMenu(*phone_number, selection_text,
                                                    entry_point);
  }
