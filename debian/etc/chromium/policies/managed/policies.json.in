@@ -28,5 +28,6 @@
   "SearchSuggestEnabled": false,
   "SyncDisabled": true,
   "VideoCaptureAllowed": true,
-  "WPADQuickCheckEnabled": false
+  "WPADQuickCheckEnabled": false,
+  "ZstdContentEncodingEnabled": false
 }

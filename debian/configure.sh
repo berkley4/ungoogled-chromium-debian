@@ -92,9 +92,10 @@ sanitise_op () {
 [ -n "$SUPERVISED_USER" ] || SUPERVISED_USER=0
 [ -n "$TRANSLATE" ] || TRANSLATE=1
 [ -n "$VR" ] || VR=0
-[ -n "$WEBGPU" ] || WEBGPU=0
 [ -n "$VAAPI" ] || VAAPI=1
+[ -n "$WEBGPU" ] || WEBGPU=0
 [ -n "$WIDEVINE" ] || WIDEVINE=1
+[ -n "$ZSTD" ] || ZSTD=0
 
 [ -n "$SYS_FFMPEG" ] || SYS_FFMPEG=0
 [ -n "$SYS_ICU" ] || SYS_ICU=0
@@ -805,6 +806,14 @@ if [ $SYS_OPENH264 -eq 0 ]; then
   deps_disable="$deps_disable libopenh264"
 fi
 
+
+if [ $ZSTD -eq 1 ]; then
+  op_enable="$op_enable system/zstd/"
+  sys_enable="$sys_enable zstd"
+  deps_enable="$deps_enable libzstd"
+
+  POL="$POL  -e \"/ZstdContentEncodingEnabled/s@false@true@\""
+fi
 
 
 ## Items which are (or are likely to become) unstable-only

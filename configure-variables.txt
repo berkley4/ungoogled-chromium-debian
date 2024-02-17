@@ -89,6 +89,7 @@ SPEECH		1		Speech service (voice recognition)
 VR		0		Virtual reality hardware support
 WEBGPU		0		Not enabled upstream on linux yet (likely beta quality)
 WIDEVINE	1		Needs various extra components to enable
+ZSTD		0		Used for the bleeding edge zstd content encoding (web server compression)
 
 
 ## Libraries
@@ -104,8 +105,8 @@ SYS_ICU		1
 SYS_JPEG	1
 SYS_OPENH264	1		The bundled OpenH264 library (SYS_OPENH264=0) cannot be redistributed
 
-# Unsupported
 
+# Unsupported
 SYS_FFMPEG	0		Unsupported upstream for security reasons
 				Functional issues (eg media not playing)
 				Only enable if you have patched and rebuilt your system ffmpeg

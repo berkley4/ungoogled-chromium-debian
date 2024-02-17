@@ -1,0 +1,31 @@
+From 99e282244922c6c598abb8594dc8b767dc0abbe1 Mon Sep 17 00:00:00 2001
+From: Nidhi Jaju <nidhijaju@chromium.org>
+Date: Fri, 16 Feb 2024 01:30:19 +0000
+Subject: [PATCH] Ship Zstd Content-Encoding
+
+This CL enables the ZstdContentEncoding feature by default.
+
+See the Intent to Ship thread at:
+https://groups.google.com/a/chromium.org/g/blink-dev/c/GFFOLCF12a4
+
+Bug: 40196713
+Change-Id: If2835f15ea5896e053e841ad2985a217d97fc821
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5300076
+Commit-Queue: Nidhi Jaju <nidhijaju@chromium.org>
+Reviewed-by: Kenichi Ishibashi <bashi@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1261439}
+---
+
+diff --git a/net/base/features.cc b/net/base/features.cc
+index 346f405..6650f84 100644
+--- a/net/base/features.cc
++++ b/net/base/features.cc
+@@ -493,7 +493,7 @@
+ 
+ BASE_FEATURE(kZstdContentEncoding,
+              "ZstdContentEncoding",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             base::FEATURE_ENABLED_BY_DEFAULT);
+ 
+ // When enabled, partitioned storage will be allowed even if third-party cookies
+ // are disabled by default. Partitioned storage will not be allowed if

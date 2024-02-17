@@ -160,6 +160,9 @@ GN_FLAGS += enable_vr=false
 # Disable WebGPU
 GN_FLAGS += use_dawn=false
 
+# Disable zstd
+GN_FLAGS += disable_zstd_filter=true
+
 
 ### AVX2 intructions
 
@@ -214,8 +217,7 @@ SYS_LIBS :=               \
         libusb            \
         libXNVCtrl        \
         opus              \
-        zlib              \
-        zstd
+        zlib
 
 # The below is best configured via debian/configure.sh, ehich is better
 # suited to automatically deal with any of the dependency issues
@@ -229,6 +231,10 @@ SYS_LIBS += libjpeg
 
 # Enable openh264
 SYS_LIBS += openh264
+
+# Enable zstd
+#SYS_LIBS += zstd
+
 
 # Backported libraries (stable users can insert below)
 #SYS_LIBS +=

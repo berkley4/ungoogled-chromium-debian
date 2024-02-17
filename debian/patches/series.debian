@@ -103,7 +103,6 @@ various/system/minizip.patch
 various/system/perfetto-system-zlib.patch
 various/system/xdg-scripts.patch
 various/system/zlib.patch
-various/system/zstd.patch
 various/upstream/0001-RaceNetworkRequest-is-triggered-only-when-the-scheme-is-HTTP-or-HTTPS.patch
 various/upstream/0002-c39bb52.diff
 various/upstream/0003-446d33d.diff
@@ -159,6 +158,8 @@ optional/system/unstable/icu/convertutf.patch
 optional/system/unstable/icu/icu.patch
 optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
 optional/system/vaapi/vaapi-disable-libaom-encoding.patch
+#optional/system/zstd/zstd.patch
+#optional/system/zstd/zstd-feature-flag.patch
 optional/translate/translate-revert-disable.patch
 optional/translate/translate-stop-unsupported-switch-warning.patch
 #optional/no-ELOC_PROTO-mnemonic.patch
