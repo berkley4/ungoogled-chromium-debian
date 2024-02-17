@@ -1,0 +1,11 @@
+--- a/components/lens/lens_features.cc
++++ b/components/lens/lens_features.cc
+@@ -12,7 +12,7 @@
+ 
+ BASE_FEATURE(kLensStandalone,
+              "LensStandalone",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             base::FEATURE_DISABLED_BY_DEFAULT);
+ 
+ BASE_FEATURE(kLensImageCompression,
+              "LensImageCompression",
