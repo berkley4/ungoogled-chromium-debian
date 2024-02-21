@@ -123,6 +123,7 @@ optional/cpu/avx.patch
 #optional/disable/atk-dbus.patch
 #optional/disable/catapult.patch
 #optional/disable/click-to-call.patch
+optional/disable/dns_config_service.patch
 #optional/disable/media-remoting.patch
 optional/disable/supervised-users.patch
 #optional/fixes/convertutf-bundled.patch

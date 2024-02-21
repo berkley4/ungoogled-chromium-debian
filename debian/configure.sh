@@ -668,6 +668,7 @@ else
   fi
 
   if [ $DNS_BUILTIN -eq 1 ]; then
+    op_disable="$op_disable disable/dns_config_service"
     POL="$POL -e \"/BuiltInDnsClientEnabled/s@false@true@\""
   fi
 fi
