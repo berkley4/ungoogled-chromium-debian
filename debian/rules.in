@@ -109,9 +109,6 @@ GN_FLAGS +=                                     \
 # Disable feed v2
 #GN_FLAGS += enable_feed_v2=false
 
-# Enable harfbuzz
-GN_FLAGS += use_system_harfbuzz=true
-
 # Disable media remoting
 #GN_FLAGS += enable_media_remoting=false enable_media_remoting_rpc=false
 
@@ -248,6 +245,7 @@ GN_FLAGS += use_system_libtiff=true
 
 # Enable harfbuzz (freetype is a dependency)
 SYS_LIBS += harfbuzz-ng
+GN_FLAGS += use_system_harfbuzz=true
 
 # Enable fontconfig and dependencies
 SYS_LIBS += fontconfig freetype brotli libpng
