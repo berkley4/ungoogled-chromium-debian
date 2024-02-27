@@ -62,9 +62,6 @@ vanadinite/0014-Enable-strict-origin-isolation-by-default.patch
 vanadinite/0015-enable-process-isolated-sandboxed-iframes-by-default.patch
 vanadinite/0016-enable-partitioning-third-party-storage.patch
 
-various/fix-unbundle-script-dh-clean-interoperabilty.patch
-various/fixup-GaiaAuthFetcher-kMaxMessageSize.patch
-various/template-correction.patch
 various/compiler-flags/Do-not-link-with-libatomic.patch
 various/compiler-flags/function-import-limits.patch
 various/compiler-flags/init-stack-vars-zero.patch
@@ -78,12 +75,14 @@ various/disable/crashpad-handler.patch
 various/disable/crashpad-handler_2.patch
 various/disable/driver-chrome-path.patch
 various/disable/lens.patch
+various/disable/motherboard-metrics.patch
 various/disable/orchestrator.patch
 various/disable/screen-ai-service.patch
 various/disable/unrar.patch
 various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
 various/fixes/chromedriver-BrandVersion.patch
 various/fixes/EnumTable-crash.patch
+various/fixes/GaiaAuthFetcher-kMaxMessageSize.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/remove-main-main10-profile-limit.patch
 various/fixes/revert-fix-linking-chromedriver.patch
@@ -91,9 +90,10 @@ various/fixes/revert-fix-linking-content-shell.patch
 various/fixes/shim-fix-for-official-builds.patch
 various/fixes/silence-alsa-frames-log-msg.patch
 various/fixes/skia-allow-bundled-freetype-harfbuzz.patch
+various/fixes/template-correction.patch
+various/fixes/unbundle-script-dh-clean-interoperabilty.patch
 various/fixes/unshrink-ui-font.patch
 various/fixes/xdg-basedir.patch
-various/launchpad/dont-collect-motherboard-metrics.patch
 various/system/libdrm.patch
 various/system/libusb-api.patch
 various/system/libxml2.patch
@@ -129,6 +129,7 @@ optional/disable/supervised-users.patch
 #optional/fixes/convertutf-bundled.patch
 #optional/fixes/dav1d-bundled-header.patch
 optional/fixes/extensions-in-tools-menu.patch
+#optional/fixes/no-ELOC_PROTO-mnemonic.patch
 #optional/fixes/opentype-svg-on-bundled-freetype.patch
 #optional/fixes/skia-gamma.patch
 optional/fixes/widevine/widevine-enable-version-string.patch
@@ -157,4 +158,3 @@ optional/system/vaapi/vaapi-disable-libaom-encoding.patch
 #optional/system/zstd/zstd-feature-flag.patch
 optional/translate/translate-revert-disable.patch
 optional/translate/translate-stop-unsupported-switch-warning.patch
-#optional/no-ELOC_PROTO-mnemonic.patch

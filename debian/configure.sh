@@ -848,7 +848,7 @@ if [ $STABLE -eq 1 ]; then
   deps_disable="$deps_disable libdav1d"
 
   # Build error since v117 seemingly only affecting stable
-  op_enable="$op_enable no-ELOC_PROTO-mnemonic"
+  op_enable="$op_enable fixes/no-ELOC_PROTO-mnemonic"
 fi
 
 
