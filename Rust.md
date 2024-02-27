@@ -26,7 +26,7 @@ then you can force SYS_RUST=1 to succeed by including SYS_RUST_FORCE=1 in your
 configuration variables. A version matching that of upstream stable rust should
 suffice.
 
-Then make sure that SYS_RUST=1 is included in your configuration variable
+Now make sure that SYS_RUST=1 is included in your configuration variables
 
 ```... SYS_RUST=1 ./debian/configure.sh```
 
