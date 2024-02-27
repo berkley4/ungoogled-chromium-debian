@@ -1,0 +1,28 @@
+--- a/DEPS
++++ b/DEPS
+@@ -259,6 +259,9 @@
+   # instead of downloading the prebuilt pinned revision.
+   'llvm_force_head_revision': False,
+ 
++  # Fetch Rust toolchain.
++  'checkout_rust': False,
++
+   # Make Dawn skip its standalone dependencies
+   'dawn_standalone': False,
+ 
+@@ -4431,13 +4434,14 @@
+     # Note: On Win, this should run after win_toolchain, as it may use it.
+     'name': 'clang',
+     'pattern': '.',
+-    'condition': 'checkout_x86',
++    'condition': 'not llvm_force_head_revision',
+     'action': ['python3', 'src/tools/clang/scripts/update.py'],
+   },
+   {
+     # Update prebuilt Rust toolchain.
+     'name': 'rust-toolchain',
+     'pattern': '.',
++    'condition': 'checkout_rust',
+     'action': ['python3', 'src/tools/rust/update_rust.py'],
+   },
+   {

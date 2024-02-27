@@ -258,9 +258,13 @@ patch -p1 < DEPS.patch
 # Do not download chromium's pre-built clang toolchain
 patch -p1 < DEPS-no-clang.patch
 
-# To omit downloading the pre-built rust toolchain add
-# the following to the custom_vars section of build/.gclient
+# To omit downloading the pre-buil rust toolchain one needs to add the following
+# to the custom_vars section of build/.gclient (and also apply DEPS-no-rust.patch)
 "checkout_rust": False,
+
+# Make the above 'checkout_rust' variable active by applying a patch
+patch -p1 < DEPS-no-rust.patch
+
 
 
 # Update the chromium build tree submodules

@@ -1,17 +1,11 @@
 --- a/DEPS
 +++ b/DEPS
-@@ -4377,14 +4377,6 @@
-     'action': ['python3', 'src/build/mac_toolchain.py'],
+@@ -4431,7 +4431,7 @@
+     # Note: On Win, this should run after win_toolchain, as it may use it.
+     'name': 'clang',
+     'pattern': '.',
+-    'condition': 'not llvm_force_head_revision',
++    'condition': 'checkout_x86',
+     'action': ['python3', 'src/tools/clang/scripts/update.py'],
    },
    {
--    # Update the prebuilt clang toolchain.
--    # Note: On Win, this should run after win_toolchain, as it may use it.
--    'name': 'clang',
--    'pattern': '.',
--    'condition': 'not llvm_force_head_revision',
--    'action': ['python3', 'src/tools/clang/scripts/update.py'],
--  },
--  {
-     # Update prebuilt Rust toolchain.
-     'name': 'rust-toolchain',
-     'pattern': '.',
