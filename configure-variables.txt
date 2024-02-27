@@ -68,6 +68,9 @@ CAP_AUD		1		Audio capture
 CAP_SCR		1		Screen capture (desktop sharing)
 CAP_VID		1		Video capture
 
+JS_JIT		1		JavaScript jit (disabling is very slow but secure)
+
+
 ## Enable/Disable features/components/patches
 
 DRIVER		1		Chromedriver package

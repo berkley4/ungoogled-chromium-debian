@@ -125,6 +125,8 @@ if [ $POLICIES -eq 1 ]; then
   [ -n "$DNS_BUILTIN" ] && DNS_BUILTIN_SET=1 || DNS_BUILTIN=0
   [ -n "$DNS_HOST" ] || DNS_HOST=
   [ -n "$DNS_INTERCEPT" ] || DNS_INTERCEPT=1
+
+  [ -n "$JS_JIT" ] || JS_JIT=1
 fi
 
 
@@ -670,6 +672,11 @@ else
   if [ $DNS_BUILTIN -eq 1 ]; then
     op_disable="$op_disable disable/dns_config_service"
     POL="$POL -e \"/BuiltInDnsClientEnabled/s@false@true@\""
+  fi
+
+  # Treat 0 and 2 as both disabling jit (2 being the value of the key)
+  if [ $JS_JIT -eq 0 ] || [ $JS_JIT -eq 2 ]; then
+    POL="$POL -e \"/DefaultJavaScriptJitSetting/s@1@2@\""
   fi
 fi
 

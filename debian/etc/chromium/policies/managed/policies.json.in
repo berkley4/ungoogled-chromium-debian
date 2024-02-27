@@ -8,6 +8,7 @@
   "BuiltInDnsClientEnabled": false,
   "CloudPrintProxyEnabled": false,
   "CrossOriginWebAssemblyModuleSharingEnabled": false,
+  "DefaultJavaScriptJitSetting": 1,
   "DefaultSearchProviderContextMenuAccessAllowed": false,
   "DefaultSerialGuardSetting": 2,
   "DefaultWebBluetoothGuardSetting": 2,
