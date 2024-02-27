@@ -302,7 +302,7 @@ override_dh_auto_install-arch:
 	chmod 4755 $(OUT_DIR)/chrome_sandbox
 
 override_dh_auto_install-indep:
-	test -f $(OUT_DIR)/resources/en-US.pak || mv $(OUT_DIR)/locales/en-US.pak $(OUT_DIR)/resources/
+	cp -a $(OUT_DIR)/locales/en-US.pak $(OUT_DIR)/resources/
 
 override_dh_fixperms:
 	dh_fixperms --exclude chrome-sandbox
