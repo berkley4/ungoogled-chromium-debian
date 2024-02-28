@@ -151,8 +151,8 @@ fi
 ## Disable non-free stuff if NON_FREE=0
 [ -n "$NON_FREE" ] || NON_FREE=1
 if [ $NON_FREE -eq 0 ]; then
-  SER="$SER -e \"s@^\(bromite/\)@#\1@\" -e \"s@^\(vanadium/\)@#\1@\""
-  SUPERVISED_USER=1  # Setting this to zero requires a (non-free) bromite patch
+  SER="$SER -e \"s@^\(cromite/\)@#\1@\" -e \"s@^\(vanadium/\)@#\1@\""
+  SUPERVISED_USER=1  # Setting this to zero requires a (non-free) cromite patch
   if [ $OPENH264 -eq 1 ] && [ $SYS_OPENH264 -eq 0 ]; then
     printf '%s\n' "WARN: Not a non-free build - disabling bundled OpenH264"
     printf '%s\n' "WARN: Enabling system OpenH264 library instead"
