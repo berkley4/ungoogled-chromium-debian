@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2353,6 +2353,15 @@
+@@ -2346,6 +2346,15 @@
        "-Wl,-O2",
        "-Wl,--gc-sections",
      ]
@@ -16,7 +16,7 @@
    }
  
    # We cannot rely on errno being set after math functions,
-@@ -2439,7 +2448,7 @@
+@@ -2432,7 +2441,7 @@
      # vectorization while otherwise optimizing for size.
      rustflags = [ "-Copt-level=s" ]
    } else {
@@ -25,7 +25,7 @@
  
      # The `-O3` for clang turns on extra optimizations compared to the standard
      # `-O2`. But for rust, `-Copt-level=3` is the default and is thus reliable
-@@ -2510,7 +2519,7 @@
+@@ -2503,7 +2512,7 @@
      } else if (optimize_for_fuzzing) {
        cflags = [ "-O1" ] + common_optimize_on_cflags
      } else {
@@ -34,7 +34,7 @@
      }
      rustflags = [ "-Copt-level=3" ]
    }
-@@ -2543,7 +2552,7 @@
+@@ -2536,7 +2545,7 @@
      } else if (optimize_for_fuzzing) {
        cflags = [ "-O1" ] + common_optimize_on_cflags
      } else {
