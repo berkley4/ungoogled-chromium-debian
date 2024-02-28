@@ -29,6 +29,7 @@ XZ_THREADED_SET=0
 DEBIAN=${0%/*}
 RT_DIR=${DEBIAN%/*}
 
+FLAG_DIR=$DEBIAN/etc/chromium.d
 OP_DIR=$DEBIAN/patches/optional
 
 UC_DIR=$DEBIAN/submodules/ungoogled-chromium
@@ -38,8 +39,6 @@ INSTALL=ungoogled-chromium.install
 P_FILE=etc/chromium/policies/managed/policies.json
 
 PRUNE_PATCH=$DEBIAN/misc_patches/no-exit-if-pruned.patch
-
-TRANSLATE_FILE=debian/etc/chromium.d/google-translate
 
 sanitise_op () {
   printf '%s\n' "Unnecessary optional prefix: $i"
@@ -704,14 +703,15 @@ fi
 if [ $TRANSLATE -eq 0 ]; then
   op_disable="$op_disable translate/"
 
-  INS="$INS -e \"s@^\($TRANSLATE_FILE\)@#\1@\""
+  INS="$INS -e \"s@^\($FLAG_DIR/google-translate\)@#\1@\""
 else
   DSB="$DSB -e \"/\/translate_manager_browsertest\.cc/d\""
   DSB="$DSB -e \"/\/translate_script\.cc/d\""
   DSB="$DSB -e \"/\/translate_util\.cc/d\""
 
   if [ $TRANSLATE -ge 2 ]; then
-    sed 's@^#\(export.*translate-script-url=\)@\1@' -i $DEBIAN/$TRANSLATE_FILE
+    sed 's@^#\(export GOOGLE_\)@\1@' -i $FLAG_DIR/google-api-keys
+    sed 's@^#\(export.*translate-script-url=\)@\1@' -i $FLAG_DIR/google-translate
   fi
 fi
 

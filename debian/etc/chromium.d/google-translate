@@ -1,8 +1,6 @@
-# To enable translate you need to at least uncomment the line below
+### You will also need to ensure that the exports in
+### /etc/chromium.d/google-translate are uncommented
+
+# Uncomment to enable google translate
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --translate-script-url=https://translate.googleapis.com/translate_a/element.js"
-
-
-# Note: translate seems to be functional WITHOUT enabling the option below
-# (Taken from - https://chromium.googlesource.com/chromium/src/+/main/components/translate/core/browser/translate_ranker_impl.cc)
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --translate-ranker-model-url=https://www.gstatic.com/chrome/intelligence/assist/ranker/models/translate/2017/03/translate_ranker_model_20170329.pb.bin"
 
