@@ -74,7 +74,7 @@ sanitise_op () {
 [ -n "$DRIVER" ] || DRIVER=1
 [ -n "$EXT_TOOLS_MENU" ] || EXT_TOOLS_MENU=1
 [ -n "$FEED" ] || FEED=1
-[ -n "$MEDIA_REMOTING" ] || MEDIA_REMOTING=1
+[ -n "$MEDIA_REMOTING" ] || MEDIA_REMOTING=0
 [ -n "$MUTEX_PI" ] || MUTEX_PI=1
 [ -n "$NOTIFICATIONS" ] || NOTIFICATIONS=1
 [ -n "$OAUTH2" ] || OAUTH2=0
@@ -610,11 +610,11 @@ if [ $FEED -eq 0 ]; then
 fi
 
 
-if [ $MEDIA_REMOTING -eq 0 ]; then
-  op_enable="$op_enable disable/media-remoting"
+if [ $MEDIA_REMOTING -eq 1 ]; then
+  op_disable="$op_disable disable/media-remoting/"
 
-  #GN_FLAGS += enable_media_remoting=false enable_media_remoting_rpc=false
-  gn_enable="$gn_enable enable_media_remoting"
+  #GN_FLAGS += enable_media_remoting=false
+  gn_disable="$gn_disable enable_media_remoting"
 fi
 
 

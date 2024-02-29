@@ -78,7 +78,7 @@ DRIVER		1		Chromedriver package
 CLICK_TO_CALL	1		Feature for using chromium to make a call via an android phone
 EXT_TOOLS_MENU	1		Move the extensions menu to the 'More tools' menu
 FEED		1		WebFeed (News feed) support
-MEDIA_REMOTING	1		Render and play back media on remote devices when a tab is casted
+MEDIA_REMOTING	0		Render and play back media on remote devices when a tab is casted
 MUTEX_PI	1		Mutex priority inheritance
 NOTIFICATIONS	1		System notifications
 OPENTYPE_SVG	1		Opentype SVG support
