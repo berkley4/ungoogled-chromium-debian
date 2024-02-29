@@ -1028,7 +1028,14 @@ sed -e "s;@@VERSION@@;$VERSION;" \
   < $DEBIAN/changelog.in \
   > $DEBIAN/changelog
 
-SERIES_DEBIAN="$(eval sed $SER $DEBIAN/patches/series.debian)"
+case $SER in
+  "")
+    SERIES_DEBIAN="$(cat $DEBIAN/patches/series.debian)" ;;
+
+  *)
+    SERIES_DEBIAN="$(eval sed $SER $DEBIAN/patches/series.debian)" ;;
+esac
+
 echo "$(cat $UC_DIR/patches/series)" "$SERIES_DEBIAN" > $DEBIAN/patches/series
 
 [ -z "$INS" ] || eval sed $INS < $DEBIAN/$INSTALL.in > $DEBIAN/$INSTALL
