@@ -156,5 +156,5 @@ optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
 optional/system/vaapi/vaapi-disable-libaom-encoding.patch
 #optional/system/zstd/zstd.patch
 #optional/system/zstd/zstd-feature-flag.patch
-optional/translate/translate-revert-disable.patch
-optional/translate/translate-stop-unsupported-switch-warning.patch
+optional/translate/revert-disable.patch
+optional/translate/stop-unsupported-switch-warning.patch
