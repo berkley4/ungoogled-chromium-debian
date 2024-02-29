@@ -52,14 +52,13 @@ vanadinite/0004-disable-article-suggestions-feature-by-default.patch
 vanadinite/0005-disable-content-feed-suggestions-by-default.patch
 vanadinite/0006-disable-sensors-access-by-default.patch
 vanadinite/0007-disable-background-sync-by-default.patch
-vanadinite/0008-disable-media-router-by-default.patch
-vanadinite/0009-disable-media-DRM-preprovisioning-by-default.patch
-vanadinite/0010-enable-split-cache-by-default.patch
-vanadinite/0011-enable-partitioning-connections-by-default.patch
-vanadinite/0012-disable-component-updater-pings-by-default.patch
-vanadinite/0013-Enable-strict-origin-isolation-by-default.patch
-vanadinite/0014-enable-process-isolated-sandboxed-iframes-by-default.patch
-vanadinite/0015-enable-partitioning-third-party-storage.patch
+vanadinite/0008-disable-media-DRM-preprovisioning-by-default.patch
+vanadinite/0009-enable-split-cache-by-default.patch
+vanadinite/0010-enable-partitioning-connections-by-default.patch
+vanadinite/0011-disable-component-updater-pings-by-default.patch
+vanadinite/0012-Enable-strict-origin-isolation-by-default.patch
+vanadinite/0013-enable-process-isolated-sandboxed-iframes-by-default.patch
+vanadinite/0014-enable-partitioning-third-party-storage.patch
 
 various/compiler-flags/Do-not-link-with-libatomic.patch
 various/compiler-flags/function-import-limits.patch
@@ -112,6 +111,7 @@ optional/polly-extra.patch
 #optional/thinlto-cache-location.patch
 #optional/thinlto-jobs.patch
 #optional/use-oauth2-client-switches-as-default.patch
+optional/chromecast/add-flag-to-enable-mdns.patch
 optional/cpu/aes-pclmul.patch
 optional/cpu/march.patch
 optional/cpu/mtune.patch
@@ -123,9 +123,10 @@ optional/cpu/avx.patch
 #optional/disable/catapult.patch
 #optional/disable/click-to-call.patch
 optional/disable/dns_config_service.patch
+#optional/disable/media-router.patch
 optional/disable/supervised-users.patch
-optional/disable/media-remoting/media-remoting.patch
-optional/disable/media-remoting/registry-pref.patch
+#optional/disable/media-remoting/media-remoting.patch
+#optional/disable/media-remoting/registry-pref.patch
 #optional/fixes/convertutf-bundled.patch
 #optional/fixes/dav1d-bundled-header.patch
 optional/fixes/extensions-in-tools-menu.patch

@@ -18,7 +18,6 @@
   "DnsPrefetchingEnabled": false,
   "DnsOverHttpsMode": "secure",
   "DnsOverHttpsTemplates": "https://doh.opendns.com/dns-query{?dns}",
-  "EnableMediaRouter": false,
   "NativeMessagingUserLevelHosts": false,
   "NetworkPredictionOptions": 2,
   "PromotionalTabsEnabled": false,

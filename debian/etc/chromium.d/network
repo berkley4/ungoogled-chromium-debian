@@ -22,5 +22,11 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-tls-grease"
 #             default_public_interface_only or disable_non_proxied_udp
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --webrtc-ip-handling-policy=default_public_interface_only"
 
-# Disable the builtin media router
+
+### The flags below are required to enable Chromecast ###
+
+# COMMENT OUT to enable chromecast (enables the builtin media router)
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --media-router=0"
+
+# UNCOMMENT to enable chromecast (enables mDNS)
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-mdns"

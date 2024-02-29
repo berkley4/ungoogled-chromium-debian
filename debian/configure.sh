@@ -18,6 +18,7 @@ sys_disable=; sys_enable=
 C_VER_SET=0
 DNS_BUILTIN_SET=0
 MARCH_SET=0
+MEDIA_REMOTING_SET=0
 MTUNE_SET=0
 POLLY_EXT_SET=0
 RELEASE_SET=0
@@ -71,10 +72,10 @@ sanitise_op () {
 [ -n "$ATK_DBUS" ] || ATK_DBUS=1
 [ -n "$CATAPULT" ] || CATAPULT=1
 [ -n "$CLICK_TO_CALL" ] || CLICK_TO_CALL=1
+[ -n "$CHROMECAST" ] || CHROMECAST=1
 [ -n "$DRIVER" ] || DRIVER=1
 [ -n "$EXT_TOOLS_MENU" ] || EXT_TOOLS_MENU=1
 [ -n "$FEED" ] || FEED=1
-[ -n "$MEDIA_REMOTING" ] || MEDIA_REMOTING=0
 [ -n "$MUTEX_PI" ] || MUTEX_PI=1
 [ -n "$NOTIFICATIONS" ] || NOTIFICATIONS=1
 [ -n "$OAUTH2" ] || OAUTH2=0
@@ -99,7 +100,6 @@ sanitise_op () {
 [ -n "$SYS_FFMPEG" ] || SYS_FFMPEG=0
 [ -n "$SYS_ICU" ] || SYS_ICU=0
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
-
 
 ## Allow freetype to be force-enabled (for stable builds)
 [ -n "$SYS_FREETYPE" ] && SYS_FREETYPE_SET=1 || SYS_FREETYPE=1
@@ -582,6 +582,29 @@ if [ $CATAPULT -eq 0 ]; then
 fi
 
 
+if [ $CHROMECAST -ge 0 ]; then
+  op_enable="$op_enable disable/media-router"
+  op_disable="$op_disable chromecast/"
+
+  MEDIA_REMOTING=0
+else
+  P=fix-building-without-mdns-and-service-discovery
+  SER_UC="$SER_UC -e \"s@^#\(extra/ungoogled-chromium/$P\)@\1@\""
+
+  SMF="$SMF -e \"/^enable_mdns=false/d\""
+  SMF="$SMF -e \"/^enable_remoting=false/d\""
+
+  # Allow MEDIA_REMOTING to be force-disabled
+  [ $MEDIA_REMOTING_SET -eq 1 ] && [ $MEDIA_REMOTING -eq 0 ] || MEDIA_REMOTING=1
+
+  if [ $CHROMECAST -eq 2 ]; then
+    sed -e 's@^\(export.*media-router=0\)@#\1@' \
+        -e 's@^#\(export.*enable-mdns\)@\1@' \
+        -i $FLAG_DIR/network
+  fi
+fi
+
+
 if [ $CLICK_TO_CALL -eq 0 ]; then
   op_enable="$op_enable disable/click-to-call"
 
@@ -610,11 +633,11 @@ if [ $FEED -eq 0 ]; then
 fi
 
 
-if [ $MEDIA_REMOTING -eq 1 ]; then
-  op_disable="$op_disable disable/media-remoting/"
+if [ $MEDIA_REMOTING -eq 0 ]; then
+  op_enable="$op_enable disable/media-remoting/"
 
   #GN_FLAGS += enable_media_remoting=false
-  gn_disable="$gn_disable enable_media_remoting"
+  gn_enable="$gn_enable enable_media_remoting"
 fi
 
 
