@@ -1,3 +1,0 @@
-# Comment to disable NGShapeCache
-
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=LayoutNGShapeCache"

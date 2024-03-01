@@ -1,0 +1,26 @@
+# Disables GREASE for TLS (See UC issue #783 for more info)
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-tls-grease"
+
+# Valid values are 6 and 15
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --max-connections-per-host=15"
+
+# Disable probing for ipv6
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=SetIpv6ProbeFalse"
+
+# Disable quic (https://sec-consult.com/blog/detail/better-dont-be-too-quick/)
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-quic"
+
+# Limit referrer headers (choices: MinimalReferrers, NoCrossOriginReferrers, NoReferrers)
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=MinimalReferrers"
+
+# Disable weak cyphers (could break some websites)
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --cipher-suite-blacklist=0x000a,0x009c,0x009d,0x002f,0x0035"
+
+# WebRTC IP privacy
+#  - The builtin UC default ip handling policy is disable_non_proxied_udp
+#  - Choices: default, default_public_and_private_interfaces,
+#             default_public_interface_only or disable_non_proxied_udp
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --webrtc-ip-handling-policy=default_public_interface_only"
+
+# Disable the builtin media router
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --media-router=0"

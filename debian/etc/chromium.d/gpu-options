@@ -26,5 +26,8 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-zero-copy"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --num-raster-threads=2"
 
 
+# Enables shared GPUImageDecodeCache for UI if gpu rasterization is enabled
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --ui-enable-shared-image-cache-for-gpu"
+
 # This might help with eg google streetview on very old GPUs
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-accelerated-2d-canvas"

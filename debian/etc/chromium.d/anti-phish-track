@@ -1,5 +1,8 @@
-# Uncomment to enable anti-tracking mitigations
-# Note: this could potentially make you stand out even more from the crowd.
+### Note: you could potentially 'stand out from the crowd'
+###       by enabling some of these options
+
+# Convert Internationalized Domain Names to punycode (anti-phishing)
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --force-punycode-hostnames"
 
 # Disable pinging
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-pings"
@@ -9,10 +12,6 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --no-pings"
 
 # Disable automatic search engine scraping from webpages
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-search-engine-collection"
-
-# Disables GREASE for TLS (seems safe enough to set by default)
-# See https://github.com/ungoogled-software/ungoogled-chromium/issues/783 for more details
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-tls-grease"
 
 # Disable frequently-visited sites in the new tab page
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-top-sites"
@@ -24,16 +23,6 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-tls-grease"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --fingerprinting-canvas-image-data-noise"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --fingerprinting-canvas-measuretext-noise"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --fingerprinting-client-rects-noise"
-
-# Limit referrer headers (choices: MinimalReferrers, NoCrossOriginReferrers, NoReferrers)
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=MinimalReferrers"
-
-# WebRTC IP privacy
-# The builtin default (via an UC patch) is disable_non_proxied_udp)
-# Choices: default, default_public_and_private_interfaces,
-#          default_public_interface_only or disable_non_proxied_udp
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --webrtc-ip-handling-policy=disable_non_proxied_udp"
-
 
 # Disable OpenGL ES 3 APIs (prevents gpu info leakage; will also disable WebGL2)
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-es3-apis"

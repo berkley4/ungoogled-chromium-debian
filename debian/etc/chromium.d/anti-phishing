@@ -1,4 +1,0 @@
-# Convert all Internationalized Domain Names to punycode
-# See https://github.com/ungoogled-software/ungoogled-chromium/issues/370
-
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --force-punycode-hostnames"

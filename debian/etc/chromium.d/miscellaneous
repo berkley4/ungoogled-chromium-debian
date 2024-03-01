@@ -1,14 +1,27 @@
-# Valid values are 6 and 15
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --max-connections-per-host=15"
+# Disable setuid sandbox (should be used for debugging purposes onlu)
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-setuid-sandbox"
 
 # Don't display any warnings about not being the default browser
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --no-default-browser-check"
 
+# Disable breakpad (related to crash reporting)
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-breakpad"
+
 # Do not hide any extensions in the about:extensions dialog
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --show-component-extension-options"
+
+# Comment to disable NGShapeCache
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=LayoutNGShapeCache"
+
+# Disable Autoplay features
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=PreloadMediaEngagementData,AutoplayIgnoreWebAudio,MediaEngagementBypassAutoplayPolicies"
+
+# Disk cache options (the cache size is in bytes)
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disk-cache-dir=/tmp/example"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disk-cache-size=0"
 
 # For those on slow machines
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-low-end-device-mode"
 
-# Disable the builtin media router
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --media-router=0"
+# Uncomment to load all of the extensions installed to /usr/share/chromium/extensions
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --load-extension=$(ls -dm /usr/share/chromium/extensions/* 2>/dev/null | tr -d '\n')"
