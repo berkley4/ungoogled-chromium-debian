@@ -26,7 +26,7 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=AllowQt"
 
 # Sets visibility of the avatar button.
 # Choices are: always, incognito-and-guest or never
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --show-avatar-button=never"
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --show-avatar-button=never"
 
 # Hides the bookmark bar in new tab pages
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --bookmark-bar-ntp=none"
