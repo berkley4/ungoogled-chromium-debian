@@ -4,7 +4,7 @@
 
 # Disable hardware decoding/encoding
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=VaapiVideoDecoder"
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoEncoder"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=VaapiVideoEncoder"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-webrtc-hw-decoding"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-webrtc-hw-encoding"
 
