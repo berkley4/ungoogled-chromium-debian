@@ -589,7 +589,7 @@ if [ $CHROMECAST -ge 0 ]; then
   MEDIA_REMOTING=0
 else
   P=fix-building-without-mdns-and-service-discovery
-  SER_UC="$SER_UC -e \"s@^#\(extra/ungoogled-chromium/$P\)@\1@\""
+  SER_UC="$SER_UC -e \"s@^\(extra/ungoogled-chromium/$P\)@#\1@\""
 
   SMF="$SMF -e \"/^enable_mdns=false/d\""
   SMF="$SMF -e \"/^enable_remoting=false/d\""
