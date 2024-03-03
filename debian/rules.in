@@ -67,6 +67,7 @@ GN_FLAGS +=                                     \
         dawn_tests_use_angle=false              \
         dawn_use_swiftshader=false              \
         enable_component_updater=false          \
+        enable_extractors=false                 \
         enable_lens_desktop=false               \
         enable_maldoca=false                    \
         enable_perfetto_unittests=false         \
