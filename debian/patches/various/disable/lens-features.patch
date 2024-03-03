@@ -1,0 +1,47 @@
+--- a/components/lens/lens_features.cc
++++ b/components/lens/lens_features.cc
+@@ -12,7 +12,7 @@
+ 
+ BASE_FEATURE(kLensStandalone,
+              "LensStandalone",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             base::FEATURE_DISABLED_BY_DEFAULT);
+ 
+ BASE_FEATURE(kLensImageCompression,
+              "LensImageCompression",
+@@ -24,7 +24,7 @@
+ 
+ BASE_FEATURE(kEnableLatencyLogging,
+              "LensImageLatencyLogging",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             base::FEATURE_DISABLED_BY_DEFAULT);
+ 
+ BASE_FEATURE(kEnableRegionSearchKeyboardShortcut,
+              "LensEnableRegionSearchKeyboardShortcut",
+@@ -36,7 +36,7 @@
+ 
+ BASE_FEATURE(kEnableImageSearchSidePanelFor3PDse,
+              "EnableImageSearchSidePanelFor3PDse",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             base::FEATURE_DISABLED_BY_DEFAULT);
+ 
+ BASE_FEATURE(kLensRegionSearchStaticPage,
+              "LensRegionSearchStaticPage",
+@@ -44,7 +44,7 @@
+ 
+ BASE_FEATURE(kEnableContextMenuInLensSidePanel,
+              "EnableContextMenuInLensSidePanel",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             base::FEATURE_DISABLED_BY_DEFAULT);
+ 
+ constexpr base::FeatureParam<std::string> kHomepageURLForLens{
+     &kLensStandalone, "lens-homepage-url", "https://lens.google.com/v3/"};
+@@ -71,7 +71,7 @@
+         true};
+ 
+ constexpr base::FeatureParam<bool> kShouldIssuePreconnectForLens{
+-    &kLensStandalone, "lens-issue-preconnect", true};
++    &kLensStandalone, "lens-issue-preconnect", false};
+ 
+ constexpr base::FeatureParam<std::string> kPreconnectKeyForLens{
+     &kLensStandalone, "lens-preconnect-key", "https://google.com"};

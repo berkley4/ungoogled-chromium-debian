@@ -76,6 +76,8 @@ sanitise_op () {
 [ -n "$DRIVER" ] || DRIVER=1
 [ -n "$EXT_TOOLS_MENU" ] || EXT_TOOLS_MENU=1
 [ -n "$FEED" ] || FEED=1
+[ -n "$LENS" ] || LENS=1
+[ -n "$LENS_TRANSLATE" ] || LENS_TRANSLATE=1
 [ -n "$MUTEX_PI" ] || MUTEX_PI=1
 [ -n "$NOTIFICATIONS" ] || NOTIFICATIONS=1
 [ -n "$OAUTH2" ] || OAUTH2=0
@@ -110,7 +112,6 @@ sanitise_op () {
 ## OpenH254 support
 [ -n "$OPENH264" ] && [ $OPENH264 -eq 0 ] && SYS_OPENH264=0 || OPENH264=1
 [ -n "$SYS_OPENH264" ] || SYS_OPENH264=1
-
 
 ## Managed Browser Policy Settings
 if [ $POLICIES -eq 1 ]; then
@@ -633,10 +634,29 @@ if [ $FEED -eq 0 ]; then
 fi
 
 
+if [ $LENS -eq 0 ]; then
+  # GN_FLAGS += enable_lens_desktop=false
+  gn_enable="$gn_enable enable_lens_desktop"
+else
+  DSB="$DSB -e \"/^components\/lens\/lens_features\.cc/d\""
+
+  if [ $LENS -ge 2 ]; then
+    if [ $LENS_TRANSLATE -eq 0 ]; then
+      sed -e 's@^#\(export.*enable-lens-standalone\)@\1@' \
+          -e 's@^\(export.*enable-lens-image-translate\)@#\1@' \
+          -i $FLAG_DIR/google-lens
+    else
+      sed -e 's@^#\(export.*enable-lens-standalone\)@\1@' \
+          -i $FLAG_DIR/google-lens
+    fi
+  fi
+fi
+
+
 if [ $MEDIA_REMOTING -eq 0 ]; then
   op_enable="$op_enable disable/media-remoting/"
 
-  #GN_FLAGS += enable_media_remoting=false
+  # GN_FLAGS += enable_media_remoting=false
   gn_enable="$gn_enable enable_media_remoting"
 fi
 

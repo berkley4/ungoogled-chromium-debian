@@ -73,7 +73,7 @@ various/disable/crashpad-handler.patch
 various/disable/crashpad-handler_2.patch
 various/disable/driver-chrome-path.patch
 various/disable/file-util-extractors.patch
-various/disable/lens.patch
+various/disable/lens-features.patch
 various/disable/motherboard-metrics.patch
 various/disable/orchestrator.patch
 various/disable/screen-ai-service.patch

@@ -1,0 +1,5 @@
+# Enable Google lens (probably needs google-api-keys enabled)
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-lens-standalone"
+
+# Comment out to disable lens image translation
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-lens-image-translate"

@@ -64,7 +64,6 @@ GN_FLAGS +=                                     \
         dawn_use_swiftshader=false              \
         enable_component_updater=false          \
         enable_extractors=false                 \
-        enable_lens_desktop=false               \
         enable_maldoca=false                    \
         enable_screen_ai_service=false          \
         enable_swiftshader=false                \
@@ -112,6 +111,9 @@ GN_FLAGS +=                                     \
 
 # Disable feed v2
 #GN_FLAGS += enable_feed_v2=false
+
+# Google lens
+#GN_FLAGS += enable_lens_desktop=false
 
 # Disable media remoting
 #GN_FLAGS += enable_media_remoting=false
