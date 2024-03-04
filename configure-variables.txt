@@ -34,8 +34,6 @@ LTO_DIR		<dir>		Default iis <source root>/out/Release/thinlto-cache
 
 PGO		1		Enable/disable building with PGO profile optimisation
 
-POLICIES	1		Install /etc/chromium/policies/managed/policies.json
-
 SKIA_GAMMA	0		Set the gamma value for text blitting
 				Set to 1 to set a gamma value of 2.2
 				Set within the range 1.0 - 3.0 (always give one decimal place) for other values

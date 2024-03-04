@@ -85,9 +85,8 @@ sanitise_op () {
 [ -n "$OZONE_WAYLAND" ] || OZONE_WAYLAND=1
 [ -n "$PDF_JS" ] || PDF_JS=0
 [ -n "$PIPEWIRE" ] || PIPEWIRE=1
-[ -n "$PULSE" ] || PULSE=1
-[ -n "$POLICIES" ] || POLICIES=1
 [ -n "$PRINT_PREVIEW" ] || PRINT_PREVIEW=1
+[ -n "$PULSE" ] || PULSE=1
 [ -n "$QT" ] || QT=1
 [ -n "$SKIA_GAMMA" ] || SKIA_GAMMA=0
 [ -n "$SPEECH" ] || SPEECH=1
@@ -113,23 +112,6 @@ sanitise_op () {
 [ -n "$OPENH264" ] && [ $OPENH264 -eq 0 ] && SYS_OPENH264=0 || OPENH264=1
 [ -n "$SYS_OPENH264" ] || SYS_OPENH264=1
 
-## Managed Browser Policy Settings
-if [ $POLICIES -eq 1 ]; then
-  # Capture of audio/video/screen (eg for WebRTC)
-  [ -n "$CAP" ] && [ $CAP -eq 0 ] && CAP_AUD=0 && CAP_SCR=0 && CAP_VID=0 || CAP=1
-  [ -n "$CAP_AUD" ] || CAP_AUD=1
-  [ -n "$CAP_SCR" ] || CAP_SCR=1
-  [ -n "$CAP_VID" ] || CAP_VID=1
-
-  # Setting DNS_HOST will enable DNS_BUILTIN unless the latter is set to zero
-  [ -n "$DNS_BUILTIN" ] && DNS_BUILTIN_SET=1 || DNS_BUILTIN=0
-  [ -n "$DNS_HOST" ] || DNS_HOST=
-  [ -n "$DNS_INTERCEPT" ] || DNS_INTERCEPT=1
-
-  [ -n "$JS_JIT" ] || JS_JIT=1
-fi
-
-
 ## MARCH and MTUNE defaults
 [ -n "$MARCH" ] && MARCH_SET=1 || MARCH=x86-64-v2
 [ -n "$MTUNE" ] && MTUNE_SET=1 || MTUNE=generic
@@ -142,8 +124,22 @@ fi
 [ -n "$LTO_JOBS" ] || LTO_JOBS=0
 
 
-## Package (deb) compression options
-## XZ_THREADED is disabled If XZ_EXTREME=0 or XZ_THREADED=0 (or both)
+## Managed Policy: Capture of audio/video/screen (eg for WebRTC)
+[ -n "$CAP" ] && [ $CAP -eq 0 ] && CAP_AUD=0 && CAP_SCR=0 && CAP_VID=0 || CAP=1
+[ -n "$CAP_AUD" ] || CAP_AUD=1
+[ -n "$CAP_SCR" ] || CAP_SCR=1
+[ -n "$CAP_VID" ] || CAP_VID=1
+
+## Managed Policy: Setting DNS_HOST will enable DNS_BUILTIN if the latter isn't set to zero
+[ -n "$DNS_BUILTIN" ] && DNS_BUILTIN_SET=1 || DNS_BUILTIN=0
+[ -n "$DNS_HOST" ] || DNS_HOST=
+[ -n "$DNS_INTERCEPT" ] || DNS_INTERCEPT=1
+
+## Managed Policy: Javascript Jit compiler
+[ -n "$JS_JIT" ] || JS_JIT=1
+
+
+## Package conpression: XZ_THREADED is disabled If XZ_EXTREME=0 or XZ_THREADED=0 (or both)
 [ -n "$XZ_EXTREME" ] || XZ_EXTREME=0
 [ -n "$XZ_THREADED" ] && XZ_THREADED_SET=1 || XZ_THREADED=0
 
@@ -566,6 +562,36 @@ fi
 
 
 
+####################
+## Managed Policy ##
+####################
+
+[ $CAP_AUD -eq 1 ] || POL="$POL -e \"/AudioCaptureAllowed/s@true@false@\""
+[ $CAP_SCR -eq 1 ] || POL="$POL -e \"/ScreenCaptureAllowed/s@true@false@\""
+[ $CAP_VID -eq 1 ] || POL="$POL -e \"/VideoCaptureAllowed/s@true@false@\""
+
+if [ -n "$DNS_HOST" ]; then
+  [ $DNS_BUILTIN_SET -eq 1 ] && [ $DNS_BUILTIN -eq 0 ] || DNS_BUILTIN=1
+  POL="$POL -e \"/doh.opendns.com/s@doh.opendns.com@$DNS_HOST@\""
+fi
+
+if [ $DNS_INTERCEPT -eq 0 ]; then
+  POL="$POL -e \"/DNSInterceptionChecksEnabled/s@true@false@\""
+fi
+
+if [ $DNS_BUILTIN -eq 1 ]; then
+  op_disable="$op_disable disable/dns_config_service"
+  POL="$POL -e \"/BuiltInDnsClientEnabled/s@false@true@\""
+fi
+
+# Treat 0 and 2 as both disabling jit (2 being the value of the key)
+if [ $JS_JIT -eq 0 ] || [ $JS_JIT -eq 2 ]; then
+  POL="$POL -e \"/DefaultJavaScriptJitSetting/s@1@2@\""
+fi
+
+
+
+
 #############################################
 ## Non-library features/components/patches ##
 #############################################
@@ -692,34 +718,6 @@ fi
 if [ $PDF_JS -eq 1 ]; then
   # GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
   gn_disable="$gn_disable pdf_enable_v8"
-fi
-
-
-if [ $POLICIES -eq 0 ]; then
-  INS="$INS -e \"s@^\(.*/managed/policies\.json\)@#\1@\""
-else
-  [ $CAP_AUD -eq 1 ] || POL="$POL -e \"/AudioCaptureAllowed/s@true@false@\""
-  [ $CAP_SCR -eq 1 ] || POL="$POL -e \"/ScreenCaptureAllowed/s@true@false@\""
-  [ $CAP_VID -eq 1 ] || POL="$POL -e \"/VideoCaptureAllowed/s@true@false@\""
-
-  if [ -n "$DNS_HOST" ]; then
-    [ $DNS_BUILTIN_SET -eq 1 ] && [ $DNS_BUILTIN -eq 0 ] || DNS_BUILTIN=1
-    POL="$POL -e \"/doh.opendns.com/s@doh.opendns.com@$DNS_HOST@\""
-  fi
-
-  if [ $DNS_INTERCEPT -eq 0 ]; then
-    POL="$POL -e \"/DNSInterceptionChecksEnabled/s@true@false@\""
-  fi
-
-  if [ $DNS_BUILTIN -eq 1 ]; then
-    op_disable="$op_disable disable/dns_config_service"
-    POL="$POL -e \"/BuiltInDnsClientEnabled/s@false@true@\""
-  fi
-
-  # Treat 0 and 2 as both disabling jit (2 being the value of the key)
-  if [ $JS_JIT -eq 0 ] || [ $JS_JIT -eq 2 ]; then
-    POL="$POL -e \"/DefaultJavaScriptJitSetting/s@1@2@\""
-  fi
 fi
 
 
