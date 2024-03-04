@@ -112,6 +112,9 @@ GN_FLAGS +=                                     \
 # Disable feed v2
 #GN_FLAGS += enable_feed_v2=false
 
+# Enable HLS manifest parser and demuxer
+#GN_FLAGS += enable_hls_demuxer=true
+
 # Google lens
 #GN_FLAGS += enable_lens_desktop=false
 

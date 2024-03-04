@@ -76,6 +76,7 @@ sanitise_op () {
 [ -n "$DRIVER" ] || DRIVER=1
 [ -n "$EXT_TOOLS_MENU" ] || EXT_TOOLS_MENU=1
 [ -n "$FEED" ] || FEED=1
+[ -n "$HLS_DEMUXER" ] || HLS_DEMUXER=0
 [ -n "$LENS" ] || LENS=1
 [ -n "$LENS_TRANSLATE" ] || LENS_TRANSLATE=1
 [ -n "$MUTEX_PI" ] || MUTEX_PI=1
@@ -657,6 +658,11 @@ fi
 if [ $FEED -eq 0 ]; then
   # GN_FLAGS += enable_feed_v2=false
   gn_enable="$gn_enable enable_feed_v2"
+fi
+
+
+if [ $HLS_DEMUXER -eq 1 ]; then
+  gn_enable="$gn_enable enable_hls_demuxer"
 fi
 
 
