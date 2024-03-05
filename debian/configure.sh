@@ -136,9 +136,6 @@ sanitise_op () {
 [ -n "$DNS_HOST" ] || DNS_HOST=
 [ -n "$DNS_INTERCEPT" ] || DNS_INTERCEPT=1
 
-## Managed Policy: Javascript Jit compiler
-[ -n "$JS_JIT" ] || JS_JIT=1
-
 
 ## Package conpression: XZ_THREADED is disabled If XZ_EXTREME=0 or XZ_THREADED=0 (or both)
 [ -n "$XZ_EXTREME" ] || XZ_EXTREME=0
@@ -583,11 +580,6 @@ fi
 if [ $DNS_BUILTIN -eq 1 ]; then
   op_disable="$op_disable disable/dns_config_service"
   POL="$POL -e \"/BuiltInDnsClientEnabled/s@false@true@\""
-fi
-
-# Treat 0 and 2 as both disabling jit (2 being the value of the key)
-if [ $JS_JIT -eq 0 ] || [ $JS_JIT -eq 2 ]; then
-  POL="$POL -e \"/DefaultJavaScriptJitSetting/s@1@2@\""
 fi
 
 
