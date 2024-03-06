@@ -79,6 +79,7 @@ sanitise_op () {
 [ -n "$HLS_DEMUXER" ] || HLS_DEMUXER=0
 [ -n "$LENS" ] || LENS=1
 [ -n "$LENS_TRANSLATE" ] || LENS_TRANSLATE=1
+[ -n "$MEDIA_REMOTING" ] || MEDIA_REMOTING=1
 [ -n "$MUTEX_PI" ] || MUTEX_PI=1
 [ -n "$NOTIFICATIONS" ] || NOTIFICATIONS=1
 [ -n "$OAUTH2" ] || OAUTH2=0
@@ -602,7 +603,7 @@ if [ $CATAPULT -eq 0 ]; then
 fi
 
 
-if [ $CHROMECAST -ge 0 ]; then
+if [ $CHROMECAST -eq 0 ]; then
   op_enable="$op_enable disable/media-router"
   op_disable="$op_disable chromecast/"
 
@@ -614,10 +615,7 @@ else
   SMF="$SMF -e \"/^enable_mdns=false/d\""
   SMF="$SMF -e \"/^enable_remoting=false/d\""
 
-  # Allow MEDIA_REMOTING to be force-disabled
-  [ $MEDIA_REMOTING_SET -eq 1 ] && [ $MEDIA_REMOTING -eq 0 ] || MEDIA_REMOTING=1
-
-  if [ $CHROMECAST -eq 2 ]; then
+  if [ $CHROMECAST -ge 2 ]; then
     sed -e 's@^\(export.*media-router=0\)@#\1@' \
         -e 's@^#\(export.*enable-mdns\)@\1@' \
         -i $FLAG_DIR/network
