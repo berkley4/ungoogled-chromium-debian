@@ -44,8 +44,9 @@ ___Performance improvements___
     - -mavx - enables AVX instructions (AVX2 is available via an optional patch)
     - -fno-plt - (see [here](https://patchwork.ozlabs.org/project/gcc/patch/alpine.LNX.2.11.1505061730460.22867@monopod.intra.ispras.ru/))
     - -fsplit-machine-functions - (see [here](https://groups.google.com/g/llvm-dev/c/RUegaMg-iqc/m/wFAVxa6fCgAJ))
-    - -import-instr-limit=24 and -import-hot-multiplier=12
-        - gives a hot import limit of 288 (24x12) versus a default of 300 (30x10)
+        - allows for lower function import limits (-import-instr-limit=24 and -import-hot-multiplier=12)
+        - a limit of 24 (default 30) and hot limit of 288 (default 300) produce a smaller/faster binary
+    - -Wl,-z,keep-text-section-prefix - enables text section splitting to further help optimise the binary
     - The following LLVM polly options are available (needs a capable toolchain)
         - -polly-vectorizer=stripmine, -polly-run-dce, -polly-invariant-load-hoisting
 
@@ -59,19 +60,28 @@ ___Security/Privacy improvements___
 - Overflow prevention (-fwrapv) - see [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1031653) and [here](https://gitlab.e.foundation/e/apps/browser/-/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch)
 - Extra cromite and vanadium patches (and generic copies of patches derived from these projects)
 - A policy file is installed to help lock down the browser (use [this](https://chromeenterprise.google/policies/) as a reference guide)
-- The Web Bluetooth/HID/Serial/USB APIs are disabled, and the audio/video/screen capture APIs can be disabled via the policy file
-- Text fragments are disabled by default via the opilcy file (see [here](https://xsleaks.dev/docs/attacks/experiments/scroll-to-text-fragment/) for more info)
-- Built without possibly privacy unfriendly Lens Desktop and Screen AI Service components
+- The Web Bluetooth/HID/Serial/USB APIs are disabled via managed policy
+- Text fragments are disabled by default via the poilcy file (see [here](https://xsleaks.dev/docs/attacks/experiments/scroll-to-text-fragment/) for more info)
 - Some security/privacy themed flag files are installed to /etc/chromium.d
+- Potentially privacy-unfriendly Google features - Chromecast, Lens and Translate - are guarded behind runtime flags
+- Reduced attack surface
+    - Some components/features can optionally be disabled/patched out at compile time
+        - ATK/dbus
+        - Catapult
+        - DNS config service
+        - Media remoting
+        - Supervised users
+    - Some other features/components are always patched out
+        - Screen AI Service
+        - Crashpad handler
+        - USB image writer extension API
 
 
 ___Other features___
 
-- Lots of extra runtime flags (via the flag files in /etc/chromium.d)
-- Lots of extra build flags to try and prevent the building of unneeded testing/debug features
-- The crashpad handler binary is redundant on Ungoogled Chromium and has been patched out
-- Google translate - can be enabled via an edit to /etc/chromium.d/google-translate
-- Various patches to disable several potentially unwanted components/enable system libraries
+- Lots of extra runtime flags (via files in /etc/chromium.d)
+- Lots of extra build flags to try and prevent the building of unneeded testing/debug/development features
+- Various patches to enable system libraries
 - Experimental Opentype SVG support via third party patches
 
 
@@ -81,6 +91,7 @@ ___Build system___
 - Using git often avoids compatibility/availabilty issues associated with tarball sources
 - Self-built BOLT/LTO/PGO optimised and polly-enabled clang/llvm is preferred for building
     - requiring a recent version of clang often means fewer build headaches
+- Upstream rust is preferred (a simple script-based install)
 - A configure shell script is provided to enable easy customisation of the build
     - it takes out much of the complexity might otherwise be present in debian/rules
     - it handles dependencies, patches, enabling/disabling system libraries and components
