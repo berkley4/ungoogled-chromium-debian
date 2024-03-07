@@ -673,7 +673,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  
    // Check for reasons not to return a URLRequestHttpJob. These don't apply to
    // https and wss requests.
-@@ -1099,7 +1100,7 @@
+@@ -1095,7 +1096,7 @@
    HttpResponseHeaders* headers = GetResponseHeaders();
    std::string value;
    if (headers->EnumerateHeader(nullptr, "Strict-Transport-Security", &value))
@@ -682,7 +682,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  }
  
  void URLRequestHttpJob::OnStartCompleted(int result) {
-@@ -1169,7 +1170,7 @@
+@@ -1165,7 +1166,7 @@
      TransportSecurityState* state = context->transport_security_state();
      NotifySSLCertificateError(
          result, transaction_->GetResponseInfo()->ssl_info,
