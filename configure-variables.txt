@@ -44,16 +44,6 @@ X11_ONLY	0		When enabled is an alias for OZONE_WAYLAND=0
 TARBALL		0		Use tarball download instead of git
 DL_CACHE	<dir>		Default is ../download_cache (one level up from source tree; active when TARBALL=1)
 
-## Components/features that can be enabled/disabled exclusively via patches
-
-ATK_DBUS	1		Accessibility/D-Bus support (d-bus is only used for bluetooth)
-CATAPULT	1		Catapult profiling support
-OAUTH2		0		Enable OAuth 2.0 client switches
-SUPERVISED_USER	0		Parental control related component (relies on a bromite patch)
-TRANSLATE	1		Google translate support
-				0 - disable
-				1 - enable (need to edit /etc/chromium.d/google-translate)
-				2 - enable completely
 
 ## Managed Browser Policy Settings
 DNS_BUILTIN	0		Internal chromium DNS-over-HTTPS client
@@ -71,6 +61,8 @@ CAP_VID		1		Video capture
 
 DRIVER		1		Chromedriver package
 
+ATK_DBUS	1		Accessibility/D-Bus support (d-bus is only used for bluetooth)
+CATAPULT	1		Catapult profiling support
 CLICK_TO_CALL	1		Feature for using chromium to make a call via an android phone
 EXT_TOOLS_MENU	1		Move the extensions menu to the 'More tools' menu
 FEED		1		WebFeed (News feed) support
@@ -80,6 +72,7 @@ LENS_TRANSLATE	1		Goodle Lens image translation subfeature
 MEDIA_REMOTING	0		Render and play back media on remote devices when a tab is casted
 MUTEX_PI	1		Mutex priority inheritance
 NOTIFICATIONS	1		System notifications
+OAUTH2		0		Enable OAuth 2.0 client switches
 OPENTYPE_SVG	1		Opentype SVG support
 OZONE_WAYLAND	1		Wayland ozone platform (experimental; can be disabled by wayland users)
 PDF_JS		0		PDF javascript support
@@ -88,6 +81,11 @@ PRINT_PREVIEW	1		Can be disabled to replace the print dialogue with the system o
 PULSE		1		Pulseaudio
 QT		1		Runtime autodetected (eg Gnome desktops will ignore)
 SPEECH		1		Speech service (voice recognition)
+SUPERVISED_USER	0		Parental control related component (relies on a bromite patch)
+TRANSLATE	1		Google translate support
+				0 - disable
+				1 - enable (need to edit /etc/chromium.d/google-translate)
+				2 - enable completely
 VR		0		Virtual reality hardware support
 WEBGPU		0		Not enabled upstream on linux yet (likely beta quality)
 WIDEVINE	1		Needs various extra components to enable
