@@ -76,6 +76,7 @@ sanitise_op () {
 [ -n "$DRIVER" ] || DRIVER=1
 [ -n "$EXT_TOOLS_MENU" ] || EXT_TOOLS_MENU=1
 [ -n "$FEED" ] || FEED=1
+[ -n "$GOOGLE_API_KEYS" ] || GOOGLE_API_KEYS=0
 [ -n "$HLS_DEMUXER" ] || HLS_DEMUXER=0
 [ -n "$LENS" ] || LENS=1
 [ -n "$LENS_TRANSLATE" ] || LENS_TRANSLATE=1
@@ -663,6 +664,7 @@ else
   DSB="$DSB -e \"/^components\/lens\/lens_features\.cc/d\""
 
   if [ $LENS -ge 2 ]; then
+    GOOGLE_API_KEYS=1
     if [ $LENS_TRANSLATE -eq 0 ]; then
       sed -e 's@^#\(export.*enable-lens-standalone\)@\1@' \
           -e 's@^\(export.*enable-lens-image-translate\)@#\1@' \
@@ -747,7 +749,7 @@ else
   DSB="$DSB -e \"/\/translate_util\.cc/d\""
 
   if [ $TRANSLATE -ge 2 ]; then
-    sed 's@^#\(export GOOGLE_\)@\1@' -i $FLAG_DIR/google-api-keys
+    GOOGLE_API_KEYS=1
     sed 's@^#\(export.*translate-script-url=\)@\1@' -i $FLAG_DIR/google-translate
   fi
 fi
@@ -779,6 +781,13 @@ fi
 
 if [ $XZ_THREADED -eq 1 ]; then
   RUL="$RUL -e \"s@\(dh_builddeb .*\)@\1 --threads-max=\x24(JOBS)@\""
+fi
+
+
+
+## Enable Google API keys for google services
+if [ $GOOGLE_API_KEYS -eq 1 ]; then
+  sed 's@^#\(export GOOGLE_\)@\1@' -i $FLAG_DIR/google-api-keys
 fi
 
 
