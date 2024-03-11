@@ -79,7 +79,15 @@
    # Chrome OS does not support Native Messaging policies.
    if (!is_chromeos) {
      sources += [
-@@ -1097,7 +1103,6 @@
+@@ -825,6 +831,7 @@
+     "//chrome/browser/web_applications/extensions",
+     "//chrome/common/extensions/api:extensions_features",
+     "//chrome/common/safe_browsing:proto",
++    "//chrome/services/file_util:buildflags",
+     "//chrome/services/file_util/public/mojom:mojom",
+     "//chrome/services/removable_storage_writer/public/mojom",
+     "//components/app_constants",
+@@ -1097,7 +1104,6 @@
      sources += [
        "api/enterprise_reporting_private/chrome_desktop_report_request_helper.cc",
        "api/enterprise_reporting_private/chrome_desktop_report_request_helper.h",
@@ -87,7 +95,7 @@
        "api/messaging/native_message_process_host.cc",
        "api/messaging/native_message_process_host.h",
        "api/messaging/native_messaging_launch_from_native.cc",
-@@ -1113,6 +1118,9 @@
+@@ -1113,6 +1119,9 @@
        "//components/enterprise/common/proto:connectors_proto",
        "//components/keep_alive_registry",
      ]
@@ -97,7 +105,7 @@
      if (is_posix) {
        sources += [ "api/messaging/native_process_launcher_posix.cc" ]
      }
-@@ -1311,7 +1319,7 @@
+@@ -1311,7 +1320,7 @@
      ]
    }
  
@@ -116,11 +124,27 @@
  #include "chrome/browser/extensions/api/messaging/incognito_connectability.h"
  #include "chrome/browser/extensions/api/notifications/extension_notification_display_helper_factory.h"
  #include "chrome/browser/extensions/api/web_authentication_proxy/web_authentication_proxy_service.h"
-@@ -43,7 +42,6 @@
+@@ -26,8 +25,13 @@
+ #include "chrome/browser/extensions/permissions_updater.h"
+ #include "chrome/browser/extensions/plugin_manager.h"
+ #include "chrome/browser/extensions/warning_badge_service_factory.h"
++#include "chrome/services/file_util/buildflags.h"
+ #include "ppapi/buildflags/buildflags.h"
+ 
++#if BUILDFLAG(ENABLE_EXTRACTORS)
++#include "chrome/browser/extensions/api/image_writer_private/operation_manager.h"
++#endif
++
+ namespace chrome_extensions {
+ 
+ void EnsureChromeBrowserContextKeyedServiceFactoriesBuilt() {
+@@ -43,7 +47,9 @@
    extensions::ExtensionNotificationDisplayHelperFactory::GetInstance();
    extensions::ExtensionSystemFactory::GetInstance();
    extensions::ExtensionWebUIOverrideRegistrar::GetFactoryInstance();
--  extensions::image_writer::OperationManager::GetFactoryInstance();
++#if BUILDFLAG(ENABLE_EXTRACTORS)
+   extensions::image_writer::OperationManager::GetFactoryInstance();
++#endif
    extensions::IncognitoConnectability::EnsureFactoryBuilt();
    extensions::InstallTrackerFactory::GetInstance();
    extensions::InstallVerifierFactory::GetInstance();
