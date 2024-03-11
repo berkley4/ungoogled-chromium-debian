@@ -74,7 +74,9 @@ ___Security/Privacy improvements___
     - Some other features/components are always patched out
         - Screen AI Service
         - Crashpad handler
-        - USB image writer extension API
+        - Image writer private API
+        - image writer utility
+        - Removable storage writer service
 
 
 ___Other features___
