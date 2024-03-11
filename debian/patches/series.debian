@@ -75,7 +75,6 @@ various/disable/driver-chrome-path.patch
 various/disable/file-util-extractors.patch
 various/disable/lens-features.patch
 various/disable/motherboard-metrics.patch
-various/disable/orchestrator.patch
 various/disable/screen-ai-service.patch
 various/disable/unrar.patch
 various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
