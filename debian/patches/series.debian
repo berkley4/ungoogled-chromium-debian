@@ -72,7 +72,7 @@ various/disable/CollectWebGPUSupportMetrics.patch
 various/disable/crashpad-handler.patch
 various/disable/crashpad-handler_2.patch
 various/disable/driver-chrome-path.patch
-various/disable/file-util-extractors.patch
+various/disable/image-writer-private.patch
 various/disable/lens-features.patch
 various/disable/motherboard-metrics.patch
 various/disable/screen-ai-service.patch
