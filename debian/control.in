@@ -12,7 +12,7 @@ Build-Depends:
 #lld-18,
 #clang-18,
 #libclang-rt-18-dev,
-#rustc (>= 1.75.0),
+#rustc (>= 1.70.0+dfsg1-5),
  python-is-python3,
  generate-ninja,
  ninja-build,

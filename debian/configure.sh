@@ -57,7 +57,6 @@ sanitise_op () {
 [ -n "$SYMBOLS_BLINK" ] || SYMBOLS_BLINK=0
 [ -n "$SYS_CLANG" ] || SYS_CLANG=0
 [ -n "$SYS_RUST" ] || SYS_RUST=0
-[ -n "$SYS_RUST_FORCE" ] || SYS_RUST_FORCE=0
 [ -n "$TARBALL" ] || TARBALL=0
 
 [ -n "$AES_PCLMUL" ] || AES_PCLMUL=1
@@ -218,13 +217,13 @@ esac
 [ -d $RT_DIR/third_party ] && TEST=0 || TEST=1
 
 
-## Get/set/override default clang version
-CC_VER=$(sed -n 's@[ #]lld-\([^,]*\).*@\1@p' $DEBIAN/control.in)
+## Get/set/override default clang version from debian/rules.in
+CR_VER=$(sed -n 's@^#export LLVM_VERSION := @@p' $DEBIAN/rules.in)
 
-[ -n "$C_VER" ] && C_VER_SET=1 || C_VER=$CC_VER
+[ -n "$C_VER" ] && C_VER_SET=1 || C_VER=$CR_VER
 
-if [ $C_VER_SET -eq 1 ] && [ $C_VER -lt $CC_VER ]; then
-  printf '%s\n' "WARN: Clang versions below $CC_VER are not supported"
+if [ $C_VER_SET -eq 1 ] && [ $C_VER -lt $CR_VER ]; then
+  printf '%s\n' "WARN: Clang versions below $CR_VER are not supported"
   printf '%s\n' "Disabling PGO support"
   PGO=0
 fi
@@ -353,74 +352,69 @@ if [ $SYS_CLANG -eq 0 ]; then
   PRU="$PRU -e \"/^tools\/clang/d\""
 else
   op_enable="$op_enable system/clang/clang-version-check"
-  op_enable="$op_enable system/clang/rust-clanglib-local"
 
-  CL_PATCH=$OP_DIR/system/clang/rust-clanglib-local.patch
+  #GN_FLAGS += clang_base_path=CLANG_DIR clang_verion=CLANG_VER
+  gn_enable="$gn_enable clang_base_path"
+
+  CLANG_DIR=/usr/lib/llvm-$C_VER
+  CLANG_VER=$C_VER
 
   if [ $SYS_CLANG -eq 1 ]; then
-    # Path to libclang_rt.builtins.a
-    C_LIB_DIR=/usr/lib/llvm-$C_VER/lib/clang/$C_VER/lib/linux
+    # Grab the clang version used in debian/control.in
+    CC_VER=$(sed -n 's@[ #]lld-\([^,]*\).*@\1@p' $DEBIAN/control.in)
 
-    # Grab the clang version used in debian/rules.in
-    CR_VER=$(sed -n 's@.*LLVM_DIR.*/llvm-\([^/]*\)/bin@\1@p' $DEBIAN/rules.in)
-
-    # Clang/LLVM version sanity chack
+    #### Clang/LLVM version sanity chack
     if [ $CC_VER -ne $CR_VER ]; then
-      printf '%s\n' "Clang/LLVM version mismatch in d/control.in and d/rules.in"
+      printf '%s\n' "WARN: Clang/LLVM version mismatch in d/control.in and d/rules.in"
+    fi
+
+    # Check that package version $C_VER is actually installed on the system
+    if [ ! -x /usr/lib/llvm-$C_VER/bin/clang ] && [ $TEST -eq 0 ]; then
+      printf '%s\n' "Cannot find /usr/lib/llvm-${C_VER}/bin/clang"
       exit 1
     fi
-
-    if [ $TEST -eq 0 ]; then
-      # Check that package version $C_VER is actually installed on the system
-      if [ ! -f /usr/lib/llvm-$C_VER/bin/clang ]; then
-        printf '%s\n' "Cannot find /usr/lib/llvm-${C_VER}/bin/clang"
-        exit 1
-      fi
-    fi
-
-    # Alter patch to use $C_LIB_DIR instead of the /usr/local/lib default
-    sed "s@/usr/local/lib/clang/[^/]*/lib@$C_LIB_DIR@" -i $CL_PATCH
 
     deps_enable="$deps_enable lld clang libclang-rt"
     op_enable="$op_enable system/clang/rust-clanglib"
 
-    # Change clang version in d/rules and d/control if we override version
-    if [ $C_VER -ne $CR_VER ]; then
+    # Change clang version in d/control if override version differs
+    if [ $CC_VER -ne $C_VER ]; then
       CON="$CON -e \"s@\(lld-\)$CC_VER@\1$C_VER@\""
       CON="$CON -e \"s@\(clang-\)$CC_VER@\1$C_VER@\""
       CON="$CON -e \"s@\(libclang-rt-\)$CC_VER\(-dev\)@\1$C_VER\2@\""
-
-      RUL="$RUL -e \"s@\(.*LLVM_DIR.*/llvm-\)$CR_VER\(/bin\)@\1$C_VER\2@\""
     fi
 
-    # Uncomment the export of LLVM_DIR path variable
+    # Change clang version in d/rules if override version differs
+    if [ $CR_VER -ne $C_VER ]; then
+      RUL="$RUL -e \"s@^\(#export LLVM_VERSION :=\) $CR_VER@\1 $C_VER@\""
+    fi
+
+    # Uncomment the export of LLVM_VERSION and LLVM_DIR variables
+    RUL="$RUL -e \"s@^#\(export LLVM_VERSION\)@\1@\""
     RUL="$RUL -e \"s@^#\(export LLVM_DIR\)@\1@\""
 
     # Prefix clang, clang++ and llvm-{ar,nm,ranlib} with $LLVM_DIR path
     RUL="$RUL -e \"s@^\(#export [ANR].*\)\(llvm-.*\)@\1\$LLVM_DIR/\2@\""
     RUL="$RUL -e \"s@^\(#export C[CX].*\)\(clang.*\)@\1\$LLVM_DIR/\2@\""
   else
-    # Grab the clang version used in rust-clanglib-local.patch
-    CP_VER=$(sed -n 's@.*clang/\([0-9]*\)/lib.*@\1@p' $CL_PATCH)
-
-    if [ $TEST -eq 0 ]; then
-      # Autodetect C_VER if it's not explicity set
-      if [ $C_VER_SET -eq 0 ]; then
-        C_VER=$(echo $(realpath $(command -v clang)) | sed 's@/usr/local/bin/clang-@@')
-      fi
-
-      # Change clang version in the patch if it differs from installed version
-      if [ $C_VER -ne $CP_VER ]; then
-        sed "s@\(/usr/local/lib/clang/\)[^/]*\(/lib\)@\1$C_VER\2@" -i $CL_PATCH
-      fi
+    # Autodetect C_VER if it's not explicity set
+    if [ $C_VER_SET -eq 0 ] && [ $TEST -eq 0 ]; then
+      C_VER=$(realpath $(command -v clang) | sed 's@/usr/local/bin/clang-@@')
     fi
+
+    CLANG_DIR=/usr/local
+    CLANG_VER=$C_VER
   fi
 
-  # Enable the local clang/llvm tool chain
+  # Enable the system package/local toolchain
   RUL="$RUL -e \"s@^#\(.*_toolchain=\)@\1@\""
   RUL="$RUL -e \"s@^#\(export [ANR].*llvm-\)@\1@\""
   RUL="$RUL -e \"s@^#\(export C[CX].*clang\)@\1@\""
   RUL="$RUL -e \"s@^#\(export DEB_C[FX].*\)@\1@\""
+
+  # Set clang path/version build flags in d/rules
+  RUL="$RUL -e \"s@\(clang_base_path=\)_CLANG_DIR@\1\x5c\x22$CLANG_DIR\x5c\x22@\""
+  RUL="$RUL -e \"s@\(clang_version=\)_CLANG_VER@\1\x5c\x22$CLANG_VER\x5c\x22@\""
 
   if [ $POLLY_VEC -eq 1 ]; then
     [ $POLLY_EXT_SET -eq 1 ] && [ $POLLY_EXT -eq 0 ] || POLLY_EXT=1
@@ -441,24 +435,19 @@ if [ $SYS_RUST -gt 0 ]; then
   # GN_FLAGS += rust_sysroot_absolute=RUST_PATH rustc_version=RUST_DASHV
   gn_enable="$gn_enable rust_sysroot_absolute"
 
-  RUST_NEW_PATH="$HOME/.cargo"
+  RUST_PATH="$HOME/.cargo"
 
   if [ $SYS_RUST -eq 1 ]; then
-    if [ $SYS_RUST -eq 1 ] && [ $SYS_RUST_FORCE -eq 0 ]; then
-        # We exit here (unless SYS_RUST_FORCE=1) as system rust is usually too old
-        printf '%s\n' "WARN: your system rust is too old"
-        printf '%s\n' "INFO: configure with SYS_RUST=0 (bundled) or SYS_RUST=2 (upstream rust)"
-        exit 1
-    fi
-
     op_enable="$op_enable system/rust"
-    deps_enable="$deps_enable rustc"
+    gn_enable="$gn_enable clang_version"
+    #deps_enable="$deps_enable rustc"
 
-    RUST_NEW_PATH="/usr"
+    RUST_PATH="/usr"
+    RUL="$RUL -e \"s@^#\(export \)@\1@\""
   fi
 
-  RUST="$RUST_NEW_PATH/bin/rustc"
-  RUST_VER="rustc TEST"
+  RUST="$RUST_PATH/bin/rustc"
+  RUST_VER="TEST"
 
   if [ $TEST -eq 0 ]; then
     if [ ! -x $RUST ]; then
@@ -470,8 +459,8 @@ if [ $SYS_RUST -gt 0 ]; then
   fi
 
   RUL="$RUL -e \"s@^#\(export RUSTC_BOOTSTRAP=1\)@\1@\""
-  RUL="$RUL -e \"s@\(rust_sysroot_absolute=\)RUST_PATH@\1\x5c\x22$RUST_NEW_PATH\x5c\x22@\""
-  RUL="$RUL -e \"s@\(rustc_version=\)RUST_DASHV@\1\x5c\x22$RUST_VER\x5c\x22@\""
+  RUL="$RUL -e \"s@\(rust_sysroot_absolute=\)_RUST_PATH@\1\x5c\x22$RUST_PATH\x5c\x22@\""
+  RUL="$RUL -e \"s@\(rustc_version=\)_RUST_VER@\1\x5c\x22$RUST_VER\x5c\x22@\""
 fi
 
 

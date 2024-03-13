@@ -28,8 +28,6 @@ SYS_RUST	0		Use in-tree chromium rust binaries
 		1		Use a system rustc package (eg from debian unstable/backports repo)
 		2		Use rust installed to $HOME/.cargo/bin (see https://rust-lang.github.io/rustup/)
 
-SYS_RUST_FORCE	0		This forces SYS_RUST=1 when your packaged version is roughly as new as upstream
-
 LTO_DIR		<dir>		Default iis <source root>/out/Release/thinlto-cache
 
 PGO		1		Enable/disable building with PGO profile optimisation

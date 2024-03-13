@@ -18,7 +18,8 @@ GN_FLAGS := $(shell tr "\n" " " < $(UC_DIR)/flags.gn | sed 's/"/\\"/g')
 #GN_FLAGS += custom_toolchain=\"//build/toolchain/linux/unbundle:default\" \
 #            host_toolchain=\"//build/toolchain/linux/unbundle:default\"
 #
-#export LLVM_DIR := /usr/lib/llvm-18/bin
+#export LLVM_VERSION := 18
+#export LLVM_DIR := /usr/lib/llvm-$(LLVM_VERSION)/bin
 #
 #export AR     := llvm-ar
 #export NM     := llvm-nm
@@ -97,10 +98,13 @@ GN_FLAGS +=                                     \
 # The items below are best configured via debian/configure.sh
 # (this needs to be run anyway when self-compiling).
 
-### Rust toolchain
+
+### Clang/Rust toolchain
+
+#GN_FLAGS += clang_base_path=_CLANG_DIR clang_version=_CLANG_VER
 
 #export RUSTC_BOOTSTRAP=1
-#GN_FLAGS += rust_sysroot_absolute=RUST_PATH rustc_version=RUST_DASHV
+#GN_FLAGS += rust_sysroot_absolute=_RUST_PATH rustc_version=_RUST_VER
 
 
 ### General components

@@ -145,7 +145,6 @@ optional/system/jpeg.patch
 optional/system/openh264.patch
 #optional/system/rust.patch
 #optional/system/clang/clang-version-check.patch
-#optional/system/clang/rust-clanglib-local.patch
 #optional/system/clang/rust-clanglib.patch
 optional/system/unstable/dav1d/dav1d.patch
 optional/system/unstable/dav1d/dav1d-bundled-libavif.patch
