@@ -1,13 +1,12 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -799,6 +799,11 @@
+@@ -799,6 +799,10 @@
          # TODO(crbug.com/1308318): Investigate if we can get the > 6% perf win
          # of import_instr_limit 30 with a binary size hit smaller than ~2 MiB.
          import_instr_limit = 5
 +      } else if (is_linux) {
-+        # Use a slightly lower import_instr_limit value of 24 for linux and
-+        # raise the import-hot-multiplier from the default of 10 to 12.
-+        import_instr_limit = 24
++        # Raise the import-hot-multiplier from the default of 10 to 12 to give
++        # a hot limit of 360, equating to an import limit of 36 (36x10 = 360).
 +        ldflags += [ "-Wl,-mllvm,-import-hot-multiplier=12" ]
        }
  
