@@ -1,0 +1,27 @@
+From 31e88b9d3d21986637252aed7f0aba9416950daf Mon Sep 17 00:00:00 2001
+From: perryuwang <perryuwang@tencent.com>
+Date: Wed, 13 Mar 2024 04:49:24 +0000
+Subject: [PATCH] Fix crash caused by invalid offset in bufferData
+
+Invalid offset value causes memory out of bounds. This CL constrains
+that offset must be a non-negative value.
+
+Bug: 328483401
+Change-Id: I7c8bf7df88dd4038ad1ea52b8b40337be3bf81b4
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5353870
+Reviewed-by: Kenneth Russell <kbr@chromium.org>
+Commit-Queue: Perry <perryuwang@tencent.com>
+Cr-Commit-Position: refs/heads/main@{#1271980}
+---
+
+--- a/third_party/blink/renderer/modules/webgl/webgl2_rendering_context_base.cc
++++ b/third_party/blink/renderer/modules/webgl/webgl2_rendering_context_base.cc
+@@ -129,7 +129,7 @@
+     // type size is at most 8, so no overflow.
+     byte_offset = sub_offset * type_size;
+   }
+-  base::CheckedNumeric<int64_t> total = byte_offset;
++  base::CheckedNumeric<size_t> total = byte_offset;
+   total += byte_length;
+   if (!total.IsValid() || total.ValueOrDie() > view->byteLength()) {
+     return false;

@@ -1,0 +1,55 @@
+From f2b97f1eaec9aa981309c968e61bc02ea0ac0505 Mon Sep 17 00:00:00 2001
+From: Jinli Wu <wujinli.cn@gmail.com>
+Date: Tue, 05 Mar 2024 18:55:44 +0000
+Subject: [PATCH] Remove base::Unretained from the WebContentsImpl function binding
+
+In WebContentsImpl, there are still some function bindings containing
+base::Unretained. In an asynchronous calling scenario, WebContentsImpl
+may have been destroyed when these callbacks are called, causing a crash.
+
+Bug: 328182349
+Change-Id: I44ef6af2a5533fe9559cbd2125b084c61b5b594f
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5345909
+Reviewed-by: Bo Liu <boliu@chromium.org>
+Commit-Queue: Bo Liu <boliu@chromium.org>
+Reviewed-by: Arthur Sonzogni <arthursonzogni@chromium.org>
+Auto-Submit: 吴金立 <wujinli.cn@gmail.com>
+Cr-Commit-Position: refs/heads/main@{#1268598}
+---
+
+--- a/content/browser/web_contents/web_contents_impl.cc
++++ b/content/browser/web_contents/web_contents_impl.cc
+@@ -7622,11 +7622,11 @@
+   // http://crbug.com/728276
+   base::ScopedClosureRunner fullscreen_block = ForSecurityDropFullscreen();
+ 
+-  auto callback =
+-      base::BindOnce(&WebContentsImpl::OnDialogClosed, base::Unretained(this),
+-                     render_frame_host->GetProcess()->GetID(),
+-                     render_frame_host->GetRoutingID(),
+-                     std::move(response_callback), std::move(fullscreen_block));
++  auto callback = base::BindOnce(
++      &WebContentsImpl::OnDialogClosed, weak_factory_.GetWeakPtr(),
++      render_frame_host->GetProcess()->GetID(),
++      render_frame_host->GetRoutingID(), std::move(response_callback),
++      std::move(fullscreen_block));
+ 
+   std::vector<protocol::PageHandler*> page_handlers =
+       protocol::PageHandler::EnabledForWebContents(this);
+@@ -7733,11 +7733,11 @@
+   // http://crbug.com/728276
+   base::ScopedClosureRunner fullscreen_block = ForSecurityDropFullscreen();
+ 
+-  auto callback =
+-      base::BindOnce(&WebContentsImpl::OnDialogClosed, base::Unretained(this),
+-                     render_frame_host->GetProcess()->GetID(),
+-                     render_frame_host->GetRoutingID(),
+-                     std::move(response_callback), std::move(fullscreen_block));
++  auto callback = base::BindOnce(
++      &WebContentsImpl::OnDialogClosed, weak_factory_.GetWeakPtr(),
++      render_frame_host->GetProcess()->GetID(),
++      render_frame_host->GetRoutingID(), std::move(response_callback),
++      std::move(fullscreen_block));
+ 
+   std::vector<protocol::PageHandler*> page_handlers =
+       protocol::PageHandler::EnabledForWebContents(this);

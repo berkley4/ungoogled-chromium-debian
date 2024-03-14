@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1902,13 +1902,6 @@
+@@ -1901,13 +1901,6 @@
          # TODO(https://crbug.com/1490607): Fix and re-enable.
          "-Wno-thread-safety-reference-return",
        ]

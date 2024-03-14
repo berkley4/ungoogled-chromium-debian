@@ -1,0 +1,37 @@
+From 03069a778882ac1c09f57e6e410382bc65ce15f7 Mon Sep 17 00:00:00 2001
+From: Steve Becker <stevebe@microsoft.com>
+Date: Mon, 11 Mar 2024 20:21:12 +0000
+Subject: [PATCH] Fix IDBBucketContext::OnMemoryDump() crash w/ nullptr backing_store
+
+Updates IndexedDBBucketContext::OnMemoryDump() to return early and skip
+recording 0 bytes when `backing_store_` is nullptr.  Avoids crashing
+when using a nullptr `backing_store_` to get the leveldb::DB pointer:
+
+  // This pointer is used to match the pointer used in
+  // TransactionalLevelDBDatabase::OnMemoryDump.
+  leveldb::DB* db = backing_store()->db()->db();
+
+Bug: 328588664
+Change-Id: I7d7c5e59b3deefc62014bfef1139a5cc05624a73
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5353692
+Reviewed-by: Evan Stade <estade@chromium.org>
+Reviewed-by: Ayu Ishii <ayui@chromium.org>
+Commit-Queue: Steve Becker <stevebe@microsoft.com>
+Cr-Commit-Position: refs/heads/main@{#1271142}
+---
+
+--- a/content/browser/indexed_db/indexed_db_bucket_context.cc
++++ b/content/browser/indexed_db/indexed_db_bucket_context.cc
+@@ -998,6 +998,12 @@
+ bool IndexedDBBucketContext::OnMemoryDump(
+     const base::trace_event::MemoryDumpArgs& args,
+     base::trace_event::ProcessMemoryDump* pmd) {
++  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
++  if (!backing_store_) {
++    // Nothing to report when no databases have been loaded.
++    return true;
++  }
++
+   base::CheckedNumeric<uint64_t> total_memory_in_flight = 0;
+   for (const auto& db_name_object_pair : databases()) {
+     for (IndexedDBConnection* connection :

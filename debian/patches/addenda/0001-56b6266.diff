@@ -1,0 +1,49 @@
+From 56b6266246c1f32ad400be8f139e576446619533 Mon Sep 17 00:00:00 2001
+From: Erik Chen <erikchen@chromium.org>
+Date: Tue, 12 Mar 2024 15:35:08 +0000
+Subject: [PATCH] [Merge to 6261] Fix crash in LoginHandlerViews.
+
+The destructor of WebContents can trigger
+WebContentsObserver::DidFinishNavigation. This in turn can trigger the
+LoginTabHelper process for showing a Loginhandler. At this point, the
+WebContentsModalDialogManager has already been destroyed so the http
+auth dialog can no longer be shown.
+
+(cherry picked from commit 6ce85a09d6a6435735bd774fba7ff508e2fddce1)
+
+Change-Id: I5577a1d2cbeae034ad2217f1de546f459eb4885f
+Bug: 328388128, 328462789
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5355654
+Reviewed-by: Peter Boström <pbos@chromium.org>
+Commit-Queue: Erik Chen <erikchen@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1270490}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5363772
+Cr-Commit-Position: refs/branch-heads/6261@{#1065}
+Cr-Branched-From: 9755d9d81e4a8cb5b4f76b23b761457479dbb06b-refs/heads/main@{#1250580}
+---
+
+--- a/chrome/browser/ui/views/login_handler_views.cc
++++ b/chrome/browser/ui/views/login_handler_views.cc
+@@ -14,6 +14,7 @@
+ #include "components/constrained_window/constrained_window_views.h"
+ #include "components/password_manager/core/browser/password_manager.h"
+ #include "components/strings/grit/components_strings.h"
++#include "components/web_modal/web_contents_modal_dialog_manager.h"
+ #include "content/public/browser/browser_thread.h"
+ #include "content/public/browser/web_contents.h"
+ #include "ui/base/l10n/l10n_util.h"
+@@ -52,6 +53,14 @@
+     DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
+     DCHECK(!dialog_);
+ 
++    // A WebContentsModalDialogManager is necessary to show the Dialog. A
++    // manager may not be available during the shutdown process of the
++    // WebContents, which can trigger DidFinishNavigation events.
++    // See https://crbug.com/328462789.
++    if (!web_modal::WebContentsModalDialogManager::FromWebContents(
++            constrained_window::GetTopLevelWebContents(web_contents()))) {
++      return false;
++    }
+     dialog_ = new Dialog(this, web_contents(), authority, explanation,
+                          login_model_data);
+     return true;

@@ -102,6 +102,11 @@ various/system/xdg-scripts.patch
 various/system/zlib.patch
 various/upstream/0001-RaceNetworkRequest-is-triggered-only-when-the-scheme-is-HTTP-or-HTTPS.patch
 various/upstream/0002-9c5c8ca.diff
+various/upstream/0003-f2b97f1.diff
+various/upstream/0004-b360457.diff
+various/upstream/0005-03069a77.diff
+various/upstream/0006-a3d5cdf.diff
+various/upstream/0007-31e88b9.diff
 various/warnings/clang-excessive-warnings.patch
 various/warnings/silence-unknown-warning.patch
 
@@ -159,3 +164,7 @@ optional/system/vaapi/vaapi-disable-libaom-encoding.patch
 #optional/system/zstd/zstd-feature-flag.patch
 optional/translate/revert-disable.patch
 optional/translate/stop-unsupported-switch-warning.patch
+
+addenda/0001-56b6266.diff
+addenda/0002-d331801.diff
+addenda/0003-496297f.diff

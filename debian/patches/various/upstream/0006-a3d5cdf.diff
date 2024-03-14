@@ -1,0 +1,30 @@
+From a3d5cdf338a859e5e725830165a196b3fc2dcb02 Mon Sep 17 00:00:00 2001
+From: Saifuddin Hitawala <hitawala@chromium.org>
+Date: Tue, 12 Mar 2024 21:27:02 +0000
+Subject: [PATCH] [gpu] Check TextureStorage2DAvailable before calling EGLImageBacking api
+
+Currently EGLImageBacking::GenEGLImageSibling checks for
+supports_storage on format_info which may not be enough and leads to
+crashes as the glTexStorage2DEXTFn is not available. This change adds
+a check for IsTextureStorage2DAvailable similar to
+ExternalVkImageBacking which should ensure its availability.
+
+Bug: 326567313
+Change-Id: Ic6f600719b31206149ab3f8f3db540d5f977db33
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5366003
+Reviewed-by: Vasiliy Telezhnikov <vasilyt@chromium.org>
+Commit-Queue: Saifuddin Hitawala <hitawala@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1271829}
+---
+
+--- a/gpu/command_buffer/service/shared_image/egl_image_backing.cc
++++ b/gpu/command_buffer/service/shared_image/egl_image_backing.cc
+@@ -427,7 +427,7 @@
+       // time before we create |egl_image_buffer_| from it. If pixel data is
+       // empty we only allocate memory for the texture object which is required
+       // to create EGLImage.
+-      if (format_info_.supports_storage) {
++      if (format_info_.supports_storage && IsTexStorage2DAvailable()) {
+         api->glTexStorage2DEXTFn(target, 1,
+                                  format_info_.adjusted_storage_internal_format,
+                                  size().width(), size().height());

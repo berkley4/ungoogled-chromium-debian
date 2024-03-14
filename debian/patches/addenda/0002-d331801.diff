@@ -1,0 +1,152 @@
+From d3318011b64d3af062d1a562f1f952e03866f71f Mon Sep 17 00:00:00 2001
+From: Thomas Guilbert <tguilbert@chromium.org>
+Date: Wed, 13 Mar 2024 00:44:37 +0000
+Subject: [PATCH] [M122] Revert "Improve AudioRendererMixer sharing across RenderFrames."
+
+This reverts commit a6068ebab3469d9d7793381987b1168434afaabe.
+
+Reason for revert: Causing too many unforeseen consequences, see
+327884890, 327489297
+
+Original change's description:
+> Improve AudioRendererMixer sharing across RenderFrames.
+>
+> It's common for a page to have a lot of YouTube embeds. With the
+> current code, none of those embeds share a mixer and thus can
+> trigger the 50 physical stream limit quickly.
+>
+> AFAICT, there's no good reason to prevent sharing of these streams
+> across render frames when the default device is used. They are
+> output only and an uncompromised renderer can't directly observe
+> any effects (readback for WebAudio and MediaStreams happens
+> asynchronously below the shared output).
+>
+> Often the default device is already being shared at the OS level,
+> so any demultiplexing we do in the renderer seems pointless.
+>
+> Looking through the history we've always limited the sharing to
+> per RenderFrameID, but it was only out of an abundance of caution
+> rather than a particular concern.
+>
+> For non-default devices there's good reasons we shouldn't share:
+> permissions are required per-origin to access the non-default
+> device.
+>
+> R=olka, tguilbert
+>
+> Bug: b/314766691
+> Change-Id: I7ee6865eb675962aff2aeedcd7290666b38c91e5
+> Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5185891
+> Commit-Queue: Olga Sharonova <olka@chromium.org>
+> Auto-Submit: Dale Curtis <dalecurtis@chromium.org>
+> Reviewed-by: Olga Sharonova <olka@chromium.org>
+> Reviewed-by: Thomas Guilbert <tguilbert@chromium.org>
+> Cr-Commit-Position: refs/heads/main@{#1245750}
+
+(cherry picked from commit 5f20e0e777c3820b92b85fa941a888fe0a50750d)
+
+Bug: b/314766691, b/327489297, b/327884890
+Change-Id: Idb20538593c6303900ebc6062501b424974cbb55
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5354149
+Commit-Queue: Thomas Guilbert <tguilbert@chromium.org>
+Reviewed-by: Dan Sanders <sandersd@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1269893}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5367174
+Reviewed-by: Thomas Guilbert <tguilbert@chromium.org>
+Auto-Submit: Dale Curtis <dalecurtis@chromium.org>
+Bot-Commit: Rubber Stamper <rubber-stamper@appspot.gserviceaccount.com>
+Cr-Commit-Position: refs/branch-heads/6261@{#1067}
+Cr-Branched-From: 9755d9d81e4a8cb5b4f76b23b761457479dbb06b-refs/heads/main@{#1250580}
+---
+
+--- a/third_party/blink/renderer/modules/media/audio/audio_renderer_mixer_manager.h
++++ b/third_party/blink/renderer/modules/media/audio/audio_renderer_mixer_manager.h
+@@ -123,6 +123,8 @@
+   // mixers where only irrelevant keys mismatch.
+   struct MixerKeyCompare {
+     bool operator()(const MixerKey& a, const MixerKey& b) const {
++      if (a.source_frame_token != b.source_frame_token)
++        return a.source_frame_token < b.source_frame_token;
+       if (a.params.channels() != b.params.channels())
+         return a.params.channels() < b.params.channels();
+ 
+@@ -141,13 +143,6 @@
+       if (a.params.effects() != b.params.effects())
+         return a.params.effects() < b.params.effects();
+ 
+-      // Don't check the `source_frame_token` when the default device is used
+-      // since that will prevent sharing of the output device across render
+-      // frames. A common scenario is a lot of YouTube embeds which would each
+-      // end up with their own output device if we check the frame token here.
+-      //
+-      // Output sink behavior can't be directly observed by the page, so there's
+-      // no harm in sharing the sink across origins for the default device.
+       if (media::AudioDeviceDescription::IsDefaultDevice(a.device_id) &&
+           media::AudioDeviceDescription::IsDefaultDevice(b.device_id)) {
+         // Both device IDs represent the same default device => do not compare
+@@ -155,12 +150,6 @@
+         return false;
+       }
+ 
+-      // Since a non-default device is being used, we must check the frame
+-      // token to ensure authorization has been completed for the frame.
+-      if (a.source_frame_token != b.source_frame_token) {
+-        return a.source_frame_token < b.source_frame_token;
+-      }
+-
+       return a.device_id < b.device_id;
+     }
+   };
+--- a/third_party/blink/renderer/modules/media/audio/audio_renderer_mixer_manager_test.cc
++++ b/third_party/blink/renderer/modules/media/audio/audio_renderer_mixer_manager_test.cc
+@@ -270,45 +270,29 @@
+       kFrameToken, base::UnguessableToken(), kDefaultDeviceId,
+       AudioLatency::Type::kPlayback, params, &callback);
+   EXPECT_EQ(0u, mixer_count());
+-  ASSERT_EQ(mock_sink_, nullptr);  // Sink is consumed by CreateInputHelper.
+-
+-  // Despite being from another frame, this input uses the default device, so
+-  // should share the previously created mixer.
+   media::FakeAudioRenderCallback another_callback(1, kSampleRate);
++
++  EXPECT_FALSE(!!mock_sink_);
++  mock_sink_ = CreateNormalSink();
++  EXPECT_CALL(*mock_sink_, Start()).Times(1);
+   auto another_input = CreateInputHelper(
+       kAnotherFrameToken, base::UnguessableToken(), kDefaultDeviceId,
+       AudioLatency::Type::kPlayback, params, &another_callback);
+   EXPECT_EQ(0u, mixer_count());
+ 
+-  // Since this input uses a non-default device id it should not share the
+-  // previous mixer.
+-  media::FakeAudioRenderCallback another_callback2(1, kSampleRate);
+-  mock_sink_ = CreateNormalSink(kAnotherDeviceId);
+-  EXPECT_CALL(*mock_sink_, Start()).Times(1);
+-  auto another_input2 = CreateInputHelper(
+-      kAnotherFrameToken, base::UnguessableToken(), kAnotherDeviceId,
+-      AudioLatency::Type::kPlayback, params, &another_callback2);
+-  EXPECT_EQ(0u, mixer_count());
+-  ASSERT_EQ(mock_sink_, nullptr);  // Sink is consumed by CreateInputHelper.
+-
+   // Implicitly test that AudioRendererMixerInput was provided with the expected
+   // callbacks needed to acquire an AudioRendererMixer and return it.
+   input->Start();
+   EXPECT_EQ(1u, mixer_count());
+   another_input->Start();
+-  EXPECT_EQ(1u, mixer_count());
+-  another_input2->Start();
+   EXPECT_EQ(2u, mixer_count());
+ 
+   // Destroying the inputs should destroy the mixers.
+   input->Stop();
+   input = nullptr;
+-  EXPECT_EQ(2u, mixer_count());
++  EXPECT_EQ(1u, mixer_count());
+   another_input->Stop();
+   another_input = nullptr;
+-  EXPECT_EQ(1u, mixer_count());
+-  another_input2->Stop();
+-  another_input2 = nullptr;
+   EXPECT_EQ(0u, mixer_count());
+ }
+ 
