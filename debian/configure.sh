@@ -439,8 +439,7 @@ if [ $SYS_RUST -gt 0 ]; then
 
   if [ $SYS_RUST -eq 1 ]; then
     op_enable="$op_enable system/rust"
-    gn_enable="$gn_enable clang_version"
-    #deps_enable="$deps_enable rustc"
+    deps_enable="$deps_enable rustc"
 
     RUST_PATH="/usr"
     RUL="$RUL -e \"s@^#\(export \)@\1@\""

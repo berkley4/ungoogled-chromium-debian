@@ -23,10 +23,12 @@ C_VER		<version>	Override the default clang version (for use with SYS_CLANG > 0)
 SYS_CLANG	0		Use in-tree chromium clang/llvm binaries
 		1		Use a system clang package (eg from apt.llvm.org)
 		2		Use clang installed in /usr/local (self built)
+				Refer to Toolchain.md for more details.
 
 SYS_RUST	0		Use in-tree chromium rust binaries
 		1		Use a system rustc package (eg from debian unstable/backports repo)
-		2		Use rust installed to $HOME/.cargo/bin (see https://rust-lang.github.io/rustup/)
+		2		Use rust installed to $HOME/.cargo/bin (Recommended method)
+				Refer to Rust.md for more details.
 
 LTO_DIR		<dir>		Default iis <source root>/out/Release/thinlto-cache
 
