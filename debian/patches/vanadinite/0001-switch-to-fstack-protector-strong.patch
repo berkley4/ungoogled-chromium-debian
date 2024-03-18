@@ -1,8 +1,8 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -387,7 +387,7 @@
-           cflags += [ "-fno-stack-protector" ]
-         } else if (current_os != "aix") {
+@@ -382,7 +382,7 @@
+       } else if ((is_posix && !is_chromeos && !is_nacl) || is_fuchsia) {
+         if (current_os != "aix") {
            # Not available on aix.
 -          cflags += [ "-fstack-protector" ]
 +          cflags += [ "-fstack-protector-strong" ]

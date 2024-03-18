@@ -19,7 +19,7 @@ Cr-Commit-Position: refs/heads/main@{#1268598}
 
 --- a/content/browser/web_contents/web_contents_impl.cc
 +++ b/content/browser/web_contents/web_contents_impl.cc
-@@ -7622,11 +7622,11 @@
+@@ -7634,11 +7634,11 @@
    // http://crbug.com/728276
    base::ScopedClosureRunner fullscreen_block = ForSecurityDropFullscreen();
  
@@ -36,7 +36,7 @@ Cr-Commit-Position: refs/heads/main@{#1268598}
  
    std::vector<protocol::PageHandler*> page_handlers =
        protocol::PageHandler::EnabledForWebContents(this);
-@@ -7733,11 +7733,11 @@
+@@ -7745,11 +7745,11 @@
    // http://crbug.com/728276
    base::ScopedClosureRunner fullscreen_block = ForSecurityDropFullscreen();
  

@@ -17,7 +17,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
 
 --- a/skia/BUILD.gn
 +++ b/skia/BUILD.gn
-@@ -401,9 +401,6 @@
+@@ -380,9 +380,6 @@
      defines += [ "SK_CODEC_DECODES_JPEG_GAINMAPS" ]
    }
  
@@ -27,9 +27,9 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
    if (is_win) {
      libs = [ "fontsub.lib" ]
    }
-@@ -621,6 +618,8 @@
-     sources += skia_sksg_sources
-     sources += skia_shaper_primitive_sources
+@@ -604,6 +601,8 @@
+       "SKOTTIE_TRIVIAL_FONTRUN_ITER",
+     ]
    }
 +  import("//third_party/skia/modules/svg/svg.gni")
 +  sources += skia_svg_sources
@@ -94,7 +94,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
  using namespace skia_private;
  
  namespace {
-@@ -1007,9 +1009,13 @@
+@@ -1019,9 +1021,13 @@
          // FT_LOAD_COLOR with scalable fonts means allow SVG.
          // It also implies attempt to render COLR if available, but this is not used.
  #if defined(FT_CONFIG_OPTION_SVG)
@@ -110,7 +110,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
          fStrikeIndex = chooseBitmapStrike(fFaceRec->fFace.get(), scaleY);
 --- a/third_party/skia/src/ports/SkScalerContext_win_dw.cpp
 +++ b/third_party/skia/src/ports/SkScalerContext_win_dw.cpp
-@@ -45,6 +45,8 @@
+@@ -46,6 +46,8 @@
  #include "src/utils/win/SkHRESULT.h"
  #include "src/utils/win/SkTScopedComPtr.h"
  
@@ -119,7 +119,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
  #include <dwrite.h>
  #include <dwrite_1.h>
  #include <dwrite_3.h>
-@@ -2271,6 +2273,8 @@
+@@ -2272,6 +2274,8 @@
          return false;
      }
  

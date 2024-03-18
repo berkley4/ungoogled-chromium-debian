@@ -1,6 +1,6 @@
---- a/chrome/common/chrome_features.cc
-+++ b/chrome/common/chrome_features.cc
-@@ -79,7 +79,7 @@
+--- a/net/base/features.cc
++++ b/net/base/features.cc
+@@ -29,7 +29,7 @@
               "AsyncDns",
  #if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_ANDROID) || \
      BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX)

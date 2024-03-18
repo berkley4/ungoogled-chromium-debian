@@ -13,7 +13,7 @@
  # necessary.
 --- a/chrome/browser/chrome_browser_main_linux.cc
 +++ b/chrome/browser/chrome_browser_main_linux.cc
-@@ -64,11 +64,11 @@
+@@ -68,11 +68,11 @@
    }
    // Don't initialize DBus here. Ash and Lacros Bluetooth DBusManager
    // initialization depend on FeatureList, and is done elsewhere.
@@ -27,7 +27,7 @@
    // Set up crypt config. This needs to be done before anything starts the
    // network service, as the raw encryption key needs to be shared with the
    // network service for encrypted cookie storage.
-@@ -126,7 +126,7 @@
+@@ -137,7 +137,7 @@
  void ChromeBrowserMainPartsLinux::PostDestroyThreads() {
  #if BUILDFLAG(IS_CHROMEOS)
    // No-op; per PostBrowserStart() comment, this is done elsewhere.

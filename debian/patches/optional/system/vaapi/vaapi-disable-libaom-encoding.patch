@@ -8,7 +8,7 @@
  #include "media/gpu/vaapi/h264_vaapi_video_encoder_delegate.h"
  #include "media/gpu/vaapi/va_surface.h"
  #include "media/gpu/vaapi/vaapi_common.h"
-@@ -191,7 +190,7 @@
+@@ -192,7 +191,7 @@
  
    const VideoCodec codec = VideoCodecProfileToVideoCodec(config.output_profile);
    if (codec != VideoCodec::kH264 && codec != VideoCodec::kVP8 &&
@@ -17,7 +17,7 @@
      MEDIA_LOG(ERROR, media_log.get())
          << "Unsupported profile: " << GetProfileName(config.output_profile);
      return false;
-@@ -277,7 +276,6 @@
+@@ -278,7 +277,6 @@
          break;
        case VideoCodec::kVP8:
        case VideoCodec::kVP9:
@@ -25,7 +25,7 @@
          mode = VaapiWrapper::kEncodeConstantQuantizationParameter;
          break;
        default:
-@@ -340,12 +338,6 @@
+@@ -341,12 +339,6 @@
              vaapi_wrapper_, error_cb);
        }
        break;
@@ -38,7 +38,7 @@
      default:
        NOTREACHED() << "Unsupported codec type " << GetCodecName(output_codec_);
        return;
-@@ -825,10 +817,6 @@
+@@ -826,10 +818,6 @@
      case VideoCodec::kVP9:
        picture = new VaapiVP9Picture(std::move(reconstructed_surface));
        break;
@@ -51,7 +51,7 @@
    }
 --- a/media/gpu/BUILD.gn
 +++ b/media/gpu/BUILD.gn
-@@ -379,10 +379,7 @@
+@@ -385,10 +385,7 @@
        "vp9_svc_layers.h",
      ]
      configs += [ "//third_party/libvpx:libvpx_config" ]

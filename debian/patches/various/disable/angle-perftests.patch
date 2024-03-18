@@ -1,19 +1,6 @@
 description: Disable ANGLE perftests
 author: Michel Le Bihan <michel@lebihan.pl>
 
---- a/chrome/test/BUILD.gn
-+++ b/chrome/test/BUILD.gn
-@@ -6008,10 +6008,6 @@
-       data_deps += [ "//third_party/dawn/src/dawn/tests:dawn_perf_tests" ]
-     }
- 
--    if (!is_chromeos_lacros) {
--      data_deps += [ "//third_party/angle/src/tests:angle_perftests" ]
--    }
--
-     if (!is_android && !is_chromeos_lacros) {
-       data_deps += [
-         "//chrome/test:load_library_perf_tests",
 --- a/third_party/angle/src/tests/BUILD.gn
 +++ b/third_party/angle/src/tests/BUILD.gn
 @@ -195,7 +195,6 @@
@@ -24,7 +11,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
      "$angle_root:angle_static",
      "$angle_root:libfeature_support",
      "$angle_root/util:angle_util_static",
-@@ -409,7 +408,7 @@
+@@ -413,7 +412,7 @@
    test_utils = ":angle_common_test_utils_static"
  }
  
@@ -33,7 +20,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
    import("angle_perftests.gni")
  
    # This test suite is for perf tests that use ANGLE's internals in some direct way.
-@@ -1852,10 +1851,10 @@
+@@ -1856,10 +1855,10 @@
      deps += [ ":angle_trace_perf_tests" ]
      deps += [ "capture_tests:angle_capture_tests_trace" ]
    }

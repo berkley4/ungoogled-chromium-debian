@@ -49,22 +49,22 @@
    int rv = core_->Init(socket_factory);
 --- a/services/network/p2p/socket_manager.cc
 +++ b/services/network/p2p/socket_manager.cc
-@@ -8,6 +8,7 @@
- 
+@@ -9,6 +9,7 @@
+ #include <optional>
  #include <utility>
  
 +#include "base/feature_list.h"
  #include "base/functional/bind.h"
  #include "base/memory/raw_ptr.h"
  #include "base/task/single_thread_task_runner.h"
-@@ -29,6 +30,7 @@
+@@ -30,6 +31,7 @@
  #include "net/url_request/url_request_context_getter.h"
  #include "services/network/p2p/socket.h"
  #include "services/network/proxy_resolving_client_socket_factory.h"
 +#include "services/network/public/cpp/features.h"
  #include "services/network/public/cpp/p2p_param_traits.h"
- #include "third_party/abseil-cpp/absl/types/optional.h"
  #include "third_party/webrtc/media/base/rtp_utils.h"
+ #include "third_party/webrtc/media/base/turn_utils.h"
 @@ -114,7 +116,7 @@
      net::HostPortPair host(host_name_, 0);
  

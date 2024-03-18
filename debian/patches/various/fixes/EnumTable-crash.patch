@@ -1,8 +1,8 @@
 --- a/components/media_router/common/providers/cast/channel/enum_table.h
 +++ b/components/media_router/common/providers/cast/channel/enum_table.h
-@@ -8,6 +8,7 @@
- #include <cstdint>
+@@ -9,6 +9,7 @@
  #include <cstring>
+ #include <optional>
  #include <ostream>
 +#include <vector>
  
@@ -33,7 +33,7 @@
          if (ANALYZER_ASSUME_TRUE(entry.has_str()))
            return entry.str();
        }
-       return absl::nullopt;
+       return std::nullopt;
      }
      return GenericEnumTableEntry::FindByValue(
 -        reinterpret_cast<const GenericEnumTableEntry*>(data_.begin()),
@@ -44,12 +44,12 @@
    // This overload of GetString is designed for cases where the argument is a
 @@ -348,8 +346,7 @@
    // enum value directly.
-   absl::optional<E> GetEnum(base::StringPiece str) const {
+   std::optional<E> GetEnum(base::StringPiece str) const {
      auto* entry = GenericEnumTableEntry::FindByString(
 -        reinterpret_cast<const GenericEnumTableEntry*>(data_.begin()),
 -        data_.size(), str);
 +        &data_[0], data_.size(), str);
-     return entry ? static_cast<E>(entry->value) : absl::optional<E>();
+     return entry ? static_cast<E>(entry->value) : std::optional<E>();
    }
  
 @@ -364,7 +361,7 @@

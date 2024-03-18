@@ -10,7 +10,7 @@ Pretend that the device is always plugged in and fully charged.
 
 --- a/third_party/blink/renderer/modules/battery/battery_manager.cc
 +++ b/third_party/blink/renderer/modules/battery/battery_manager.cc
-@@ -78,46 +78,28 @@
+@@ -80,46 +80,28 @@
  }
  
  bool BatteryManager::charging() {

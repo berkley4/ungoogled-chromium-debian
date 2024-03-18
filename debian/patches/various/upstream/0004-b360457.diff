@@ -16,7 +16,7 @@ Cr-Commit-Position: refs/heads/main@{#1270676}
 
 --- a/chrome/browser/background/background_mode_manager.cc
 +++ b/chrome/browser/background/background_mode_manager.cc
-@@ -553,7 +553,9 @@
+@@ -554,7 +554,9 @@
      const base::FilePath& profile_path) {
    Profile* profile =
        g_browser_process->profile_manager()->GetProfileByPath(profile_path);

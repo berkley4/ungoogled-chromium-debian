@@ -6,11 +6,9 @@ Truncate base latency precision to two digits
 
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- chrome/browser/about_flags.cc                      |  4 ++++
- chrome/browser/flag_descriptions.cc                |  5 +++++
- chrome/browser/flag_descriptions.h                 |  3 +++
- third_party/blink/common/features.cc               |  4 ++++
- third_party/blink/public/common/features.h         |  2 ++
+ .../AudioBuffer-AnalyserNode-fp-mitigations.inc    |  8 ++++++++
+ .../AudioBuffer-AnalyserNode-fp-mitigations.inc    |  3 +++
+ .../AudioBuffer-AnalyserNode-fp-mitigations.inc    |  1 +
  .../renderer/modules/webaudio/audio_buffer.cc      | 14 ++++++++++++++
  .../blink/renderer/modules/webaudio/audio_buffer.h |  2 ++
  .../renderer/modules/webaudio/audio_context.cc     |  5 ++++-
@@ -18,11 +16,11 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../renderer/modules/webaudio/base_audio_context.h |  2 ++
  .../modules/webaudio/offline_audio_context.cc      |  1 +
  .../renderer/modules/webaudio/realtime_analyser.cc |  7 +++++++
- 12 files changed, 60 insertions(+), 1 deletion(-)
+ 10 files changed, 54 insertions(+), 1 deletion(-)
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -3866,6 +3866,10 @@
+@@ -3794,6 +3794,10 @@
       FEATURE_VALUE_TYPE(
           ash::standalone_browser::features::kWebKioskEnableLacros)},
  #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
@@ -35,7 +33,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       flag_descriptions::kWebRtcRemoteEventLogName,
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3756,6 +3756,11 @@
+@@ -3782,6 +3782,11 @@
      "When enabled, removes the requirement that all certificates used for "
      "WebTransport over HTTP/3 are issued by a known certificate root.";
  
@@ -49,7 +47,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  const char kWebUsbDeviceDetectionDescription[] =
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -2155,6 +2155,9 @@
+@@ -2174,6 +2174,9 @@
  extern const char kWebrtcUseMinMaxVEADimensionsName[];
  extern const char kWebrtcUseMinMaxVEADimensionsDescription[];
  
@@ -61,7 +59,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -278,6 +278,10 @@
+@@ -297,6 +297,10 @@
               "BiddingAndScoringDebugReportingAPI",
               base::FEATURE_ENABLED_BY_DEFAULT);
  
@@ -74,7 +72,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  BASE_FEATURE(kBlinkHeapCompaction,
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -178,6 +178,8 @@
+@@ -188,6 +188,8 @@
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(
      kBlinkSchedulerPrioritizeNavigationIPCs);
  

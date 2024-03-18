@@ -22,7 +22,7 @@ Cr-Commit-Position: refs/heads/main@{#1271142}
 
 --- a/content/browser/indexed_db/indexed_db_bucket_context.cc
 +++ b/content/browser/indexed_db/indexed_db_bucket_context.cc
-@@ -998,6 +998,12 @@
+@@ -1268,6 +1268,12 @@
  bool IndexedDBBucketContext::OnMemoryDump(
      const base::trace_event::MemoryDumpArgs& args,
      base::trace_event::ProcessMemoryDump* pmd) {
@@ -33,5 +33,5 @@ Cr-Commit-Position: refs/heads/main@{#1271142}
 +  }
 +
    base::CheckedNumeric<uint64_t> total_memory_in_flight = 0;
-   for (const auto& db_name_object_pair : databases()) {
-     for (IndexedDBConnection* connection :
+   for (const auto& [name, database] : databases_) {
+     for (IndexedDBConnection* connection : database->connections()) {

@@ -1,75 +1,14 @@
---- a/chrome/browser/ui/webui/settings/accessibility_main_handler.cc
-+++ b/chrome/browser/ui/webui/settings/accessibility_main_handler.cc
-@@ -39,7 +39,8 @@
-       base::BindRepeating(
-           &AccessibilityMainHandler::HandleCheckAccessibilityImageLabels,
-           base::Unretained(this)));
--#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC)
-+#if (BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC)) && \
-+     BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
-   web_ui()->RegisterMessageCallback(
-       "getScreenAiInstallState",
-       base::BindRepeating(
-@@ -56,7 +57,8 @@
-           base::Unretained(this)));
- #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
- 
--#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC)
-+#if (BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC)) && \
-+     BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
-   if (features::IsPdfOcrEnabled()) {
-     CHECK(!component_ready_observer_.IsObserving());
-     component_ready_observer_.Observe(
-@@ -70,14 +72,16 @@
-   accessibility_subscription_ = {};
- #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
- 
--#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC)
-+#if (BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC)) && \
-+     BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
-   if (features::IsPdfOcrEnabled()) {
-     component_ready_observer_.Reset();
-   }
- #endif  // BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC)
- }
- 
--#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC)
-+#if (BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC)) && \
-+     BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
- void AccessibilityMainHandler::DownloadProgressChanged(double progress) {
-   CHECK_GE(progress, 0.0);
-   CHECK_LE(progress, 1.0);
 --- a/chrome/browser/ui/webui/settings/accessibility_main_handler.h
 +++ b/chrome/browser/ui/webui/settings/accessibility_main_handler.h
-@@ -16,6 +16,7 @@
- #if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC)
- #include "base/scoped_observation.h"
- #include "chrome/browser/screen_ai/screen_ai_install_state.h"
+@@ -8,6 +8,7 @@
+ #include "build/build_config.h"
+ #include "build/chromeos_buildflags.h"
+ #include "chrome/browser/ui/webui/settings/settings_page_ui_handler.h"
 +#include "components/services/screen_ai/buildflags/buildflags.h"
- #endif  // BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC)
  
- namespace settings {
-@@ -24,7 +25,8 @@
- // chrome://settings/accessibility.
- class AccessibilityMainHandler
-     : public ::settings::SettingsPageUIHandler
--#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC)
-+#if (BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC)) && \
-+     BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
-     ,
-       public screen_ai::ScreenAIInstallState::Observer
- #endif  // BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC)
-@@ -40,7 +42,8 @@
-   void OnJavascriptAllowed() override;
-   void OnJavascriptDisallowed() override;
- 
--#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC)
-+#if (BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC)) && \
-+     BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
-   // screen_ai::ScreenAIInstallState::Observer:
-   void DownloadProgressChanged(double progress) override;
-   void StateChanged(screen_ai::ScreenAIInstallState::State state) override;
-@@ -50,7 +53,8 @@
+ #if BUILDFLAG(IS_CHROMEOS_ASH)
+ #include "chrome/browser/ash/accessibility/accessibility_manager.h"
+@@ -37,7 +38,8 @@
    void HandleGetScreenReaderState(const base::Value::List& args);
    void HandleCheckAccessibilityImageLabels(const base::Value::List& args);
  
@@ -79,13 +18,3 @@
    void HandleGetScreenAIInstallState(const base::Value::List& args);
  #endif  // BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC)
  
-@@ -63,7 +67,8 @@
-   base::CallbackListSubscription accessibility_subscription_;
- #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
- 
--#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC)
-+#if (BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC)) && \
-+     BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
-   base::ScopedObservation<screen_ai::ScreenAIInstallState,
-                           screen_ai::ScreenAIInstallState::Observer>
-       component_ready_observer_{this};

@@ -86,8 +86,8 @@
 +    "//chrome/services/file_util:buildflags",
      "//chrome/services/file_util/public/mojom:mojom",
      "//chrome/services/removable_storage_writer/public/mojom",
-     "//components/app_constants",
-@@ -1097,7 +1104,6 @@
+     "//components/affiliations/core/browser:affiliations",
+@@ -1093,7 +1100,6 @@
      sources += [
        "api/enterprise_reporting_private/chrome_desktop_report_request_helper.cc",
        "api/enterprise_reporting_private/chrome_desktop_report_request_helper.h",
@@ -95,7 +95,7 @@
        "api/messaging/native_message_process_host.cc",
        "api/messaging/native_message_process_host.h",
        "api/messaging/native_messaging_launch_from_native.cc",
-@@ -1113,6 +1119,9 @@
+@@ -1109,6 +1115,9 @@
        "//components/enterprise/common/proto:connectors_proto",
        "//components/keep_alive_registry",
      ]
@@ -105,7 +105,7 @@
      if (is_posix) {
        sources += [ "api/messaging/native_process_launcher_posix.cc" ]
      }
-@@ -1311,7 +1320,7 @@
+@@ -1307,7 +1316,7 @@
      ]
    }
  
@@ -197,7 +197,7 @@
          "../browser/extensions/api/instance_id/instance_id_apitest.cc",
          "../browser/extensions/api/management/management_api_browsertest.cc",
          "../browser/extensions/api/management/management_api_non_persistent_apitest.cc",
-@@ -3803,6 +3801,14 @@
+@@ -3804,6 +3802,14 @@
          "../browser/user_bypass/user_bypass_web_contents_observer_browsertest.cc",
        ]
  
@@ -212,7 +212,7 @@
        if (is_win) {
          data_deps += [
            "//chrome/browser/extensions/api:native_messaging_test_echo_&_host",
-@@ -3878,9 +3884,12 @@
+@@ -3880,9 +3886,12 @@
        if (!is_chromeos_lacros) {
          sources += [
            "../browser/extensions/api/automation/automation_apitest.cc",
@@ -226,7 +226,7 @@
        }
  
        if (is_chromeos) {
-@@ -5277,12 +5286,17 @@
+@@ -5286,12 +5295,17 @@
      if (is_mac || is_win || is_linux || is_chromeos_lacros) {
        sources += [
          # Tests for non mobile and non CrOS (includes Linux, Win, Mac).
@@ -245,24 +245,24 @@
        if (!is_chromeos_lacros) {
          sources += [
            "../browser/browser_switcher/browser_switcher_browsertest.cc",
-@@ -8954,15 +8968,6 @@
-         "../browser/extensions/api/identity/identity_api_unittest.cc",
-         "../browser/extensions/api/identity/identity_mint_queue_unittest.cc",
-         "../browser/extensions/api/identity/identity_token_cache_unittest.cc",
--        "../browser/extensions/api/image_writer_private/destroy_partitions_operation_unittest.cc",
--        "../browser/extensions/api/image_writer_private/extractor_unittest.cc",
--        "../browser/extensions/api/image_writer_private/image_writer_private_api_unittest.cc",
--        "../browser/extensions/api/image_writer_private/operation_manager_unittest.cc",
--        "../browser/extensions/api/image_writer_private/operation_unittest.cc",
--        "../browser/extensions/api/image_writer_private/test_utils.cc",
--        "../browser/extensions/api/image_writer_private/test_utils.h",
--        "../browser/extensions/api/image_writer_private/write_from_file_operation_unittest.cc",
--        "../browser/extensions/api/image_writer_private/write_from_url_operation_unittest.cc",
-         "../browser/extensions/api/language_settings_private/language_settings_private_api_unittest.cc",
-         "../browser/extensions/api/language_settings_private/language_settings_private_delegate_unittest.cc",
-         "../browser/extensions/api/management/management_api_unittest.cc",
-@@ -9202,6 +9207,20 @@
-         "../renderer/extensions/renderer_permissions_policy_delegate_unittest.cc",
+@@ -8869,15 +8883,6 @@
+       "../browser/extensions/api/identity/identity_api_unittest.cc",
+       "../browser/extensions/api/identity/identity_mint_queue_unittest.cc",
+       "../browser/extensions/api/identity/identity_token_cache_unittest.cc",
+-      "../browser/extensions/api/image_writer_private/destroy_partitions_operation_unittest.cc",
+-      "../browser/extensions/api/image_writer_private/extractor_unittest.cc",
+-      "../browser/extensions/api/image_writer_private/image_writer_private_api_unittest.cc",
+-      "../browser/extensions/api/image_writer_private/operation_manager_unittest.cc",
+-      "../browser/extensions/api/image_writer_private/operation_unittest.cc",
+-      "../browser/extensions/api/image_writer_private/test_utils.cc",
+-      "../browser/extensions/api/image_writer_private/test_utils.h",
+-      "../browser/extensions/api/image_writer_private/write_from_file_operation_unittest.cc",
+-      "../browser/extensions/api/image_writer_private/write_from_url_operation_unittest.cc",
+       "../browser/extensions/api/language_settings_private/language_settings_private_api_unittest.cc",
+       "../browser/extensions/api/language_settings_private/language_settings_private_delegate_unittest.cc",
+       "../browser/extensions/api/management/management_api_unittest.cc",
+@@ -11324,6 +11329,20 @@
+         "../browser/ui/views/touch_events_interactive_uitest_win.cc",
        ]
  
 +      if (enable_extractors) {
@@ -280,5 +280,5 @@
 +      }
 +
        if (use_aura) {
-         sources += [ "../browser/extensions/extension_install_prompt_show_params_unittest.cc" ]
+         sources += [ "../browser/ui/views/autofill/autofill_accessibility_win_browsertest.cc" ]
        }

@@ -36,7 +36,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
            std::move(query_complete_callback),
 --- a/chrome/browser/ui/webui/net_internals/net_internals_ui.cc
 +++ b/chrome/browser/ui/webui/net_internals/net_internals_ui.cc
-@@ -395,7 +395,10 @@
+@@ -407,7 +407,10 @@
      // There cannot be a unicode entry in the HSTS set.
      return;
    }
@@ -47,7 +47,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
        *domain, base::BindOnce(&IgnoreBoolCallback));
  }
  
-@@ -405,7 +408,10 @@
+@@ -417,7 +420,10 @@
    DCHECK(callback_id && domain);
  
    AllowJavascript();
@@ -58,7 +58,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
        *domain,
        base::BindOnce(&NetInternalsMessageHandler::ResolveCallbackWithResult,
                       weak_factory_.GetWeakPtr(), *callback_id));
-@@ -431,8 +437,12 @@
+@@ -443,8 +449,12 @@
    const bool sts_include_subdomains = list[1].GetBool();
  
    base::Time expiry = base::Time::Now() + base::Days(1000);
@@ -587,17 +587,17 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
      if (!GetECHNameOverride().empty()) {
 --- a/net/spdy/spdy_session.cc
 +++ b/net/spdy/spdy_session.cc
-@@ -732,7 +732,8 @@
+@@ -733,7 +733,8 @@
                            const SSLInfo& ssl_info,
                            const SSLConfigService& ssl_config_service,
-                           const std::string& old_hostname,
--                          const std::string& new_hostname) {
-+                          const std::string& new_hostname,
+                           std::string_view old_hostname,
+-                          std::string_view new_hostname) {
++                          std::string_view new_hostname,
 +                          const net::NetworkAnonymizationKey& network_anonymization_key) {
    // Pooling is prohibited if the server cert is not valid for the new domain,
    // and for connections on which client certs were sent. It is also prohibited
    // when channel ID was sent if the hosts are from different eTLDs+1.
-@@ -751,7 +752,7 @@
+@@ -752,7 +753,7 @@
    // Port is left at 0 as it is never used.
    if (transport_security_state->CheckPublicKeyPins(
            HostPortPair(new_hostname, 0), ssl_info.is_issued_by_known_root,
@@ -606,7 +606,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
        TransportSecurityState::PKPStatus::VIOLATED) {
      return false;
    }
-@@ -972,7 +973,8 @@
+@@ -973,7 +974,8 @@
      return true;  // This is not a secure session, so all domains are okay.
  
    return CanPool(transport_security_state_, ssl_info, *ssl_config_service_,
@@ -616,31 +616,31 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  }
  
  void SpdySession::EnqueueStreamWrite(
-@@ -3007,7 +3009,8 @@
-     if (!GetSSLInfo(&ssl_info))
+@@ -3010,7 +3012,8 @@
        return;
+     }
      if (!CanPool(transport_security_state_, ssl_info, *ssl_config_service_,
--                 host_port_pair().host(), gurl.host())) {
-+                 host_port_pair().host(), gurl.host(),
+-                 host_port_pair().host(), gurl.host_piece())) {
++                 host_port_pair().host(), gurl.host_piece(),
 +                 spdy_session_key_.network_anonymization_key())) {
        return;
      }
      scheme_host_port = url::SchemeHostPort(gurl);
 --- a/net/spdy/spdy_session.h
 +++ b/net/spdy/spdy_session.h
-@@ -319,7 +319,8 @@
+@@ -320,7 +320,8 @@
                        const SSLInfo& ssl_info,
                        const SSLConfigService& ssl_config_service,
-                       const std::string& old_hostname,
--                      const std::string& new_hostname);
-+                      const std::string& new_hostname,
+                       std::string_view old_hostname,
+-                      std::string_view new_hostname);
++                      std::string_view new_hostname,
 +                      const net::NetworkAnonymizationKey& network_anonymization_key);
  
    // Create a new SpdySession.
    // |spdy_session_key| is the host/port that this session connects to, privacy
 --- a/net/url_request/url_request_context_builder.cc
 +++ b/net/url_request/url_request_context_builder.cc
-@@ -389,20 +389,6 @@
+@@ -388,20 +388,6 @@
  
    context->set_transport_security_state(
        std::make_unique<TransportSecurityState>(hsts_policy_bypass_list_));
@@ -663,7 +663,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
      context->set_http_server_properties(std::move(http_server_properties_));
 --- a/net/url_request/url_request_http_job.cc
 +++ b/net/url_request/url_request_http_job.cc
-@@ -275,7 +275,8 @@
+@@ -274,7 +274,8 @@
  
    TransportSecurityState* hsts = request->context()->transport_security_state();
    bool should_upgrade_to_ssl =
@@ -673,7 +673,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  
    // Check for reasons not to return a URLRequestHttpJob. These don't apply to
    // https and wss requests.
-@@ -1095,7 +1096,7 @@
+@@ -1080,7 +1081,7 @@
    HttpResponseHeaders* headers = GetResponseHeaders();
    std::string value;
    if (headers->EnumerateHeader(nullptr, "Strict-Transport-Security", &value))
@@ -682,7 +682,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  }
  
  void URLRequestHttpJob::OnStartCompleted(int result) {
-@@ -1165,7 +1166,7 @@
+@@ -1150,7 +1151,7 @@
      TransportSecurityState* state = context->transport_security_state();
      NotifySSLCertificateError(
          result, transaction_->GetResponseInfo()->ssl_info,
@@ -784,7 +784,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  
    // |PreconnectSockets| may receive arguments from the renderer, which is not
    // guaranteed to validate them.
-@@ -2785,12 +2790,15 @@
+@@ -2801,12 +2806,15 @@
      std::move(on_connection_close_callback_).Run(this);
  }
  
@@ -801,7 +801,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
            original_url.host())) {
      return original_url;
    }
-@@ -2838,7 +2846,8 @@
+@@ -2854,7 +2862,8 @@
          url_request_context_->transport_security_state()->CheckPublicKeyPins(
              net::HostPortPair::FromURL(pending_cert_verify->url),
              pending_cert_verify->result->is_issued_by_known_root,
@@ -858,7 +858,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
    };
 --- a/services/network/public/mojom/network_context.mojom
 +++ b/services/network/public/mojom/network_context.mojom
-@@ -1523,6 +1523,7 @@
+@@ -1503,6 +1503,7 @@
    // implementation is currently specific for use by Signed Exchange.
    VerifyCertForSignedExchange(X509Certificate certificate,
                                url.mojom.Url url,
@@ -866,7 +866,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
                                string ocsp_response,
                                string sct_list) => (int32 error_code,
                                                     CertVerifyResult cv_result,
-@@ -1530,16 +1531,16 @@
+@@ -1510,16 +1511,16 @@
  
    // Adds explicitly-specified data as if it was processed from an
    // HSTS header. Used by tests and implementation of chrome://net-internals.
@@ -886,7 +886,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
        => (mojo_base.mojom.DictionaryValue state);
  
    // Sets allowed and blocked origins respectively for the URLLoaderFactory
-@@ -1558,7 +1559,7 @@
+@@ -1538,7 +1539,7 @@
    // Deletes any dynamic data stored for |host| from the transport
    // security state. Returns true iff an entry was deleted.
    // See net::TransportSecurityState::DeleteDynamicDataForHost for more detail.

@@ -5,10 +5,10 @@
      "//chrome/services/file_util:buildflags",
      "//chrome/services/file_util/public/mojom:mojom",
 -    "//chrome/services/removable_storage_writer/public/mojom",
+     "//components/affiliations/core/browser:affiliations",
      "//components/app_constants",
      "//components/autofill/content/browser",
-     "//components/back_forward_cache",
-@@ -988,6 +987,10 @@
+@@ -987,6 +986,10 @@
      "//url",
    ]
  
@@ -17,19 +17,19 @@
 +  }
 +
    if (enable_supervised_users) {
-     deps += [
-       "//components/supervised_user/core/browser",
+     deps += [ "//components/supervised_user/core/browser" ]
+   }
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -1764,7 +1764,6 @@
+@@ -1729,7 +1729,6 @@
+       "//chrome/common/privacy_budget:test_support",
+       "//chrome/renderer",
        "//chrome/renderer/companion/visual_query:browser_tests",
-       "//chrome/services/qrcode_generator/public/cpp",
-       "//chrome/services/qrcode_generator/public/mojom",
 -      "//chrome/services/removable_storage_writer:lib",
        "//chrome/test/data/webui:resources_grit",
        "//chrome/test/data/webui/mojo:mojo_bindings",
        "//chrome/test/media_router/access_code_cast:access_code_cast_integration_base",
-@@ -2076,6 +2075,10 @@
+@@ -2048,6 +2047,10 @@
        "//v8",
      ]
  
@@ -40,28 +40,28 @@
      if (is_chromeos) {
        deps += [
          "//chromeos/dbus/dlp:dlp",
-@@ -9269,7 +9272,6 @@
-         "//chrome/common/apps/platform_apps",
-         "//chrome/common/extensions:extension_features_unittest",
-         "//chrome/common/extensions/api",
--        "//chrome/utility/image_writer:unit_tests",
-         "//components/enterprise:test_support",
-         "//components/password_manager/core/browser/features:password_features",
-         "//components/password_manager/core/browser/sharing",
-@@ -9300,6 +9302,10 @@
-         "//tools/json_schema_compiler/test:unit_tests",
-       ]
+@@ -9171,7 +9174,6 @@
+       "//chrome/common/apps/platform_apps",
+       "//chrome/common/extensions:extension_features_unittest",
+       "//chrome/common/extensions/api",
+-      "//chrome/utility/image_writer:unit_tests",
+       "//components/enterprise:test_support",
+       "//components/password_manager/core/browser/features:password_features",
+       "//components/password_manager/core/browser/sharing",
+@@ -9202,6 +9204,10 @@
+       "//tools/json_schema_compiler/test:unit_tests",
+     ]
  
-+      if (!is_linux) {
-+        deps += [ "//chrome/utility/image_writer:unit_tests" ]
-+      }
++    if (!is_linux) {
++      deps += [ "//chrome/utility/image_writer:unit_tests" ]
++    }
 +
-       if (enable_service_discovery) {
-         sources += [ "../browser/extensions/api/mdns/mdns_api_unittest.cc" ]
-       }
+     if (enable_service_discovery) {
+       sources += [ "../browser/extensions/api/mdns/mdns_api_unittest.cc" ]
+     }
 --- a/chrome/utility/BUILD.gn
 +++ b/chrome/utility/BUILD.gn
-@@ -151,16 +151,24 @@
+@@ -150,16 +150,24 @@
    if (enable_extensions) {
      deps += [
        "//chrome/common/extensions/api",
@@ -91,7 +91,7 @@
        ldflags = [ "/DELAYLOAD:wininet.dll" ]
 --- a/chrome/utility/services.cc
 +++ b/chrome/utility/services.cc
-@@ -87,7 +87,7 @@
+@@ -85,7 +85,7 @@
  #include "chrome/services/file_util/document_analysis_service.h"  // nogncheck
  #endif
  
@@ -100,7 +100,7 @@
  #include "chrome/services/removable_storage_writer/public/mojom/removable_storage_writer.mojom.h"
  #include "chrome/services/removable_storage_writer/removable_storage_writer.h"
  #endif
-@@ -293,7 +293,7 @@
+@@ -286,7 +286,7 @@
  }
  #endif
  
@@ -109,7 +109,7 @@
  auto RunRemovableStorageWriter(
      mojo::PendingReceiver<chrome::mojom::RemovableStorageWriter> receiver) {
    return std::make_unique<RemovableStorageWriter>(std::move(receiver));
-@@ -487,7 +487,7 @@
+@@ -485,7 +485,7 @@
    services.Add(RunDocumentAnalysis);
  #endif
  

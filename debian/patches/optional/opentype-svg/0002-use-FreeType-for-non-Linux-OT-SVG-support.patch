@@ -46,13 +46,13 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
 --- a/third_party/blink/renderer/platform/fonts/web_font_typeface_factory.cc
 +++ b/third_party/blink/renderer/platform/fonts/web_font_typeface_factory.cc
 @@ -178,6 +178,8 @@
-        InstantiationResult::kSuccessColrV1Font, absl::nullopt},
+        InstantiationResult::kSuccessColrV1Font, std::nullopt},
        {&FontFormatCheck::IsSbixColorFont, &MakeSbixTypeface,
-        InstantiationResult::kSuccessSbixFont, absl::nullopt},
+        InstantiationResult::kSuccessSbixFont, std::nullopt},
 +      {&FontFormatCheck::IsSvgColorFont, &MakeUseFallbackIfNeeded,
-+       InstantiationResult::kSuccessSvgFont, absl::nullopt},
++       InstantiationResult::kSuccessSvgFont, std::nullopt},
        {&FontFormatCheck::IsCff2OutlineFont, &MakeUseFallbackIfNeeded,
-        InstantiationResult::kSuccessCff2Font, absl::nullopt},
+        InstantiationResult::kSuccessCff2Font, std::nullopt},
        // We need to special case variable COLRv0 for backend instantiation as
 --- a/third_party/blink/renderer/platform/fonts/web_font_typeface_factory.h
 +++ b/third_party/blink/renderer/platform/fonts/web_font_typeface_factory.h

@@ -17,7 +17,7 @@ disable/widevine-cdm-cu.patch
 system/openjpeg.patch
 system/zlib.patch
 
-cromite/00Disable-csp-reports.patch
+cromite/Disable-csp-reports.patch
 cromite/AudioBuffer-AnalyserNode-fp-mitigations.patch
 cromite/Partition-Blink-memory-cache.patch
 cromite/Partition-blobs-by-top-frame-URL.patch
@@ -41,7 +41,7 @@ kryptonite/remove-window-name-on-cross-origin-navigation.patch
 kryptonite/replace-dns-probe-hostname-with-example-com.patch
 kryptonite/stop-omnibar-searches-triggering-dns-requests.patch
 
-vanadium/0050-stub-out-the-battery-status-API.patch
+vanadium/0049-stub-out-the-battery-status-API.patch
 
 vanadinite/0001-switch-to-fstack-protector-strong.patch
 vanadinite/0002-enable-fwrapv-in-Clang-for-non-UBSan-builds.patch
@@ -100,7 +100,6 @@ various/system/perfetto-system-zlib.patch
 various/system/xdg-scripts.patch
 various/system/zlib.patch
 various/upstream/0001-RaceNetworkRequest-is-triggered-only-when-the-scheme-is-HTTP-or-HTTPS.patch
-various/upstream/0002-9c5c8ca.diff
 various/upstream/0003-f2b97f1.diff
 various/upstream/0004-b360457.diff
 various/upstream/0005-03069a77.diff
@@ -135,7 +134,6 @@ optional/disable/supervised-users.patch
 #optional/fixes/convertutf-bundled.patch
 #optional/fixes/dav1d-bundled-header.patch
 optional/fixes/extensions-in-tools-menu.patch
-#optional/fixes/no-ELOC_PROTO-mnemonic.patch
 #optional/fixes/opentype-svg-on-bundled-freetype.patch
 #optional/fixes/skia-gamma.patch
 optional/fixes/widevine/widevine-enable-version-string.patch
@@ -163,7 +161,3 @@ optional/system/vaapi/vaapi-disable-libaom-encoding.patch
 #optional/system/zstd/zstd-feature-flag.patch
 optional/translate/revert-disable.patch
 optional/translate/stop-unsupported-switch-warning.patch
-
-addenda/0001-56b6266.diff
-addenda/0002-d331801.diff
-addenda/0003-496297f.diff
