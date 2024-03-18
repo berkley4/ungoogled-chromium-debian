@@ -94,7 +94,7 @@ sanitise_op () {
 [ -n "$SPEECH" ] || SPEECH=1
 [ -n "$SUPERVISED_USER" ] || SUPERVISED_USER=0
 [ -n "$SWIFTSHADER" ] || SWIFTSHADER=1
-[ -n "$SWIFTSHADER_WEBGPU" ] || SWIFTSHADER_WEBGPU=0
+[ -n "$SWIFTSHADER_WEBGPU" ] || SWIFTSHADER_WEBGPU=1
 [ -n "$TRANSLATE" ] || TRANSLATE=1
 [ -n "$VR" ] || VR=0
 [ -n "$VAAPI" ] || VAAPI=1
@@ -729,14 +729,6 @@ if [ $SUPERVISED_USER -eq 1 ]; then
 fi
 
 
-if [ $SWIFTSHADER -eq 0 ]; then
-  # GN_FLAGS += enable_swiftshader=false
-  gn_enable="$gn_enable enable_swiftshader"
-
-  INS="$INS -e \"s@^\(out/Release/.*swiftshader\)@#\1@\""
-fi
-
-
 if [ $TRANSLATE -eq 0 ]; then
   op_disable="$op_disable translate/"
 
@@ -758,16 +750,26 @@ if [ $VR -eq 1 ]; then
 fi
 
 
-if [ $WEBGPU -eq 1 ]; then
+if [ $WEBGPU -eq 0 ]; then
   # GN_FLAGS += use_dawn=false skia_use_dawn=false
-  gn_disable="$gn_disable use_dawn"
+  gn_enable="$gn_enable use_dawn"
 
-  if [ $SWIFTSHADER_WEBGPU -eq 1 ]; then
+  SWIFTSHADER_WEBGPU=0
+elif [ $WEBGPU -ge 2 ]; then
+  sed 's@^#\(.*enable-unsafe-webgpu\)@\1@' -i $DEBIAN/etc/chromium.d/gpu
+fi
+
+
+if [ $SWIFTSHADER -eq 0 ]; then
+  # GN_FLAGS += enable_swiftshader=false
+  gn_enable="$gn_enable enable_swiftshader"
+
+  INS="$INS -e \"s@^\(out/Release/.*swiftshader\)@#\1@\""
+else
+  if [ $SWIFTSHADER_WEBGPU -eq 0 ]; then
     # GN_FLAGS += dawn_use_swiftshader=false
-    gn_disable="$gn_disable dawn_use_swiftshader"
+    gn_enable="$gn_enable dawn_use_swiftshader"
   fi
-
-  sed 's@^#\(.*enable-unsafe-webgpu\)@\1@' -i $DEBIAN/etc/chromium.d/gpu-options
 fi
 
 

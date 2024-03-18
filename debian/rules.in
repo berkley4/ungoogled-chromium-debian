@@ -167,8 +167,8 @@ GN_FLAGS += enable_supervised_users=false
 GN_FLAGS += enable_vr=false
 
 # Disable WebGPU
-GN_FLAGS += use_dawn=false skia_use_dawn=false
-GN_FLAGS += dawn_use_swiftshader=false
+#GN_FLAGS += use_dawn=false skia_use_dawn=false
+#GN_FLAGS += dawn_use_swiftshader=false
 
 # Disable zstd
 GN_FLAGS += disable_zstd_filter=true
