@@ -28,7 +28,7 @@
          ":chrome_symbols",
        ]
        if (is_linux) {
-@@ -1748,18 +1745,6 @@
+@@ -1749,18 +1746,6 @@
  
        deps = [ ":chrome" ]
      }
@@ -44,9 +44,9 @@
 -
 -      deps = [ "//components/crash/core/app:chrome_crashpad_handler" ]
 -    }
- if (false) {
      extract_symbols("swiftshader_vk_symbols") {
        binary = "$root_out_dir/libvk_swiftshader.so"
+ 
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
 @@ -4742,7 +4742,7 @@

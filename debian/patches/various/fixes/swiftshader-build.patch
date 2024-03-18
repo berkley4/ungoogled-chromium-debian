@@ -1,0 +1,135 @@
+--- a/BUILD.gn
++++ b/BUILD.gn
+@@ -495,7 +495,8 @@
+     }
+ 
+     if ((is_win || is_mac || is_linux || is_chromeos || is_fuchsia) &&
+-        (target_cpu == "x86" || target_cpu == "x64")) {
++        (target_cpu == "x86" || target_cpu == "x64") &&
++         enable_swiftshader_vulkan) {
+       deps += [
+         "//third_party/swiftshader/src/Vulkan:icd_file",
+         "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan",
+--- a/chrome/BUILD.gn
++++ b/chrome/BUILD.gn
+@@ -22,6 +22,7 @@
+ import("//components/nacl/features.gni")
+ import("//components/optimization_guide/features.gni")
+ import("//extensions/buildflags/buildflags.gni")
++import("//gpu/vulkan/features.gni")
+ import("//media/media_options.gni")
+ import("//ppapi/buildflags/buildflags.gni")
+ import("//third_party/blink/public/public_features.gni")
+@@ -1724,7 +1725,7 @@
+         ":angle_gles_symbols",
+         ":chrome_symbols",
+       ]
+-      if (is_linux) {
++      if (is_linux && enable_swiftshader_vulkan) {
+         deps += [ ":swiftshader_vk_symbols" ]
+       }
+       if (!is_chromeos) {
+@@ -1746,17 +1747,19 @@
+ 
+       deps = [ ":chrome" ]
+     }
+-    extract_symbols("swiftshader_vk_symbols") {
+-      binary = "$root_out_dir/libvk_swiftshader.so"
++    if (enable_swiftshader_vulkan) {
++      extract_symbols("swiftshader_vk_symbols") {
++        binary = "$root_out_dir/libvk_swiftshader.so"
+ 
+-      if (current_cpu == "x86") {
+-        # GYP used "ia32" so keep that naming for back-compat.
+-        symbol_file = "$root_out_dir/libvk_swiftshader.breakpad.ia32"
+-      } else {
+-        symbol_file = "$root_out_dir/libvk_swiftshader.breakpad.$current_cpu"
+-      }
++        if (current_cpu == "x86") {
++          # GYP used "ia32" so keep that naming for back-compat.
++          symbol_file = "$root_out_dir/libvk_swiftshader.breakpad.ia32"
++        } else {
++          symbol_file = "$root_out_dir/libvk_swiftshader.breakpad.$current_cpu"
++        }
+ 
+-      deps = [ "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan" ]
++        deps = [ "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan" ]
++      }
+     }
+     extract_symbols("angle_egl_symbols") {
+       binary = "$root_out_dir/libEGL.so"
+--- a/gpu/vulkan/features.gni
++++ b/gpu/vulkan/features.gni
+@@ -3,6 +3,7 @@
+ # found in the LICENSE file.
+ 
+ import("//build/config/ui.gni")
++import("//ui/gl/features.gni")
+ 
+ # Features used by targets inside and outside of |gpu/vulkan|.
+ # For details see declare_args() in build/config/BUILDCONFIG.gn.
+@@ -13,5 +14,5 @@
+   # Enable swiftshader vulkan. Disabling it can save build time, however
+   # --use-vulkan=swiftshader and some tests which use swiftshader vulkan will
+   # not work.
+-  enable_swiftshader_vulkan = true
++  enable_swiftshader_vulkan = enable_swiftshader
+ }
+--- a/third_party/angle/gni/angle.gni
++++ b/third_party/angle/gni/angle.gni
+@@ -3,6 +3,7 @@
+ # found in the LICENSE file.
+ 
+ import("//build_overrides/angle.gni")
++import("//ui/gl/features.gni")
+ 
+ declare_args() {
+   is_ggp = false
+@@ -226,7 +227,8 @@
+   # Currently SwiftShader's Vulkan front-end doesn't build on Android.
+   # Disabled by default on MSVC because of compiler warnings/errors.
+   angle_enable_swiftshader =
+-      angle_enable_vulkan && !is_android && !is_ggp && is_clang
++      angle_enable_vulkan && enable_swiftshader &&
++      !is_android && !is_ggp && is_clang
+ 
+   # Translator frontend support:
+   angle_enable_desktop_glsl = angle_enable_gl_desktop_frontend
+@@ -551,7 +553,6 @@
+                       "$angle_root:angle_common",
+                       "$angle_root:includes",
+                       "$angle_root/src/tests:angle_test_expectations",
+-                      "$angle_root/third_party/rapidjson:rapidjson",
+                       "$angle_root/util:angle_test_utils",
+                       "//testing/gmock",
+                       "//testing/gtest",
+@@ -582,6 +583,10 @@
+         ]
+       }
+ 
++      if (angle_has_rapidjson) {
++        public_deps += [ "$angle_root/third_party/rapidjson:rapidjson" ]
++      }
++
+       if (is_mac) {
+         if (angle_enable_metal) {
+           # On macOS, compiling Metal shader sometimes takes very long time due to internal caching
+--- a/third_party/dawn/scripts/dawn_features.gni
++++ b/third_party/dawn/scripts/dawn_features.gni
+@@ -26,6 +26,7 @@
+ # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ 
+ import("//build_overrides/build.gni")
++import("//ui/gl/features.gni")
+ import("dawn_overrides_with_defaults.gni")
+ 
+ if (build_with_chromium) {
+@@ -52,7 +53,7 @@
+   # Enables SwiftShader as the fallback adapter. Requires dawn_swiftshader_dir
+   # to be set to take effect.
+   # TODO(dawn:1536): Enable SwiftShader for Android.
+-  dawn_use_swiftshader = !is_android && !is_ios
++  dawn_use_swiftshader = !is_android && !is_ios && enable_swiftshader
+ 
+   # Whether we allow building DXC.
+   # DXC requires SM6.0+ which is blocklisted on x86,
