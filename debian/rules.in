@@ -65,7 +65,6 @@ GN_FLAGS +=                                     \
         enable_extractors=false                 \
         enable_maldoca=false                    \
         enable_screen_ai_service=false          \
-        enable_swiftshader=false                \
         use_kerberos=false                      \
         use_sysroot=false
 
@@ -158,6 +157,9 @@ GN_FLAGS += link_pulseaudio=true
 # Disable supervised users (parental control)
 GN_FLAGS += enable_supervised_users=false
 
+# Disable swiftshader
+#GN_FLAGS += enable_swiftshader=false
+
 # Disable VA-API
 #GN_FLAGS += use_vaapi=false
 
@@ -166,6 +168,7 @@ GN_FLAGS += enable_vr=false
 
 # Disable WebGPU
 GN_FLAGS += use_dawn=false skia_use_dawn=false
+GN_FLAGS += dawn_use_swiftshader=false
 
 # Disable zstd
 GN_FLAGS += disable_zstd_filter=true
