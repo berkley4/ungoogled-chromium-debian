@@ -1,0 +1,117 @@
+--- a/chrome/app/chrome_main_delegate.cc
++++ b/chrome/app/chrome_main_delegate.cc
+@@ -199,7 +199,9 @@
+ #if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_ANDROID) || \
+     BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
+ #include "chrome/browser/policy/policy_path_parser.h"
++#if !BUILDFLAG(IS_LINUX)
+ #include "components/crash/core/app/crashpad.h"
++#endif  // !BUILDFLAG(IS_LINUX)
+ #endif
+ 
+ #if BUILDFLAG(ENABLE_EXTENSIONS)
+@@ -1722,9 +1724,11 @@
+       base::android::InitJavaExceptionReporterForChildProcess();
+     }
+ #else
++#if !BUILDFLAG(IS_LINUX)
+     crash_reporter::InitializeCrashpad(process_type.empty(), process_type);
+     crash_reporter::SetFirstChanceExceptionHandler(
+         v8::TryHandleWebAssemblyTrapPosix);
++#endif  // !BUILDFLAG(IS_LINUX)
+ #endif  // BUILDFLAG(IS_ANDROID)
+   }
+ #endif  // BUILDFLAG(IS_POSIX) && !BUILDFLAG(IS_MAC)
+@@ -1869,10 +1873,11 @@
+       base::CommandLine::ForCurrentProcess();
+   std::string process_type =
+       command_line->GetSwitchValueASCII(switches::kProcessType);
++#if !BUILDFLAG(IS_LINUX)
+   crash_reporter::InitializeCrashpad(false, process_type);
+   crash_reporter::SetFirstChanceExceptionHandler(
+       v8::TryHandleWebAssemblyTrapPosix);
+-
++#endif  // !BUILDFLAG(IS_LINUX)
+   // Reset the command line for the newly spawned process.
+   crash_keys::SetCrashKeysFromCommandLine(*command_line);
+ }
+--- a/chrome/browser/chrome_content_browser_client.cc
++++ b/chrome/browser/chrome_content_browser_client.cc
+@@ -569,7 +569,7 @@
+ #include "chrome/browser/browser_switcher/browser_switcher_navigation_throttle.h"
+ #endif
+ 
+-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
++#if BUILDFLAG(IS_CHROMEOS)
+ #include "components/crash/core/app/crash_switches.h"
+ #include "components/crash/core/app/crashpad.h"
+ #endif
+@@ -978,7 +978,7 @@
+ int GetCrashSignalFD(const base::CommandLine& command_line) {
+   return crashpad::CrashHandlerHost::Get()->GetDeathSignalSocket();
+ }
+-#elif BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
++#elif BUILDFLAG(IS_CHROMEOS)
+ int GetCrashSignalFD(const base::CommandLine& command_line) {
+   int fd;
+   return crash_reporter::GetHandlerSocket(&fd, nullptr) ? fd : -1;
+@@ -4522,7 +4522,7 @@
+   DCHECK(!app_data_path.empty());
+ #endif  // BUILDFLAG(IS_ANDROID)
+ 
+-#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
++#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_CHROMEOS)
+   int crash_signal_fd = GetCrashSignalFD(command_line);
+   if (crash_signal_fd >= 0) {
+     mappings->Share(kCrashDumpSignal, crash_signal_fd);
+--- a/headless/lib/browser/headless_content_browser_client.h
++++ b/headless/lib/browser/headless_content_browser_client.h
+@@ -45,7 +45,7 @@
+   CreateDevToolsManagerDelegate() override;
+   content::GeneratedCodeCacheSettings GetGeneratedCodeCacheSettings(
+       content::BrowserContext* context) override;
+-#if BUILDFLAG(IS_POSIX) && !BUILDFLAG(IS_MAC)
++#if BUILDFLAG(IS_POSIX) && !BUILDFLAG(IS_LINUX) && !BUILDFLAG(IS_MAC)
+   void GetAdditionalMappedFilesForChildProcess(
+       const base::CommandLine& command_line,
+       int child_process_id,
+--- a/headless/lib/browser/headless_content_browser_client.cc
++++ b/headless/lib/browser/headless_content_browser_client.cc
+@@ -49,8 +49,10 @@
+ #include "ui/gfx/switches.h"
+ 
+ #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
++#if BUILDFLAG(IS_CHROMEOS)
+ #include "components/crash/core/app/crash_switches.h"  // nogncheck
+ #include "components/crash/core/app/crashpad.h"        // nogncheck
++#endif  // BUILDFLAG(IS_CHROMEOS)
+ #include "content/public/common/content_descriptors.h"
+ #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
+ 
+@@ -66,7 +68,7 @@
+ 
+ namespace headless {
+ 
+-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
++#if BUILDFLAG(IS_CHROMEOS)
+ namespace {
+ 
+ int GetCrashSignalFD(const base::CommandLine& command_line,
+@@ -164,7 +166,7 @@
+   return content::GeneratedCodeCacheSettings(true, 0, context->GetPath());
+ }
+ 
+-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
++#if BUILDFLAG(IS_CHROMEOS)
+ void HeadlessContentBrowserClient::GetAdditionalMappedFilesForChildProcess(
+     const base::CommandLine& command_line,
+     int child_process_id,
+@@ -183,7 +185,7 @@
+ 
+   command_line->AppendSwitch(::switches::kHeadless);
+ 
+-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
++#if BUILDFLAG(IS_CHROMEOS)
+   int fd;
+   pid_t pid;
+   if (crash_reporter::GetHandlerSocket(&fd, &pid)) {
