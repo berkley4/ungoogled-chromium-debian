@@ -77,6 +77,7 @@ sanitise_op () {
 [ -n "$FEED" ] || FEED=1
 [ -n "$GOOGLE_API_KEYS" ] || GOOGLE_API_KEYS=0
 [ -n "$HLS_DEMUXER" ] || HLS_DEMUXER=0
+[ -n "$LABS_TOOLBAR_BUTTON" ] || LABS_TOOLBAR_BUTTON=0
 [ -n "$LENS" ] || LENS=1
 [ -n "$LENS_TRANSLATE" ] || LENS_TRANSLATE=1
 [ -n "$MEDIA_REMOTING" ] || MEDIA_REMOTING=1
@@ -644,6 +645,11 @@ fi
 
 if [ $HLS_DEMUXER -eq 1 ]; then
   gn_enable="$gn_enable enable_hls_demuxer"
+fi
+
+
+if [ $LABS_TOOLBAR_BUTTON -eq 1 ]; then
+  op_disable="$op_disable disable/labs-toolbar-button"
 fi
 
 
