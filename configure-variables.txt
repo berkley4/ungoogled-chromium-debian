@@ -68,6 +68,7 @@ EXTENSIONS_ROOT_MENU	0		Whether to put the extensions menu in the root menu (0 =
 FEED			1		WebFeed (News feed) support
 GOOGLE_API_KEYS		0		Uncomment the GOOGLE_* variables in /etc/chromium.d/google-api-keys
 HLS_DEMUXER		0		HLS manifest parser and demuxer (experimental)
+LABS_TOOLBAR_BUTTON	0		Experimental flag toggles via a Labs toolbar button
 LENS			1		Goodle Lens
 LENS_TRANSLATE		1		Goodle Lens image translation subfeature
 MEDIA_REMOTING		0		Render and play back media on remote devices when a tab is casted
