@@ -1,17 +1,26 @@
-## Note: if using an intel GPU try enabling the flag under 'Deprecated method' below
-## and install intel-media-va-driver-non-free (as opposed to intel-media-va-driver)
+# https://chromium.googlesource.com/chromium/src/+/main/docs/gpu/vaapi.md#vaapi-on-linux
+#
+# One can also try editing /etc/chromium.d/gpu to enable the following...
+#   --ignore-gpu-blocklist
+#   --disable-gpu-driver-bug-workaround
 
 
-# Disable hardware decoding/encoding
+# Currently required for hardware decoding on linux
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoDecodeLinuxGL"
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-angle=gl"
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-gl=angle"
+
+# Experimental VA-API support for Nvidia GPUs
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiOnNvidiaGPUs"
+
+
+# Disable VA-API hardware decoder
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=VaapiVideoDecoder"
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=VaapiVideoEncoder"
+
+# Enable VA-API hardware encoder
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoEncoder"
+
+
+# Disable WebRTC hardware decoding/encoding
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-webrtc-hw-decoding"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-webrtc-hw-encoding"
-
-# Enable hardware decoding
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoDecodeLinuxGL"
-
-# It might be worth trying one or both of these if all else fails
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiIgnoreDriverChecks"
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VulkanFromANGLE,DefaultANGLEVulkan"
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=UseSkiaRenderer"
