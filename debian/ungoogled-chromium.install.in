@@ -37,6 +37,7 @@ debian/etc/chromium/policies/managed/README.txt                                e
 
 debian/etc/chromium.d/anti-phish-track                                         etc/chromium.d
 debian/etc/chromium.d/google-api-keys                                          etc/chromium.d
+debian/etc/chromium.d/google-lens                                              etc/chromium.d
 debian/etc/chromium.d/google-translate                                         etc/chromium.d
 debian/etc/chromium.d/gpu                                                      etc/chromium.d
 debian/etc/chromium.d/hw-decoding-encoding                                     etc/chromium.d
