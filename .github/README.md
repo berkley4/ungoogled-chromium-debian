@@ -63,16 +63,20 @@ ___Security/Privacy improvements___
 - The Web Bluetooth/HID/Serial/USB APIs are disabled via managed policy
 - Text fragments are disabled by default via the poilcy file (see [here](https://xsleaks.dev/docs/attacks/experiments/scroll-to-text-fragment/) for more info)
 - Some security/privacy themed flag files are installed to /etc/chromium.d
-- Potentially privacy-unfriendly Google features - Chromecast, Lens and Translate - are guarded behind runtime flags
+- Potentially privacy/security -unfriendly Google features are guarded behind runtime flags
+    - Chromecast
+    - Google Lens
+    - Google Translate
+    - WebGPU
 - Reduced attack surface
     - Some components/features can optionally be disabled/patched out at compile time
         - ATK/dbus
         - Catapult
         - DNS config service
         - Media remoting
+        - Swiftshader
         - Supervised users
     - Some other features/components are always patched out
-        - Screen AI Service
         - Crashpad handler
         - Image writer private API
         - image writer utility
@@ -103,20 +107,20 @@ ___Build system___
 - - - -
 
 
-___Google Translate___
+___Google Lens/Google Translate/WebGPU___
 
-To enable, you just need to edit /etc/chromium.d/google-translate and uncomment the
-line containing the '--translate-script-url' runtime switch.
+To enable, you just need to edit the respective flag files :-
 
-To build with everything enabled (no need to edit the above flag file), pass TRANSLATE=2
-to the configure script :-
+/etc/chromium.d/google-lens: '--enable-lens-standalone' (and optionally '--enable-lens-image-translate')
+/etc/chromium.d/google-translate: '--translate-script-url'
+/etc/chromium.d/gpu: '--enable-unsafe-webgpu'
 
-TRANSLATE=2 ./debian/configure.sh
+To build with everything enabled (no need to edit the above flag file), set the repective configuration
+variables to a value of 2. For example :-
 
-To build with translate disabled, include TRANSLATE=0 in your configure
-variables :-
+LENS=2 TRANSLATE=2 WEBGPU=2 ./debian/configure.sh
 
-TRANSLATE=0 ./debian/configure.sh
+Likewise, use zero instead of 2 to disable.
 
 
 
@@ -124,14 +128,6 @@ ___VAAPI (hardware video decoding/encoding)___
 
 To test whether hardware decoding is functional, have a look at chrome://media-internals/
 (or the newer media tab in devtools).
-
-I found that I needed to install the NON-FREE intel-media-va-driver-non-free (as opposed to the free
-intel-media-va-driver), as well running with the '--disable-features=UseChromeOSDirectVideoDecoder'
-runtime flag enabled in /etc/chromium.d/hw-decoding-encoding.
-
-If that doesn't work, then try playing around with the options in /etc/chromium.d/hw-decoding-encoding
-or uncommenting the LIBVA variable exports in /usr/bin/chromium.
-
 
 
 - - - -
