@@ -51,6 +51,7 @@ sanitise_op () {
 ## Default values ##
 ####################
 
+[ -n "$CCACHE" ] || CCACHE=0
 [ -n "$PGO" ] || PGO=1
 [ -n "$STABLE" ] || STABLE=0
 [ -n "$SYMBOLS" ] || SYMBOLS=0
@@ -345,6 +346,13 @@ esac
 ####################################
 ## Clang/Polly/Rust configuration ##
 ####################################
+
+## Enable the use of ccache
+if [ $CCACHE -eq 1 ]; then
+  # GN_FLAGS += cc_wrapper=ccache
+  gn_enable="$gn_enable cc_wrapper"
+fi
+
 
 if [ $SYS_CLANG -eq 0 ]; then
   # Polly not available on bundled toolchain

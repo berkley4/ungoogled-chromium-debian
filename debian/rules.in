@@ -96,6 +96,10 @@ GN_FLAGS +=                                     \
 # (this needs to be run anyway when self-compiling).
 
 
+### Enable ccache
+#GN_FLAGS += cc_wrapper=ccache
+
+
 ### Clang/Rust toolchain
 
 #GN_FLAGS += clang_base_path=_CLANG_DIR clang_version=_CLANG_VER
