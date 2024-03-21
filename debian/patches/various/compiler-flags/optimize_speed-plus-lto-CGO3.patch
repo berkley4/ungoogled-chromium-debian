@@ -1,0 +1,16 @@
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -2551,7 +2551,12 @@
+     # "default_optimization", below.
+     configs = [ "//build/config/nacl:irt_optimize" ]
+   } else {
+-    ldflags = common_optimize_on_ldflags
++    if (is_linux && use_lld) {
++      ldflags = [ "-Wl,--lto-CGO3" ] + common_optimize_on_ldflags
++    } else {
++      ldflags = common_optimize_on_ldflags
++    }
++
+     if (is_win) {
+       # Favor speed over size, /O2 must be before the common flags.
+       # /O2 implies /Ot, /Oi, and /GF.

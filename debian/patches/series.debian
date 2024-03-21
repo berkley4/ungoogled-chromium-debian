@@ -63,6 +63,7 @@ various/compiler-flags/function-import-limits.patch
 various/compiler-flags/init-stack-vars-zero.patch
 various/compiler-flags/no-plt.patch
 various/compiler-flags/optimize-debug-info.patch
+various/compiler-flags/optimize_speed-plus-lto-CGO3.patch
 various/compiler-flags/stack-clash-protection.patch
 various/compiler-flags/unique-section-names.patch
 various/disable/angle-perftests.patch
