@@ -657,7 +657,7 @@ fi
 
 
 if [ $LABS_TOOLBAR_BUTTON -eq 1 ]; then
-  op_disable="$op_disable disable/labs-toolbar-button"
+  sed 's@^#\(export.*chrome-labs\)@\1@' -i $FLAG_DIR/ui
 fi
 
 

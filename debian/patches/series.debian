@@ -74,6 +74,7 @@ various/disable/crashpad-handler_3.patch
 various/disable/driver-chrome-path.patch
 various/disable/image-writer-private.patch
 various/disable/image-writer-utility.patch
+various/disable/labs-toolbar-button.patch
 various/disable/lens-features.patch
 various/disable/motherboard-metrics.patch
 various/disable/screen-ai-service.patch
@@ -130,7 +131,6 @@ optional/cpu/avx.patch
 #optional/disable/click-to-call.patch
 optional/disable/dns_config_service.patch
 optional/disable/extensions-in-root-menu.patch
-optional/disable/labs-toolbar-button.patch
 #optional/disable/media-router.patch
 optional/disable/supervised-users.patch
 #optional/disable/media-remoting/media-remoting.patch
