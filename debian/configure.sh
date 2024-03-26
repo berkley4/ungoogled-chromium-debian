@@ -20,7 +20,6 @@ DNS_BUILTIN_SET=0
 MARCH_SET=0
 MEDIA_REMOTING_SET=0
 MTUNE_SET=0
-POLLY_EXT_SET=0
 RELEASE_SET=0
 SYS_FREETYPE_SET=0
 SYS_HARFBUZZ_SET=0
@@ -68,6 +67,7 @@ sanitise_op () {
 
 [ -n "$INTEL_CET" ] || INTEL_CET=0
 [ -n "$MF_SPLIT" ] || MF_SPLIT=1
+[ -n "$POLLY" ] || POLLY=1
 
 [ -n "$ATK_DBUS" ] || ATK_DBUS=1
 [ -n "$CATAPULT" ] || CATAPULT=1
@@ -122,13 +122,8 @@ sanitise_op () {
 [ -n "$MARCH" ] && MARCH_SET=1 || MARCH=x86-64-v2
 [ -n "$MTUNE" ] && MTUNE_SET=1 || MTUNE=generic
 
-## Allow forcing POLLY_EXT=0 to stop auto-enablement later on
-[ -n "$POLLY_EXT" ] && POLLY_EXT_SET=1 || POLLY_EXT=0
-[ -n "$POLLY_VEC" ] || POLLY_VEC=1
-
 ## LTO Jobs (patch = 1; chromium default = all)
 [ -n "$LTO_JOBS" ] || LTO_JOBS=0
-
 
 ## Managed Policy: Capture of audio/video/screen (eg for WebRTC)
 [ -n "$CAP" ] && [ $CAP -eq 0 ] && CAP_AUD=0 && CAP_SCR=0 && CAP_VID=0 || CAP=1
@@ -140,7 +135,6 @@ sanitise_op () {
 [ -n "$DNS_BUILTIN" ] && DNS_BUILTIN_SET=1 || DNS_BUILTIN=0
 [ -n "$DNS_HOST" ] || DNS_HOST=
 [ -n "$DNS_INTERCEPT" ] || DNS_INTERCEPT=1
-
 
 ## Package conpression: XZ_THREADED is disabled If XZ_EXTREME=0 or XZ_THREADED=0 (or both)
 [ -n "$XZ_EXTREME" ] || XZ_EXTREME=0
@@ -356,7 +350,7 @@ fi
 
 if [ $SYS_CLANG -eq 0 ]; then
   # Polly not available on bundled toolchain
-  POLLY_VEC=0
+  POLLY=0
 
   # Stop bundled toolchain directories from being pruned
   PRU="$PRU -e \"/^third_party\/llvm/d\""
@@ -426,19 +420,11 @@ else
   # Set clang path/version build flags in d/rules
   RUL="$RUL -e \"s@\(clang_base_path=\)_CLANG_DIR@\1\x5c\x22$CLANG_DIR\x5c\x22@\""
   RUL="$RUL -e \"s@\(clang_version=\)_CLANG_VER@\1\x5c\x22$CLANG_VER\x5c\x22@\""
-
-  if [ $POLLY_VEC -eq 1 ]; then
-    [ $POLLY_EXT_SET -eq 1 ] && [ $POLLY_EXT -eq 0 ] || POLLY_EXT=1
-  fi
 fi
 
 
-if [ $POLLY_VEC -eq 0 ]; then
-  op_disable="$op_disable polly-vectorizer"
-fi
-
-if [ $POLLY_EXT -eq 0 ]; then
-  op_disable="$op_disable polly-extra"
+if [ $POLLY -eq 0 ]; then
+  op_disable="$op_disable polly"
 fi
 
 
