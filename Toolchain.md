@@ -109,10 +109,8 @@ ___Install___
 Default install target is /usr/local, so do this as root :-
 
 ```sh
-ninja -j4 install
+ninja -j4 install/strip
 ```
-
-(* see note about not stripping debug information)
 
 
 ___Check for root-only permissions___
@@ -131,13 +129,13 @@ Permissions of 0700 won't allow users to access directories, and cause runtime e
 Check to see if you have any :-
 
 ```sh
-find /usr/local/ -type d | while read l; do [ $(stat -c %a "$l") -eq 0700 ] && ls -ld "$l"; done
+find /usr/local/ -type d | while read l; do [ $(stat -c %a "$l") -eq 0755 ] || ls -ld "$l"; done
 ```
 
 Correct them with :-
 
 ```sh
-find /usr/local/ -type d | while read l; do [ $(stat -c %a "$l") -eq 0700 ] && chmod 0755 "$l"; done
+find /usr/local/ -type d | while read l; do [ $(stat -c %a "$l") -eq 0755 ] || chmod 0755 "$l"; done
 ```
 
 
@@ -149,7 +147,3 @@ various install_manifest.txt files.
 ```sh
 find -type f -name install_manifest.txt | while read l; do xargs rm -rf < $l; done
 ```
-
-
-* Normally you would strip debug information by running 'ninja -j4 install/strip', however an
-  upstream bug means it might not be safe to do this when using BOLT. See llvm issue [56738](https://github.com/llvm/llvm-project/issues/56738).
