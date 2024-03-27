@@ -58,7 +58,7 @@ vanadinite/0012-Enable-strict-origin-isolation-by-default.patch
 vanadinite/0013-enable-process-isolated-sandboxed-iframes-by-default.patch
 vanadinite/0014-enable-partitioning-third-party-storage.patch
 
-various/compiler-flags/Do-not-link-with-libatomic.patch
+various/compiler-flags/do-not-link-with-libatomic.patch
 various/compiler-flags/function-import-limits.patch
 various/compiler-flags/init-stack-vars-zero.patch
 various/compiler-flags/no-plt.patch
