@@ -163,5 +163,3 @@ optional/system/vaapi/vaapi-disable-libaom-encoding.patch
 #optional/system/zstd/zstd-feature-flag.patch
 optional/translate/revert-disable.patch
 optional/translate/stop-unsupported-switch-warning.patch
-
-addenda/0001-2b4d6a3.diff
