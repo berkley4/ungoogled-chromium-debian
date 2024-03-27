@@ -69,7 +69,10 @@ CLICK_TO_CALL		1		Feature for using chromium to make a call via an android phone
 EXTENSIONS_ROOT_MENU	0		Whether to put the extensions menu in the root menu (0 = put in 'More tools' menu)
 FEED			1		WebFeed (News feed) support
 GOOGLE_API_KEYS		0		Uncomment the GOOGLE_* variables in /etc/chromium.d/google-api-keys
-HLS_DEMUXER		0		HLS manifest parser and demuxer (experimental)
+HLS_PLAYER		1		Enables the HLS manifest parser/demuxer/player (experimental)
+					0 - disable
+					1 - enable (need to edit /etc/chromium.d/hls-player to fully enable)
+					2 - enable fully
 LABS_TOOLBAR_BUTTON	0		Experimental flag toggles via a Labs toolbar button
 LENS			1		Goodle Lens
 					0 - disable

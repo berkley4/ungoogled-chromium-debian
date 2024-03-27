@@ -1,0 +1,3 @@
+## Enables the use of MediaPlayerRenderer for HLS playback
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-builtin-hls"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=HlsPlayer"

@@ -40,6 +40,7 @@ debian/etc/chromium.d/google-api-keys                                          e
 debian/etc/chromium.d/google-lens                                              etc/chromium.d
 debian/etc/chromium.d/google-translate                                         etc/chromium.d
 debian/etc/chromium.d/gpu                                                      etc/chromium.d
+debian/etc/chromium.d/hls-player                                               etc/chromium.d
 debian/etc/chromium.d/hw-decoding-encoding                                     etc/chromium.d
 debian/etc/chromium.d/isolation                                                etc/chromium.d
 debian/etc/chromium.d/miscellaneous                                            etc/chromium.d

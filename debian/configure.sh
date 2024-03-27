@@ -77,7 +77,7 @@ sanitise_op () {
 [ -n "$EXTENSIONS_ROOT_MENU" ] || EXTENSIONS_ROOT_MENU=0
 [ -n "$FEED" ] || FEED=1
 [ -n "$GOOGLE_API_KEYS" ] || GOOGLE_API_KEYS=0
-[ -n "$HLS_DEMUXER" ] || HLS_DEMUXER=0
+[ -n "$HLS_PLAYER" ] || HLS_PLAYER=1
 [ -n "$LABS_TOOLBAR_BUTTON" ] || LABS_TOOLBAR_BUTTON=0
 [ -n "$LENS" ] || LENS=1
 [ -n "$LENS_TRANSLATE" ] || LENS_TRANSLATE=1
@@ -637,8 +637,14 @@ if [ $FEED -eq 0 ]; then
 fi
 
 
-if [ $HLS_DEMUXER -eq 1 ]; then
-  gn_enable="$gn_enable enable_hls_demuxer"
+if [ $HLS_PLAYER -eq 0 ]; then
+  gn_disable="$gn_disable enable_hls_demuxer"
+
+  INS="$INS -e \"s@^\(debian/etc/chromium.d/hls-player\)@#\1@\""
+elif [ $HLS_PLAYER -ge 2 ]; then
+  sed -e 's@^#\(export.*enable-builtin-hls\)@\1@' \
+      -e 's@^#\(export.*enable-features==HlsPlayer\)@\1@' \
+      -i $FLAG_DIR/hls-player
 fi
 
 
