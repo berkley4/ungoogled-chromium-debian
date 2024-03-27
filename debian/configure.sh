@@ -650,6 +650,8 @@ fi
 if [ $LENS -eq 0 ]; then
   # GN_FLAGS += enable_lens_desktop=false
   gn_enable="$gn_enable enable_lens_desktop"
+
+  INS="$INS -e \"s@^\(debian/etc/chromium.d/google-lens\)@#\1@\""
 else
   DSB="$DSB -e \"/^components\/lens\/lens_features\.cc/d\""
 
