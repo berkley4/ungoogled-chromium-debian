@@ -261,7 +261,7 @@
        "../browser/extensions/api/language_settings_private/language_settings_private_api_unittest.cc",
        "../browser/extensions/api/language_settings_private/language_settings_private_delegate_unittest.cc",
        "../browser/extensions/api/management/management_api_unittest.cc",
-@@ -11324,6 +11329,20 @@
+@@ -11320,6 +11325,20 @@
          "../browser/ui/views/touch_events_interactive_uitest_win.cc",
        ]
  

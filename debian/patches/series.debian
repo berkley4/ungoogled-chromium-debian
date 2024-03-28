@@ -58,11 +58,12 @@ vanadinite/0012-Enable-strict-origin-isolation-by-default.patch
 vanadinite/0013-enable-process-isolated-sandboxed-iframes-by-default.patch
 vanadinite/0014-enable-partitioning-third-party-storage.patch
 
-various/compiler-flags/Do-not-link-with-libatomic.patch
+various/compiler-flags/do-not-link-with-libatomic.patch
 various/compiler-flags/function-import-limits.patch
 various/compiler-flags/init-stack-vars-zero.patch
 various/compiler-flags/no-plt.patch
 various/compiler-flags/optimize-debug-info.patch
+various/compiler-flags/optimize_speed-plus-lto-CGO3.patch
 various/compiler-flags/stack-clash-protection.patch
 various/compiler-flags/unique-section-names.patch
 various/disable/angle-perftests.patch
@@ -73,6 +74,7 @@ various/disable/crashpad-handler_3.patch
 various/disable/driver-chrome-path.patch
 various/disable/image-writer-private.patch
 various/disable/image-writer-utility.patch
+various/disable/labs-toolbar-button.patch
 various/disable/lens-features.patch
 various/disable/motherboard-metrics.patch
 various/disable/screen-ai-service.patch
@@ -111,8 +113,7 @@ various/warnings/silence-unknown-warning.patch
 
 optional/machine-function-splitting.patch
 optional/mutex-priority-inheritance.patch
-optional/polly-vectorizer.patch
-optional/polly-extra.patch
+optional/polly.patch
 #optional/thinlto-cache-location.patch
 #optional/thinlto-jobs.patch
 #optional/use-oauth2-client-switches-as-default.patch
@@ -129,7 +130,6 @@ optional/cpu/avx.patch
 #optional/disable/click-to-call.patch
 optional/disable/dns_config_service.patch
 optional/disable/extensions-in-root-menu.patch
-optional/disable/labs-toolbar-button.patch
 #optional/disable/media-router.patch
 optional/disable/supervised-users.patch
 #optional/disable/media-remoting/media-remoting.patch
@@ -163,5 +163,3 @@ optional/system/vaapi/vaapi-disable-libaom-encoding.patch
 #optional/system/zstd/zstd-feature-flag.patch
 optional/translate/revert-disable.patch
 optional/translate/stop-unsupported-switch-warning.patch
-
-addenda/0001-2b4d6a3.diff

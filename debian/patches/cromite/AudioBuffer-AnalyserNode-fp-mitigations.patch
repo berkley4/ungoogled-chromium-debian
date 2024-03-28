@@ -33,7 +33,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       flag_descriptions::kWebRtcRemoteEventLogName,
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3782,6 +3782,11 @@
+@@ -3787,6 +3787,11 @@
      "When enabled, removes the requirement that all certificates used for "
      "WebTransport over HTTP/3 are issued by a known certificate root.";
  
@@ -47,7 +47,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  const char kWebUsbDeviceDetectionDescription[] =
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -2174,6 +2174,9 @@
+@@ -2177,6 +2177,9 @@
  extern const char kWebrtcUseMinMaxVEADimensionsName[];
  extern const char kWebrtcUseMinMaxVEADimensionsDescription[];
  
