@@ -1,14 +1,12 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2551,7 +2551,12 @@
-     # "default_optimization", below.
+@@ -2552,6 +2552,11 @@
      configs = [ "//build/config/nacl:irt_optimize" ]
    } else {
--    ldflags = common_optimize_on_ldflags
+     ldflags = common_optimize_on_ldflags
++
 +    if (is_linux && use_lld) {
-+      ldflags = [ "-Wl,--lto-CGO3" ] + common_optimize_on_ldflags
-+    } else {
-+      ldflags = common_optimize_on_ldflags
++      ldflags += [ "-Wl,--lto-CGO3" ]
 +    }
 +
      if (is_win) {
