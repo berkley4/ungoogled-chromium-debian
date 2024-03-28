@@ -5,17 +5,14 @@
 ### debian patches are below ###
 ################################
 
-debianization/master-preferences.patch
-
-fixes/atspi.patch
-fixes/ps-print.patch
-
-disable/android.patch
-disable/font-tests.patch
-disable/widevine-cdm-cu.patch
-
-system/openjpeg.patch
-system/zlib.patch
+debian/debianization/master-preferences.patch
+debian/fixes/atspi.patch
+debian/fixes/ps-print.patch
+debian/disable/android.patch
+debian/disable/font-tests.patch
+debian/disable/widevine-cdm-cu.patch
+debian/system/openjpeg.patch
+debian/system/zlib.patch
 
 cromite/Disable-csp-reports.patch
 cromite/AudioBuffer-AnalyserNode-fp-mitigations.patch
