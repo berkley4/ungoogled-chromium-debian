@@ -7,6 +7,10 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=AllowQt"
 # Opens popups as tabs instead
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --popups-to-tabs"
 
+# Disables JavaScript dialog boxes triggered by 'beforeunload'
+# Often used to maliciously/annoyingly trigger a popup when closing a tab
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-beforeunload"
+
 # Switch tabs with the scroll wheel when hovering over the tab strip
 # Choices are: always, never, incognito-and-guest
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --scroll-tabs=never"
