@@ -235,20 +235,20 @@ if [ -n "$LTO_DIR" ]; then
     exit 1
   fi
 
-  op_enable="$op_enable thinlto-cache-location"
+  op_enable="$op_enable compiler-flags/thinlto-cache-location"
 
   sed -e "s@^\(+.*thinlto-cache-dir=\)[-_a-zA-Z0-9/]*@\1$LTO_DIR@" \
-      -i $OP_DIR/thinlto-cache-location.patch
+      -i $OP_DIR/compiler-flags/thinlto-cache-location.patch
 fi
 
 case $LTO_JOBS in
   [1-9]|[1-9][0-9])
-    op_enable="$op_enable thinlto-jobs"
+    op_enable="$op_enable compiler-flags/thinlto-jobs"
 
     case $LTO_JOBS in
       [2-9]|[1-9][0-9])
         sed "s@\(thinlto-jobs=\)1@\1$LTO_JOBS@" \
-          -i $OP_DIR/thinlto-jobs.patch
+          -i $OP_DIR/compiler-flags/thinlto-jobs.patch
         ;;
     esac
     ;;
@@ -424,7 +424,7 @@ fi
 
 
 if [ $POLLY -eq 0 ]; then
-  op_disable="$op_disable polly"
+  op_disable="$op_disable compiler-flags/polly"
 fi
 
 
@@ -466,11 +466,11 @@ fi
 #####################################################
 
 if [ $INTEL_CET -eq 1 ]; then
-  op_enable="$op_enable cpu/intel-cet/"
+  op_enable="$op_enable compiler-flags/cpu/intel-cet/"
 fi
 
 if [ $MF_SPLIT -eq 0 ]; then
-  op_disable="$op_disable machine-function-splitting"
+  op_disable="$op_disable compiler-flags/machine-function-splitting"
 fi
 
 
@@ -513,7 +513,7 @@ if [ -n "$arch_patches" ]; then
   for i in $arch_patches; do
     sed -e "s@\(march=\)[-a-z0-9]*@\1$MARCH@" \
         -e "s@\(mtune=\)[-a-z0-9]*@\1$MTUNE@" \
-        -i $OP_DIR/cpu/$i.patch
+        -i $OP_DIR/compiler-flags/cpu/$i.patch
   done
 fi
 
@@ -521,17 +521,17 @@ fi
 if [ $AVX2 -eq 1 ]; then
   AES_PCLMUL=1
   AVX=1
-  op_enable="$op_enable cpu/avx2"
+  op_enable="$op_enable compiler-flags/cpu/avx2"
 fi
 
 if [ $AVX -eq 0 ]; then
-  op_disable="$op_disable cpu/avx"
+  op_disable="$op_disable compiler-flags/cpu/avx"
 else
   AES_PCLMUL=1
 fi
 
 if [ $AES_PCLMUL -eq 0 ]; then
-  op_disable="$op_disable cpu/aes-pclmul"
+  op_disable="$op_disable compiler-flags/cpu/aes-pclmul"
 fi
 
 if [ $RTC_AVX2 -eq 0 ]; then
