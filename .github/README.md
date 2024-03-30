@@ -134,6 +134,25 @@ To test whether hardware decoding is functional, have a look at chrome://media-i
 
 - - - -
 
+# Managed Policy
+
+Some browser settings are locked down via managed policy, but can be changed by editing
+/etc/chromium/policies/managed/policies.json.
+
+For more information on policy keys, please refer [here](https://chromeenterprise.google/policies/).
+
+
+- - - -
+
+# DNS over HTTPS (DoH)
+
+To enable the internal DoH client, one needs to set the BuiltInDnsClientEnabled policy key
+to true in /etc/chromium/policies/managed/policies.json.
+
+Builders can do the same at compile time by configuring with DNS_BUILTIN=1.
+
+
+- - - -
 
 # Sandbox
 

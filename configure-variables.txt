@@ -48,15 +48,19 @@ DL_CACHE		<dir>		Default is ../download_cache (one level up from source tree; ac
 
 
 ## Managed Browser Policy Settings
-DNS_BUILTIN		0		Internal chromium DNS-over-HTTPS client
-DNS_INTERCEPT		1		DNS interception checking (helps protect against hijacking/poisoning)
-DNS_HOST		<hostname>	To set https://dns.example.net/dns-query{?dns} as DNS-over-HTTPS
-					resolver, run: DNS_HOST=dns.example.net ./debian/configure.sh
 
 CAP			1		Toggle for all capture features (needed for WebRTC)
 CAP_AUD			1		Audio capture
 CAP_SCR			1		Screen capture (desktop sharing)
 CAP_VID			1		Video capture
+
+DNS_BUILTIN		0		Controls whether to use the internal chromium DNS-over-HTTPS client
+DNS_INTERCEPT		1		DNS interception detection (helps protect against hijacking/poisoning)
+DNS_HOST		<hostname>	To set https://dns.example.net/dns-query{?dns} as DNS-over-HTTPS
+					resolver, run: DNS_HOST=dns.example.net ./debian/configure.sh
+
+# Required for DNS interception detection
+DNS_CONFIG		1		Enable monitoring for changes in system DNS configuration
 
 
 ## Enable/Disable features/components/patches

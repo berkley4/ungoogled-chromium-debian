@@ -16,7 +16,6 @@ op_disable=; op_enable=
 sys_disable=; sys_enable=
 
 C_VER_SET=0
-DNS_BUILTIN_SET=0
 MARCH_SET=0
 MEDIA_REMOTING_SET=0
 MTUNE_SET=0
@@ -131,10 +130,13 @@ sanitise_op () {
 [ -n "$CAP_SCR" ] || CAP_SCR=1
 [ -n "$CAP_VID" ] || CAP_VID=1
 
-## Managed Policy: Setting DNS_HOST will enable DNS_BUILTIN if the latter isn't set to zero
-[ -n "$DNS_BUILTIN" ] && DNS_BUILTIN_SET=1 || DNS_BUILTIN=0
+## Managed Policy: DNS_BUILTIN can be enabled by editing the managed policy file
+[ -n "$DNS_BUILTIN" ] || DNS_BUILTIN=0
 [ -n "$DNS_HOST" ] || DNS_HOST=
 [ -n "$DNS_INTERCEPT" ] || DNS_INTERCEPT=1
+
+## DNS config service
+[ -n "$DNS_CONFIG" ] || DNS_CONFIG=1
 
 ## Package conpression: XZ_THREADED is disabled If XZ_EXTREME=0 or XZ_THREADED=0 (or both)
 [ -n "$XZ_EXTREME" ] || XZ_EXTREME=0
@@ -555,20 +557,29 @@ fi
 [ $CAP_SCR -eq 1 ] || POL="$POL -e \"/ScreenCaptureAllowed/s@true@false@\""
 [ $CAP_VID -eq 1 ] || POL="$POL -e \"/VideoCaptureAllowed/s@true@false@\""
 
+
 if [ -n "$DNS_HOST" ]; then
-  [ $DNS_BUILTIN_SET -eq 1 ] && [ $DNS_BUILTIN -eq 0 ] || DNS_BUILTIN=1
   POL="$POL -e \"/doh.opendns.com/s@doh.opendns.com@$DNS_HOST@\""
 fi
 
 if [ $DNS_INTERCEPT -eq 0 ]; then
   POL="$POL -e \"/DNSInterceptionChecksEnabled/s@true@false@\""
+else
+  # The DNS config service is needed for DNS interception checking
+  if [ $DNS_CONFIG -eq 0 ]; then
+    printf '%s\n' "ERROR: cannot set DNS_CONFIG=0 with DNS_INTERCEPT=1"
+    exit 1
+  fi
 fi
 
 if [ $DNS_BUILTIN -eq 1 ]; then
-  op_disable="$op_disable disable/dns_config_service"
   POL="$POL -e \"/BuiltInDnsClientEnabled/s@false@true@\""
 fi
 
+# Not part of managed policy but DNS_INTERCEPT=1 depends on DNS_CONFIG=1
+if [ $DNS_CONFIG -eq 0 ]; then
+  op_enable="$op_enable disable/dns_config_service"
+fi
 
 
 
