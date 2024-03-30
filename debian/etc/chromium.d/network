@@ -20,12 +20,6 @@
 # Disable weak cyphers (could break some websites)
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --cipher-suite-blacklist=0x000a,0x009c,0x009d,0x002f,0x0035"
 
-# WebRTC IP privacy
-#  - The builtin UC default ip handling policy is disable_non_proxied_udp
-#  - Choices: default, default_public_and_private_interfaces,
-#             default_public_interface_only or disable_non_proxied_udp
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --webrtc-ip-handling-policy=default_public_interface_only"
-
 
 ### The flags below are required to enable Chromecast ###
 

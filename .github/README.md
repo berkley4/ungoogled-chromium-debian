@@ -154,6 +154,39 @@ Builders can do the same at compile time by configuring with DNS_BUILTIN=1.
 
 - - - -
 
+# WebRTC IP Leak protection
+
+The WebRtcIPHandling key in /etc/chromium/policies/managed/policies.json
+allows the restriction of IP addresses and interfaces that WebRTC uses.
+
+The available policies are :-
+
+- default
+    WebRTC will use all available interfaces when searching for the best path.
+
+- default_public_and_private_interfaces
+    WebRTC will only use the interface connecting to the public Internet
+    but may connect using private IP addresses.
+
+- default_public_interface_only
+    WebRTC will only use the interface connecting to the public Internet
+    and will not connect using private IP addresses.
+
+- disable_non_proxied_udp
+    WebRTC will use TCP on the public-facing interface
+    and will only use UDP if supported by a configured proxy.
+
+
+The default is disable_non_proxied_udp which is the best in terms of privacy.
+
+You can chack whether your IP is being leaked by visiting the sites below :-
+
+[https://ipleak.net/#webrtcleak](https://ipleak.net/)
+[https://browserleaks.com/webrtc#howto-disable-webrtc](https://browserleaks.com/webrtc)
+
+
+- - - -
+
 # Sandbox
 
 By default, chromium sandboxing on linux relies on using kernel unprivileged user namespaces. An alternative is via
