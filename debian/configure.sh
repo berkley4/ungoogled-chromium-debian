@@ -66,7 +66,7 @@ sanitise_op () {
 
 [ -n "$INTEL_CET" ] || INTEL_CET=0
 [ -n "$MF_SPLIT" ] || MF_SPLIT=1
-[ -n "$POLLY" ] || POLLY=1
+[ -n "$POLLY" ] || POLLY=0
 
 [ -n "$ATK_DBUS" ] || ATK_DBUS=1
 [ -n "$CATAPULT" ] || CATAPULT=1
@@ -352,7 +352,10 @@ fi
 
 if [ $SYS_CLANG -eq 0 ]; then
   # Polly not available on bundled toolchain
-  POLLY=0
+  if [ $POLLY -eq 1 ]; then
+    printf '%s\n' "ERROR: when SYS_CLANG=0 you must set POLLY=0"
+    exit 1
+  fi
 
   # Stop bundled toolchain directories from being pruned
   PRU="$PRU -e \"/^third_party\/llvm/d\""
