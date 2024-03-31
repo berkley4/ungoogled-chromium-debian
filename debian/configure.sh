@@ -334,7 +334,11 @@ esac
 
 
 # Machine function splitting relies on PGO being enabled
-[ $PGO -eq 1 ] || MF_SPLIT=0
+if [ $PGO -eq 0 ] && [ $MF_SPLIT -eq 1 ]; then
+  printf '%s\n' "WARN: MF_SPLIT depends on PGO=1"
+  printf '%s\n' "Setting MF_SPLIT=0"
+  MF_SPLIT=0
+fi
 
 
 
