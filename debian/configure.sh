@@ -528,7 +528,6 @@ fi
 
 
 if [ $AVX2 -eq 1 ]; then
-  AES_PCLMUL=1
   AVX=1
   op_enable="$op_enable compiler-flags/cpu/avx2"
 fi
