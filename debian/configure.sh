@@ -149,9 +149,9 @@ if [ $NON_FREE -eq 0 ]; then
   SER="$SER -e \"s@^\(cromite/\)@#\1@\" -e \"s@^\(vanadium/\)@#\1@\""
   SUPERVISED_USER=1  # Setting this to zero requires a (non-free) cromite patch
   if [ $OPENH264 -eq 1 ] && [ $SYS_OPENH264 -eq 0 ]; then
-    printf '%s\n' "WARN: Not a non-free build - disabling bundled OpenH264"
-    printf '%s\n' "WARN: Enabling system OpenH264 library instead"
-    SYS_OPENH264=1
+    printf '%s\n' "Error: Not a non-free build"
+    printf '%s\n' "Error: When NON_FREE=0, you must set SYS_OPENH264=1"
+    exit 1
   fi
 fi
 
