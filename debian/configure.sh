@@ -16,7 +16,6 @@ op_disable=; op_enable=
 sys_disable=; sys_enable=
 
 C_VER_SET=0
-DNS_BUILTIN_SET=0
 MARCH_SET=0
 MEDIA_REMOTING_SET=0
 MTUNE_SET=0
@@ -67,7 +66,7 @@ sanitise_op () {
 
 [ -n "$INTEL_CET" ] || INTEL_CET=0
 [ -n "$MF_SPLIT" ] || MF_SPLIT=1
-[ -n "$POLLY" ] || POLLY=1
+[ -n "$POLLY" ] || POLLY=0
 
 [ -n "$ATK_DBUS" ] || ATK_DBUS=1
 [ -n "$CATAPULT" ] || CATAPULT=1
@@ -131,10 +130,13 @@ sanitise_op () {
 [ -n "$CAP_SCR" ] || CAP_SCR=1
 [ -n "$CAP_VID" ] || CAP_VID=1
 
-## Managed Policy: Setting DNS_HOST will enable DNS_BUILTIN if the latter isn't set to zero
-[ -n "$DNS_BUILTIN" ] && DNS_BUILTIN_SET=1 || DNS_BUILTIN=0
+## Managed Policy: DNS_BUILTIN can be enabled by editing the managed policy file
+[ -n "$DNS_BUILTIN" ] || DNS_BUILTIN=0
 [ -n "$DNS_HOST" ] || DNS_HOST=
 [ -n "$DNS_INTERCEPT" ] || DNS_INTERCEPT=1
+
+## DNS config service
+[ -n "$DNS_CONFIG" ] || DNS_CONFIG=1
 
 ## Package conpression: XZ_THREADED is disabled If XZ_EXTREME=0 or XZ_THREADED=0 (or both)
 [ -n "$XZ_EXTREME" ] || XZ_EXTREME=0
@@ -147,9 +149,9 @@ if [ $NON_FREE -eq 0 ]; then
   SER="$SER -e \"s@^\(cromite/\)@#\1@\" -e \"s@^\(vanadium/\)@#\1@\""
   SUPERVISED_USER=1  # Setting this to zero requires a (non-free) cromite patch
   if [ $OPENH264 -eq 1 ] && [ $SYS_OPENH264 -eq 0 ]; then
-    printf '%s\n' "WARN: Not a non-free build - disabling bundled OpenH264"
-    printf '%s\n' "WARN: Enabling system OpenH264 library instead"
-    SYS_OPENH264=1
+    printf '%s\n' "Error: Not a non-free build"
+    printf '%s\n' "Error: When NON_FREE=0, you must set SYS_OPENH264=1"
+    exit 1
   fi
 fi
 
@@ -235,20 +237,20 @@ if [ -n "$LTO_DIR" ]; then
     exit 1
   fi
 
-  op_enable="$op_enable thinlto-cache-location"
+  op_enable="$op_enable compiler-flags/thinlto-cache-location"
 
   sed -e "s@^\(+.*thinlto-cache-dir=\)[-_a-zA-Z0-9/]*@\1$LTO_DIR@" \
-      -i $OP_DIR/thinlto-cache-location.patch
+      -i $OP_DIR/compiler-flags/thinlto-cache-location.patch
 fi
 
 case $LTO_JOBS in
   [1-9]|[1-9][0-9])
-    op_enable="$op_enable thinlto-jobs"
+    op_enable="$op_enable compiler-flags/thinlto-jobs"
 
     case $LTO_JOBS in
       [2-9]|[1-9][0-9])
         sed "s@\(thinlto-jobs=\)1@\1$LTO_JOBS@" \
-          -i $OP_DIR/thinlto-jobs.patch
+          -i $OP_DIR/compiler-flags/thinlto-jobs.patch
         ;;
     esac
     ;;
@@ -332,7 +334,11 @@ esac
 
 
 # Machine function splitting relies on PGO being enabled
-[ $PGO -eq 1 ] || MF_SPLIT=0
+if [ $PGO -eq 0 ] && [ $MF_SPLIT -eq 1 ]; then
+  printf '%s\n' "WARN: MF_SPLIT depends on PGO=1"
+  printf '%s\n' "Setting MF_SPLIT=0"
+  MF_SPLIT=0
+fi
 
 
 
@@ -350,7 +356,10 @@ fi
 
 if [ $SYS_CLANG -eq 0 ]; then
   # Polly not available on bundled toolchain
-  POLLY=0
+  if [ $POLLY -eq 1 ]; then
+    printf '%s\n' "ERROR: when SYS_CLANG=0 you must set POLLY=0"
+    exit 1
+  fi
 
   # Stop bundled toolchain directories from being pruned
   PRU="$PRU -e \"/^third_party\/llvm/d\""
@@ -424,7 +433,7 @@ fi
 
 
 if [ $POLLY -eq 0 ]; then
-  op_disable="$op_disable polly"
+  op_disable="$op_disable compiler-flags/polly"
 fi
 
 
@@ -466,11 +475,11 @@ fi
 #####################################################
 
 if [ $INTEL_CET -eq 1 ]; then
-  op_enable="$op_enable cpu/intel-cet/"
+  op_enable="$op_enable compiler-flags/cpu/intel-cet/"
 fi
 
 if [ $MF_SPLIT -eq 0 ]; then
-  op_disable="$op_disable machine-function-splitting"
+  op_disable="$op_disable compiler-flags/machine-function-splitting"
 fi
 
 
@@ -513,25 +522,24 @@ if [ -n "$arch_patches" ]; then
   for i in $arch_patches; do
     sed -e "s@\(march=\)[-a-z0-9]*@\1$MARCH@" \
         -e "s@\(mtune=\)[-a-z0-9]*@\1$MTUNE@" \
-        -i $OP_DIR/cpu/$i.patch
+        -i $OP_DIR/compiler-flags/cpu/$i.patch
   done
 fi
 
 
 if [ $AVX2 -eq 1 ]; then
-  AES_PCLMUL=1
   AVX=1
-  op_enable="$op_enable cpu/avx2"
+  op_enable="$op_enable compiler-flags/cpu/avx2"
 fi
 
 if [ $AVX -eq 0 ]; then
-  op_disable="$op_disable cpu/avx"
+  op_disable="$op_disable compiler-flags/cpu/avx"
 else
   AES_PCLMUL=1
 fi
 
 if [ $AES_PCLMUL -eq 0 ]; then
-  op_disable="$op_disable cpu/aes-pclmul"
+  op_disable="$op_disable compiler-flags/cpu/aes-pclmul"
 fi
 
 if [ $RTC_AVX2 -eq 0 ]; then
@@ -555,20 +563,29 @@ fi
 [ $CAP_SCR -eq 1 ] || POL="$POL -e \"/ScreenCaptureAllowed/s@true@false@\""
 [ $CAP_VID -eq 1 ] || POL="$POL -e \"/VideoCaptureAllowed/s@true@false@\""
 
+
 if [ -n "$DNS_HOST" ]; then
-  [ $DNS_BUILTIN_SET -eq 1 ] && [ $DNS_BUILTIN -eq 0 ] || DNS_BUILTIN=1
   POL="$POL -e \"/doh.opendns.com/s@doh.opendns.com@$DNS_HOST@\""
 fi
 
 if [ $DNS_INTERCEPT -eq 0 ]; then
   POL="$POL -e \"/DNSInterceptionChecksEnabled/s@true@false@\""
+else
+  # The DNS config service is needed for DNS interception checking
+  if [ $DNS_CONFIG -eq 0 ]; then
+    printf '%s\n' "ERROR: cannot set DNS_CONFIG=0 with DNS_INTERCEPT=1"
+    exit 1
+  fi
 fi
 
 if [ $DNS_BUILTIN -eq 1 ]; then
-  op_disable="$op_disable disable/dns_config_service"
   POL="$POL -e \"/BuiltInDnsClientEnabled/s@false@true@\""
 fi
 
+# Not part of managed policy but DNS_INTERCEPT=1 depends on DNS_CONFIG=1
+if [ $DNS_CONFIG -eq 0 ]; then
+  op_enable="$op_enable disable/dns_config_service"
+fi
 
 
 

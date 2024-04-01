@@ -11,10 +11,6 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --strict-origin-isolation"
 # See https://github.com/reillyeon/isolated-web-apps for more information
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-isolated-web-apps"
 
-# Enables site isolation for content rendered inside <webview> tags.
-# This increases security for Chrome Apps and WebUI pages that use <webview>.
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-webview-tag-site-isolation"
-
 # Prevents out-of-process iframes from reusing compatible processes from
 # unrelated tabs. This will result in more processes being created.
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-process-reuse"
