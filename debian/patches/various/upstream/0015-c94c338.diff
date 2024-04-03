@@ -1,0 +1,46 @@
+From c94c338528eefd14e7ca230d97350eeb8d30cdb1 Mon Sep 17 00:00:00 2001
+From: Max Schmitt <max@schmitt.mx>
+Date: Fri, 29 Mar 2024 20:59:50 +0000
+Subject: [PATCH] Fix crash in LoginHandlerViews without manager delegate
+
+This is a follow-up to https://crrev.com/c/5355654 which in the
+scenario of this bug also has destroyed the delegate already. Extends
+the existing safeguard in LoginHandlerViews to check for a null
+manager delegate. This crash was notably reproduced under automation
+frameworks like Puppeteer, Playwright with official Chromium snapshots
+but not easily encountered in manual testing (race?).
+
+While this fix mitigates the immediate issue by preventing
+DidFinishNavigation events in the absence of a necessary dialog
+manager and delegate, this approach acts as a temporary solution.
+The broader, long-term goal is to refine HTTP authentication flow
+handling and event firing during WebContents destruction, avoiding
+such crashes altogether.
+
+See https://crrev.com/c/5355654 for more context.
+
+Bug: 331670932
+Change-Id: I71b563f225e98a3158a91950a4acd065e61f0f9c
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5402149
+Reviewed-by: Erik Chen <erikchen@chromium.org>
+Commit-Queue: Dmitry Gozman <dgozman@chromium.org>
+Auto-Submit: Max Schmitt <max@schmitt.mx>
+Reviewed-by: Dmitry Gozman <dgozman@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1280335}
+---
+
+--- a/chrome/browser/ui/views/login_handler_views.cc
++++ b/chrome/browser/ui/views/login_handler_views.cc
+@@ -57,8 +57,10 @@
+     // manager may not be available during the shutdown process of the
+     // WebContents, which can trigger DidFinishNavigation events.
+     // See https://crbug.com/328462789.
+-    if (!web_modal::WebContentsModalDialogManager::FromWebContents(
+-            constrained_window::GetTopLevelWebContents(web_contents()))) {
++    web_modal::WebContentsModalDialogManager* manager =
++        web_modal::WebContentsModalDialogManager::FromWebContents(
++            constrained_window::GetTopLevelWebContents(web_contents()));
++    if (!manager || !manager->delegate()) {
+       return false;
+     }
+     dialog_ = new Dialog(this, web_contents(), authority, explanation,

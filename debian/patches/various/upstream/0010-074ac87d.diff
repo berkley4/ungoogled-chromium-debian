@@ -1,0 +1,40 @@
+From 074ac87d2744da7bbcbf13f47f60189ebc9701db Mon Sep 17 00:00:00 2001
+From: Hao Liu <haoliuk@chromium.org>
+Date: Thu, 21 Mar 2024 19:24:09 +0000
+Subject: [PATCH] Cast gfx::Size width and height to avoid integer overflow
+
+The associated bug is a clusterfuzz crash caused by integer overflow
+that occurs when computing the viewport area size for soft
+navigation detection purpose.
+
+This CL is to cast gfx::Size width and height to uint64_t to avoid the
+crash.
+
+The cast is safe because the gfx::Size width and height should always
+be non-negative, the same cast already exists in the gfx::Size's member
+class and the height, the width and the multiplication of the two should
+be well within the range of uint64_t.
+https://source.chromium.org/chromium/chromium/src/+/main:ui/gfx/geometry/size.h;l=56
+
+Bug: 330601398
+Change-Id: Ia88aac0815aa0afc45ebbe88ec421434b46712f9
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5385570
+Commit-Queue: Hao Liu <haoliuk@chromium.org>
+Reviewed-by: Michael Lippautz <mlippautz@chromium.org>
+Reviewed-by: Michal Mocny <mmocny@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1276429}
+---
+
+--- a/third_party/blink/renderer/core/timing/soft_navigation_heuristics.cc
++++ b/third_party/blink/renderer/core/timing/soft_navigation_heuristics.cc
+@@ -91,8 +91,8 @@
+     : Supplement<LocalDOMWindow>(window) {
+   LocalFrame* frame = window.GetFrame();
+   CHECK(frame && frame->View());
+-  gfx::Size viewport_size = frame->View()->GetLayoutSize();
+-  viewport_area_ = viewport_size.width() * viewport_size.height();
++
++  viewport_area_ = frame->View()->GetLayoutSize().Area64();
+ }
+ 
+ SoftNavigationHeuristics* SoftNavigationHeuristics::From(
