@@ -73,7 +73,7 @@
 -
    'src/clank': {
      'url': Var('chrome_git') + '/clank/internal/apps.git' + '@' +
-     '867db2fbc9508c8bd4b59588ecb3e9c487778aeb',
+     'a70e288235a5afae6592e6e2fcf01fb4d8c699cc',
 @@ -1146,7 +1107,7 @@
            },
        ],
@@ -150,20 +150,19 @@
    # Userspace interface to kernel DRM services.
    'src/third_party/libdrm/src': {
        'url': Var('chromium_git') + '/chromiumos/third_party/libdrm.git' + '@' + '98e1db501173303e58ef6a1def94ab7a2d84afc1',
-@@ -3896,12 +3839,6 @@
-       'condition': 'checkout_src_internal',
+@@ -1867,11 +1810,6 @@
+       'condition': 'checkout_chromeos',
    },
  
--  'src/chrome/browser/platform_experience/win': {
--      'url': Var('chrome_git') + '/chrome/browser/platform_experience/win.git' + '@' +
--        '6383a08573bf06dbcd51da6aceffc86c59cc25f4',
--      'condition': 'checkout_src_internal',
+-  'src/third_party/xdg-utils': {
+-      'url': Var('chromium_git') + '/chromium/deps/xdg-utils.git' + '@' + 'cb54d9db2e535ee4ef13cc91b65a1e2741a94a44',
+-      'condition': 'checkout_linux',
 -  },
 -
-   'src/chrome/browser/resources/chromeos/quickoffice': {
-       'url': Var('chrome_git') + '/quickoffice/crx.git' + '@' +
-         '82b2a09bf9550c7435a774a6261e6736b787468f',
-@@ -4221,17 +4158,6 @@
+   'src/third_party/xnnpack/src':
+     Var('chromium_git') + '/external/github.com/google/XNNPACK.git' + '@' + 'd5d373fee053b4823f37611f88a51d6c8e23d42a',
+ 
+@@ -4221,17 +4159,6 @@
      'dep_type': 'cipd',
    },
  
@@ -181,7 +180,7 @@
    'src/third_party/screen-ai/macos_amd64': {
        'packages': [
            {
-@@ -4658,7 +4584,7 @@
+@@ -4658,7 +4585,7 @@
      # dump-static-initializers.py on linux.
      'name': 'objdump',
      'pattern': '.',
@@ -190,7 +189,7 @@
      'action': ['python3', 'src/tools/clang/scripts/update.py',
                 '--package=objdump'],
    },
-@@ -4762,18 +4688,6 @@
+@@ -4762,18 +4689,6 @@
                  '-o', 'src/buildtools/mac/clang-format',
      ],
    },
@@ -209,7 +208,7 @@
    # Pull rc binaries using checked-in hashes.
    {
      'name': 'rc_win',
-@@ -4811,29 +4725,6 @@
+@@ -4811,29 +4726,6 @@
                  '-s', 'src/build/toolchain/win/rc/linux64/rc.sha1',
      ]
    },
@@ -239,7 +238,7 @@
    {
      'name': 'apache_win32',
      'pattern': '\\.sha1',
-@@ -4873,31 +4764,6 @@
+@@ -4873,31 +4765,6 @@
                  '-s', 'src/third_party/instrumented_libraries/binaries/msan-no-origins-focal.tgz.sha1',
                ],
    },
@@ -271,7 +270,7 @@
    # Pull down Node binaries for WebUI toolchain.
    # The Linux binary is always downloaded regardless of host os and architecture
    # since remote node actions run on Linux worker.
-@@ -5042,46 +4908,6 @@
+@@ -5042,47 +4909,6 @@
      ],
    },
  
@@ -284,6 +283,7 @@
 -                'src/third_party/perfetto/tools/test_data',
 -                '--dir',
 -                'src/base/tracing/test/data',
+-                '--overwrite',
 -                'download',
 -    ],
 -  },
@@ -318,7 +318,7 @@
    # Pull down WPR Archive files
    {
      'name': 'Fetch WPR archive files',
-@@ -5560,17 +5386,6 @@
+@@ -5561,17 +5387,6 @@
      'condition': 'host_os == "win"',
      'action': ['python3', 'src/build/del_ninja_deps_cache.py'],
    },
