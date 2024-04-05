@@ -100,11 +100,21 @@ various/system/perfetto-system-zlib.patch
 various/system/xdg-scripts.patch
 various/system/zlib.patch
 various/upstream/0001-RaceNetworkRequest-is-triggered-only-when-the-scheme-is-HTTP-or-HTTPS.patch
-various/upstream/0003-f2b97f1.diff
-various/upstream/0004-b360457.diff
-various/upstream/0005-03069a77.diff
-various/upstream/0006-a3d5cdf.diff
-various/upstream/0007-31e88b9.diff
+various/upstream/0002-d18460a2.diff
+various/upstream/0003-6b108ec3.diff
+various/upstream/0004-f2b97f1.diff
+various/upstream/0005-b360457.diff
+various/upstream/0006-03069a77.diff
+various/upstream/0007-a3d5cdf.diff
+various/upstream/0008-31e88b9.diff
+various/upstream/0009-24eba6a.diff
+various/upstream/0010-074ac87d.diff
+various/upstream/0011-af11ae0.diff
+various/upstream/0012-85a5606.diff
+various/upstream/0013-faf520f.diff
+various/upstream/0014-b68ff42.diff
+various/upstream/0015-c94c338.diff
+various/upstream/0016-3bb9ba4.diff
 various/warnings/clang-excessive-warnings.patch
 various/warnings/silence-unknown-warning.patch
 

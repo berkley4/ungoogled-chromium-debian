@@ -1,6 +1,6 @@
 --- a/DEPS
 +++ b/DEPS
-@@ -4532,7 +4532,7 @@
+@@ -4533,7 +4533,7 @@
      # Note: On Win, this should run after win_toolchain, as it may use it.
      'name': 'clang',
      'pattern': '.',

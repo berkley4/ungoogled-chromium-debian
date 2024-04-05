@@ -1,0 +1,27 @@
+From 3bb9ba47fe4dd6a6da89fc8b782c8738e50ae17f Mon Sep 17 00:00:00 2001
+From: Xiyuan Xia <xiyuan@chromium.org>
+Date: Fri, 29 Mar 2024 21:13:10 +0000
+Subject: [PATCH] Fix dump_colors crash
+
+The crash is because `COMPONENTS_COLOR_IDS` is missing from
+`enum_names`. Add it back to fix the crash.
+
+Bug: None
+Test: Run `dump_colors` and no crash.
+Change-Id: I5eb2d78583935d133c5b913218b2ae234b3f0656
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5408193
+Commit-Queue: Peter Kasting <pkasting@chromium.org>
+Reviewed-by: Peter Kasting <pkasting@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1280341}
+---
+
+--- a/chrome/browser/ui/color/tools/dump_colors.cc
++++ b/chrome/browser/ui/color/tools/dump_colors.cc
+@@ -25,6 +25,7 @@
+ // clang-format off
+ const char* enum_names[] = {
+   COLOR_IDS
++  COMPONENTS_COLOR_IDS
+   CHROME_COLOR_IDS
+ };
+ // clang-format on

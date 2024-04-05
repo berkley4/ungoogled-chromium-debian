@@ -357,7 +357,7 @@ fi
 if [ $SYS_CLANG -eq 0 ]; then
   # Polly not available on bundled toolchain
   if [ $POLLY -eq 1 ]; then
-    printf '%s\n' "ERROR: when SYS_CLANG=0 you must set POLLY=0"
+    printf '%s\n' "ERROR: when SYS_CLANG=0 you cannot set POLLY=1"
     exit 1
   fi
 
