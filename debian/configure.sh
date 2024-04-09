@@ -297,8 +297,7 @@ fi
 
 ## Enable the use of ccache
 if [ $CCACHE -eq 1 ]; then
-  # GN_FLAGS += cc_wrapper=ccache
-  gn_enable="$gn_enable cc_wrapper"
+  gn_enable="$gn_enable cc_wrapper=ccache"
 fi
 
 
@@ -492,13 +491,11 @@ if [ $AES_PCLMUL -eq 0 ]; then
 fi
 
 if [ $RTC_AVX2 -eq 0 ]; then
-  # GN_FLAGS += rtc_enable_avx2=false
-  gn_enable="$gn_enable rtc_enable_avx2"
+  gn_enable="$gn_enable rtc_enable_avx2=false"
 fi
 
 if [ $V8_AVX2 -eq 0 ]; then
-  # GN_FLAGS += v8_enable_wasm_simd256_revec=true
-  gn_disable="$gn_disable v8_enable_wasm_simd256_revec"
+  gn_disable="$gn_disable v8_enable_wasm_simd256_revec=true"
 fi
 
 
@@ -578,9 +575,7 @@ fi
 
 if [ $CLICK_TO_CALL -eq 0 ]; then
   op_enable="$op_enable disable/click-to-call"
-
-  # GN_FLAGS += enable_click_to_call=false
-  gn_enable="$gn_enable enable_click_to_call"
+  gn_enable="$gn_enable enable_click_to_call=false"
 fi
 
 
@@ -599,8 +594,7 @@ fi
 
 
 if [ $FEED -eq 0 ]; then
-  # GN_FLAGS += enable_feed_v2=false
-  gn_enable="$gn_enable enable_feed_v2"
+  gn_enable="$gn_enable enable_feed_v2=false"
 fi
 
 
@@ -621,8 +615,7 @@ fi
 
 
 if [ $LENS -eq 0 ]; then
-  # GN_FLAGS += enable_lens_desktop=false
-  gn_enable="$gn_enable enable_lens_desktop"
+  gn_enable="$gn_enable enable_lens_desktop=false"
 
   INS="$INS -e \"s@^\(debian/etc/chromium.d/google-lens\)@#\1@\""
 else
@@ -644,9 +637,7 @@ fi
 
 if [ $MEDIA_REMOTING -eq 0 ]; then
   op_enable="$op_enable disable/media-remoting/"
-
-  # GN_FLAGS += enable_media_remoting=false
-  gn_enable="$gn_enable enable_media_remoting"
+  gn_enable="$gn_enable enable_media_remoting=false"
 fi
 
 
@@ -657,8 +648,7 @@ fi
 
 
 if [ $NOTIFICATIONS -eq 0 ]; then
-  # GN_FLAGS += enable_system_notifications=false
-  gn_enable="$gn_enable enable_system_notifications"
+  gn_enable="$gn_enable enable_system_notifications=false"
 fi
 
 
@@ -673,8 +663,7 @@ fi
 
 
 if [ $OZONE_WAYLAND -eq 0 ]; then
-  # GN_FLAGS += ozone_platform_wayland=false
-  gn_enable="$gn_enable ozone_platform_wayland"
+  gn_enable="$gn_enable ozone_platform_wayland=false"
 fi
 
 
@@ -691,16 +680,13 @@ fi
 
 
 if [ $SPEECH -eq 0 ]; then
-  # GN_FLAGS += enable_speech_service=false
-  gn_enable="$gn_enable enable_speech_service"
+  gn_enable="$gn_enable enable_speech_service=false"
 fi
 
 
 if [ $SUPERVISED_USER -eq 1 ]; then
   op_disable="$op_disable disable/supervised-users"
-
-  # GN_FLAGS += enable_supervised_users=false
-  gn_disable="$gn_disable enable_supervised_users"
+  gn_disable="$gn_disable enable_supervised_users=false"
 fi
 
 
@@ -736,14 +722,12 @@ fi
 
 
 if [ $SWIFTSHADER -eq 0 ]; then
-  # GN_FLAGS += enable_swiftshader=false
-  gn_enable="$gn_enable enable_swiftshader"
+  gn_enable="$gn_enable enable_swiftshader=false"
 
   INS="$INS -e \"s@^\(out/Release/.*swiftshader\)@#\1@\""
 else
   if [ $SWIFTSHADER_WEBGPU -eq 0 ]; then
-    # GN_FLAGS += dawn_use_swiftshader=false
-    gn_enable="$gn_enable dawn_use_swiftshader"
+    gn_enable="$gn_enable dawn_use_swiftshader=false"
   fi
 fi
 
@@ -789,9 +773,7 @@ esac
 
 if [ $QT -eq 0 ]; then
   op_disable="$op_disable qt/"
-
-  # GN_FLAGS += use_qt=false
-  gn_enable="$gn_enable use_qt"
+  gn_enable="$gn_enable use_qt=false"
   deps_disable="$deps_disable qtbase5"
 
   INS="$INS -e \"s@^\(debian/etc/chromium.d/qt\)@#\1@\""
@@ -814,20 +796,15 @@ fi
 
 
 if [ $PULSE -eq 0 ]; then
-  # GN_FLAGS += link_pulseaudio=true
-  gn_disable="$gn_disable link_pulseaudio"
-
-  # GN_FLAGS += use_pulseaudio=false
-  gn_enable="$gn_enable use_pulseaudio"
+  gn_disable="$gn_disable link_pulseaudio=true"
+  gn_enable="$gn_enable use_pulseaudio=false"
   deps_disable="$deps_disable libpulse"
 fi
 
 
 if [ $VAAPI -eq 0 ]; then
   op_disable="$op_disable system/vaapi/"
-
-  # GN_FLAGS += use_vaapi=false
-  gn_enable="$gn_enable use_vaapi"
+  gn_enable="$gn_enable use_vaapi=false"
   deps_disable="$deps_disable libva"
 
   INS="$INS -e \"s@^\(debian/etc/chromium.d/hw-decoding-encoding\)@#\1@\""
