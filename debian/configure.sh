@@ -721,7 +721,7 @@ fi
 if [ $TRANSLATE -eq 0 ]; then
   op_disable="$op_disable translate/"
 
-  INS="$INS -e \"s@^\($FLAG_DIR/google-translate\)@#\1@\""
+  INS="$INS -e \"s@^\(debian/etc/chromium.d/google-translate\)@#\1@\""
 else
   DSB="$DSB -e \"/\/translate_manager_browsertest\.cc/d\""
   DSB="$DSB -e \"/\/translate_script\.cc/d\""
@@ -745,7 +745,7 @@ if [ $WEBGPU -eq 0 ]; then
 
   SWIFTSHADER_WEBGPU=0
 elif [ $WEBGPU -ge 2 ]; then
-  sed 's@^#\(.*enable-unsafe-webgpu\)@\1@' -i $DEBIAN/etc/chromium.d/gpu
+  sed 's@^#\(.*enable-unsafe-webgpu\)@\1@' -i $FLAG_DIR/gpu
 fi
 
 
@@ -799,7 +799,7 @@ if [ $QT -eq 0 ]; then
 
   INS="$INS -e \"s@^\(out/Release/libqt5_shim.so\)@#\1@\""
 else
-  sed '/disable-features=AllowQt/s@^@#@' -i $DEBIAN/etc/chromium.d/ui
+  sed '/disable-features=AllowQt/s@^@#@' -i $FLAG_DIR/ui
 fi
 
 
