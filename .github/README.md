@@ -95,8 +95,7 @@ ___Other features___
 
 ___Build system___
 
-- Predominantly uses git to obtain and update source (release tarballs are not actively supported)
-- Using git often avoids compatibility/availabilty issues associated with tarball sources
+- Uses git to obtain and update source (release tarballs are not currently supported)
 - Self-built BOLT/LTO/PGO optimised and polly-enabled clang/llvm is preferred for building
     - requiring a recent version of clang often means fewer build headaches
 - Upstream rust is preferred (a simple script-based install)
@@ -260,7 +259,7 @@ git submodule update --init --recursive
 cd ..
 ```
 
-## Cloning the chromium git repo (recommended, tarball method is detailed further below)
+## Cloning the chromium git repo
 
 ```sh
 # Clone depot_tools and put it in your PATH
@@ -340,19 +339,6 @@ gclient runhooks --jobs=$JOBS
 
 # Copy over the debian directory into your source tree
 cp -a ../../debian .
-```
-
-## Tarball download/extraction (instead of cloning the chromium git repo)
-
-```sh
-cd build/tarball
-
-# Copy over the debian directory
-cp -a ../../debian .
-
-# Include TARBALL=1 in your variables and run the configure script to
-# download and extract (refer below and to the script to configure further)
-TARBALL=1 ./debian/configure.sh
 ```
 
 ## Prepare build setup and prune source binaries

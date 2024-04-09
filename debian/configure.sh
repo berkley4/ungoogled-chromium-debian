@@ -56,7 +56,6 @@ sanitise_op () {
 [ -n "$SYMBOLS_BLINK" ] || SYMBOLS_BLINK=0
 [ -n "$SYS_CLANG" ] || SYS_CLANG=0
 [ -n "$SYS_RUST" ] || SYS_RUST=0
-[ -n "$TARBALL" ] || TARBALL=0
 
 [ -n "$AES_PCLMUL" ] || AES_PCLMUL=1
 [ -n "$AVX" ] || AVX=1
@@ -277,41 +276,6 @@ case $SKIA_GAMMA in
     op_enable="$op_enable skia-gamma"
     ;;
 esac
-
-
-
-
-#############################
-##  Tarball Fetch/Extract  ##
-#############################
-
-if [ $TARBALL -eq 1 ]; then
-  if [ "$RT_DIR" != "tarball" ]; then
-    printf '%s\n' "Cannot run outside of tarball directory"
-    exit 1
-  fi
-
-  [ -n "$DL_CACHE" ] || DL_CACHE=$RT_DIR/../download_cache
-  [ -d $DL_CACHE ] || mkdir -p $DL_CACHE
-
-  find $RT_DIR/ -mindepth 1 -maxdepth 1 \
-    -type d \( -name debian -o -name out -o -name .pc \) -prune \
-      -o -exec rm -rf "{}" +
-
-  if [ ! -f $RT_DIR/base/BUILD.gn ]; then
-    $UC_DIR/utils/downloads.py retrieve \
-      -i $UC_DIR/downloads.ini -c $DL_CACHE
-
-    $UC_DIR/utils/downloads.py unpack \
-      -i $UC_DIR/downloads.ini -c $DL_CACHE $RT_DIR
-  fi
-
-  if [ $PGO -eq 1 ] && [ ! -d $RT_DIR/chrome/build/pgo_profiles ]; then
-    $RT_DIR/tools/update_pgo_profiles.py \
-      --target linux update \
-      --gs-url-base=chromium-optimization-profiles/pgo_profiles
-  fi
-fi
 
 
 

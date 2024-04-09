@@ -43,9 +43,6 @@ SKIA_GAMMA		0		Set the gamma value for text blitting
 X11_ONLY		0		When enabled is an alias for OZONE_WAYLAND=0
 					Wayland users can also enable (the ozone wayland platform is experimental)
 
-TARBALL			0		Use tarball download instead of git
-DL_CACHE		<dir>		Default is ../download_cache (one level up from source tree; active when TARBALL=1)
-
 
 ## Managed Browser Policy Settings
 
