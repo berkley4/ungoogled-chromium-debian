@@ -832,6 +832,7 @@ if [ $VAAPI -eq 0 ]; then
   gn_enable="$gn_enable use_vaapi"
   deps_disable="$deps_disable libva"
 
+  INS="$INS -e \"s@^\(debian/etc/chromium.d/hw-decoding-encoding\)@#\1@\""
   INS="$INS -e \"s@^\(debian/.*/drirc\.d/10-chromium\.conf\)@#\1@\""
 fi
 
