@@ -1041,8 +1041,7 @@ sed -e "s;@@VERSION@@;$VERSION;" \
     -e "s;@@RELEASE@@;$RELEASE;" \
     -e "s;@@AUTHOR@@;$AUTHOR;" \
     -e "s;@@DATETIME@@;$(date -R);" \
-  < $DEBIAN/changelog.in \
-  > $DEBIAN/changelog
+  < $DEBIAN/changelog.in > $DEBIAN/changelog
 
 
 case $SER in
