@@ -162,6 +162,7 @@ fi
 
 
 
+
 #########################
 ## Changelog variables ##
 #########################
@@ -208,9 +209,10 @@ esac
 
 
 
-#####################################################
-## Test mode | Clang versioning | LTO | Skia Gamma ##
-#####################################################
+
+##############################################################################
+## Test mode | Clang versioning | LTO | Symbol levels | Package compression ##
+##############################################################################
 
 ## Enter test mode if $RT_DIR/third_party does not exist
 [ -d $RT_DIR/third_party ] && TEST=0 || TEST=1
@@ -225,6 +227,13 @@ if [ $C_VER_SET -eq 1 ] && [ $C_VER -lt $CR_VER ]; then
   printf '%s\n' "WARN: Clang versions below $CR_VER are not supported"
   printf '%s\n' "Disabling PGO support"
   PGO=0
+fi
+
+# Machine function splitting relies on PGO being enabled
+if [ $PGO -eq 0 ] && [ $MF_SPLIT -eq 1 ]; then
+  printf '%s\n' "WARN: MF_SPLIT depends on PGO=1"
+  printf '%s\n' "Setting MF_SPLIT=0"
+  MF_SPLIT=0
 fi
 
 
@@ -257,33 +266,6 @@ esac
 
 
 
-# Range is 1.0 to 3.0. Make 2 and 3 become 2.0 and 3.0.
-case $SKIA_GAMMA in
-  [23])
-    # Ensure skia gamma values have one decimal place
-    SKIA_GAMMA=${SKIA_GAMMA}.0 ;;
-esac
-
-# A value of 1 (not 1.0) just enables the patch
-case $SKIA_GAMMA in
-  1|[12].[0-9]|3.0)
-    case $SKIA_GAMMA in
-      [12].[0-9]|3.0)
-        sed "s@2\.2@$SKIA_GAMMA@" -i $OP_DIR/fixes/skia-gamma.patch
-        ;;
-    esac
-
-    op_enable="$op_enable skia-gamma"
-    ;;
-esac
-
-
-
-
-#########################
-## Symbol levels | PGO ##
-#########################
-
 ## Set Symbol levels
 case $SYMBOLS in
   -1|[1-2])
@@ -297,11 +279,13 @@ esac
 
 
 
-# Machine function splitting relies on PGO being enabled
-if [ $PGO -eq 0 ] && [ $MF_SPLIT -eq 1 ]; then
-  printf '%s\n' "WARN: MF_SPLIT depends on PGO=1"
-  printf '%s\n' "Setting MF_SPLIT=0"
-  MF_SPLIT=0
+if [ $XZ_EXTREME -eq 1 ]; then
+  RUL="$RUL -e \"s@\(dh_builddeb .*\)@\1 -S extreme@\""
+  [ $XZ_THREADED_SET -eq 1 ] && [ $XZ_THREADED -eq 0 ] || XZ_THREADED=1
+fi
+
+if [ $XZ_THREADED -eq 1 ]; then
+  RUL="$RUL -e \"s@\(dh_builddeb .*\)@\1 --threads-max=\x24(JOBS)@\""
 fi
 
 
@@ -434,6 +418,7 @@ fi
 
 
 
+
 #####################################################
 ## CPU architecture/instructions and optimisations ##
 #####################################################
@@ -550,6 +535,7 @@ fi
 if [ $DNS_CONFIG -eq 0 ]; then
   op_enable="$op_enable disable/dns_config_service"
 fi
+
 
 
 
@@ -768,21 +754,32 @@ if [ $WIDEVINE -eq 0 ]; then
 fi
 
 
-if [ $XZ_EXTREME -eq 1 ]; then
-  RUL="$RUL -e \"s@\(dh_builddeb .*\)@\1 -S extreme@\""
-  [ $XZ_THREADED_SET -eq 1 ] && [ $XZ_THREADED -eq 0 ] || XZ_THREADED=1
-fi
-
-if [ $XZ_THREADED -eq 1 ]; then
-  RUL="$RUL -e \"s@\(dh_builddeb .*\)@\1 --threads-max=\x24(JOBS)@\""
-fi
-
-
 
 ## Enable Google API keys for google services
 if [ $GOOGLE_API_KEYS -eq 1 ]; then
   sed 's@^#\(export GOOGLE_\)@\1@' -i $FLAG_DIR/google-api-keys
 fi
+
+
+
+## Skia gamma range: 1.0 to 3.0 (a value of 1 just enables the patch)
+case $SKIA_GAMMA in
+  [23])
+    # Ensure skia gamma values have one decimal place
+    SKIA_GAMMA=${SKIA_GAMMA}.0 ;;
+esac
+
+case $SKIA_GAMMA in
+  1|[12].[0-9]|3.0)
+    case $SKIA_GAMMA in
+      [12].[0-9]|3.0)
+        sed "s@2\.2@$SKIA_GAMMA@" -i $OP_DIR/fixes/skia-gamma.patch
+        ;;
+    esac
+
+    op_enable="$op_enable skia-gamma"
+    ;;
+esac
 
 
 
