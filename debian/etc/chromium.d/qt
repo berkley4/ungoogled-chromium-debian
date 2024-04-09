@@ -1,0 +1,2 @@
+# Comment to enable Qt interface elements
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=AllowQt"

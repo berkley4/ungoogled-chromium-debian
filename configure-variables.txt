@@ -90,7 +90,9 @@ PDF_JS			0		PDF javascript support
 PIPEWIRE		1
 PRINT_PREVIEW		1		Can be disabled to replace the print dialogue with the system one
 PULSE			1		Pulseaudio
-QT			1		Runtime autodetected (eg Gnome desktops will ignore)
+QT			1		0 - disable
+					1 - enable (need to edit /etc/chromium.d/qt to fully enable)
+					2 - enable fully (runtime autodetected ie Gnome desktops will ignore it)
 SPEECH			1		Speech service (voice recognition)
 SUPERVISED_USER		0		Parental control related component (relies on a bromite patch)
 SWIFTSHADER		1		Swiftshader

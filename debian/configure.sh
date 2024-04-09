@@ -794,9 +794,10 @@ if [ $QT -eq 0 ]; then
   gn_enable="$gn_enable use_qt"
   deps_disable="$deps_disable qtbase5"
 
+  INS="$INS -e \"s@^\(debian/etc/chromium.d/qt\)@#\1@\""
   INS="$INS -e \"s@^\(out/Release/libqt5_shim.so\)@#\1@\""
-else
-  sed '/disable-features=AllowQt/s@^@#@' -i $FLAG_DIR/ui
+elif [ $QT -ge 2 ]; then
+  sed '/disable-features=AllowQt/s@^@#@' -i $FLAG_DIR/qt
 fi
 
 
