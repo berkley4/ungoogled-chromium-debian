@@ -104,7 +104,7 @@ TRANSLATE		1		Google translate support
 					2 - enable completely
 VR			0		Virtual reality hardware support
 VULKAN			1		Vulkan (disabling will also disable WebGPU)
-WEBGPU			1		WebGPU (likely beta quality at the time of writing)
+WEBGPU			0		WebGPU (likely beta quality at the time of writing)
 					0 - disable
 					1 - enable (need to edit /etc/chromium.d/gpu)
 					2 - enable completely
