@@ -1,0 +1,11 @@
+--- a/third_party/dawn/scripts/tint_overrides_with_defaults.gni
++++ b/third_party/dawn/scripts/tint_overrides_with_defaults.gni
+@@ -41,7 +41,7 @@
+   tint_has_build = true
+ }
+ 
+-tint_has_fuzzers = tint_has_build
++tint_has_fuzzers = false
+ tint_has_protobuf = tint_standalone || build_with_chromium
+ 
+ declare_args() {
