@@ -163,6 +163,8 @@ GN_FLAGS += enable_supervised_users=false
 
 # Disable swiftshader
 #GN_FLAGS += enable_swiftshader=false
+#GN_FLAGS += dawn_use_swiftshader=false
+#GN_FLAGS += enable_swiftshader_vulkan=false
 
 # Disable VA-API
 #GN_FLAGS += use_vaapi=false
@@ -170,9 +172,13 @@ GN_FLAGS += enable_supervised_users=false
 # Disable virtual reality features
 GN_FLAGS += enable_vr=false
 
-# Disable WebGPU
+# Disable vulkan (also see swiftshader section)
+#GN_FLAGS += enable_vulkan=false angle_enable_vulkan=false
+#GN_FLAGS += angle_build_vulkan_system_info=false angle_shared_libvulkan=false angle_use_vulkan_display=false
+#GN_FLAGS += dawn_enable_vulkan=false dawn_enable_vulkan_loader=false dawn_enable_vulkan_validation_layers=false
+
+# Disable WebGPU (also see swiftshader section)
 #GN_FLAGS += use_dawn=false skia_use_dawn=false
-#GN_FLAGS += dawn_use_swiftshader=false
 
 # Disable zstd
 GN_FLAGS += disable_zstd_filter=true

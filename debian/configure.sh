@@ -94,10 +94,12 @@ sanitise_op () {
 [ -n "$SPEECH" ] || SPEECH=1
 [ -n "$SUPERVISED_USER" ] || SUPERVISED_USER=0
 [ -n "$SWIFTSHADER" ] || SWIFTSHADER=1
+[ -n "$SWIFTSHADER_VULKAN" ] || SWIFTSHADER_VULKAN=1
 [ -n "$SWIFTSHADER_WEBGPU" ] || SWIFTSHADER_WEBGPU=1
 [ -n "$TRANSLATE" ] || TRANSLATE=1
 [ -n "$VR" ] || VR=0
 [ -n "$VAAPI" ] || VAAPI=1
+[ -n "$VULKAN" ] || VULKAN=1
 [ -n "$WEBGPU" ] || WEBGPU=0
 [ -n "$WIDEVINE" ] || WIDEVINE=1
 [ -n "$ZSTD" ] || ZSTD=0
@@ -711,6 +713,22 @@ if [ $VR -eq 1 ]; then
 fi
 
 
+if [ $VULKAN -eq 0 ]; then
+  op_enable="$op_enable disable/vulkan"
+
+  # Refer to debian/rules.in to see which flags are disabled
+  gn_enable="$gn_enable enable_vulkan=false"
+  gn_enable="$gn_enable angle_build_vulkan_system_info=false"
+  gn_enable="$gn_enable dawn_enable_vulkan=false"
+
+  INS="$INS -e \"s@^\(out/Release/libVkICD_mock_icd.so\)@#\1@\""
+  INS="$INS -e \"s@^\(out/Release/libvulkan.so.1\)@#\1@\""
+
+  SWIFTSHADER=0
+  WEBGPU=0
+fi
+
+
 if [ $WEBGPU -eq 0 ]; then
   # GN_FLAGS += use_dawn=false skia_use_dawn=false
   gn_enable="$gn_enable use_dawn"
@@ -726,6 +744,10 @@ if [ $SWIFTSHADER -eq 0 ]; then
 
   INS="$INS -e \"s@^\(out/Release/.*swiftshader\)@#\1@\""
 else
+  if [ $SWIFTSHADER_VULKAN -eq 0 ]; then
+    gn_enable="$gn_enable enable_swiftshader_vulkan=false"
+  fi
+
   if [ $SWIFTSHADER_WEBGPU -eq 0 ]; then
     gn_enable="$gn_enable dawn_use_swiftshader=false"
   fi

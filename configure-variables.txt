@@ -96,12 +96,14 @@ QT			1		0 - disable
 SPEECH			1		Speech service (voice recognition)
 SUPERVISED_USER		0		Parental control related component (relies on a bromite patch)
 SWIFTSHADER		1		Swiftshader
+SWIFTSHADER_VULKAN	1		Swiftshader for vulkan
 SWIFTSHADER_WEBGPU	1		Swiftshader for WebGPU
 TRANSLATE		1		Google translate support
 					0 - disable
 					1 - enable (need to edit /etc/chromium.d/google-translate)
 					2 - enable completely
 VR			0		Virtual reality hardware support
+VULKAN			1		Vulkan (disabling will also disable WebGPU)
 WEBGPU			1		WebGPU (likely beta quality at the time of writing)
 					0 - disable
 					1 - enable (need to edit /etc/chromium.d/gpu)

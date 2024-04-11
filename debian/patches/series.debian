@@ -139,6 +139,7 @@ optional/compiler-flags/cpu/avx.patch
 optional/disable/extensions-in-root-menu.patch
 #optional/disable/media-router.patch
 optional/disable/supervised-users.patch
+#optional/disable/vulkan.patch
 #optional/disable/media-remoting/media-remoting.patch
 #optional/disable/media-remoting/registry-pref.patch
 #optional/fixes/convertutf-bundled.patch
