@@ -97,7 +97,7 @@ SPEECH			1		Speech service (voice recognition)
 SUPERVISED_USER		0		Parental control related component (relies on a bromite patch)
 SWIFTSHADER		1		Swiftshader
 SWIFTSHADER_VULKAN	1		Swiftshader for vulkan
-SWIFTSHADER_WEBGPU	1		Swiftshader for WebGPU
+SWIFTSHADER_WEBGPU	0		Swiftshader for WebGPU
 TRANSLATE		1		Google translate support
 					0 - disable
 					1 - enable (need to edit /etc/chromium.d/google-translate)
