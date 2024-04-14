@@ -1114,8 +1114,7 @@ for file in control rules $INSTALL $P_FILE; do
 done
 
 ## Make d/rules and d/ungoogled-chromium.install executable
-chmod 0700 $DEBIAN/rules
-chmod 0700 $DEBIAN/$INSTALL
+chmod 0700 $DEBIAN/rules $DEBIAN/$INSTALL
 
 
 
