@@ -1115,7 +1115,7 @@ done
 
 ## Make d/rules and d/ungoogled-chromium.install executable
 chmod 0700 $DEBIAN/rules
-chmod 0700 $DEBIAN/ungoogled-chromium.install
+chmod 0700 $DEBIAN/$INSTALL
 
 
 
