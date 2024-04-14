@@ -37,8 +37,6 @@ UC_PATCH_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 INSTALL=ungoogled-chromium.install
 P_FILE=etc/chromium/policies/managed/policies.json
 
-PRUNE_PATCH=$DEBIAN/misc_patches/no-exit-if-pruned.patch
-
 sanitise_op () {
   printf '%s\n' "Unnecessary optional prefix: $i"
   i=$(echo $i | sed 's@^optional/@@')
@@ -1142,7 +1140,7 @@ mv $UC_PATCH_DIRS $DEBIAN/patches/
 
 
 ## Submodule patching
-patch -p1 < $PRUNE_PATCH >/dev/null
+patch -p1 < $DEBIAN/misc_patches/no-exit-if-pruned.patch >/dev/null
 
 
 exit $?
