@@ -88,9 +88,7 @@ GN_FLAGS +=                                     \
         rtc_disable_trace_events=true           \
         rtc_enable_google_benchmarks=false      \
         rtc_enable_protobuf=false               \
-        skia_enable_skshaper_tests=false        \
-        tint_build_benchmarks=false             \
-        tint_build_unittests=false
+        skia_enable_skshaper_tests=false
 
 # The items below are best configured via debian/configure.sh
 # (this needs to be run anyway when self-compiling).
@@ -163,6 +161,8 @@ GN_FLAGS += enable_supervised_users=false
 
 # Disable swiftshader
 #GN_FLAGS += enable_swiftshader=false
+#GN_FLAGS += dawn_use_swiftshader=false
+#GN_FLAGS += enable_swiftshader_vulkan=false
 
 # Disable VA-API
 #GN_FLAGS += use_vaapi=false
@@ -170,9 +170,19 @@ GN_FLAGS += enable_supervised_users=false
 # Disable virtual reality features
 GN_FLAGS += enable_vr=false
 
-# Disable WebGPU
-#GN_FLAGS += use_dawn=false skia_use_dawn=false
-#GN_FLAGS += dawn_use_swiftshader=false
+# Disable vulkan (also see swiftshader section)
+#GN_FLAGS += enable_vulkan=false angle_enable_vulkan=false
+#GN_FLAGS += angle_build_vulkan_system_info=false angle_shared_libvulkan=false angle_use_vulkan_display=false
+
+# Disable WebGPU (also see swiftshader section)
+GN_FLAGS += use_dawn=false skia_use_dawn=false
+GN_FLAGS += dawn_enable_desktop_gl=false dawn_enable_opengles=false dawn_enable_spirv_validation=false
+
+# Uncomment when enabling WebGPU
+#GN_FLAGS += tint_build_benchmarks=false tint_build_unittests=false
+
+# Comment out when enabling either WebGPU or vulkan (or both)
+GN_FLAGS += dawn_enable_vulkan=false dawn_enable_vulkan_loader=false dawn_enable_vulkan_validation_layers=false
 
 # Disable zstd
 GN_FLAGS += disable_zstd_filter=true

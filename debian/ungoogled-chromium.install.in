@@ -32,8 +32,8 @@ chrome/app/theme/chromium/product_logo_64.png                               => u
 chrome/app/theme/chromium/product_logo_128.png                              => usr/share/icons/hicolor/128x128/apps/chromium.png
 chrome/app/theme/chromium/product_logo_256.png                              => usr/share/icons/hicolor/256x256/apps/chromium.png
 
+debian/etc/chromium/README.txt                                                 etc/chromium
 debian/etc/chromium/policies/managed/policies.json                             etc/chromium/policies/managed
-debian/etc/chromium/policies/managed/README.txt                                etc/chromium/policies/managed
 
 debian/etc/chromium.d/anti-phish-track                                         etc/chromium.d
 debian/etc/chromium.d/google-api-keys                                          etc/chromium.d
@@ -45,6 +45,7 @@ debian/etc/chromium.d/hw-decoding-encoding                                     e
 debian/etc/chromium.d/isolation                                                etc/chromium.d
 debian/etc/chromium.d/miscellaneous                                            etc/chromium.d
 debian/etc/chromium.d/network                                                  etc/chromium.d
+debian/etc/chromium.d/qt                                                       etc/chromium.d
 debian/etc/chromium.d/ui                                                       etc/chromium.d
 debian/etc/chromium.d/webassembly                                              etc/chromium.d
 debian/etc/chromium.d/README                                                   etc/chromium.d

@@ -1,0 +1,100 @@
+--- a/chrome/BUILD.gn
++++ b/chrome/BUILD.gn
+@@ -25,6 +25,7 @@
+ import("//gpu/vulkan/features.gni")
+ import("//media/media_options.gni")
+ import("//ppapi/buildflags/buildflags.gni")
++import("//third_party/angle/gni/angle.gni")
+ import("//third_party/blink/public/public_features.gni")
+ import("//third_party/widevine/cdm/widevine.gni")
+ import("//tools/resources/generate_resource_allowlist.gni")
+@@ -1719,7 +1720,7 @@
+       if (is_linux && enable_swiftshader_vulkan) {
+         deps += [ ":swiftshader_vk_symbols" ]
+       }
+-      if (!is_chromeos) {
++      if (!is_chromeos && angle_enable_vulkan) {
+         deps += [ ":angle_libvulkan_symbols" ]
+       }
+       if (build_with_internal_optimization_guide) {
+@@ -1790,7 +1791,7 @@
+ 
+       deps = [ "//third_party/angle:libGLESv2" ]
+     }
+-    if (!is_chromeos) {
++    if (!is_chromeos && angle_enable_vulkan) {
+       extract_symbols("angle_libvulkan_symbols") {
+         binary = "$root_out_dir/libvulkan.so.1"
+ 
+--- a/components/exo/wayland/BUILD.gn
++++ b/components/exo/wayland/BUILD.gn
+@@ -373,12 +373,17 @@
+ 
+   deps = [
+     "//base",
+-    "//gpu/vulkan:vulkan",
+-    "//gpu/vulkan/init:init",
+     "//ui/gl",
+     "//ui/gl/init",
+   ]
+ 
++  if (enable_vulkan) {
++    deps += [
++      "//gpu/vulkan:vulkan",
++      "//gpu/vulkan/init:init",
++    ]
++  }
++
+   public_deps = [
+     "//components/exo/wayland/protocol:aura_output_management_protocol",
+     "//components/exo/wayland/protocol:aura_shell_protocol",
+--- a/media/gpu/chromeos/BUILD.gn
++++ b/media/gpu/chromeos/BUILD.gn
+@@ -105,7 +105,6 @@
+     "//build:chromeos_buildflags",
+     "//build/config/linux/libdrm",
+     "//gpu/ipc/common:common",
+-    "//gpu/vulkan/init:init",
+     "//media",
+     "//media/gpu:buffer_validation",
+     "//media/gpu:buildflags",
+@@ -127,7 +126,10 @@
+       "vulkan_image_processor.cc",
+       "vulkan_image_processor.h",
+     ]
+-    deps += [ "//gpu/command_buffer/service:gles2" ]
++    deps += [
++      "//gpu/command_buffer/service:gles2",
++      "//gpu/vulkan/init:init",
++    ]
+   }
+ 
+   if (is_chromeos) {
+--- a/ui/gl/gl_switches.cc
++++ b/ui/gl/gl_switches.cc
+@@ -13,6 +13,7 @@
+ 
+ #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
+ #include <vulkan/vulkan_core.h>
++#include "gpu/vulkan/buildflags.h"
+ #include "third_party/angle/src/gpu_info_util/SystemInfo.h"  // nogncheck
+ #endif
+ 
+@@ -280,6 +281,7 @@
+              base::FEATURE_DISABLED_BY_DEFAULT);
+ 
+ bool IsDefaultANGLEVulkan() {
++#if BUILDFLAG(ENABLE_VULKAN)
+ #if defined(MEMORY_SANITIZER)
+   return false;
+ #else  // !defined(MEMORY_SANITIZER)
+@@ -321,6 +323,9 @@
+ #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
+   return base::FeatureList::IsEnabled(kDefaultANGLEVulkan);
+ #endif  // !defined(MEMORY_SANITIZER)
++#else   // !BUILDFLAG(ENABLE_VULKAN)
++  return false;
++#endif  // BUILDFLAG(ENABLE_VULKAN)
+ }
+ 
+ // Use waitable swap chain on Windows to reduce display latency.

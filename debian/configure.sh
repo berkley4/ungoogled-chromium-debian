@@ -56,7 +56,6 @@ sanitise_op () {
 [ -n "$SYMBOLS_BLINK" ] || SYMBOLS_BLINK=0
 [ -n "$SYS_CLANG" ] || SYS_CLANG=0
 [ -n "$SYS_RUST" ] || SYS_RUST=0
-[ -n "$TARBALL" ] || TARBALL=0
 
 [ -n "$AES_PCLMUL" ] || AES_PCLMUL=1
 [ -n "$AVX" ] || AVX=1
@@ -95,10 +94,12 @@ sanitise_op () {
 [ -n "$SPEECH" ] || SPEECH=1
 [ -n "$SUPERVISED_USER" ] || SUPERVISED_USER=0
 [ -n "$SWIFTSHADER" ] || SWIFTSHADER=1
-[ -n "$SWIFTSHADER_WEBGPU" ] || SWIFTSHADER_WEBGPU=1
+[ -n "$SWIFTSHADER_VULKAN" ] || SWIFTSHADER_VULKAN=1
+[ -n "$SWIFTSHADER_WEBGPU" ] || SWIFTSHADER_WEBGPU=0
 [ -n "$TRANSLATE" ] || TRANSLATE=1
 [ -n "$VR" ] || VR=0
 [ -n "$VAAPI" ] || VAAPI=1
+[ -n "$VULKAN" ] || VULKAN=1
 [ -n "$WEBGPU" ] || WEBGPU=0
 [ -n "$WIDEVINE" ] || WIDEVINE=1
 [ -n "$ZSTD" ] || ZSTD=0
@@ -163,6 +164,7 @@ fi
 
 
 
+
 #########################
 ## Changelog variables ##
 #########################
@@ -209,9 +211,10 @@ esac
 
 
 
-#####################################################
-## Test mode | Clang versioning | LTO | Skia Gamma ##
-#####################################################
+
+##############################################################################
+## Test mode | Clang versioning | LTO | Symbol levels | Package compression ##
+##############################################################################
 
 ## Enter test mode if $RT_DIR/third_party does not exist
 [ -d $RT_DIR/third_party ] && TEST=0 || TEST=1
@@ -226,6 +229,13 @@ if [ $C_VER_SET -eq 1 ] && [ $C_VER -lt $CR_VER ]; then
   printf '%s\n' "WARN: Clang versions below $CR_VER are not supported"
   printf '%s\n' "Disabling PGO support"
   PGO=0
+fi
+
+# Machine function splitting relies on PGO being enabled
+if [ $PGO -eq 0 ] && [ $MF_SPLIT -eq 1 ]; then
+  printf '%s\n' "WARN: MF_SPLIT depends on PGO=1"
+  printf '%s\n' "Setting MF_SPLIT=0"
+  MF_SPLIT=0
 fi
 
 
@@ -258,68 +268,6 @@ esac
 
 
 
-# Range is 1.0 to 3.0. Make 2 and 3 become 2.0 and 3.0.
-case $SKIA_GAMMA in
-  [23])
-    # Ensure skia gamma values have one decimal place
-    SKIA_GAMMA=${SKIA_GAMMA}.0 ;;
-esac
-
-# A value of 1 (not 1.0) just enables the patch
-case $SKIA_GAMMA in
-  1|[12].[0-9]|3.0)
-    case $SKIA_GAMMA in
-      [12].[0-9]|3.0)
-        sed "s@2\.2@$SKIA_GAMMA@" -i $OP_DIR/fixes/skia-gamma.patch
-        ;;
-    esac
-
-    op_enable="$op_enable skia-gamma"
-    ;;
-esac
-
-
-
-
-#############################
-##  Tarball Fetch/Extract  ##
-#############################
-
-if [ $TARBALL -eq 1 ]; then
-  if [ "$RT_DIR" != "tarball" ]; then
-    printf '%s\n' "Cannot run outside of tarball directory"
-    exit 1
-  fi
-
-  [ -n "$DL_CACHE" ] || DL_CACHE=$RT_DIR/../download_cache
-  [ -d $DL_CACHE ] || mkdir -p $DL_CACHE
-
-  find $RT_DIR/ -mindepth 1 -maxdepth 1 \
-    -type d \( -name debian -o -name out -o -name .pc \) -prune \
-      -o -exec rm -rf "{}" +
-
-  if [ ! -f $RT_DIR/base/BUILD.gn ]; then
-    $UC_DIR/utils/downloads.py retrieve \
-      -i $UC_DIR/downloads.ini -c $DL_CACHE
-
-    $UC_DIR/utils/downloads.py unpack \
-      -i $UC_DIR/downloads.ini -c $DL_CACHE $RT_DIR
-  fi
-
-  if [ $PGO -eq 1 ] && [ ! -d $RT_DIR/chrome/build/pgo_profiles ]; then
-    $RT_DIR/tools/update_pgo_profiles.py \
-      --target linux update \
-      --gs-url-base=chromium-optimization-profiles/pgo_profiles
-  fi
-fi
-
-
-
-
-#########################
-## Symbol levels | PGO ##
-#########################
-
 ## Set Symbol levels
 case $SYMBOLS in
   -1|[1-2])
@@ -333,11 +281,13 @@ esac
 
 
 
-# Machine function splitting relies on PGO being enabled
-if [ $PGO -eq 0 ] && [ $MF_SPLIT -eq 1 ]; then
-  printf '%s\n' "WARN: MF_SPLIT depends on PGO=1"
-  printf '%s\n' "Setting MF_SPLIT=0"
-  MF_SPLIT=0
+if [ $XZ_EXTREME -eq 1 ]; then
+  RUL="$RUL -e \"s@\(dh_builddeb .*\)@\1 -S extreme@\""
+  [ $XZ_THREADED_SET -eq 1 ] && [ $XZ_THREADED -eq 0 ] || XZ_THREADED=1
+fi
+
+if [ $XZ_THREADED -eq 1 ]; then
+  RUL="$RUL -e \"s@\(dh_builddeb .*\)@\1 --threads-max=\x24(JOBS)@\""
 fi
 
 
@@ -349,8 +299,7 @@ fi
 
 ## Enable the use of ccache
 if [ $CCACHE -eq 1 ]; then
-  # GN_FLAGS += cc_wrapper=ccache
-  gn_enable="$gn_enable cc_wrapper"
+  gn_enable="$gn_enable cc_wrapper=ccache"
 fi
 
 
@@ -470,6 +419,7 @@ fi
 
 
 
+
 #####################################################
 ## CPU architecture/instructions and optimisations ##
 #####################################################
@@ -543,13 +493,11 @@ if [ $AES_PCLMUL -eq 0 ]; then
 fi
 
 if [ $RTC_AVX2 -eq 0 ]; then
-  # GN_FLAGS += rtc_enable_avx2=false
-  gn_enable="$gn_enable rtc_enable_avx2"
+  gn_enable="$gn_enable rtc_enable_avx2=false"
 fi
 
 if [ $V8_AVX2 -eq 0 ]; then
-  # GN_FLAGS += v8_enable_wasm_simd256_revec=true
-  gn_disable="$gn_disable v8_enable_wasm_simd256_revec"
+  gn_disable="$gn_disable v8_enable_wasm_simd256_revec=true"
 fi
 
 
@@ -586,6 +534,7 @@ fi
 if [ $DNS_CONFIG -eq 0 ]; then
   op_enable="$op_enable disable/dns_config_service"
 fi
+
 
 
 
@@ -628,9 +577,7 @@ fi
 
 if [ $CLICK_TO_CALL -eq 0 ]; then
   op_enable="$op_enable disable/click-to-call"
-
-  # GN_FLAGS += enable_click_to_call=false
-  gn_enable="$gn_enable enable_click_to_call"
+  gn_enable="$gn_enable enable_click_to_call=false"
 fi
 
 
@@ -649,8 +596,7 @@ fi
 
 
 if [ $FEED -eq 0 ]; then
-  # GN_FLAGS += enable_feed_v2=false
-  gn_enable="$gn_enable enable_feed_v2"
+  gn_enable="$gn_enable enable_feed_v2=false"
 fi
 
 
@@ -671,8 +617,7 @@ fi
 
 
 if [ $LENS -eq 0 ]; then
-  # GN_FLAGS += enable_lens_desktop=false
-  gn_enable="$gn_enable enable_lens_desktop"
+  gn_enable="$gn_enable enable_lens_desktop=false"
 
   INS="$INS -e \"s@^\(debian/etc/chromium.d/google-lens\)@#\1@\""
 else
@@ -694,9 +639,7 @@ fi
 
 if [ $MEDIA_REMOTING -eq 0 ]; then
   op_enable="$op_enable disable/media-remoting/"
-
-  # GN_FLAGS += enable_media_remoting=false
-  gn_enable="$gn_enable enable_media_remoting"
+  gn_enable="$gn_enable enable_media_remoting=false"
 fi
 
 
@@ -707,8 +650,7 @@ fi
 
 
 if [ $NOTIFICATIONS -eq 0 ]; then
-  # GN_FLAGS += enable_system_notifications=false
-  gn_enable="$gn_enable enable_system_notifications"
+  gn_enable="$gn_enable enable_system_notifications=false"
 fi
 
 
@@ -723,8 +665,7 @@ fi
 
 
 if [ $OZONE_WAYLAND -eq 0 ]; then
-  # GN_FLAGS += ozone_platform_wayland=false
-  gn_enable="$gn_enable ozone_platform_wayland"
+  gn_enable="$gn_enable ozone_platform_wayland=false"
 fi
 
 
@@ -741,23 +682,20 @@ fi
 
 
 if [ $SPEECH -eq 0 ]; then
-  # GN_FLAGS += enable_speech_service=false
-  gn_enable="$gn_enable enable_speech_service"
+  gn_enable="$gn_enable enable_speech_service=false"
 fi
 
 
 if [ $SUPERVISED_USER -eq 1 ]; then
   op_disable="$op_disable disable/supervised-users"
-
-  # GN_FLAGS += enable_supervised_users=false
-  gn_disable="$gn_disable enable_supervised_users"
+  gn_disable="$gn_disable enable_supervised_users=false"
 fi
 
 
 if [ $TRANSLATE -eq 0 ]; then
   op_disable="$op_disable translate/"
 
-  INS="$INS -e \"s@^\($FLAG_DIR/google-translate\)@#\1@\""
+  INS="$INS -e \"s@^\(debian/etc/chromium.d/google-translate\)@#\1@\""
 else
   DSB="$DSB -e \"/\/translate_manager_browsertest\.cc/d\""
   DSB="$DSB -e \"/\/translate_script\.cc/d\""
@@ -775,25 +713,54 @@ if [ $VR -eq 1 ]; then
 fi
 
 
-if [ $WEBGPU -eq 0 ]; then
-  # GN_FLAGS += use_dawn=false skia_use_dawn=false
-  gn_enable="$gn_enable use_dawn"
+if [ $VULKAN -eq 0 ]; then
+  op_enable="$op_enable disable/vulkan"
 
-  SWIFTSHADER_WEBGPU=0
+  # Refer to debian/rules.in to see which flags are disabled
+  gn_enable="$gn_enable enable_vulkan=false"
+  gn_enable="$gn_enable angle_build_vulkan_system_info=false"
+
+  INS="$INS -e \"s@^\(out/Release/libVkICD_mock_icd.so\)@#\1@\""
+  INS="$INS -e \"s@^\(out/Release/libvulkan.so.1\)@#\1@\""
+
+  SWIFTSHADER=0
+  WEBGPU=0
+fi
+
+
+if [ $WEBGPU -eq 1 ]; then
+  op_disable="$op_disable disable/webgpu"
+
+  # Refer to debian/rules.in to see which flags are disabled
+  gn_disable="$gn_disable use_dawn=false"
+  gn_disable="$gn_disable dawn_enable_desktop_gl=false"
+
+  # Disable certain flags in debian/rules which will go out of scope
+  gn_enable="$gn_enable tint_build_benchmarks=false"
+
+  SWIFTSHADER_WEBGPU=1
 elif [ $WEBGPU -ge 2 ]; then
-  sed 's@^#\(.*enable-unsafe-webgpu\)@\1@' -i $DEBIAN/etc/chromium.d/gpu
+  sed 's@^#\(.*enable-unsafe-webgpu\)@\1@' -i $FLAG_DIR/gpu
+fi
+
+
+if [ $VULKAN -eq 0 ] || [ $WEBGPU -eq 0 ]; then
+  # Refer to debian/rules.in to see which flags are disabled
+  gn_enable="$gn_enable dawn_enable_vulkan=false"
 fi
 
 
 if [ $SWIFTSHADER -eq 0 ]; then
-  # GN_FLAGS += enable_swiftshader=false
-  gn_enable="$gn_enable enable_swiftshader"
+  gn_enable="$gn_enable enable_swiftshader=false"
 
   INS="$INS -e \"s@^\(out/Release/.*swiftshader\)@#\1@\""
 else
+  if [ $SWIFTSHADER_VULKAN -eq 0 ]; then
+    gn_enable="$gn_enable enable_swiftshader_vulkan=false"
+  fi
+
   if [ $SWIFTSHADER_WEBGPU -eq 0 ]; then
-    # GN_FLAGS += dawn_use_swiftshader=false
-    gn_enable="$gn_enable dawn_use_swiftshader"
+    gn_enable="$gn_enable dawn_use_swiftshader=false"
   fi
 fi
 
@@ -801,16 +768,6 @@ fi
 if [ $WIDEVINE -eq 0 ]; then
   op_disable="$op_disable fixes/widevine/"
   SMF="$SMF -e \"s@^\(enable_widevine=\)true@\1false@\""
-fi
-
-
-if [ $XZ_EXTREME -eq 1 ]; then
-  RUL="$RUL -e \"s@\(dh_builddeb .*\)@\1 -S extreme@\""
-  [ $XZ_THREADED_SET -eq 1 ] && [ $XZ_THREADED -eq 0 ] || XZ_THREADED=1
-fi
-
-if [ $XZ_THREADED -eq 1 ]; then
-  RUL="$RUL -e \"s@\(dh_builddeb .*\)@\1 --threads-max=\x24(JOBS)@\""
 fi
 
 
@@ -822,20 +779,40 @@ fi
 
 
 
+## Skia gamma range: 1.0 to 3.0 (a value of 1 just enables the patch)
+case $SKIA_GAMMA in
+  [23])
+    # Ensure skia gamma values have one decimal place
+    SKIA_GAMMA=${SKIA_GAMMA}.0 ;;
+esac
+
+case $SKIA_GAMMA in
+  1|[12].[0-9]|3.0)
+    case $SKIA_GAMMA in
+      [12].[0-9]|3.0)
+        sed "s@2\.2@$SKIA_GAMMA@" -i $OP_DIR/fixes/skia-gamma.patch
+        ;;
+    esac
+
+    op_enable="$op_enable skia-gamma"
+    ;;
+esac
+
+
+
 #################
 ##  Libraries  ##
 #################
 
 if [ $QT -eq 0 ]; then
   op_disable="$op_disable qt/"
-
-  # GN_FLAGS += use_qt=false
-  gn_enable="$gn_enable use_qt"
+  gn_enable="$gn_enable use_qt=false"
   deps_disable="$deps_disable qtbase5"
 
+  INS="$INS -e \"s@^\(debian/etc/chromium.d/qt\)@#\1@\""
   INS="$INS -e \"s@^\(out/Release/libqt5_shim.so\)@#\1@\""
-else
-  sed '/disable-features=AllowQt/s@^@#@' -i $DEBIAN/etc/chromium.d/ui
+elif [ $QT -ge 2 ]; then
+  sed '/disable-features=AllowQt/s@^@#@' -i $FLAG_DIR/qt
 fi
 
 
@@ -852,22 +829,18 @@ fi
 
 
 if [ $PULSE -eq 0 ]; then
-  # GN_FLAGS += link_pulseaudio=true
-  gn_disable="$gn_disable link_pulseaudio"
-
-  # GN_FLAGS += use_pulseaudio=false
-  gn_enable="$gn_enable use_pulseaudio"
+  gn_disable="$gn_disable link_pulseaudio=true"
+  gn_enable="$gn_enable use_pulseaudio=false"
   deps_disable="$deps_disable libpulse"
 fi
 
 
 if [ $VAAPI -eq 0 ]; then
   op_disable="$op_disable system/vaapi/"
-
-  # GN_FLAGS += use_vaapi=false
-  gn_enable="$gn_enable use_vaapi"
+  gn_enable="$gn_enable use_vaapi=false"
   deps_disable="$deps_disable libva"
 
+  INS="$INS -e \"s@^\(debian/etc/chromium.d/hw-decoding-encoding\)@#\1@\""
   INS="$INS -e \"s@^\(debian/.*/drirc\.d/10-chromium\.conf\)@#\1@\""
 fi
 
@@ -1101,8 +1074,7 @@ sed -e "s;@@VERSION@@;$VERSION;" \
     -e "s;@@RELEASE@@;$RELEASE;" \
     -e "s;@@AUTHOR@@;$AUTHOR;" \
     -e "s;@@DATETIME@@;$(date -R);" \
-  < $DEBIAN/changelog.in \
-  > $DEBIAN/changelog
+  < $DEBIAN/changelog.in > $DEBIAN/changelog
 
 
 case $SER in

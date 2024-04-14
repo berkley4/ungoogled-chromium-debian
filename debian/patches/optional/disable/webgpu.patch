@@ -1,0 +1,153 @@
+--- a/components/viz/common/BUILD.gn
++++ b/components/viz/common/BUILD.gn
+@@ -8,6 +8,7 @@
+ import("//gpu/vulkan/features.gni")
+ import("//skia/features.gni")
+ import("//testing/test.gni")
++import("//ui/gl/features.gni")
+ 
+ import("//third_party/inspector_protocol/inspector_protocol.gni")
+ 
+@@ -35,10 +36,12 @@
+     "//cc/base",
+     "//gpu/vulkan:buildflags",
+     "//skia",
+-    "//third_party/dawn/include/dawn:cpp_headers",
+     "//ui/gfx:buffer_types",
+     "//ui/gfx/geometry",
+   ]
++  if (use_dawn) {
++    deps += [ "//third_party/dawn/include/dawn:cpp_headers" ]
++  }
+   if (enable_vulkan) {
+     deps += [ "//third_party/vulkan-deps/vulkan-headers/src:vulkan_headers" ]
+   }
+--- a/services/on_device_model/BUILD.gn
++++ b/services/on_device_model/BUILD.gn
+@@ -42,12 +42,14 @@
+     }
+ 
+     if (is_linux || is_chromeos) {
+-      deps += [
+-        "//gpu/config",
+-        "//third_party/dawn/src/dawn:cpp",
+-        "//third_party/dawn/src/dawn:proc",
+-        "//third_party/dawn/src/dawn/native",
+-      ]
++      deps += [ "//gpu/config" ]
++      if (use_dawn) {
++        deps += [
++          "//third_party/dawn/src/dawn:cpp",
++          "//third_party/dawn/src/dawn:proc",
++          "//third_party/dawn/src/dawn/native",
++        ]
++      }
+     }
+   }
+ }
+--- a/services/on_device_model/ml/BUILD.gn
++++ b/services/on_device_model/ml/BUILD.gn
+@@ -27,8 +27,12 @@
+     "//components/translate/core/language_detection",
+     "//gpu/config",
+     "//third_party/angle:includes",
+-    "//third_party/dawn/src/dawn/native",
+   ]
++
++  if (use_dawn) {
++    deps += [ "//third_party/dawn/src/dawn/native" ]
++  }
++
+   public_deps = [
+     ":api",
+     "//base",
+--- a/services/on_device_model/pre_sandbox_init.cc
++++ b/services/on_device_model/pre_sandbox_init.cc
+@@ -16,9 +16,11 @@
+ 
+ #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
+ #include "gpu/config/gpu_info_collector.h"                    // nogncheck
++#if BUILDFLAG(USE_DAWN)
+ #include "third_party/dawn/include/dawn/dawn_proc.h"          // nogncheck
+ #include "third_party/dawn/include/dawn/native/DawnNative.h"  // nogncheck
+ #include "third_party/dawn/include/dawn/webgpu_cpp.h"         // nogncheck
++#endif  // BUILDFLAG(USE_DAWN)
+ #endif
+ 
+ namespace on_device_model {
+@@ -74,7 +76,7 @@
+   }
+ #endif
+ 
+-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
++#if (BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)) && BUILDFLAG(USE_DAWN)
+   // Warm any relevant drivers before attempting to bring up the sandbox. For
+   // good measure we initialize a device instance for any adapter with an
+   // appropriate backend on top of any integrated or discrete GPU.
+--- a/third_party/blink/renderer/modules/BUILD.gn
++++ b/third_party/blink/renderer/modules/BUILD.gn
+@@ -9,6 +9,7 @@
+ import("//third_party/blink/renderer/bindings/bindings.gni")
+ import("//third_party/blink/renderer/build/scripts/scripts.gni")
+ import("//third_party/blink/renderer/modules/modules.gni")
++import("//ui/gl/features.gni")
+ 
+ if (is_android) {
+   import("//build/config/android/rules.gni")
+@@ -162,7 +163,6 @@
+     "//third_party/blink/renderer/modules/webcodecs",
+     "//third_party/blink/renderer/modules/webdatabase",
+     "//third_party/blink/renderer/modules/webgl",
+-    "//third_party/blink/renderer/modules/webgpu",
+     "//third_party/blink/renderer/modules/webmidi",
+     "//third_party/blink/renderer/modules/webrtc",
+     "//third_party/blink/renderer/modules/webshare",
+@@ -173,6 +173,10 @@
+     "//third_party/blink/renderer/modules/xr",
+   ]
+ 
++  if (use_dawn) {
++    submodules += [ "//third_party/blink/renderer/modules/webgpu" ]
++  }
++
+   # This uses target_os rather than current_os (which is what is_android is set
+   # from) for the case of generating the v8 context snapshot for android. When
+   # generating the snapshot for android, blink is compiled with
+@@ -696,7 +700,6 @@
+     "//third_party/blink/renderer/modules/storage:unit_tests",
+     "//third_party/blink/renderer/modules/storage_access:unit_tests",
+     "//third_party/blink/renderer/modules/webcodecs:unit_tests",
+-    "//third_party/blink/renderer/modules/webgpu:unit_tests",
+     "//third_party/blink/renderer/modules/webtransport:unit_tests",
+     "//third_party/blink/renderer/platform",
+     "//third_party/blink/renderer/platform:test_support",
+@@ -707,6 +710,10 @@
+     "//v8",
+   ]
+ 
++  if (use_dawn) {
++    deps += [ "//third_party/blink/renderer/modules/webgpu:unit_tests" ]
++  }
++
+   # This uses target_os rather than current_os (which is what is_android is set
+   # from) for the case of generating the v8 context snapshot for android. When
+   # generating the snapshot for android, blink is compiled with
+@@ -1037,7 +1044,6 @@
+     "//third_party/blink/renderer/modules/storage:unit_tests",
+     "//third_party/blink/renderer/modules/storage_access:unit_tests",
+     "//third_party/blink/renderer/modules/webcodecs:unit_tests",
+-    "//third_party/blink/renderer/modules/webgpu:unit_tests",
+     "//third_party/blink/renderer/modules/webtransport:unit_tests",
+     "//third_party/blink/renderer/platform",
+     "//third_party/blink/renderer/platform:test_support",
+@@ -1048,6 +1054,10 @@
+     "//v8",
+   ]
+ 
++  if (use_dawn) {
++    deps += [ "//third_party/blink/renderer/modules/webgpu:unit_tests" ]
++  }
++
+   # This uses target_os rather than current_os (which is what is_android is set
+   # from) for the case of generating the v8 context snapshot for android. When
+   # generating the snapshot for android, blink is compiled with
