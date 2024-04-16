@@ -1,12 +1,18 @@
 --- a/third_party/libavif/BUILD.gn
 +++ b/third_party/libavif/BUILD.gn
-@@ -45,8 +45,7 @@
+@@ -21,7 +21,7 @@
+   }
  
    if (enable_dav1d_decoder) {
-     sources += [ "src/src/codec_dav1d.c" ]
 -    include_dirs += [ "../dav1d/libdav1d/include/" ]
 +    include_dirs += [ "/usr/include/dav1d" ]
      defines += [ "AVIF_CODEC_DAV1D" ]
+   }
+ }
+@@ -58,6 +58,5 @@
+ 
+   if (enable_dav1d_decoder) {
+     sources += [ "src/src/codec_dav1d.c" ]
 -    deps += [ "//third_party/dav1d" ]
    }
  }

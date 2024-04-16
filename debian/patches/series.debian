@@ -73,6 +73,7 @@ various/disable/image-writer-private.patch
 various/disable/image-writer-utility.patch
 various/disable/labs-toolbar-button.patch
 various/disable/lens-features.patch
+various/disable/libavif-fuzzers.patch
 various/disable/motherboard-metrics.patch
 various/disable/screen-ai-service.patch
 various/disable/tint-fuzzers.patch
