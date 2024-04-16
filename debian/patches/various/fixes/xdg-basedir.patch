@@ -1,23 +1,23 @@
 --- a/base/nix/xdg_util.cc
 +++ b/base/nix/xdg_util.cc
-@@ -32,6 +32,8 @@
- const char kXdgConfigHomeEnvVar[] = "XDG_CONFIG_HOME";
- const char kXdgCurrentDesktopEnvVar[] = "XDG_CURRENT_DESKTOP";
+@@ -47,6 +47,8 @@
  const char kXdgSessionTypeEnvVar[] = "XDG_SESSION_TYPE";
+ const char kXdgActivationTokenEnvVar[] = "XDG_ACTIVATION_TOKEN";
+ const char kXdgActivationTokenSwitch[] = "xdg-activation-token";
 +const char kDotDataDir[] = ".local/share";
 +const char kXdgDataHomeEnvVar[] = "XDG_DATA_HOME";
  
- FilePath GetXDGDirectory(Environment* env, const char* env_name,
-                          const char* fallback_dir) {
+ FilePath GetXDGDirectory(Environment* env,
+                          const char* env_name,
 --- a/base/nix/xdg_util.h
 +++ b/base/nix/xdg_util.h
-@@ -64,6 +64,12 @@
- // The XDG session type environment variable.
- BASE_EXPORT extern const char kXdgSessionTypeEnvVar[];
+@@ -82,6 +82,12 @@
+ // process and an existing browser process.
+ BASE_EXPORT extern const char kXdgActivationTokenSwitch[];
  
 +// The default XDG data directory name.
 +BASE_EXPORT extern const char kDotDataDir[];
-+ 
++
 +// The XDG data directory environment variable.
 +BASE_EXPORT extern const char kXdgDataHomeEnvVar[];
 +

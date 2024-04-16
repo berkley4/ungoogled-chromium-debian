@@ -28,7 +28,7 @@ Cr-Commit-Position: refs/heads/main@{#1191942}
 
 --- a/content/browser/service_worker/service_worker_main_resource_loader.cc
 +++ b/content/browser/service_worker/service_worker_main_resource_loader.cc
-@@ -610,6 +610,12 @@
+@@ -608,6 +608,12 @@
      return false;
    }
  

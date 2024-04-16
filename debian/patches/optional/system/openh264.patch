@@ -8,9 +8,9 @@
  import("//build/config/linux/pkg_config.gni")
  import("//build/shim_headers.gni")
  
-@@ -34,3 +35,9 @@
-   deps = [ ":openh264_shim" ]
-   public_configs = [ ":config" ]
+@@ -47,3 +48,9 @@
+     ":encoder_cfi_flags",
+   ]
  }
 +
 +buildflag_header("buildflags") {

@@ -38,7 +38,7 @@ kryptonite/remove-window-name-on-cross-origin-navigation.patch
 kryptonite/replace-dns-probe-hostname-with-example-com.patch
 kryptonite/stop-omnibar-searches-triggering-dns-requests.patch
 
-vanadium/0049-stub-out-the-battery-status-API.patch
+vanadium/0051-stub-out-the-battery-status-API.patch
 
 vanadinite/0001-switch-to-fstack-protector-strong.patch
 vanadinite/0002-enable-fwrapv-in-Clang-for-non-UBSan-builds.patch
@@ -102,13 +102,6 @@ various/system/perfetto-system-zlib.patch
 various/system/xdg-scripts.patch
 various/system/zlib.patch
 various/upstream/0001-RaceNetworkRequest-is-triggered-only-when-the-scheme-is-HTTP-or-HTTPS.patch
-various/upstream/0002-d18460a2.diff
-various/upstream/0003-6b108ec3.diff
-various/upstream/0004-f2b97f1.diff
-various/upstream/0005-b360457.diff
-various/upstream/0006-03069a77.diff
-various/upstream/0007-a3d5cdf.diff
-various/upstream/0008-31e88b9.diff
 various/upstream/0009-24eba6a.diff
 various/upstream/0010-074ac87d.diff
 various/upstream/0011-af11ae0.diff
@@ -174,3 +167,5 @@ optional/system/vaapi/vaapi-disable-libaom-encoding.patch
 #optional/system/zstd/zstd-feature-flag.patch
 optional/translate/revert-disable.patch
 optional/translate/stop-unsupported-switch-warning.patch
+
+addenda/0001-feffd47.diff

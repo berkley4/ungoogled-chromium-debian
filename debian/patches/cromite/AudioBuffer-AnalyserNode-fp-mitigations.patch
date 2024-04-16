@@ -20,7 +20,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -3794,6 +3794,10 @@
+@@ -3866,6 +3866,10 @@
       FEATURE_VALUE_TYPE(
           ash::standalone_browser::features::kWebKioskEnableLacros)},
  #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
@@ -33,7 +33,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       flag_descriptions::kWebRtcRemoteEventLogName,
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3787,6 +3787,11 @@
+@@ -3763,6 +3763,11 @@
      "When enabled, removes the requirement that all certificates used for "
      "WebTransport over HTTP/3 are issued by a known certificate root.";
  
@@ -59,7 +59,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -297,6 +297,10 @@
+@@ -329,6 +329,10 @@
               "BiddingAndScoringDebugReportingAPI",
               base::FEATURE_ENABLED_BY_DEFAULT);
  
@@ -72,7 +72,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  BASE_FEATURE(kBlinkHeapCompaction,
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -188,6 +188,8 @@
+@@ -206,6 +206,8 @@
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(
      kBlinkSchedulerPrioritizeNavigationIPCs);
  
@@ -117,15 +117,15 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        uint32_t length,
 --- a/third_party/blink/renderer/modules/webaudio/audio_context.cc
 +++ b/third_party/blink/renderer/modules/webaudio/audio_context.cc
-@@ -11,6 +11,7 @@
- #include "services/metrics/public/cpp/ukm_recorder.h"
+@@ -12,6 +12,7 @@
  #include "third_party/blink/public/common/browser_interface_broker_proxy.h"
+ #include "third_party/blink/public/common/features.h"
  #include "third_party/blink/public/common/mediastream/media_devices.h"
 +#include "third_party/blink/public/common/features.h"
  #include "third_party/blink/public/platform/modules/webrtc/webrtc_logging.h"
  #include "third_party/blink/public/platform/web_audio_latency_hint.h"
  #include "third_party/blink/renderer/bindings/core/v8/script_promise_resolver.h"
-@@ -586,7 +587,9 @@
+@@ -587,7 +588,9 @@
    DCHECK(IsMainThread());
    DCHECK(destination());
  
@@ -146,7 +146,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "third_party/blink/public/mojom/devtools/console_message.mojom-blink.h"
  #include "third_party/blink/public/mojom/frame/lifecycle.mojom-shared.h"
  #include "third_party/blink/public/platform/platform.h"
-@@ -721,6 +722,17 @@
+@@ -722,6 +723,17 @@
    return To<LocalDOMWindow>(GetExecutionContext());
  }
  
@@ -163,10 +163,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +
  void BaseAudioContext::NotifySourceNodeStartedProcessing(AudioNode* node) {
    DCHECK(IsMainThread());
-   GraphAutoLocker locker(this);
+   DeferredTaskHandler::GraphAutoLocker locker(this);
 --- a/third_party/blink/renderer/modules/webaudio/base_audio_context.h
 +++ b/third_party/blink/renderer/modules/webaudio/base_audio_context.h
-@@ -339,6 +339,8 @@
+@@ -337,6 +337,8 @@
    // if the execution context does not exist.
    bool CheckExecutionContextAndThrowIfNecessary(ExceptionState&);
  
@@ -177,7 +177,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/third_party/blink/renderer/modules/webaudio/offline_audio_context.cc
 +++ b/third_party/blink/renderer/modules/webaudio/offline_audio_context.cc
-@@ -368,6 +368,7 @@
+@@ -369,6 +369,7 @@
      if (!rendered_buffer) {
        return;
      }

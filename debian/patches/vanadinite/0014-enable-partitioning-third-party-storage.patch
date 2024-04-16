@@ -1,6 +1,6 @@
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -763,7 +763,7 @@
+@@ -797,7 +797,7 @@
  
  BASE_FEATURE(kDisableThirdPartyStoragePartitioningDeprecationTrial,
               "DisableThirdPartyStoragePartitioningDeprecationTrial",
@@ -11,7 +11,7 @@
  // This allows the browser to know whether discarding the frame could result in
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -1342,7 +1342,7 @@
+@@ -1363,7 +1363,7 @@
        origin_trial_feature_name: "DisableThirdPartySessionStoragePartitioningAfterGeneralPartitioning",
        origin_trial_type: "deprecation",
        origin_trial_allows_insecure: true,
@@ -20,7 +20,7 @@
        base_feature: "none",
      },
      // This feature will represent the deprecation trial that allows first
-@@ -1354,7 +1354,7 @@
+@@ -1375,7 +1375,7 @@
        origin_trial_type: "deprecation",
        origin_trial_allows_insecure: true,
        origin_trial_allows_third_party: true,

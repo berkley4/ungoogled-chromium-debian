@@ -16,7 +16,7 @@ Cr-Commit-Position: refs/heads/main@{#1278371}
 
 --- a/chrome/browser/performance_manager/policies/page_discarding_helper.cc
 +++ b/chrome/browser/performance_manager/policies/page_discarding_helper.cc
-@@ -454,10 +454,12 @@
+@@ -453,10 +453,12 @@
      const std::string& browser_context_id,
      const GURL& url) const {
    auto it = profiles_no_discard_patterns_.find(browser_context_id);

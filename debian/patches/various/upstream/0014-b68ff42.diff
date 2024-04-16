@@ -26,7 +26,7 @@ Cr-Commit-Position: refs/heads/main@{#1279624}
 
 --- a/content/browser/renderer_host/navigation_request.cc
 +++ b/content/browser/renderer_host/navigation_request.cc
-@@ -6020,6 +6020,9 @@
+@@ -6101,6 +6101,9 @@
        std::move(subresource_loader_params_), std::move(subresource_overrides_),
        std::move(service_worker_container_info), document_token_,
        devtools_navigation_token_);
@@ -138,7 +138,7 @@ Cr-Commit-Position: refs/heads/main@{#1279624}
    std::optional<ServiceWorkerClientInfo> client_info_;
 --- a/content/browser/worker_host/dedicated_worker_host.cc
 +++ b/content/browser/worker_host/dedicated_worker_host.cc
-@@ -488,6 +488,9 @@
+@@ -489,6 +489,9 @@
        subresource_loader_updater_.BindNewPipeAndPassReceiver(),
        std::move(controller),
        BindAndPassRemoteForBackForwardCacheControllerHost());
@@ -162,7 +162,7 @@ Cr-Commit-Position: refs/heads/main@{#1279624}
    // can't be made on it until its request endpoint is sent. Now that the
 --- a/tools/metrics/histograms/enums.xml
 +++ b/tools/metrics/histograms/enums.xml
-@@ -4095,6 +4095,13 @@
+@@ -4152,6 +4152,13 @@
    <int value="2" label="Cache miss"/>
  </enum>
  

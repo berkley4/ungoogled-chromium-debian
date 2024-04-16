@@ -16,7 +16,7 @@ Cr-Commit-Position: refs/heads/main@{#1279415}
 
 --- a/base/metrics/histogram_samples.cc
 +++ b/base/metrics/histogram_samples.cc
-@@ -11,6 +11,7 @@
+@@ -12,6 +12,7 @@
  #include "base/memory/raw_ptr.h"
  #include "base/metrics/histogram_functions.h"
  #include "base/metrics/histogram_macros.h"
@@ -24,7 +24,7 @@ Cr-Commit-Position: refs/heads/main@{#1279415}
  #include "base/numerics/safe_conversions.h"
  #include "base/numerics/safe_math.h"
  #include "base/pickle.h"
-@@ -420,15 +421,18 @@
+@@ -421,15 +422,18 @@
    return output;
  }
  
@@ -50,7 +50,7 @@ Cr-Commit-Position: refs/heads/main@{#1279415}
  void HistogramSamples::WriteAsciiBucketValue(HistogramBase::Count current,
 --- a/base/metrics/histogram_samples.h
 +++ b/base/metrics/histogram_samples.h
-@@ -14,6 +14,7 @@
+@@ -15,6 +15,7 @@
  
  #include "base/atomicops.h"
  #include "base/base_export.h"
@@ -58,7 +58,7 @@ Cr-Commit-Position: refs/heads/main@{#1279415}
  #include "base/memory/raw_ptr.h"
  #include "base/metrics/histogram_base.h"
  
-@@ -243,9 +244,9 @@
+@@ -244,9 +245,9 @@
    }
  
    // Produces an actual graph (set of blank vs non blank char's) for a bucket.
@@ -71,7 +71,7 @@ Cr-Commit-Position: refs/heads/main@{#1279415}
  
    // Writes textual description of the bucket contents (relative to histogram).
    // Output is the count in the buckets, as well as the percentage.
-@@ -267,6 +268,8 @@
+@@ -268,6 +269,8 @@
    Metadata* meta() { return meta_; }
  
   private:

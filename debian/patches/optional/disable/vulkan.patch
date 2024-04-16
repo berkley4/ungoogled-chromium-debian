@@ -1,6 +1,6 @@
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -25,6 +25,7 @@
+@@ -26,6 +26,7 @@
  import("//gpu/vulkan/features.gni")
  import("//media/media_options.gni")
  import("//ppapi/buildflags/buildflags.gni")
@@ -8,7 +8,7 @@
  import("//third_party/blink/public/public_features.gni")
  import("//third_party/widevine/cdm/widevine.gni")
  import("//tools/resources/generate_resource_allowlist.gni")
-@@ -1719,7 +1720,7 @@
+@@ -1724,7 +1725,7 @@
        if (is_linux && enable_swiftshader_vulkan) {
          deps += [ ":swiftshader_vk_symbols" ]
        }
@@ -17,7 +17,7 @@
          deps += [ ":angle_libvulkan_symbols" ]
        }
        if (build_with_internal_optimization_guide) {
-@@ -1790,7 +1791,7 @@
+@@ -1795,7 +1796,7 @@
  
        deps = [ "//third_party/angle:libGLESv2" ]
      }
@@ -28,7 +28,7 @@
  
 --- a/components/exo/wayland/BUILD.gn
 +++ b/components/exo/wayland/BUILD.gn
-@@ -373,12 +373,17 @@
+@@ -374,12 +374,17 @@
  
    deps = [
      "//base",
@@ -50,7 +50,7 @@
      "//components/exo/wayland/protocol:aura_shell_protocol",
 --- a/media/gpu/chromeos/BUILD.gn
 +++ b/media/gpu/chromeos/BUILD.gn
-@@ -105,7 +105,6 @@
+@@ -107,7 +107,6 @@
      "//build:chromeos_buildflags",
      "//build/config/linux/libdrm",
      "//gpu/ipc/common:common",
@@ -58,7 +58,7 @@
      "//media",
      "//media/gpu:buffer_validation",
      "//media/gpu:buildflags",
-@@ -127,7 +126,10 @@
+@@ -129,7 +128,10 @@
        "vulkan_image_processor.cc",
        "vulkan_image_processor.h",
      ]
@@ -80,7 +80,7 @@
  #include "third_party/angle/src/gpu_info_util/SystemInfo.h"  // nogncheck
  #endif
  
-@@ -280,6 +281,7 @@
+@@ -288,6 +289,7 @@
               base::FEATURE_DISABLED_BY_DEFAULT);
  
  bool IsDefaultANGLEVulkan() {
@@ -88,7 +88,7 @@
  #if defined(MEMORY_SANITIZER)
    return false;
  #else  // !defined(MEMORY_SANITIZER)
-@@ -321,6 +323,9 @@
+@@ -329,6 +331,9 @@
  #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
    return base::FeatureList::IsEnabled(kDefaultANGLEVulkan);
  #endif  // !defined(MEMORY_SANITIZER)

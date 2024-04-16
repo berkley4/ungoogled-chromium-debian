@@ -1,6 +1,6 @@
 --- a/chrome/browser/extensions/BUILD.gn
 +++ b/chrome/browser/extensions/BUILD.gn
-@@ -833,7 +833,6 @@
+@@ -841,7 +841,6 @@
      "//chrome/common/safe_browsing:proto",
      "//chrome/services/file_util:buildflags",
      "//chrome/services/file_util/public/mojom:mojom",
@@ -8,7 +8,7 @@
      "//components/affiliations/core/browser:affiliations",
      "//components/app_constants",
      "//components/autofill/content/browser",
-@@ -987,6 +986,10 @@
+@@ -995,6 +994,10 @@
      "//url",
    ]
  
@@ -21,7 +21,7 @@
    }
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -1729,7 +1729,6 @@
+@@ -1770,7 +1770,6 @@
        "//chrome/common/privacy_budget:test_support",
        "//chrome/renderer",
        "//chrome/renderer/companion/visual_query:browser_tests",
@@ -29,7 +29,7 @@
        "//chrome/test/data/webui:resources_grit",
        "//chrome/test/data/webui/mojo:mojo_bindings",
        "//chrome/test/media_router/access_code_cast:access_code_cast_integration_base",
-@@ -2048,6 +2047,10 @@
+@@ -2091,6 +2090,10 @@
        "//v8",
      ]
  
@@ -40,7 +40,7 @@
      if (is_chromeos) {
        deps += [
          "//chromeos/dbus/dlp:dlp",
-@@ -9171,7 +9174,6 @@
+@@ -9278,7 +9281,6 @@
        "//chrome/common/apps/platform_apps",
        "//chrome/common/extensions:extension_features_unittest",
        "//chrome/common/extensions/api",
@@ -48,7 +48,7 @@
        "//components/enterprise:test_support",
        "//components/password_manager/core/browser/features:password_features",
        "//components/password_manager/core/browser/sharing",
-@@ -9202,6 +9204,10 @@
+@@ -9309,6 +9311,10 @@
        "//tools/json_schema_compiler/test:unit_tests",
      ]
  

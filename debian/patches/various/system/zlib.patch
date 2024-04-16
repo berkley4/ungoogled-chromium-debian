@@ -143,8 +143,8 @@
  #include "chrome/browser/ash/profiles/profile_helper.h"
 --- a/chrome/browser/media/webrtc/webrtc_rtp_dump_writer.cc
 +++ b/chrome/browser/media/webrtc/webrtc_rtp_dump_writer.cc
-@@ -12,7 +12,7 @@
- #include "base/logging.h"
+@@ -14,7 +14,7 @@
+ #include "base/numerics/byte_conversions.h"
  #include "base/task/thread_pool.h"
  #include "content/public/browser/browser_thread.h"
 -#include "third_party/zlib/zlib.h"

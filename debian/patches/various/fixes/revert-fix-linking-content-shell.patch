@@ -9,7 +9,7 @@
    disallowed_extension_deps_ = [
      # Components should largely not depend on //extensions. Since // extensions
      # is not a component target and is linked with //chrome, depending on most
-@@ -831,7 +831,7 @@
+@@ -832,7 +832,7 @@
    # On other platforms, no components should depend on Chrome.
    # Since //chrome depends on //extensions, we also only assert_no_deps on
    # extensions targets for non-lacros builds.
@@ -29,7 +29,7 @@
      }
 --- a/content/shell/BUILD.gn
 +++ b/content/shell/BUILD.gn
-@@ -279,7 +279,6 @@
+@@ -299,7 +299,6 @@
      "//base/third_party/dynamic_annotations",
      "//build:chromeos_buildflags",
      "//cc/base",

@@ -27,7 +27,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
    if (is_win) {
      libs = [ "fontsub.lib" ]
    }
-@@ -604,6 +601,8 @@
+@@ -606,6 +603,8 @@
        "SKOTTIE_TRIVIAL_FONTRUN_ITER",
      ]
    }
@@ -35,7 +35,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
 +  sources += skia_svg_sources
  }
  
- # Template for things that are logically part of :skia, but need to be split out
+ component("skia_switches") {
 --- a/skia/ext/font_utils.cc
 +++ b/skia/ext/font_utils.cc
 @@ -10,6 +10,8 @@
@@ -57,18 +57,18 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
    });
 --- a/third_party/blink/renderer/platform/fonts/web_font_decoder.cc
 +++ b/third_party/blink/renderer/platform/fonts/web_font_decoder.cc
-@@ -104,6 +104,7 @@
-   const uint32_t kCpalTag = OTS_TAG('C', 'P', 'A', 'L');
+@@ -105,6 +105,7 @@
    const uint32_t kCff2Tag = OTS_TAG('C', 'F', 'F', '2');
    const uint32_t kSbixTag = OTS_TAG('s', 'b', 'i', 'x');
+   const uint32_t kStatTag = OTS_TAG('S', 'T', 'A', 'T');
 +  const uint32_t kSvg_Tag = OTS_TAG('S', 'V', 'G', ' ');
  #if HB_VERSION_ATLEAST(1, 0, 0)
    const uint32_t kBaseTag = OTS_TAG('B', 'A', 'S', 'E');
    const uint32_t kGdefTag = OTS_TAG('G', 'D', 'E', 'F');
-@@ -131,6 +132,7 @@
-     case kCpalTag:
+@@ -133,6 +134,7 @@
      case kCff2Tag:
      case kSbixTag:
+     case kStatTag:
 +    case kSvg_Tag:
  #if HB_VERSION_ATLEAST(1, 0, 0)
      // Let HarfBuzz handle how to deal with broken tables.
@@ -94,7 +94,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
  using namespace skia_private;
  
  namespace {
-@@ -1019,9 +1021,13 @@
+@@ -1018,9 +1020,13 @@
          // FT_LOAD_COLOR with scalable fonts means allow SVG.
          // It also implies attempt to render COLR if available, but this is not used.
  #if defined(FT_CONFIG_OPTION_SVG)

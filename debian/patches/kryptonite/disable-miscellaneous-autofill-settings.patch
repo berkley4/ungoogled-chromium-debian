@@ -1,6 +1,6 @@
 --- a/components/autofill/core/browser/browser_autofill_manager.h
 +++ b/components/autofill/core/browser/browser_autofill_manager.h
-@@ -577,9 +577,9 @@
+@@ -593,9 +593,9 @@
        manual_fallback_logger_;
  
    // Have we logged whether Autofill is enabled for this page load?
@@ -14,7 +14,7 @@
    bool user_did_type_ = false;
 --- a/components/autofill/core/common/autofill_features.cc
 +++ b/components/autofill/core/common/autofill_features.cc
-@@ -762,7 +762,7 @@
+@@ -780,7 +780,7 @@
  // i.e., https://other.autofill.server:port/tbproxy/af/
  BASE_FEATURE(kAutofillServerCommunication,
               "AutofillServerCommunication",

@@ -67,7 +67,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +  SetNetworkConnectionInfoOverride(
 +    /*on_line*/ true,
 +    /*type*/ WebConnectionType::kWebConnectionTypeWifi,
-+    /*effective_type*/ absl::nullopt,
++    /*effective_type*/ std::nullopt,
 +    /*http_rtt_msec*/ 0,
 +    /*max_bandwidth_mbps*/ std::numeric_limits<double>::max());
 +  SetNetworkQuality(/*effective_type*/ WebEffectiveConnectionType::kType4G, base::TimeDelta(), base::TimeDelta(), 10000);

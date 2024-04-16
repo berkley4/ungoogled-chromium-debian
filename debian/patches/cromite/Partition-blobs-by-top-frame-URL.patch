@@ -23,13 +23,13 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +bool BlobURLStoreImpl::IsSamePartition(
 +    const GURL& blob_url,
 +    const base::UnguessableToken& unsafe_agent_cluster_id,
-+    const absl::optional<net::SchemefulSite>& unsafe_top_level_site) {
-+  const absl::optional<net::SchemefulSite>& top_level_site =
++    const std::optional<net::SchemefulSite>& unsafe_top_level_site) {
++  const std::optional<net::SchemefulSite>& top_level_site =
 +    registry_->GetUnsafeTopLevelSite(blob_url);
 +  if (top_level_site.has_value())
 +    return top_level_site == unsafe_top_level_site;
 +
-+  absl::optional<base::UnguessableToken> agent_cluster_id =
++  std::optional<base::UnguessableToken> agent_cluster_id =
 +    registry_->GetUnsafeAgentClusterID(blob_url);
 +  return agent_cluster_id == unsafe_agent_cluster_id;
 +}
@@ -44,14 +44,14 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 -void BlobURLStoreImpl::Resolve(const GURL& url, ResolveCallback callback) {
 +void BlobURLStoreImpl::Resolve(const GURL& url,
 +    const base::UnguessableToken& unsafe_agent_cluster_id,
-+    const absl::optional<net::SchemefulSite>& unsafe_top_level_site,
++    const std::optional<net::SchemefulSite>& unsafe_top_level_site,
 +    ResolveCallback callback) {
    if (!registry_) {
      std::move(callback).Run(mojo::NullRemote(), std::nullopt);
      return;
    }
 +  if (!IsSamePartition(url, unsafe_agent_cluster_id, unsafe_top_level_site)) {
-+    std::move(callback).Run(mojo::NullRemote(), absl::nullopt);
++    std::move(callback).Run(mojo::NullRemote(), std::nullopt);
 +    return;
 +  }
    mojo::PendingRemote<blink::mojom::Blob> blob = registry_->GetBlobFromUrl(url);
@@ -62,7 +62,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      const GURL& url,
      mojo::PendingReceiver<network::mojom::URLLoaderFactory> receiver,
 +    const base::UnguessableToken& unsafe_agent_cluster_id,
-+    const absl::optional<net::SchemefulSite>& unsafe_top_level_site,
++    const std::optional<net::SchemefulSite>& unsafe_top_level_site,
      ResolveAsURLLoaderFactoryCallback callback) {
    if (!registry_) {
      BlobURLLoaderFactory::Create(mojo::NullRemote(), url, std::move(receiver));
@@ -72,7 +72,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 +  if (!IsSamePartition(url, unsafe_agent_cluster_id, unsafe_top_level_site)) {
 +    BlobURLLoaderFactory::Create(mojo::NullRemote(), url, std::move(receiver));
-+    std::move(callback).Run(absl::nullopt, absl::nullopt);
++    std::move(callback).Run(std::nullopt, std::nullopt);
 +    return;
 +  }
 +
@@ -84,14 +84,14 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      const GURL& url,
      mojo::PendingReceiver<blink::mojom::BlobURLToken> token,
 +    const base::UnguessableToken& unsafe_agent_cluster_id,
-+    const absl::optional<net::SchemefulSite>& unsafe_top_level_site,
++    const std::optional<net::SchemefulSite>& unsafe_top_level_site,
      ResolveForNavigationCallback callback) {
    if (!registry_) {
      std::move(callback).Run(std::nullopt);
      return;
    }
 +  if (!IsSamePartition(url, unsafe_agent_cluster_id, unsafe_top_level_site)) {
-+    std::move(callback).Run(absl::nullopt);
++    std::move(callback).Run(std::nullopt);
 +    return;
 +  }
    mojo::PendingRemote<blink::mojom::Blob> blob = registry_->GetBlobFromUrl(url);
@@ -106,19 +106,19 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 -  void Resolve(const GURL& url, ResolveCallback callback) override;
 +  void Resolve(const GURL& url,
 +               const base::UnguessableToken& unsafe_agent_cluster_id,
-+               const absl::optional<net::SchemefulSite>& unsafe_top_level_site,
++               const std::optional<net::SchemefulSite>& unsafe_top_level_site,
 +               ResolveCallback callback) override;
    void ResolveAsURLLoaderFactory(
        const GURL& url,
        mojo::PendingReceiver<network::mojom::URLLoaderFactory> receiver,
 +      const base::UnguessableToken& unsafe_agent_cluster_id,
-+      const absl::optional<net::SchemefulSite>& unsafe_top_level_site,
++      const std::optional<net::SchemefulSite>& unsafe_top_level_site,
        ResolveAsURLLoaderFactoryCallback callback) override;
    void ResolveForNavigation(
        const GURL& url,
        mojo::PendingReceiver<blink::mojom::BlobURLToken> token,
 +      const base::UnguessableToken& unsafe_agent_cluster_id,
-+      const absl::optional<net::SchemefulSite>& unsafe_top_level_site,
++      const std::optional<net::SchemefulSite>& unsafe_top_level_site,
        ResolveForNavigationCallback callback) override;
  
   private:
@@ -129,7 +129,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +  bool IsSamePartition(
 +      const GURL& blob_url,
 +      const base::UnguessableToken& unsafe_agent_cluster_id,
-+      const absl::optional<net::SchemefulSite>& unsafe_top_level_site);
++      const std::optional<net::SchemefulSite>& unsafe_top_level_site);
 +
    const blink::StorageKey storage_key_;
  
@@ -171,13 +171,13 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  };
 --- a/third_party/blink/renderer/core/fileapi/public_url_manager.cc
 +++ b/third_party/blink/renderer/core/fileapi/public_url_manager.cc
-@@ -65,6 +65,21 @@
+@@ -63,6 +63,21 @@
      BlobURLNullOriginMap::GetInstance()->Remove(blob_url);
  }
  
-+static absl::optional<BlinkSchemefulSite> GetInsecureTopLevelSite(
++static std::optional<BlinkSchemefulSite> GetInsecureTopLevelSite(
 +    ExecutionContext* execution_context) {
-+  absl::optional<BlinkSchemefulSite> top_level_site;
++  std::optional<BlinkSchemefulSite> top_level_site;
 +  if (execution_context->IsWindow()) {
 +    auto* window = To<LocalDOMWindow>(execution_context);
 +    if (window->top() && window->top()->GetFrame()) {
@@ -192,8 +192,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +
  }  // namespace
  
- // Execution context names corresponding to the entries from
-@@ -317,6 +332,7 @@
+ PublicURLManager::PublicURLManager(ExecutionContext* execution_context)
+@@ -278,6 +293,7 @@
  
    GetBlobURLStore().ResolveAsURLLoaderFactory(
        url, std::move(factory_receiver),
@@ -201,7 +201,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        WTF::BindOnce(metrics_callback, WrapPersistent(GetExecutionContext())));
  }
  
-@@ -340,6 +356,7 @@
+@@ -301,6 +317,7 @@
  
    GetBlobURLStore().ResolveForNavigation(
        url, std::move(token_receiver),

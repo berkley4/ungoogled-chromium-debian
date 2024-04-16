@@ -56,7 +56,7 @@ Cr-Commit-Position: refs/heads/main@{#1276475}
 
 --- a/chrome/browser/resource_coordinator/tab_lifecycle_unit.cc
 +++ b/chrome/browser/resource_coordinator/tab_lifecycle_unit.cc
-@@ -214,10 +214,17 @@
+@@ -215,10 +215,17 @@
  
    switch (GetState()) {
      case LifecycleUnitState::DISCARDED: {

@@ -1,6 +1,6 @@
 --- a/chrome/browser/ui/ui_features.cc
 +++ b/chrome/browser/ui/ui_features.cc
-@@ -35,7 +35,7 @@
+@@ -46,7 +46,7 @@
               base::FEATURE_DISABLED_BY_DEFAULT);
  
  // Enables Chrome Labs menu in the toolbar. See https://crbug.com/1145666

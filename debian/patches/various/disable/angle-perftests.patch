@@ -11,7 +11,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
      "$angle_root:angle_static",
      "$angle_root:libfeature_support",
      "$angle_root/util:angle_util_static",
-@@ -413,7 +412,7 @@
+@@ -418,7 +417,7 @@
    test_utils = ":angle_common_test_utils_static"
  }
  
@@ -20,7 +20,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
    import("angle_perftests.gni")
  
    # This test suite is for perf tests that use ANGLE's internals in some direct way.
-@@ -1856,10 +1855,10 @@
+@@ -1861,10 +1860,10 @@
      deps += [ ":angle_trace_perf_tests" ]
      deps += [ "capture_tests:angle_capture_tests_trace" ]
    }

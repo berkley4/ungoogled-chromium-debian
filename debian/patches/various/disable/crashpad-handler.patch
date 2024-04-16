@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -681,7 +681,7 @@
+@@ -680,7 +680,7 @@
        ]
      }
  
@@ -11,7 +11,7 @@
          "//third_party/crashpad/crashpad/handler:crashpad_handler",
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -4631,7 +4631,6 @@
+@@ -4643,7 +4643,6 @@
        "//courgette:courgette_lib",
        "//services/device/public/cpp/bluetooth",
        "//services/device/public/cpp/hid",
@@ -19,7 +19,7 @@
        "//third_party/zxcvbn-cpp",
        "//ui/webui/resources/cr_components/app_management:mojo_bindings",
        "//ui/webui/resources/cr_components/help_bubble:mojo_bindings",
-@@ -4658,6 +4657,9 @@
+@@ -4671,6 +4670,9 @@
        # //chrome/browser instead.
        "//chrome/browser/smart_card",
      ]
@@ -31,7 +31,7 @@
          "device_notifications/device_status_icon_renderer.cc",
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -297,7 +297,9 @@
+@@ -298,7 +298,9 @@
            "//chrome/common:buildflags",
          ]
  
@@ -42,7 +42,7 @@
  
          ldflags = []
  
-@@ -1711,7 +1713,6 @@
+@@ -1716,7 +1718,6 @@
        deps = [
          ":angle_egl_symbols",
          ":angle_gles_symbols",
@@ -50,7 +50,7 @@
          ":chrome_symbols",
        ]
        if (is_linux) {
-@@ -1736,17 +1737,19 @@
+@@ -1741,17 +1742,19 @@
  
        deps = [ ":chrome" ]
      }
@@ -81,7 +81,7 @@
        binary = "$root_out_dir/libvk_swiftshader.so"
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -550,10 +550,6 @@
+@@ -569,10 +569,6 @@
      ]
    }
  
@@ -114,7 +114,7 @@
    executable("chrome_crashpad_handler") {
 --- a/content/shell/BUILD.gn
 +++ b/content/shell/BUILD.gn
-@@ -689,7 +689,7 @@
+@@ -726,7 +726,7 @@
      if (is_win) {
        data_deps +=
            [ "//third_party/crashpad/crashpad/handler:crashpad_handler" ]

@@ -1,6 +1,6 @@
 --- a/components/lens/lens_features.cc
 +++ b/components/lens/lens_features.cc
-@@ -12,7 +12,7 @@
+@@ -13,7 +13,7 @@
  
  BASE_FEATURE(kLensStandalone,
               "LensStandalone",
@@ -9,7 +9,7 @@
  
  BASE_FEATURE(kLensImageCompression,
               "LensImageCompression",
-@@ -24,7 +24,7 @@
+@@ -25,7 +25,7 @@
  
  BASE_FEATURE(kEnableLatencyLogging,
               "LensImageLatencyLogging",
@@ -18,7 +18,7 @@
  
  BASE_FEATURE(kEnableRegionSearchKeyboardShortcut,
               "LensEnableRegionSearchKeyboardShortcut",
-@@ -36,7 +36,7 @@
+@@ -37,7 +37,7 @@
  
  BASE_FEATURE(kEnableImageSearchSidePanelFor3PDse,
               "EnableImageSearchSidePanelFor3PDse",
@@ -27,16 +27,16 @@
  
  BASE_FEATURE(kLensRegionSearchStaticPage,
               "LensRegionSearchStaticPage",
-@@ -44,7 +44,7 @@
+@@ -45,7 +45,7 @@
  
  BASE_FEATURE(kEnableContextMenuInLensSidePanel,
               "EnableContextMenuInLensSidePanel",
 -             base::FEATURE_ENABLED_BY_DEFAULT);
 +             base::FEATURE_DISABLED_BY_DEFAULT);
  
- constexpr base::FeatureParam<std::string> kHomepageURLForLens{
-     &kLensStandalone, "lens-homepage-url", "https://lens.google.com/v3/"};
-@@ -71,7 +71,7 @@
+ BASE_FEATURE(kLensOverlay, "LensOverlay", base::FEATURE_DISABLED_BY_DEFAULT);
+ const base::FeatureParam<int> kLensOverlayMinRamMb{&kLensOverlay, "min_ram_mb",
+@@ -78,7 +78,7 @@
          true};
  
  constexpr base::FeatureParam<bool> kShouldIssuePreconnectForLens{
