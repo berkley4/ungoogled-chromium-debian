@@ -144,8 +144,12 @@ sanitise_op () {
 ## Disable non-free stuff if NON_FREE=0
 [ -n "$NON_FREE" ] || NON_FREE=1
 if [ $NON_FREE -eq 0 ]; then
+  INS="$INS -e \"s@^\(debian/etc/chromium.d/anti-audio-fingerprint\)@#\1@\""
   SER="$SER -e \"s@^\(cromite/\)@#\1@\" -e \"s@^\(vanadium/\)@#\1@\""
-  SUPERVISED_USER=1  # Setting this to zero requires a (non-free) cromite patch
+
+  # Setting this to zero requires a (non-free) cromite patch
+  SUPERVISED_USER=1
+
   if [ $OPENH264 -eq 1 ] && [ $SYS_OPENH264 -eq 0 ]; then
     printf '%s\n' "Error: Not a non-free build"
     printf '%s\n' "Error: When NON_FREE=0, you must set SYS_OPENH264=1"

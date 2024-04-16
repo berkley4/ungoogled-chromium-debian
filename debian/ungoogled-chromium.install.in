@@ -35,6 +35,7 @@ chrome/app/theme/chromium/product_logo_256.png                              => u
 debian/etc/chromium/README.txt                                                 etc/chromium
 debian/etc/chromium/policies/managed/policies.json                             etc/chromium/policies/managed
 
+debian/etc/chromium.d/anti-audio-fingerprint                                   etc/chromium.d
 debian/etc/chromium.d/anti-phish-track                                         etc/chromium.d
 debian/etc/chromium.d/google-api-keys                                          etc/chromium.d
 debian/etc/chromium.d/google-lens                                              etc/chromium.d
