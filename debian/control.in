@@ -63,7 +63,7 @@ Architecture: i386 amd64 arm64 armhf
 Depends:
  ${misc:Depends},
  ${shlibs:Depends},
- libgtk-3-0,
+ libgtk-3-0t64,
  xdg-utils,
 Recommends:
  libgles2,
