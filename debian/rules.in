@@ -66,7 +66,6 @@ GN_FLAGS +=                                     \
         enable_extractors=false                 \
         enable_maldoca=false                    \
         enable_screen_ai_service=false          \
-	enterprise_watermark=false              \
         use_kerberos=false                      \
         use_sysroot=false
 
@@ -115,6 +114,9 @@ GN_FLAGS +=                                     \
 
 # Disable click-to-call
 #GN_FLAGS += enable_click_to_call=false
+
+# Enterprise watermark
+#GN_FLAGS += enterprise_watermark=false
 
 # Disable feed v2
 #GN_FLAGS += enable_feed_v2=false

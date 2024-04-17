@@ -69,6 +69,7 @@ sanitise_op () {
 [ -n "$CLICK_TO_CALL" ] || CLICK_TO_CALL=1
 [ -n "$CHROMECAST" ] || CHROMECAST=1
 [ -n "$DRIVER" ] || DRIVER=1
+[ -n "$ENTERPRISE_WATERMARK" ] || ENTERPRISE_WATERMARK=1
 [ -n "$EXTENSIONS_ROOT_MENU" ] || EXTENSIONS_ROOT_MENU=0
 [ -n "$FEED" ] || FEED=1
 [ -n "$GOOGLE_API_KEYS" ] || GOOGLE_API_KEYS=0
@@ -588,6 +589,12 @@ if [ $DRIVER -eq 0 ]; then
   RUL="$RUL -e \"s@ chromedriver@@\""
 
   rm $DEBIAN/ungoogled-chromium-driver.*
+fi
+
+
+if [ $ENTERPRISE_WATERMARK -eq 0 ]; then
+  op_enable="$op_enable disable/enterprise-watermark"
+  gn_enable="$gn_enable enterprise_watermark=false"
 fi
 
 

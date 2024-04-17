@@ -67,6 +67,7 @@ DRIVER			1		Chromedriver package
 ATK_DBUS		1		Accessibility/D-Bus support (d-bus is only used for bluetooth)
 CATAPULT		1		Catapult profiling support
 CLICK_TO_CALL		1		Feature for using chromium to make a call via an android phone
+ENTERPRISE_WATERMARK	1		Watermarking security/privacy feature (for Chrome Enterprise Premium users)
 EXTENSIONS_ROOT_MENU	0		Whether to put the extensions menu in the root menu (0 = put in 'More tools' menu)
 FEED			1		WebFeed (News feed) support
 GOOGLE_API_KEYS		0		Uncomment the GOOGLE_* variables in /etc/chromium.d/google-api-keys
