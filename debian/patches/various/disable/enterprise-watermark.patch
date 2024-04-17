@@ -1,0 +1,37 @@
+--- a/chrome/browser/ui/views/frame/browser_view.h
++++ b/chrome/browser/ui/views/frame/browser_view.h
+@@ -1191,8 +1191,10 @@
+   raw_ptr<views::WebView, AcrossTasksDanglingUntriaged> devtools_web_view_ =
+       nullptr;
+ 
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+   // The view that overlays a watermark on the contents container.
+   raw_ptr<enterprise_watermark::WatermarkView> watermark_view_ = nullptr;
++#endif
+ 
+   // The view managing the devtools and contents positions.
+   // Handled by ContentsLayoutManager.
+--- a/chrome/browser/ui/views/frame/browser_view.cc
++++ b/chrome/browser/ui/views/frame/browser_view.cc
+@@ -939,6 +939,8 @@
+     watermark_view_ = contents_container->AddChildView(
+         std::make_unique<enterprise_watermark::WatermarkView>());
+   }
++#else
++  views::View* watermark_view_ = nullptr;
+ #endif  // BUILDFLAG(ENTERPRISE_WATERMARK)
+ 
+   contents_container->SetLayoutManager(std::make_unique<ContentsLayoutManager>(
+@@ -5483,10 +5485,12 @@
+   }
+ }
+ 
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+ void BrowserView::ApplyDataProtectionSettings(
+     const std::string& watermark_text) {
+   SetWatermarkString(watermark_text);
+ }
++#endif
+ 
+ BEGIN_METADATA(BrowserView)
+ ADD_READONLY_PROPERTY_METADATA(gfx::Rect, FindBarBoundingBox)

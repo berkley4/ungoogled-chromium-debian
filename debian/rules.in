@@ -66,6 +66,7 @@ GN_FLAGS +=                                     \
         enable_extractors=false                 \
         enable_maldoca=false                    \
         enable_screen_ai_service=false          \
+	enterprise_watermark=false              \
         use_kerberos=false                      \
         use_sysroot=false
 
