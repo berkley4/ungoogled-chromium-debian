@@ -74,6 +74,7 @@ ___Security/Privacy improvements___
     - Some components/features can optionally be disabled/patched out at compile time
         - ATK/dbus
         - Catapult
+        - Feed
         - DNS config service
         - Media remoting
         - Swiftshader
