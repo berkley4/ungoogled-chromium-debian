@@ -37,6 +37,7 @@ ___Performance improvements___
 - Profile Guided Optimisation (PGO) - a smaller, faster chrome binary
 - PartitionAlloc pointer compression - should help reduce memory usage and help boost performance
 - Mutex Priority Inheritance - greater smoothness and responsiveness (see [here](https://lwn.net/Articles/177111/))
+- The ffmpeg component has been patched to use the upstream -O3 optimisation level (the chromium default is -O2)
 - Various compiler flags aimed at improving speed
     - -march=[x86-64-v2](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels)
     - -maes - enables AES instructions
@@ -45,10 +46,11 @@ ___Performance improvements___
     - -fno-plt - (see [here](https://patchwork.ozlabs.org/project/gcc/patch/alpine.LNX.2.11.1505061730460.22867@monopod.intra.ispras.ru/))
     - -fsplit-machine-functions - (see [here](https://groups.google.com/g/llvm-dev/c/RUegaMg-iqc/m/wFAVxa6fCgAJ))
     - -import-hot-multiplier=15
-        - a hot import limit of 450 (30x15) versus a default of 300 (30x10) allowss more hot functions to be inlined
-    - -Wl,-z,keep-text-section-prefix - enables text section splitting to further help optimise the binary
+        - a hot import limit of 450 (30x15) versus a default of 300 (30x10)
+        - allows more hot functions to be inlined
+    - -Wl,-z,keep-text-section-prefix - enables text section splitting to further optimise the binary
     - -Wl,--lto-CGO3
-        - aggressive lto codegen optimisation (this comes into effect only when the -O3 optimisation level is active)
+        - aggressive lto codegen optimisation; used by the V8 javascript engine and openscreen
     - The following LLVM polly options are available (needs a capable toolchain)
         - -polly-vectorizer=stripmine, -polly-run-dce, -polly-invariant-load-hoisting
 

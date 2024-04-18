@@ -1,0 +1,11 @@
+--- a/third_party/ffmpeg/BUILD.gn
++++ b/third_party/ffmpeg/BUILD.gn
+@@ -250,7 +250,7 @@
+   # that are under "if (0)" style sections.  Which lead to link time errors
+   # when for example it tries to link an ARM symbol on X86.
+   configs -= [ "//build/config/compiler:default_optimization" ]
+-  configs += [ "//build/config/compiler:optimize_max" ]
++  configs += [ "//build/config/compiler:optimize_speed" ]
+ 
+   if (ffmpeg_use_unsafe_atomics) {
+     if (is_posix || is_fuchsia) {
