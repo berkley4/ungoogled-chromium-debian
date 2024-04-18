@@ -144,7 +144,7 @@ XZ_THREADED		0		Multi-threaded xz compression (number of threads = $JOBS)
 ## CPU architecture/instructions and optimisations
 
 INTEL_CET		0		Experimental Intel Control-flow Enforcement Technology (Tiger Lake or newer CPUs)
-
+MEDIA_OPT_SPEED		1		Build the core media components with optimize_speed (-O3) config
 MF_SPLIT		1		Machine function splitting (requires PGO=1)
 
 MARCH			x86-64-v2	Matches MTUNE if MTUNE is set and MARCH is not specified

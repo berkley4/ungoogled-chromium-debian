@@ -1,0 +1,144 @@
+--- a/media/audio/BUILD.gn
++++ b/media/audio/BUILD.gn
+@@ -150,8 +150,10 @@
+   ]
+   libs = []
+   defines = []
++  configs -= [ "//build/config/compiler:default_optimization" ]
+   configs += [
+     ":platform_config",
++    "//build/config/compiler:optimize_speed",
+     "//media:subcomponent_config",
+   ]
+ 
+--- a/media/base/BUILD.gn
++++ b/media/base/BUILD.gn
+@@ -406,9 +406,10 @@
+   ]
+ 
+   libs = []
++  configs -= [ "//build/config/compiler:default_optimization" ]
+   configs += [
+     "//build/config:precompiled_headers",
+-
++    "//build/config/compiler:optimize_speed",
+     "//media:subcomponent_config",
+   ]
+ 
+--- a/media/cdm/BUILD.gn
++++ b/media/cdm/BUILD.gn
+@@ -15,7 +15,11 @@
+       ":*",
+       "//media",
+     ]
+-    configs += [ "//media:subcomponent_config" ]
++    configs -= [ "//build/config/compiler:default_optimization" ]
++    configs += [
++      "//build/config/compiler:optimize_speed",
++      "//media:subcomponent_config",
++    ]
+   } else {
+     visibility = [ "//media/cdm/library_cdm/clear_key_cdm:clear_key_cdm" ]
+   }
+--- a/media/ffmpeg/BUILD.gn
++++ b/media/ffmpeg/BUILD.gn
+@@ -14,7 +14,11 @@
+     "//media",
+     "//media/filters",
+   ]
+-  configs += [ "//media:subcomponent_config" ]
++  configs -= [ "//build/config/compiler:default_optimization" ]
++  configs += [
++    "//build/config/compiler:optimize_speed",
++    "//media:subcomponent_config",
++  ]
+   sources = [
+     "ffmpeg_common.cc",
+     "ffmpeg_common.h",
+--- a/media/filters/BUILD.gn
++++ b/media/filters/BUILD.gn
+@@ -79,7 +79,11 @@
+     "wsola_internals.h",
+   ]
+ 
+-  configs += [ "//media:subcomponent_config" ]
++  configs -= [ "//build/config/compiler:default_optimization" ]
++  configs += [
++    "//build/config/compiler:optimize_speed",
++    "//media:subcomponent_config",
++  ]
+ 
+   deps = [
+     "//base",
+--- a/media/formats/BUILD.gn
++++ b/media/formats/BUILD.gn
+@@ -88,7 +88,11 @@
+     "//third_party/libwebm",
+   ]
+ 
+-  configs += [ "//media:subcomponent_config" ]
++  configs -= [ "//build/config/compiler:default_optimization" ]
++  configs += [
++    "//build/config/compiler:optimize_speed",
++    "//media:subcomponent_config",
++  ]
+ 
+   if (proprietary_codecs) {
+     deps += [ "//media/video" ]
+--- a/media/gpu/BUILD.gn
++++ b/media/gpu/BUILD.gn
+@@ -400,6 +400,9 @@
+     ]
+     public_deps += [ "//third_party/libgav1:libgav1_parser" ]
+   }
++
++  configs -= [ "//build/config/compiler:default_optimization" ]
++  configs += [ "//build/config/compiler:optimize_speed" ]
+ }
+ 
+ # The buffer validation functionality is in its own component so that it can be
+--- a/media/muxers/BUILD.gn
++++ b/media/muxers/BUILD.gn
+@@ -52,7 +52,11 @@
+     "//ui/gfx/geometry",
+   ]
+ 
+-  configs += [ "//media:subcomponent_config" ]
++  configs -= [ "//build/config/compiler:default_optimization" ]
++  configs += [
++    "//build/config/compiler:optimize_speed",
++    "//media:subcomponent_config",
++  ]
+ }
+ 
+ source_set("unit_tests") {
+--- a/media/renderers/BUILD.gn
++++ b/media/renderers/BUILD.gn
+@@ -98,7 +98,11 @@
+     ]
+   }
+ 
+-  configs += [ "//media:subcomponent_config" ]
++  configs -= [ "//build/config/compiler:default_optimization" ]
++  configs += [
++    "//build/config/compiler:optimize_speed",
++    "//media:subcomponent_config",
++  ]
+ }
+ 
+ # Note: This is a roll-up only target; do not expand the visibility. DEPS should
+--- a/media/video/BUILD.gn
++++ b/media/video/BUILD.gn
+@@ -90,7 +90,11 @@
+     "//ui/gl",
+   ]
+ 
+-  configs += [ "//media:subcomponent_config" ]
++  configs -= [ "//build/config/compiler:default_optimization" ]
++  configs += [
++    "//build/config/compiler:optimize_speed",
++    "//media:subcomponent_config",
++  ]
+ 
+   if (enable_libaom) {
+     sources += [

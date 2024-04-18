@@ -119,6 +119,7 @@ optional/mutex-priority-inheritance.patch
 #optional/use-oauth2-client-switches-as-default.patch
 optional/chromecast/add-flag-to-enable-mdns.patch
 optional/compiler-flags/machine-function-splitting.patch
+optional/compiler-flags/media-optimize-speed-O3.patch
 optional/compiler-flags/polly.patch
 #optional/compiler-flags/thinlto-cache-location.patch
 #optional/compiler-flags/thinlto-jobs.patch

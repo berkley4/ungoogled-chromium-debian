@@ -37,7 +37,7 @@ ___Performance improvements___
 - Profile Guided Optimisation (PGO) - a smaller, faster chrome binary
 - PartitionAlloc pointer compression - should help reduce memory usage and help boost performance
 - Mutex Priority Inheritance - greater smoothness and responsiveness (see [here](https://lwn.net/Articles/177111/))
-- The ffmpeg component has been patched to use the upstream -O3 optimisation level (the chromium default is -O2)
+- The ffmpeg and core media components have been patched to use the -O3 optimisation level
 - Various compiler flags aimed at improving speed
     - -march=[x86-64-v2](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels)
     - -maes - enables AES instructions

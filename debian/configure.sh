@@ -61,6 +61,7 @@ sanitise_op () {
 [ -n "$V8_AVX2" ] || V8_AVX2=1
 
 [ -n "$INTEL_CET" ] || INTEL_CET=0
+[ -n "$MEDIA_OPT_SPEED" ] || MEDIA_OPT_SPEED=1
 [ -n "$MF_SPLIT" ] || MF_SPLIT=1
 [ -n "$POLLY" ] || POLLY=0
 
@@ -428,6 +429,10 @@ fi
 
 if [ $INTEL_CET -eq 1 ]; then
   op_enable="$op_enable compiler-flags/cpu/intel-cet/"
+fi
+
+if [ $MEDIA_OPT_SPEED -eq 0 ]; then
+  op_disable="$op_disable compiler-flags/media-optimize-speed-O3"
 fi
 
 if [ $MF_SPLIT -eq 0 ]; then
