@@ -96,6 +96,7 @@ sanitise_op () {
 [ -n "$SWIFTSHADER_VULKAN" ] || SWIFTSHADER_VULKAN=1
 [ -n "$SWIFTSHADER_WEBGPU" ] || SWIFTSHADER_WEBGPU=0
 [ -n "$TRANSLATE" ] || TRANSLATE=1
+[ -n "$VISUAL_QUERY" ] || VISUAL_QUERY=1
 [ -n "$VR" ] || VR=0
 [ -n "$VAAPI" ] || VAAPI=1
 [ -n "$VULKAN" ] || VULKAN=1
@@ -719,6 +720,12 @@ else
     GOOGLE_API_KEYS=1
     sed 's@^#\(export.*translate-script-url=\)@\1@' -i $FLAG_DIR/google-translate
   fi
+fi
+
+
+if [ $VISUAL_QUERY -eq 0 ]; then
+  op_enable="$op_enable disable/visual-query"
+  op_enable="$op_enable disable/visual-query_2"
 fi
 
 

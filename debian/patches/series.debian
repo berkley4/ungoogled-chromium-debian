@@ -139,6 +139,8 @@ optional/disable/extensions-in-root-menu.patch
 #optional/disable/feed.patch
 #optional/disable/media-router.patch
 optional/disable/supervised-users.patch
+#optional/disable/visual-query.patch
+#optional/disable/visual-query_2.patch
 #optional/disable/vulkan.patch
 optional/disable/webgpu.patch
 #optional/disable/media-remoting/media-remoting.patch

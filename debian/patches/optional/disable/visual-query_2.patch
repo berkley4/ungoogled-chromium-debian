@@ -1,0 +1,302 @@
+--- a/chrome/browser/about_flags.cc
++++ b/chrome/browser/about_flags.cc
+@@ -69,7 +69,6 @@
+ #include "chrome/common/chrome_content_client.h"
+ #include "chrome/common/chrome_features.h"
+ #include "chrome/common/chrome_switches.h"
+-#include "chrome/common/companion/visual_query/features.h"
+ #include "components/assist_ranker/predictor_config_definitions.h"
+ #include "components/autofill/content/common/content_autofill_features.h"
+ #include "components/autofill/core/browser/autofill_experiments.h"
+--- a/chrome/browser/chrome_browser_interface_binders.cc
++++ b/chrome/browser/chrome_browser_interface_binders.cc
+@@ -225,13 +225,10 @@
+ 
+ #if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX) || \
+     BUILDFLAG(IS_CHROMEOS)
+-#include "chrome/browser/companion/visual_query/visual_query_suggestions_service_factory.h"
+ #include "chrome/browser/ui/web_applications/sub_apps_service_impl.h"
+ #include "chrome/browser/ui/webui/discards/discards.mojom.h"
+ #include "chrome/browser/ui/webui/discards/discards_ui.h"
+ #include "chrome/browser/ui/webui/discards/site_data.mojom.h"
+-#include "chrome/common/companion/visual_query.mojom.h"
+-#include "chrome/common/companion/visual_query/features.h"
+ #endif  // BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX) ||
+         // BUILDFLAG(IS_CHROMEOS)
+ 
+@@ -833,20 +830,6 @@
+ }
+ #endif
+ 
+-#if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC) || \
+-    BUILDFLAG(IS_WIN)
+-void BindVisualSuggestionsModelProvider(
+-    content::RenderFrameHost* frame_host,
+-    mojo::PendingReceiver<
+-        companion::visual_query::mojom::VisualSuggestionsModelProvider>
+-        receiver) {
+-  companion::visual_query::VisualQuerySuggestionsServiceFactory::GetForProfile(
+-      Profile::FromBrowserContext(
+-          frame_host->GetProcess()->GetBrowserContext()))
+-      ->BindModelReceiver(std::move(receiver));
+-}
+-#endif
+-
+ #if BUILDFLAG(IS_CHROMEOS_LACROS)
+ // A helper class to register ChromeOS Apps API binders. This includes the logic
+ // that checks that the feature is allowed on Profile before registering a
+@@ -1047,12 +1030,6 @@
+     map->Add<blink::mojom::SubAppsService>(
+         base::BindRepeating(&web_app::SubAppsServiceImpl::CreateIfAllowed));
+   }
+-
+-  if (companion::visual_query::features::
+-          IsVisualQuerySuggestionsAgentEnabled()) {
+-    map->Add<companion::visual_query::mojom::VisualSuggestionsModelProvider>(
+-        base::BindRepeating(&BindVisualSuggestionsModelProvider));
+-  }
+ #endif
+ 
+ #if BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
+--- a/chrome/browser/companion/core/companion_url_builder.cc
++++ b/chrome/browser/companion/core/companion_url_builder.cc
+@@ -18,12 +18,6 @@
+ #include "net/base/url_util.h"
+ #include "url/gurl.h"
+ 
+-// Need to BUILDFLAG these lines because kSidePanelCompanionEntryPinnedToToolbar
+-// does not exist on Android and will break try-bots
+-#if (!BUILDFLAG(IS_ANDROID))
+-#include "chrome/common/companion/visual_query/features.h"
+-#endif
+-
+ namespace companion {
+ namespace {
+ 
+@@ -138,8 +132,6 @@
+           ->GetDefaultPrefValue(prefs::kSidePanelCompanionEntryPinnedToToolbar)
+           ->GetBool();
+   url_params.set_is_entrypoint_pinned_by_default(is_entry_point_default_pinned);
+-  url_params.set_is_vqs_enabled_on_chrome(base::FeatureList::IsEnabled(
+-      visual_query::features::kVisualQuerySuggestions));
+   url_params.set_is_upload_dialog_supported(true);
+   url_params.set_is_hard_refresh_supported(true);
+ #endif
+--- a/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
++++ b/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
+@@ -40,7 +40,6 @@
+ #include "chrome/browser/chrome_browser_main.h"
+ #include "chrome/browser/client_hints/client_hints_factory.h"
+ #include "chrome/browser/commerce/shopping_service_factory.h"
+-#include "chrome/browser/companion/visual_query/visual_query_suggestions_service_factory.h"
+ #include "chrome/browser/consent_auditor/consent_auditor_factory.h"
+ #include "chrome/browser/content_index/content_index_provider_factory.h"
+ #include "chrome/browser/content_settings/cookie_settings_factory.h"
+@@ -736,7 +735,6 @@
+ #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
+ #if !BUILDFLAG(IS_ANDROID)
+   ClosedTabCacheServiceFactory::GetInstance();
+-  companion::visual_query::VisualQuerySuggestionsServiceFactory::GetInstance();
+ #endif
+   commerce::ShoppingServiceFactory::GetInstance();
+   ConsentAuditorFactory::GetInstance();
+--- a/chrome/browser/ui/webui/side_panel/companion/companion_page_handler.h
++++ b/chrome/browser/ui/webui/side_panel/companion/companion_page_handler.h
+@@ -12,7 +12,6 @@
+ #include "chrome/browser/companion/core/companion_metrics_logger.h"
+ #include "chrome/browser/companion/core/constants.h"
+ #include "chrome/browser/companion/core/mojom/companion.mojom.h"
+-#include "chrome/browser/companion/visual_query/visual_query_classifier_host.h"
+ #include "chrome/browser/ui/side_panel/side_panel_enums.h"
+ #include "components/lens/buildflags.h"
+ #include "components/prefs/pref_change_registrar.h"
+@@ -130,16 +129,6 @@
+   void DidFinishFindingCqTexts(
+       const std::vector<std::pair<std::string, bool>>& text_found_vec);
+ 
+-  // This method is used as the callback that handles visual query results.
+-  // Its role is to perform some checks and do a mojom IPC to side panel.
+-  void HandleVisualQueryResult(
+-      const visual_query::VisualSuggestionsResults results,
+-      const VisualSuggestionsMetrics stats);
+-
+-  // Method responsible for binding and sending VQS results to panel.
+-  void SendVisualQueryResult(
+-      const visual_query::VisualSuggestionsResults& results);
+-
+   // The callback that handles the response to the request for the innerHTML of
+   // the main frame. Stores the response in |inner_html_| and sends it to the
+   // side panel if ready.
+@@ -158,9 +147,6 @@
+   std::unique_ptr<unified_consent::UrlKeyedDataCollectionConsentHelper>
+       consent_helper_;
+ 
+-  // Owns the orchestrator for visual query suggestions.
+-  std::unique_ptr<visual_query::VisualQueryClassifierHost> visual_query_host_;
+-
+   // Logs metrics for companion page. Reset when there is a new navigation.
+   std::unique_ptr<CompanionMetricsLogger> metrics_logger_;
+ 
+--- a/chrome/browser/ui/webui/side_panel/companion/companion_page_handler.cc
++++ b/chrome/browser/ui/webui/side_panel/companion/companion_page_handler.cc
+@@ -15,7 +15,6 @@
+ #include "chrome/browser/companion/core/utils.h"
+ #include "chrome/browser/companion/text_finder/text_finder_manager.h"
+ #include "chrome/browser/companion/text_finder/text_highlighter_manager.h"
+-#include "chrome/browser/companion/visual_query/visual_query_suggestions_service_factory.h"
+ #include "chrome/browser/content_extraction/inner_html.h"
+ #include "chrome/browser/feature_engagement/tracker_factory.h"
+ #include "chrome/browser/profiles/profile.h"
+@@ -30,7 +29,6 @@
+ #include "chrome/browser/ui/webui/side_panel/companion/companion_side_panel_untrusted_ui.h"
+ #include "chrome/browser/ui/webui/side_panel/companion/signin_delegate_impl.h"
+ #include "chrome/browser/unified_consent/unified_consent_service_factory.h"
+-#include "chrome/common/companion/visual_query/features.h"
+ #include "chrome/common/webui_url_constants.h"
+ #include "components/feature_engagement/public/event_constants.h"
+ #include "components/feature_engagement/public/feature_constants.h"
+@@ -79,12 +77,6 @@
+         base::BindRepeating(&CompanionPageHandler::OnPageContentPrefChanged,
+                             base::Unretained(this)));
+   }
+-  if (visual_query::features::IsVisualQuerySuggestionsEnabled()) {
+-    visual_query_host_ =
+-        std::make_unique<visual_query::VisualQueryClassifierHost>(
+-            visual_query::VisualQuerySuggestionsServiceFactory::GetForProfile(
+-                GetProfile()));
+-  }
+ }
+ 
+ CompanionPageHandler::~CompanionPageHandler() {
+@@ -173,53 +165,7 @@
+                        weak_ptr_factory_.GetWeakPtr()));
+   }
+ 
+-  // TODO(b/284640445) - Add browser test to verify side effect of feature
+-  // on/off, use histogram check to determine whether or not classification was
+-  // called.
+-  if (visual_query_host_) {
+-    visual_query::VisualQueryClassifierHost::ResultCallback callback =
+-        base::BindOnce(&CompanionPageHandler::HandleVisualQueryResult,
+-                       weak_ptr_factory_.GetWeakPtr());
+-    visual_query_host_->StartClassification(render_frame_host, validated_url,
+-                                            std::move(callback));
+-  }
+-}
+-
+-void CompanionPageHandler::SendVisualQueryResult(
+-    const visual_query::VisualSuggestionsResults& results) {
+-  std::vector<side_panel::mojom::VisualSearchResultPtr> final_results;
+-  for (const auto& result : results) {
+-    final_results.emplace_back(side_panel::mojom::VisualSearchResult::New(
+-        result.base64_img, result.alt_text));
+-  }
+-  page_->OnDeviceVisualClassificationResult(std::move(final_results));
+-  base::UmaHistogramTimes(
+-      "Companion.VisualQuery.ResultLatency",
+-      base::TimeTicks::Now() - ui_ready_for_visual_queries_time_.value());
+-  base::UmaHistogramBoolean("Companion.VisualQuery.SendVisualResultSuccess",
+-                            true);
+-  ui_ready_for_visual_queries_time_.reset();
+-}
+-
+-void CompanionPageHandler::HandleVisualQueryResult(
+-    const visual_query::VisualSuggestionsResults results,
+-    const VisualSuggestionsMetrics metrics) {
+-  // This is the only place where we log UKM metrics for the visual
+-  // classification pipeline. We record the metrics even when the UI is not
+-  // ready to receive the visual suggestions result. We care about these metrics
+-  // independent of whether or not the result is shown to user.
+-  metrics_logger_->OnVisualSuggestionsResult(metrics);
+-
+-  // Check to see if |ui_ready_for_visual_queries_time_| is set as indication
+-  // that we received the kStartedLoading signal from side panel. If set, we
+-  // send the visual query suggestions to the side. If it is not set, then we
+-  // don't send the request in hopes that when it is set in the future, we can
+-  // send the cached result from |visual_query_host_|.
+-  if (ui_ready_for_visual_queries_time_) {
+-    SendVisualQueryResult(results);
+-  }
+ }
+-
+ void CompanionPageHandler::HandleInnerHtmlResponse(
+     const std::optional<std::string>& result) {
+   inner_html_ = result;
+@@ -254,42 +200,6 @@
+       }
+     }
+   }
+-
+-  // Only continue if VQS is enabled.
+-  if (!visual_query_host_) {
+-    return;
+-  }
+-
+-  const auto& visual_result =
+-      visual_query_host_->GetVisualResult(web_contents()->GetURL());
+-
+-  // We use the OnLoadingState function to send the visual result to
+-  // the WebUI to handle cases where we obtain the |VisualQueryResult| before
+-  // the UI is ready to render it.
+-  if (loading_state == side_panel::mojom::LoadingState::kStartedLoading) {
+-    ui_ready_for_visual_queries_time_ = base::TimeTicks::Now();
+-    if (visual_result) {
+-      SendVisualQueryResult(visual_result.value());
+-    } else {
+-      visual_query::VisualQueryClassifierHost::ResultCallback callback =
+-          base::BindOnce(&CompanionPageHandler::HandleVisualQueryResult,
+-                         weak_ptr_factory_.GetWeakPtr());
+-      visual_query_host_->StartClassification(
+-          web_contents()->GetPrimaryMainFrame(), web_contents()->GetURL(),
+-          std::move(callback));
+-    }
+-    return;
+-  }
+-
+-  // This is the case where the side panel is finished and we still
+-  // don't have any visual query result; hence we log this as a failure to
+-  // send the result to the side panel.
+-  if (!visual_result &&
+-      loading_state == side_panel::mojom::LoadingState::kFinishedLoading) {
+-    base::UmaHistogramBoolean("Companion.VisualQuery.SendVisualResultSuccess",
+-                              false);
+-    return;
+-  }
+ }
+ 
+ void CompanionPageHandler::ShowUI() {
+@@ -375,10 +285,6 @@
+     reload_start_time_ = base::TimeTicks::Now();
+     page_->UpdateCompanionPage(companion_update_proto);
+   }
+-  if (visual_query_host_) {
+-    ui_ready_for_visual_queries_time_.reset();
+-    visual_query_host_->CancelClassification(web_contents()->GetVisibleURL());
+-  }
+   ui_ready_for_page_content_time_.reset();
+ }
+ 
+--- a/chrome/browser/flag_descriptions.h
++++ b/chrome/browser/flag_descriptions.h
+@@ -1315,9 +1315,6 @@
+ extern const char kCscSidePanelCompanionName[];
+ extern const char kCscSidePanelCompanionDescription[];
+ 
+-extern const char kCscVisualQuerySuggestionsName[];
+-extern const char kCscVisualQuerySuggestionsDescription[];
+-
+ extern const char kLensOnQuickActionSearchWidgetName[];
+ extern const char kLensOnQuickActionSearchWidgetDescription[];
+ 
+--- a/chrome/browser/flag_descriptions.cc
++++ b/chrome/browser/flag_descriptions.cc
+@@ -2319,9 +2319,6 @@
+ const char kCscSidePanelCompanionName[] = "CSC";
+ const char kCscSidePanelCompanionDescription[] = "Chrome search companion.";
+ 
+-const char kCscVisualQuerySuggestionsName[] = "CSC-VSS";
+-const char kCscVisualQuerySuggestionsDescription[] = "";
+-
+ const char kLogJsConsoleMessagesName[] =
+     "Log JS console messages in system logs";
+ const char kLogJsConsoleMessagesDescription[] =

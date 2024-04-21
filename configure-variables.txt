@@ -103,6 +103,7 @@ TRANSLATE		1		Google translate support
 					0 - disable
 					1 - enable (need to edit /etc/chromium.d/google-translate)
 					2 - enable completely
+VISUAL_QUERY		1		Visual query image search facility (a possible privacy concern)
 VR			0		Virtual reality hardware support
 VULKAN			1		Vulkan (disabling will also disable WebGPU)
 WEBGPU			0		WebGPU (likely beta quality at the time of writing)
