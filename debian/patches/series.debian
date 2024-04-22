@@ -28,12 +28,12 @@ kryptonite/disable-component-updates.patch
 kryptonite/disable-conversion-measurement-api.patch
 kryptonite/disable-extension-autoupdate.patch
 kryptonite/disable-miscellaneous-autofill-settings.patch
+kryptonite/disable-segmentation-platform.patch
 kryptonite/disable-signed-exchange-reporting.patch
 kryptonite/do-not-build-API-keys-infobar.patch
 kryptonite/force-dns-over-https-secure-mode.patch
 kryptonite/harden-against-incognito-mode-detection.patch
 kryptonite/profile-resetter-disable-send-settings.patch
-kryptonite/remove-segmentation-platform.patch
 kryptonite/remove-window-name-on-cross-origin-navigation.patch
 kryptonite/replace-dns-probe-hostname-with-example-com.patch
 kryptonite/stop-omnibar-searches-triggering-dns-requests.patch
