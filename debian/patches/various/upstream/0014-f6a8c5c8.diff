@@ -1,0 +1,116 @@
+From f6a8c5c8f439c73ac4e526ba0ff9a7277b4bf1ce Mon Sep 17 00:00:00 2001
+From: Evan Stade <estade@chromium.org>
+Date: Wed, 10 Apr 2024 20:11:49 +0000
+Subject: [PATCH] IDB: fix IndexedDBDataItemReader crasher
+
+See bug for more details.
+
+The fix is to make sure the IndexedDBDataItemReader
+instances are destroyed when the backing store is reset.
+Otherwise, the disconnection callback does nothing (as
+the bound weak pointer was invalidated), meaning the
+data item reader persists and can be reused. The object
+will later try to run the disconnection callback again,
+leading to a crash.
+
+Fixed: 330868483
+Change-Id: Ic7db727ab7c7dae03d4d9a82397521dde9c90189
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5435180
+Reviewed-by: Ayu Ishii <ayui@chromium.org>
+Commit-Queue: Evan Stade <estade@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1285359}
+---
+
+--- a/content/browser/indexed_db/indexed_db_browsertest.cc
++++ b/content/browser/indexed_db/indexed_db_browsertest.cc
+@@ -818,6 +818,36 @@
+   EXPECT_EQ(0, RequestUsage());
+ }
+ 
++// Regression test for crbug.com/330868483
++// In this test,
++//   1. the page reads a blob
++//   2. the backing store is force-closed
++//   3. the reference to the blob is GC'd
++//      . this disconnects the IndexedDBDataItemReader *after* the backing store
++//        is already reset
++//   4. the page reads the same blob, reusing the IndexedDBDataItemReader
++//   5. the blob reference is dropped and GC'd again
++//   6. don't crash
++IN_PROC_BROWSER_TEST_F(IndexedDBBrowserTestWithGCExposed, ForceCloseWithBlob) {
++  const GURL kTestUrl = GetTestUrl("indexeddb", "write_and_read_blob.html");
++  SimpleTest(kTestUrl);
++  DeleteBucketData(
++      blink::StorageKey::CreateFirstParty(url::Origin::Create(kTestUrl)));
++  std::ignore = EvalJs(shell(), "gc()");
++
++  // Run the test again, but don't reset the object stores first to make sure
++  // the same blob is read again.
++  std::ignore = EvalJs(shell(), "testThenGc()");
++  while (true) {
++    std::string result = shell()->web_contents()->GetLastCommittedURL().ref();
++    if (!result.empty()) {
++      EXPECT_EQ(result, "pass");
++      break;
++    }
++    base::RunLoop().RunUntilIdle();
++  }
++}
++
+ IN_PROC_BROWSER_TEST_F(IndexedDBBrowserTest, DeleteBucketDataIncognito) {
+   const GURL test_url = GetTestUrl("indexeddb", "fill_up_5k.html");
+   const blink::StorageKey kTestStorageKey =
+--- a/content/browser/indexed_db/indexed_db_bucket_context.cc
++++ b/content/browser/indexed_db/indexed_db_bucket_context.cc
+@@ -1374,10 +1374,11 @@
+ 
+   auto itr = file_reader_map_.find(path);
+   if (itr == file_reader_map_.end()) {
++    // Unretained is safe because `this` owns the reader.
+     auto reader = std::make_unique<IndexedDBDataItemReader>(
+         path, expected_modification_time,
+         base::BindOnce(&IndexedDBBucketContext::RemoveBoundReaders,
+-                       weak_factory_.GetWeakPtr()),
++                       base::Unretained(this)),
+         file_task_runner_, io_task_runner_);
+     itr = file_reader_map_
+               .insert({path, std::make_tuple(std::move(reader),
+@@ -1726,6 +1727,7 @@
+ }
+ 
+ void IndexedDBBucketContext::ResetBackingStore() {
++  file_reader_map_.clear();
+   weak_factory_.InvalidateWeakPtrs();
+ 
+   if (backing_store_) {
+--- a/content/test/data/indexeddb/write_and_read_blob.html
++++ b/content/test/data/indexeddb/write_and_read_blob.html
+@@ -29,6 +29,8 @@
+   request.onerror = unexpectedErrorCallback;
+ }
+ 
++let gcWhenDone = false;
++
+ function getBlob() {
+   const transaction = db.transaction('storeName', 'readwrite');
+   transaction.onabort = unexpectedAbortCallback;
+@@ -43,12 +45,19 @@
+         fail(`expected blob to contain 'abc', got '${reader.result}'`);
+         return;
+       }
++      if (gcWhenDone) gc();
+       done();
+     });
+     reader.readAsText(request.result.blob);
+   }
+ }
+ 
++function testThenGc() {
++  document.location.hash = '';
++  gcWhenDone = true;
++  test();
++}
++
+ </script>
+ </head>
+ <body onLoad="test()">

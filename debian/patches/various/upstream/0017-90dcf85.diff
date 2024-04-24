@@ -1,0 +1,63 @@
+From 90dcf85bbd020f78c908b9acdf78202bdaff3eae Mon Sep 17 00:00:00 2001
+From: Rune Lillesveen <futhark@chromium.org>
+Date: Tue, 23 Apr 2024 14:22:53 +0000
+Subject: [PATCH] [css-anchor-position] Fix gradient resource crash
+
+CSSImageGeneratorValue keeps a map with ImageResourceObservers that
+needs to be update for each reference/dereference to
+CSSImageGeneratorValue from ComputedStyle. That is done via
+UpdateImageObservers() from LayoutObject::SetStyle(). That was
+previously not done for ApplyStyleChanges::kNo for OOF style recalcs for
+anchor positioning. OOF recalcs do not change properties which can take
+gradient values. However, each new recalc of custom property
+substitutions create a new CSSImageGeneratorValue, which means we still
+need to do UpdateImageObservers() to update the map update correctly.
+
+Bug: 336322507
+Change-Id: I66bf1e029a36b3444b83db0567f6d690a68e253c
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5471816
+Reviewed-by: Anders Hartvoll Ruud <andruud@chromium.org>
+Commit-Queue: Rune Lillesveen <futhark@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1291250}
+---
+
+--- a/third_party/blink/renderer/core/css/css_image_generator_value.cc
++++ b/third_party/blink/renderer/core/css/css_image_generator_value.cc
+@@ -92,7 +92,7 @@
+ void CSSImageGeneratorValue::RemoveClient(const ImageResourceObserver* client) {
+   DCHECK(client);
+   ClientSizeCountMap::iterator it = clients_.find(client);
+-  SECURITY_DCHECK(it != clients_.end());
++  SECURITY_CHECK(it != clients_.end());
+ 
+   SizeAndCount& size_count = it->value;
+   if (!size_count.size.IsEmpty()) {
+--- a/third_party/blink/renderer/core/layout/layout_object.cc
++++ b/third_party/blink/renderer/core/layout/layout_object.cc
+@@ -2668,7 +2668,14 @@
+     return;
+ 
+   if (apply_changes == ApplyStyleChanges::kNo) {
+-    SetStyleInternal(std::move(style));
++    const ComputedStyle* old_style = style_;
++    SetStyleInternal(style);
++    // Ideally we shouldn't have to do this, but new CSSImageGeneratorValues are
++    // generated on recalc for custom properties, which means we need to call
++    // UpdateImageObservers to keep CSSImageGeneratorValue::clients_ up-to-date.
++    if (!IsText()) {
++      UpdateImageObservers(old_style, style_.Get());
++    }
+     return;
+   }
+ 
+@@ -2736,8 +2743,9 @@
+   const ComputedStyle* old_style = std::move(style_);
+   SetStyleInternal(std::move(style));
+ 
+-  if (!IsText())
++  if (!IsText()) {
+     UpdateImageObservers(old_style, style_.Get());
++  }
+ 
+   CheckCounterChanges(old_style, style_.Get());
+ 

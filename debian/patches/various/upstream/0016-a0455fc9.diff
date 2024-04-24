@@ -1,0 +1,28 @@
+From a0455fc90ed301766d96c0a38f2006ebf5416f3c Mon Sep 17 00:00:00 2001
+From: Ilya Nikolaevskiy <ilnik@chromium.org>
+Date: Tue, 16 Apr 2024 22:46:41 +0000
+Subject: [PATCH] fix crash in tracing if |frame| is null
+
+Bug: 335141866
+Change-Id: I5387ac1e2ad84b22da0313eb76f09220cec01f5c
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5453622
+Reviewed-by: Mark Foltz <mfoltz@chromium.org>
+Commit-Queue: Mark Foltz <mfoltz@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1288370}
+---
+
+--- a/components/viz/service/frame_sinks/video_capture/frame_sink_video_capturer_impl.cc
++++ b/components/viz/service/frame_sinks/video_capture/frame_sink_video_capturer_impl.cc
+@@ -1438,8 +1438,10 @@
+     // Note: The following is used by
+     // chrome/browser/media/cast_mirroring_performance_browsertest.cc, in
+     // addition to the usual runtime tracing
+-    TRACE_EVENT_END("gpu.capture", CaptureTrack(frame->metadata()), "success",
+-                    false);
++    if (frame) {
++      TRACE_EVENT_END("gpu.capture", CaptureTrack(frame->metadata()), "success",
++                      false);
++    }
+     MaybeScheduleRefreshFrame();
+     return;
+   }

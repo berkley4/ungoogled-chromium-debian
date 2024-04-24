@@ -1,0 +1,32 @@
+From 0bf199b0af67c0f2dce07097570cf69c04b2a5ee Mon Sep 17 00:00:00 2001
+From: Ted Meyer <tmathmeyer@chromium.org>
+Date: Wed, 03 Apr 2024 20:54:56 +0000
+Subject: [PATCH] Fix HLS fuzzer crash on non-ut8 character logging
+
+The purely informational message was wrapping the input text which was
+not valid utf-8 content (duh. its fuzzer input), and causing a check
+fail. This message was purely informational, so not including it won't
+change behavior at all.
+
+Bug: 40057824
+Change-Id: I2ad156e526477b677c6632bb7d58d75446188e64
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5420464
+Auto-Submit: Ted (Chromium) Meyer <tmathmeyer@chromium.org>
+Reviewed-by: Eugene Zemtsov <eugene@chromium.org>
+Commit-Queue: Eugene Zemtsov <eugene@chromium.org>
+Commit-Queue: Ted (Chromium) Meyer <tmathmeyer@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1282106}
+---
+
+--- a/media/formats/hls/source_string.cc
++++ b/media/formats/hls/source_string.cc
+@@ -92,6 +92,9 @@
+   const auto line_end = source_.find_first_of("\r\n");
+   if (line_end == std::string_view::npos) {
+     ParseStatus st = ParseStatusCode::kInvalidEOL;
++    if (!base::IsStringUTF8AllowingNoncharacters(source_)) {
++      return st;
++    }
+     return std::move(st).WithData("source", source_);
+   }
+ 

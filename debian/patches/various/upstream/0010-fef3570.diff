@@ -1,0 +1,34 @@
+From fef3570c2cb225215a4e1c149e310e0bb571ef9b Mon Sep 17 00:00:00 2001
+From: perryuwang <perryuwang@tencent.com>
+Date: Wed, 03 Apr 2024 03:09:40 +0000
+Subject: [PATCH] Fix GPU process crashing when GPUDevice is destroyed
+
+When GPUDevice is destroyed, SharedTextureMemory's BeginAccess and
+EndAccess return false. In this case we should not crash. This CL
+replaces check with early return.
+
+Bug: 332331845
+Change-Id: Iaa613aa3a7764e0edd463d74d846431cad384ab6
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5409885
+Reviewed-by: Colin Blundell <blundell@chromium.org>
+Commit-Queue: Perry <perryuwang@tencent.com>
+Cr-Commit-Position: refs/heads/main@{#1281632}
+---
+
+--- a/gpu/command_buffer/service/shared_image/dawn_ahardwarebuffer_image_representation.cc
++++ b/gpu/command_buffer/service/shared_image/dawn_ahardwarebuffer_image_representation.cc
+@@ -139,7 +139,13 @@
+   wgpu::SharedTextureMemoryVkImageLayoutEndState end_layout{};
+   end_access_desc.nextInChain = &end_layout;
+ 
+-  CHECK(shared_texture_memory_.EndAccess(texture_, &end_access_desc));
++  if (!shared_texture_memory_.EndAccess(texture_, &end_access_desc)) {
++    // The only case in which this can happen is on device loss.
++    CHECK(shared_texture_memory_.IsDeviceLost());
++    LOG(ERROR) << "Failed to end access for texture due to device loss";
++    return;
++  }
++
+   if (end_access_desc.initialized) {
+     SetCleared();
+   }

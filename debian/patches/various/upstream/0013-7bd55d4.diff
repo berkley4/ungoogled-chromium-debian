@@ -1,0 +1,37 @@
+From 7bd55d43b0505750047e1d9a3be2c80f248a99f0 Mon Sep 17 00:00:00 2001
+From: Christoph Schwering <schwering@google.com>
+Date: Tue, 09 Apr 2024 20:59:09 +0000
+Subject: [PATCH] [Autofill] Fix crash if suggestion is selected during pointer lock
+
+PopupViewViews::SetSelectedCell() indirectly calls
+AutofillPopupControllerImpl::SelectSuggestion() (by calling
+new_selected_row.SetSelectedCell()), which in turn hides the popup
+if the pointer is locked, which in turn invalidates
+PopupViewViews::controller_.
+
+This CL adds an early return to prevent dereferencing the null
+PopupViewViews::controller_. This could happen before this CL if
+the pointer was locked *after* showing the popup and *before*
+selecting a suggestion.
+
+Bug: 333566620
+Change-Id: I705ad04f8560fd7e3ee6c9a634df1a284db55a2e
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5439277
+Reviewed-by: Jan Keitel <jkeitel@google.com>
+Commit-Queue: Christoph Schwering <schwering@google.com>
+Cr-Commit-Position: refs/heads/main@{#1284690}
+---
+
+--- a/chrome/browser/ui/views/autofill/popup/popup_view_views.cc
++++ b/chrome/browser/ui/views/autofill/popup/popup_view_views.cc
+@@ -642,6 +642,10 @@
+     new_selected_row.SetSelectedCell(cell_index->second);
+     new_selected_row.ScrollViewToVisible();
+ 
++    if (!controller_) {
++      // The previous SetSelectedCell() call may have hidden the popup.
++      return;
++    }
+     const Suggestion& suggestion =
+         controller_->GetSuggestionAt(cell_index->first);
+     bool can_open_sub_popup =
