@@ -72,7 +72,7 @@
    if (!is_android) {
      deps += [
        "//chrome/browser/ui/webui/search_engine_choice:mojo_bindings",
-@@ -4054,8 +4064,6 @@
+@@ -4056,8 +4066,6 @@
        "new_tab_page/modules/drive/drive_service.h",
        "new_tab_page/modules/drive/drive_service_factory.cc",
        "new_tab_page/modules/drive/drive_service_factory.h",
@@ -81,7 +81,7 @@
        "new_tab_page/modules/history_clusters/cart/cart_processor.cc",
        "new_tab_page/modules/history_clusters/cart/cart_processor.h",
        "new_tab_page/modules/history_clusters/discount/discount_processor.cc",
-@@ -4548,6 +4556,14 @@
+@@ -4550,6 +4558,14 @@
        "webauthn/webauthn_switches.cc",
        "webauthn/webauthn_switches.h",
      ]
@@ -96,7 +96,7 @@
      deps += [
        ":browser_themes",
        ":theme_properties",
-@@ -4566,7 +4582,6 @@
+@@ -4568,7 +4584,6 @@
        "//chrome/browser/new_tab_page/chrome_colors:generate_chrome_colors_info",
        "//chrome/browser/new_tab_page/chrome_colors:generate_colors_info",
        "//chrome/browser/new_tab_page/modules/drive:mojo_bindings",
@@ -104,7 +104,7 @@
        "//chrome/browser/new_tab_page/modules/history_clusters:mojo_bindings",
        "//chrome/browser/new_tab_page/modules/history_clusters/cart:mojo_bindings",
        "//chrome/browser/new_tab_page/modules/history_clusters/discount:mojo_bindings",
-@@ -4779,6 +4794,10 @@
+@@ -4781,6 +4796,10 @@
        ]
      }
  
@@ -464,7 +464,7 @@
  void NewTabPageUI::BindInterface(
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -6858,9 +6858,6 @@
+@@ -6859,9 +6859,6 @@
      "//components/favicon/core/test:test_support",
      "//components/feature_engagement/public",
      "//components/feed:buildflags",
@@ -474,7 +474,7 @@
      "//components/feed/mojom:mojo_bindings",
      "//components/feedback",
      "//components/feedback/redaction_tool",
-@@ -7118,6 +7115,14 @@
+@@ -7119,6 +7116,14 @@
      "//base:path_service_unittest",
    ]
  

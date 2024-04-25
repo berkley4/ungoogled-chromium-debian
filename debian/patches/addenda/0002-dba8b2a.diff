@@ -1,0 +1,92 @@
+From dba8b2a9db18d3bb19fb74c2ec49284888c132f4 Mon Sep 17 00:00:00 2001
+From: Evan Stade <estade@chromium.org>
+Date: Wed, 24 Apr 2024 00:12:47 +0000
+Subject: [PATCH] Revert "[Clipboard] Remove `image/svg+xml` MIME type from DataTransfer APIs."
+
+This reverts commit a76f7cfd2c4d211b41eb19cbc1704cd71c83cf11.
+
+Reason for revert: breaks DataTransfer custom types
+
+Original change's description:
+> [Clipboard] Remove `image/svg+xml` MIME type from DataTransfer APIs.
+>
+> `image/svg+xml` MIME type is only supported in async clipboard APIs.
+>
+> Bug: 333952122
+>
+> (cherry picked from commit 0a27acc799cbac6e84eabfab62ac6d7750d72dd3)
+>
+> Change-Id: I75bb34481a91f0c04a6a3353a059bb6ee9c95e78
+> Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5449448
+> Reviewed-by: Evan Stade <estade@chromium.org>
+> Reviewed-by: Christine Hollingsworth <christinesm@chromium.org>
+> Commit-Queue: Anupam Snigdha <snianu@microsoft.com>
+> Reviewed-by: Sanket Joshi <sajos@microsoft.com>
+> Cr-Original-Commit-Position: refs/heads/main@{#1287553}
+> Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5465493
+> Owners-Override: Daniel Yip <danielyip@google.com>
+> Reviewed-by: Daniel Yip <danielyip@google.com>
+> Cr-Commit-Position: refs/branch-heads/6367@{#914}
+> Cr-Branched-From: d158c6dc6e3604e6f899041972edf26087a49740-refs/heads/main@{#1274542}
+
+Bug: 333952122
+Change-Id: Ib026f72a3b6009b5730e81150804c161a1d17162
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5479609
+Reviewed-by: Daniel Yip <danielyip@google.com>
+Bot-Commit: Rubber Stamper <rubber-stamper@appspot.gserviceaccount.com>
+Commit-Queue: Evan Stade <estade@chromium.org>
+Reviewed-by: Christine Hollingsworth <christinesm@chromium.org>
+Reviewed-by: Anupam Snigdha <snianu@microsoft.com>
+Cr-Commit-Position: refs/branch-heads/6367@{#978}
+Cr-Branched-From: d158c6dc6e3604e6f899041972edf26087a49740-refs/heads/main@{#1274542}
+---
+
+--- a/third_party/blink/renderer/core/clipboard/data_object.cc
++++ b/third_party/blink/renderer/core/clipboard/data_object.cc
+@@ -61,14 +61,8 @@
+   ClipboardSequenceNumberToken sequence_number =
+       system_clipboard->SequenceNumber();
+   for (const String& type : system_clipboard->ReadAvailableTypes()) {
+-    if (paste_mode == PasteMode::kPlainTextOnly && type != kMimeTypeTextPlain) {
++    if (paste_mode == PasteMode::kPlainTextOnly && type != kMimeTypeTextPlain)
+       continue;
+-    }
+-    // `image/svg+xml` is not supported by the DataTransfer API, so we should
+-    // ignore it.
+-    if (type == kMimeTypeImageSvg) {
+-      continue;
+-    }
+     mojom::blink::ClipboardFilesPtr files;
+     if (type == kMimeTypeTextURIList) {
+       files = system_clipboard->ReadFiles();
+--- a/third_party/blink/web_tests/clipboard/async-clipboard/async-svg-datatransfer-read-write.tentative.https.html
++++ /dev/null
+@@ -1,28 +0,0 @@
+-<!doctype html>
+-<meta charset="utf-8">
+-<title>DataTransfer items read unsupported image/svg+xml types test.</title>
+-<body>Body needed for test_driver.click()</body>
+-<script src="../../resources/testharness.js"></script>
+-<script src="../../resources/testharnessreport.js"></script>
+-<script src="../../resources/testdriver.js"></script>
+-<script src="../../resources/testdriver-vendor.js"></script>
+-<script src="resources/user-activation.js"></script>
+-<script>
+-'use strict';
+-
+-promise_test(async t => {
+-  await test_driver.set_permission({name: 'clipboard-read'}, 'granted');
+-  await test_driver.set_permission({name: 'clipboard-write'}, 'granted');
+-  const textInput = '<svg> <circle cx="50" cy="50" r="40"/> </svg>';
+-  const blobInput = new Blob([textInput], {type: 'image/svg+xml'});
+-  const clipboardItem = new ClipboardItem({'image/svg+xml': blobInput});
+-  await waitForUserActivation();
+-  await navigator.clipboard.write([clipboardItem]);
+-  // Write supported and unsupported types to clipboard.
+-  document.addEventListener('paste', event => {
+-    assert_equals(event.clipboardData.items.length, 0);
+-    event.preventDefault();
+-  });
+-  document.execCommand('paste');
+-}, 'Verify that dataTransfer items removes unsupported SVG type.');
+-</script>

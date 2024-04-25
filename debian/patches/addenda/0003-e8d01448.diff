@@ -1,0 +1,284 @@
+From e8d014483207ababd4bde696bfe39135117d1162 Mon Sep 17 00:00:00 2001
+From: Daniel Cheng <dcheng@chromium.org>
+Date: Wed, 24 Apr 2024 17:10:54 +0000
+Subject: [PATCH] [M124] Fix detach IPCs races against navigation commit with navigation queueing
+
+With navigation queueing, a pending commit navigation is never
+cancelled. If a pending commit navigation races with the frame being
+removed from the DOM, the renderer process committing the navigation can
+end up missing the detach: in the browser process, the detach is
+replicated to the other renderers by deleting the RenderFrameProxyHosts
+for the FrameTreeNode. However, the committing renderer process will no
+longer have a RenderFrameProxy after the commit completes in its
+process, so it will never hear about the detach.
+
+The fix is to also call `DeleteRenderFrame()` when discard pending
+commit speculative RFHs, rather than assuming that the pending commit
+RenderFrame will be implicitly cleaned up.
+
+(cherry picked from commit 066698dae62100ca4a3fd87635fc30db44c4b4ac)
+
+Bug: 332746903
+Change-Id: I0e8c48b0c17271cdf974ec40ff6a479346581def
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5460976
+Reviewed-by: Alex Moshchuk <alexmos@chromium.org>
+Commit-Queue: Daniel Cheng <dcheng@chromium.org>
+Reviewed-by: Rakina Zata Amni <rakina@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1289587}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5474681
+Cr-Commit-Position: refs/branch-heads/6367@{#981}
+Cr-Branched-From: d158c6dc6e3604e6f899041972edf26087a49740-refs/heads/main@{#1274542}
+---
+
+--- a/content/browser/navigation_browsertest.cc
++++ b/content/browser/navigation_browsertest.cc
+@@ -6040,71 +6040,6 @@
+   EXPECT_EQ(final_url, results[1].url);
+ }
+ 
+-// Regression test for https://crbug.com/1223837. Previously, if a child frame
+-// was in the middle of committing a navigation to a provisional frame in render
+-// process B while render process A simultaneously detaches that child frame,
+-// the detach message would never be received by render process B.
+-IN_PROC_BROWSER_TEST_F(UndoCommitNavigationBrowserTest,
+-                       DetachAfterCommitNavigationInSubFrame) {
+-  ASSERT_TRUE(NavigateToURL(
+-      shell(), embedded_test_server()->GetURL(
+-                   "a.com", "/cross_site_iframe_factory.html?a(b,a)")));
+-
+-  WebContentsImpl* const web_contents =
+-      static_cast<WebContentsImpl*>(shell()->web_contents());
+-  FrameTreeNode* const first_subframe_node =
+-      web_contents->GetPrimaryMainFrame()->child_at(0);
+-  FrameTreeNode* const second_subframe_node =
+-      web_contents->GetPrimaryMainFrame()->child_at(1);
+-  RenderProcessHost* const b_com_render_process_host =
+-      first_subframe_node->render_manager()->current_frame_host()->GetProcess();
+-
+-  // Start a navigation in the second child frame that will create a speculative
+-  // RFH in the existing render process for b.com. The first child frame is
+-  // already hosted in the render process for b.com: this is to ensure the
+-  // render process remains live even after the second child frame is detached
+-  // later in this test.
+-  ASSERT_TRUE(BeginNavigateToURLFromRenderer(
+-      second_subframe_node,
+-      embedded_test_server()->GetURL("b.com", "/title1.html")));
+-
+-  // Ensure the speculative RFH is in the expected process.
+-  RenderFrameHostImpl* speculative_render_frame_host =
+-      second_subframe_node->render_manager()->speculative_frame_host();
+-  ASSERT_TRUE(speculative_render_frame_host);
+-  EXPECT_EQ(b_com_render_process_host,
+-            speculative_render_frame_host->GetProcess());
+-
+-  // Pause (and ignore) the next `DidCommitProvisionalLoad()` for b.com.
+-  CommitNavigationPauser commit_pauser(speculative_render_frame_host);
+-  commit_pauser.WaitForCommitAndPause();
+-
+-  // At this point, the b.com renderer has already committed the RenderFrame,
+-  // but on the browser side, the RenderFrameHost is still speculative.
+-
+-  // Intentionally do not wait for script completion here. This runs an event
+-  // loop that pumps incoming messages, but IPCs from b.com would be processed
+-  // out of order, since the `DidCommitProvisionalLoad()` attempt was previously
+-  // paused above.
+-  ExecuteScriptAsync(
+-      web_contents,
+-      JsReplace("document.querySelectorAll('iframe')[1].remove()"));
+-
+-  // However, since it's not possible to wait for `remove()` to take effect,
+-  // the test must cheat a little and directly call the Mojo IPC that the JS
+-  // above would eventually trigger.
+-  second_subframe_node->render_manager()->current_frame_host()->Detach();
+-
+-  EXPECT_TRUE(WaitForLoadStop(web_contents));
+-  // Validate that render process for b.com has handled the detach message for
+-  // the provisional frame that was committing. Before the fix, the render
+-  // process for b.com still had the proxy for the second child frame, because
+-  // the browser process's request to delete it was sent via a broken message
+-  // pipe. Thus, the frame tree in the render process for b.com incorrectly
+-  // thought there were still two child frames.
+-  EXPECT_EQ(1, EvalJs(first_subframe_node, "top.length"));
+-}
+-
+ class ResumeCommitClosureSetWaiter {
+  public:
+   explicit ResumeCommitClosureSetWaiter(NavigationHandle* handle) {
+@@ -6267,6 +6202,80 @@
+   base::test::ScopedFeatureList feature_list_;
+ };
+ 
++// Test for https://crbug.com/40187807 and https://crbug.com/332746903.
++//
++// Ensure that racing a navigation commit in a speculative/provisional child
++// frame in render process B with a detach IPC from render process A (i.e. the
++// child frame's parent is in render process A and has removed the frame owner
++// element—e.g. <iframe>—from the DOM) does not result in the detach IPC being
++// discarded and never received by render process B.
++IN_PROC_BROWSER_TEST_P(CommitNavigationRaceBrowserTest,
++                       DetachAfterCommitNavigationInSubFrame) {
++  ASSERT_TRUE(NavigateToURL(
++      shell(), embedded_test_server()->GetURL(
++                   "a.com", "/cross_site_iframe_factory.html?a(b,a)")));
++
++  WebContentsImpl* const web_contents =
++      static_cast<WebContentsImpl*>(shell()->web_contents());
++  FrameTreeNode* const first_subframe_node =
++      web_contents->GetPrimaryMainFrame()->child_at(0);
++  FrameTreeNode* const second_subframe_node =
++      web_contents->GetPrimaryMainFrame()->child_at(1);
++  RenderProcessHost* const b_com_render_process_host =
++      first_subframe_node->render_manager()->current_frame_host()->GetProcess();
++
++  // Start a navigation in the second child frame that will create a speculative
++  // RFH in the existing render process for b.com. The first child frame is
++  // already hosted in the render process for b.com: this is to ensure the
++  // render process remains live even after the second child frame is detached
++  // later in this test.
++  ASSERT_TRUE(BeginNavigateToURLFromRenderer(
++      second_subframe_node,
++      embedded_test_server()->GetURL("b.com", "/title1.html")));
++
++  // Ensure the speculative RFH is in the expected process.
++  RenderFrameHostImpl* speculative_render_frame_host =
++      second_subframe_node->render_manager()->speculative_frame_host();
++  ASSERT_TRUE(speculative_render_frame_host);
++  EXPECT_EQ(b_com_render_process_host,
++            speculative_render_frame_host->GetProcess());
++
++  // Pause (and ignore) the next `DidCommitProvisionalLoad()` for b.com.
++  CommitNavigationPauser commit_pauser(speculative_render_frame_host);
++  commit_pauser.WaitForCommitAndPause();
++
++  // At this point, the b.com renderer has already committed the RenderFrame,
++  // but on the browser side, the RenderFrameHost is still speculative.
++
++  // Intentionally do not wait for script completion here. This runs an event
++  // loop that pumps incoming messages, but IPCs from b.com would be processed
++  // out of order, since the `DidCommitProvisionalLoad()` attempt was previously
++  // paused above.
++  ExecuteScriptAsync(
++      web_contents,
++      JsReplace("document.querySelectorAll('iframe')[1].remove()"));
++
++  // However, since it's not possible to wait for `remove()` to take effect,
++  // the test must cheat a little and directly call the Mojo IPC that the JS
++  // above would eventually trigger.
++  second_subframe_node->render_manager()->current_frame_host()->Detach();
++
++  EXPECT_TRUE(WaitForLoadStop(web_contents));
++  // Validate that render process for b.com has handled the detach message for
++  // the provisional frame that was committing. Before the fix:
++  // - without navigation queueing, the render process for b.com still had the
++  //   proxy for the second child frame, because the browser process's request
++  //   to delete it was sent via a broken message pipe. Thus, the frame tree in
++  //   the render process for b.com incorrectly thought there were still two
++  //   child frames.
++  // - with navigation queueing, the render process for b.com has already
++  //   committed the navigation in the second child frame, so the renderer-side
++  //   proxy has already been destroyed and replaced. However, the browser
++  //   process has not heard about the commit yet and sends a detach to the
++  //   proxy, which the renderer ignores since it no longer exists.
++  EXPECT_EQ(1, EvalJs(first_subframe_node, "top.length"));
++}
++
+ IN_PROC_BROWSER_TEST_P(CommitNavigationRaceBrowserTest,
+                        BeginNewNavigationDuringCommitNavigationInMainFrame) {
+   ASSERT_TRUE(NavigateToURL(
+--- a/content/browser/renderer_host/render_frame_host_manager.cc
++++ b/content/browser/renderer_host/render_frame_host_manager.cc
+@@ -2048,16 +2048,6 @@
+               "RenderFrameHostManager::UnsetSpeculativeRenderFrameHost",
+               ChromeTrackEvent::kFrameTreeNodeInfo, *frame_tree_node_);
+ 
+-  if (ShouldQueueNavigationsWhenPendingCommitRFHExists() &&
+-      speculative_render_frame_host_
+-          ->HasPendingCommitForCrossDocumentNavigation()) {
+-    // With navigation queueing, pending commit navigations in speculative
+-    // RenderFrameHosts shouldn't get deleted, unless the FrameTreeNode or
+-    // renderer process is gone/will be gone soon.
+-    CHECK(reason == NavigationDiscardReason::kRenderProcessGone ||
+-          reason == NavigationDiscardReason::kWillRemoveFrame);
+-  }
+-
+   speculative_render_frame_host_->GetProcess()->RemovePendingView();
+   if (speculative_render_frame_host_->lifecycle_state() ==
+       LifecycleStateImpl::kSpeculative) {
+@@ -2067,8 +2057,10 @@
+             : mojom::FrameDeleteIntention::
+                   kSpeculativeMainFrameForNavigationCancelled);
+   } else {
++    // TODO(dcheng): Upgrade this to a CHECK()?
+     DCHECK_EQ(speculative_render_frame_host_->lifecycle_state(),
+               LifecycleStateImpl::kPendingCommit);
++
+     if (!ShouldQueueNavigationsWhenPendingCommitRFHExists()) {
+       // The browser process already asked the renderer to commit the
+       // navigation. The renderer is guaranteed to commit the navigation and
+@@ -2095,8 +2087,64 @@
+       speculative_render_frame_host_->UndoCommitNavigation(
+           *proxy, frame_tree_node_->IsLoading());
+     } else {
+-      speculative_render_frame_host_->SetLifecycleState(
+-          LifecycleStateImpl::kReadyToBeDeleted);
++      // A reasonable person might wonder: shouldn't a RenderFrameHostImpl in
++      // kPendingCommit always have a... pending commit?
++      //
++      // The surprising answer is no! When the browser process handles the
++      // renderer's commit navigation ack:
++      // - the NavigationRequest is unconditionally removed from
++      //   `RenderFrameHostImpl::navigation_requests_`.
++      // - but if the IPC fails validation, the browser process reports a bad
++      //   message (which kills the renderer process) and returns immediately.
++      //
++      // However, the kill is async and observing process termination (which is
++      // what cleans up the speculative RenderFrameHostImpl) is also async.
++      // Between reporting the bad message and the actual cleanup, the user can
++      // begin a new navigation, which will discard any speculative RFHs rather
++      // than blocking (since `HasPendingCommitForCrossDocumentNavigation()` now
++      // returns `false`!) for a reason other than `kRenderProcessGone` or
++      // `kWillRemoveFrame`.
++      //
++      // TODO(dcheng): it might help make state easier to reason about if the
++      // speculative RFH is proactively discarded rather than just leaving it
++      // around to be asynchronously cleaned up.
++      if (speculative_render_frame_host_
++              ->HasPendingCommitForCrossDocumentNavigation()) {
++        // With navigation queueing, pending commit navigations in speculative
++        // RenderFrameHosts shouldn't get deleted, unless the FrameTreeNode or
++        // renderer process is gone/will be gone soon.
++        CHECK(reason == NavigationDiscardReason::kRenderProcessGone ||
++              reason == NavigationDiscardReason::kWillRemoveFrame);
++      }
++
++      // TODO(dcheng): `CHECK(render_frame_host_->IsPendingDeletion())` would be
++      // a nice precondition to enforce here. However, this turns out to be
++      // Hard: `StartPendingDeletionOnSubtree()` performs its work in two
++      // phases: it resets all navigation requests first (which might delete
++      // speculative RFHs—even ones in pending commit), before doing a complex
++      // dance to invoke `DeleteRenderFrame()` a minimal number of times. In the
++      // future, it would be nice to refactor the code so this precondition can
++      // be enforced.
++
++      // A pending commit RFH is assumed/expected to have committed already in
++      // the renderer process. If the FrameTreeNode is going away, explicitly
++      // tear down the RenderFrame in the renderer process to keep the frame
++      // tree in sync.
++      if (frame_tree_node_->parent()) {
++        speculative_render_frame_host_->DeleteRenderFrame(
++            mojom::FrameDeleteIntention::kNotMainFrame);
++      } else {
++        // But for main frames, just advance the lifecycle state instead. In
++        // Blink, a live WebView must always have a live main frame; violating
++        // this invariant by destroying the already-committed (from the
++        // perspective of the renderer process) frame with `DeleteRenderFrame()`
++        // results in bugs like crbug.com/40091257.
++        //
++        // The main RenderFrame will be implicitly torn down later when the
++        // corresponding RenderViewHost/WebView are torn down.
++        speculative_render_frame_host_->SetLifecycleState(
++            LifecycleStateImpl::kReadyToBeDeleted);
++      }
+     }
+   }
+ 

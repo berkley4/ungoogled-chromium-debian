@@ -11,7 +11,7 @@
          "//third_party/crashpad/crashpad/handler:crashpad_handler",
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -4643,7 +4643,6 @@
+@@ -4645,7 +4645,6 @@
        "//courgette:courgette_lib",
        "//services/device/public/cpp/bluetooth",
        "//services/device/public/cpp/hid",
@@ -19,7 +19,7 @@
        "//third_party/zxcvbn-cpp",
        "//ui/webui/resources/cr_components/app_management:mojo_bindings",
        "//ui/webui/resources/cr_components/help_bubble:mojo_bindings",
-@@ -4671,6 +4670,9 @@
+@@ -4673,6 +4672,9 @@
        # //chrome/browser instead.
        "//chrome/browser/smart_card",
      ]
