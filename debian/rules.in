@@ -116,7 +116,7 @@ GN_FLAGS +=                                     \
 #GN_FLAGS += enable_click_to_call=false
 
 # Enterprise watermark
-#GN_FLAGS += enterprise_watermark=false
+GN_FLAGS += enterprise_watermark=false
 
 # Disable feed v2
 #GN_FLAGS += enable_feed_v2=false

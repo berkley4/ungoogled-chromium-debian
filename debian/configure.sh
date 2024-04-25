@@ -70,7 +70,7 @@ sanitise_op () {
 [ -n "$CLICK_TO_CALL" ] || CLICK_TO_CALL=1
 [ -n "$CHROMECAST" ] || CHROMECAST=1
 [ -n "$DRIVER" ] || DRIVER=1
-[ -n "$ENTERPRISE_WATERMARK" ] || ENTERPRISE_WATERMARK=1
+[ -n "$ENTERPRISE_WATERMARK" ] || ENTERPRISE_WATERMARK=0
 [ -n "$EXTENSIONS_ROOT_MENU" ] || EXTENSIONS_ROOT_MENU=0
 [ -n "$FEED" ] || FEED=1
 [ -n "$GOOGLE_API_KEYS" ] || GOOGLE_API_KEYS=0
@@ -598,9 +598,9 @@ if [ $DRIVER -eq 0 ]; then
 fi
 
 
-if [ $ENTERPRISE_WATERMARK -eq 0 ]; then
-  op_enable="$op_enable disable/enterprise-watermark"
-  gn_enable="$gn_enable enterprise_watermark=false"
+if [ $ENTERPRISE_WATERMARK -eq 1 ]; then
+  op_disable="$op_disable disable/enterprise-watermark"
+  gn_disable="$gn_disable enterprise_watermark=false"
 fi
 
 
