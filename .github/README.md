@@ -73,14 +73,18 @@ ___Security/Privacy improvements___
     - Google Translate
     - WebGPU
 - Reduced attack surface
-    - Some components/features can optionally be disabled/patched out at compile time
+    - Some components/features can variously be disabled/patched out (or enabled) at compile time
         - ATK/dbus
         - Catapult
         - Feed
         - DNS config service
+        - Enterprise watermark
         - Media remoting
         - Swiftshader
         - Supervised users
+        - Visual query
+        - Vulkan
+        - WebGPU
     - Some other features/components are always patched out
         - Crashpad handler
         - Image writer private API

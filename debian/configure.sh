@@ -96,7 +96,7 @@ sanitise_op () {
 [ -n "$SWIFTSHADER_VULKAN" ] || SWIFTSHADER_VULKAN=1
 [ -n "$SWIFTSHADER_WEBGPU" ] || SWIFTSHADER_WEBGPU=0
 [ -n "$TRANSLATE" ] || TRANSLATE=1
-[ -n "$VISUAL_QUERY" ] || VISUAL_QUERY=1
+[ -n "$VISUAL_QUERY" ] || VISUAL_QUERY=0
 [ -n "$VR" ] || VR=0
 [ -n "$VAAPI" ] || VAAPI=1
 [ -n "$VULKAN" ] || VULKAN=1
@@ -723,9 +723,9 @@ else
 fi
 
 
-if [ $VISUAL_QUERY -eq 0 ]; then
-  op_enable="$op_enable disable/visual-query"
-  op_enable="$op_enable disable/visual-query_2"
+if [ $VISUAL_QUERY -eq 1 ]; then
+  op_disable="$op_disable disable/visual-query"
+  op_disable="$op_disable disable/visual-query_2"
 fi
 
 
