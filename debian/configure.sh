@@ -15,6 +15,8 @@ gn_disable=; gn_enable=
 op_disable=; op_enable=
 sys_disable=; sys_enable=
 
+SER_DB=; SER_U=; SERIES_DB=; SERIES_UC=
+
 C_VER_SET=0
 MARCH_SET=0
 MTUNE_SET=0
@@ -148,7 +150,7 @@ sanitise_op () {
 [ -n "$NON_FREE" ] || NON_FREE=1
 if [ $NON_FREE -eq 0 ]; then
   INS="$INS -e \"s@^\(debian/etc/chromium.d/anti-audio-fingerprint\)@#\1@\""
-  SER="$SER -e \"s@^\(cromite/\)@#\1@\" -e \"s@^\(vanadium/\)@#\1@\""
+  SER_DB="$SER_DB -e \"s@^\(cromite/\)@#\1@\" -e \"s@^\(vanadium/\)@#\1@\""
 
   # Setting this to zero requires a (non-free) cromite patch
   SUPERVISED_USER=1
@@ -1029,11 +1031,11 @@ if [ -n "$op_disable" ]; then
 
     case $i in
       */|*.patch)
-        SER="$SER -e \"s@^\(optional/$i\)@#\1@\""
+        SER_DB="$SER_DB -e \"s@^\(optional/$i\)@#\1@\""
         ;;
 
       *)
-        SER="$SER -e \"s@^\(optional/$i\.patch\)@#\1@\""
+        SER_DB="$SER_DB -e \"s@^\(optional/$i\.patch\)@#\1@\""
         ;;
     esac
   done
@@ -1048,11 +1050,11 @@ if [ -n "$op_enable" ]; then
 
     case $i in
       */|*.patch)
-        SER="$SER -e \"s@^#\(optional/$i\)@\1@\""
+        SER_DB="$SER_DB -e \"s@^#\(optional/$i\)@\1@\""
         ;;
 
       *)
-        SER="$SER -e \"s@^#\(optional/$i\.patch\)@\1@\""
+        SER_DB="$SER_DB -e \"s@^#\(optional/$i\.patch\)@\1@\""
         ;;
     esac
   done
@@ -1101,23 +1103,13 @@ sed -e "s;@@VERSION@@;$VERSION;" \
   < $DEBIAN/changelog.in > $DEBIAN/changelog
 
 
-case $SER in
-  "")
-    SERIES_DEBIAN="$(cat $DEBIAN/patches/series.debian)" ;;
+[ -n "$SER_DB" ] || SER_DB="-n p"
+[ -n "$SER_UC" ] || SER_UC="-n p"
 
-  *)
-    SERIES_DEBIAN="$(eval sed $SER $DEBIAN/patches/series.debian)" ;;
-esac
+SERIES_DB="$(eval sed $SER_DB $DEBIAN/patches/series.debian)"
+SERIES_UC="$(eval sed $SER_UC $UC_DIR/patches/series)"
 
-case $SER_UC in
-  "")
-    SERIES_UC="$(cat $UC_DIR/patches/series)" ;;
-
-  *)
-    SERIES_UC="$(eval sed $SER_UC $UC_DIR/patches/series)" ;;
-esac
-
-echo "$SERIES_UC" "$SERIES_DEBIAN" > $DEBIAN/patches/series
+echo "$SERIES_UC" "$SERIES_DB" > $DEBIAN/patches/series
 
 
 [ -z "$INS" ] || eval sed $INS < $DEBIAN/$INSTALL.in > $DEBIAN/$INSTALL
