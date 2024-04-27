@@ -19,6 +19,7 @@ SER_DB=; SER_U=; SERIES_DB=; SERIES_UC=
 
 C_VER_SET=0
 MARCH_SET=0
+MEDIA_REMOTING_SET=0
 MTUNE_SET=0
 RELEASE_SET=0
 SYS_FREETYPE_SET=0
@@ -69,8 +70,8 @@ sanitise_op () {
 
 [ -n "$ATK_DBUS" ] || ATK_DBUS=1
 [ -n "$CATAPULT" ] || CATAPULT=1
-[ -n "$CLICK_TO_CALL" ] || CLICK_TO_CALL=1
 [ -n "$CHROMECAST" ] || CHROMECAST=1
+[ -n "$CLICK_TO_CALL" ] || CLICK_TO_CALL=1
 [ -n "$DRIVER" ] || DRIVER=1
 [ -n "$ENTERPRISE_WATERMARK" ] || ENTERPRISE_WATERMARK=0
 [ -n "$EXTENSIONS_ROOT_MENU" ] || EXTENSIONS_ROOT_MENU=0
@@ -80,7 +81,6 @@ sanitise_op () {
 [ -n "$LABS_TOOLBAR_BUTTON" ] || LABS_TOOLBAR_BUTTON=0
 [ -n "$LENS" ] || LENS=1
 [ -n "$LENS_TRANSLATE" ] || LENS_TRANSLATE=1
-[ -n "$MEDIA_REMOTING" ] || MEDIA_REMOTING=1
 [ -n "$MUTEX_PI" ] || MUTEX_PI=1
 [ -n "$NOTIFICATIONS" ] || NOTIFICATIONS=1
 [ -n "$OAUTH2" ] || OAUTH2=0
@@ -115,6 +115,9 @@ sanitise_op () {
 
 ## Allow harfbuzz to be force-enabled (for stable builds)
 [ -n "$SYS_HARFBUZZ" ] && SYS_HARFBUZZ_SET=1 || SYS_HARFBUZZ=1
+
+## Need to error out if MEDIA_REMOTING explicitly set with CHROMECAST=0
+[ -n "$MEDIA_REMOTING" ] && MEDIA_REMOTING_SET=1 || MEDIA_REMOTING=1
 
 ## OpenH254 support
 [ -n "$OPENH264" ] && [ $OPENH264 -eq 0 ] && SYS_OPENH264=0 || OPENH264=1
@@ -563,7 +566,16 @@ if [ $CHROMECAST -eq 0 ]; then
   op_enable="$op_enable disable/media-router"
   op_disable="$op_disable chromecast/"
 
-  MEDIA_REMOTING=0
+  if [ $MEDIA_REMOTING -eq 1 ]; then
+    if [ $MEDIA_REMOTING_SET -eq 0 ]; then
+      printf '$s\n' "WARN: Setting MEDIA_REMOTING=0 since CHROMECAST=0"
+      printf '%s\n' "WARN: Set MEDIA_REMOTING=0 to silence these warnings"
+      MEDIA_REMOTING=0
+    else
+      printf '%s\n' "ERROR: Cannot set MEDIA_REMOTING=1 when CHROMECAST=0"
+      exit 1
+    fi
+  fi
 else
   P=fix-building-without-mdns-and-service-discovery
   SER_UC="$SER_UC -e \"s@^\(extra/ungoogled-chromium/$P\)@#\1@\""

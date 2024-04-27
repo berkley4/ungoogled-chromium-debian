@@ -66,6 +66,9 @@ DRIVER			1		Chromedriver package
 
 ATK_DBUS		1		Accessibility/D-Bus support (d-bus is only used for bluetooth)
 CATAPULT		1		Catapult profiling support
+CHROMECAST		1		0 - disable (will also disable MEDIA_REMOTING)
+					1 - enable (need to edit /etc/chromium.d/network)
+					2 - enable fully
 CLICK_TO_CALL		1		Feature for using chromium to make a call via an android phone
 ENTERPRISE_WATERMARK	0		Watermarking security/privacy feature (for Chrome Enterprise Premium users)
 EXTENSIONS_ROOT_MENU	0		Whether to put the extensions menu in the root menu (0 = put in 'More tools' menu)
@@ -81,7 +84,8 @@ LENS			1		Goodle Lens
                                         1 - enable (need to edit /etc/chromium.d/google-lens to fully enable)
                                         2 - enable fully
 LENS_TRANSLATE		1		Goodle Lens image translation subfeature
-MEDIA_REMOTING		0		Render and play back media on remote devices when a tab is casted
+MEDIA_REMOTING		1		Render and play back media on remote devices when a tab is casted
+					Depends on CHROMECAST=1 (which is the default)
 MUTEX_PI		1		Mutex priority inheritance
 NOTIFICATIONS		1		System notifications
 OAUTH2			0		Enable OAuth 2.0 client switches
