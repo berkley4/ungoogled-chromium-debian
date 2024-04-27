@@ -152,7 +152,7 @@ sanitise_op () {
 ## Disable non-free stuff if NON_FREE=0
 [ -n "$NON_FREE" ] || NON_FREE=1
 if [ $NON_FREE -eq 0 ]; then
-  INS="$INS -e \"s@^\(debian/etc/chromium.d/anti-audio-fingerprint\)@#\1@\""
+  ins_disable="$ins_disable anti-audio-fingerprint"
   SER_DB="$SER_DB -e \"s@^\(cromite/\)@#\1@\" -e \"s@^\(vanadium/\)@#\1@\""
 
   # Setting this to zero requires a (non-free) cromite patch
@@ -622,8 +622,7 @@ fi
 
 if [ $HLS_PLAYER -eq 0 ]; then
   gn_disable="$gn_disable enable_hls_demuxer"
-
-  INS="$INS -e \"s@^\(debian/etc/chromium.d/hls-player\)@#\1@\""
+  ins_disable="$ins_disable hls-player"
 elif [ $HLS_PLAYER -ge 2 ]; then
   sed -e '/enable-builtin-hls/s@^#@@' \
       -e '/enable-features=HlsPlayer/s@^#@@' \
@@ -638,8 +637,7 @@ fi
 
 if [ $LENS -eq 0 ]; then
   gn_enable="$gn_enable enable_lens_desktop=false"
-
-  INS="$INS -e \"s@^\(debian/etc/chromium.d/google-lens\)@#\1@\""
+  ins_disable="$ins_disable google-lens"
 else
   DSB="$DSB -e \"/^components\/lens\/lens_features\.cc/d\""
 
@@ -714,8 +712,7 @@ fi
 
 if [ $TRANSLATE -eq 0 ]; then
   op_disable="$op_disable translate/"
-
-  INS="$INS -e \"s@^\(debian/etc/chromium.d/google-translate\)@#\1@\""
+  ins_disable="$ins_disable google-translate"
 else
   DSB="$DSB -e \"/\/translate_manager_browsertest\.cc/d\""
   DSB="$DSB -e \"/\/translate_script\.cc/d\""
@@ -746,8 +743,8 @@ if [ $VULKAN -eq 0 ]; then
   gn_enable="$gn_enable enable_vulkan=false"
   gn_enable="$gn_enable angle_build_vulkan_system_info=false"
 
-  INS="$INS -e \"s@^\(out/Release/libVkICD_mock_icd.so\)@#\1@\""
-  INS="$INS -e \"s@^\(out/Release/libvulkan.so.1\)@#\1@\""
+  ins_disable="$ins_disable libVkICD_mock_icd.so"
+  ins_disable="$ins_disable libvulkan.so.1"
 
   SWIFTSHADER=0
   WEBGPU=0
@@ -778,8 +775,7 @@ fi
 
 if [ $SWIFTSHADER -eq 0 ]; then
   gn_enable="$gn_enable enable_swiftshader=false"
-
-  INS="$INS -e \"s@^\(out/Release/.*swiftshader\)@#\1@\""
+  ins_disable="$ins_disable swiftshader"
 else
   if [ $SWIFTSHADER_VULKAN -eq 0 ]; then
     gn_enable="$gn_enable enable_swiftshader_vulkan=false"
@@ -832,9 +828,7 @@ if [ $QT -eq 0 ]; then
   op_disable="$op_disable qt/"
   gn_enable="$gn_enable use_qt=false"
   deps_disable="$deps_disable qtbase5"
-
-  INS="$INS -e \"s@^\(debian/etc/chromium.d/qt\)@#\1@\""
-  INS="$INS -e \"s@^\(out/Release/libqt5_shim.so\)@#\1@\""
+  ins_disable="$ins_disable qt"
 elif [ $QT -ge 2 ]; then
   sed '/disable-features=AllowQt/s@^@#@' -i $FLAG_DIR/qt
 fi
@@ -863,9 +857,8 @@ if [ $VAAPI -eq 0 ]; then
   op_disable="$op_disable system/vaapi/"
   gn_enable="$gn_enable use_vaapi=false"
   deps_disable="$deps_disable libva"
-
-  INS="$INS -e \"s@^\(debian/etc/chromium.d/hw-decoding-encoding\)@#\1@\""
-  INS="$INS -e \"s@^\(debian/.*/drirc\.d/10-chromium\.conf\)@#\1@\""
+  ins_disable="$ins_disable hw-decoding-encoding"
+  ins_disable="$ins_disable 10-chromium.conf"
 fi
 
 
@@ -966,7 +959,7 @@ if [ $SYS_ICU -eq 0 ]; then
   # It's not unreasonable to include libicu-dev so that it can be versioned
   deps_disable="$deps_disable libicu libxslt1"
 
-  INS="$INS -e \"s@^#\(out/Release/icudtl\.dat\)@\1@\""
+  ins_enable="$ins_enable icudtl.dat"
 fi
 
 
@@ -1017,6 +1010,21 @@ fi
 if [ -n "$deps_enable" ]; then
   for i in $deps_enable; do
     CON="$CON -e \"/^[ ]*#[ ]*$i/s@^[ ]*#[ ]*@ @\""
+  done
+fi
+
+
+## install files
+
+if [ -n "$ins_disable" ]; then
+  for i in $ins_disable; do
+    INS="$INS -e \"/$i/s@^@#@\""
+  done
+fi
+
+if [ -n "$ins_enable" ]; then
+  for i in $ins_enable; do
+    INS="$INS -e \"/$i/s@^#@@\""
   done
 fi
 
