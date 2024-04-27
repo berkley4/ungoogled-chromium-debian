@@ -178,8 +178,7 @@ fi
 ## Allow overriding AUTHOR
 case $AUTHOR in
   "")
-    AUTHOR='ungoogled-chromium Maintainers <github@null.invalid>'
-    ;;
+    AUTHOR='ungoogled-chromium Maintainers <github@null.invalid>' ;;
 esac
 
 ## Also need to set AUTHOR in debian/control
@@ -206,13 +205,11 @@ case $VERSION in
         REV=stable$REV ;;
     esac
 
-    VERSION=$VER-$REV
-    ;;
+    VERSION=$VER-$REV ;;
 
   -|-[1-9]|-stable[1-9]|*-)
     printf '%s\n' "Malformed VERSION variable: $VERSION"
-    exit 1
-    ;;
+    exit 1 ;;
 esac
 
 
@@ -266,10 +263,8 @@ case $LTO_JOBS in
     case $LTO_JOBS in
       [2-9]|[1-9][0-9])
         sed "s@\(thinlto-jobs=\)1@\1$LTO_JOBS@" \
-          -i $OP_DIR/compiler-flags/thinlto-jobs.patch
-        ;;
-    esac
-    ;;
+          -i $OP_DIR/compiler-flags/thinlto-jobs.patch ;;
+    esac ;;
 esac
 
 
@@ -813,12 +808,10 @@ case $SKIA_GAMMA in
   1|[12].[0-9]|3.0)
     case $SKIA_GAMMA in
       [12].[0-9]|3.0)
-        sed "s@2\.2@$SKIA_GAMMA@" -i $OP_DIR/fixes/skia-gamma.patch
-        ;;
+        sed "s@2\.2@$SKIA_GAMMA@" -i $OP_DIR/fixes/skia-gamma.patch ;;
     esac
 
-    op_enable="$op_enable skia-gamma"
-    ;;
+    op_enable="$op_enable skia-gamma" ;;
 esac
 
 
@@ -1031,12 +1024,10 @@ if [ -n "$op_disable" ]; then
 
     case $i in
       */|*.patch)
-        SER_DB="$SER_DB -e \"s@^\(optional/$i\)@#\1@\""
-        ;;
+        SER_DB="$SER_DB -e \"s@^\(optional/$i\)@#\1@\"" ;;
 
       *)
-        SER_DB="$SER_DB -e \"s@^\(optional/$i\.patch\)@#\1@\""
-        ;;
+        SER_DB="$SER_DB -e \"s@^\(optional/$i\.patch\)@#\1@\"" ;;
     esac
   done
 fi
@@ -1050,12 +1041,10 @@ if [ -n "$op_enable" ]; then
 
     case $i in
       */|*.patch)
-        SER_DB="$SER_DB -e \"s@^#\(optional/$i\)@\1@\""
-        ;;
+        SER_DB="$SER_DB -e \"s@^#\(optional/$i\)@\1@\"" ;;
 
       *)
-        SER_DB="$SER_DB -e \"s@^#\(optional/$i\.patch\)@\1@\""
-        ;;
+        SER_DB="$SER_DB -e \"s@^#\(optional/$i\.patch\)@\1@\"" ;;
     esac
   done
 fi
