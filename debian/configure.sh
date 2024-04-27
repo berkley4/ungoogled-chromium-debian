@@ -275,23 +275,23 @@ esac
 ## Set Symbol levels
 case $SYMBOLS in
   -1|[1-2])
-    RUL="$RUL -e \"s@^\([ \t]*symbol_level=\)0@\1$SYMBOLS@\"" ;;
+    RUL="$RUL -e \"/[^_]symbol_level=/s@=0@=$SYMBOLS@\"" ;;
 esac
 
 case $SYMBOLS_BLINK in
   -1|[1-2])
-    RUL="$RUL -e \"s@^\([ \t]*blink_symbol_level=\)0@\1$SYMBOLS_BLINK@\"" ;;
+    RUL="$RUL -e \"/blink_symbol_level=/s@=0@=$SYMBOLS_BLINK@\"" ;;
 esac
 
 
 
 if [ $XZ_EXTREME -eq 1 ]; then
-  RUL="$RUL -e \"s@\(dh_builddeb .*\)@\1 -S extreme@\""
+  RUL="$RUL -e \"/dh_builddeb /s@$@ -S extreme@\""
   [ $XZ_THREADED_SET -eq 1 ] && [ $XZ_THREADED -eq 0 ] || XZ_THREADED=1
 fi
 
 if [ $XZ_THREADED -eq 1 ]; then
-  RUL="$RUL -e \"s@\(dh_builddeb .*\)@\1 --threads-max=\x24(JOBS)@\""
+  RUL="$RUL -e \"/dh_builddeb /s@$@ --threads-max=\x24(JOBS)@\""
 fi
 
 
@@ -346,23 +346,23 @@ else
 
     # Change clang version in d/control if override version differs
     if [ $CC_VER -ne $C_VER ]; then
-      CON="$CON -e \"s@\(lld-\)$CC_VER@\1$C_VER@\""
-      CON="$CON -e \"s@\(clang-\)$CC_VER@\1$C_VER@\""
-      CON="$CON -e \"s@\(libclang-rt-\)$CC_VER\(-dev\)@\1$C_VER\2@\""
+      CON="$CON -e \"/^[ ]*#[ ]*lld-/s@$CC_VER@$C_VER@\""
+      CON="$CON -e \"/^[ ]*#[ ]*clang-/s@$CC_VER@$C_VER@\""
+      CON="$CON -e \"/^[ ]*#[ ]*libclang-rt-/s@$CC_VER@$C_VER@\""
     fi
 
     # Change clang version in d/rules if override version differs
     if [ $CR_VER -ne $C_VER ]; then
-      RUL="$RUL -e \"s@^\(#export LLVM_VERSION :=\) $CR_VER@\1 $C_VER@\""
+      RUL="$RUL -e \"/^#export LLVM_VERSION /s@$CR_VER@$C_VER@\""
     fi
 
     # Uncomment the export of LLVM_VERSION and LLVM_DIR variables
-    RUL="$RUL -e \"s@^#\(export LLVM_VERSION\)@\1@\""
-    RUL="$RUL -e \"s@^#\(export LLVM_DIR\)@\1@\""
+    RUL="$RUL -e \"/^#export LLVM_VERSION /s@^#@@\""
+    RUL="$RUL -e \"/^#export LLVM_DIR /s@^#@@\""
 
     # Prefix clang, clang++ and llvm-{ar,nm,ranlib} with $LLVM_DIR path
-    RUL="$RUL -e \"s@^\(#export [ANR].*\)\(llvm-.*\)@\1\$LLVM_DIR/\2@\""
-    RUL="$RUL -e \"s@^\(#export C[CX].*\)\(clang.*\)@\1\$LLVM_DIR/\2@\""
+    RUL="$RUL -e \"/^#export.*:= llvm-/s@llvm-@\$LLVM_DIR/llvm-@\""
+    RUL="$RUL -e \"/^#export.*:= clang/s@clang@\$LLVM_DIR/clang@\""
   else
     # Autodetect C_VER if it's not explicity set
     if [ $C_VER_SET -eq 0 ] && [ $TEST -eq 0 ]; then
@@ -374,14 +374,14 @@ else
   fi
 
   # Enable the system package/local toolchain
-  RUL="$RUL -e \"s@^#\(.*_toolchain=\)@\1@\""
-  RUL="$RUL -e \"s@^#\(export [ANR].*llvm-\)@\1@\""
-  RUL="$RUL -e \"s@^#\(export C[CX].*clang\)@\1@\""
-  RUL="$RUL -e \"s@^#\(export DEB_C[FX].*\)@\1@\""
+  RUL="$RUL -e \"/^#export.*_toolchain=/s@^#@@\""
+  RUL="$RUL -e \"/^#export.*:= llvm-/s@^#@@\""
+  RUL="$RUL -e \"/^#export.*:= clang/s@^#@@\""
+  RUL="$RUL -e \"/^#export.*_MAINT_SET/s@^#@@\""
 
   # Set clang path/version build flags in d/rules
-  RUL="$RUL -e \"s@\(clang_base_path=\)_CLANG_DIR@\1\x5c\x22$CLANG_DIR\x5c\x22@\""
-  RUL="$RUL -e \"s@\(clang_version=\)_CLANG_VER@\1\x5c\x22$CLANG_VER\x5c\x22@\""
+  RUL="$RUL -e \"/clang_base_path=/s@_CLANG_DIR@\x5c\x22$CLANG_DIR\x5c\x22@\""
+  RUL="$RUL -e \"/clang_version=/s@_CLANG_VER@\x5c\x22$CLANG_VER\x5c\x22@\""
 fi
 
 
@@ -415,8 +415,8 @@ if [ $SYS_RUST -gt 0 ]; then
     RUST_VER="$($RUST -V)"
   fi
 
-  RUL="$RUL -e \"s@\(rust_sysroot_absolute=\)_RUST_PATH@\1\x5c\x22$RUST_PATH\x5c\x22@\""
-  RUL="$RUL -e \"s@\(rustc_version=\)_RUST_VER@\1\x5c\x22$RUST_VER\x5c\x22@\""
+  RUL="$RUL -e \"/rust_sysroot_absolute=/s@_RUST_PATH@\x5c\x22$RUST_PATH\x5c\x22@\""
+  RUL="$RUL -e \"/rustc_version=/s@_RUST_VER@\x5c\x22$RUST_VER\x5c\x22@\""
 fi
 
 
@@ -793,7 +793,7 @@ fi
 
 if [ $WIDEVINE -eq 0 ]; then
   op_disable="$op_disable fixes/widevine/"
-  SMF="$SMF -e \"s@^\(enable_widevine=\)true@\1false@\""
+  SMF="$SMF -e \"/^enable_widevine=/s@true@false@\""
 fi
 
 
@@ -931,7 +931,7 @@ if [ $STABLE -eq 1 ]; then
   op_enable="$op_enable fixes/no-ELOC_PROTO-mnemonic"
 
   # Reverse time_t transition dependencies for stable
-  CON="$CON -e \"s@\(libgtk-3-0\)t64@\1@\""
+  CON="$CON -e \"/libgtk-3-0t64/s@t64@@\""
 fi
 
 
@@ -1010,13 +1010,13 @@ SMF="$SMF -e \"/^google_default_client_secret/d\""
 
 if [ -n "$deps_disable" ]; then
   for i in $deps_disable; do
-    CON="$CON -e \"s@^[ ]*\($i\)@#\1@\""
+    CON="$CON -e \"/^[ ]*$i/s@^[ ]*@#@\""
   done
 fi
 
 if [ -n "$deps_enable" ]; then
   for i in $deps_enable; do
-    CON="$CON -e \"s@^[ ]*#[ ]*\($i\)@ \1@\""
+    CON="$CON -e \"/^[ ]*#[ ]*$i/s@^[ ]*#[ ]*@ @\""
   done
 fi
 
@@ -1062,13 +1062,13 @@ fi
 
 if [ -n "$gn_disable" ]; then
   for i in $gn_disable; do
-    RUL="$RUL -e \"s@^\(GN_FLAGS += $i=*\)@#\1@\""
+    RUL="$RUL -e \"/^GN_FLAGS += $i=*/s@^@#@\""
   done
 fi
 
 if [ -n "$gn_enable" ]; then
   for i in $gn_enable; do
-    RUL="$RUL -e \"s@^#\(GN_FLAGS += $i=*\)@\1@\""
+    RUL="$RUL -e \"/^#GN_FLAGS += $i=*/s@^#@@\""
   done
 fi
 
@@ -1077,13 +1077,13 @@ fi
 
 if [ -n "$sys_disable" ]; then
   for i in $sys_disable; do
-    RUL="$RUL -e \"s@^\(SYS_LIBS += $i\)@#\1@\""
+    RUL="$RUL -e \"/^SYS_LIBS += $i/s@^@#@\""
   done
 fi
 
 if [ -n "$sys_enable" ]; then
   for i in $sys_enable; do
-    RUL="$RUL -e \"s@^#\(SYS_LIBS += $i\)@\1@\""
+    RUL="$RUL -e \"/^#SYS_LIBS += $i/s@^#@@\""
   done
 fi
 
