@@ -618,7 +618,7 @@ if [ $HLS_PLAYER -eq 0 ]; then
   INS="$INS -e \"s@^\(debian/etc/chromium.d/hls-player\)@#\1@\""
 elif [ $HLS_PLAYER -ge 2 ]; then
   sed -e 's@^#\(export.*enable-builtin-hls\)@\1@' \
-      -e 's@^#\(export.*enable-features==HlsPlayer\)@\1@' \
+      -e 's@^#\(export.*enable-features=HlsPlayer\)@\1@' \
       -i $FLAG_DIR/hls-player
 fi
 
