@@ -1137,7 +1137,7 @@ if [ $TEST -eq 0 ]; then
 fi
 
 
-## Copy upstream UC patches into debian/patches
+## Move upstream UC patches into debian/patches
 if [ -d $UC_DIR/patches/upstream ]; then
   UC_PATCH_DIRS="$UC_PATCH_DIRS $UC_DIR/patches/upstream"
 fi
