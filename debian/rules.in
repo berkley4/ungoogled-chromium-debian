@@ -116,6 +116,9 @@ export RUSTC_BOOTSTRAP=1
 # Disable click-to-call
 #GN_FLAGS += enable_click_to_call=false
 
+# Disable compose
+#GN_FLAGS += enable_compose=false
+
 # Enterprise watermark
 GN_FLAGS += enterprise_watermark=false
 

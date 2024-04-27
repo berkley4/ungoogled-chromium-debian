@@ -76,6 +76,7 @@ ___Security/Privacy improvements___
     - Some components/features can variously be disabled/patched out (or enabled) at compile time
         - ATK/dbus
         - Catapult
+        - Compose
         - Feed
         - DNS config service
         - Enterprise watermark
