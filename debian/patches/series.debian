@@ -183,9 +183,3 @@ optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
 #optional/system/zstd/zstd-feature-flag.patch
 optional/translate/revert-disable.patch
 optional/translate/stop-unsupported-switch-warning.patch
-
-addenda/0001-98bcf9ef.diff
-addenda/0002-dba8b2a.diff
-addenda/0003-e8d01448.diff
-addenda/0004-f12ce79.diff
-addenda/0005-24be18ac.diff
