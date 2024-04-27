@@ -573,8 +573,8 @@ else
   SMF="$SMF -e \"/^enable_remoting=false/d\""
 
   if [ $CHROMECAST -ge 2 ]; then
-    sed -e 's@^\(export.*media-router=0\)@#\1@' \
-        -e 's@^#\(export.*enable-mdns\)@\1@' \
+    sed -e '/media-router=0/s@^@#@' \
+        -e '/enable-mdns/s@^#@@' \
         -i $FLAG_DIR/network
   fi
 fi
@@ -617,14 +617,14 @@ if [ $HLS_PLAYER -eq 0 ]; then
 
   INS="$INS -e \"s@^\(debian/etc/chromium.d/hls-player\)@#\1@\""
 elif [ $HLS_PLAYER -ge 2 ]; then
-  sed -e 's@^#\(export.*enable-builtin-hls\)@\1@' \
-      -e 's@^#\(export.*enable-features=HlsPlayer\)@\1@' \
+  sed -e '/enable-builtin-hls/s@^#@@' \
+      -e '/enable-features=HlsPlayer/s@^#@@' \
       -i $FLAG_DIR/hls-player
 fi
 
 
 if [ $LABS_TOOLBAR_BUTTON -eq 1 ]; then
-  sed 's@^#\(export.*chrome-labs\)@\1@' -i $FLAG_DIR/ui
+  sed -e '/chrome-labs/s@^#@@' -i $FLAG_DIR/ui
 fi
 
 
@@ -638,11 +638,11 @@ else
   if [ $LENS -ge 2 ]; then
     GOOGLE_API_KEYS=1
     if [ $LENS_TRANSLATE -eq 0 ]; then
-      sed -e 's@^#\(export.*enable-lens-standalone\)@\1@' \
-          -e 's@^\(export.*enable-lens-image-translate\)@#\1@' \
+      sed -e '/enable-lens-standalone/s@^#@@' \
+          -e '/enable-lens-image-translate/s@^@#@' \
           -i $FLAG_DIR/google-lens
     else
-      sed -e 's@^#\(export.*enable-lens-standalone\)@\1@' \
+      sed -e '/enable-lens-standalone/s@^#@@' \
           -i $FLAG_DIR/google-lens
     fi
   fi
@@ -715,7 +715,7 @@ else
 
   if [ $TRANSLATE -ge 2 ]; then
     GOOGLE_API_KEYS=1
-    sed 's@^#\(export.*translate-script-url=\)@\1@' -i $FLAG_DIR/google-translate
+    sed -e '/translate-script-url=/s@^#@@' -i $FLAG_DIR/google-translate
   fi
 fi
 
@@ -758,7 +758,7 @@ if [ $WEBGPU -eq 1 ]; then
 
   SWIFTSHADER_WEBGPU=1
 elif [ $WEBGPU -ge 2 ]; then
-  sed 's@^#\(.*enable-unsafe-webgpu\)@\1@' -i $FLAG_DIR/gpu
+  sed -e '/enable-unsafe-webgpu/s@^#@@' -i $FLAG_DIR/gpu
 fi
 
 
@@ -792,7 +792,7 @@ fi
 
 ## Enable Google API keys for google services
 if [ $GOOGLE_API_KEYS -eq 1 ]; then
-  sed 's@^#\(export GOOGLE_\)@\1@' -i $FLAG_DIR/google-api-keys
+  sed -e '/^export GOOGLE_/s@^#@@' -i $FLAG_DIR/google-api-keys
 fi
 
 
