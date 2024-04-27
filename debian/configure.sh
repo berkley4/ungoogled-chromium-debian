@@ -398,7 +398,7 @@ if [ $SYS_RUST -gt 0 ]; then
     deps_enable="$deps_enable rustc"
 
     RUST_PATH="/usr"
-    RUL="$RUL -e \"s@^#\(export \)@\1@\""
+    RUL="$RUL -e \"s@^#\(export RUSTC_BOOTSTRAP=1\)@\1@\""
   fi
 
   RUST="$RUST_PATH/bin/rustc"
@@ -413,7 +413,6 @@ if [ $SYS_RUST -gt 0 ]; then
     RUST_VER="$($RUST -V)"
   fi
 
-  RUL="$RUL -e \"s@^#\(export RUSTC_BOOTSTRAP=1\)@\1@\""
   RUL="$RUL -e \"s@\(rust_sysroot_absolute=\)_RUST_PATH@\1\x5c\x22$RUST_PATH\x5c\x22@\""
   RUL="$RUL -e \"s@\(rustc_version=\)_RUST_VER@\1\x5c\x22$RUST_VER\x5c\x22@\""
 fi
