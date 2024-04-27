@@ -601,8 +601,6 @@ if [ $DRIVER -eq 0 ]; then
   CON="$CON -e \"/^Package: ungoogled-chromium-driver/,/^Package:/{//!d}\""
   CON="$CON -e \"/^Package: ungoogled-chromium-driver/d\""
   RUL="$RUL -e \"s@ chromedriver@@\""
-
-  rm $DEBIAN/ungoogled-chromium-driver.*
 fi
 
 
@@ -1140,6 +1138,12 @@ chmod 0700 $DEBIAN/rules $DEBIAN/$INSTALL
 ###################################
 ##  Prepare miscellaneous files  ##
 ###################################
+
+## Chromedriver file removal
+if [ $DRIVER -eq 0 ]; then
+  rm $DEBIAN/ungoogled-chromium-driver.*
+fi
+
 
 ## Shell launcher
 if [ $TEST -eq 0 ]; then
