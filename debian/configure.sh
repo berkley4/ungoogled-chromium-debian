@@ -3,7 +3,7 @@ set -e
 
 case $USER in
   root)
-    printf '%s\n' "Run this script as an unprivileged user"
+    printf '%s\n' "ERROR: Run this script as an unprivileged user"
     exit 1 ;;
 esac
 
@@ -39,7 +39,7 @@ INSTALL=ungoogled-chromium.install
 P_FILE=etc/chromium/policies/managed/policies.json
 
 sanitise_op () {
-  printf '%s\n' "Unnecessary optional prefix: $i"
+  printf '%s\n' "WARN: Unnecessary optional prefix $i"
   i=$(echo $i | sed 's@^optional/@@')
 }
 
@@ -156,8 +156,8 @@ if [ $NON_FREE -eq 0 ]; then
   SUPERVISED_USER=1
 
   if [ $OPENH264 -eq 1 ] && [ $SYS_OPENH264 -eq 0 ]; then
-    printf '%s\n' "Error: Not a non-free build"
-    printf '%s\n' "Error: When NON_FREE=0, you must set SYS_OPENH264=1"
+    printf '%s\n' "ERROR: Not a non-free build"
+    printf '%s\n' "ERROR: When NON_FREE=0, you must set SYS_OPENH264=1"
     exit 1
   fi
 fi
@@ -208,7 +208,7 @@ case $VERSION in
     VERSION=$VER-$REV ;;
 
   -|-[1-9]|-stable[1-9]|*-)
-    printf '%s\n' "Malformed VERSION variable: $VERSION"
+    printf '%s\n' "ERROR: Malformed VERSION variable: $VERSION"
     exit 1 ;;
 esac
 
@@ -230,14 +230,14 @@ CR_VER=$(sed -n 's@^#export LLVM_VERSION := @@p' $DEBIAN/rules.in)
 
 if [ $C_VER_SET -eq 1 ] && [ $C_VER -lt $CR_VER ]; then
   printf '%s\n' "WARN: Clang versions below $CR_VER are not supported"
-  printf '%s\n' "Disabling PGO support"
+  printf '%s\n' "WARN: Disabling PGO support"
   PGO=0
 fi
 
 # Machine function splitting relies on PGO being enabled
 if [ $PGO -eq 0 ] && [ $MF_SPLIT -eq 1 ]; then
   printf '%s\n' "WARN: MF_SPLIT depends on PGO=1"
-  printf '%s\n' "Setting MF_SPLIT=0"
+  printf '%s\n' "WARN: Setting MF_SPLIT=0"
   MF_SPLIT=0
 fi
 
@@ -246,7 +246,7 @@ fi
 ## Set LTO cache directory and number of LTO jobs
 if [ -n "$LTO_DIR" ]; then
   if [ ! -d $LTO_DIR ] && [ $TEST -eq 0 ]; then
-    printf '\n%s\n' "LTO_DIR: path $LTO_DIR does not exist"
+    printf '\n%s\n' "ERROR: LTO_DIR path $LTO_DIR does not exist"
     exit 1
   fi
 
@@ -334,7 +334,7 @@ else
 
     # Check that package version $C_VER is actually installed on the system
     if [ ! -x /usr/lib/llvm-$C_VER/bin/clang ] && [ $TEST -eq 0 ]; then
-      printf '%s\n' "Cannot find /usr/lib/llvm-${C_VER}/bin/clang"
+      printf '%s\n' "ERROR: Cannot find /usr/lib/llvm-${C_VER}/bin/clang"
       exit 1
     fi
 
@@ -406,7 +406,7 @@ if [ $SYS_RUST -gt 0 ]; then
 
   if [ $TEST -eq 0 ]; then
     if [ ! -x $RUST ]; then
-      printf '%s\n' "$RUST does not exist (or is not executable)"
+      printf '%s\n' "ERROR: $RUST does not exist (or is not executable)"
       exit 1
     fi
 
@@ -459,7 +459,7 @@ if [ $MARCH_SET -eq 1 ] || [ $MTUNE_SET -eq 1 ]; then
   esac
 
   if [ "$OLD_MARCH" != "$MARCH" ] || [ "$OLD_MTUNE" != "$MTUNE" ]; then
-    printf '%s\n' "Using: MARCH=$MARCH MTUNE=$MTUNE"
+    printf '%s\n' "WARN: Using MARCH=$MARCH MTUNE=$MTUNE"
   fi
 fi
 
