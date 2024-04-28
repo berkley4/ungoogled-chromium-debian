@@ -1148,7 +1148,7 @@ fi
 ## Shell launcher
 if [ $TEST -eq 0 ]; then
   $DEBIAN/devutils/update_launcher.sh \
-    < $DEBIAN/shims/chromium.sh > $DEBIAN/shims/chromium
+    < $DEBIAN/misc_files/chromium.sh > $DEBIAN/misc_files/chromium
 fi
 
 
@@ -1161,7 +1161,7 @@ mv $UC_PATCH_DIRS $DEBIAN/patches/
 
 
 ## Submodule patching
-patch -p1 < $DEBIAN/misc_patches/no-exit-if-pruned.patch >/dev/null
+patch -p1 < $DEBIAN/misc_files/no-exit-if-pruned.patch >/dev/null
 
 
 exit $?

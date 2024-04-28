@@ -1,6 +1,6 @@
 #!/usr/bin/dh-exec
 
-debian/shims/chromium                                                          usr/bin
+debian/misc_files/chromium                                                     usr/bin
 
 debian/initial_preferences                                                     usr/lib/chromium
 out/Release/chrome                                                             usr/lib/chromium
