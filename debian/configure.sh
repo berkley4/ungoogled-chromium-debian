@@ -801,7 +801,7 @@ fi
 
 ## Enable Google API keys for google services
 if [ $GOOGLE_API_KEYS -eq 1 ]; then
-  sed -e '/^export GOOGLE_/s@^#@@' -i $FLAG_DIR/google-api-keys
+  sed -e '/^#export GOOGLE_/s@^#@@' -i $FLAG_DIR/google-api-keys
 fi
 
 
