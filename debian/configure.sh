@@ -838,7 +838,6 @@ esac
 #################
 
 if [ $QT -eq 0 ]; then
-  op_disable="$op_disable qt/"
   gn_enable="$gn_enable use_qt=false"
   deps_disable="$deps_disable qtbase5"
   ins_disable="$ins_disable qt"
