@@ -1,0 +1,643 @@
+--- a/BUILD.gn
++++ b/BUILD.gn
+@@ -774,13 +774,6 @@
+       deps += [ "//native_client_sdk/src:nacl_core_sdk" ]
+     }
+ 
+-    if (((is_linux || is_chromeos) && use_ozone) || is_fuchsia) {
+-      deps += [
+-        "//headless:headless_non_renderer",
+-        "//headless:headless_tests",
+-      ]
+-    }
+-
+     if (enable_vr) {
+       deps += [
+         "//chrome/browser/vr:vr_common_perftests",
+--- a/chrome/BUILD.gn
++++ b/chrome/BUILD.gn
+@@ -291,7 +291,6 @@
+           "//content/public/app",
+ 
+           # For headless mode.
+-          "//headless:headless_shell_lib",
+         ]
+ 
+         public_deps = [
+--- a/chrome/browser/BUILD.gn
++++ b/chrome/browser/BUILD.gn
+@@ -1991,7 +1991,6 @@
+   public_deps = [
+     "//base",
+     "//chrome/browser/google",
+-    "//chrome/browser/headless",
+     "//chrome/browser/profiles",
+     "//chrome/common",
+     "//chrome/common:buildflags",
+@@ -2229,7 +2228,6 @@
+     "//components/flags_ui",
+     "//components/gcm_driver",
+     "//components/handoff",
+-    "//components/headless/select_file_dialog",
+     "//components/heavy_ad_intervention",
+     "//components/history/content/browser",
+     "//components/history/core/browser",
+@@ -3897,8 +3895,6 @@
+       "first_run/first_run_internal.h",
+       "font_family_cache.cc",
+       "font_family_cache.h",
+-      "headless/chrome_browser_main_extra_parts_headless.cc",
+-      "headless/chrome_browser_main_extra_parts_headless.h",
+       "hid/chrome_hid_delegate.cc",
+       "hid/chrome_hid_delegate.h",
+       "hid/hid_chooser_context.cc",
+@@ -4634,8 +4630,6 @@
+       "//components/feedback",
+       "//components/feedback/content:factory",
+       "//components/feedback/redaction_tool",
+-      "//components/headless/clipboard",
+-      "//components/headless/policy",
+       "//components/image_fetcher/core",
+       "//components/keep_alive_registry",
+       "//components/live_caption",
+@@ -6875,7 +6870,7 @@
+     ]
+   }
+ 
+-  if (is_win || is_mac || is_linux) {
+-    deps += [ "//chrome/browser/headless:metrics" ]
+-  }
+-
+   if (enable_click_to_call) {
+     sources += [
+       "sharing/click_to_call/click_to_call_utils.cc",
+@@ -6944,7 +6938,6 @@
+     deps += [
+       "//chrome/common/printing",
+       "//components/printing/browser",
+-      "//components/printing/browser/headless",
+       "//components/printing/browser/print_to_pdf",
+       "//components/services/print_compositor/public/cpp",
+       "//components/services/print_compositor/public/mojom",
+--- a/chrome/browser/ui/BUILD.gn
++++ b/chrome/browser/ui/BUILD.gn
+@@ -399,7 +399,6 @@
+   # have the same dependencies. Once browser_ui is untangled from
+   # browser, then we can clean up these dependencies.
+   public_deps = [
+-    "//chrome/browser/headless",
+     "//components/cross_device/logging",
+     "//components/dom_distiller/core",
+     "//components/paint_preview/buildflags",
+@@ -2071,7 +2070,6 @@
+       "//components/endpoint_fetcher:endpoint_fetcher",
+       "//components/enterprise/common:files_scan_data",
+       "//components/feedback/proto",
+-      "//components/headless/policy",
+       "//components/history_embeddings",
+       "//components/keep_alive_registry",
+       "//components/manta",
+@@ -2171,10 +2169,6 @@
+       ]
+       deps += [ "//chrome/browser/ui/webui/new_tab_page/foo:mojo_bindings" ]
+     }
+- 
+-    if (!is_android) {
+-      deps += [ "//chrome/browser/headless:command_processor" ]
+-    }
+   }
+ 
+   if (enable_paint_preview) {
+--- a/chrome/test/BUILD.gn
++++ b/chrome/test/BUILD.gn
+@@ -1721,7 +1721,6 @@
+       "//chrome/browser/enterprise/identifiers:identifiers",
+       "//chrome/browser/favicon",
+       "//chrome/browser/first_party_sets",
+-      "//chrome/browser/headless:browser_tests",
+       "//chrome/browser/image_decoder:browser_tests",
+       "//chrome/browser/image_fetcher",
+       "//chrome/browser/ip_protection:browser_tests",
+@@ -3180,7 +3179,6 @@
+             "../browser/devtools/protocol/devtools_printtopdf_browsertest.cc",
+           ]
+           deps += [
+-            "//components/headless/test",
+             "//components/printing/browser",
+             "//pdf",
+           ]
+--- a/chrome/app/chrome_main.cc
++++ b/chrome/app/chrome_main.cc
+@@ -14,15 +14,12 @@
+ #include "base/time/time.h"
+ #include "build/build_config.h"
+ #include "chrome/app/chrome_main_delegate.h"
+-#include "chrome/browser/headless/headless_mode_util.h"
+ #include "chrome/common/buildflags.h"
+ #include "chrome/common/chrome_result_codes.h"
+ #include "chrome/common/chrome_switches.h"
+ #include "chrome/common/profiler/main_thread_stack_sampling_profiler.h"
+ #include "content/public/app/content_main.h"
+ #include "content/public/common/content_switches.h"
+-#include "headless/public/headless_shell.h"
+-#include "headless/public/switches.h"
+ 
+ #if BUILDFLAG(IS_MAC)
+ #include "chrome/app/chrome_main_mac.h"
+@@ -160,27 +157,6 @@
+   // thread's destruction racing with main thread destruction.
+   MainThreadStackSamplingProfiler scoped_sampling_profiler;
+ 
+-  // Chrome-specific process modes.
+-  std::unique_ptr<headless::HeadlessModeHandle> headless_mode_handle;
+-  if (headless::IsHeadlessMode()) {
+-    if (command_line->GetArgs().size() > 1) {
+-      LOG(ERROR) << "Multiple targets are not supported in headless mode.";
+-      return chrome::RESULT_CODE_UNSUPPORTED_PARAM;
+-    }
+-    headless_mode_handle = headless::InitHeadlessMode();
+-  } else {
+-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_MAC) || \
+-    BUILDFLAG(IS_WIN)
+-    if (headless::IsOldHeadlessMode()) {
+-#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+-      command_line->AppendSwitch(::headless::switches::kEnableCrashReporter);
+-#endif
+-      return headless::HeadlessShellMain(std::move(params));
+-    }
+-#endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_MAC) ||
+-        // BUILDFLAG(IS_WIN)
+-  }
+-
+ #if BUILDFLAG(IS_MAC)
+   // Gracefully exit if the system tried to launch the macOS notification helper
+   // app when a user clicked on a notification.
+--- a/chrome/browser/chrome_browser_main.cc
++++ b/chrome/browser/chrome_browser_main.cc
+@@ -295,9 +295,6 @@
+ #endif
+ 
+ #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
+-#include "chrome/browser/headless/headless_mode_metrics.h"  // nogncheck
+-#include "chrome/browser/headless/headless_mode_util.h"     // nogncheck
+-#include "components/headless/select_file_dialog/headless_select_file_dialog.h"
+ #include "ui/gfx/switches.h"
+ #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
+ 
+@@ -1377,12 +1374,6 @@
+   language::LanguageUsageMetrics::RecordPageLanguages(
+       *UrlLanguageHistogramFactory::GetForBrowserContext(profile));
+ #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
+-
+-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
+-  if (headless::IsHeadlessMode()) {
+-    headless::ReportHeadlessActionMetrics();
+-  }
+-#endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
+ }
+ 
+ void ChromeBrowserMainParts::PreBrowserStart() {
+@@ -1483,15 +1474,6 @@
+       std::make_unique<ui::SelectFileDialogLacros::Factory>());
+ #endif  // BUILDFLAG(IS_WIN)
+ 
+-  // In headless mode provide alternate SelectFileDialog factory overriding
+-  // any platform specific SelectFileDialog implementation that may have been
+-  // set.
+-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
+-  if (headless::IsHeadlessMode()) {
+-    headless::HeadlessSelectFileDialogFactory::SetUp();
+-  }
+-#endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
+-
+ #if BUILDFLAG(CHROME_FOR_TESTING)
+   if (!g_browser_process->local_state()->GetBoolean(
+           prefs::kChromeForTestingAllowed)) {
+@@ -2024,15 +2006,6 @@
+     return false;
+   }
+ 
+-  // Drop the request if headless mode is in effect or the request is from
+-  // a headless Chrome process.
+-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
+-  if (headless::IsHeadlessMode() ||
+-      command_line.HasSwitch(switches::kHeadless)) {
+-    return false;
+-  }
+-#endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
+-
+   // In order to handle this request on Windows, there is platform specific
+   // code in browser_finder.cc that requires making outbound COM calls to
+   // cross-apartment shell objects (via IVirtualDesktopManager). That is not
+--- a/chrome/browser/chrome_content_browser_client.cc
++++ b/chrome/browser/chrome_content_browser_client.cc
+@@ -531,7 +531,6 @@
+ #include "chrome/browser/devtools/chrome_devtools_manager_delegate.h"
+ #include "chrome/browser/devtools/devtools_window.h"
+ #include "chrome/browser/direct_sockets/chrome_direct_sockets_delegate.h"
+-#include "chrome/browser/headless/chrome_browser_main_extra_parts_headless.h"
+ #include "chrome/browser/media/unified_autoplay_config.h"
+ #include "chrome/browser/metrics/usage_scenario/chrome_responsiveness_calculator_delegate.h"
+ #include "chrome/browser/new_tab_page/new_tab_page_util.h"
+@@ -1684,11 +1683,6 @@
+           chrome::enterprise_util::ChromeBrowserMainExtraPartsEnterprise>());
+ #endif
+ 
+-#if !BUILDFLAG(IS_ANDROID)
+-  main_parts->AddParts(
+-      std::make_unique<headless::ChromeBrowserMainExtraPartsHeadless>());
+-#endif
+-
+   // Always add ChromeBrowserMainExtraPartsGpu last to make sure
+   // GpuDataManager initialization could pick up about:flags settings.
+   main_parts->AddParts(std::make_unique<ChromeBrowserMainExtraPartsGpu>());
+--- a/chrome/browser/chrome_content_browser_client_receiver_bindings.cc
++++ b/chrome/browser/chrome_content_browser_client_receiver_bindings.cc
+@@ -15,7 +15,6 @@
+ #include "chrome/browser/chrome_browser_interface_binders.h"
+ #include "chrome/browser/chrome_content_browser_client_parts.h"
+ #include "chrome/browser/content_settings/content_settings_manager_delegate.h"
+-#include "chrome/browser/headless/headless_mode_util.h"
+ #include "chrome/browser/metrics/chrome_metrics_service_accessor.h"
+ #include "chrome/browser/net/net_error_tab_helper.h"
+ #include "chrome/browser/net_benchmarking.h"
+@@ -108,7 +107,6 @@
+ 
+ #if BUILDFLAG(ENABLE_PRINTING)
+ #include "chrome/browser/printing/print_view_manager_basic.h"
+-#include "components/printing/browser/headless/headless_print_manager.h"
+ #if BUILDFLAG(ENABLE_PRINT_PREVIEW)
+ #include "chrome/browser/printing/print_view_manager.h"
+ #endif  // BUILDFLAG(ENABLE_PRINT_PREVIEW)
+@@ -558,10 +556,6 @@
+           [](content::RenderFrameHost* render_frame_host,
+              mojo::PendingAssociatedReceiver<printing::mojom::PrintManagerHost>
+                  receiver) {
+-            if (headless::IsHeadlessMode()) {
+-              headless::HeadlessPrintManager::BindPrintManagerHost(
+-                  std::move(receiver), render_frame_host);
+-            } else {
+ #if BUILDFLAG(ENABLE_PRINT_PREVIEW)
+               printing::PrintViewManager::BindPrintManagerHost(
+                   std::move(receiver), render_frame_host);
+@@ -569,7 +563,6 @@
+               printing::PrintViewManagerBasic::BindPrintManagerHost(
+                   std::move(receiver), render_frame_host);
+ #endif  // BUILDFLAG(ENABLE_PRINT_PREVIEW)
+-            }
+           },
+           &render_frame_host));
+ #endif  // BUILDFLAG(ENABLE_PRINTING)
+--- a/chrome/browser/first_run/first_run.cc
++++ b/chrome/browser/first_run/first_run.cc
+@@ -26,7 +26,6 @@
+ #include "chrome/browser/extensions/updater/extension_updater.h"
+ #include "chrome/browser/first_run/first_run_internal.h"
+ #include "chrome/browser/google/google_brand.h"
+-#include "chrome/browser/headless/headless_mode_util.h"
+ #include "chrome/browser/importer/external_process_importer_host.h"
+ #include "chrome/browser/importer/importer_list.h"
+ #include "chrome/browser/importer/importer_progress_observer.h"
+@@ -125,8 +124,6 @@
+   ExternalProcessImporterHost* importer_host =
+       new ExternalProcessImporterHost;
+   // Don't show the warning dialog if import fails.
+-  importer_host->set_headless();
+-
+   ImportEndedObserver observer;
+   importer_host->set_observer(&observer);
+   importer_host->StartImportSettings(source_profile,
+@@ -413,10 +410,7 @@
+   DCHECK(!user_data_dir.empty());
+ 
+   if (initial_prefs.get()) {
+-    // Don't show EULA when running in headless mode since this would
+-    // effectively block the UI because there is no one to accept it.
+-    if (!headless::IsHeadlessMode() &&
+-        !internal::ShowPostInstallEULAIfNeeded(initial_prefs.get())) {
++    if (!internal::ShowPostInstallEULAIfNeeded(initial_prefs.get())) {
+       return EULA_EXIT_NOW;
+     }
+ 
+--- a/chrome/browser/policy/configuration_policy_handler_list_factory.cc
++++ b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
+@@ -148,7 +148,6 @@
+ #include "chrome/browser/policy/local_sync_policy_handler.h"
+ #include "chrome/browser/policy/managed_account_policy_handler.h"
+ #include "chrome/browser/web_applications/policy/web_app_settings_policy_handler.h"
+-#include "components/headless/policy/headless_mode_policy_handler.h"
+ #include "components/media_router/common/pref_names.h"
+ #endif  // BUILDFLAG(IS_ANDROID)
+ 
+@@ -2259,7 +2258,6 @@
+ #endif  // !BUILDFLAG(IS_FUCHSIA)
+ 
+   handlers->AddHandler(std::make_unique<GuestModePolicyHandler>());
+-  handlers->AddHandler(std::make_unique<headless::HeadlessModePolicyHandler>());
+   handlers->AddHandler(std::make_unique<DeveloperToolsPolicyHandler>());
+   handlers->AddHandler(
+       std::make_unique<DownloadAutoOpenPolicyHandler>(chrome_schema));
+--- a/chrome/browser/prefs/browser_prefs.cc
++++ b/chrome/browser/prefs/browser_prefs.cc
+@@ -299,7 +299,6 @@
+ #include "chrome/browser/ui/webui/tab_search/tab_search_prefs.h"
+ #include "chrome/browser/ui/webui/whats_new/whats_new_ui.h"
+ #include "chrome/browser/upgrade_detector/upgrade_detector.h"
+-#include "components/headless/policy/headless_mode_prefs.h"
+ #include "components/live_caption/live_caption_controller.h"
+ #include "components/live_caption/live_translate_controller.h"
+ #include "components/ntp_tiles/custom_links_manager_impl.h"
+@@ -1546,7 +1545,6 @@
+ #else   // BUILDFLAG(IS_ANDROID)
+   enterprise_connectors::RegisterLocalStatePrefs(registry);
+   gcm::RegisterPrefs(registry);
+-  headless::RegisterPrefs(registry);
+   IntranetRedirectDetector::RegisterPrefs(registry);
+   media_router::RegisterLocalStatePrefs(registry);
+   metrics::TabStatsTracker::RegisterPrefs(registry);
+--- a/chrome/browser/printing/printing_init.cc
++++ b/chrome/browser/printing/printing_init.cc
+@@ -4,9 +4,7 @@
+ 
+ #include "chrome/browser/printing/printing_init.h"
+ 
+-#include "chrome/browser/headless/headless_mode_util.h"
+ #include "components/embedder_support/user_agent_utils.h"
+-#include "components/printing/browser/headless/headless_print_manager.h"
+ #include "components/printing/browser/print_manager_utils.h"
+ #include "content/public/browser/web_contents.h"
+ #include "printing/buildflags/buildflags.h"
+@@ -35,19 +33,12 @@
+ #endif
+ 
+ void InitializePrintingForWebContents(content::WebContents* web_contents) {
+-  // Headless mode uses a minimalistic Print Manager implementation that
+-  // shortcuts most of the callbacks providing only print to PDF
+-  // functionality.
+-  if (headless::IsHeadlessMode()) {
+-    headless::HeadlessPrintManager::CreateForWebContents(web_contents);
+-  } else {
+ #if BUILDFLAG(ENABLE_PRINT_PREVIEW)
+-    PrintViewManager::CreateForWebContents(web_contents);
+-    PdfNupConverterClient::CreateForWebContents(web_contents);
++  PrintViewManager::CreateForWebContents(web_contents);
++  PdfNupConverterClient::CreateForWebContents(web_contents);
+ #else
+-    PrintViewManagerBasic::CreateForWebContents(web_contents);
++  PrintViewManagerBasic::CreateForWebContents(web_contents);
+ #endif  // BUILDFLAG(ENABLE_PRINT_PREVIEW)
+-  }
+   CreateCompositeClientIfNeeded(web_contents, embedder_support::GetUserAgent());
+ }
+ 
+--- a/chrome/browser/ui/startup/startup_browser_creator.cc
++++ b/chrome/browser/ui/startup/startup_browser_creator.cc
+@@ -136,9 +136,7 @@
+ #endif  // BUILDFLAG(IS_WIN)
+ 
+ #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN)
+-#include "chrome/browser/headless/headless_mode_util.h"
+ #include "chrome/browser/ui/startup/web_app_info_recorder_utils.h"
+-#include "components/headless/policy/headless_mode_policy.h"
+ #endif
+ 
+ #if !BUILDFLAG(IS_CHROMEOS)
+@@ -962,15 +960,6 @@
+   TRACE_EVENT0("startup", "StartupBrowserCreator::ProcessCmdLineImpl");
+   ComputeAndRecordLaunchMode(command_line);
+ 
+-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN)
+-  if (headless::IsHeadlessMode() &&
+-      headless::HeadlessModePolicy::IsHeadlessModeDisabled(
+-          g_browser_process->local_state())) {
+-    LOG(ERROR) << "Headless mode is disallowed by the system admin.";
+-    return false;
+-  }
+-#endif
+-
+   if (process_startup == chrome::startup::IsProcessStartup::kYes &&
+       command_line.HasSwitch(switches::kDisablePromptOnRepost)) {
+     content::NavigationController::DisablePromptOnRepost();
+--- a/chrome/browser/ui/startup/startup_browser_creator_impl.cc
++++ b/chrome/browser/ui/startup/startup_browser_creator_impl.cc
+@@ -28,7 +28,6 @@
+ #include "chrome/browser/custom_handlers/protocol_handler_registry_factory.h"
+ #include "chrome/browser/defaults.h"
+ #include "chrome/browser/first_run/first_run.h"
+-#include "chrome/browser/headless/headless_command_processor.h"
+ #include "chrome/browser/infobars/simple_alert_infobar_creator.h"
+ #include "chrome/browser/prefs/session_startup_pref.h"
+ #include "chrome/browser/privacy_sandbox/privacy_sandbox_service.h"
+@@ -275,7 +274,7 @@
+   CHECK(profile_);
+ 
+   bool first_tab = true;
+-  bool process_headless_commands = headless::ShouldProcessHeadlessCommands();
++  bool process_headless_commands = false;
+   custom_handlers::ProtocolHandlerRegistry* registry =
+       ProtocolHandlerRegistryFactory::GetForBrowserContext(profile_);
+   for (auto& tab : tabs) {
+@@ -300,35 +299,6 @@
+       continue;
+     }
+ 
+-    // Headless mode is restricted to only one url in the command line, so
+-    // just grab the first one assuming it's the target.
+-    if (first_tab && process_headless_commands) {
+-      std::unique_ptr<ScopedProfileKeepAlive> profile_keepalive;
+-      if (!profile_->IsOffTheRecord()) {
+-        profile_keepalive = std::make_unique<ScopedProfileKeepAlive>(
+-            profile_, ProfileKeepAliveOrigin::kHeadlessCommand);
+-      }
+-      headless::ProcessHeadlessCommands(
+-          profile_, tab.url,
+-          base::BindOnce(
+-              [](base::WeakPtr<Browser> browser,
+-                 std::unique_ptr<ScopedProfileKeepAlive> profile_keepalive,
+-                 headless::HeadlessCommandHandler::Result result) {
+-                if (browser && browser->window()) {
+-#if BUILDFLAG(IS_MAC)
+-                  // On Macs Chrome keeps running after the last browser
+-                  // window is closed which is not expected for headless
+-                  // command execution, so explicitly allow application
+-                  // to terminate after the browser window is closed.
+-                  app_controller_mac::AllowApplicationToTerminate();
+-#endif
+-                  browser->window()->Close();
+-                }
+-              },
+-              browser->AsWeakPtr(), std::move(profile_keepalive)));
+-      continue;
+-    }
+-
+     int add_types = first_tab ? AddTabTypes::ADD_ACTIVE : AddTabTypes::ADD_NONE;
+     add_types |= AddTabTypes::ADD_FORCE_INDEX;
+     if (tab.type == StartupTab::Type::kPinned)
+--- a/chrome/browser/ui/startup/startup_tab_provider.cc
++++ b/chrome/browser/ui/startup/startup_tab_provider.cc
+@@ -61,10 +61,6 @@
+ #include "extensions/browser/extension_registry.h"
+ #endif  // !BUILDFLAG(IS_ANDROID)
+ 
+-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN)
+-#include "chrome/browser/headless/headless_mode_util.h"
+-#endif
+-
+ namespace {
+ 
+ // Attempts to find an existing, non-empty tabbed browser for this profile.
+@@ -106,17 +102,6 @@
+   // In ChromeOS, allow any URL pattern that matches chrome:// scheme.
+   url_scheme_is_chrome = url.SchemeIs(content::kChromeUIScheme);
+ #elif BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN)
+-  // In Headless mode, allow any URL pattern that matches chrome:// scheme if
+-  // the user explicitly allowed it.
+-  if (headless::IsHeadlessMode() && url.SchemeIs(content::kChromeUIScheme)) {
+-    if (headless::IsChromeSchemeUrlAllowed()) {
+-      url_scheme_is_chrome = true;
+-    } else {
+-      LOG(WARNING) << "Headless mode requires the --allow-chrome-scheme-url "
+-                      "command-line option to access "
+-                   << url;
+-    }
+-  }
+ #endif
+ 
+   auto* policy = content::ChildProcessSecurityPolicy::GetInstance();
+--- a/chrome/browser/ui/views/frame/browser_frame.cc
++++ b/chrome/browser/ui/views/frame/browser_frame.cc
+@@ -15,7 +15,6 @@
+ #include "build/build_config.h"
+ #include "build/chromeos_buildflags.h"
+ #include "chrome/browser/app_mode/app_mode_utils.h"
+-#include "chrome/browser/headless/headless_mode_util.h"
+ #include "chrome/browser/profiles/profile.h"
+ #include "chrome/browser/themes/custom_theme_supplier.h"
+ #include "chrome/browser/themes/theme_service.h"
+@@ -133,7 +132,7 @@
+   views::Widget::InitParams params = native_browser_frame_->GetWidgetParams();
+   params.name = "BrowserFrame";
+   params.delegate = browser_view_;
+-  params.headless_mode = headless::IsHeadlessMode();
++  params.headless_mode = false;
+ 
+   Browser* browser = browser_view_->browser();
+   if (browser->is_type_picture_in_picture()) {
+--- a/chrome/browser/ui/views/policy/enterprise_startup_dialog_view.cc
++++ b/chrome/browser/ui/views/policy/enterprise_startup_dialog_view.cc
+@@ -14,7 +14,6 @@
+ #include "build/branding_buildflags.h"
+ #include "build/build_config.h"
+ #include "chrome/app/vector_icons/vector_icons.h"
+-#include "chrome/browser/headless/headless_mode_util.h"
+ #include "chrome/browser/ui/views/chrome_layout_provider.h"
+ #include "chrome/grit/branded_strings.h"
+ #include "chrome/grit/theme_resources.h"
+@@ -96,55 +95,6 @@
+ END_METADATA
+ #endif  // BUILDFLAG(GOOGLE_CHROME_BRANDING)
+ 
+-// Alternate implementation of the EnterpriseStartupDialog which is used when
+-// the headless mode is in effect. It does not display anything and when error
+-// is set immediately calls back with not accepted condition.
+-class HeadlessEnterpriseStartupDialogImpl : public EnterpriseStartupDialog {
+- public:
+-  explicit HeadlessEnterpriseStartupDialogImpl(DialogResultCallback callback)
+-      : callback_(std::move(callback)) {}
+-
+-  HeadlessEnterpriseStartupDialogImpl(
+-      const HeadlessEnterpriseStartupDialogImpl&) = delete;
+-  HeadlessEnterpriseStartupDialogImpl& operator=(
+-      const HeadlessEnterpriseStartupDialogImpl&) = delete;
+-
+-  ~HeadlessEnterpriseStartupDialogImpl() override {
+-    if (callback_) {
+-      // ChromeBrowserCloudManagementRegisterWatcher dismisses the dialog
+-      // without displaying an error messgae (in which case we would not
+-      // have the outstanding callback) in case of successful enrollment,
+-      // so allow it to show the browser window using the callback.
+-      std::move(callback_).Run(/*was_accepted=*/false,
+-                               /*can_show_browser_window_=*/true);
+-    }
+-  }
+-
+-  // Override EnterpriseStartupDialog
+-  void DisplayLaunchingInformationWithThrobber(
+-      const std::u16string& information) override {}
+-
+-  void DisplayErrorMessage(
+-      const std::u16string& error_message,
+-      const std::optional<std::u16string>& accept_button) override {
+-    if (callback_) {
+-      // In headless mode the dialog is invisible, therefore there is
+-      // no one to accept or dismiss it. So just dismiss the dialog
+-      // right away without accepting the prompt and not allowing
+-      // browser to show its window.
+-      base::SingleThreadTaskRunner::GetCurrentDefault()->PostTask(
+-          FROM_HERE,
+-          base::BindOnce(std::move(callback_), /*was_accepted=*/false,
+-                         /*can_show_browser_window_=*/false));
+-    }
+-  }
+-
+-  bool IsShowing() override { return true; }
+-
+- private:
+-  DialogResultCallback callback_;
+-};
+-
+ }  // namespace
+ 
+ EnterpriseStartupDialogView::EnterpriseStartupDialogView(
+@@ -334,13 +284,6 @@
+ // static
+ std::unique_ptr<EnterpriseStartupDialog>
+ EnterpriseStartupDialog::CreateAndShowDialog(DialogResultCallback callback) {
+-  // If running in headless mode use an alternate version of the enterprise
+-  // startup dialog.
+-  if (headless::IsHeadlessMode()) {
+-    return std::make_unique<HeadlessEnterpriseStartupDialogImpl>(
+-        std::move(callback));
+-  }
+-
+   return std::make_unique<EnterpriseStartupDialogImpl>(std::move(callback));
+ }
+ 
+--- a/chrome/browser/user_education/user_education_service_factory.cc
++++ b/chrome/browser/user_education/user_education_service_factory.cc
+@@ -8,7 +8,6 @@
+ #include <optional>
+ 
+ #include "build/build_config.h"
+-#include "chrome/browser/headless/headless_mode_util.h"
+ #include "chrome/browser/profiles/profile.h"
+ #include "chrome/browser/profiles/profiles_state.h"
+ #include "chrome/browser/user_education/browser_feature_promo_storage_service.h"
+@@ -103,9 +102,6 @@
+     return false;
+   }
+ #endif
+-  if (headless::IsHeadlessMode()) {
+-    return false;
+-  }
+   return true;
+ }
+ 
+--- a/components/BUILD.gn
++++ b/components/BUILD.gn
+@@ -118,7 +118,6 @@
+       "test/data/explore_sites/",
+       "test/data/feed/",
+       "test/data/fenced_frames/",
+-      "test/data/headless/",
+       "test/data/history/",
+       "test/data/html_viewer/",
+       "test/data/json_schema/",
+@@ -547,7 +546,6 @@
+       "//components/blocked_content:unit_tests",
+       "//components/content_settings/browser/ui:unit_tests",
+       "//components/facilitated_payments/content/renderer:unit_tests",
+-      "//components/headless/test:unit_tests",
+       "//components/media_router/browser:unit_tests",
+       "//components/media_router/common:unit_tests",
+       "//components/media_router/common/providers/cast/channel:unit_tests",
