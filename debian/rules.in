@@ -95,15 +95,16 @@ GN_FLAGS +=                                     \
 # (this needs to be run anyway when self-compiling).
 
 
-### Enable ccache
+### Toolchains
+
+# Enable ccache
 #GN_FLAGS += cc_wrapper=ccache
 
-
-### Clang/Rust toolchain
-
+# Clang toolchain
 #GN_FLAGS += clang_base_path=_CLANG_DIR clang_version=_CLANG_VER
 
-#export RUSTC_BOOTSTRAP=1
+# Rust toolchain
+export RUSTC_BOOTSTRAP=1
 #GN_FLAGS += rust_sysroot_absolute=_RUST_PATH rustc_version=_RUST_VER
 
 
