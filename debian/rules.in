@@ -106,6 +106,7 @@ GN_FLAGS +=                                     \
 # Rust toolchain
 export RUSTC_BOOTSTRAP=1
 #GN_FLAGS += rust_sysroot_absolute=_RUST_PATH rustc_version=_RUST_VER
+#GN_FLAGS += toolchain_supports_rust_thin_lto=false
 
 
 ### General components

@@ -25,7 +25,7 @@ SYS_CLANG		0		Use in-tree chromium clang/llvm binaries
 			2		Use clang installed in /usr/local (self built)
 					Refer to Toolchain.md for more details.
 
-SYS_RUST		0		Use in-tree chromium rust binaries
+SYS_RUST		0		Use in-tree chromium rust binaries (default)
 			1		Use a system rustc package (eg from debian unstable/backports repo)
 			2		Use rust installed to $HOME/.cargo/bin (Recommended method)
 					Refer to Rust.md for more details.

@@ -21,12 +21,8 @@ ___System rustc package___
 
 ```apt-get install rustc```
 
-Most rust packages will be too old. If you know that your package new enough
-then you can force SYS_RUST=1 to succeed by including SYS_RUST_FORCE=1 in your
-configuration variables. A version matching that of upstream stable rust should
-suffice.
-
-Now make sure that SYS_RUST=1 is included in your configuration variables
+System rustc packages might be too old, especially on stable distributions.
+To proceed, configure with SYS_RUST=1.
 
 ```... SYS_RUST=1 ./debian/configure.sh```
 

@@ -399,7 +399,7 @@ if [ $SYS_RUST -gt 0 ]; then
   RUST_PATH="$HOME/.cargo"
 
   if [ $SYS_RUST -eq 1 ]; then
-    op_enable="$op_enable system/rust"
+    gn_enable="$gn_enable toolchain_supports_rust_thin_lto=false"
     deps_enable="$deps_enable rustc"
 
     RUST_PATH="/usr"
