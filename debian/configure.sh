@@ -288,12 +288,12 @@ esac
 
 
 if [ $XZ_EXTREME -eq 1 ]; then
-  RUL="$RUL -e \"/dh_builddeb /s@$@ -S extreme@\""
+  RUL="$RUL -e \"/dh_builddeb /s@\(.*\)@\1 -S extreme@\""
   [ $XZ_THREADED_SET -eq 1 ] && [ $XZ_THREADED -eq 0 ] || XZ_THREADED=1
 fi
 
 if [ $XZ_THREADED -eq 1 ]; then
-  RUL="$RUL -e \"/dh_builddeb /s@$@ --threads-max=\x24(JOBS)@\""
+  RUL="$RUL -e \"/dh_builddeb /s@\(.*\)@\1 --threads-max=\x24(JOBS)@\""
 fi
 
 
