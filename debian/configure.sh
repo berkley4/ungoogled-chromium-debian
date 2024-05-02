@@ -629,7 +629,7 @@ fi
 
 if [ $HEADLESS -eq 0 ]; then
   op_enable="$op_enable disable/headless"
-  gn_enable="$gn_enable headless_enable_commands"
+  gn_enable="$gn_enable headless_enable_commands=false"
 fi
 
 
