@@ -17,7 +17,6 @@ third_party/libusb/BUILD.gn.bundled
 third_party/libwebp/BUILD.gn.bundled
 third_party/libxml/BUILD.gn.bundled
 third_party/libxslt/BUILD.gn.bundled
-third_party/libyuv/BUILD.gn.bundled
 third_party/openh264/BUILD.gn.bundled
 third_party/opus/BUILD.gn.bundled
 third_party/zlib/BUILD.gn.bundled
