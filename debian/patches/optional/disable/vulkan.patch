@@ -8,7 +8,7 @@
  import("//third_party/blink/public/public_features.gni")
  import("//third_party/widevine/cdm/widevine.gni")
  import("//tools/resources/generate_resource_allowlist.gni")
-@@ -1724,7 +1725,7 @@
+@@ -1723,7 +1724,7 @@
        if (is_linux && enable_swiftshader_vulkan) {
          deps += [ ":swiftshader_vk_symbols" ]
        }
@@ -17,7 +17,7 @@
          deps += [ ":angle_libvulkan_symbols" ]
        }
        if (build_with_internal_optimization_guide) {
-@@ -1795,7 +1796,7 @@
+@@ -1794,7 +1795,7 @@
  
        deps = [ "//third_party/angle:libGLESv2" ]
      }

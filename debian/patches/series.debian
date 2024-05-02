@@ -107,7 +107,6 @@ various/system/zlib.patch
 various/upstream/0001-RaceNetworkRequest-is-triggered-only-when-the-scheme-is-HTTP-or-HTTPS.patch
 various/upstream/0002-24eba6a.diff
 various/upstream/0003-074ac87d.diff
-various/upstream/0004-af11ae0.diff
 various/upstream/0005-85a5606.diff
 various/upstream/0006-faf520f.diff
 various/upstream/0007-b68ff42.diff

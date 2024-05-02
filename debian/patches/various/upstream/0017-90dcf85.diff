@@ -34,7 +34,7 @@ Cr-Commit-Position: refs/heads/main@{#1291250}
    if (!size_count.size.IsEmpty()) {
 --- a/third_party/blink/renderer/core/layout/layout_object.cc
 +++ b/third_party/blink/renderer/core/layout/layout_object.cc
-@@ -2668,7 +2668,14 @@
+@@ -2664,7 +2664,14 @@
      return;
  
    if (apply_changes == ApplyStyleChanges::kNo) {
@@ -50,7 +50,7 @@ Cr-Commit-Position: refs/heads/main@{#1291250}
      return;
    }
  
-@@ -2736,8 +2743,9 @@
+@@ -2732,8 +2739,9 @@
    const ComputedStyle* old_style = std::move(style_);
    SetStyleInternal(std::move(style));
  

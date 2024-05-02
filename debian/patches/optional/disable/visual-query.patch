@@ -1,6 +1,6 @@
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2130,8 +2130,6 @@
+@@ -2125,8 +2125,6 @@
      "//chrome/common:channel_info",
      "//chrome/common:version_header",
      "//chrome/common/cart:mojo_bindings",
@@ -9,7 +9,7 @@
      "//chrome/common/net",
      "//chrome/common/notifications",
      "//chrome/installer/util:with_no_strings",
-@@ -3698,8 +3696,6 @@
+@@ -3688,8 +3686,6 @@
        "commerce/coupons/coupon_service_factory.cc",
        "commerce/coupons/coupon_service_factory.h",
        "commerce/coupons/coupon_service_observer.h",
@@ -18,7 +18,7 @@
        "component_updater/soda_component_installer.cc",
        "component_updater/soda_component_installer.h",
        "component_updater/soda_language_pack_component_installer.cc",
-@@ -4575,7 +4571,6 @@
+@@ -4559,7 +4555,6 @@
        "//chrome/browser/apps/app_service",
        "//chrome/browser/apps/link_capturing",
        "//chrome/browser/cart:mojo_bindings",
@@ -102,7 +102,7 @@
      "//chrome/services/file_util:unit_tests",
      "//components/account_id",
      "//components/affiliations/core/browser:test_support",
-@@ -8281,7 +8276,6 @@
+@@ -8276,7 +8271,6 @@
        "//chrome/browser/companion/core",
        "//chrome/browser/companion/core/mojom:mojo_bindings",
        "//chrome/browser/companion/core/proto",

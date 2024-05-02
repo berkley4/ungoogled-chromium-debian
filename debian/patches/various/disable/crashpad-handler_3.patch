@@ -10,7 +10,7 @@
  #endif
  
  #if BUILDFLAG(ENABLE_EXTENSIONS)
-@@ -1769,9 +1771,11 @@
+@@ -1776,9 +1778,11 @@
        base::android::InitJavaExceptionReporterForChildProcess();
      }
  #else
@@ -22,7 +22,7 @@
  #endif  // BUILDFLAG(IS_ANDROID)
    }
  #endif  // BUILDFLAG(IS_POSIX) && !BUILDFLAG(IS_MAC)
-@@ -1916,10 +1920,11 @@
+@@ -1923,10 +1927,11 @@
        base::CommandLine::ForCurrentProcess();
    std::string process_type =
        command_line->GetSwitchValueASCII(switches::kProcessType);
