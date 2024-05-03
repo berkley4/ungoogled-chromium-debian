@@ -1,0 +1,53 @@
+From adc5a73165eb2484855e1c4d31381489f8b88c71 Mon Sep 17 00:00:00 2001
+From: Hongchan Choi <hongchan@chromium.org>
+Date: Thu, 02 May 2024 19:31:43 +0000
+Subject: [PATCH] Check initialization state before accessing GC-managed objects
+
+The RADH::OnRenderError function call assumes the validity of the
+associated AudioContext, which is a GC-managed object. This CL
+fixes the assumption by checking the initialization state of the
+RADH (which is changed before GC happens).
+
+(cherry picked from commit 50eb6f8c2f57ebf5f0eb2480eb544f93e88673f5)
+
+Bug: 331369797
+Test: Local reproduction doesn't crash ASAN with this change
+Change-Id: I2eb0ae55c6f6c1283b9fa9b31f1beca6f18a252b
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5497083
+Commit-Queue: Hongchan Choi <hongchan@chromium.org>
+Reviewed-by: Michael Wilson <mjwilson@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1293784}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5510833
+Bot-Commit: Rubber Stamper <rubber-stamper@appspot.gserviceaccount.com>
+Cr-Commit-Position: refs/branch-heads/6367@{#1071}
+Cr-Branched-From: d158c6dc6e3604e6f899041972edf26087a49740-refs/heads/main@{#1274542}
+---
+
+--- a/third_party/blink/renderer/modules/webaudio/audio_context.cc
++++ b/third_party/blink/renderer/modules/webaudio/audio_context.cc
+@@ -1192,6 +1192,8 @@
+ void AudioContext::OnRenderError() {
+   if (base::FeatureList::IsEnabled(features::kWebAudioHandleOnRenderError)) {
+     DCHECK(IsMainThread());
++
++    CHECK(GetExecutionContext());
+     LocalDOMWindow* window = To<LocalDOMWindow>(GetExecutionContext());
+     if (window && window->GetFrame()) {
+       window->AddConsoleMessage(MakeGarbageCollected<ConsoleMessage>(
+--- a/third_party/blink/renderer/modules/webaudio/realtime_audio_destination_handler.cc
++++ b/third_party/blink/renderer/modules/webaudio/realtime_audio_destination_handler.cc
+@@ -314,6 +314,14 @@
+ 
+ void RealtimeAudioDestinationHandler::NotifyAudioContext() {
+   DCHECK(IsMainThread());
++
++  // When this method gets executed by the task runner, it is possible that
++  // the corresponding GC-managed objects are not valid anymore. Check the
++  // initialization state and stop if the disposition already happened.
++  if (!IsInitialized()) {
++    return;
++  }
++
+   Context()->OnRenderError();
+ }
+ 
