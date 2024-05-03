@@ -933,9 +933,6 @@ if [ $STABLE -eq 1 ]; then
   op_disable="$op_disable system/unstable/libwebp-sharpyuv"
   deps_disable="$deps_disable libwebp"
 
-  # Build error since v117 seemingly only affecting stable
-  op_enable="$op_enable fixes/no-ELOC_PROTO-mnemonic"
-
   # Reverse time_t transition dependencies for stable
   CON="$CON -e \"/libgtk-3-0t64/s@t64@@\""
 fi
