@@ -932,6 +932,10 @@ if [ $STABLE -eq 1 ]; then
   sys_disable="$sys_disable dav1d"
   deps_disable="$deps_disable libdav1d"
 
+  # Disable libwebp (libsharpyuv not in stable)
+  op_disable="$op_disable system/unstable/libwebp-sharpyuv"
+  deps_disable="$deps_disable libwebp"
+
   # Build error since v117 seemingly only affecting stable
   op_enable="$op_enable fixes/no-ELOC_PROTO-mnemonic"
 
