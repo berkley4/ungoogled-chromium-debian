@@ -938,7 +938,7 @@ if [ $STABLE -eq 1 ]; then
 fi
 
 
-if [ $BROTLI -eq 0 ]; then
+if [ $SYS_BROTLI -eq 0 ]; then
   # SYS_LIBS += fontconfig freetype brotli libpng
   sys_disable="$sys_disable fontconfig"
 
