@@ -5,7 +5,7 @@ debian/misc_files/chromium                                                     u
 debian/initial_preferences                                                     usr/lib/chromium
 out/Release/chrome                                                             usr/lib/chromium
 out/Release/chrome_*_percent.pak                                               usr/lib/chromium
-#out/Release/icudtl.dat                                                         usr/lib/chromium
+out/Release/icudtl.dat                                                         usr/lib/chromium
 out/Release/resources.pak                                                      usr/lib/chromium
 out/Release/v8_context_snapshot.bin                                            usr/lib/chromium
 out/Release/resources/en-US.pak                                                usr/lib/chromium/locales

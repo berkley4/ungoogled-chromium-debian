@@ -22,8 +22,7 @@ MARCH_SET=0
 MEDIA_REMOTING_SET=0
 MTUNE_SET=0
 RELEASE_SET=0
-SYS_FREETYPE_SET=0
-SYS_HARFBUZZ_SET=0
+SYS_BROTLI_SET=0
 XZ_THREADED_SET=0
 
 # ${example%/*} = $(dirname example)
@@ -112,11 +111,8 @@ sanitise_op () {
 [ -n "$SYS_ICU" ] || SYS_ICU=0
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
 
-## Allow freetype to be force-enabled (for stable builds)
-[ -n "$SYS_FREETYPE" ] && SYS_FREETYPE_SET=1 || SYS_FREETYPE=1
-
-## Allow harfbuzz to be force-enabled (for stable builds)
-[ -n "$SYS_HARFBUZZ" ] && SYS_HARFBUZZ_SET=1 || SYS_HARFBUZZ=1
+## Allow force-enabling brotli for stable users who have installed my deb packages
+[ -n "$SYS_BROTLI" ] && SYS_BROTLI_SET=1 || SYS_BROTLI=1
 
 ## Need to error out if MEDIA_REMOTING explicitly set with CHROMECAST=0
 [ -n "$MEDIA_REMOTING" ] && MEDIA_REMOTING_SET=1 || MEDIA_REMOTING=1
@@ -702,7 +698,13 @@ fi
 
 if [ $PDF_JS -eq 1 ]; then
   # GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
-  gn_disable="$gn_disable pdf_enable_v8"
+  # GN_FLAGS += use_system_libtiff=true
+  gn_disable="$gn_disable pdf_enable_v8 use_system_libtiff"
+
+  # Prevent libzstd being enabled twice
+  if [ $ZSTD -eq 0 ]; then
+    deps_enable="$deps_enable libzstd"
+  fi
 fi
 
 
@@ -908,27 +910,22 @@ fi
 ## Items which are (or are likely to become) unstable-only
 
 if [ $STABLE -eq 1 ]; then
-  SYS_ICU=0
-
-  # Disable by default if not force-enabled
-  [ $SYS_FREETYPE_SET -eq 1 ] && [ $SYS_FREETYPE -eq 1 ] || SYS_FREETYPE=0
-
-  # harfbuzz and freetpye need brotli 1.1 (see d/rules for dependency chain info)
-  if [ $SYS_HARFBUZZ_SET -eq 1 ] && [ $SYS_HARFBUZZ -eq 1 ]; then
-    # Force-enable freetype if harfbuzz has been force-enabled
-    SYS_FREETYPE=1
-  else
-    # Disable harfbuzz by default on stable
-    SYS_HARFBUZZ=0
+  if [ $SYS_ICU -eq 1 ]; then
+    printf '%s\n' "ERROR: SYS_ICU=1 cannot be used with STABLE=1"
+    exit 1
   fi
 
-  if [ $SYS_FREETYPE -eq 1 ]; then
+  # Disable by default if not force-enabled
+  [ $SYS_BROTLI_SET -eq 1 ] && [ $SYS_BROTLI -eq 1 ] || SYS_BROTLI=0
+
+  if [ $SYS_BROTLI -eq 1 ]; then
+    # Implied enablement of system freetype when SYS_BROTLI=1
     op_enable="$op_enable system/freetype-COLRV1"
   fi
 
+  # Disable dav1d (too old)
   op_disable="$op_disable system/unstable/dav1d/"
   op_enable="$op_enable fixes/dav1d-bundled-header"
-
   sys_disable="$sys_disable dav1d"
   deps_disable="$deps_disable libdav1d"
 
@@ -944,38 +941,35 @@ if [ $STABLE -eq 1 ]; then
 fi
 
 
-if [ $SYS_FREETYPE -eq 0 ]; then
-  if [ $OPENTYPE_SVG -eq 1 ]; then
-    op_enable="$op_enable fixes/opentype-svg-on-bundled-freetype"
-  fi
-
+if [ $BROTLI -eq 0 ]; then
   # SYS_LIBS += fontconfig freetype brotli libpng
   sys_disable="$sys_disable fontconfig"
-  deps_disable="$deps_disable libfontconfig brotli"
 
-  ## System libpng must be enabled separately when SYS_FREETYPE=0
-  sys_enable="$sys_enable libpng"
+  # libfontconfig pulls in libfreetype
+  # libfreetype pulls in libbrotli and libpng
+  deps_disable="$deps_disable libfontconfig"
+
+  if [ $SYS_ICU -eq 0 ]; then
+    sys_enable="$sys_enable libpng"
+    deps_enable="$deps_enable libpng"
+  fi
 fi
 
 
-if [ $SYS_HARFBUZZ -eq 0 ]; then
-  sys_disable="$sys_disable harfbuzz-ng"
-  deps_disable="$deps_disable libharfbuzz"
-fi
+if [ $SYS_ICU -eq 1 ]; then
+  op_enable="$op_enable system/unstable/icu/"
+  op_disable="$op_disable fixes/convertutf-bundled"
 
+  # SYS_LIBS += harfbuzz-ng libxslt libxml icu
+  sys_enable="$sys_enable harfbuzz-ng"
 
-if [ $SYS_ICU -eq 0 ]; then
-  op_disable="$op_disable system/unstable/icu/"
-  op_enable="$op_enable fixes/convertutf-bundled"
+  # harfbuzz-ng pulls in libicu
+  # libxslt1 pulls in libicu via dependency on libxml2
+  # include libicu in so we can control its version
+  deps_enable="$deps_enable libicu libxslt1"
 
-  # SYS_LIBS += icu libxml libxslt
-  sys_disable="$sys_disable icu"
-
-  # libxslt1-dev will pull in libxml2-dev, which pulls in libicu-dev
-  # It's not unreasonable to include libicu-dev so that it can be versioned
-  deps_disable="$deps_disable libicu libxslt1"
-
-  ins_enable="$ins_enable icudtl.dat"
+  # icudtl.dat is not needed with system icu
+  ins_disable="$ins_disable icudtl.dat"
 fi
 
 

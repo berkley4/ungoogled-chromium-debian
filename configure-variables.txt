@@ -127,10 +127,9 @@ OPENH264		1		Used for software h264 media encoding and webrtc h264 encoding/deco
 
 VAAPI			1		Used for hardware encoding/decoding
 
-SYS_FREETYPE		0		Needed for system fontconfig; dependencies: brotli and libpng
-SYS_HARFBUZZ		1
-SYS_ICU			1
-SYS_JPEG		1
+SYS_BROTLI		1
+SYS_ICU			0
+SYS_JPEG		1		Set to zero if building for both debian and ubuntu (unsupported)
 SYS_OPENH264		1		The bundled OpenH264 library (SYS_OPENH264=0) cannot be redistributed
 
 
