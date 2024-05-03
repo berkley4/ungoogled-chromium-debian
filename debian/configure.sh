@@ -931,6 +931,7 @@ if [ $STABLE -eq 1 ]; then
 
   # Disable libwebp (libsharpyuv not in stable)
   op_disable="$op_disable system/unstable/libwebp-sharpyuv"
+  sys_disable="$sys_disable libwebp"
   deps_disable="$deps_disable libwebp"
 
   # Reverse time_t transition dependencies for stable
