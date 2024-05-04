@@ -963,7 +963,7 @@ if [ $SYS_ICU -eq 1 ]; then
   # harfbuzz-ng pulls in libicu
   # libxslt1 pulls in libicu via dependency on libxml2
   # include libicu in so we can control its version
-  deps_enable="$deps_enable libicu libxslt1"
+  deps_enable="$deps_enable libharfbuzz libicu libxslt1"
 
   # icudtl.dat is not needed with system icu
   ins_disable="$ins_disable icudtl.dat"
