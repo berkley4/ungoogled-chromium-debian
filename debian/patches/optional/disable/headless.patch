@@ -60,7 +60,7 @@
        "//components/image_fetcher/core",
        "//components/keep_alive_registry",
        "//components/live_caption",
-@@ -6875,7 +6870,7 @@
+@@ -6874,10 +6868,6 @@
      ]
    }
  
@@ -71,7 +71,7 @@
    if (enable_click_to_call) {
      sources += [
        "sharing/click_to_call/click_to_call_utils.cc",
-@@ -6944,7 +6938,6 @@
+@@ -6944,7 +6934,6 @@
      deps += [
        "//chrome/common/printing",
        "//components/printing/browser",
@@ -101,7 +101,7 @@
        ]
        deps += [ "//chrome/browser/ui/webui/new_tab_page/foo:mojo_bindings" ]
      }
-- 
+-
 -    if (!is_android) {
 -      deps += [ "//chrome/browser/headless:command_processor" ]
 -    }
@@ -347,7 +347,7 @@
  #include "components/live_caption/live_caption_controller.h"
  #include "components/live_caption/live_translate_controller.h"
  #include "components/ntp_tiles/custom_links_manager_impl.h"
-@@ -1546,7 +1545,6 @@
+@@ -1553,7 +1552,6 @@
  #else   // BUILDFLAG(IS_ANDROID)
    enterprise_connectors::RegisterLocalStatePrefs(registry);
    gcm::RegisterPrefs(registry);
