@@ -225,13 +225,13 @@ GN_FLAGS += v8_enable_wasm_simd256_revec=true
 # libstdc++ system library. We need to build with use_custom_libcxx=true
 # in order to enable CFI.
 #
-# Problematic          : ffmpeg, libvpx, libaom
+# Problematic          : ffmpeg, libaom, libavif, libvpx, libwebp
 #
 # libstdc++ issue      : crc32c, flatbuffers, highway, libyuv
 #                        jsoncpp, re2, snappy,woff2
 #
 # Too old for stable   : brotli, dav1d, icu
-#                        libwebp (via libsharpyuv dependency)
+#                        libavif/libwebp (libsharpyuv dependency)
 #
 # Dependent on TOO OLD : fontconfig, freetype, harfbuzz-ng
 #                        libxml, libxslt
@@ -240,8 +240,8 @@ GN_FLAGS += v8_enable_wasm_simd256_revec=true
 #
 # Interdependent IMPOSSIBLE :-
 #
-#     libavif depends on libaom (* Problematic)
-#     libaom depends on libyuv  (* Problematic/libstdc++ issue)
+#     libavif depends on libaom, libyuv
+#     libaom depends on libyuv
 #
 # Interdependent POSSIBLE :-
 #
@@ -274,9 +274,6 @@ SYS_LIBS += libjpeg
 
 # Enable openh264
 SYS_LIBS += openh264
-
-# Enable libwebp
-SYS_LIBS += libwebp
 
 # Enable zstd
 #SYS_LIBS += zstd

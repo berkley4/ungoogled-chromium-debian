@@ -933,11 +933,6 @@ if [ $STABLE -eq 1 ]; then
   sys_disable="$sys_disable dav1d"
   deps_disable="$deps_disable libdav1d"
 
-  # Disable libwebp (libsharpyuv not in stable)
-  op_disable="$op_disable system/unstable/libwebp-sharpyuv"
-  sys_disable="$sys_disable libwebp"
-  deps_disable="$deps_disable libwebp"
-
   # Reverse time_t transition dependencies for stable
   CON="$CON -e \"/libgtk-3-0t64/s@t64@@\""
 fi
