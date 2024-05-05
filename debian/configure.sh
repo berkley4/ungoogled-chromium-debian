@@ -918,11 +918,7 @@ if [ $STABLE -eq 1 ]; then
   # Disable by default if not force-enabled
   [ $SYS_BROTLI_SET -eq 1 ] && [ $SYS_BROTLI -eq 1 ] || SYS_BROTLI=0
 
-  if [ $SYS_BROTLI -eq 0 ]; then
-    if [ $OPENTYPE_SVG -eq 1 ]; then
-      op_enable="$op_enable fixes/opentype-svg-on-bundled-freetype"
-    fi
-  else
+  if [ $SYS_BROTLI -eq 1 ]; then
     # Implied enablement of system freetype when SYS_BROTLI=1
     op_enable="$op_enable system/freetype-COLRV1"
   fi
@@ -940,6 +936,10 @@ fi
 
 if [ $SYS_BROTLI -eq 0 ]; then
   op_enable="$op_enable skia-allow-bundled-freetype"
+
+  if [ $OPENTYPE_SVG -eq 1 ]; then
+    op_enable="$op_enable fixes/opentype-svg-on-bundled-freetype"
+  fi
 
   # SYS_LIBS += fontconfig freetype brotli libpng
   sys_disable="$sys_disable fontconfig"
