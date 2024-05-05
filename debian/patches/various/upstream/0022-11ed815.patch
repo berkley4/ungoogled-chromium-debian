@@ -1,0 +1,35 @@
+From 11ed815f48ff914189b852f59c8e2a96942f16f5 Mon Sep 17 00:00:00 2001
+From: Antonio Rivera <antoniori@google.com>
+Date: Thu, 2 May 2024 22:40:11 +0000
+Subject: [PATCH] Fix a V8 crash when running cast.
+
+A V8::HandleScope must be created before calling MainWorldScriptContext.
+
+See the bug below for more details.
+
+Bug: b:336383799
+Change-Id: I4bc7c694855c1fe2806e415087349af7457568e1
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5474882
+Reviewed-by: Luke Halliwell <halliwell@chromium.org>
+Commit-Queue: Antonio Rivera <antoniori@google.com>
+Reviewed-by: Shawn Quereshi <shawnq@google.com>
+Cr-Commit-Position: refs/heads/main@{#1295806}
+---
+ chromecast/renderer/native_bindings_helper.cc | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+--- a/chromecast/renderer/native_bindings_helper.cc
++++ b/chromecast/renderer/native_bindings_helper.cc
+@@ -71,10 +71,11 @@
+   if (!isolate)
+     return;
+ 
++  // The HandleScope must be created before MainWorldScriptContext is called.
++  v8::HandleScope handle_scope(isolate);
+   v8::Local<v8::Context> context = web_frame->MainWorldScriptContext();
+   v8::MicrotasksScope microtasks(context,
+                                  v8::MicrotasksScope::kDoNotRunMicrotasks);
+-  v8::HandleScope handle_scope(isolate);
+   if (context.IsEmpty())
+     return;
+ 

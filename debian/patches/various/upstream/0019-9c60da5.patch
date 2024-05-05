@@ -1,0 +1,28 @@
+From 9c60da598ba3b1e7dc87d14cd29cc8750400282d Mon Sep 17 00:00:00 2001
+From: Noam Rosenthal <nrosenthal@chromium.org>
+Date: Fri, 26 Apr 2024 12:21:25 +0000
+Subject: [PATCH] Null-check View() when responding to a resize
+
+This is a defensive fix for a crash found in the wild.
+
+Bug: 335654142
+Change-Id: Ic12f5d1dc1fdc31eac7ed1e0888ea6c04bfb0169
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5482188
+Reviewed-by: Stefan Zager <szager@chromium.org>
+Commit-Queue: Noam Rosenthal <nrosenthal@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1292983}
+---
+ third_party/blink/renderer/core/dom/document.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/third_party/blink/renderer/core/dom/document.cc
++++ b/third_party/blink/renderer/core/dom/document.cc
+@@ -5336,7 +5336,7 @@
+   // window size changes during load event dispatch.
+   // Note that in the case of the initial empty document, the load may hav
+   // completed before performing the first layout.
+-  if (View()->DidFirstLayout() ||
++  if ((View() && View()->DidFirstLayout()) ||
+       load_event_progress_ == kLoadEventInProgress || IsLoadCompleted()) {
+     EnqueueResizeEvent();
+     EnqueueVisualViewportResizeEvent();

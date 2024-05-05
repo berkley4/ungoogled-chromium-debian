@@ -128,6 +128,10 @@ various/upstream/0015-e2287ff.diff
 various/upstream/0016-a0455fc9.diff
 various/upstream/0017-90dcf85.diff
 various/upstream/0018-63d6590.diff
+various/upstream/0019-9c60da5.patch
+various/upstream/0020-e9e844d.patch
+various/upstream/0021-bf16913.patch
+various/upstream/0022-11ed815.patch
 various/warnings/clang-excessive-warnings.patch
 various/warnings/silence-unknown-warning.patch
 

@@ -1,0 +1,36 @@
+From e9e844de35315f4755ff7d205394d7b0986f3536 Mon Sep 17 00:00:00 2001
+From: Xianzhu Wang <wangxianzhu@chromium.org>
+Date: Mon, 29 Apr 2024 17:35:28 +0000
+Subject: [PATCH] Fix null pointer in
+ PropertyTreeManager::GetMainThreadScrollingReasons()
+
+I can't reproduce the crash locally and don't know how to create a
+test case. The clusterfuzz report clearly indicates the cc scroll node
+is null.
+
+Bug: 337069152
+Change-Id: Iece2fae27e900f1b9642b4a74980bec560c99e8d
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5497579
+Reviewed-by: Philip Rogers <pdr@chromium.org>
+Commit-Queue: Xianzhu Wang <wangxianzhu@chromium.org>
+Commit-Queue: Philip Rogers <pdr@chromium.org>
+Auto-Submit: Xianzhu Wang <wangxianzhu@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1293791}
+---
+ .../platform/graphics/compositing/property_tree_manager.cc   | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+--- a/third_party/blink/renderer/platform/graphics/compositing/property_tree_manager.cc
++++ b/third_party/blink/renderer/platform/graphics/compositing/property_tree_manager.cc
+@@ -234,8 +234,9 @@
+   const auto* property_trees = host.property_trees();
+   const auto* cc_scroll = property_trees->scroll_tree().Node(
+       scroll.CcNodeId(property_trees->sequence_number()));
+-  DCHECK(cc_scroll);
+-  return cc_scroll->main_thread_scrolling_reasons;
++  return cc_scroll
++             ? cc_scroll->main_thread_scrolling_reasons
++             : cc::MainThreadScrollingReason::kPreferNonCompositedScrolling;
+ }
+ 
+ bool PropertyTreeManager::UsesCompositedScrolling(

@@ -1,0 +1,92 @@
+From bf16913d969d40eb4c54378431fa617a14d611cb Mon Sep 17 00:00:00 2001
+From: Yoshisato Yanagisawa <yyanagisawa@chromium.org>
+Date: Wed, 1 May 2024 08:07:17 +0000
+Subject: [PATCH] Use hasCondition() or hasSource() to confirm their existence
+
+If the rule without condition or source is used, it causes the renderer
+crash because the IDL expect condition() and source() is used only if
+they are set.
+
+Change-Id: I34b8f76b1cf4f245b7b096db120176134d72b6c8
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5504213
+Reviewed-by: Sam McNally <sammc@chromium.org>
+Reviewed-by: Minoru Chikamune <chikamune@chromium.org>
+Commit-Queue: Yoshisato Yanagisawa <yyanagisawa@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1294810}
+---
+ .../service_worker_router_type_converter.cc   |  6 +++++-
+ .../static-router/resources/router-rules.js   |  6 ++++++
+ .../static-router-invalid-rules.https.html    | 19 +++++++++++++++++++
+ 3 files changed, 30 insertions(+), 1 deletion(-)
+
+--- a/third_party/blink/renderer/modules/service_worker/service_worker_router_type_converter.cc
++++ b/third_party/blink/renderer/modules/service_worker/service_worker_router_type_converter.cc
+@@ -303,7 +303,7 @@
+     return std::nullopt;
+   }
+ 
+-  if (!input->condition()) {
++  if (!input->hasCondition()) {
+     exception_state.ThrowTypeError("No input condition has been set.");
+     return std::nullopt;
+   }
+@@ -330,6 +330,10 @@
+   // does not cover cases sequence of sources are set. The current IDL has
+   // been implemented for this level, but the mojo IPC has been implemented
+   // to support the final form.
++  if (!input->hasSource()) {
++    exception_state.ThrowTypeError("No input source has been set.");
++    return std::nullopt;
++  }
+   const std::optional<ServiceWorkerRouterSource> source =
+       RouterSourceInputToBlink(input->source(), fetch_handler_type,
+                                exception_state);
+--- a/third_party/blink/web_tests/external/wpt/service-workers/service-worker/tentative/static-router/resources/router-rules.js
++++ b/third_party/blink/web_tests/external/wpt/service-workers/service-worker/tentative/static-router/resources/router-rules.js
+@@ -35,6 +35,12 @@
+       [{condition: {requestMethod: 'PUT'}, source: 'network'}],
+   'condition-request-method-delete-network':
+       [{condition: {requestMethod: 'DELETE'}, source: 'network'}],
++  'condition-lack-of-condition': [{
++    source: 'network'
++  }],
++  'condition-lack-of-source': [{
++    condition: {requestMode: 'no-cors'},
++  }],
+   'condition-invalid-request-method': [{
+     condition: {requestMethod: String.fromCodePoint(0x3042)},
+     source: 'network'
+--- a/third_party/blink/web_tests/external/wpt/service-workers/service-worker/tentative/static-router/static-router-invalid-rules.https.html
++++ b/third_party/blink/web_tests/external/wpt/service-workers/service-worker/tentative/static-router/static-router-invalid-rules.https.html
+@@ -19,6 +19,10 @@
+     'condition-invalid-or-condition-depth';
+ const ROUTER_RULE_KEY_INVALID_ROUTER_SIZE =
+     'condition-invalid-router-size';
++const ROUTER_RULE_KEY_LACK_OF_CONDITION =
++    'condition-lack-of-condition';
++const ROUTER_RULE_KEY_LACK_OF_SOURCE =
++    'condition-lack-of-source';
+ 
+ promise_test(async t => {
+   const worker = await registerAndActivate(t, ROUTER_RULE_KEY_INVALID_REQUEST_METHOD);
+@@ -41,5 +45,20 @@
+   assert_equals(errors.length, 1);
+ }, 'addRoutes should raise if the number of router rules exceeds the length limit');
+ 
++promise_test(async t => {
++  const worker = await registerAndActivate(t, ROUTER_RULE_KEY_LACK_OF_CONDITION);
++  t.add_cleanup(() => {reset_info_in_worker(worker)});
++  const {errors} = await get_info_from_worker(worker);
++  assert_equals(errors.length, 1);
++}, 'addRoutes should raise if the conditon does not exist in the rule');
++
++promise_test(async t => {
++  const worker = await registerAndActivate(t, ROUTER_RULE_KEY_LACK_OF_SOURCE);
++  t.add_cleanup(() => {reset_info_in_worker(worker)});
++  const {errors} = await get_info_from_worker(worker);
++  assert_equals(errors.length, 1);
++}, 'addRoutes should raise if the source does not exiswt in the rule');
++
++
+ </script>
+ </body>
