@@ -166,7 +166,7 @@ optional/disable/visual-query_2.patch
 optional/disable/webgpu.patch
 #optional/disable/media-remoting/media-remoting.patch
 #optional/disable/media-remoting/registry-pref.patch
-#optional/fixes/convertutf-bundled.patch
+optional/fixes/convertutf-bundled.patch
 #optional/fixes/dav1d-bundled-header.patch
 #optional/fixes/opentype-svg-on-bundled-freetype.patch
 #optional/fixes/skia-allow-bundled-freetype.patch
@@ -188,8 +188,8 @@ optional/system/unstable/dav1d/dav1d-bundled-libavif.patch
 #optional/system/unstable/ffmpeg/ffmpeg-first_dts.patch
 #optional/system/unstable/ffmpeg/roll-src-third_party-ffmpeg-102.patch
 #optional/system/unstable/ffmpeg/roll-src-third_party-ffmpeg-106.patch
-optional/system/unstable/icu/convertutf.patch
-optional/system/unstable/icu/icu.patch
+#optional/system/unstable/icu/convertutf.patch
+#optional/system/unstable/icu/icu.patch
 optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
 #optional/system/zstd/zstd.patch
 #optional/system/zstd/zstd-feature-flag.patch
