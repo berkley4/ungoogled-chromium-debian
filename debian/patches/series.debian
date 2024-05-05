@@ -169,6 +169,8 @@ optional/disable/webgpu.patch
 #optional/fixes/convertutf-bundled.patch
 #optional/fixes/dav1d-bundled-header.patch
 #optional/fixes/opentype-svg-on-bundled-freetype.patch
+#optional/fixes/skia-allow-bundled-freetype.patch
+optional/fixes/skia-allow-bundled-harfbuzz.patch
 #optional/fixes/skia-gamma.patch
 optional/fixes/widevine/widevine-enable-version-string.patch
 optional/fixes/widevine/widevine-locations.patch

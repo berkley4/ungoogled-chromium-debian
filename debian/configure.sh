@@ -939,6 +939,8 @@ fi
 
 
 if [ $SYS_BROTLI -eq 0 ]; then
+  op_enable="$op_enable skia-allow-bundled-freetype"
+
   # SYS_LIBS += fontconfig freetype brotli libpng
   sys_disable="$sys_disable fontconfig"
 
@@ -955,7 +957,9 @@ fi
 
 if [ $SYS_ICU -eq 1 ]; then
   op_enable="$op_enable system/unstable/icu/"
+
   op_disable="$op_disable fixes/convertutf-bundled"
+  op_disable="$op_disable fixes/skia-allow-bundled-harfbuzz"
 
   # SYS_LIBS += harfbuzz-ng libxslt libxml icu
   sys_enable="$sys_enable harfbuzz-ng"

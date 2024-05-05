@@ -1,0 +1,17 @@
+--- a/third_party/skia/third_party/harfbuzz/BUILD.gn
++++ b/third_party/skia/third_party/harfbuzz/BUILD.gn
+@@ -3,11 +3,13 @@
+ # Use of this source code is governed by a BSD-style license that can be
+ # found in the LICENSE file.
+ 
++import("//third_party/harfbuzz-ng/harfbuzz.gni")
+ import("../../gn/skia.gni")
+ import("../third_party.gni")
+ 
+ declare_args() {
+-  skia_use_system_harfbuzz = is_official_build && !is_wasm
++  skia_use_system_harfbuzz = is_official_build && !is_wasm &&
++                             use_system_harfbuzz
+ }
+ 
+ if (skia_use_system_harfbuzz) {
