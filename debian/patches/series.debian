@@ -90,7 +90,6 @@ various/fixes/revert-fix-linking-chromedriver.patch
 various/fixes/revert-fix-linking-content-shell.patch
 various/fixes/shim-fix-for-official-builds.patch
 various/fixes/silence-alsa-frames-log-msg.patch
-various/fixes/skia-allow-bundled-freetype-harfbuzz.patch
 various/fixes/swiftshader-build.patch
 various/fixes/template-correction.patch
 various/fixes/unbundle-script-dh-clean-interoperabilty.patch
