@@ -389,7 +389,7 @@ fi
 
 
 if [ $SYS_RUST -gt 0 ]; then
-  # GN_FLAGS += rust_sysroot_absolute=RUST_PATH rustc_version=RUST_DASHV
+  # GN_FLAGS += rust_sysroot_absolute=\"$(RUST_PATH)\" rustc_version=\"$(RUST_VER)\"
   gn_enable="$gn_enable rust_sysroot_absolute"
 
   RUST_PATH="$HOME/.cargo"
@@ -401,20 +401,14 @@ if [ $SYS_RUST -gt 0 ]; then
     RUST_PATH="/usr"
   fi
 
-  RUST="$RUST_PATH/bin/rustc"
-  RUST_VER="TEST"
-
-  if [ $TEST -eq 0 ]; then
-    if [ ! -x $RUST ]; then
-      printf '%s\n' "ERROR: $RUST does not exist (or is not executable)"
-      exit 1
-    fi
-
-    RUST_VER="$($RUST -V)"
+  if [ $TEST -eq 0 ] && [ ! -x $RUST_PATH/bin/rustc ]; then
+    printf '%s\n' "ERROR: $RUST does not exist (or is not executable)"
+    exit 1
   fi
 
-  RUL="$RUL -e \"/rust_sysroot_absolute=/s@_RUST_PATH@\x5c\x22$RUST_PATH\x5c\x22@\""
-  RUL="$RUL -e \"/rustc_version=/s@_RUST_VER@\x5c\x22$RUST_VER\x5c\x22@\""
+  RUL="$RUL -e \"/^#RUST_PATH /s@^#@@\""
+  RUL="$RUL -e \"/^RUST_PATH /s@_RUST_PATH@$RUST_PATH@\""
+  RUL="$RUL -e \"/^#RUST_VER /s@^#@@\""
 fi
 
 
