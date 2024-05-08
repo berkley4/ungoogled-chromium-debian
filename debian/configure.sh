@@ -1135,8 +1135,8 @@ eval sed $SMF -i $UC_DIR/flags.gn
 eval sed $PRU -i $UC_DIR/pruning.list
 
 
-## Ensure control, rules, ungoogled-chromium.install and policies.json exist
-for file in control rules $INSTALL $P_FILE; do
+## Ensure ungoogled-chromium.install and policies.json exist
+for file in $INSTALL $P_FILE; do
   [ -f $DEBIAN/$file ] || mv $DEBIAN/$file.in $DEBIAN/$file
 done
 
