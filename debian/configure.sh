@@ -224,16 +224,19 @@ esac
 [ -d $RT_DIR/third_party ] && TEST=0 || TEST=1
 
 
-## Get/set/override default clang version from debian/rules.in
-CR_VER=$(sed -n 's@^#export LLVM_VERSION := @@p' $DEBIAN/rules.in)
+if [ $SYS_CLANG -gt 0 ]; then
+  ## Get/set/override default clang version from debian/rules.in
+  CR_VER=$(sed -n 's@^#export LLVM_VERSION := @@p' $DEBIAN/rules.in)
 
-[ -n "$CLANG_VER" ] && CLANG_VER_SET=1 || CLANG_VER=$CR_VER
+  [ -n "$CLANG_VER" ] && CLANG_VER_SET=1 || CLANG_VER=$CR_VER
 
-if [ $CLANG_VER_SET -eq 1 ] && [ $CLANG_VER -lt $CR_VER ]; then
-  printf '%s\n' "WARN: Clang versions below $CR_VER are not supported"
-  printf '%s\n' "WARN: Disabling PGO support"
-  PGO=0
+  if [ $CLANG_VER_SET -eq 1 ] && [ $CLANG_VER -lt $CR_VER ]; then
+    printf '%s\n' "WARN: Clang versions below $CR_VER are not supported"
+    printf '%s\n' "WARN: Disabling PGO support"
+    PGO=0
+  fi
 fi
+
 
 # Machine function splitting relies on PGO being enabled
 if [ $PGO -eq 0 ] && [ $MF_SPLIT -eq 1 ]; then
