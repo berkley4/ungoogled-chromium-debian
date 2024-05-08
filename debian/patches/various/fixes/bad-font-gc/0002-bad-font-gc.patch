@@ -45,7 +45,7 @@ Date:   Thu Feb 22 17:08:22 2024 +0000
  const SimpleFontData* FontDataCache::Get(const FontPlatformData* platform_data,
                                           bool subpixel_ascent_descent) {
    if (!platform_data)
-@@ -64,16 +55,7 @@ const SimpleFontData* FontDataCache::Get
+@@ -64,16 +55,7 @@
      add_result.stored_value->value = MakeGarbageCollected<SimpleFontData>(
          platform_data, nullptr, subpixel_ascent_descent);
    }
@@ -73,7 +73,7 @@ Date:   Thu Feb 22 17:08:22 2024 +0000
  
  namespace blink {
  
-@@ -59,29 +58,17 @@ class FontDataCache final {
+@@ -59,29 +58,17 @@
    FontDataCache(const FontDataCache&) = delete;
    FontDataCache& operator=(const FontDataCache&) = delete;
  

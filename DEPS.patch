@@ -73,7 +73,7 @@
 -
    'src/clank': {
      'url': Var('chrome_git') + '/clank/internal/apps.git' + '@' +
-     'f9998d38972051d519a1cde1bc4fc780ed8fc7dc',
+     '53f8d961553cf0cf2215974bc1de646157057f88',
 @@ -1141,7 +1102,7 @@
            },
        ],

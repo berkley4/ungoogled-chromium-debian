@@ -17,7 +17,7 @@ Date:   Tue Feb 20 18:18:04 2024 +0000
 
 --- a/third_party/blink/renderer/core/css/css_font_face.cc
 +++ b/third_party/blink/renderer/core/css/css_font_face.cc
-@@ -291,7 +291,6 @@ bool CSSFontFace::UpdatePeriod() {
+@@ -292,7 +292,6 @@
  void CSSFontFace::Trace(Visitor* visitor) const {
    visitor->Trace(segmented_font_faces_);
    visitor->Trace(sources_);
@@ -27,7 +27,7 @@ Date:   Tue Feb 20 18:18:04 2024 +0000
  
 --- a/third_party/blink/renderer/core/css/css_font_face.h
 +++ b/third_party/blink/renderer/core/css/css_font_face.h
-@@ -47,8 +47,8 @@ class SimpleFontData;
+@@ -47,8 +47,8 @@
  
  class CORE_EXPORT CSSFontFace final : public GarbageCollected<CSSFontFace> {
   public:
@@ -38,7 +38,7 @@ Date:   Tue Feb 20 18:18:04 2024 +0000
          font_face_(font_face) {
      DCHECK(font_face_);
    }
-@@ -61,7 +61,7 @@ class CORE_EXPORT CSSFontFace final : pu
+@@ -61,7 +61,7 @@
    }
    FontFace* GetFontFace() const { return font_face_.Get(); }
  
@@ -47,7 +47,7 @@ Date:   Tue Feb 20 18:18:04 2024 +0000
  
    void AddSegmentedFontFace(CSSSegmentedFontFace*);
    void RemoveSegmentedFontFace(CSSSegmentedFontFace*);
-@@ -98,9 +98,9 @@ class CORE_EXPORT CSSFontFace final : pu
+@@ -98,9 +98,9 @@
   private:
    void SetLoadStatus(FontFace::LoadStatusType);
  
@@ -60,7 +60,7 @@ Date:   Tue Feb 20 18:18:04 2024 +0000
  
 --- a/third_party/blink/renderer/core/css/font_face.cc
 +++ b/third_party/blink/renderer/core/css/font_face.cc
-@@ -90,7 +90,7 @@ const CSSValue* ParseCSSValue(const Exec
+@@ -90,7 +90,7 @@
  
  CSSFontFace* CreateCSSFontFace(FontFace* font_face,
                                 const CSSValue* unicode_range) {
@@ -69,7 +69,7 @@ Date:   Tue Feb 20 18:18:04 2024 +0000
    if (const auto* range_list = To<CSSValueList>(unicode_range)) {
      unsigned num_ranges = range_list->length();
      for (unsigned i = 0; i < num_ranges; i++) {
-@@ -100,7 +100,7 @@ CSSFontFace* CreateCSSFontFace(FontFace*
+@@ -100,7 +100,7 @@
      }
    }
  
@@ -80,7 +80,7 @@ Date:   Tue Feb 20 18:18:04 2024 +0000
  const CSSValue* ConvertFontMetricOverrideValue(const CSSValue* parsed_value) {
 --- a/third_party/blink/renderer/platform/fonts/font_data_for_range_set.h
 +++ b/third_party/blink/renderer/platform/fonts/font_data_for_range_set.h
-@@ -39,18 +39,16 @@ class SimpleFontData;
+@@ -39,18 +39,16 @@
  class PLATFORM_EXPORT FontDataForRangeSet
      : public GarbageCollected<FontDataForRangeSet> {
   public:
@@ -104,7 +104,7 @@ Date:   Tue Feb 20 18:18:04 2024 +0000
  
    bool Contains(UChar32 test_char) const {
      return !range_set_ || range_set_->Contains(test_char);
-@@ -58,7 +56,7 @@ class PLATFORM_EXPORT FontDataForRangeSe
+@@ -58,7 +56,7 @@
    bool IsEntireRange() const {
      return !range_set_ || range_set_->IsEntireRange();
    }
@@ -113,7 +113,7 @@ Date:   Tue Feb 20 18:18:04 2024 +0000
    bool HasFontData() const { return font_data_; }
    const SimpleFontData* FontData() const { return font_data_.Get(); }
  
-@@ -74,7 +72,7 @@ class PLATFORM_EXPORT FontDataForRangeSe
+@@ -74,7 +72,7 @@
  
   protected:
    Member<const SimpleFontData> font_data_;
@@ -124,7 +124,7 @@ Date:   Tue Feb 20 18:18:04 2024 +0000
  }  // namespace blink
 --- a/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_face.cc
 +++ b/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_face.cc
-@@ -508,10 +508,10 @@ const OpenTypeVerticalData& HarfBuzzFace
+@@ -508,10 +508,10 @@
    return *harfbuzz_font_data_->VerticalData();
  }
  
@@ -139,7 +139,7 @@ Date:   Tue Feb 20 18:18:04 2024 +0000
  
 --- a/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_face.h
 +++ b/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_face.h
-@@ -66,7 +66,7 @@ class HarfBuzzFace final : public Garbag
+@@ -66,7 +66,7 @@
    // Passing in specified_size in order to control selecting the right value
    // from the trak table. If not set, the size of the internal FontPlatformData
    // object will be used.
@@ -150,7 +150,7 @@ Date:   Tue Feb 20 18:18:04 2024 +0000
  
 --- a/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_font_data.h
 +++ b/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_font_data.h
-@@ -32,7 +32,7 @@ struct HarfBuzzFontData final : public G
+@@ -32,7 +32,7 @@
    HarfBuzzFontData(const HarfBuzzFontData&) = delete;
    HarfBuzzFontData& operator=(const HarfBuzzFontData&) = delete;
  
@@ -159,7 +159,7 @@ Date:   Tue Feb 20 18:18:04 2024 +0000
  
    // The vertical origin and vertical advance functions in HarfBuzzFace require
    // the ascent and height metrics as fallback in case no specific vertical
-@@ -98,7 +98,7 @@ struct HarfBuzzFontData final : public G
+@@ -98,7 +98,7 @@
        SpaceGlyphInOpenTypeTables::kUnknown;
  
    scoped_refptr<OpenTypeVerticalData> vertical_data_;
@@ -170,7 +170,7 @@ Date:   Tue Feb 20 18:18:04 2024 +0000
  }  // namespace blink
 --- a/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_shaper.cc
 +++ b/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_shaper.cc
-@@ -289,7 +289,7 @@ void RoundHarfBuzzBufferPositions(hb_buf
+@@ -289,7 +289,7 @@
  inline bool ShapeRange(hb_buffer_t* buffer,
                         const FontFeatures& font_features,
                         const SimpleFontData* current_font,
@@ -179,7 +179,7 @@ Date:   Tue Feb 20 18:18:04 2024 +0000
                         UScriptCode current_run_script,
                         hb_direction_t direction,
                         hb_language_t language,
-@@ -325,7 +325,7 @@ inline bool ShapeRange(hb_buffer_t* buff
+@@ -325,7 +325,7 @@
    hb_buffer_set_direction(buffer, direction);
  
    hb_font_t* hb_font =
@@ -219,7 +219,7 @@ Date:   Tue Feb 20 18:18:04 2024 +0000
  
  namespace blink {
  
-@@ -55,14 +56,13 @@ struct PLATFORM_EXPORT UnicodeRange fina
+@@ -55,14 +56,13 @@
    UChar32 to_;
  };
  
@@ -238,7 +238,7 @@ Date:   Tue Feb 20 18:18:04 2024 +0000
    bool Contains(UChar32) const;
    bool IntersectsWith(const String&) const;
    bool IsEntireRange() const { return ranges_.empty(); }
-@@ -71,8 +71,7 @@ class PLATFORM_EXPORT UnicodeRangeSet
+@@ -71,8 +71,7 @@
    bool operator==(const UnicodeRangeSet& other) const;
  
   private:

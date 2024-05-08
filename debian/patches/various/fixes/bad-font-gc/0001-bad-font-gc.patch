@@ -53,7 +53,7 @@ Date:   Tue Mar 5 20:27:13 2024 +0000
 
 --- a/third_party/blink/renderer/core/css/css_font_face.cc
 +++ b/third_party/blink/renderer/core/css/css_font_face.cc
-@@ -216,8 +216,9 @@ bool CSSFontFace::MaybeLoadFont(const Fo
+@@ -216,8 +216,9 @@
  
  void CSSFontFace::Load() {
    FontDescription font_description;
@@ -67,7 +67,7 @@ Date:   Tue Mar 5 20:27:13 2024 +0000
  
 --- a/third_party/blink/renderer/core/css/font_face_set_document.cc
 +++ b/third_party/blink/renderer/core/css/font_face_set_document.cc
-@@ -195,10 +195,13 @@ bool FontFaceSetDocument::ResolveFontSty
+@@ -195,10 +195,13 @@
    ComputedStyleBuilder builder =
        GetDocument()->GetStyleResolver().CreateComputedStyleBuilder();
  
@@ -86,7 +86,7 @@ Date:   Tue Mar 5 20:27:13 2024 +0000
  
 --- a/third_party/blink/renderer/core/css/font_face_set_worker.cc
 +++ b/third_party/blink/renderer/core/css/font_face_set_worker.cc
-@@ -84,10 +84,13 @@ bool FontFaceSetWorker::ResolveFontStyle
+@@ -84,10 +84,13 @@
      return false;
    }
  
@@ -105,7 +105,7 @@ Date:   Tue Mar 5 20:27:13 2024 +0000
  
 --- a/third_party/blink/renderer/core/css/resolver/font_builder.cc
 +++ b/third_party/blink/renderer/core/css/resolver/font_builder.cc
-@@ -54,9 +54,11 @@ void FontBuilder::DidChangeWritingMode()
+@@ -54,9 +54,11 @@
  }
  
  FontFamily FontBuilder::StandardFontFamily() const {
@@ -121,7 +121,7 @@ Date:   Tue Mar 5 20:27:13 2024 +0000
  AtomicString FontBuilder::StandardFontFamilyName() const {
 --- a/third_party/blink/renderer/core/css/resolver/style_builder_converter.cc
 +++ b/third_party/blink/renderer/core/css/resolver/style_builder_converter.cc
-@@ -379,8 +379,8 @@ FontDescription::FamilyDescription Style
+@@ -379,8 +379,8 @@
  
    if (const auto* system_font =
            DynamicTo<cssvalue::CSSPendingSystemFontValue>(value)) {
@@ -132,7 +132,7 @@ Date:   Tue Mar 5 20:27:13 2024 +0000
      return desc;
    }
  
-@@ -410,8 +410,10 @@ FontDescription::FamilyDescription Style
+@@ -410,8 +410,10 @@
      // Take the previous value and wrap it in a `SharedFontFamily` adding to
      // the linked list.
      if (has_value) {
@@ -145,7 +145,7 @@ Date:   Tue Mar 5 20:27:13 2024 +0000
      }
      family_name = next_family_name;
      family_type = is_generic ? FontFamily::Type::kGenericFamily
-@@ -442,7 +444,8 @@ FontDescription::FamilyDescription Style
+@@ -442,7 +444,8 @@
    }
  #endif
  
@@ -157,7 +157,7 @@ Date:   Tue Mar 5 20:27:13 2024 +0000
  
 --- a/third_party/blink/renderer/core/html/canvas/canvas_font_cache.cc
 +++ b/third_party/blink/renderer/core/html/canvas/canvas_font_cache.cc
-@@ -29,9 +29,11 @@ const int defaultFontSize = 10;
+@@ -29,9 +29,11 @@
  
  const ComputedStyle* CreateDefaultFontStyle(const Document& document) {
    const AtomicString& default_font_family = font_family_names::kSansSerif;
@@ -173,7 +173,7 @@ Date:   Tue Mar 5 20:27:13 2024 +0000
    ComputedStyleBuilder builder =
 --- a/third_party/blink/renderer/core/page/drag_image.cc
 +++ b/third_party/blink/renderer/core/page/drag_image.cc
-@@ -127,9 +127,11 @@ static Font DeriveDragLabelFont(int size
+@@ -127,9 +127,11 @@
    const AtomicString& family =
        LayoutThemeFontProvider::SystemFontFamily(CSSValueID::kNone);
  
@@ -189,7 +189,7 @@ Date:   Tue Mar 5 20:27:13 2024 +0000
    description.SetComputedSize(size);
 --- a/third_party/blink/renderer/core/paint/embedded_object_painter.cc
 +++ b/third_party/blink/renderer/core/paint/embedded_object_painter.cc
-@@ -32,9 +32,11 @@ static Font ReplacementTextFont(const Do
+@@ -32,9 +32,11 @@
    const float size = LayoutThemeFontProvider::SystemFontSize(
        CSSValueID::kWebkitSmallControl, document);
  
@@ -205,7 +205,7 @@ Date:   Tue Mar 5 20:27:13 2024 +0000
    font_description.SetComputedSize(size);
 --- a/third_party/blink/renderer/platform/exported/web_font_description.cc
 +++ b/third_party/blink/renderer/platform/exported/web_font_description.cc
-@@ -49,10 +49,13 @@ WebFontDescription::WebFontDescription(c
+@@ -49,10 +49,13 @@
  }
  
  WebFontDescription::operator FontDescription() const {
@@ -224,7 +224,7 @@ Date:   Tue Mar 5 20:27:13 2024 +0000
    desc.SetSpecifiedSize(size);
 --- a/third_party/blink/renderer/platform/fonts/font_description.h
 +++ b/third_party/blink/renderer/platform/fonts/font_description.h
-@@ -195,6 +195,7 @@ class PLATFORM_EXPORT FontDescription {
+@@ -195,6 +195,7 @@
    FamilyDescription GetFamilyDescription() const {
      return FamilyDescription(GenericFamily(), Family());
    }
@@ -232,7 +232,7 @@ Date:   Tue Mar 5 20:27:13 2024 +0000
    const FontFamily& FirstFamily() const { return family_list_; }
    Size GetSize() const {
      return Size(KeywordSize(), SpecifiedSize(), IsAbsoluteSize());
-@@ -450,6 +451,10 @@ class PLATFORM_EXPORT FontDescription {
+@@ -450,6 +451,10 @@
      return fields_.subpixel_ascent_descent_;
    }
  
@@ -245,7 +245,7 @@ Date:   Tue Mar 5 20:27:13 2024 +0000
    }
 --- a/third_party/blink/renderer/platform/fonts/font_fallback_list.cc
 +++ b/third_party/blink/renderer/platform/fonts/font_fallback_list.cc
-@@ -178,8 +178,9 @@ const FontData* FontFallbackList::GetFon
+@@ -178,8 +178,9 @@
  
    if (font_selector_) {
      // Try the user's preferred standard font.
@@ -259,7 +259,7 @@ Date:   Tue Mar 5 20:27:13 2024 +0000
        return data;
 --- a/third_party/blink/renderer/platform/fonts/font_family.cc
 +++ b/third_party/blink/renderer/platform/fonts/font_family.cc
-@@ -49,6 +49,20 @@ bool operator==(const FontFamily& a, con
+@@ -49,6 +49,20 @@
    return true;
  }
  
@@ -282,7 +282,7 @@ Date:   Tue Mar 5 20:27:13 2024 +0000
    builder.Append(family_name_);
 --- a/third_party/blink/renderer/platform/fonts/font_family.h
 +++ b/third_party/blink/renderer/platform/fonts/font_family.h
-@@ -39,18 +39,16 @@ class PLATFORM_EXPORT FontFamily {
+@@ -39,18 +39,16 @@
    DISALLOW_NEW();
  
   public:
@@ -308,7 +308,7 @@ Date:   Tue Mar 5 20:27:13 2024 +0000
    // Return this font family's name. Note that it is never quoted nor escaped.
    // For web-exposed serialization, please rely instead on the functions
    // ComputedStyleUtils::ValueForFontFamily(const FontFamily&) and
-@@ -59,8 +57,13 @@ class PLATFORM_EXPORT FontFamily {
+@@ -59,8 +57,13 @@
    const AtomicString& FamilyName() const { return family_name_; }
    bool FamilyIsGeneric() const { return family_type_ == Type::kGenericFamily; }
  
@@ -322,7 +322,7 @@ Date:   Tue Mar 5 20:27:13 2024 +0000
    scoped_refptr<SharedFontFamily> ReleaseNext();
  
    bool IsPrewarmed() const { return is_prewarmed_; }
-@@ -93,19 +96,12 @@ class PLATFORM_EXPORT SharedFontFamily :
+@@ -93,19 +96,12 @@
    SharedFontFamily(const SharedFontFamily&) = delete;
    SharedFontFamily& operator=(const SharedFontFamily&) = delete;
  
@@ -345,7 +345,7 @@ Date:   Tue Mar 5 20:27:13 2024 +0000
  };
  
  PLATFORM_EXPORT bool operator==(const FontFamily&, const FontFamily&);
-@@ -125,6 +121,10 @@ inline const FontFamily* FontFamily::Nex
+@@ -125,6 +121,10 @@
    return next_.get();
  }
  
@@ -358,7 +358,7 @@ Date:   Tue Mar 5 20:27:13 2024 +0000
  }
 --- a/third_party/blink/renderer/platform/graphics/placeholder_image.cc
 +++ b/third_party/blink/renderer/platform/graphics/placeholder_image.cc
-@@ -85,18 +85,23 @@ void DrawCenteredIcon(cc::PaintCanvas* c
+@@ -85,18 +85,23 @@
  }
  
  FontDescription CreatePlaceholderFontDescription(float scale_factor) {
@@ -395,7 +395,7 @@ Date:   Tue Mar 5 20:27:13 2024 +0000
    description.SetWeight(FontSelectionValue(500));
 --- a/third_party/blink/renderer/platform/testing/font_test_helpers.cc
 +++ b/third_party/blink/renderer/platform/testing/font_test_helpers.cc
-@@ -127,9 +127,11 @@ Font CreateTestFont(const AtomicString&
+@@ -127,9 +127,11 @@
                      size_t data_size,
                      float size,
                      const FontDescription::VariantLigatures* ligatures) {
@@ -409,7 +409,7 @@ Date:   Tue Mar 5 20:27:13 2024 +0000
    font_description.SetSpecifiedSize(size);
    font_description.SetComputedSize(size);
    if (ligatures)
-@@ -143,9 +145,11 @@ Font CreateTestFont(const AtomicString&
+@@ -143,9 +145,11 @@
                      float size,
                      const FontDescription::VariantLigatures* ligatures,
                      void (*init_font_description)(FontDescription*)) {

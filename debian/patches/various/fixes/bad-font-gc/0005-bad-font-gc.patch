@@ -18,7 +18,7 @@ Date:   Wed Feb 14 19:35:11 2024 +0000
 
 --- a/third_party/blink/renderer/core/css/binary_data_font_face_source.cc
 +++ b/third_party/blink/renderer/core/css/binary_data_font_face_source.cc
-@@ -27,16 +27,13 @@ BinaryDataFontFaceSource::BinaryDataFont
+@@ -27,16 +27,13 @@
      return;
    }
    probe::FontsUpdated(context, font_face, String(),
@@ -40,7 +40,7 @@ Date:   Wed Feb 14 19:35:11 2024 +0000
  SimpleFontData* BinaryDataFontFaceSource::CreateFontData(
 --- a/third_party/blink/renderer/core/css/binary_data_font_face_source.h
 +++ b/third_party/blink/renderer/core/css/binary_data_font_face_source.h
-@@ -16,14 +16,14 @@ class FontCustomPlatformData;
+@@ -16,14 +16,14 @@
  class BinaryDataFontFaceSource final : public CSSFontFaceSource {
   public:
    BinaryDataFontFaceSource(CSSFontFace*, SharedBuffer*, String&);
@@ -59,7 +59,7 @@ Date:   Wed Feb 14 19:35:11 2024 +0000
  }  // namespace blink
 --- a/third_party/blink/renderer/core/css/remote_font_face_source.cc
 +++ b/third_party/blink/renderer/core/css/remote_font_face_source.cc
-@@ -262,7 +262,7 @@ void RemoteFontFaceSource::NotifyFinishe
+@@ -262,7 +262,7 @@
          FontInvalidationReason::kFontFaceLoaded);
      if (custom_font_data_) {
        probe::FontsUpdated(execution_context, face_->GetFontFace(),
@@ -68,7 +68,7 @@ Date:   Wed Feb 14 19:35:11 2024 +0000
      }
    }
  }
-@@ -456,7 +456,6 @@ void RemoteFontFaceSource::BeginLoadIfNe
+@@ -456,7 +456,6 @@
  void RemoteFontFaceSource::Trace(Visitor* visitor) const {
    visitor->Trace(face_);
    visitor->Trace(font_selector_);
@@ -78,7 +78,7 @@ Date:   Wed Feb 14 19:35:11 2024 +0000
  }
 --- a/third_party/blink/renderer/core/css/remote_font_face_source.h
 +++ b/third_party/blink/renderer/core/css/remote_font_face_source.h
-@@ -43,7 +43,7 @@ class RemoteFontFaceSource final : publi
+@@ -43,7 +43,7 @@
    bool IsPendingDataUrl() const override;
  
    const FontCustomPlatformData* GetCustomPlaftormData() const override {
@@ -87,7 +87,7 @@ Date:   Wed Feb 14 19:35:11 2024 +0000
    }
  
    void BeginLoadIfNeeded() override;
-@@ -157,7 +157,7 @@ class RemoteFontFaceSource final : publi
+@@ -157,7 +157,7 @@
    Member<FontSelector> font_selector_;
  
    // |nullptr| if font is not loaded or failed to decode.
@@ -98,7 +98,7 @@ Date:   Wed Feb 14 19:35:11 2024 +0000
  
 --- a/third_party/blink/renderer/core/loader/resource/font_resource.cc
 +++ b/third_party/blink/renderer/core/loader/resource/font_resource.cc
-@@ -112,7 +112,7 @@ void FontResource::StartLoadLimitTimersI
+@@ -112,7 +112,7 @@
        kFontLoadWaitLong);
  }
  
@@ -107,7 +107,7 @@ Date:   Wed Feb 14 19:35:11 2024 +0000
    if (!font_data_ && !ErrorOccurred() && !IsLoading()) {
      if (Data()) {
        auto decode_start_time = base::TimeTicks::Now();
-@@ -225,7 +225,6 @@ void FontResource::AddClearDataObserver(
+@@ -225,7 +225,6 @@
  }
  
  void FontResource::Trace(Visitor* visitor) const {
@@ -117,7 +117,7 @@ Date:   Wed Feb 14 19:35:11 2024 +0000
  }
 --- a/third_party/blink/renderer/core/loader/resource/font_resource.h
 +++ b/third_party/blink/renderer/core/loader/resource/font_resource.h
-@@ -72,7 +72,7 @@ class CORE_EXPORT FontResource final : p
+@@ -72,7 +72,7 @@
  
    String OtsParsingMessage() const { return ots_parsing_message_; }
  
@@ -126,7 +126,7 @@ Date:   Wed Feb 14 19:35:11 2024 +0000
  
    // Returns true if the loading priority of the remote font resource can be
    // lowered. The loading priority of the font can be lowered only if the
-@@ -112,7 +112,7 @@ class CORE_EXPORT FontResource final : p
+@@ -112,7 +112,7 @@
      kMaxValue = kLongLimitExceeded,
    };
  
@@ -137,7 +137,7 @@ Date:   Wed Feb 14 19:35:11 2024 +0000
    bool cors_failed_;
 --- a/third_party/blink/renderer/platform/fonts/font_custom_platform_data.cc
 +++ b/third_party/blink/renderer/platform/fonts/font_custom_platform_data.cc
-@@ -115,7 +115,7 @@ const FontPlatformData* FontCustomPlatfo
+@@ -115,7 +115,7 @@
      const ResolvedFontFeatures& resolved_font_features,
      FontOrientation orientation,
      const FontVariationSettings* variation_settings,
@@ -146,7 +146,7 @@ Date:   Wed Feb 14 19:35:11 2024 +0000
    DCHECK(base_typeface_);
  
    sk_sp<SkTypeface> return_typeface = base_typeface_;
-@@ -304,7 +304,7 @@ String FontCustomPlatformData::FamilyNam
+@@ -304,7 +304,7 @@
                            localized_string.fString.size());
  }
  
@@ -155,7 +155,7 @@ Date:   Wed Feb 14 19:35:11 2024 +0000
      SharedBuffer* buffer,
      String& ots_parse_message) {
    DCHECK(buffer);
-@@ -321,8 +321,8 @@ FontCustomPlatformData* FontCustomPlatfo
+@@ -321,8 +321,8 @@
    if (v8::Isolate* isolate = v8::Isolate::TryGetCurrent()) {
      isolate->AdjustAmountOfExternalAllocatedMemory(data_size);
    }
@@ -176,7 +176,7 @@ Date:   Wed Feb 14 19:35:11 2024 +0000
  #include "third_party/blink/renderer/platform/platform_export.h"
  #include "third_party/blink/renderer/platform/wtf/allocator/allocator.h"
  #include "third_party/blink/renderer/platform/wtf/forward.h"
-@@ -55,17 +54,16 @@ class FontPlatformData;
+@@ -55,17 +54,16 @@
  class FontVariationSettings;
  
  class PLATFORM_EXPORT FontCustomPlatformData
@@ -199,7 +199,7 @@ Date:   Wed Feb 14 19:35:11 2024 +0000
    // The size argument should come from EffectiveFontSize() and
    // adjusted_specified_size should come from AdjustedSpecifiedSize() of
    // FontDescription. The latter is needed for correctly applying
-@@ -82,7 +80,7 @@ class PLATFORM_EXPORT FontCustomPlatform
+@@ -82,7 +80,7 @@
        const ResolvedFontFeatures& resolved_font_features,
        FontOrientation = FontOrientation::kHorizontal,
        const FontVariationSettings* = nullptr,
@@ -208,7 +208,7 @@ Date:   Wed Feb 14 19:35:11 2024 +0000
  
    String FamilyNameForInspector() const;
  
-@@ -93,6 +91,7 @@ class PLATFORM_EXPORT FontCustomPlatform
+@@ -93,6 +91,7 @@
    bool MayBeIconFont() const;
  
   private:
@@ -218,7 +218,7 @@ Date:   Wed Feb 14 19:35:11 2024 +0000
  
 --- a/third_party/blink/renderer/platform/testing/font_test_helpers.cc
 +++ b/third_party/blink/renderer/platform/testing/font_test_helpers.cc
-@@ -29,7 +29,7 @@ class TestFontSelector : public FontSele
+@@ -29,7 +29,7 @@
    static TestFontSelector* Create(const uint8_t* data, size_t size) {
      scoped_refptr<SharedBuffer> font_buffer = SharedBuffer::Create(data, size);
      String ots_parse_message;
@@ -227,7 +227,7 @@ Date:   Wed Feb 14 19:35:11 2024 +0000
          FontCustomPlatformData::Create(font_buffer.get(), ots_parse_message);
      if (!font_custom_platform_data)
        return nullptr;
-@@ -37,17 +37,12 @@ class TestFontSelector : public FontSele
+@@ -37,17 +37,12 @@
          std::move(font_custom_platform_data));
    }
  
@@ -247,7 +247,7 @@ Date:   Wed Feb 14 19:35:11 2024 +0000
    FontData* GetFontData(const FontDescription& font_description,
                          const FontFamily&) override {
      FontSelectionCapabilities normal_capabilities(
-@@ -117,7 +112,7 @@ class TestFontSelector : public FontSele
+@@ -117,7 +112,7 @@
    }
  
   private:

@@ -18,7 +18,7 @@ Date:   Mon Mar 18 22:56:31 2024 +0000
 
 --- a/third_party/blink/renderer/core/css/css_custom_font_data.h
 +++ b/third_party/blink/renderer/core/css/css_custom_font_data.h
-@@ -55,6 +55,7 @@ class CSSCustomFontData final : public C
+@@ -55,6 +55,7 @@
  
    bool IsLoading() const override { return is_loading_; }
    bool IsLoadingFallback() const override { return true; }
@@ -28,7 +28,7 @@ Date:   Mon Mar 18 22:56:31 2024 +0000
      return font_face_source_ && font_face_source_->IsPendingDataUrl();
 --- a/third_party/blink/renderer/platform/fonts/custom_font_data.h
 +++ b/third_party/blink/renderer/platform/fonts/custom_font_data.h
-@@ -46,6 +46,7 @@ class PLATFORM_EXPORT CustomFontData : p
+@@ -46,6 +46,7 @@
    virtual bool IsLoading() const { return false; }
    virtual bool IsLoadingFallback() const { return false; }
    virtual bool ShouldSkipDrawing() const { return false; }

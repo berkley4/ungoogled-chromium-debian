@@ -31,7 +31,7 @@ Date:   Tue Feb 20 17:40:39 2024 +0000
  #include "third_party/blink/renderer/platform/privacy_budget/identifiability_digest_helpers.h"
  #include "third_party/blink/renderer/platform/wtf/thread_specific.h"
  
-@@ -50,6 +51,15 @@ FontUniqueNameLookup* FontGlobalContext:
+@@ -50,6 +51,15 @@
    return Get().font_unique_name_lookup_.get();
  }
  
@@ -57,7 +57,7 @@ Date:   Tue Feb 20 17:40:39 2024 +0000
  #include "third_party/blink/renderer/platform/platform_export.h"
  #include "third_party/blink/renderer/platform/text/layout_locale.h"
  #include "third_party/blink/renderer/platform/wtf/allocator/allocator.h"
-@@ -34,19 +33,14 @@ class PLATFORM_EXPORT FontGlobalContext
+@@ -34,19 +33,14 @@
    static FontGlobalContext& Get();
    static FontGlobalContext* TryGet();
  
@@ -79,7 +79,7 @@ Date:   Tue Feb 20 17:40:39 2024 +0000
  
    static FontUniqueNameLookup* GetFontUniqueNameLookup();
  
-@@ -62,7 +56,7 @@ class PLATFORM_EXPORT FontGlobalContext
+@@ -62,7 +56,7 @@
  
   private:
    FontCache font_cache_;
@@ -90,7 +90,7 @@ Date:   Tue Feb 20 17:40:39 2024 +0000
    base::HashingLRUCache<SkTypefaceID, IdentifiableToken>
 --- a/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_face.cc
 +++ b/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_face.cc
-@@ -64,14 +64,20 @@ namespace blink {
+@@ -64,14 +64,20 @@
  
  HarfBuzzFace::HarfBuzzFace(const FontPlatformData* platform_data,
                             uint64_t unique_id)
@@ -116,7 +116,7 @@ Date:   Tue Feb 20 17:40:39 2024 +0000
  }
  
  static hb_bool_t HarfBuzzGetGlyph(hb_font_t* hb_font,
-@@ -234,17 +240,14 @@ bool HarfBuzzFace::HasSpaceInLigaturesOr
+@@ -234,17 +240,14 @@
  
    hb::unique_ptr<hb_set_t> glyphs(hb_set_create());
  
@@ -136,7 +136,7 @@ Date:   Tue Feb 20 17:40:39 2024 +0000
      DCHECK(face);
      harfbuzz_font_data_->space_in_gpos_ =
          hb_ot_layout_has_positioning(face) &&
-@@ -258,11 +261,10 @@ bool HarfBuzzFace::HasSpaceInLigaturesOr
+@@ -258,11 +261,10 @@
    if (features & kLigatures &&
        harfbuzz_font_data_->space_in_gsub_ ==
            HarfBuzzFontData::SpaceGlyphInOpenTypeTables::kUnknown) {
@@ -150,7 +150,7 @@ Date:   Tue Feb 20 17:40:39 2024 +0000
      DCHECK(face);
      harfbuzz_font_data_->space_in_gsub_ =
          hb_ot_layout_has_substitution(face) &&
-@@ -280,14 +282,14 @@ bool HarfBuzzFace::HasSpaceInLigaturesOr
+@@ -280,14 +282,14 @@
  }
  
  unsigned HarfBuzzFace::UnitsPerEmFromHeadTable() {
@@ -168,7 +168,7 @@ Date:   Tue Feb 20 17:40:39 2024 +0000
    return glyph;
  }
  
-@@ -444,10 +446,9 @@ static hb::unique_ptr<hb_face_t> CreateF
+@@ -444,10 +446,9 @@
    return face;
  }
  
@@ -182,7 +182,7 @@ Date:   Tue Feb 20 17:40:39 2024 +0000
    hb::unique_ptr<hb_font_t> ot_font(hb_font_create(face));
    hb_ot_font_set_funcs(ot_font.get());
  
-@@ -466,26 +467,25 @@ HarfBuzzFontData* CreateHarfBuzzFontData
+@@ -466,26 +467,25 @@
    // Creating a sub font means that non-available functions
    // are found from the parent.
    hb_font_t* const unscaled_font = hb_font_create_sub_font(ot_font.get());
@@ -218,7 +218,7 @@ Date:   Tue Feb 20 17:40:39 2024 +0000
  }
  
  static_assert(
-@@ -516,18 +516,17 @@ hb_font_t* HarfBuzzFace::GetScaledFont(s
+@@ -516,18 +516,17 @@
                                                       vertical_layout);
  
    int scale = SkiaScalarToHarfBuzzPosition(platform_data_->size());
@@ -243,7 +243,7 @@ Date:   Tue Feb 20 17:40:39 2024 +0000
  hb_font_t* HarfBuzzFace::GetScaledFont() const {
 --- a/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_face.h
 +++ b/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_face.h
-@@ -55,6 +55,7 @@ class HarfBuzzFace final : public Garbag
+@@ -55,6 +55,7 @@
    HarfBuzzFace(const FontPlatformData* platform_data, uint64_t);
    HarfBuzzFace(const HarfBuzzFace&) = delete;
    HarfBuzzFace& operator=(const HarfBuzzFace&) = delete;
@@ -251,7 +251,7 @@ Date:   Tue Feb 20 17:40:39 2024 +0000
  
    void Trace(Visitor*) const;
  
-@@ -90,7 +91,11 @@ class HarfBuzzFace final : public Garbag
+@@ -90,7 +91,11 @@
    void PrepareHarfBuzzFontData();
  
    Member<const FontPlatformData> platform_data_;
@@ -325,7 +325,7 @@ Date:   Tue Feb 20 17:40:39 2024 +0000
  
  namespace blink {
  
-@@ -22,21 +25,39 @@ struct HarfBuzzFontData;
+@@ -22,21 +25,39 @@
  // FIXME, crbug.com/609099: We should fix the FontCache to only keep one
  // FontPlatformData object independent of size, then consider using this here.
  
@@ -378,7 +378,7 @@ Date:   Tue Feb 20 17:40:39 2024 +0000
  }  // namespace blink
 --- a/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_font_data.h
 +++ b/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_font_data.h
-@@ -22,18 +22,15 @@ const unsigned kInvalidFallbackMetricsVa
+@@ -22,18 +22,15 @@
  // The HarfBuzzFontData struct carries user-pointer data for
  // |hb_font_t| callback functions/operations. It contains metrics and OpenType
  // layout information related to a font scaled to a particular size.
@@ -401,7 +401,7 @@ Date:   Tue Feb 20 17:40:39 2024 +0000
    // The vertical origin and vertical advance functions in HarfBuzzFace require
    // the ascent and height metrics as fallback in case no specific vertical
    // layout information is found from the font.
-@@ -81,7 +78,6 @@ struct HarfBuzzFontData final : public G
+@@ -81,7 +78,6 @@
      return vertical_data_;
    }
  
