@@ -21,7 +21,7 @@ GN_FLAGS := $(shell tr "\n" " " < $(UC_DIR)/flags.gn | sed 's/"/\\"/g')
 #GN_FLAGS += custom_toolchain=\"//build/toolchain/linux/unbundle:default\" \
 #            host_toolchain=\"//build/toolchain/linux/unbundle:default\"
 #
-#export LLVM_VERSION := 18
+#export LLVM_VERSION := 19
 #export LLVM_DIR := /usr/lib/llvm-$(LLVM_VERSION)/bin
 #
 #export AR     := llvm-ar

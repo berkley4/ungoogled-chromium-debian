@@ -230,10 +230,9 @@ if [ $SYS_CLANG -gt 0 ]; then
 
   [ -n "$CLANG_VER" ] && CLANG_VER_SET=1 || CLANG_VER=$CR_VER
 
-  if [ $CLANG_VER_SET -eq 1 ] && [ $CLANG_VER -lt $CR_VER ]; then
-    printf '%s\n' "WARN: Clang versions below $CR_VER are not supported"
-    printf '%s\n' "WARN: Disabling PGO support"
-    PGO=0
+  if [ $PGO -eq 1 ] && [ $CLANG_VER_SET -eq 1 ] && [ $CLANG_VER -lt $CR_VER ]; then
+    printf '%s\n' "ERROR: Clang versions below $CR_VER are incompatible with PGO"
+    exit 1
   fi
 fi
 
