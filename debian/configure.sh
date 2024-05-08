@@ -224,7 +224,7 @@ esac
 [ -d $RT_DIR/third_party ] && TEST=0 || TEST=1
 
 
-if [ $SYS_CLANG -gt 0 ]; then
+if [ $SYS_CLANG -ge 1 ]; then
   ## Get/set/override default clang version from debian/rules.in
   CR_VER=$(sed -n 's@^#export LLVM_VERSION := @@p' $DEBIAN/rules.in)
 
@@ -386,7 +386,7 @@ if [ $POLLY -eq 0 ]; then
 fi
 
 
-if [ $SYS_RUST -gt 0 ]; then
+if [ $SYS_RUST -ge 1 ]; then
   # GN_FLAGS += rust_sysroot_absolute=\"$(RUST_PATH)\" rustc_version=\"$(RUST_VER)\"
   gn_enable="$gn_enable rust_sysroot_absolute"
 
