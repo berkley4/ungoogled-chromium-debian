@@ -330,7 +330,8 @@ else
 
     #### Clang/LLVM version sanity chack
     if [ $CC_VER -ne $CR_VER ]; then
-      printf '%s\n' "WARN: Clang/LLVM version mismatch in d/control.in and d/rules.in"
+      printf '%s\n' "ERROR: Clang/LLVM version mismatch in d/control.in and d/rules.in"
+      exit 1
     fi
 
     # Check that package version $C_VER is actually installed on the system
