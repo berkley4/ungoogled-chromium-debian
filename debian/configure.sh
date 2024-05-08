@@ -246,7 +246,7 @@ fi
 
 ## Set LTO cache directory and number of LTO jobs
 if [ -n "$LTO_DIR" ]; then
-  if [ ! -d $LTO_DIR ] && [ $TEST -eq 0 ]; then
+  if [ $TEST -eq 0 ] && [ ! -d $LTO_DIR ]; then
     printf '\n%s\n' "ERROR: LTO_DIR path $LTO_DIR does not exist"
     exit 1
   fi
@@ -334,7 +334,7 @@ else
     fi
 
     # Check that package version $C_VER is actually installed on the system
-    if [ ! -x /usr/lib/llvm-$C_VER/bin/clang ] && [ $TEST -eq 0 ]; then
+    if [ $TEST -eq 0 ] && [ ! -x /usr/lib/llvm-$C_VER/bin/clang ]; then
       printf '%s\n' "ERROR: Cannot find /usr/lib/llvm-${C_VER}/bin/clang"
       exit 1
     fi
@@ -363,7 +363,7 @@ else
     RUL="$RUL -e \"/^#export.*:= clang/s@clang@\$LLVM_DIR/clang@\""
   else
     # Autodetect C_VER if it's not explicity set
-    if [ $C_VER_SET -eq 0 ] && [ $TEST -eq 0 ]; then
+    if [ $TEST -eq 0 ] && [ $C_VER_SET -eq 0 ]; then
       C_VER=$(realpath $(command -v clang) | sed 's@/usr/local/bin/clang-@@')
     fi
 
