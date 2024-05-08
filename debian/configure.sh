@@ -17,7 +17,7 @@ sys_disable=; sys_enable=
 
 SER_DB=; SER_U=; SERIES_DB=; SERIES_UC=
 
-C_VER_SET=0
+CLANG_VER_SET=0
 MARCH_SET=0
 MEDIA_REMOTING_SET=0
 MTUNE_SET=0
@@ -227,9 +227,9 @@ esac
 ## Get/set/override default clang version from debian/rules.in
 CR_VER=$(sed -n 's@^#export LLVM_VERSION := @@p' $DEBIAN/rules.in)
 
-[ -n "$C_VER" ] && C_VER_SET=1 || C_VER=$CR_VER
+[ -n "$CLANG_VER" ] && CLANG_VER_SET=1 || CLANG_VER=$CR_VER
 
-if [ $C_VER_SET -eq 1 ] && [ $C_VER -lt $CR_VER ]; then
+if [ $CLANG_VER_SET -eq 1 ] && [ $CLANG_VER -lt $CR_VER ]; then
   printf '%s\n' "WARN: Clang versions below $CR_VER are not supported"
   printf '%s\n' "WARN: Disabling PGO support"
   PGO=0
@@ -318,13 +318,15 @@ if [ $SYS_CLANG -eq 0 ]; then
 else
   op_enable="$op_enable system/clang/clang-version-check"
 
-  #GN_FLAGS += clang_base_path=CLANG_DIR clang_verion=CLANG_VER
+  # GN_FLAGS += clang_base_path=\"$(LLVM_BASE_DIR)\" clang_version=\"$(LLVM_VER)\"
   gn_enable="$gn_enable clang_base_path"
 
-  CLANG_DIR=/usr/lib/llvm-$C_VER
-  CLANG_VER=$C_VER
+  # For SYS_CLANG=2
+  LLVM_BASE_DIR=/usr/local
 
   if [ $SYS_CLANG -eq 1 ]; then
+    LLVM_BASE_DIR=/usr/lib/llvm-$CLANG_VER
+
     # Grab the clang version used in debian/control.in
     CC_VER=$(sed -n 's@[ #]lld-\([^,]*\).*@\1@p' $DEBIAN/control.in)
 
@@ -334,9 +336,9 @@ else
       exit 1
     fi
 
-    # Check that package version $C_VER is actually installed on the system
-    if [ $TEST -eq 0 ] && [ ! -x /usr/lib/llvm-$C_VER/bin/clang ]; then
-      printf '%s\n' "ERROR: Cannot find /usr/lib/llvm-${C_VER}/bin/clang"
+    # Check that package version $CLANG_VER is actually installed on the system
+    if [ $TEST -eq 0 ] && [ ! -x $LLVM_BASE_DIR/bin/clang ]; then
+      printf '%s\n' "ERROR: Cannot find $LLVM_BASE_DIR/bin/clang"
       exit 1
     fi
 
@@ -344,43 +346,36 @@ else
     op_enable="$op_enable system/clang/rust-clanglib"
 
     # Change clang version in d/control if override version differs
-    if [ $CC_VER -ne $C_VER ]; then
-      CON="$CON -e \"/^[ ]*#[ ]*lld-/s@$CC_VER@$C_VER@\""
-      CON="$CON -e \"/^[ ]*#[ ]*clang-/s@$CC_VER@$C_VER@\""
-      CON="$CON -e \"/^[ ]*#[ ]*libclang-rt-/s@$CC_VER@$C_VER@\""
+    if [ $CC_VER -ne $CLANG_VER ]; then
+      CON="$CON -e \"/^[ ]*#[ ]*lld-/s@$CC_VER@$CLANG_VER@\""
+      CON="$CON -e \"/^[ ]*#[ ]*clang-/s@$CC_VER@$CLANG_VER@\""
+      CON="$CON -e \"/^[ ]*#[ ]*libclang-rt-/s@$CC_VER@$CLANG_VER@\""
     fi
 
     # Change clang version in d/rules if override version differs
-    if [ $CR_VER -ne $C_VER ]; then
-      RUL="$RUL -e \"/^#export LLVM_VERSION /s@$CR_VER@$C_VER@\""
+    if [ $CR_VER -ne $CLANG_VER ]; then
+      RUL="$RUL -e \"/^#export LLVM_VERSION /s@$CR_VER@$CLANG_VER@\""
     fi
 
-    # Uncomment the export of LLVM_VERSION and LLVM_DIR variables
+    # Uncomment the export of LLVM_VERSION and LLVM_BASE_DIR variables
     RUL="$RUL -e \"/^#export LLVM_VERSION /s@^#@@\""
     RUL="$RUL -e \"/^#export LLVM_DIR /s@^#@@\""
 
     # Prefix clang, clang++ and llvm-{ar,nm,ranlib} with $LLVM_DIR path
     RUL="$RUL -e \"/^#export.*:= llvm-/s@llvm-@\$LLVM_DIR/llvm-@\""
     RUL="$RUL -e \"/^#export.*:= clang/s@clang@\$LLVM_DIR/clang@\""
-  else
-    # Autodetect C_VER if it's not explicity set
-    if [ $TEST -eq 0 ] && [ $C_VER_SET -eq 0 ]; then
-      C_VER=$(realpath $(command -v clang) | sed 's@/usr/local/bin/clang-@@')
-    fi
-
-    CLANG_DIR=/usr/local
-    CLANG_VER=$C_VER
   fi
+
+  # Enable getting LLVM_VER via d/rules
+  RUL="$RUL -e \"/^#LLVM_BASE_DIR /s@^#@@\""
+  RUL="$RUL -e \"/^LLVM_BASE_DIR /s@_LLVM_BASE_DIR@$LLVM_BASE_DIR@\""
+  RUL="$RUL -e \"/^#LLVM_VER /s@^#@@\""
 
   # Enable the system package/local toolchain
   RUL="$RUL -e \"/^#export.*_toolchain=/s@^#@@\""
   RUL="$RUL -e \"/^#export.*:= llvm-/s@^#@@\""
   RUL="$RUL -e \"/^#export.*:= clang/s@^#@@\""
   RUL="$RUL -e \"/^#export.*_MAINT_SET/s@^#@@\""
-
-  # Set clang path/version build flags in d/rules
-  RUL="$RUL -e \"/clang_base_path=/s@_CLANG_DIR@\x5c\x22$CLANG_DIR\x5c\x22@\""
-  RUL="$RUL -e \"/clang_version=/s@_CLANG_VER@\x5c\x22$CLANG_VER\x5c\x22@\""
 fi
 
 
