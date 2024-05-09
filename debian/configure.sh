@@ -339,12 +339,6 @@ else
       exit 1
     fi
 
-    # Check that package version $CLANG_VER is actually installed on the system
-    if [ $TEST -eq 0 ] && [ ! -x $LLVM_BASE_DIR/bin/clang ]; then
-      printf '%s\n' "ERROR: Cannot find $LLVM_BASE_DIR/bin/clang"
-      exit 1
-    fi
-
     deps_enable="$deps_enable lld clang libclang-rt"
     op_enable="$op_enable system/clang/rust-clanglib"
 
@@ -367,6 +361,12 @@ else
     # Prefix clang, clang++ and llvm-{ar,nm,ranlib} with $LLVM_DIR path
     RUL="$RUL -e \"/^#export.*:= llvm-/s@llvm-@\$LLVM_DIR/llvm-@\""
     RUL="$RUL -e \"/^#export.*:= clang/s@clang@\$LLVM_DIR/clang@\""
+  fi
+
+  # Check that a working clang is installed on the system
+  if [ $TEST -eq 0 ] && [ ! -x $LLVM_BASE_DIR/bin/clang ]; then
+    printf '%s\n' "ERROR: Cannot find $LLVM_BASE_DIR/bin/clang"
+    exit 1
   fi
 
   # Enable the system package/local toolchain
