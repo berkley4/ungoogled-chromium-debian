@@ -323,10 +323,11 @@ else
   # GN_FLAGS += clang_base_path=\"$(LLVM_BASE_DIR)\" clang_version=\"$(LLVM_VER)\"
   gn_enable="$gn_enable clang_base_path"
 
-  # For SYS_CLANG=2
+  # Base path for SYS_CLANG=2
   LLVM_BASE_DIR=/usr/local
 
   if [ $SYS_CLANG -eq 1 ]; then
+    # Base path for SYS_CLANG=1
     LLVM_BASE_DIR=/usr/lib/llvm-$CLANG_VER
 
     # Grab the clang version used in debian/control.in
@@ -359,7 +360,7 @@ else
       RUL="$RUL -e \"/^#export LLVM_VERSION /s@$CR_VER@$CLANG_VER@\""
     fi
 
-    # Uncomment the export of LLVM_VERSION and LLVM_BASE_DIR variables
+    # Enable export of LLVM_DIR path
     RUL="$RUL -e \"/^#export LLVM_VERSION /s@^#@@\""
     RUL="$RUL -e \"/^#export LLVM_DIR /s@^#@@\""
 
@@ -368,16 +369,16 @@ else
     RUL="$RUL -e \"/^#export.*:= clang/s@clang@\$LLVM_DIR/clang@\""
   fi
 
-  # Enable getting LLVM_VER via d/rules
-  RUL="$RUL -e \"/^#LLVM_BASE_DIR /s@^#@@\""
-  RUL="$RUL -e \"/^LLVM_BASE_DIR /s@_LLVM_BASE_DIR@$LLVM_BASE_DIR@\""
-  RUL="$RUL -e \"/^#LLVM_VER /s@^#@@\""
-
   # Enable the system package/local toolchain
   RUL="$RUL -e \"/^#export.*_toolchain=/s@^#@@\""
   RUL="$RUL -e \"/^#export.*:= llvm-/s@^#@@\""
   RUL="$RUL -e \"/^#export.*:= clang/s@^#@@\""
   RUL="$RUL -e \"/^#export.*_MAINT_SET/s@^#@@\""
+
+  # Enable getting clang version via d/rules (for passing to a build flag)
+  RUL="$RUL -e \"/^#LLVM_BASE_DIR /s@^#@@\""
+  RUL="$RUL -e \"/^LLVM_BASE_DIR /s@_LLVM_BASE_DIR@$LLVM_BASE_DIR@\""
+  RUL="$RUL -e \"/^#LLVM_VER /s@^#@@\""
 fi
 
 
@@ -404,6 +405,7 @@ if [ $SYS_RUST -ge 1 ]; then
     exit 1
   fi
 
+  # Enable getting rust version string via d/rules (for passing to a build flag)
   RUL="$RUL -e \"/^#RUST_PATH /s@^#@@\""
   RUL="$RUL -e \"/^RUST_PATH /s@_RUST_PATH@$RUST_PATH@\""
   RUL="$RUL -e \"/^#RUST_VER /s@^#@@\""
