@@ -237,14 +237,6 @@ if [ $SYS_CLANG -ge 1 ]; then
 fi
 
 
-# Machine function splitting relies on PGO being enabled
-if [ $PGO -eq 0 ] && [ $MF_SPLIT -eq 1 ]; then
-  printf '%s\n' "WARN: MF_SPLIT depends on PGO=1"
-  printf '%s\n' "WARN: Setting MF_SPLIT=0"
-  MF_SPLIT=0
-fi
-
-
 
 ## Set LTO cache directory and number of LTO jobs
 if [ -n "$LTO_DIR" ]; then
@@ -297,9 +289,9 @@ fi
 
 
 
-####################################
-## Clang/Polly/Rust configuration ##
-####################################
+##############################################################
+## Clang/Polly/Machine Function Splitter/Rust configuration ##
+##############################################################
 
 ## Enable the use of ccache
 if [ $CCACHE -eq 1 ]; then
@@ -382,11 +374,6 @@ else
 fi
 
 
-if [ $POLLY -eq 0 ]; then
-  op_disable="$op_disable compiler-flags/polly"
-fi
-
-
 if [ $SYS_RUST -ge 1 ]; then
   # GN_FLAGS += rust_sysroot_absolute=\"$(RUST_PATH)\" rustc_version=\"$(RUST_VER)\"
   gn_enable="$gn_enable rust_sysroot_absolute"
@@ -409,6 +396,19 @@ if [ $SYS_RUST -ge 1 ]; then
   RUL="$RUL -e \"/^#RUST_PATH /s@^#@@\""
   RUL="$RUL -e \"/^RUST_PATH /s@_RUST_PATH@$RUST_PATH@\""
   RUL="$RUL -e \"/^#RUST_VER /s@^#@@\""
+fi
+
+
+# Machine function splitting relies on PGO being enabled
+if [ $PGO -eq 0 ] && [ $MF_SPLIT -eq 1 ]; then
+  printf '%s\n' "WARN: MF_SPLIT depends on PGO=1"
+  printf '%s\n' "WARN: Setting MF_SPLIT=0"
+  MF_SPLIT=0
+fi
+
+
+if [ $POLLY -eq 0 ]; then
+  op_disable="$op_disable compiler-flags/polly"
 fi
 
 
