@@ -216,26 +216,12 @@ esac
 
 
 
-##############################################################################
-## Test mode | Clang versioning | LTO | Symbol levels | Package compression ##
-##############################################################################
+###########################################################
+## Test mode | LTO | Symbol levels | Package compression ##
+###########################################################
 
 ## Enter test mode if $RT_DIR/third_party does not exist
 [ -d $RT_DIR/third_party ] && TEST=0 || TEST=1
-
-
-if [ $SYS_CLANG -ge 1 ]; then
-  ## Get/set/override default clang version from debian/rules.in
-  CR_VER=$(sed -n 's@^#export LLVM_VERSION := @@p' $DEBIAN/rules.in)
-
-  [ -n "$CLANG_VER" ] && CLANG_VER_SET=1 || CLANG_VER=$CR_VER
-
-  if [ $PGO -eq 1 ] && [ $CLANG_VER_SET -eq 1 ] && [ $CLANG_VER -lt $CR_VER ]; then
-    printf '%s\n' "ERROR: Clang versions below $CR_VER are incompatible with PGO"
-    exit 1
-  fi
-fi
-
 
 
 ## Set LTO cache directory and number of LTO jobs
@@ -315,24 +301,28 @@ else
   # GN_FLAGS += clang_base_path=\"$(LLVM_BASE_DIR)\" clang_version=\"$(LLVM_VER)\"
   gn_enable="$gn_enable clang_base_path"
 
-  # Base path for SYS_CLANG=2
+  # Get the clang version used in d/rules.in
+  CR_VER=$(sed -n 's@^#export LLVM_VERSION := @@p' $DEBIAN/rules.in)
+
+  # Base clang/llvm path for SYS_CLANG=2
   LLVM_BASE_DIR=/usr/local
 
   if [ $SYS_CLANG -eq 1 ]; then
-    # Base path for SYS_CLANG=1
-    LLVM_BASE_DIR=/usr/lib/llvm-$CLANG_VER
-
-    # Grab the clang version used in debian/control.in
+    # Get the clang version used in d/control.in
     CC_VER=$(sed -n 's@[ #]lld-\([^,]*\).*@\1@p' $DEBIAN/control.in)
 
-    #### Clang/LLVM version sanity chack
-    if [ $CC_VER -ne $CR_VER ]; then
-      printf '%s\n' "ERROR: Clang/LLVM version mismatch in d/control.in and d/rules.in"
+    # CLANG_VER is set to CR_VER by default
+    [ -n "$CLANG_VER" ] && CLANG_VER_SET=1 || CLANG_VER=$CR_VER
+
+    LLVM_BASE_DIR=/usr/lib/llvm-$CLANG_VER
+
+    if [ $PGO -eq 1 ] && [ $CLANG_VER_SET -eq 1 ] && [ $CLANG_VER -lt $CR_VER ]; then
+      printf '%s\n' "ERROR: Clang versions below $CR_VER are incompatible with PGO"
       exit 1
     fi
 
-    deps_enable="$deps_enable lld clang libclang-rt"
     op_enable="$op_enable system/clang/rust-clanglib"
+    deps_enable="$deps_enable lld clang libclang-rt"
 
     # Change clang version in d/control if override version differs
     if [ $CC_VER -ne $CLANG_VER ]; then
