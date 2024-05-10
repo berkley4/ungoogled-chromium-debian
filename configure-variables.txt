@@ -17,9 +17,7 @@ NON_FREE		1		Anyone distributing built debs should configure with NON_FREE=0
 SYMBOLS			0		symbol_level build flag: -1 = auto-set; 0 = none; 1 = minimal; 2 = regular
 SYMBOLS_BLINK		0		blink_symbol_level build flag: -1 = auto-set; 0 = minimal; 1 = medium; 2 = regular
 
-CLANG_VER		<version>	Override the default clang version. The default is derived from LLVM_VERSION in debian/rules
-					which in turn is made to match the current version of the upstream chromium bundled clang.
-					This mainly affects SYS_CLANG=1, but also SYS_CLANG=2 when checking to see if PGO can be enabled.
+CLANG_VER		<version>	Override the default clang version (from LLVM_VERSION in d/rules). Affects SYS_CLANG=1 only.
 
 SYS_CLANG		0		Use in-tree chromium clang/llvm binaries
 			1		Use a system clang package (eg from apt.llvm.org)

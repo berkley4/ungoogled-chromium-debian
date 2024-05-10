@@ -104,9 +104,7 @@ GN_FLAGS +=                                     \
 #GN_FLAGS += cc_wrapper=ccache
 
 # Clang toolchain
-#LLVM_BASE_DIR := _LLVM_BASE_DIR
-#LLVM_VER := $(shell $(LLVM_BASE_DIR)/bin/clang --version | sed -n 's@.*clang version \([^\.]*\).*@\1@p')
-#GN_FLAGS += clang_base_path=\"$(LLVM_BASE_DIR)\" clang_version=\"$(LLVM_VER)\"
+#GN_FLAGS += clang_base_path=\"_LLVM_BASE_DIR\" clang_version=\"_LLVM_VER\"
 
 # Rust toolchain
 export RUSTC_BOOTSTRAP=1

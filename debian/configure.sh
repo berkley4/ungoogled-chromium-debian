@@ -316,11 +316,6 @@ else
 
     LLVM_BASE_DIR=/usr/lib/llvm-$CLANG_VER
 
-    if [ $PGO -eq 1 ] && [ $CLANG_VER_SET -eq 1 ] && [ $CLANG_VER -lt $CR_VER ]; then
-      printf '%s\n' "ERROR: Clang versions below $CR_VER are incompatible with PGO"
-      exit 1
-    fi
-
     op_enable="$op_enable system/clang/rust-clanglib"
     deps_enable="$deps_enable lld clang libclang-rt"
 
@@ -336,7 +331,7 @@ else
       RUL="$RUL -e \"/^#export LLVM_VERSION /s@$CR_VER@$CLANG_VER@\""
     fi
 
-    # Enable export of LLVM_DIR path
+    # Enable export of LLVM_VERSION and LLVM_DIR
     RUL="$RUL -e \"/^#export LLVM_VERSION /s@^#@@\""
     RUL="$RUL -e \"/^#export LLVM_DIR /s@^#@@\""
 
@@ -345,22 +340,26 @@ else
     RUL="$RUL -e \"/^#export.*:= clang/s@clang@\$LLVM_DIR/clang@\""
   fi
 
-  # Check that a working clang is installed on the system
-  if [ $TEST -eq 0 ] && [ ! -x $LLVM_BASE_DIR/bin/clang ]; then
-    printf '%s\n' "ERROR: Cannot find $LLVM_BASE_DIR/bin/clang"
+  if [ $TEST -eq 0 ]; then
+    # Get the actual clang version
+    LLVM_VER=$($LLVM_BASE_DIR/bin/clang --version | sed -n 's@.*version \([^.]*\).*@\1@p')
+  fi
+
+  # Check our clang version for PGO compatibility
+  if [ $PGO -eq 1 ] && [ $LLVM_VER -lt $CR_VER ]; then
+    printf '%s\n' "ERROR: Clang versions below $CR_VER are incompatible with PGO"
     exit 1
   fi
 
-  # Enable the system package/local toolchain
+  # Enable the system package/local toolchain variables
   RUL="$RUL -e \"/^#export.*_toolchain=/s@^#@@\""
   RUL="$RUL -e \"/^#export.*:= llvm-/s@^#@@\""
   RUL="$RUL -e \"/^#export.*:= clang/s@^#@@\""
   RUL="$RUL -e \"/^#export.*_MAINT_SET/s@^#@@\""
 
-  # Enable getting clang version via d/rules (for passing to a build flag)
-  RUL="$RUL -e \"/^#LLVM_BASE_DIR /s@^#@@\""
-  RUL="$RUL -e \"/^LLVM_BASE_DIR /s@_LLVM_BASE_DIR@$LLVM_BASE_DIR@\""
-  RUL="$RUL -e \"/^#LLVM_VER /s@^#@@\""
+  # Set LLVM_BASE_DIR and LLVM_VER in d/rules (for passing to build flags)
+  RUL="$RUL -e \"s@_LLVM_BASE_DIR@$LLVM_BASE_DIR@\""
+  RUL="$RUL -e \"s@_LLVM_VER@$LLVM_VER@\""
 fi
 
 
