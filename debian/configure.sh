@@ -321,38 +321,8 @@ else
   # CLANG_VER is set to CR_VER by default
   [ -n "$CLANG_VER" ] && CLANG_VER_SET=1 || CLANG_VER=$CR_VER && sanitise_clang_ver
 
-  # Base clang/llvm path for SYS_CLANG=2
-  LLVM_BASE_DIR=/usr/local
-
-  if [ $SYS_CLANG -eq 1 ]; then
-    # Get the clang version used in d/control.in
-    CC_VER=$(sed -n 's@[ #]lld-\([^,]*\).*@\1@p' $DEBIAN/control.in)
-
-    LLVM_BASE_DIR=/usr/lib/llvm-$CLANG_VER
-
-    op_enable="$op_enable system/clang/rust-clanglib"
-    deps_enable="$deps_enable lld clang libclang-rt"
-
-    # Change clang version in d/control if override version differs
-    if [ $CC_VER -ne $CLANG_VER ]; then
-      CON="$CON -e \"/^[ ]*#[ ]*lld-/s@$CC_VER@$CLANG_VER@\""
-      CON="$CON -e \"/^[ ]*#[ ]*clang-/s@$CC_VER@$CLANG_VER@\""
-      CON="$CON -e \"/^[ ]*#[ ]*libclang-rt-/s@$CC_VER@$CLANG_VER@\""
-    fi
-
-    # Change clang version in d/rules if override version differs
-    if [ $CR_VER -ne $CLANG_VER ]; then
-      RUL="$RUL -e \"/^#export LLVM_VERSION /s@$CR_VER@$CLANG_VER@\""
-    fi
-
-    # Enable export of LLVM_VERSION and LLVM_DIR
-    RUL="$RUL -e \"/^#export LLVM_VERSION /s@^#@@\""
-    RUL="$RUL -e \"/^#export LLVM_DIR /s@^#@@\""
-
-    # Prefix clang, clang++ and llvm-{ar,nm,ranlib} with $LLVM_DIR path
-    RUL="$RUL -e \"/^#export.*:= llvm-/s@llvm-@\$LLVM_DIR/llvm-@\""
-    RUL="$RUL -e \"/^#export.*:= clang/s@clang@\$LLVM_DIR/clang@\""
-  fi
+  LLVM_BASE_DIR=/usr/lib/llvm-$CLANG_VER
+  [ $SYS_CLANG -eq 1 ] || LLVM_BASE_DIR=/usr/local
 
   if [ $TEST -eq 0 ]; then
     if [ $CLANG_VER_SET -eq 0 ]; then
@@ -383,6 +353,34 @@ else
   # Set LLVM_BASE_DIR and LLVM_VER in d/rules (for passing to build flags)
   RUL="$RUL -e \"s@_LLVM_BASE_DIR@$LLVM_BASE_DIR@\""
   RUL="$RUL -e \"s@_LLVM_VER@$LLVM_VER@\""
+
+  if [ $SYS_CLANG -eq 1 ]; then
+    op_enable="$op_enable system/clang/rust-clanglib"
+    deps_enable="$deps_enable lld clang libclang-rt"
+
+    # Get the clang version used in d/control.in
+    CC_VER=$(sed -n 's@[ #]lld-\([^,]*\).*@\1@p' $DEBIAN/control.in)
+
+    # Change clang version in d/control if override version differs
+    if [ $CC_VER -ne $CLANG_VER ]; then
+      CON="$CON -e \"/^[ ]*#[ ]*lld-/s@$CC_VER@$CLANG_VER@\""
+      CON="$CON -e \"/^[ ]*#[ ]*clang-/s@$CC_VER@$CLANG_VER@\""
+      CON="$CON -e \"/^[ ]*#[ ]*libclang-rt-/s@$CC_VER@$CLANG_VER@\""
+    fi
+
+    # Change clang version in d/rules if override version differs
+    if [ $CR_VER -ne $CLANG_VER ]; then
+      RUL="$RUL -e \"/^#export LLVM_VERSION /s@$CR_VER@$CLANG_VER@\""
+    fi
+
+    # Enable export of LLVM_VERSION and LLVM_DIR
+    RUL="$RUL -e \"/^#export LLVM_VERSION /s@^#@@\""
+    RUL="$RUL -e \"/^#export LLVM_DIR /s@^#@@\""
+
+    # Prefix clang, clang++ and llvm-{ar,nm,ranlib} with $LLVM_DIR path
+    RUL="$RUL -e \"/^#export.*:= llvm-/s@llvm-@\$LLVM_DIR/llvm-@\""
+    RUL="$RUL -e \"/^#export.*:= clang/s@clang@\$LLVM_DIR/clang@\""
+  fi
 fi
 
 
