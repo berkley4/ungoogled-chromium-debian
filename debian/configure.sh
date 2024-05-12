@@ -304,15 +304,15 @@ else
   # Get the clang version used in d/rules.in
   CR_VER=$(sed -n 's@^#export LLVM_VERSION := @@p' $DEBIAN/rules.in)
 
+  # CLANG_VER is set to CR_VER by default
+  [ -n "$CLANG_VER" ] && CLANG_VER_SET=1 || CLANG_VER=$CR_VER
+
   # Base clang/llvm path for SYS_CLANG=2
   LLVM_BASE_DIR=/usr/local
 
   if [ $SYS_CLANG -eq 1 ]; then
     # Get the clang version used in d/control.in
     CC_VER=$(sed -n 's@[ #]lld-\([^,]*\).*@\1@p' $DEBIAN/control.in)
-
-    # CLANG_VER is set to CR_VER by default
-    [ -n "$CLANG_VER" ] && CLANG_VER_SET=1 || CLANG_VER=$CR_VER
 
     LLVM_BASE_DIR=/usr/lib/llvm-$CLANG_VER
 
@@ -341,8 +341,17 @@ else
   fi
 
   if [ $TEST -eq 0 ]; then
-    # Get the actual clang version
-    LLVM_VER=$($LLVM_BASE_DIR/bin/clang --version | sed -n 's@.*version \([^.]*\).*@\1@p')
+    if [ $CLANG_VER_SET -eq 0 ]; then
+      # If CLANG_VER has NOT been set explicity then get the version from the binary
+      LLVM_VER=$($LLVM_BASE_DIR/bin/clang --version | sed -n 's@.*version \([^.]*\).*@\1@p')
+    else
+      # If CLANG_VER has been set explicity then trust the version and do a quick usability check
+      LLVM_VER=$CLANG_VER
+      if [ ! -x $LLVM_BASE_DIR/bin/clang ]; then
+        printf '%s\n' "ERROR: Cannot find $LLVM_BASE_DIR/bin/clang"
+        exit 1
+      fi
+    fi
   fi
 
   # Check our clang version for PGO compatibility

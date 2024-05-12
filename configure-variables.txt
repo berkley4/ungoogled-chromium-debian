@@ -17,7 +17,11 @@ NON_FREE		1		Anyone distributing built debs should configure with NON_FREE=0
 SYMBOLS			0		symbol_level build flag: -1 = auto-set; 0 = none; 1 = minimal; 2 = regular
 SYMBOLS_BLINK		0		blink_symbol_level build flag: -1 = auto-set; 0 = minimal; 1 = medium; 2 = regular
 
-CLANG_VER		<version>	Override the default clang version (from LLVM_VERSION in d/rules). Affects SYS_CLANG=1 only.
+CLANG_VER		<major ver>	Override the default clang version.
+					Set this to skip querying the chrome binary for version info. Only do so if you know for
+					sure that you have a particular version installed. If CLANG_VER is not set then	you will
+					get an error if you do not have a version installed which at least equals the version of
+					LLEV_VERSION in debian/rules.in. This setting has no effect if SYS_CLANG=0.
 
 SYS_CLANG		0		Use in-tree chromium clang/llvm binaries
 			1		Use a system clang package (eg from apt.llvm.org)
