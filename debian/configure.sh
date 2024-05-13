@@ -336,6 +336,9 @@ else
         exit 1
       fi
     fi
+  else
+    # Allow LLVM_VER to be specified and default to $CLANG_VER for testing purposes
+    [ -n "$LLVM_VER" ] || LLVM_VER=$CLANG_VER
   fi
 
   # Check our clang version for PGO compatibility
