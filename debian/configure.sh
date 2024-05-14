@@ -381,8 +381,8 @@ else
     RUL="$RUL -e \"/^#export LLVM_DIR /s@^#@@\""
 
     # Prefix clang, clang++ and llvm-{ar,nm,ranlib} with $LLVM_DIR path
-    RUL="$RUL -e \"/^#export.*:= llvm-/s@llvm-@\$LLVM_DIR/llvm-@\""
-    RUL="$RUL -e \"/^#export.*:= clang/s@clang@\$LLVM_DIR/clang@\""
+    RUL="$RUL -e \"/^export.*:= llvm-/s@\(llvm-\)@\x24\x28LLVM_DIR\x29/\1@\""
+    RUL="$RUL -e \"/^export.*:= clang/s@\(clang\)@\x24\x28LLVM_DIR\x28/\1@\""
   fi
 fi
 
