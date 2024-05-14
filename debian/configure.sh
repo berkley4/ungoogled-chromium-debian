@@ -361,18 +361,12 @@ else
     op_enable="$op_enable system/clang/rust-clanglib"
     deps_enable="$deps_enable lld clang libclang-rt"
 
-    # Get the clang version used in d/control.in
-    CC_VER=$(sed -n 's@[ #]lld-\([^,]*\).*@\1@p' $DEBIAN/control.in)
-
-    # Change clang version in d/control if override version differs
-    if [ $CC_VER -ne $CLANG_VER ]; then
-      CON="$CON -e \"/^[ ]*#[ ]*lld-/s@$CC_VER@$CLANG_VER@\""
-      CON="$CON -e \"/^[ ]*#[ ]*clang-/s@$CC_VER@$CLANG_VER@\""
-      CON="$CON -e \"/^[ ]*#[ ]*libclang-rt-/s@$CC_VER@$CLANG_VER@\""
-    fi
-
-    # Change clang version in d/rules if override version differs
+    # Change version in d/control and d/rules if CR_VER and CLANG_VER differ
     if [ $CR_VER -ne $CLANG_VER ]; then
+      CON="$CON -e \"/^[ ]*#[ ]*lld-/s@$CR_VER@$CLANG_VER@\""
+      CON="$CON -e \"/^[ ]*#[ ]*clang-/s@$CR_VER@$CLANG_VER@\""
+      CON="$CON -e \"/^[ ]*#[ ]*libclang-rt-/s@$CR_VER@$CLANG_VER@\""
+
       RUL="$RUL -e \"/^#export LLVM_VERSION /s@$CR_VER@$CLANG_VER@\""
     fi
 
