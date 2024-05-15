@@ -1,0 +1,53 @@
+From aad11d41151d1a57dcecc3cf074df8ab1b04f126 Mon Sep 17 00:00:00 2001
+From: Nihar Majmudar <niharm@google.com>
+Date: Thu, 09 May 2024 15:53:40 +0000
+Subject: [PATCH] [searchbox] Add spark icon resource to searchbox.
+
+Gemini shortcut icon was missing in searchbox causing crash in
+ActionVectorIconToResourceName. Adding spark icon resource resolves
+this.
+
+Bug: 338902405
+Change-Id: I08fee150f6da89e062f1dea0593304263871601a
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5525591
+Reviewed-by: Moe Ahmadi <mahmadi@chromium.org>
+Commit-Queue: Nihar Majmudar <niharm@google.com>
+Cr-Commit-Position: refs/heads/main@{#1298650}
+---
+
+--- a/chrome/browser/ui/webui/searchbox/searchbox_handler.cc
++++ b/chrome/browser/ui/webui/searchbox/searchbox_handler.cc
+@@ -90,6 +90,8 @@
+     "//resources/cr_components/searchbox/icons/page.svg";
+ const char* kPedalsIconResourceName = "//theme/current-channel-logo";
+ const char* kSearchIconResourceName = "//resources/images/icon_search.svg";
++const char* kSparkIconResourceName =
++    "//resources/cr_components/searchbox/icons/spark.svg";
+ const char* kTabIconResourceName =
+     "//resources/cr_components/searchbox/icons/tab.svg";
+ const char* kTrendingUpIconResourceName =
+@@ -673,6 +675,9 @@
+     return kShareIconResourceName;
+   }
+ #endif
++  if (icon.name == omnibox::kSparkIcon.name) {
++    return kSparkIconResourceName;
++  }
+   NOTREACHED() << "Every vector icon returned by OmniboxAction::GetVectorIcon "
+                   "must have an equivalent SVG resource for the NTP Realbox. "
+                   "icon.name: '"
+--- a/ui/webui/resources/cr_components/searchbox/icons/BUILD.gn
++++ b/ui/webui/resources/cr_components/searchbox/icons/BUILD.gn
+@@ -50,6 +50,7 @@
+     "share_cr23.svg",
+     "share.svg",
+     "sites.svg",
++    "spark.svg",
+     "sunrise_cr23.svg",
+     "sunrise.svg",
+     "tab_cr23.svg",
+--- /dev/null
++++ b/ui/webui/resources/cr_components/searchbox/icons/spark.svg
+@@ -0,0 +1 @@
++<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#5f6368" viewBox="0 -960 960 960"><path d="M480-96q0-80-30-149.5t-82.5-122Q315-420 245.5-450T96-480q80 0 149.5-30t122-82.5Q420-645 450-715t30-149q0 79 30 149t82.5 122.5Q645-540 715-510t149 30q-79 0-149 30t-122.5 82.5Q540-315 510-245.5T480-96Z"/></svg>
+\ No newline at end of file

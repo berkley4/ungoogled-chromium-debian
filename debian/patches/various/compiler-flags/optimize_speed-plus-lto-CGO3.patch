@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2530,6 +2530,11 @@
+@@ -2535,6 +2535,11 @@
      configs = [ "//build/config/nacl:irt_optimize" ]
    } else {
      ldflags = common_optimize_on_ldflags

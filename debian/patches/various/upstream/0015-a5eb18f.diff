@@ -1,0 +1,68 @@
+From a5eb18f48ff28d55aefe47ba82089c06fd687412 Mon Sep 17 00:00:00 2001
+From: Andrew Paseltiner <apaseltiner@chromium.org>
+Date: Fri, 10 May 2024 16:35:59 +0000
+Subject: [PATCH] Avoid crashing when setAttributionReportingTracking is enabled twice
+
+Previously this method crashed due to a DCHECK in
+base::ScopedObservation::Observe when an observation was already in
+effect.
+
+Bug: 339141101
+Change-Id: Ie9e202c121fd7dff885c60981cd759a3206f8959
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5527382
+Reviewed-by: Andrey Kosyakov <caseq@chromium.org>
+Commit-Queue: Andrew Paseltiner <apaseltiner@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1299294}
+---
+
+--- a/content/browser/devtools/protocol/storage_handler.cc
++++ b/content/browser/devtools/protocol/storage_handler.cc
+@@ -2210,7 +2210,11 @@
+     if (!manager) {
+       return Response::ServerError("Attribution Reporting is disabled.");
+     }
+-    attribution_observation_.Observe(manager);
++    // Prevent `DCHECK` crashes in `base::ScopedObservation::Observe()` when we
++    // are already observing.
++    if (!attribution_observation_.IsObserving()) {
++      attribution_observation_.Observe(manager);
++    }
+   } else {
+     attribution_observation_.Reset();
+   }
+--- /dev/null
++++ b/third_party/blink/web_tests/http/tests/inspector-protocol/attribution-reporting/set-tracking-idempotent-expected.txt
+@@ -0,0 +1,2 @@
++Test that Storage.setAttributionReportingTracking is idempotent and does not crash when called redundantly.
++
+--- /dev/null
++++ b/third_party/blink/web_tests/http/tests/inspector-protocol/attribution-reporting/set-tracking-idempotent.js
+@@ -0,0 +1,28 @@
++// Copyright 2024 The Chromium Authors
++// Use of this source code is governed by a BSD-style license that can be
++// found in the LICENSE file.
++
++// Regression test for https://issues.chromium.org/339141101 in which attempting
++// to enable tracking when it was already enabled caused a DCHECK crash.
++(async function(/** @type {import('test_runner').TestRunner} */ testRunner) {
++  const {dp} = await testRunner.startBlank(
++      'Test that Storage.setAttributionReportingTracking is idempotent and does not crash when called redundantly.');
++
++  await dp.Storage.setAttributionReportingLocalTestingMode({enabled: true});
++
++  await dp.Storage.setAttributionReportingTracking({enable: true});
++  await dp.Storage.setAttributionReportingTracking({enable: true});
++
++  dp.Runtime.evaluate({
++    expression: `
++    document.body.innerHTML = '<img attributionsrc="https://devtools.test:8443/inspector-protocol/attribution-reporting/resources/register-source-filter-data-and-agg-keys.php">';
++  `
++  });
++
++  await dp.Storage.onceAttributionReportingSourceRegistered();
++
++  await dp.Storage.setAttributionReportingTracking({enable: false});
++  await dp.Storage.setAttributionReportingTracking({enable: false});
++
++  testRunner.completeTest();
++})

@@ -26,7 +26,7 @@
  // a directory path. |fallback_dir| is the directory relative to $HOME that we
 --- a/crypto/nss_util.cc
 +++ b/crypto/nss_util.cc
-@@ -30,6 +30,8 @@
+@@ -31,6 +31,8 @@
  #include "build/chromeos_buildflags.h"
  #include "crypto/nss_crypto_module_delegate.h"
  #include "crypto/nss_util_internal.h"
@@ -35,8 +35,8 @@
  
  namespace crypto {
  
-@@ -45,12 +47,21 @@
- 
+@@ -39,12 +41,21 @@
+ #if !(BUILDFLAG(IS_CHROMEOS_ASH) || BUILDFLAG(IS_CHROMEOS_LACROS))
  base::FilePath GetDefaultConfigDirectory() {
    base::FilePath dir;
 +#if defined(OS_LINUX)

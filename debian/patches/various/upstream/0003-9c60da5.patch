@@ -17,7 +17,7 @@ Cr-Commit-Position: refs/heads/main@{#1292983}
 
 --- a/third_party/blink/renderer/core/dom/document.cc
 +++ b/third_party/blink/renderer/core/dom/document.cc
-@@ -5336,7 +5336,7 @@
+@@ -5326,7 +5326,7 @@
    // window size changes during load event dispatch.
    // Note that in the case of the initial empty document, the load may hav
    // completed before performing the first layout.

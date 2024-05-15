@@ -22,7 +22,7 @@ Cr-Commit-Position: refs/heads/main@{#1291446}
 
 --- a/chrome/browser/browser_process_impl.cc
 +++ b/chrome/browser/browser_process_impl.cc
-@@ -845,8 +845,9 @@
+@@ -851,8 +851,9 @@
  NotificationUIManager* BrowserProcessImpl::notification_ui_manager() {
    DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
  #if BUILDFLAG(ENABLE_CHROME_NOTIFICATIONS)

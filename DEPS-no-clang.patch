@@ -1,11 +1,11 @@
 --- a/DEPS
 +++ b/DEPS
-@@ -4553,7 +4553,7 @@
+@@ -4581,7 +4581,7 @@
      # Note: On Win, this should run after win_toolchain, as it may use it.
      'name': 'clang',
      'pattern': '.',
 -    'condition': 'not llvm_force_head_revision',
 +    'condition': 'checkout_x86',
-     'action': ['python3', 'src/tools/clang/scripts/update.py'],
+     'action': ['vpython3', 'src/tools/clang/scripts/update.py'],
    },
    {

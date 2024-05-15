@@ -78,7 +78,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      NetworkStateNotifier::ObserverType type,
 --- a/third_party/blink/renderer/platform/network/network_state_notifier.h
 +++ b/third_party/blink/renderer/platform/network/network_state_notifier.h
-@@ -122,7 +122,7 @@
+@@ -121,7 +121,7 @@
      scoped_refptr<base::SingleThreadTaskRunner> task_runner_;
    };
  

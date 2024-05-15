@@ -1,7 +1,7 @@
 --- a/chrome/test/chromedriver/BUILD.gn
 +++ b/chrome/test/chromedriver/BUILD.gn
-@@ -359,7 +359,8 @@
-     "//base/third_party/dynamic_annotations",
+@@ -357,7 +357,8 @@
+     "//base",
      "//build:branding_buildflags",
      "//build:chromeos_buildflags",
 -    "//chrome/common",

@@ -1,0 +1,64 @@
+From d3e0f45288ed9404eb90fdbf0b38b2d4f699ccd5 Mon Sep 17 00:00:00 2001
+From: Kent Tamura <tkent@chromium.org>
+Date: Tue, 07 May 2024 05:47:30 +0000
+Subject: [PATCH] RubyLB: Fix a crash with a block ruby + text-combine-upright
+
+Bug: 338350893
+Change-Id: Ia6cf5330ca1a4009c484011ca63cbf1890426293
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5518393
+Auto-Submit: Kent Tamura <tkent@chromium.org>
+Commit-Queue: Koji Ishii <kojii@chromium.org>
+Reviewed-by: Koji Ishii <kojii@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1297293}
+---
+
+--- a/third_party/blink/renderer/core/layout/build.gni
++++ b/third_party/blink/renderer/core/layout/build.gni
+@@ -773,6 +773,7 @@
+   "layout_quote_test.cc",
+   "layout_replaced_test.cc",
+   "layout_result_caching_test.cc",
++  "layout_ruby_as_block_test.cc",
+   "layout_ruby_base_test.cc",
+   "layout_ruby_column_test.cc",
+   "layout_shift_region_test.cc",
+--- a/third_party/blink/renderer/core/layout/layout_ruby_as_block.cc
++++ b/third_party/blink/renderer/core/layout/layout_ruby_as_block.cc
+@@ -36,6 +36,9 @@
+             StyleRef(), EDisplay::kRuby);
+     inline_ruby->SetStyle(new_style_builder.TakeStyle());
+     LayoutNGBlockFlow::AddChild(inline_ruby);
++  } else if (before_child == inline_ruby) {
++    inline_ruby->AddChild(child, inline_ruby->SlowFirstChild());
++    return;
+   }
+   inline_ruby->AddChild(child, before_child);
+ }
+--- /dev/null
++++ b/third_party/blink/renderer/core/layout/layout_ruby_as_block_test.cc
+@@ -0,0 +1,25 @@
++// Copyright 2024 The Chromium Authors
++// Use of this source code is governed by a BSD-style license that can be
++// found in the LICENSE file.
++
++#include "third_party/blink/renderer/core/layout/layout_ruby_as_block.h"
++
++#include "third_party/blink/renderer/core/testing/core_unit_test_helper.h"
++
++namespace blink {
++
++class LayoutRubyAsBlockTest : public RenderingTest {};
++
++// crbug.com/338350893
++TEST_F(LayoutRubyAsBlockTest, TextCombineCrash) {
++  SetBodyInnerHTML(R"HTML(
++      <div style="writing-mode:vertical-rl">
++      <ruby id="target" style="display:block ruby; text-combine-upright:all;"></ruby>
++      )HTML");
++  auto* ruby = GetElementById("target");
++  ruby->setInnerHTML("<ol></ol>a");
++  UpdateAllLifecyclePhasesForTest();
++  // Pass if no crashes.
++}
++
++}  // namespace blink

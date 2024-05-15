@@ -1,6 +1,6 @@
 --- a/build/linux/unbundle/replace_gn_files.py
 +++ b/build/linux/unbundle/replace_gn_files.py
-@@ -102,12 +102,12 @@
+@@ -103,12 +103,12 @@
      if args.undo:
        # Restore original file, and also remove the backup.
        # This is meant to restore the source tree to its original state.

@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -503,6 +503,10 @@
+@@ -500,6 +500,10 @@
      ldflags += [ "-fPIC" ]
      rustflags += [ "-Crelocation-model=pic" ]
  

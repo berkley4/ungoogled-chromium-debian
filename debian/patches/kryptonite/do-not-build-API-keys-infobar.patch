@@ -1,9 +1,9 @@
 --- a/chrome/browser/ui/BUILD.gn
 +++ b/chrome/browser/ui/BUILD.gn
-@@ -1430,8 +1430,6 @@
-       "singleton_tabs.h",
-       "startup/automation_infobar_delegate.cc",
-       "startup/automation_infobar_delegate.h",
+@@ -1459,8 +1459,6 @@
+       "startup/default_browser_infobar_delegate.h",
+       "startup/default_browser_prompt_manager.cc",
+       "startup/default_browser_prompt_manager.h",
 -      "startup/google_api_keys_infobar_delegate.cc",
 -      "startup/google_api_keys_infobar_delegate.h",
        "startup/infobar_utils.cc",

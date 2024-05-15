@@ -1,0 +1,42 @@
+From ca682fcb59b09beb951fa393bf153d60ffc2174c Mon Sep 17 00:00:00 2001
+From: kylechar <kylechar@chromium.org>
+Date: Wed, 08 May 2024 19:00:12 +0000
+Subject: [PATCH] Avoid WrappedSkImageBacking crash
+
+When SharedImageFactory is created for WebGL fallback (aka SwiftShader)
+there is no skia context. Don't create WrappedSkImageBackingFactory or
+RawDrawImageBackingFactory since they both require a skia context to be
+used. There are CHECK failures occurring due to this.
+
+Bug: 325850215
+Change-Id: Iae5ed3816841ea289661ce2d3e3bc6a180b3fba4
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5527393
+Commit-Queue: Kyle Charbonneau <kylechar@chromium.org>
+Reviewed-by: Saifuddin Hitawala <hitawala@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1298268}
+---
+
+--- a/gpu/command_buffer/service/shared_image/shared_image_factory.cc
++++ b/gpu/command_buffer/service/shared_image/shared_image_factory.cc
+@@ -258,15 +258,16 @@
+                              use_passthrough, gles2::DisallowedFeatures());
+   }
+ 
+-  {
++  // Skia specific factories can't be used without a Skia context.
++  if (gr_context_type_ != GrContextType::kNone) {
+     auto wrapped_sk_image_factory =
+         std::make_unique<WrappedSkImageBackingFactory>(context_state_);
+     factories_.push_back(std::move(wrapped_sk_image_factory));
+-  }
+ 
+-  if (features::IsUsingRawDraw()) {
+-    auto factory = std::make_unique<RawDrawImageBackingFactory>();
+-    factories_.push_back(std::move(factory));
++    if (features::IsUsingRawDraw()) {
++      auto factory = std::make_unique<RawDrawImageBackingFactory>();
++      factories_.push_back(std::move(factory));
++    }
+   }
+ 
+   bool use_gl =

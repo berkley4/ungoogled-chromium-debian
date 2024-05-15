@@ -1,0 +1,29 @@
+From 0a84a2b6633c42474d6bc74cb0eca24090717d6d Mon Sep 17 00:00:00 2001
+From: Guangyue Xu <guangyue.xu@microsoft.com>
+Date: Wed, 15 May 2024 16:22:21 +0000
+Subject: [PATCH] Fix a webdriver crash issue
+
+During the invoke of the WebView::AttachTo method, the DevToolsClientImpl::ProcessNextMessage method could be invoked recursively. When a target.detachFromTarget command (or a target.detachedFromTarget event) is received, the WebView object will be released. As a side effect, the DevToolsClient object linked to the WebView object is released as well. When there are still commands to be processed, the release of the DevToolsClient object will result in a crash in the std::map::find call in DevToolsClientImpl::ProcessNextMessage.
+
+This crash happened about 3k times out of 400k runs in a test server and is not repro in local runs. This change extends the lifetime of the WebView object and fix webdriver crash issue. The fix has been validated in the test server. No more crashes happened in the std::map::find in DevToolsClientImpl::ProcessNextMessage when the fix is applied.
+
+Bug: 339773537
+Change-Id: I7c9cf1a567f67954e3fdc1bd23e87dacc5092f4e
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5527584
+Commit-Queue: Guangyue Xu <guangyue.xu@microsoft.com>
+Reviewed-by: Vladimir Nechaev <nechaev@chromium.org>
+Reviewed-by: Mathias Bynens <mathias@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1301356}
+---
+
+--- a/chrome/test/chromedriver/chrome/web_view_impl.cc
++++ b/chrome/test/chromedriver/chrome/web_view_impl.cc
+@@ -501,6 +501,8 @@
+ }
+ 
+ Status WebViewImpl::AttachTo(DevToolsClient* root_client) {
++  // Add this target holder to extend the lifetime of webview object.
++  WebViewImplHolder target_holder(this);
+   return client_->AttachTo(root_client);
+ }
+ 

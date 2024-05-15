@@ -24,7 +24,7 @@
    }
 --- a/services/on_device_model/BUILD.gn
 +++ b/services/on_device_model/BUILD.gn
-@@ -42,12 +42,14 @@
+@@ -54,12 +54,14 @@
      }
  
      if (is_linux || is_chromeos) {

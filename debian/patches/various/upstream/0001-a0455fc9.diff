@@ -13,7 +13,7 @@ Cr-Commit-Position: refs/heads/main@{#1288370}
 
 --- a/components/viz/service/frame_sinks/video_capture/frame_sink_video_capturer_impl.cc
 +++ b/components/viz/service/frame_sinks/video_capture/frame_sink_video_capturer_impl.cc
-@@ -1438,8 +1438,10 @@
+@@ -1469,8 +1469,10 @@
      // Note: The following is used by
      // chrome/browser/media/cast_mirroring_performance_browsertest.cc, in
      // addition to the usual runtime tracing

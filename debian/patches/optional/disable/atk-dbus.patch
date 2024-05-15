@@ -108,8 +108,8 @@
 -#if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX)
 +#if BUILDFLAG(IS_CHROMEOS) || (BUILDFLAG(IS_LINUX) && defined(USE_DBUS))
    adapter_info->system_name = adapter_->GetSystemName();
-   adapter_info->floss = floss::features::IsFlossEnabled();
  #endif
+ #if BUILDFLAG(IS_CHROMEOS)
 --- a/device/bluetooth/bluetooth_adapter_factory.cc
 +++ b/device/bluetooth/bluetooth_adapter_factory.cc
 @@ -42,7 +42,7 @@

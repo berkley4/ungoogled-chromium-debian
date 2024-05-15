@@ -17,7 +17,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
 
 --- a/skia/BUILD.gn
 +++ b/skia/BUILD.gn
-@@ -380,9 +380,6 @@
+@@ -384,9 +384,6 @@
      defines += [ "SK_CODEC_DECODES_JPEG_GAINMAPS" ]
    }
  
@@ -27,7 +27,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
    if (is_win) {
      libs = [ "fontsub.lib" ]
    }
-@@ -606,6 +603,8 @@
+@@ -609,6 +606,8 @@
        "SKOTTIE_TRIVIAL_FONTRUN_ITER",
      ]
    }
@@ -94,7 +94,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
  using namespace skia_private;
  
  namespace {
-@@ -1018,9 +1020,13 @@
+@@ -1019,9 +1021,13 @@
          // FT_LOAD_COLOR with scalable fonts means allow SVG.
          // It also implies attempt to render COLR if available, but this is not used.
  #if defined(FT_CONFIG_OPTION_SVG)

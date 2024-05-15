@@ -1,5 +1,5 @@
---- a/google_apis/google_api_keys.cc
-+++ b/google_apis/google_api_keys.cc
+--- a/google_apis/google_api_keys-inc.cc
++++ b/google_apis/google_api_keys-inc.cc
 @@ -182,11 +182,11 @@
  
      std::string default_client_id = CalculateKeyValue(

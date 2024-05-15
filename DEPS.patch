@@ -34,7 +34,7 @@
    # We don't know target_cpu at deps time. At least until there's a universal
    # binary of httpd-php, pull both intel and arm versions in DEPS and then pick
 @@ -605,17 +586,6 @@
-     'condition': 'checkout_mac',
+     'condition': 'checkout_mac or checkout_ios',
    },
  
 -  'src/third_party/apache-linux': {
@@ -73,7 +73,7 @@
 -
    'src/clank': {
      'url': Var('chrome_git') + '/clank/internal/apps.git' + '@' +
-     '53f8d961553cf0cf2215974bc1de646157057f88',
+     'd5317aa5ae96aaa0f64c11e2c9137969dcac3c69',
 @@ -1141,7 +1102,7 @@
            },
        ],
@@ -93,7 +93,7 @@
  
    'src/third_party/crubit/src': {
        'url': Var('chromium_git') + '/external/github.com/google/crubit.git' + '@' + Var('crubit_revision'),
-@@ -1255,9 +1213,6 @@
+@@ -1255,20 +1213,12 @@
    'src/third_party/freetype/src':
      Var('chromium_git') + '/chromium/src/third_party/freetype2.git' + '@' + Var('freetype_revision'),
  
@@ -103,7 +103,18 @@
    'src/third_party/fxdiv/src':
      Var('chromium_git') + '/external/github.com/Maratyszcza/FXdiv.git' + '@' + '63058eff77e11aa15bf531df5dd34395ec3017c8',
  
-@@ -1339,7 +1294,7 @@
+   'src/third_party/harfbuzz-ng/src':
+     Var('chromium_git') + '/external/github.com/harfbuzz/harfbuzz.git' + '@' + Var('harfbuzz_revision'),
+ 
+-  'src/third_party/instrumented_libs': {
+-    'url': Var('chromium_git') + '/chromium/third_party/instrumented_libraries.git' + '@' + '0172d67d98df2d30bd2241959d0e9569ada25abe',
+-    'condition': 'checkout_instrumented_libraries',
+-  },
+-
+   'src/third_party/jszip/src': {
+     'url': Var('chromium_git') + '/external/github.com/Stuk/jszip.git' + '@' + '2ceb998e29d4171b4f3f2ecab1a2195c696543c0',
+     'condition': 'checkout_ios',
+@@ -1344,7 +1294,7 @@
            },
        ],
        # Needed on Linux for use on chromium_presubmit.
@@ -112,7 +123,7 @@
        'dep_type': 'cipd',
    },
  
-@@ -1395,7 +1350,7 @@
+@@ -1400,7 +1350,7 @@
            },
        ],
        # Needed on Linux for use on chromium_presubmit (for checkstyle).
@@ -121,7 +132,7 @@
        'dep_type': 'cipd',
    },
  
-@@ -1446,12 +1401,6 @@
+@@ -1451,12 +1401,6 @@
    'src/third_party/leveldatabase/src':
      Var('chromium_git') + '/external/leveldb.git' + '@' + '068d5ee1a3ac40dabd00d211d5013af44be55bea',
  
@@ -134,7 +145,7 @@
    'src/third_party/libaddressinput/src':
      Var('chromium_git') + '/external/libaddressinput.git' + '@' + 'e8712e415627f22d0b00ebee8db99547077f39bd',
  
-@@ -1473,15 +1422,9 @@
+@@ -1478,15 +1422,9 @@
    'src/third_party/securemessage/src':
      Var('chromium_git') + '/external/github.com/google/securemessage.git' + '@' + Var('securemessage_revision'),
  
@@ -150,7 +161,7 @@
    # Userspace interface to kernel DRM services.
    'src/third_party/libdrm/src': {
        'url': Var('chromium_git') + '/chromiumos/third_party/libdrm.git' + '@' + '98e1db501173303e58ef6a1def94ab7a2d84afc1',
-@@ -1865,11 +1808,6 @@
+@@ -1870,11 +1808,6 @@
        'condition': 'checkout_chromeos',
    },
  
@@ -160,9 +171,9 @@
 -  },
 -
    'src/third_party/xnnpack/src':
-     Var('chromium_git') + '/external/github.com/google/XNNPACK.git' + '@' + '7e696d941310a528dd2d6fbee3d499d19b24746d',
+     Var('chromium_git') + '/external/github.com/google/XNNPACK.git' + '@' + '85071b8b8729f63262484942fc9eb1c7c16525c4',
  
-@@ -4219,17 +4157,6 @@
+@@ -4252,17 +4185,6 @@
      'dep_type': 'cipd',
    },
  
@@ -180,16 +191,16 @@
    'src/third_party/screen-ai/macos_amd64': {
        'packages': [
            {
-@@ -4678,7 +4605,7 @@
+@@ -4711,7 +4633,7 @@
      # dump-static-initializers.py on linux.
      'name': 'objdump',
      'pattern': '.',
 -    'condition': 'checkout_linux or checkout_mac or checkout_android and host_os != "mac"',
 +    'condition': 'checkout_mac or checkout_android and host_os != "mac"',
-     'action': ['python3', 'src/tools/clang/scripts/update.py',
+     'action': ['vpython3', 'src/tools/clang/scripts/update.py',
                 '--package=objdump'],
    },
-@@ -4782,18 +4709,6 @@
+@@ -4815,18 +4737,6 @@
                  '-o', 'src/buildtools/mac/clang-format',
      ],
    },
@@ -208,7 +219,7 @@
    # Pull rc binaries using checked-in hashes.
    {
      'name': 'rc_win',
-@@ -4831,29 +4746,6 @@
+@@ -4864,29 +4774,6 @@
                  '-s', 'src/build/toolchain/win/rc/linux64/rc.sha1',
      ]
    },
@@ -238,9 +249,9 @@
    {
      'name': 'apache_win32',
      'pattern': '\\.sha1',
-@@ -4893,31 +4785,6 @@
-                 '-s', 'src/third_party/instrumented_libraries/binaries/msan-no-origins-focal.tgz.sha1',
-               ],
+@@ -4902,30 +4789,6 @@
+                 'src/third_party/apache-win32',
+     ],
    },
 -  {
 -    'name': 'wasm_fuzzer',
@@ -266,11 +277,10 @@
 -                '-s', 'src/third_party/tfhub_models/models.tar.gz.sha1',
 -    ],
 -  },
--
+ 
    # Pull down Node binaries for WebUI toolchain.
    # The Linux binary is always downloaded regardless of host os and architecture
-   # since remote node actions run on Linux worker.
-@@ -5062,47 +4929,6 @@
+@@ -5071,44 +4934,6 @@
      ],
    },
  
@@ -279,11 +289,8 @@
 -    'name': 'perfetto_testdata',
 -    'condition': 'host_os == "linux"',
 -    'pattern': '\\.sha256',
--    'action': [ 'python3',
--                'src/third_party/perfetto/tools/test_data',
--                '--dir',
--                'src/base/tracing/test/data',
--                '--overwrite',
+-    'action': [ 'vpython3',
+-                'src/base/tracing/test/test_data.py',
 -                'download',
 -    ],
 -  },
@@ -318,7 +325,7 @@
    # Pull down WPR Archive files
    {
      'name': 'Fetch WPR archive files',
-@@ -5581,17 +5407,6 @@
+@@ -5587,17 +5412,6 @@
      'condition': 'host_os == "win"',
      'action': ['python3', 'src/build/del_ninja_deps_cache.py'],
    },
@@ -335,4 +342,4 @@
 -  },
    # Configure remote exec cfg files
    {
-     'name': 'download_and_configure_reclient_cfgs',
+     # Use luci_auth if on windows and using chrome-untrusted project

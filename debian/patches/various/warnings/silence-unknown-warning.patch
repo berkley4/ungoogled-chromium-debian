@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1922,13 +1922,6 @@
+@@ -1946,13 +1946,6 @@
          # TODO(crbug.com/328490295): Fix and re-enable for C flags.
          "-Wenum-compare-conditional",
        ]

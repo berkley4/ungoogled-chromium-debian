@@ -1,6 +1,6 @@
 --- a/chrome/browser/ui/startup/bad_flags_prompt.cc
 +++ b/chrome/browser/ui/startup/bad_flags_prompt.cc
-@@ -95,7 +95,6 @@
+@@ -96,7 +96,6 @@
  
      // These flags change the URLs that handle PII.
      switches::kGaiaUrl,

@@ -22,7 +22,7 @@ Cr-Commit-Position: refs/heads/main@{#1293791}
 
 --- a/third_party/blink/renderer/platform/graphics/compositing/property_tree_manager.cc
 +++ b/third_party/blink/renderer/platform/graphics/compositing/property_tree_manager.cc
-@@ -234,8 +234,9 @@
+@@ -239,8 +239,9 @@
    const auto* property_trees = host.property_trees();
    const auto* cc_scroll = property_trees->scroll_tree().Node(
        scroll.CcNodeId(property_trees->sequence_number()));

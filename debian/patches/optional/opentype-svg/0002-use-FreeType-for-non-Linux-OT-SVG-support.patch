@@ -15,7 +15,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
 
 --- a/third_party/blink/renderer/platform/fonts/opentype/font_format_check.cc
 +++ b/third_party/blink/renderer/platform/fonts/opentype/font_format_check.cc
-@@ -93,12 +93,16 @@
+@@ -100,12 +100,16 @@
    return table_tags_.size() && table_tags_.Contains(HB_TAG('s', 'b', 'i', 'x'));
  }
  

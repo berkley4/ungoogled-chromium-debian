@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -774,13 +774,6 @@
+@@ -770,13 +770,6 @@
        deps += [ "//native_client_sdk/src:nacl_core_sdk" ]
      }
  
@@ -26,7 +26,7 @@
          public_deps = [
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -1991,7 +1991,6 @@
+@@ -2030,7 +2030,6 @@
    public_deps = [
      "//base",
      "//chrome/browser/google",
@@ -34,15 +34,15 @@
      "//chrome/browser/profiles",
      "//chrome/common",
      "//chrome/common:buildflags",
-@@ -2229,7 +2228,6 @@
+@@ -2273,7 +2272,6 @@
      "//components/flags_ui",
      "//components/gcm_driver",
      "//components/handoff",
 -    "//components/headless/select_file_dialog",
+     "//components/heap_profiling/in_process",
      "//components/heavy_ad_intervention",
      "//components/history/content/browser",
-     "//components/history/core/browser",
-@@ -3897,8 +3895,6 @@
+@@ -3955,8 +3953,6 @@
        "first_run/first_run_internal.h",
        "font_family_cache.cc",
        "font_family_cache.h",
@@ -51,7 +51,7 @@
        "hid/chrome_hid_delegate.cc",
        "hid/chrome_hid_delegate.h",
        "hid/hid_chooser_context.cc",
-@@ -4634,8 +4630,6 @@
+@@ -4698,8 +4694,6 @@
        "//components/feedback",
        "//components/feedback/content:factory",
        "//components/feedback/redaction_tool",
@@ -60,7 +60,7 @@
        "//components/image_fetcher/core",
        "//components/keep_alive_registry",
        "//components/live_caption",
-@@ -6874,10 +6868,6 @@
+@@ -6950,10 +6944,6 @@
      ]
    }
  
@@ -71,7 +71,7 @@
    if (enable_click_to_call) {
      sources += [
        "sharing/click_to_call/click_to_call_utils.cc",
-@@ -6944,7 +6934,6 @@
+@@ -7022,7 +7012,6 @@
      deps += [
        "//chrome/common/printing",
        "//components/printing/browser",
@@ -81,7 +81,7 @@
        "//components/services/print_compositor/public/mojom",
 --- a/chrome/browser/ui/BUILD.gn
 +++ b/chrome/browser/ui/BUILD.gn
-@@ -399,7 +399,6 @@
+@@ -407,7 +407,6 @@
    # have the same dependencies. Once browser_ui is untangled from
    # browser, then we can clean up these dependencies.
    public_deps = [
@@ -89,7 +89,7 @@
      "//components/cross_device/logging",
      "//components/dom_distiller/core",
      "//components/paint_preview/buildflags",
-@@ -2071,7 +2070,6 @@
+@@ -2117,7 +2116,6 @@
        "//components/endpoint_fetcher:endpoint_fetcher",
        "//components/enterprise/common:files_scan_data",
        "//components/feedback/proto",
@@ -97,7 +97,7 @@
        "//components/history_embeddings",
        "//components/keep_alive_registry",
        "//components/manta",
-@@ -2171,10 +2169,6 @@
+@@ -2218,10 +2216,6 @@
        ]
        deps += [ "//chrome/browser/ui/webui/new_tab_page/foo:mojo_bindings" ]
      }
@@ -110,7 +110,7 @@
    if (enable_paint_preview) {
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -1721,7 +1721,6 @@
+@@ -1714,7 +1714,6 @@
        "//chrome/browser/enterprise/identifiers:identifiers",
        "//chrome/browser/favicon",
        "//chrome/browser/first_party_sets",
@@ -118,7 +118,7 @@
        "//chrome/browser/image_decoder:browser_tests",
        "//chrome/browser/image_fetcher",
        "//chrome/browser/ip_protection:browser_tests",
-@@ -3180,7 +3179,6 @@
+@@ -3185,7 +3184,6 @@
              "../browser/devtools/protocol/devtools_printtopdf_browsertest.cc",
            ]
            deps += [
@@ -184,7 +184,7 @@
  #include "ui/gfx/switches.h"
  #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
  
-@@ -1377,12 +1374,6 @@
+@@ -1371,12 +1368,6 @@
    language::LanguageUsageMetrics::RecordPageLanguages(
        *UrlLanguageHistogramFactory::GetForBrowserContext(profile));
  #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
@@ -197,7 +197,7 @@
  }
  
  void ChromeBrowserMainParts::PreBrowserStart() {
-@@ -1483,15 +1474,6 @@
+@@ -1479,15 +1470,6 @@
        std::make_unique<ui::SelectFileDialogLacros::Factory>());
  #endif  // BUILDFLAG(IS_WIN)
  
@@ -213,7 +213,7 @@
  #if BUILDFLAG(CHROME_FOR_TESTING)
    if (!g_browser_process->local_state()->GetBoolean(
            prefs::kChromeForTestingAllowed)) {
-@@ -2024,15 +2006,6 @@
+@@ -2020,15 +2002,6 @@
      return false;
    }
  
@@ -231,7 +231,7 @@
    // cross-apartment shell objects (via IVirtualDesktopManager). That is not
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -531,7 +531,6 @@
+@@ -539,7 +539,6 @@
  #include "chrome/browser/devtools/chrome_devtools_manager_delegate.h"
  #include "chrome/browser/devtools/devtools_window.h"
  #include "chrome/browser/direct_sockets/chrome_direct_sockets_delegate.h"
@@ -239,7 +239,7 @@
  #include "chrome/browser/media/unified_autoplay_config.h"
  #include "chrome/browser/metrics/usage_scenario/chrome_responsiveness_calculator_delegate.h"
  #include "chrome/browser/new_tab_page/new_tab_page_util.h"
-@@ -1684,11 +1683,6 @@
+@@ -1721,11 +1720,6 @@
            chrome::enterprise_util::ChromeBrowserMainExtraPartsEnterprise>());
  #endif
  
@@ -269,7 +269,7 @@
  #if BUILDFLAG(ENABLE_PRINT_PREVIEW)
  #include "chrome/browser/printing/print_view_manager.h"
  #endif  // BUILDFLAG(ENABLE_PRINT_PREVIEW)
-@@ -558,10 +556,6 @@
+@@ -554,10 +552,6 @@
            [](content::RenderFrameHost* render_frame_host,
               mojo::PendingAssociatedReceiver<printing::mojom::PrintManagerHost>
                   receiver) {
@@ -280,7 +280,7 @@
  #if BUILDFLAG(ENABLE_PRINT_PREVIEW)
                printing::PrintViewManager::BindPrintManagerHost(
                    std::move(receiver), render_frame_host);
-@@ -569,7 +563,6 @@
+@@ -565,7 +559,6 @@
                printing::PrintViewManagerBasic::BindPrintManagerHost(
                    std::move(receiver), render_frame_host);
  #endif  // BUILDFLAG(ENABLE_PRINT_PREVIEW)
@@ -321,7 +321,7 @@
  
 --- a/chrome/browser/policy/configuration_policy_handler_list_factory.cc
 +++ b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
-@@ -148,7 +148,6 @@
+@@ -146,7 +146,6 @@
  #include "chrome/browser/policy/local_sync_policy_handler.h"
  #include "chrome/browser/policy/managed_account_policy_handler.h"
  #include "chrome/browser/web_applications/policy/web_app_settings_policy_handler.h"
@@ -329,7 +329,7 @@
  #include "components/media_router/common/pref_names.h"
  #endif  // BUILDFLAG(IS_ANDROID)
  
-@@ -2259,7 +2258,6 @@
+@@ -2265,7 +2264,6 @@
  #endif  // !BUILDFLAG(IS_FUCHSIA)
  
    handlers->AddHandler(std::make_unique<GuestModePolicyHandler>());
@@ -339,7 +339,7 @@
        std::make_unique<DownloadAutoOpenPolicyHandler>(chrome_schema));
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -299,7 +299,6 @@
+@@ -296,7 +296,6 @@
  #include "chrome/browser/ui/webui/tab_search/tab_search_prefs.h"
  #include "chrome/browser/ui/webui/whats_new/whats_new_ui.h"
  #include "chrome/browser/upgrade_detector/upgrade_detector.h"
@@ -347,7 +347,7 @@
  #include "components/live_caption/live_caption_controller.h"
  #include "components/live_caption/live_translate_controller.h"
  #include "components/ntp_tiles/custom_links_manager_impl.h"
-@@ -1553,7 +1552,6 @@
+@@ -1598,7 +1597,6 @@
  #else   // BUILDFLAG(IS_ANDROID)
    enterprise_connectors::RegisterLocalStatePrefs(registry);
    gcm::RegisterPrefs(registry);
@@ -392,7 +392,7 @@
  
 --- a/chrome/browser/ui/startup/startup_browser_creator.cc
 +++ b/chrome/browser/ui/startup/startup_browser_creator.cc
-@@ -136,9 +136,7 @@
+@@ -137,9 +137,7 @@
  #endif  // BUILDFLAG(IS_WIN)
  
  #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN)
@@ -402,7 +402,7 @@
  #endif
  
  #if !BUILDFLAG(IS_CHROMEOS)
-@@ -962,15 +960,6 @@
+@@ -964,15 +962,6 @@
    TRACE_EVENT0("startup", "StartupBrowserCreator::ProcessCmdLineImpl");
    ComputeAndRecordLaunchMode(command_line);
  
@@ -613,7 +613,7 @@
  #include "chrome/browser/profiles/profile.h"
  #include "chrome/browser/profiles/profiles_state.h"
  #include "chrome/browser/user_education/browser_feature_promo_storage_service.h"
-@@ -103,9 +102,6 @@
+@@ -117,9 +116,6 @@
      return false;
    }
  #endif
@@ -633,7 +633,7 @@
        "test/data/history/",
        "test/data/html_viewer/",
        "test/data/json_schema/",
-@@ -547,7 +546,6 @@
+@@ -553,7 +552,6 @@
        "//components/blocked_content:unit_tests",
        "//components/content_settings/browser/ui:unit_tests",
        "//components/facilitated_payments/content/renderer:unit_tests",

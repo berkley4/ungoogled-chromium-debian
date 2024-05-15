@@ -1,0 +1,58 @@
+From a26e0f3fa558d11ac3035fd0b2bf25b865cd5a09 Mon Sep 17 00:00:00 2001
+From: Orko Garai <orko@igalia.com>
+Date: Tue, 07 May 2024 15:47:41 +0000
+Subject: [PATCH] Fix wayland crash in gnome 46 from cursor size not being divisible by scale
+
+This effectively reverts crrev.com/1152067
+
+In gnome 46 a change waas made [1] where the check for surface size
+being divisible by scale was enforced if the surface didn't have a role.
+
+`wl_pointer_set_cursor` before `wl_surface_commit` ensures that the
+surface gets the cursor role and the compositor can then exclude it from
+that check which is generally enforced for all other surfaces.
+
+The exclusion of cursors from the rule is not yet formally part of the
+protocol and there is an ongoing discussion about that [2]. However, the
+major compositors have a workaround for that where they either don't
+enforce the divisibility check or at least exclude cursors from it.
+
+[1] https://gitlab.gnome.org/GNOME/mutter/-/commit/98c8c03729fd3fe72980d55fc3dccd8a0e9702e9
+[2] https://gitlab.freedesktop.org/wayland/wayland/-/issues/194
+
+Fixed: 339041266
+Change-Id: I4a61187f8fafc7f07b7efc34d58e9d30900e4812
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5513876
+Reviewed-by: Max Ihlenfeldt <max@igalia.com>
+Commit-Queue: Nick Yamane <nickdiego@igalia.com>
+Reviewed-by: Nick Yamane <nickdiego@igalia.com>
+Commit-Queue: Kramer Ge <fangzhoug@chromium.org>
+Reviewed-by: Kramer Ge <fangzhoug@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1297515}
+---
+
+--- a/ui/ozone/platform/wayland/host/wayland_cursor.cc
++++ b/ui/ozone/platform/wayland/host/wayland_cursor.cc
+@@ -161,10 +161,20 @@
+   wl_surface_damage(pointer_surface_.get(), 0, 0, buffer_width, buffer_height);
+   // Note: should the offset be non-zero, use wl_surface_offset() to set it.
+   wl_surface_attach(pointer_surface_.get(), buffer, 0, 0);
+-  wl_surface_commit(pointer_surface_.get());
+-
++  // Set cursor before commit to ensure a role is set on the surface, so that
++  // the compositor can exclude this surface from being checked that its buffer
++  // size is divisible by the buffer scale.
++  // For more details see the following:
++  // - https://gitlab.freedesktop.org/wayland/wayland/-/issues/194
++  // - https://gitlab.freedesktop.org/wayland/wayland/-/merge_requests/65
++  // - https://wayland.app/protocols/wayland#wl_pointer:request:set_cursor
++  //
++  // Gnome in particular made a change which expects a role to be set, or it
++  // will throw a protocol error when the size is not divisible by the scale:
++  // https://gitlab.gnome.org/GNOME/mutter/-/commit/98c8c03729fd3fe72980d55fc3dccd8a0e9702e9
+   wl_pointer_set_cursor(pointer_->wl_object(), pointer_enter_serial->value,
+                         pointer_surface_.get(), hotspot_x_dip, hotspot_y_dip);
++  wl_surface_commit(pointer_surface_.get());
+ 
+   connection_->Flush();
+ }

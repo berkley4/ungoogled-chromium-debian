@@ -1,0 +1,102 @@
+From a45c3d5c04f1b76739d28f754b375f626efcd020 Mon Sep 17 00:00:00 2001
+From: Ian Kilpatrick <ikilpatrick@chromium.org>
+Date: Mon, 13 May 2024 21:14:39 +0000
+Subject: [PATCH] [layout] Fix crash for min-height:min-content.
+
+min-height:min-content should resolve to a definite size, not
+indefinite.
+
+Fixed: 339654377
+Change-Id: Ifaa1ae2894c63fd3c21213ee81609137ab39f024
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5532803
+Reviewed-by: David Baron <dbaron@chromium.org>
+Commit-Queue: Ian Kilpatrick <ikilpatrick@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1300297}
+---
+
+--- a/third_party/blink/renderer/core/layout/length_utils.cc
++++ b/third_party/blink/renderer/core/layout/length_utils.cc
+@@ -128,7 +128,6 @@
+     const BoxStrut& border_padding,
+     const Length& original_length,
+     const Length* auto_length,
+-    bool use_intrinsic_size,
+     LayoutUnit override_available_size,
+     const LayoutUnit* override_percentage_resolution_size,
+     IntrinsicBlockSizeFunctionRef unresolvable_block_size_func) {
+@@ -169,7 +168,7 @@
+           {.intrinsic_evaluator = [&](const Length& length_to_evaluate) {
+             return ResolveBlockLengthInternal(
+                 constraint_space, style, border_padding, length_to_evaluate,
+-                auto_length, use_intrinsic_size, override_available_size,
++                auto_length, override_available_size,
+                 override_percentage_resolution_size,
+                 unresolvable_block_size_func);
+           }});
+@@ -184,8 +183,7 @@
+     case Length::kMaxContent:
+     case Length::kMinIntrinsic:
+     case Length::kFitContent: {
+-      LayoutUnit intrinsic_size =
+-          use_intrinsic_size ? unresolvable_block_size_func() : kIndefiniteSize;
++      LayoutUnit intrinsic_size = unresolvable_block_size_func();
+ #if DCHECK_IS_ON()
+       // Due to how intrinsic_size is calculated, it should always include
+       // border and padding. We cannot check for this if we are
+--- a/third_party/blink/renderer/core/layout/length_utils.h
++++ b/third_party/blink/renderer/core/layout/length_utils.h
+@@ -85,7 +85,6 @@
+     const BoxStrut& border_padding,
+     const Length&,
+     const Length* auto_length,
+-    bool use_intrinsic_size,
+     LayoutUnit override_available_size,
+     const LayoutUnit* override_percentage_resolution_size,
+     IntrinsicBlockSizeFunctionRef unresolvable_block_size_func);
+@@ -144,8 +143,7 @@
+   LayoutUnit border_padding_sum = border_padding.BlockSum();
+   return ResolveBlockLengthInternal(
+       constraint_space, style, border_padding, length,
+-      /* auto_length */ &Length::Auto(),
+-      /* use_intrinsic_size */ false, override_available_size,
++      /* auto_length */ &Length::Auto(), override_available_size,
+       override_percentage_resolution_size,
+       [border_padding_sum]() { return border_padding_sum; });
+ }
+@@ -162,8 +160,7 @@
+   // this LayoutUnit::Max that we pass to ResolveInlineLengthInternal.
+   return ResolveBlockLengthInternal(
+       constraint_space, style, border_padding, length,
+-      /* auto_length */ &Length::Auto(),
+-      /* use_intrinsic_size */ true, override_available_size,
++      /* auto_length */ &Length::Auto(), override_available_size,
+       override_percentage_resolution_size, []() { return LayoutUnit::Max(); });
+ }
+ 
+@@ -179,8 +176,7 @@
+     const LayoutUnit* override_percentage_resolution_size = nullptr) {
+   return ResolveBlockLengthInternal(
+       constraint_space, style, border_padding, length, auto_length,
+-      /* use_intrinsic_size */ true, override_available_size,
+-      override_percentage_resolution_size,
++      override_available_size, override_percentage_resolution_size,
+       [intrinsic_size]() { return intrinsic_size; });
+ }
+ 
+@@ -194,7 +190,7 @@
+     LayoutUnit override_available_size = kIndefiniteSize) {
+   return ResolveBlockLengthInternal(
+       constraint_space, style, border_padding, length, auto_length,
+-      /* use_intrinsic_size */ true, override_available_size,
++      override_available_size,
+       /* override_percentage_resolution_size */ nullptr,
+       intrinsic_block_size_func);
+ }
+--- /dev/null
++++ b/third_party/blink/web_tests/external/wpt/css/css-flexbox/min-height-min-content-crash.html
+@@ -0,0 +1,5 @@
++<!DOCTYPE html>
++<link rel="help" href="https://issues.chromium.org/issues/339654377">
++<div style="display: flex; flex-direction: column;">
++  <div style="min-height: min-content; overflow: hidden;"></div>
++</div>

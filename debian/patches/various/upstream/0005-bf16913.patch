@@ -21,7 +21,7 @@ Cr-Commit-Position: refs/heads/main@{#1294810}
 
 --- a/third_party/blink/renderer/modules/service_worker/service_worker_router_type_converter.cc
 +++ b/third_party/blink/renderer/modules/service_worker/service_worker_router_type_converter.cc
-@@ -303,7 +303,7 @@
+@@ -349,7 +349,7 @@
      return std::nullopt;
    }
  
@@ -30,7 +30,7 @@ Cr-Commit-Position: refs/heads/main@{#1294810}
      exception_state.ThrowTypeError("No input condition has been set.");
      return std::nullopt;
    }
-@@ -330,6 +330,10 @@
+@@ -376,6 +376,10 @@
    // does not cover cases sequence of sources are set. The current IDL has
    // been implemented for this level, but the mojo IPC has been implemented
    // to support the final form.
@@ -43,7 +43,7 @@ Cr-Commit-Position: refs/heads/main@{#1294810}
                                 exception_state);
 --- a/third_party/blink/web_tests/external/wpt/service-workers/service-worker/tentative/static-router/resources/router-rules.js
 +++ b/third_party/blink/web_tests/external/wpt/service-workers/service-worker/tentative/static-router/resources/router-rules.js
-@@ -35,6 +35,12 @@
+@@ -43,6 +43,12 @@
        [{condition: {requestMethod: 'PUT'}, source: 'network'}],
    'condition-request-method-delete-network':
        [{condition: {requestMethod: 'DELETE'}, source: 'network'}],
