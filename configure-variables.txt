@@ -68,6 +68,7 @@ DNS_CONFIG		1		Enable monitoring for changes in system DNS configuration
 DRIVER			1		Chromedriver package
 
 ATK_DBUS		1		Accessibility/D-Bus support (d-bus is only used for bluetooth)
+BLUEZ			1		Bluez bluetooth protocol stack (also disabled by setting ATK_DBUS=0)
 CATAPULT		1		Catapult profiling support
 CHROMECAST		1		0 - disable (will also disable MEDIA_REMOTING)
 					1 - enable (need to edit /etc/chromium.d/network)

@@ -82,6 +82,7 @@ sanitise_op() {
 [ -n "$POLLY" ] || POLLY=0
 
 [ -n "$ATK_DBUS" ] || ATK_DBUS=1
+[ -n "$BLUEZ" ] || BLUEZ=1
 [ -n "$CATAPULT" ] || CATAPULT=1
 [ -n "$CHROMECAST" ] || CHROMECAST=1
 [ -n "$CLICK_TO_CALL" ] || CLICK_TO_CALL=1
@@ -552,6 +553,14 @@ if [ $ATK_DBUS -eq 0 ]; then
 
   # GN_FLAGS += use_atk=false use_dbus=false
   gn_enable="$gn_enable use_atk"
+
+  # No point disabling BLUEZ since use_bluez depends on use_dbus
+  BLUEZ=1
+fi
+
+
+if [ $BLUEZ -eq 0 ]; then
+  gn_enable="$gn_enable use_bluez=false"
 fi
 
 
