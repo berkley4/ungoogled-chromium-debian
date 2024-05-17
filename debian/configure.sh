@@ -109,7 +109,6 @@ sanitise_op() {
 [ -n "$QT" ] || QT=1
 [ -n "$SKIA_GAMMA" ] || SKIA_GAMMA=0
 [ -n "$SPEECH" ] || SPEECH=1
-[ -n "$SUPERVISED_USER" ] || SUPERVISED_USER=0
 [ -n "$SWIFTSHADER" ] || SWIFTSHADER=1
 [ -n "$SWIFTSHADER_VULKAN" ] || SWIFTSHADER_VULKAN=1
 [ -n "$SWIFTSHADER_WEBGPU" ] || SWIFTSHADER_WEBGPU=0
@@ -167,9 +166,6 @@ sanitise_op() {
 if [ $NON_FREE -eq 0 ]; then
   ins_disable="$ins_disable anti-audio-fingerprint"
   SER_DB="$SER_DB -e \"s@^\(cromite/\)@#\1@\" -e \"s@^\(vanadium/\)@#\1@\""
-
-  # Setting this to zero requires a (non-free) cromite patch
-  SUPERVISED_USER=1
 
   if [ $OPENH264 -eq 1 ] && [ $SYS_OPENH264 -eq 0 ]; then
     printf '%s\n' "ERROR: Not a non-free build"
@@ -726,12 +722,6 @@ fi
 
 if [ $SPEECH -eq 0 ]; then
   gn_enable="$gn_enable enable_speech_service=false"
-fi
-
-
-if [ $SUPERVISED_USER -eq 1 ]; then
-  op_disable="$op_disable disable/supervised-users"
-  gn_disable="$gn_disable enable_supervised_users=false"
 fi
 
 

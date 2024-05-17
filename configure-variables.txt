@@ -11,8 +11,8 @@ STABLE			0		By default an unstable version is built
 
 NON_FREE		1		Anyone distributing built debs should configure with NON_FREE=0
 					in order to comply with licencing laws. This variable will disable
-					all bromite and vanadium patches, plus set SUPERVISED_USER=1 and
-	                                force-enable SYS_OPENH264 if OPENH264 is enabled.
+					all bromite and vanadium patches, plus error out if SYS_OPENH264=0
+					when OPENH264=1.
 
 SYMBOLS			0		symbol_level build flag: -1 = auto-set; 0 = none; 1 = minimal; 2 = regular
 SYMBOLS_BLINK		0		blink_symbol_level build flag: -1 = auto-set; 0 = minimal; 1 = medium; 2 = regular
@@ -105,7 +105,6 @@ QT			1		0 - disable
 					1 - enable (need to edit /etc/chromium.d/qt to fully enable)
 					2 - enable fully (runtime autodetected ie Gnome desktops will ignore it)
 SPEECH			1		Speech service (voice recognition)
-SUPERVISED_USER		0		Parental control related component (relies on a bromite patch)
 SWIFTSHADER		1		Swiftshader
 SWIFTSHADER_VULKAN	1		Swiftshader for vulkan
 SWIFTSHADER_WEBGPU	0		Swiftshader for WebGPU
