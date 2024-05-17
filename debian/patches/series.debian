@@ -152,6 +152,7 @@ optional/compiler-flags/cpu/avx.patch
 #optional/disable/atk-dbus.patch
 #optional/disable/catapult.patch
 #optional/disable/click-to-call.patch
+#optional/disable/compose.patch
 #optional/disable/dns_config_service.patch
 optional/disable/enterprise-watermark.patch
 optional/disable/extensions-in-root-menu.patch
