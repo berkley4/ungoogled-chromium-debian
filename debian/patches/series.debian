@@ -95,14 +95,6 @@ various/fixes/template-correction.patch
 various/fixes/unbundle-script-dh-clean-interoperabilty.patch
 various/fixes/unshrink-ui-font.patch
 various/fixes/xdg-basedir.patch
-various/fixes/bad-font-gc/0001-bad-font-gc.patch
-various/fixes/bad-font-gc/0002-bad-font-gc.patch
-various/fixes/bad-font-gc/0003-bad-font-gc.patch
-various/fixes/bad-font-gc/0004-bad-font-gc.patch
-various/fixes/bad-font-gc/0005-bad-font-gc.patch
-various/fixes/bad-font-gc/0006-bad-font-gc.patch
-various/fixes/bad-font-gc/0007-bad-font-gc.patch
-various/fixes/bad-font-gc/0008-bad-font-gc.patch
 various/system/libdrm.patch
 various/system/libusb-api.patch
 various/system/libxml2.patch
