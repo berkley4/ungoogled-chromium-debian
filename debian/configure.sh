@@ -327,16 +327,15 @@ else
       LLVM_VER=$($LLVM_BASE_DIR/bin/clang --version | sed -n 's@.*version \([^.]*\).*@\1@p')
     else
       # If CLANG_VER has been set explicity then trust the version and do a quick usability check
-      LLVM_VER=$CLANG_VER
       if [ ! -x $LLVM_BASE_DIR/bin/clang ]; then
         printf '%s\n' "ERROR: Cannot find $LLVM_BASE_DIR/bin/clang"
         exit 1
       fi
     fi
-  else
-    # Allow LLVM_VER to be specified and default to $CLANG_VER for testing purposes
-    [ -n "$LLVM_VER" ] || LLVM_VER=$CLANG_VER
   fi
+
+  # LLVM_VER defaults to $CLANG_VER
+  [ -n "$LLVM_VER" ] || LLVM_VER=$CLANG_VER
 
   # Check our clang version for PGO compatibility
   if [ $PGO -eq 1 ] && [ $LLVM_VER -lt $CR_VER ]; then
