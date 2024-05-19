@@ -344,8 +344,8 @@ else
     exit 1
   fi
 
-  # Enable the system package/local toolchain variables
-  RUL="$RUL -e \"/^#export.*_toolchain=/s@^#@@\""
+  # Enable the local toolchain build flags and system package variable
+  RUL="$RUL -e \"/^#.*_toolchain=/s@^#@@\""
   RUL="$RUL -e \"/^#export.*:= llvm-/s@^#@@\""
   RUL="$RUL -e \"/^#export.*:= clang/s@^#@@\""
   RUL="$RUL -e \"/^#export.*_MAINT_SET/s@^#@@\""
