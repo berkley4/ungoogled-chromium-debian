@@ -342,8 +342,8 @@ else
   gn_enable="$gn_enable clang_base_path"
 
   RUL="$RUL -e \"/^#.*_toolchain=/s@^#@@\""
-  RUL="$RUL -e \"/^#export.*:= llvm-/s@^#@@\""
-  RUL="$RUL -e \"/^#export.*:= clang/s@^#@@\""
+  RUL="$RUL -e \"/^#export LLVM_DIR /s@^#@@\""
+  RUL="$RUL -e \"/^#export.*:= \x24\x28LLVM_DIR\x29\//s@^#@@\""
   RUL="$RUL -e \"/^#export.*_MAINT_SET/s@^#@@\""
 
   RUL="$RUL -e \"s@_LLVM_BASE_DIR@$LLVM_BASE_DIR@\""
@@ -363,9 +363,6 @@ else
     fi
 
     RUL="$RUL -e \"/^#export LLVM_VERSION /s@^#@@\""
-    RUL="$RUL -e \"/^#export LLVM_DIR /s@^#@@\""
-    RUL="$RUL -e \"/^export.*:= llvm-/s@\(llvm-\)@\x24\x28LLVM_DIR\x29/\1@\""
-    RUL="$RUL -e \"/^export.*:= clang/s@\(clang\)@\x24\x28LLVM_DIR\x28/\1@\""
   fi
 fi
 

@@ -22,13 +22,13 @@ GN_FLAGS := $(shell tr "\n" " " < $(UC_DIR)/flags.gn | sed 's/"/\\"/g')
 #            host_toolchain=\"//build/toolchain/linux/unbundle:default\"
 #
 #export LLVM_VERSION := 19
-#export LLVM_DIR := /usr/lib/llvm-$(LLVM_VERSION)/bin
+#export LLVM_DIR := _LLVM_BASE_DIR/bin
 #
-#export AR     := llvm-ar
-#export NM     := llvm-nm
-#export RANLIB := llvm-ranlib
-#export CC     := clang
-#export CXX    := clang++
+#export AR     := $(LLVM_DIR)/llvm-ar
+#export NM     := $(LLVM_DIR)/llvm-nm
+#export RANLIB := $(LLVM_DIR)/llvm-ranlib
+#export CC     := $(LLVM_DIR)/clang
+#export CXX    := $(LLVM_DIR)/clang++
 #
 #export DEB_CFLAGS_MAINT_SET := -ffile-prefix-map=$(CURDIR)=.
 #export DEB_CXXFLAGS_MAINT_SET := -ffile-prefix-map=$(CURDIR)=.
