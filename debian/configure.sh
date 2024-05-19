@@ -659,14 +659,11 @@ else
 
   if [ $LENS -ge 2 ]; then
     GOOGLE_API_KEYS=1
-    if [ $LENS_TRANSLATE -eq 0 ]; then
-      sed -e '/enable-lens-standalone/s@^#@@' \
-          -e '/enable-lens-image-translate/s@^@#@' \
-          -i $FLAG_DIR/google-lens
-    else
-      sed -e '/enable-lens-standalone/s@^#@@' \
-          -i $FLAG_DIR/google-lens
-    fi
+
+    L="-e \"/enable-lens-standalone/s@^#@@\""
+    [ $LENS_TRANSLATE -eq 1 ] || L="$L -e \"/enable-lens-image-translate/s@^@#@\""
+
+    eval sed $L -i $FLAG_DIR/google-lens
   fi
 fi
 
