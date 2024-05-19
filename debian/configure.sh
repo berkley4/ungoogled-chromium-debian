@@ -307,15 +307,9 @@ if [ $SYS_CLANG -eq 0 ]; then
   PRU="$PRU -e \"/^third_party\/llvm/d\""
   PRU="$PRU -e \"/^tools\/clang/d\""
 else
-  op_enable="$op_enable system/clang/clang-version-check"
+  ## Check for clang binary existence and PGO compatibility
 
-  # GN_FLAGS += clang_base_path=\"$(LLVM_BASE_DIR)\" clang_version=\"$(LLVM_VER)\"
-  gn_enable="$gn_enable clang_base_path"
-
-  # Get the clang version used in d/rules.in
   CR_VER=$(sed -n 's@^#export LLVM_VERSION := @@p' $DEBIAN/rules.in)
-
-  # CLANG_VER is set to CR_VER by default
   [ -n "$CLANG_VER" ] && CLANG_VER_SET=1 || CLANG_VER=$CR_VER && sanitise_clang_ver
 
   LLVM_BASE_DIR=/usr/lib/llvm-$CLANG_VER
@@ -334,22 +328,24 @@ else
     fi
   fi
 
-  # LLVM_VER defaults to $CLANG_VER
   [ -n "$LLVM_VER" ] || LLVM_VER=$CLANG_VER
 
-  # Check our clang version for PGO compatibility
   if [ $PGO -eq 1 ] && [ $LLVM_VER -lt $CR_VER ]; then
     printf '%s\n' "ERROR: Clang versions below $CR_VER are incompatible with PGO"
     exit 1
   fi
 
-  # Enable the local toolchain build flags and system package variable
+
+  ## Set optional patches, build flags and format d/rules and d/control
+
+  op_enable="$op_enable system/clang/clang-version-check"
+  gn_enable="$gn_enable clang_base_path"
+
   RUL="$RUL -e \"/^#.*_toolchain=/s@^#@@\""
   RUL="$RUL -e \"/^#export.*:= llvm-/s@^#@@\""
   RUL="$RUL -e \"/^#export.*:= clang/s@^#@@\""
   RUL="$RUL -e \"/^#export.*_MAINT_SET/s@^#@@\""
 
-  # Set LLVM_BASE_DIR and LLVM_VER in d/rules (for passing to build flags)
   RUL="$RUL -e \"s@_LLVM_BASE_DIR@$LLVM_BASE_DIR@\""
   RUL="$RUL -e \"s@_LLVM_VER@$LLVM_VER@\""
 
@@ -366,11 +362,8 @@ else
       RUL="$RUL -e \"/^#export LLVM_VERSION /s@$CR_VER@$CLANG_VER@\""
     fi
 
-    # Enable export of LLVM_VERSION and LLVM_DIR
     RUL="$RUL -e \"/^#export LLVM_VERSION /s@^#@@\""
     RUL="$RUL -e \"/^#export LLVM_DIR /s@^#@@\""
-
-    # Prefix clang, clang++ and llvm-{ar,nm,ranlib} with $LLVM_DIR path
     RUL="$RUL -e \"/^export.*:= llvm-/s@\(llvm-\)@\x24\x28LLVM_DIR\x29/\1@\""
     RUL="$RUL -e \"/^export.*:= clang/s@\(clang\)@\x24\x28LLVM_DIR\x28/\1@\""
   fi
