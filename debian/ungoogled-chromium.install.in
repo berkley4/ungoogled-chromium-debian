@@ -5,7 +5,6 @@ debian/misc_files/chromium                                                     u
 debian/initial_preferences                                                     usr/lib/chromium
 out/Release/chrome                                                             usr/lib/chromium
 out/Release/chrome_*_percent.pak                                               usr/lib/chromium
-out/Release/icudtl.dat                                                         usr/lib/chromium
 out/Release/resources.pak                                                      usr/lib/chromium
 out/Release/v8_context_snapshot.bin                                            usr/lib/chromium
 out/Release/resources/en-US.pak                                                usr/lib/chromium/locales
@@ -18,6 +17,8 @@ out/Release/libVkICD_mock_icd.so                                               u
 out/Release/libvulkan.so.1                                                     usr/lib/chromium
 out/Release/libvk_swiftshader.so                                               usr/lib/chromium
 out/Release/vk_swiftshader_icd.json                                            usr/lib/chromium
+
+third_party/icu/common/icudtl.dat                                              usr/lib/chromium
 
 chrome/installer/linux/common/desktop.template                              => usr/share/applications/chromium.desktop
 debian/usr/share/drirc.d/10-chromium.conf                                      usr/share/drirc.d
