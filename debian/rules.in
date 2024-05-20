@@ -10,7 +10,7 @@ OUT_DIR  := out/Release
 UB_REP_SCRIPT := build/linux/unbundle/replace_gn_files.py
 
 # Set the list of bundled library files
-UB_LIST := $(shell cat $(DB_DIR)/misc_files/bundled.txt)
+UB_LIST := $(shell sed -z 's@\n@ @g' $(DB_DIR)/misc_files/bundled.txt)
 
 # Start with the upstream Ungoogled Chromium flags
 GN_FLAGS := $(shell sed -z -e 's@\x22@\x5c\x22@g' -e 's@\n@ @g' $(UC_DIR)/flags.gn)
