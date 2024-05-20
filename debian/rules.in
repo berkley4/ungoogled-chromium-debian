@@ -13,7 +13,7 @@ UB_REP_SCRIPT := build/linux/unbundle/replace_gn_files.py
 UB_LIST := $(shell cat $(DB_DIR)/misc_files/bundled.txt)
 
 # Start with the upstream Ungoogled Chromium flags
-GN_FLAGS := $(shell tr "\n" " " < $(UC_DIR)/flags.gn | sed 's/"/\\"/g')
+GN_FLAGS := $(shell sed -z -e 's@\x22@\x5c\x22@g' -e 's@\n@ @g' $(UC_DIR)/flags.gn)
 
 # Custom toolchain (needed if enabling optional/llvm-polly-* patches)
 # The llvm major version needs to at least match chromium's for PGO to work
