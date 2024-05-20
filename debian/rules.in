@@ -127,7 +127,7 @@ export RUSTC_BOOTSTRAP=1
 # Disable compose
 #GN_FLAGS += enable_compose=false
 
-# Enterprise watermark
+# Disable enterprise watermark
 GN_FLAGS += enterprise_watermark=false
 
 # Disable feed v2
