@@ -309,8 +309,8 @@ if [ $SYS_CLANG -eq 0 ]; then
 else
   ## Check for clang binary existence and PGO compatibility
 
-  CR_VER=$(sed -n 's@^#export LLVM_VERSION := @@p' $DEBIAN/rules.in)
-  [ -n "$CLANG_VER" ] && CLANG_VER_SET=1 || CLANG_VER=$CR_VER && sanitise_clang_ver
+  CC_VER=$(sed -n '/[ ]*#[ ]*clang-/s@[-#,a-z]@@gp' $DEBIAN/control.in)
+  [ -n "$CLANG_VER" ] && CLANG_VER_SET=1 || CLANG_VER=$CC_VER && sanitise_clang_ver
 
   LLVM_BASE_DIR=/usr/lib/llvm-$CLANG_VER
   [ $SYS_CLANG -eq 1 ] || LLVM_BASE_DIR=/usr/local
@@ -330,8 +330,8 @@ else
 
   [ -n "$LLVM_VER" ] || LLVM_VER=$CLANG_VER
 
-  if [ $PGO -eq 1 ] && [ $LLVM_VER -lt $CR_VER ]; then
-    printf '%s\n' "ERROR: Clang versions below $CR_VER are incompatible with PGO"
+  if [ $PGO -eq 1 ] && [ $LLVM_VER -lt $CC_VER ]; then
+    printf '%s\n' "ERROR: Clang versions below $CC_VER are incompatible with PGO"
     exit 1
   fi
 
@@ -353,13 +353,13 @@ else
     op_enable="$op_enable system/clang/rust-clanglib"
     deps_enable="$deps_enable lld clang libclang-rt"
 
-    # Change version in d/control and d/rules if CR_VER and CLANG_VER differ
-    if [ $CR_VER -ne $CLANG_VER ]; then
-      CON="$CON -e \"/^[ ]*#[ ]*lld-/s@$CR_VER@$CLANG_VER@\""
-      CON="$CON -e \"/^[ ]*#[ ]*clang-/s@$CR_VER@$CLANG_VER@\""
-      CON="$CON -e \"/^[ ]*#[ ]*libclang-rt-/s@$CR_VER@$CLANG_VER@\""
+    # Change version in d/control and d/rules if CC_VER and CLANG_VER differ
+    if [ $CC_VER -ne $CLANG_VER ]; then
+      CON="$CON -e \"/^#lld-/s@$CC_VER@$CLANG_VER@\""
+      CON="$CON -e \"/^#clang-/s@$CC_VER@$CLANG_VER@\""
+      CON="$CON -e \"/^#libclang-rt-/s@$CC_VER@$CLANG_VER@\""
 
-      RUL="$RUL -e \"/^#export LLVM_VERSION /s@$CR_VER@$CLANG_VER@\""
+      RUL="$RUL -e \"/^#export LLVM_VERSION /s@$CC_VER@$CLANG_VER@\""
     fi
 
     RUL="$RUL -e \"/^#export LLVM_VERSION /s@^#@@\""
@@ -1007,7 +1007,7 @@ fi
 
 if [ -n "$deps_enable" ]; then
   for i in $deps_enable; do
-    CON="$CON -e \"/^[ ]*#[ ]*$i/s@^[ ]*#[ ]*@ @\""
+    CON="$CON -e \"/^#$i/s@^#@ @\""
   done
 fi
 
