@@ -21,6 +21,7 @@ CLANG_VER_SET=0
 MARCH_SET=0
 MEDIA_REMOTING_SET=0
 MTUNE_SET=0
+POLLY_SET=0
 RELEASE_SET=0
 SYS_BROTLI_SET=0
 XZ_THREADED_SET=0
@@ -80,7 +81,6 @@ sanitise_op() {
 [ -n "$INTEL_CET" ] || INTEL_CET=0
 [ -n "$MEDIA_OPT_SPEED" ] || MEDIA_OPT_SPEED=1
 [ -n "$MF_SPLIT" ] || MF_SPLIT=1
-[ -n "$POLLY" ] || POLLY=0
 
 [ -n "$ATK_DBUS" ] || ATK_DBUS=1
 [ -n "$BLUEZ" ] || BLUEZ=1
@@ -139,6 +139,9 @@ sanitise_op() {
 ## MARCH and MTUNE defaults
 [ -n "$MARCH" ] && MARCH_SET=1 || MARCH=x86-64-v2
 [ -n "$MTUNE" ] && MTUNE_SET=1 || MTUNE=generic
+
+# Clang Polly defaults
+[ -n "$POLLY" ] && POLLY_SET=1 || POLLY=0
 
 ## LTO Jobs (patch = 1; chromium default = all)
 [ -n "$LTO_JOBS" ] || LTO_JOBS=0
@@ -287,9 +290,9 @@ fi
 
 
 
-######################################################################
-## Clang/ESbuild/Polly/Machine Function Splitter/Rust configuration ##
-######################################################################
+################################################################
+## Clang/ESbuild/Machine Function Splitter/Rust configuration ##
+################################################################
 
 ## Enable the use of ccache
 if [ $CCACHE -eq 1 ]; then
@@ -316,6 +319,9 @@ if [ $SYS_CLANG -eq 0 ]; then
   PRU="$PRU -e \"/^tools\/clang/d\""
   PRU_PY="$PRU_PY -e \"/third_party\/llvm\//d\""
 else
+  # Default enable POLLY when SYS_CLANG > 0 unless explicitly disabled
+  [ $POLLY_SET -eq 1 ] && [ $POLLY -eq 0 ] || POLLY=1
+
   ## Check for clang binary existence and PGO compatibility
 
   CC_VER=$(sed -n '/[ ]*#[ ]*clang-/s@[-#,a-z]@@gp' $DEBIAN/control.in)
@@ -409,8 +415,8 @@ if [ $PGO -eq 0 ] && [ $MF_SPLIT -eq 1 ]; then
 fi
 
 
-if [ $POLLY -eq 0 ]; then
-  op_disable="$op_disable compiler-flags/polly"
+if [ $POLLY -eq 1 ]; then
+  op_enable="$op_enable compiler-flags/polly"
 fi
 
 
