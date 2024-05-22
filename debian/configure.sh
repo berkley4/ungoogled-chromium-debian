@@ -300,6 +300,8 @@ fi
 if [ $ESBUILD -eq 1  ]; then
   op_enable="$op_enable enable-esbuild-for-official-builds"
   gn_enable="$gn_enable devtools_fast_bundle"
+
+  PRU_PY="$PRU_PY -e \"/third_party\/esbuild\//d\""
 fi
 
 
@@ -311,8 +313,8 @@ if [ $SYS_CLANG -eq 0 ]; then
   fi
 
   # Stop bundled toolchain directories from being pruned
-  PRU="$PRU -e \"/^third_party\/llvm/d\""
   PRU="$PRU -e \"/^tools\/clang/d\""
+  PRU_PY="$PRU_PY -e \"/third_party\/llvm\//d\""
 else
   ## Check for clang binary existence and PGO compatibility
 
@@ -1128,6 +1130,8 @@ echo "$SERIES_UC" "$SERIES_DB" > $DEBIAN/patches/series
 [ -z "$INS" ] || eval sed $INS < $DEBIAN/$INSTALL.in > $DEBIAN/$INSTALL
 
 [ -z "$POL" ] || eval sed $POL < $DEBIAN/$P_FILE.in > $DEBIAN/$P_FILE
+
+[ -z "$PRU_PY" ] || eval sed $PRU_PY -i $UC_DIR/utils/prune_binaries.py
 
 eval sed $CON < $DEBIAN/control.in > $DEBIAN/control
 
