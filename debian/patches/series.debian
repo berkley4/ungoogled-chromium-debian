@@ -185,4 +185,7 @@ optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
 optional/translate/revert-disable.patch
 optional/translate/stop-unsupported-switch-warning.patch
 
-addenda/0001-8d71eb98.diff
+addenda/0001-9b96127.diff
+addenda/0002-765cbf73.diff
+addenda/0003-68cfd69.diff
+addenda/0004-00413b1.diff
