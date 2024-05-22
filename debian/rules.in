@@ -130,6 +130,9 @@ export RUSTC_BOOTSTRAP=1
 # Disable enterprise watermark
 GN_FLAGS += enterprise_watermark=false
 
+# Enable ESbuild
+#GN_FLAGS += devtools_fast_bundle=true
+
 # Disable feed v2
 #GN_FLAGS += enable_feed_v2=false
 

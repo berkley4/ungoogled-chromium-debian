@@ -63,6 +63,7 @@ sanitise_op() {
 ####################
 
 [ -n "$CCACHE" ] || CCACHE=0
+[ -n "$ESBUILD" ] || ESBUILD=0
 [ -n "$PGO" ] || PGO=1
 [ -n "$STABLE" ] || STABLE=0
 [ -n "$SYMBOLS" ] || SYMBOLS=0
@@ -286,13 +287,19 @@ fi
 
 
 
-##############################################################
-## Clang/Polly/Machine Function Splitter/Rust configuration ##
-##############################################################
+######################################################################
+## Clang/ESbuild/Polly/Machine Function Splitter/Rust configuration ##
+######################################################################
 
 ## Enable the use of ccache
 if [ $CCACHE -eq 1 ]; then
   gn_enable="$gn_enable cc_wrapper=ccache"
+fi
+
+
+if [ $ESBUILD -eq 1  ]; then
+  op_enable="$op_enable enable-esbuild-for-official-builds"
+  gn_enable="$gn_enable devtools_fast_bundle"
 fi
 
 
