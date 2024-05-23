@@ -42,56 +42,55 @@ endif
 CODENAME := $(patsubst %:,,$(shell lsb_release -c))
 
 # General downstream build flags
-GN_FLAGS +=                                     \
-        is_official_build=true                  \
-        blink_symbol_level=0                    \
-        symbol_level=0                          \
-        ffmpeg_branding=\"ChromeOS\"
+GN_FLAGS +=					\
+	is_official_build=true			\
+	blink_symbol_level=0			\
+	symbol_level=0				\
+	ffmpeg_branding=\"ChromeOS\"
 
 # Enabled components
-GN_FLAGS +=                                     \
-	cppgc_enable_pointer_compression=true   \
-        enable_mse_mpeg2ts_stream_parser=true   \
-        enable_pointer_compression_support=true \
-        glue_core_pools=true                    \
-        proprietary_codecs=true                 \
-        use_cfi_cast=true                       \
-        use_crash_key_stubs=true                \
-        use_text_section_splitting=true
-#       v8_enable_zone_compression=true    (build errors)
+GN_FLAGS +=					\
+	cppgc_enable_pointer_compression=true	\
+	enable_mse_mpeg2ts_stream_parser=true	\
+	enable_pointer_compression_support=true	\
+	glue_core_pools=true			\
+	proprietary_codecs=true			\
+	use_cfi_cast=true			\
+	use_crash_key_stubs=true		\
+	use_text_section_splitting=true
 
 # Disabled components
-GN_FLAGS +=                                     \
-        angle_has_histograms=false              \
-        angle_has_rapidjson=false               \
-        enable_component_updater=false          \
-        enable_extractors=false                 \
-        enable_maldoca=false                    \
-        enable_screen_ai_service=false          \
-        use_kerberos=false                      \
-        use_sysroot=false
+GN_FLAGS +=					\
+	angle_has_histograms=false		\
+	angle_has_rapidjson=false		\
+	enable_component_updater=false		\
+	enable_extractors=false			\
+	enable_maldoca=false			\
+	enable_screen_ai_service=false		\
+	use_kerberos=false			\
+	use_sysroot=false
 
 # Disabled debug/development/test features
-GN_FLAGS +=                                     \
-        angle_build_tests=false                 \
-        build_angle_perftests=false             \
-        build_dawn_tests=false                  \
-        dawn_enable_null=false                  \
-        dawn_tests_use_angle=false              \
-        enable_perfetto_unittests=false         \
-        enable_rust_crash=false                 \
-        enable_rust_gtest_interop=false         \
-        enable_trace_logging=false              \
-        optional_trace_events_enabled=false     \
-        rtc_build_examples=false                \
-        rtc_build_tools=false                   \
-        rtc_disable_check_msg=true              \
-        rtc_disable_logging=true                \
-        rtc_disable_metrics=true                \
-        rtc_disable_trace_events=true           \
-        rtc_enable_google_benchmarks=false      \
-        rtc_enable_protobuf=false               \
-        skia_enable_skshaper_tests=false
+GN_FLAGS +=					\
+	angle_build_tests=false			\
+	build_angle_perftests=false		\
+	build_dawn_tests=false			\
+	dawn_enable_null=false			\
+	dawn_tests_use_angle=false		\
+	enable_perfetto_unittests=false		\
+	enable_rust_crash=false			\
+	enable_rust_gtest_interop=false		\
+	enable_trace_logging=false		\
+	optional_trace_events_enabled=false	\
+	rtc_build_examples=false		\
+	rtc_build_tools=false			\
+	rtc_disable_check_msg=true		\
+	rtc_disable_logging=true		\
+	rtc_disable_metrics=true		\
+	rtc_disable_trace_events=true		\
+	rtc_enable_google_benchmarks=false	\
+	rtc_enable_protobuf=false		\
+	skia_enable_skshaper_tests=false
 
 # The items below are best configured via debian/configure.sh
 # (this needs to be run anyway when self-compiling).
@@ -255,16 +254,16 @@ GN_FLAGS += v8_enable_wasm_simd256_revec=true
 #     freetype depends on brotli and libpng
 #
 
-SYS_LIBS :=               \
-        double-conversion \
-        flac              \
-        libdrm            \
-        libevent          \
-        libsecret         \
-        libusb            \
-        libXNVCtrl        \
-        opus              \
-        zlib
+SYS_LIBS :=			\
+	double-conversion	\
+	flac			\
+	libdrm			\
+	libevent		\
+	libsecret		\
+	libusb			\
+	libXNVCtrl		\
+	opus			\
+	zlib
 
 
 # The below is best configured via debian/configure.sh, which is better
@@ -309,11 +308,11 @@ GN_FLAGS += icu_copy_icudata_to_root_build_dir=false
 
 
 # Add extra flags for system libs
-GN_FLAGS +=                           \
-        perfetto_use_system_zlib=true \
-        use_system_lcms2=true         \
-        use_system_libopenjpeg2=true  \
-        use_system_libpng=true        \
+GN_FLAGS +=				\
+        perfetto_use_system_zlib=true	\
+        use_system_lcms2=true		\
+        use_system_libopenjpeg2=true	\
+        use_system_libpng=true		\
         use_system_zlib=true
 
 %:
