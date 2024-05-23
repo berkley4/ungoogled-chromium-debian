@@ -324,7 +324,7 @@ else
 
   ## Check for clang binary existence and PGO compatibility
 
-  CC_VER=$(sed -n '/[ ]*#[ ]*clang-/s@[-#,a-z]@@gp' $DEBIAN/control.in)
+  CC_VER=$(sed -n '/^[ #]clang-/s@[-#,a-z ]@@gp' $DEBIAN/control.in)
   [ -n "$CLANG_VER" ] && CLANG_VER_SET=1 || CLANG_VER=$CC_VER && sanitise_clang_ver
 
   LLVM_BASE_DIR=/usr/lib/llvm-$CLANG_VER
