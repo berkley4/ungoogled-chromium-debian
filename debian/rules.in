@@ -331,6 +331,7 @@ override_dh_auto_configure:
 	test -f $(DS_CACHE) || test -z "$(SYS_LIBS)" || $(UB_REP_SCRIPT) --system-libraries $(SYS_LIBS)
 	test -f $(DS_CACHE) || $(UL_DIR)/domain_substitution.py apply -r $(UC_DIR)/domain_regex.list -f $(UC_DIR)/domain_substitution.list -c $(DS_CACHE) $(RT_DIR)
 	gn gen $(OUT_DIR) --args="$(GN_FLAGS)" --fail-on-unused-args
+	#test -h $(OUT_DIR)/icudtl.dat || ln -sf ../../third_party/icu/common/icudtl.dat -t $(OUT_DIR)
 
 override_dh_auto_build:
 	ninja -j $(JOBS) -C $(OUT_DIR) chrome chrome_sandbox chromedriver
