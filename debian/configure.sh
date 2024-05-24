@@ -768,7 +768,7 @@ if [ $VULKAN -eq 0 ]; then
 fi
 
 
-if [ $WEBGPU -eq 1 ]; then
+if [ $WEBGPU -ge 1 ]; then
   op_disable="$op_disable disable/webgpu"
 
   # Refer to debian/rules.in to see which flags are disabled
@@ -779,8 +779,10 @@ if [ $WEBGPU -eq 1 ]; then
   gn_enable="$gn_enable tint_build_benchmarks=false"
 
   SWIFTSHADER_WEBGPU=1
-elif [ $WEBGPU -ge 2 ]; then
-  sed -e '/enable-unsafe-webgpu/s@^#@@' -i $FLAG_DIR/gpu
+
+  if [ $WEBGPU -ge 2 ]; then
+    sed -e '/enable-unsafe-webgpu/s@^#@@' -i $FLAG_DIR/gpu
+  fi
 fi
 
 
