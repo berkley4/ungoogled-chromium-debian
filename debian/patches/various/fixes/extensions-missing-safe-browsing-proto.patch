@@ -1,0 +1,10 @@
+--- a/chrome/browser/extensions/BUILD.gn
++++ b/chrome/browser/extensions/BUILD.gn
+@@ -828,6 +828,7 @@
+     "//components/device_reauth",
+     "//components/optimization_guide/core:features",
+     "//components/safe_browsing/content/browser",
++    "//components/safe_browsing/content/common/proto:download_file_types_proto",
+     "//components/safe_browsing/core/browser:safe_browsing_metrics_collector",
+     "//components/security_interstitials/content:security_interstitial_page",
+     "//components/site_engagement/core/mojom:mojo_bindings",
