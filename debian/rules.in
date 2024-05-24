@@ -180,7 +180,7 @@ GN_FLAGS += link_pulseaudio=true
 
 # Disable swiftshader
 #GN_FLAGS += enable_swiftshader=false
-#GN_FLAGS += dawn_use_swiftshader=false
+GN_FLAGS += dawn_use_swiftshader=false
 #GN_FLAGS += enable_swiftshader_vulkan=false
 
 # Disable VA-API

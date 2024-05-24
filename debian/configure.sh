@@ -800,8 +800,8 @@ else
     gn_enable="$gn_enable enable_swiftshader_vulkan=false"
   fi
 
-  if [ $SWIFTSHADER_WEBGPU -eq 0 ]; then
-    gn_enable="$gn_enable dawn_use_swiftshader=false"
+  if [ $SWIFTSHADER_WEBGPU -eq 1 ]; then
+    gn_disable="$gn_disable dawn_use_swiftshader=false"
   fi
 fi
 
