@@ -1,0 +1,10 @@
+--- a/components/enterprise/BUILD.gn
++++ b/components/enterprise/BUILD.gn
+@@ -67,6 +67,7 @@
+   deps = [
+     "//base",
+     "//build:chromeos_buildflags",
++    "//components/enterprise/buildflags:buildflags",
+     "//components/policy/core/browser",
+     "//components/policy/core/common",
+     "//components/policy/proto",

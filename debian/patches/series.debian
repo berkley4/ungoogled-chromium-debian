@@ -82,6 +82,7 @@ various/disable/tint-fuzzers.patch
 various/disable/unrar.patch
 various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
 various/fixes/chromedriver-BrandVersion.patch
+various/fixes/enterprise-buildflags.patch
 various/fixes/EnumTable-crash.patch
 various/fixes/GaiaAuthFetcher-kMaxMessageSize.patch
 various/fixes/InkDropHost-crash.patch
