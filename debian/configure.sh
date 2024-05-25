@@ -354,9 +354,8 @@ else
   ## Set optional patches, build flags and format d/rules and d/control
 
   op_enable="$op_enable system/clang/clang-version-check"
-  gn_enable="$gn_enable clang_base_path"
+  gn_enable="$gn_enable clang_base_path custom_toolchain host_toolchain"
 
-  RUL="$RUL -e \"/^#.*_toolchain=/s@^#@@\""
   RUL="$RUL -e \"/^#export LLVM_DIR /s@^#@@\""
   RUL="$RUL -e \"/^#export.*:= \x24\x28LLVM_DIR\x29\//s@^#@@\""
   RUL="$RUL -e \"/^#export.*_MAINT_SET/s@^#@@\""

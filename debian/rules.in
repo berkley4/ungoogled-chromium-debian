@@ -18,9 +18,6 @@ GN_FLAGS := $(shell sed -z -e 's@\x22@\x5c\x22@g' -e 's@\n@ @g' $(UC_DIR)/flags.
 # Custom toolchain (needed if enabling optional/llvm-polly-* patches)
 # The llvm major version needs to at least match chromium's for PGO to work
 #
-#GN_FLAGS += custom_toolchain=\"//build/toolchain/linux/unbundle:default\" \
-#            host_toolchain=\"//build/toolchain/linux/unbundle:default\"
-#
 #export LLVM_DIR := _LLVM_BASE_DIR/bin
 #
 #export AR     := $(LLVM_DIR)/llvm-ar
@@ -103,6 +100,8 @@ GN_FLAGS +=					\
 
 # Clang toolchain
 #GN_FLAGS += clang_base_path=\"_LLVM_BASE_DIR\" clang_version=\"_LLVM_VER\"
+#GN_FLAGS += custom_toolchain=\"//build/toolchain/linux/unbundle:default\"
+#GN_FLAGS += host_toolchain=\"//build/toolchain/linux/unbundle:default\"
 
 # Rust toolchain
 export RUSTC_BOOTSTRAP=1
