@@ -29,6 +29,22 @@ GN_FLAGS := $(shell sed -z -e 's@\x22@\x5c\x22@g' -e 's@\n@ @g' $(UC_DIR)/flags.
 #export DEB_CFLAGS_MAINT_SET := -ffile-prefix-map=$(CURDIR)=.
 #export DEB_CXXFLAGS_MAINT_SET := -ffile-prefix-map=$(CURDIR)=.
 
+# Enable ccache
+#GN_FLAGS += cc_wrapper=ccache
+
+# Clang toolchain
+#GN_FLAGS += clang_base_path=\"_LLVM_BASE_DIR\" clang_version=\"_LLVM_VER\"
+#GN_FLAGS += custom_toolchain=\"//build/toolchain/linux/unbundle:default\"
+#GN_FLAGS += host_toolchain=\"//build/toolchain/linux/unbundle:default\"
+
+# Rust toolchain
+export RUSTC_BOOTSTRAP=1
+#RUST_PATH := _RUST_PATH
+#RUST_VER := $(shell $(RUST_PATH)/bin/rustc -V)
+#GN_FLAGS += rust_sysroot_absolute=\"$(RUST_PATH)\" rustc_version=\"$(RUST_VER)\"
+#GN_FLAGS += toolchain_supports_rust_thin_lto=false
+
+
 # Use parallel jobs if requested
 JOBS := 1
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
@@ -91,24 +107,6 @@ GN_FLAGS +=					\
 
 # The items below are best configured via debian/configure.sh
 # (this needs to be run anyway when self-compiling).
-
-
-### Toolchains
-
-# Enable ccache
-#GN_FLAGS += cc_wrapper=ccache
-
-# Clang toolchain
-#GN_FLAGS += clang_base_path=\"_LLVM_BASE_DIR\" clang_version=\"_LLVM_VER\"
-#GN_FLAGS += custom_toolchain=\"//build/toolchain/linux/unbundle:default\"
-#GN_FLAGS += host_toolchain=\"//build/toolchain/linux/unbundle:default\"
-
-# Rust toolchain
-export RUSTC_BOOTSTRAP=1
-#RUST_PATH := _RUST_PATH
-#RUST_VER := $(shell $(RUST_PATH)/bin/rustc -V)
-#GN_FLAGS += rust_sysroot_absolute=\"$(RUST_PATH)\" rustc_version=\"$(RUST_VER)\"
-#GN_FLAGS += toolchain_supports_rust_thin_lto=false
 
 
 ### General components
