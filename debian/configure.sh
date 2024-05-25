@@ -372,11 +372,7 @@ else
       CON="$CON -e \"/^#lld-/s@$CC_VER@$CLANG_VER@\""
       CON="$CON -e \"/^#clang-/s@$CC_VER@$CLANG_VER@\""
       CON="$CON -e \"/^#libclang-rt-/s@$CC_VER@$CLANG_VER@\""
-
-      RUL="$RUL -e \"/^#export LLVM_VERSION /s@$CC_VER@$CLANG_VER@\""
     fi
-
-    RUL="$RUL -e \"/^#export LLVM_VERSION /s@^#@@\""
   fi
 fi
 
