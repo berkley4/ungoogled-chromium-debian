@@ -35,6 +35,9 @@ SYS_RUST		0		Use in-tree chromium rust binaries (default)
 
 CCACHE			0		Enable the use of the the ccache compilation cache utility
 
+ESBUILD			0		Use the faster ESbuild javascript bundler instead of the default rollup
+					The slight package size increase means this is probably only worth enabling on fast machines
+
 LTO_DIR			<dir>		Default iis <source root>/out/Release/thinlto-cache
 
 PGO			1		Enable/disable building with PGO profile optimisation
