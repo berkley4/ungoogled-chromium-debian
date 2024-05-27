@@ -39,13 +39,12 @@ output_error() {
       echo "$@" 1>&2 ;;
 
     *)
-      #  Prefer gxmessage over xmessage. Fallback to echo.
+      # Prefer gxmessage over xmessage. Fallback to echo.
+      XMESSAGE=echo
       if [ -x /usr/bin/gxmessage ]; then
         XMESSAGE=gxmessage
       elif [ -x /usr/bin/xmessage ]; then
         XMESSAGE=xmessage
-      else
-        XMESSAGE=echo
       fi
 
       $XMESSAGE "$@" ;;
