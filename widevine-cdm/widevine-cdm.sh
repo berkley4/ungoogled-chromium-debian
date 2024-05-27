@@ -1,22 +1,23 @@
 #!/bin/sh -e
 
+base_url=https://dl.google.com/linux/deb/pool/main/g/google-chrome-stable
+
+# ${example%/*} = $(dirname example)
+W_DIR=${0%/*}
+
+
 case $USER in
   root)
     printf '%s\n' "Run this script as an unprivileged user"
     exit 1 ;;
 esac
 
-
-base_url=https://dl.google.com/linux/deb/pool/main/g/google-chrome-stable
-
-W_DIR=${0%/*}    # ${example%/*} = $(dirname example)
-
-
 case $CHROME_VER in
   "")
     printf '%s\n' "Usage: CHROME_VER=<version> widevine-cdm.sh"
     exit 1 ;;
 esac
+
 
 case $CHECK in
   "")
@@ -40,6 +41,7 @@ case $DL_CACHE in
         fi ;;
     esac ;;
 esac
+
 
 
 ## MAKE NEEDED DIRECTORIES
