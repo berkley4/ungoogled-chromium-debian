@@ -15,12 +15,8 @@ ___Script variables___
 
 The script takes the following variables :-
 
-- CHROME_VER	<chrome version>
 - DL_CACHE	<path/to/folder>
 - CHECK		<0|1>
-
-CHROME_VER is mandatory and is the google chrome version eg 116.0.5845.140-1
-(note the '-1' suffix).
 
 DL_CACHE is optional and defaults to ../download_cache (ie alongside the
 widevine-cdm folder).
@@ -33,14 +29,14 @@ matches that from the downloaded deb file.
 ___Example usage___
 
 ```sh
-env CHROME_VER=116.0.5845.110-1 DL_CACHE=/tmp /bin/sh ./widevine-cdm/widevine-cdm.sh
+env DL_CACHE=/tmp /bin/sh ./widevine-cdm/widevine-cdm.sh
 ```
 
 The 'env' bit, plus the /bin/sh might be useful to those working on a noexec mounted
 drive/partition. If this doesn't affect you, then a simpler equivalent command is :-
 
 ```sh
-CHROME_VER=116.0.5845.110-1 DL_CACHE=/tmp ./widevine-cdm/widevine-cdm.sh
+DL_CACHE=/tmp ./widevine-cdm/widevine-cdm.sh
 ```
 
 

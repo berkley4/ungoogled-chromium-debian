@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-base_url=https://dl.google.com/linux/deb/pool/main/g/google-chrome-stable
+url=https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 
 # ${example%/*} = $(dirname example)
 W_DIR=${0%/*}
@@ -14,12 +14,6 @@ esac
 
 
 # Set/check initial variables
-
-case $CHROME_VER in
-  "")
-    printf '%s\n' "Usage: CHROME_VER=<version> widevine-cdm.sh"
-    exit 1 ;;
-esac
 
 case $CHECK in
   "")
@@ -47,17 +41,18 @@ dl_args="--continue -P $DL_CACHE"
 
 case $D_LOADER in
   aria2c)
-    dl_args="-x2 -s2 -c -d $DL_CACHE" ;;
+    dl_args="-x4 -s4 -c -d $DL_CACHE" ;;
 esac
 
-$D_LOADER $dl_args $base_url/google-chrome-stable_${CHROME_VER}_amd64.deb
+$D_LOADER $dl_args $url
 
 
 ## EXTRACT FILES
 
 printf '\n%s\n' "Extracting files....."
 
-ar p $DL_CACHE/google-chrome-stable_${CHROME_VER}_amd64.deb data.tar.xz | \
+# ${url##*/} = $(basename $url)
+ar p $DL_CACHE/${url##*/} data.tar.xz | \
   tar -C $W_DIR/DEB/usr/lib -xpJf - --strip-components 4 ./opt/google/chrome/WidevineCdm
 
 
