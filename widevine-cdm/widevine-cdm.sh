@@ -12,12 +12,14 @@ case $USER in
     exit 1 ;;
 esac
 
+
+# Set/check initial variables
+
 case $CHROME_VER in
   "")
     printf '%s\n' "Usage: CHROME_VER=<version> widevine-cdm.sh"
     exit 1 ;;
 esac
-
 
 case $CHECK in
   "")
@@ -28,7 +30,6 @@ case $DL_CACHE in
   "")
     DL_CACHE=$W_DIR/../download_cache ;;
 esac
-
 
 
 ## MAKE NEEDED DIRECTORIES
