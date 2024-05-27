@@ -103,6 +103,9 @@ export CHROME_WRAPPER=$0
 # Set the correct file name for the desktop file
 export CHROME_DESKTOP="chromium.desktop"
 
+# Stop gnome bug-buddy intercepting crashes (see http://crbug.com/24120)
+export GNOME_DISABLE_CRASH_DIALOG=SET_BY_GOOGLE_CHROME
+
 
 # Set CHROME_VERSION_EXTRA text, which is displayed in the About dialog
 DIST=$(print_dist)
