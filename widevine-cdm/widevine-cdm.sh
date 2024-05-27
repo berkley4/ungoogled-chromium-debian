@@ -59,7 +59,7 @@ ar p $DL_CACHE/${url##*/} data.tar.xz | \
 ## GET/CHECK WIDEVINE VERSION
 
 w_man=$W_DIR/DEB/usr/lib/WidevineCdm/manifest.json
-w_ver=$(sed -n 's@.*"version": "\([^"]*\).*@\1@p' $w_man)
+w_ver=$(sed -n '/"version"/s@[":,a-z ]@@gp' $w_man)
 
 if [ $CHECK -eq 1 ]; then
   case $w_ver in
