@@ -96,11 +96,9 @@ for file in /etc/chromium.d/*; do
   . $file
 done
 
-# Use the /usr/bin helper script for generated launchers
-case "$CHROME_WRAPPER" in
-  "")
-    export CHROME_WRAPPER="/usr/bin/$APP_NAME" ;;
-esac
+
+# Inform the chrome binary that it has been run via a wrapper script
+export CHROME_WRAPPER=$0
 
 # Set the correct file name for the desktop file
 export CHROME_DESKTOP="chromium.desktop"
