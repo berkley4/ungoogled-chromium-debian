@@ -27,19 +27,6 @@ esac
 case $DL_CACHE in
   "")
     DL_CACHE=$W_DIR/../download_cache ;;
-
-  *)
-    BD=$(basename $DL_CACHE)
-    case $BD in
-      $DL_CACHE)
-        : ;;
-
-      *)
-        if [ ! -d $BD ]; then
-          printf '%s\n' "Base directory $BD does not exist"
-          exit 1
-        fi ;;
-    esac ;;
 esac
 
 
