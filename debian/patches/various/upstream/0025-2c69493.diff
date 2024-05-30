@@ -1,0 +1,36 @@
+From 2c69493794437ca1c55f395b2c1f37a5ed5f2294 Mon Sep 17 00:00:00 2001
+From: Alison Gale <agale@chromium.org>
+Date: Tue, 21 May 2024 17:38:53 +0000
+Subject: [PATCH] Fix default prompt crash when browser is closed
+
+Chrome can still be running in the background after the browser is
+closed. In that case, don't write the prefs because they will be
+handled during the next startup (similar to what happens when the timer
+expires and Chrome is completely off).
+
+Bug: 341855213
+Change-Id: I40962867ce1c10b04a330460a048bab5af5df2ca
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5553315
+Reviewed-by: Eshwar Stalin <estalin@chromium.org>
+Commit-Queue: Alison Gale <agale@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1303876}
+---
+
+--- a/chrome/browser/ui/startup/default_browser_prompt_manager.cc
++++ b/chrome/browser/ui/startup/default_browser_prompt_manager.cc
+@@ -264,8 +264,13 @@
+ 
+     app_menu_prompt_dismiss_timer_.Start(
+         FROM_HERE, app_menu_remaining_duration, base::BindOnce([]() {
+-          UpdatePrefsForDismissedPrompt(
+-              BrowserList::GetInstance()->GetLastActive()->profile());
++          Browser* last_active = BrowserList::GetInstance()->GetLastActive();
++          // If there is no active browser, just dismiss the prompts and the
++          // prefs will be updated on the next startup.
++          if (last_active) {
++            UpdatePrefsForDismissedPrompt(
++                last_active->profile());
++          }
+           DefaultBrowserPromptManager::GetInstance()->CloseAllPrompts(
+               CloseReason::kDismiss);
+         }));

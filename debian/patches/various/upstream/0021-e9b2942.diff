@@ -1,0 +1,114 @@
+From e9b29423d0e497e025cfb6ee9d7334e80ca4c477 Mon Sep 17 00:00:00 2001
+From: Jeroen Dhollander <jeroendh@google.com>
+Date: Thu, 16 May 2024 22:16:23 +0000
+Subject: [PATCH] Fix MetricsService crash
+
+When the user log store is unset the metrics log is cleared as well,
+so the service should stop receiving recorded actions.
+
+Bug: b/328919325
+Change-Id: I49ba68e8af5666144aa75dd48f68e0d36e6c4e9b
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5535572
+Auto-Submit: Jeroen Dhollander <jeroendh@google.com>
+Commit-Queue: Alexei Svitkine <asvitkine@chromium.org>
+Reviewed-by: Alexei Svitkine <asvitkine@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1302259}
+---
+
+--- a/components/metrics/metrics_service.cc
++++ b/components/metrics/metrics_service.cc
+@@ -138,6 +138,7 @@
+ #include "base/metrics/histogram_samples.h"
+ #include "base/metrics/persistent_histogram_allocator.h"
+ #include "base/metrics/statistics_recorder.h"
++#include "base/metrics/user_metrics.h"
+ #include "base/process/process_handle.h"
+ #include "base/rand_util.h"
+ #include "base/strings/string_piece.h"
+@@ -697,8 +698,9 @@
+ }
+ 
+ void MetricsService::UnsetUserLogStore() {
+-  if (!log_store()->has_alternate_ongoing_log_store())
++  if (!log_store()->has_alternate_ongoing_log_store()) {
+     return;
++  }
+ 
+   if (state_ >= SENDING_LOGS) {
+     PushPendingLogsToPersistentStorage(
+@@ -723,9 +725,10 @@
+       /*required_flags=*/base::Histogram::kUmaTargetedHistogramFlag,
+       &histogram_snapshot_manager);
+ 
+-  // Discard the current log and don't store it.
++  // Discard the current log, don't store it and stop recording.
+   CHECK(current_log_);
+   current_log_.reset();
++  DisableRecording();
+ 
+   log_store()->UnsetAlternateOngoingLogStore();
+   RecordUserLogStoreState(kUnsetPreSendLogsState);
+@@ -891,6 +894,7 @@
+ 
+ void MetricsService::OnUserAction(const std::string& action,
+                                   base::TimeTicks action_time) {
++  CHECK(current_log_);
+   current_log_->RecordUserAction(action, action_time);
+   HandleIdleSinceLastTransmission(false);
+ }
+--- a/components/metrics/metrics_service_unittest.cc
++++ b/components/metrics/metrics_service_unittest.cc
+@@ -88,8 +88,9 @@
+       variations::MakeActiveGroupId(trial_name, group_name);
+ 
+   for (const auto& trial : proto.field_trial()) {
+-    if (trial.name_id() == id.name && trial.group_id() == id.group)
++    if (trial.name_id() == id.name && trial.group_id() == id.group) {
+       return true;
++    }
+   }
+   return false;
+ }
+@@ -272,8 +273,9 @@
+       const base::StatisticsRecorder::Histograms& histograms,
+       uint64_t name_hash) {
+     for (const base::HistogramBase* histogram : histograms) {
+-      if (name_hash == base::HashMetricName(histogram->histogram_name()))
++      if (name_hash == base::HashMetricName(histogram->histogram_name())) {
+         return histogram;
++      }
+     }
+     return nullptr;
+   }
+@@ -1649,6 +1651,31 @@
+   base::StatisticsRecorder::ForgetHistogramForTesting("Test.Before.Histogram");
+   base::StatisticsRecorder::ForgetHistogramForTesting("Test.After.Histogram");
+ }
++
++TEST_P(MetricsServiceTestWithFeatures,
++       UnsettingLogStoreShouldDisableRecording) {
++  EnableMetricsReporting();
++  TestMetricsServiceClient client;
++  TestMetricsService service(GetMetricsStateManager(), &client,
++                             GetLocalState());
++
++  service.InitializeMetricsRecordingState();
++  // Start() will register the service to start recording.
++  service.Start();
++  ASSERT_TRUE(service.recording_active());
++
++  // Register, set and unset a log store.
++  // This will clear the log file and thus should also stop recording.
++  std::unique_ptr<TestUnsentLogStore> alternate_ongoing_log_store =
++      InitializeTestLogStoreAndGet();
++  service.SetUserLogStore(std::move(alternate_ongoing_log_store));
++  service.UnsetUserLogStore();
++  ASSERT_FALSE(service.recording_active());
++
++  // This should not crash.
++  base::RecordAction(base::UserMetricsAction("TestAction"));
++}
++
+ #endif  // BUILDFLAG(IS_CHROMEOS_LACROS)
+ 
+ }  // namespace metrics

@@ -1,0 +1,39 @@
+From 17bdb170168b15c2513ece9a3326e407fc5219d6 Mon Sep 17 00:00:00 2001
+From: Lingqi Chi <lingqi@chromium.org>
+Date: Wed, 22 May 2024 00:27:51 +0000
+Subject: [PATCH] Fix a bug in GenericFontFamilySettings copy constructor.
+
+This is a follow-up of Id219621c8cc1513c6a0d124f06522f8a0044269c.
+The copy constructor of GenericFontFamilySettings did not copy the
+first_available_font_for_families_ map.
+This caused a crash when the copy of GenericFontFamilySettings was used
+to create a FontDescription.
+
+Bug: 327545434
+Change-Id: Ifa495675a9a4e6f1f2409c70ea1bf7f86dde7602
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5554151
+Commit-Queue: Lingqi Chi <lingqi@chromium.org>
+Reviewed-by: Koji Ishii <kojii@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1304162}
+---
+
+--- a/third_party/blink/renderer/platform/fonts/generic_font_family_settings.cc
++++ b/third_party/blink/renderer/platform/fonts/generic_font_family_settings.cc
+@@ -49,7 +49,8 @@
+       sans_serif_font_family_map_(other.sans_serif_font_family_map_),
+       cursive_font_family_map_(other.cursive_font_family_map_),
+       fantasy_font_family_map_(other.fantasy_font_family_map_),
+-      math_font_family_map_(other.math_font_family_map_) {}
++      math_font_family_map_(other.math_font_family_map_),
++      first_available_font_for_families_(other.first_available_font_for_families_) {}
+ 
+ GenericFontFamilySettings& GenericFontFamilySettings::operator=(
+     const GenericFontFamilySettings& other) {
+@@ -60,6 +61,7 @@
+   cursive_font_family_map_ = other.cursive_font_family_map_;
+   fantasy_font_family_map_ = other.fantasy_font_family_map_;
+   math_font_family_map_ = other.math_font_family_map_;
++  first_available_font_for_families_ = other.first_available_font_for_families_;
+   return *this;
+ }
+ 

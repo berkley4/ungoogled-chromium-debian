@@ -1,0 +1,93 @@
+From 3f8244f947fa638301848d329d4cb0305ca0e9fb Mon Sep 17 00:00:00 2001
+From: Xianzhu Wang <wangxianzhu@chromium.org>
+Date: Thu, 23 May 2024 22:28:38 +0000
+Subject: [PATCH] Fix nullptr when calling GetPositionAnchor(Element|Object)
+
+anchor_query can be nullptr if no descendants of the current
+containing block have anchor-name. Problem happens when the current
+OOF LayoutObject has position-try but it doesn't have anchor position
+(causing the UBSan warning about *anchor_query but the nullptr was
+never actually dereferenced), or it has an invalid position-anchor
+(causing nullptr crash).
+
+Bug: 338929745
+Change-Id: I488fba3aeaf7efdaef2bf75e8cc65fa97240af1e
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5564844
+Auto-Submit: Xianzhu Wang <wangxianzhu@chromium.org>
+Commit-Queue: Mason Freed <masonf@chromium.org>
+Reviewed-by: Mason Freed <masonf@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1305353}
+---
+
+--- a/third_party/blink/renderer/core/layout/out_of_flow_layout_part.cc
++++ b/third_party/blink/renderer/core/layout/out_of_flow_layout_part.cc
+@@ -279,10 +279,13 @@
+ const Element* GetPositionAnchorElement(
+     const BlockNode& node,
+     const ComputedStyle& style,
+-    const LogicalAnchorQuery& anchor_query) {
++    const LogicalAnchorQuery* anchor_query) {
++  if (!anchor_query) {
++    return nullptr;
++  }
+   if (const ScopedCSSName* specifier = style.PositionAnchor()) {
+     if (const LogicalAnchorReference* reference =
+-            anchor_query.AnchorReference(*node.GetLayoutBox(), specifier);
++            anchor_query->AnchorReference(*node.GetLayoutBox(), specifier);
+         reference && reference->layout_object) {
+       return DynamicTo<Element>(reference->layout_object->GetNode());
+     }
+@@ -297,7 +300,7 @@
+ const LayoutObject* GetPositionAnchorObject(
+     const BlockNode& node,
+     const ComputedStyle& style,
+-    const LogicalAnchorQuery& anchor_query) {
++    const LogicalAnchorQuery* anchor_query) {
+   if (const Element* element =
+           GetPositionAnchorElement(node, style, anchor_query)) {
+     return element->GetLayoutObject();
+@@ -307,7 +310,7 @@
+ 
+ gfx::Vector2dF GetAnchorOffset(const BlockNode& node,
+                                const ComputedStyle& style,
+-                               const LogicalAnchorQuery& anchor_query) {
++                               const LogicalAnchorQuery* anchor_query) {
+   if (const LayoutObject* anchor_object =
+           GetPositionAnchorObject(node, style, anchor_query)) {
+     if (const AnchorPositionScrollData* data =
+@@ -358,7 +361,7 @@
+   // The spec is still in-flux about whether we should use multiple anchors
+   // (from `anchor()` and `anchor-size()`), or just the default anchor.
+   const Element* anchor =
+-      anchored ? GetPositionAnchorElement(node, node.Style(), *anchor_query)
++      anchored ? GetPositionAnchorElement(node, node.Style(), anchor_query)
+                : nullptr;
+   if (is_anchor_positioned && has_anchors_visible_visibility && anchor) {
+     anchored->EnsureAnchorPositionScrollData()
+@@ -1879,7 +1882,7 @@
+       if (try_fit_available_space) {
+         non_overflowing_scroll_ranges.push_back(non_overflowing_range);
+         if (!non_overflowing_range.Contains(GetAnchorOffset(
+-                node_info.node, style, *anchor_evaluator.AnchorQuery()))) {
++                node_info.node, style, anchor_evaluator.AnchorQuery()))) {
+           continue;
+         }
+       }
+@@ -2206,7 +2209,7 @@
+                            block_scroll_min, block_scroll_max}
+             .ToPhysical(candidate_writing_direction);
+     out_non_overflowing_range->anchor_object = GetPositionAnchorObject(
+-        node_info.node, candidate_style, *anchor_evaluator.AnchorQuery());
++        node_info.node, candidate_style, anchor_evaluator.AnchorQuery());
+   }
+ 
+   bool anchor_center_x = anchor_center_position.inline_offset.has_value();
+--- /dev/null
++++ b/third_party/blink/web_tests/external/wpt/css/css-anchor-position/position-try-invalid-anchor-crash.html
+@@ -0,0 +1,6 @@
++<!DOCTYPE html>
++<link rel=help href="https://drafts.csswg.org/css-anchor-1/#fallback">
++<style>
++@position-try --f1 { top: 50px; }
++</style>
++<div style="position: absolute; position-anchor: --x; position-try-options: --f1">INVALID ANCHOR</div>

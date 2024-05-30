@@ -1,0 +1,34 @@
+From c99976326a20c66cdfd34b16bd96f328edb82d2b Mon Sep 17 00:00:00 2001
+From: Siye Liu <siliu@microsoft.com>
+Date: Tue, 21 May 2024 03:52:23 +0000
+Subject: [PATCH] Fix crash in |TextSuggestionController::ShowSpellCheckMenu|.
+
+The crash is introduced by this CL[1]. However, the root cause is from
+existing code. |FrameSelection::AbsoluteCaretBounds| requires clean
+layout. We should make sure that layout is clean before calling
+|FS::AbsoluteCaretBounds| in |TSC::ShowCSpellCheckMenu|.
+
+[1]: https://chromium-review.googlesource.com/c/chromium/src/+/5472192
+
+Bug: 336992377
+Change-Id: I27d47550f929aa8ed1158790f8f5779e0f5c4ca4
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5551846
+Commit-Queue: Siye Liu <siliu@microsoft.com>
+Reviewed-by: Anupam Snigdha <snianu@microsoft.com>
+Cr-Commit-Position: refs/heads/main@{#1303591}
+---
+
+--- a/third_party/blink/renderer/core/editing/suggestion/text_suggestion_controller.cc
++++ b/third_party/blink/renderer/core/editing/suggestion/text_suggestion_controller.cc
+@@ -439,6 +439,11 @@
+     suggestion_ptrs.push_back(std::move(info_ptr));
+   }
+ 
++  // |FrameSelection::AbsoluteCaretBounds()| requires clean layout.
++  // TODO(editing-dev): The use of UpdateStyleAndLayout
++  // needs to be audited.  See http://crbug.com/590369 for more details.
++  GetFrame().GetDocument()->UpdateStyleAndLayout(
++      DocumentUpdateReason::kSpellCheck);
+   const gfx::Rect& absolute_bounds =
+       GetFrame().Selection().AbsoluteCaretBounds();
+   const gfx::Rect& viewport_bounds =

@@ -1,0 +1,793 @@
+From 9e4070dd837f349c33101b8ad487ee8c9ded0a0c Mon Sep 17 00:00:00 2001
+From: Xianzhu Wang <wangxianzhu@chromium.org>
+Date: Fri, 17 May 2024 16:41:51 +0000
+Subject: [PATCH] Reland "[css-anchor-position-1] Fix flicker with try-option with fixed-position anchor"
+
+This reverts commit dcf49c3fc3cdf6a01979b453dc17c7c8a43b7986.
+
+Reason for revert: It seems that the original CL just exposed a
+cppgc bug which has been fixed by
+https://chromium-review.googlesource.com/c/v8/v8/+/5534767.
+
+Original change's description:
+> Revert "[css-anchor-position-1] Fix flicker with try-option with fixed-position anchor"
+>
+> This reverts commit 94af1f503694c3a7ffece9c910516b3bbe9d50c2.
+>
+> Reason for revert: Causing crashes in GC, see bug.
+>
+> Bug: 339967265, 338929745
+>
+> Original change's description:
+> > [css-anchor-position-1] Fix flicker with try-option with fixed-position anchor
+> >
+> > Previously we supposed the default anchor wouldn't change in
+> > try-options, but the latest draft spec allows that.
+> >
+> > When the currently tried option will use a default anchor that is
+> > different from the currently used default anchor, checking overflow
+> > with the snapshotted AnchorPositionScrollData will be incorrect,
+> > and the incorrect results caused oscillation between try options.
+> >
+> > To resolve that, when the total offset is requested for a different
+> > default anchor, we need to calculate it on the fly instead of getting
+> > it from the snapshotted result.
+> >
+> > Also allow one more layout if ValidateSnapshot() (called after the
+> > first layout in a document lifecycle update) finds that the
+> > snapshotted scroll data needs update, to ensure correct layout and
+> > paint with the changed anchor and scroll adjustment in most cases.
+> >
+> > In rare cases when we need more than one additional layout to get
+> > the stable layout, ShouldScheduleNextService() will schedule another
+> > lifecycle.
+> >
+> > Fixed: 338929745
+> > Change-Id: I295fbc605ac8b7f0298eef7aeff4434c6bd54628
+> > Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5529048
+> > Reviewed-by: Ian Kilpatrick <ikilpatrick@chromium.org>
+> > Reviewed-by: Philip Rogers <pdr@chromium.org>
+> > Commit-Queue: Xianzhu Wang <wangxianzhu@chromium.org>
+> > Cr-Commit-Position: refs/heads/main@{#1299608}
+>
+> Change-Id: I222274aa6af5da55d5d6dc0867d3cda684efff49
+> Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5526668
+> Bot-Commit: Rubber Stamper <rubber-stamper@appspot.gserviceaccount.com>
+> Commit-Queue: Michael Lippautz <mlippautz@chromium.org>
+> Cr-Commit-Position: refs/heads/main@{#1299965}
+
+Bug: 339967265, 338929745
+Change-Id: I4fca64d757967f474f5919e6726bfe24b2924152
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5535530
+Reviewed-by: Philip Rogers <pdr@chromium.org>
+Reviewed-by: Ian Kilpatrick <ikilpatrick@chromium.org>
+Commit-Queue: Xianzhu Wang <wangxianzhu@chromium.org>
+Bot-Commit: Rubber Stamper <rubber-stamper@appspot.gserviceaccount.com>
+Reviewed-by: Michael Lippautz <mlippautz@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1302649}
+---
+
+--- a/third_party/blink/renderer/core/layout/anchor_evaluator_impl.h
++++ b/third_party/blink/renderer/core/layout/anchor_evaluator_impl.h
+@@ -318,8 +318,9 @@
+   std::optional<PhysicalOffset> ComputeAnchorCenterOffsets(
+       const ComputedStyleBuilder&) override;
+ 
+- private:
+   const LogicalAnchorQuery* AnchorQuery() const;
++
++ private:
+   const LogicalAnchorReference* ResolveAnchorReference(
+       const AnchorSpecifierValue& anchor_specifier,
+       const ScopedCSSName* position_anchor) const;
+--- a/third_party/blink/renderer/core/layout/anchor_position_scroll_data.cc
++++ b/third_party/blink/renderer/core/layout/anchor_position_scroll_data.cc
+@@ -23,7 +23,7 @@
+                                 : box.AcceptableImplicitAnchor();
+ }
+ 
+-const Vector<NonOverflowingScrollRange>* GetNonOverflowingScrollRanges(
++const HeapVector<NonOverflowingScrollRange>* GetNonOverflowingScrollRanges(
+     const LayoutObject* layout_object) {
+   if (!layout_object || !layout_object->IsOutOfFlowPositioned()) {
+     return nullptr;
+@@ -56,6 +56,15 @@
+   return anchored_element_->GetAnchorPositionScrollData() == this;
+ }
+ 
++gfx::Vector2dF AnchorPositionScrollData::TotalOffset(
++    const LayoutObject& anchor_object) const {
++  if (anchor_object == default_anchor_adjustment_data_.anchor_object) {
++    return default_anchor_adjustment_data_.TotalOffset();
++  }
++
++  return ComputeAdjustmentContainersData(anchor_object).TotalOffset();
++}
++
+ AnchorPositionScrollData::AdjustmentData
+ AnchorPositionScrollData::ComputeAdjustmentContainersData(
+     const LayoutObject& anchor) const {
+@@ -71,6 +80,7 @@
+     return container;
+   };
+ 
++  result.anchor_object = &anchor;
+   const auto* bounding_container = container_ignore_layout_view_for_fixed_pos(
+       *anchored_element_->GetLayoutObject());
+ 
+@@ -171,31 +181,24 @@
+   AdjustmentData new_adjustment_data = ComputeDefaultAnchorAdjustmentData();
+ 
+   SnapshotDiff diff = SnapshotDiff::kNone;
+-  if (AdjustmentContainerIds() !=
+-      new_adjustment_data.adjustment_container_ids) {
++  if (default_anchor_adjustment_data_.anchor_object !=
++          new_adjustment_data.anchor_object ||
++      AdjustmentContainerIds() !=
++          new_adjustment_data.adjustment_container_ids ||
++      !IsFallbackPositionValid(new_adjustment_data)) {
+     diff = SnapshotDiff::kScrollersOrFallbackPosition;
+-  } else {
+-    const bool anchor_scrolled =
+-        TotalOffset() !=
+-            new_adjustment_data.accumulated_adjustment +
+-                new_adjustment_data.anchored_element_container_scroll_offset ||
+-        AccumulatedAdjustmentScrollOrigin() !=
+-            new_adjustment_data.accumulated_adjustment_scroll_origin;
+-    if (anchor_scrolled &&
+-        !IsFallbackPositionValid(
+-            new_adjustment_data.accumulated_adjustment,
+-            new_adjustment_data.anchored_element_container_scroll_offset)) {
+-      diff = SnapshotDiff::kScrollersOrFallbackPosition;
+-    } else if (anchor_scrolled ||
+-               NeedsScrollAdjustmentInX() !=
+-                   new_adjustment_data.needs_scroll_adjustment_in_x ||
+-               NeedsScrollAdjustmentInY() !=
+-                   new_adjustment_data.needs_scroll_adjustment_in_y) {
+-      // When needs_scroll_adjustment_in_x/y changes, we still need to update
+-      // paint properties so that compositor can calculate the translation
+-      // offset correctly.
+-      diff = SnapshotDiff::kOffsetOnly;
+-    }
++  } else if (NeedsScrollAdjustmentInX() !=
++                 new_adjustment_data.needs_scroll_adjustment_in_x ||
++             NeedsScrollAdjustmentInY() !=
++                 new_adjustment_data.needs_scroll_adjustment_in_y ||
++             default_anchor_adjustment_data_.TotalOffset() !=
++                 new_adjustment_data.TotalOffset() ||
++             AccumulatedAdjustmentScrollOrigin() !=
++                 new_adjustment_data.accumulated_adjustment_scroll_origin) {
++    // When needs_scroll_adjustment_in_x/y changes, we still need to update
++    // paint properties so that compositor can calculate the translation
++    // offset correctly.
++    diff = SnapshotDiff::kOffsetOnly;
+   }
+ 
+   if (update && diff != SnapshotDiff::kNone) {
+@@ -206,9 +209,8 @@
+ }
+ 
+ bool AnchorPositionScrollData::IsFallbackPositionValid(
+-    const gfx::Vector2dF& new_accumulated_adjustment,
+-    const gfx::Vector2dF& new_anchored_element_container_scroll_offset) const {
+-  const Vector<NonOverflowingScrollRange>* non_overflowing_scroll_ranges =
++    const AdjustmentData& new_adjustment_data) const {
++  const HeapVector<NonOverflowingScrollRange>* non_overflowing_scroll_ranges =
+       GetNonOverflowingScrollRanges(anchored_element_->GetLayoutObject());
+   if (!non_overflowing_scroll_ranges ||
+       non_overflowing_scroll_ranges->empty()) {
+@@ -217,39 +219,31 @@
+ 
+   for (const NonOverflowingScrollRange& range :
+        *non_overflowing_scroll_ranges) {
+-    if (range.Contains(TotalOffset()) !=
+-        range.Contains(new_accumulated_adjustment +
+-                       new_anchored_element_container_scroll_offset)) {
+-      return false;
++    if (range.anchor_object != new_adjustment_data.anchor_object) {
++      // The range was calculated with a different anchor object. Check if the
++      // anchored element (which previously overflowed with the try option that
++      // specified that anchor) will become non-overflowing with that option.
++      if (range.Contains(TotalOffset(*range.anchor_object))) {
++        return false;
++      }
++    } else {
++      // The range was calculated with the same anchor object as this data.
++      // Check if the overflow status of the anchored element will change with
++      // the new total offset.
++      if (range.Contains(default_anchor_adjustment_data_.TotalOffset()) !=
++          range.Contains(new_adjustment_data.TotalOffset())) {
++        return false;
++      }
+     }
+   }
+   return true;
+ }
+ 
+ void AnchorPositionScrollData::UpdateSnapshot() {
+-  if (!IsActive()) {
+-    return;
+-  }
+-
+-  SnapshotDiff diff = TakeAndCompareSnapshot(true /* update */);
+-  switch (diff) {
+-    case SnapshotDiff::kNone:
+-      return;
+-    case SnapshotDiff::kOffsetOnly:
+-      InvalidatePaint();
+-      return;
+-    case SnapshotDiff::kScrollersOrFallbackPosition:
+-      InvalidateLayoutAndPaint();
+-      return;
+-  }
++  ValidateSnapshot();
+ }
+ 
+ bool AnchorPositionScrollData::ValidateSnapshot() {
+-  if (is_snapshot_validated_) {
+-    return true;
+-  }
+-  is_snapshot_validated_ = true;
+-
+   // If this AnchorPositionScrollData is detached in the previous style recalc,
+   // we no longer need to validate it.
+   if (!IsActive()) {
+@@ -259,10 +253,9 @@
+   SnapshotDiff diff = TakeAndCompareSnapshot(true /* update */);
+   switch (diff) {
+     case SnapshotDiff::kNone:
++      return true;
+     case SnapshotDiff::kOffsetOnly:
+-      // We don't need to rewind to layout recalc for offset-only diff, as this
+-      // function is called at LayoutClean during lifecycle update, and
+-      // offset-only diff only needs paint update.
++      InvalidatePaint();
+       return true;
+     case SnapshotDiff::kScrollersOrFallbackPosition:
+       InvalidateLayoutAndPaint();
+@@ -301,6 +294,7 @@
+ 
+ void AnchorPositionScrollData::Trace(Visitor* visitor) const {
+   visitor->Trace(anchored_element_);
++  visitor->Trace(default_anchor_adjustment_data_);
+   visitor->Trace(position_visibility_observer_);
+   ScrollSnapshotClient::Trace(visitor);
+   ElementRareDataField::Trace(visitor);
+--- a/third_party/blink/renderer/core/layout/anchor_position_scroll_data.h
++++ b/third_party/blink/renderer/core/layout/anchor_position_scroll_data.h
+@@ -66,11 +66,20 @@
+     return default_anchor_adjustment_data_.needs_scroll_adjustment_in_y;
+   }
+ 
+-  gfx::Vector2dF TotalOffset() const {
+-    return default_anchor_adjustment_data_.accumulated_adjustment +
+-           default_anchor_adjustment_data_
+-               .anchored_element_container_scroll_offset;
+-  }
++  // Returns the total offset of the anchored element from the layout location
++  // due to scroll and other adjustments from the containers between the given
++  // `anchor_object` and the anchored element and the scroll container of the
++  // anchored element itself. There are two cases:
++  // 1. If `anchor_object` is the anchor object used to create the snapshot,
++  //    The result will be from the last snapshotted result.
++  // 2. Otherwise the result will be calculated on the fly, which may use stale
++  //    layout data if this is called during layout.
++  // ValidateSnapshot() (called after the first layout during a lifecycle
++  // update) will reschedule layout, or ShouldScheduleNextService() (called at
++  // the end of a lifecycle update) will schedule another lifecycle update,
++  // if the final layout data may cause layout changes.
++  gfx::Vector2dF TotalOffset(const LayoutObject& anchor_object) const;
++
+   gfx::Vector2dF AccumulatedAdjustment() const {
+     return default_anchor_adjustment_data_.accumulated_adjustment;
+   }
+@@ -127,6 +136,9 @@
+   struct AdjustmentData {
+     DISALLOW_NEW();
+ 
++    // The anchor object used when calculating this data.
++    Member<const LayoutObject> anchor_object;
++
+     // Compositor element ids of the ancestor scroll adjustment containers
+     // (see the class documentation) of some element (anchor), up to the
+     // containing block of `anchored_element_` (exclusively), along the
+@@ -159,6 +171,12 @@
+     bool needs_scroll_adjustment_in_y = false;
+ 
+     bool has_chained_anchor = false;
++
++    void Trace(Visitor* visitor) const { visitor->Trace(anchor_object); }
++
++    gfx::Vector2dF TotalOffset() const {
++      return accumulated_adjustment + anchored_element_container_scroll_offset;
++    }
+   };
+ 
+   AdjustmentData ComputeAdjustmentContainersData(
+@@ -167,17 +185,11 @@
+   // Takes an up-to-date snapshot, and compares it with the existing one.
+   // If `update` is true, also rewrites the existing snapshot.
+   SnapshotDiff TakeAndCompareSnapshot(bool update);
+-  bool IsFallbackPositionValid(
+-      const gfx::Vector2dF& new_accumulated_adjustment,
+-      const gfx::Vector2dF& new_anchored_element_container_scroll_offset) const;
++  bool IsFallbackPositionValid(const AdjustmentData& new_adjustment_data) const;
+ 
+   void InvalidateLayoutAndPaint();
+   void InvalidatePaint();
+ 
+-  // ValidateSnapshot is called every frame, but AnchorPositionScrollData only
+-  // needs to perform the validation once (during the frame it was created).
+-  bool is_snapshot_validated_ = false;
+-
+   // The anchor-positioned element.
+   Member<Element> anchored_element_;
+ 
+--- a/third_party/blink/renderer/core/layout/layout_box.cc
++++ b/third_party/blink/renderer/core/layout/layout_box.cc
+@@ -4364,8 +4364,8 @@
+   return is_acceptable_anchor ? anchor_layout_object : nullptr;
+ }
+ 
+-const Vector<NonOverflowingScrollRange>* LayoutBox::NonOverflowingScrollRanges()
+-    const {
++const HeapVector<NonOverflowingScrollRange>*
++LayoutBox::NonOverflowingScrollRanges() const {
+   const auto& layout_results = GetLayoutResults();
+   if (layout_results.empty()) {
+     return nullptr;
+--- a/third_party/blink/renderer/core/layout/layout_box.h
++++ b/third_party/blink/renderer/core/layout/layout_box.h
+@@ -1266,7 +1266,8 @@
+   // https://drafts.csswg.org/css-anchor-position-1/#ref-for-valdef-anchor-implicit
+   const LayoutObject* AcceptableImplicitAnchor() const;
+ 
+-  const Vector<NonOverflowingScrollRange>* NonOverflowingScrollRanges() const;
++  const HeapVector<NonOverflowingScrollRange>* NonOverflowingScrollRanges()
++      const;
+ 
+   const BoxStrut& OutOfFlowInsetsForGetComputedStyle() const;
+ 
+--- a/third_party/blink/renderer/core/layout/layout_result.cc
++++ b/third_party/blink/renderer/core/layout/layout_result.cc
+@@ -376,6 +376,7 @@
+ 
+ void LayoutResult::RareData::Trace(Visitor* visitor) const {
+   visitor->Trace(early_break);
++  visitor->Trace(non_overflowing_scroll_ranges);
+   // This will not cause TOCTOU issue because data_union_type is set in the
+   // constructor and never changed.
+   if (const BlockData* data = GetBlockData())
+--- a/third_party/blink/renderer/core/layout/layout_result.h
++++ b/third_party/blink/renderer/core/layout/layout_result.h
+@@ -177,7 +177,8 @@
+   // positioned nodes are set.
+   void CopyMutableOutOfFlowData(const LayoutResult& previous_result) const;
+ 
+-  const Vector<NonOverflowingScrollRange>* NonOverflowingScrollRanges() const {
++  const HeapVector<NonOverflowingScrollRange>* NonOverflowingScrollRanges()
++      const {
+     return rare_data_ ? rare_data_->NonOverflowingScrollRanges() : nullptr;
+   }
+ 
+@@ -525,7 +526,7 @@
+     }
+ 
+     void SetNonOverflowingScrollRanges(
+-        const Vector<NonOverflowingScrollRange>& non_overflowing_ranges) {
++        const HeapVector<NonOverflowingScrollRange>& non_overflowing_ranges) {
+       if (layout_result_->rare_data_ || !non_overflowing_ranges.empty()) {
+         layout_result_->EnsureRareData()->SetNonOverflowingScrollRanges(
+             non_overflowing_ranges);
+@@ -854,10 +855,10 @@
+     }
+ 
+     void SetNonOverflowingScrollRanges(
+-        const Vector<NonOverflowingScrollRange>& non_overflowing_ranges) {
++        const HeapVector<NonOverflowingScrollRange>& non_overflowing_ranges) {
+       non_overflowing_scroll_ranges = non_overflowing_ranges;
+     }
+-    const Vector<NonOverflowingScrollRange>* NonOverflowingScrollRanges()
++    const HeapVector<NonOverflowingScrollRange>* NonOverflowingScrollRanges()
+         const {
+       if (non_overflowing_scroll_ranges.empty()) {
+         return nullptr;
+@@ -903,7 +904,7 @@
+     // Only valid if line_box_bfc_block_offset_is_set
+     LayoutUnit line_box_bfc_block_offset;
+ 
+-    Vector<NonOverflowingScrollRange> non_overflowing_scroll_ranges;
++    HeapVector<NonOverflowingScrollRange> non_overflowing_scroll_ranges;
+ 
+     // Only valid if oof_positioned_offset_is_set
+     LogicalOffset oof_positioned_offset;
+--- a/third_party/blink/renderer/core/layout/non_overflowing_scroll_range.h
++++ b/third_party/blink/renderer/core/layout/non_overflowing_scroll_range.h
+@@ -6,9 +6,13 @@
+ #define THIRD_PARTY_BLINK_RENDERER_CORE_LAYOUT_NON_OVERFLOWING_SCROLL_RANGE_H_
+ 
+ #include "third_party/blink/renderer/core/layout/geometry/scroll_offset_range.h"
++#include "third_party/blink/renderer/platform/heap/member.h"
++#include "third_party/blink/renderer/platform/wtf/vector_traits.h"
+ 
+ namespace blink {
+ 
++class LayoutObject;
++
+ // Helper structure for CSS anchor positioning's fallback positioning. Each
+ // fallback position has a corresponding `NonOverflowingScrollRange`. See
+ // https://drafts.csswg.org/css-anchor-position-1/#fallback-apply
+@@ -20,6 +24,9 @@
+   // containing block rect.
+   PhysicalScrollRange containing_block_range;
+ 
++  // The default anchor used for the corresponding fallback position.
++  Member<const LayoutObject> anchor_object;
++
+   // Checks if the given scroll offsets are within the scroll ranges, i.e., if
+   // the fallback position's margin box overflows the bounds.
+   bool Contains(const gfx::Vector2dF& anchor_scroll_offset) const {
+@@ -29,8 +36,13 @@
+   bool operator==(const NonOverflowingScrollRange& other) const {
+     return containing_block_range == other.containing_block_range;
+   }
++
++  void Trace(Visitor* visitor) const { visitor->Trace(anchor_object); }
+ };
+ 
+ }  // namespace blink
+ 
++WTF_ALLOW_MOVE_INIT_AND_COMPARE_WITH_MEM_FUNCTIONS(
++    blink::NonOverflowingScrollRange)
++
+ #endif  // THIRD_PARTY_BLINK_RENDERER_CORE_LAYOUT_NON_OVERFLOWING_SCROLL_RANGE_H_
+--- a/third_party/blink/renderer/core/layout/out_of_flow_layout_part.cc
++++ b/third_party/blink/renderer/core/layout/out_of_flow_layout_part.cc
+@@ -278,8 +278,9 @@
+ 
+ const Element* GetPositionAnchorElement(
+     const BlockNode& node,
++    const ComputedStyle& style,
+     const LogicalAnchorQuery& anchor_query) {
+-  if (const ScopedCSSName* specifier = node.Style().PositionAnchor()) {
++  if (const ScopedCSSName* specifier = style.PositionAnchor()) {
+     if (const LogicalAnchorReference* reference =
+             anchor_query.AnchorReference(*node.GetLayoutBox(), specifier);
+         reference && reference->layout_object) {
+@@ -293,6 +294,30 @@
+   return nullptr;
+ }
+ 
++const LayoutObject* GetPositionAnchorObject(
++    const BlockNode& node,
++    const ComputedStyle& style,
++    const LogicalAnchorQuery& anchor_query) {
++  if (const Element* element =
++          GetPositionAnchorElement(node, style, anchor_query)) {
++    return element->GetLayoutObject();
++  }
++  return nullptr;
++}
++
++gfx::Vector2dF GetAnchorOffset(const BlockNode& node,
++                               const ComputedStyle& style,
++                               const LogicalAnchorQuery& anchor_query) {
++  if (const LayoutObject* anchor_object =
++          GetPositionAnchorObject(node, style, anchor_query)) {
++    if (const AnchorPositionScrollData* data =
++            To<Element>(node.GetDOMNode())->GetAnchorPositionScrollData()) {
++      return data->TotalOffset(*anchor_object);
++    }
++  }
++  return gfx::Vector2dF();
++}
++
+ // Updates `node`'s associated `PaintLayer` for `position-visibility`. See:
+ // https://drafts.csswg.org/css-anchor-position-1/#position-visibility. The
+ // values of `no-overflow` and `anchors-valid` are computed and directly update
+@@ -333,7 +358,8 @@
+   // The spec is still in-flux about whether we should use multiple anchors
+   // (from `anchor()` and `anchor-size()`), or just the default anchor.
+   const Element* anchor =
+-      anchored ? GetPositionAnchorElement(node, *anchor_query) : nullptr;
++      anchored ? GetPositionAnchorElement(node, node.Style(), *anchor_query)
++               : nullptr;
+   if (is_anchor_positioned && has_anchors_visible_visibility && anchor) {
+     anchored->EnsureAnchorPositionScrollData()
+         .EnsureAnchorPositionVisibilityObserver()
+@@ -1809,16 +1835,8 @@
+ OutOfFlowLayoutPart::OffsetInfo OutOfFlowLayoutPart::CalculateOffset(
+     const NodeInfo& node_info,
+     const LogicalAnchorQueryMap* anchor_queries) {
+-  gfx::Vector2dF anchor_offset;
+-  if (Element* element = DynamicTo<Element>(node_info.node.GetDOMNode())) {
+-    if (const AnchorPositionScrollData* data =
+-            element->GetAnchorPositionScrollData()) {
+-      anchor_offset = data->TotalOffset();
+-    }
+-  }
+-
+   // See non_overflowing_scroll_range.h for documentation.
+-  Vector<NonOverflowingScrollRange> non_overflowing_scroll_ranges;
++  HeapVector<NonOverflowingScrollRange> non_overflowing_scroll_ranges;
+ 
+   // Note: This assumes @position-try rounds can't affect
+   // writing-mode/position-anchor.
+@@ -1852,7 +1870,7 @@
+     // However, without @position-try, the style is the current style.
+     CHECK(has_try_options || &style == &iter.GetStyle());
+     std::optional<OffsetInfo> offset_info =
+-        TryCalculateOffset(node_info, style, &anchor_evaluator,
++        TryCalculateOffset(node_info, style, anchor_evaluator,
+                            try_fit_available_space, &non_overflowing_range);
+ 
+     // Also check if it fits the containing block after applying scroll offset
+@@ -1860,7 +1878,8 @@
+     if (offset_info) {
+       if (try_fit_available_space) {
+         non_overflowing_scroll_ranges.push_back(non_overflowing_range);
+-        if (!non_overflowing_range.Contains(anchor_offset)) {
++        if (!non_overflowing_range.Contains(GetAnchorOffset(
++                node_info.node, style, *anchor_evaluator.AnchorQuery()))) {
+           continue;
+         }
+       }
+@@ -1898,7 +1917,7 @@
+     // offset again, using the non-base style.
+     const ComputedStyle& style = iter.ActivateStyleForChosenOption();
+     NonOverflowingScrollRange non_overflowing_range_unused;
+-    offset_info = TryCalculateOffset(node_info, style, &anchor_evaluator,
++    offset_info = TryCalculateOffset(node_info, style, anchor_evaluator,
+                                      /* try_fit_available_space */ false,
+                                      &non_overflowing_range_unused);
+     offset_info->overflows_containing_block = overflows_containing_block;
+@@ -1919,7 +1938,7 @@
+ OutOfFlowLayoutPart::TryCalculateOffset(
+     const NodeInfo& node_info,
+     const ComputedStyle& candidate_style,
+-    AnchorEvaluatorImpl* anchor_evaluator,
++    AnchorEvaluatorImpl& anchor_evaluator,
+     bool try_fit_available_space,
+     NonOverflowingScrollRange* out_non_overflowing_range) {
+   // TryCalculateOffset may be called multiple times if we have multiple @try
+@@ -2186,6 +2205,8 @@
+         LogicalScrollRange{inline_scroll_min, inline_scroll_max,
+                            block_scroll_min, block_scroll_max}
+             .ToPhysical(candidate_writing_direction);
++    out_non_overflowing_range->anchor_object = GetPositionAnchorObject(
++        node_info.node, candidate_style, *anchor_evaluator.AnchorQuery());
+   }
+ 
+   bool anchor_center_x = anchor_center_position.inline_offset.has_value();
+@@ -2194,9 +2215,9 @@
+     std::swap(anchor_center_x, anchor_center_y);
+   }
+   offset_info.needs_scroll_adjustment_in_x =
+-      anchor_center_x || anchor_evaluator->NeedsScrollAdjustmentInX();
++      anchor_center_x || anchor_evaluator.NeedsScrollAdjustmentInX();
+   offset_info.needs_scroll_adjustment_in_y =
+-      anchor_center_y || anchor_evaluator->NeedsScrollAdjustmentInY();
++      anchor_center_y || anchor_evaluator.NeedsScrollAdjustmentInY();
+ 
+   return offset_info;
+ }
+@@ -2783,6 +2804,7 @@
+ 
+ void OutOfFlowLayoutPart::OffsetInfo::Trace(Visitor* visitor) const {
+   visitor->Trace(initial_layout_result);
++  visitor->Trace(non_overflowing_scroll_ranges);
+ }
+ 
+ void OutOfFlowLayoutPart::NodeToLayout::Trace(Visitor* visitor) const {
+--- a/third_party/blink/renderer/core/layout/out_of_flow_layout_part.h
++++ b/third_party/blink/renderer/core/layout/out_of_flow_layout_part.h
+@@ -207,7 +207,7 @@
+     // This field is set only if this |OffsetInfo| is calculated from a
+     // position-try-options style, either from a @position-try rule or a tactic,
+     // or the anchored element has position-visibility: no-overflow.
+-    Vector<NonOverflowingScrollRange> non_overflowing_scroll_ranges;
++    HeapVector<NonOverflowingScrollRange> non_overflowing_scroll_ranges;
+ 
+     // This field is set when we're calculating |OffsetInfo| with
+     // try_fit_available_space=true, e.g. when we have a non-empty
+@@ -322,7 +322,7 @@
+   std::optional<OffsetInfo> TryCalculateOffset(
+       const NodeInfo& node_info,
+       const ComputedStyle& style,
+-      AnchorEvaluatorImpl*,
++      AnchorEvaluatorImpl&,
+       bool try_fit_available_space,
+       NonOverflowingScrollRange* out_scroll_range);
+ 
+--- /dev/null
++++ b/third_party/blink/web_tests/external/wpt/css/css-anchor-position/position-try-switch-from-fixed-anchor-ref.html
+@@ -0,0 +1,33 @@
++<!doctype html>
++<style>
++body {
++  width: 150vw;
++  height: 150vh;
++}
++.anchor {
++  width: 50px;
++  height: 50px;
++  background: orange;
++}
++#anchor1 {
++  position: absolute;
++  top: 100px;
++  left: 350px;
++}
++#anchor2 {
++  position:fixed;
++  right: 0;
++  bottom: 0;
++}
++#anchored {
++  position: absolute;
++  top: 50px;
++  left: 350px;
++  width: 50px;
++  height: 50px;
++  background: blue;
++}
++</style>
++<div class="anchor" id="anchor1"></div>
++<div class="anchor" id="anchor2"></div>
++<div id="anchored"></div>
+--- /dev/null
++++ b/third_party/blink/web_tests/external/wpt/css/css-anchor-position/position-try-switch-from-fixed-anchor.html
+@@ -0,0 +1,57 @@
++<!doctype html>
++<html class=reftest-wait>
++<meta charset="utf-8">
++<title>CSS Anchor Positioning Test: @position-try with different default anchors,
++       switching to fixed-position anchor on scroll and back on another scroll</title>
++<link rel="help" href="https://drafts.csswg.org/css-anchor-position-1/#fallback-rule">
++<link rel="match" href="position-try-switch-from-fixed-anchor-ref.html">
++<script src="/common/reftest-wait.js"></script>
++<script src="/common/rendering-utils.js"></script>
++<style>
++body {
++  width: 150vw;
++  height: 150vh;
++}
++.anchor {
++  width: 50px;
++  height: 50px;
++  background: orange;
++}
++#anchor1 {
++  anchor-name: --anchor1;
++  position: absolute;
++  top: 100px;
++  left: 350px;
++}
++#anchor2 {
++  anchor-name: --anchor2;
++  position:fixed;
++  right: 0;
++  bottom: 0;
++}
++#anchored {
++  position-anchor: --anchor1;
++  inset-area: top;
++  position-try-options: --fixed;
++  position: fixed;
++  width: 50px;
++  height: 50px;
++  background: blue;
++}
++@position-try --fixed {
++  inset-area: top left;
++  position-anchor: --anchor2;
++}
++</style>
++<div class="anchor" id="anchor1"></div>
++<div class="anchor" id="anchor2"></div>
++<div id="anchored"></div>
++<script>
++waitForAtLeastOneFrame().then(() => {
++  window.scrollTo(250, 100);
++  waitForAtLeastOneFrame().then(() => {
++    window.scrollTo(0, 0);
++    takeScreenshot();
++  });
++});
++</script>
+--- /dev/null
++++ b/third_party/blink/web_tests/external/wpt/css/css-anchor-position/position-try-switch-to-fixed-anchor-ref.html
+@@ -0,0 +1,37 @@
++<!doctype html>
++<meta charset="utf-8">
++<style>
++body {
++  width: 150vw;
++  height: 150vh;
++}
++.anchor {
++  width: 50px;
++  height: 50px;
++  background: orange;
++}
++#anchor1 {
++  position: absolute;
++  top: 100px;
++  left: 350px;
++}
++#anchor2 {
++  position:fixed;
++  right: 0;
++  bottom: 0;
++}
++#anchored {
++  position: fixed;
++  right: 50px;
++  bottom: 50px;
++  width: 50px;
++  height: 50px;
++  background: blue;
++}
++</style>
++<div class="anchor" id="anchor1"></div>
++<div class="anchor" id="anchor2"></div>
++<div id="anchored"></div>
++<script>
++window.scrollTo(250, 100);
++</script>
+--- /dev/null
++++ b/third_party/blink/web_tests/external/wpt/css/css-anchor-position/position-try-switch-to-fixed-anchor.html
+@@ -0,0 +1,53 @@
++<!doctype html>
++<html class=reftest-wait>
++<meta charset="utf-8">
++<title>CSS Anchor Positioning Test: @position-try with different default anchors, switching to fixed-position anchor on scroll</title>
++<link rel="help" href="https://drafts.csswg.org/css-anchor-position-1/#fallback-rule">
++<link rel="match" href="position-try-switch-to-fixed-anchor-ref.html">
++<script src="/common/reftest-wait.js"></script>
++<script src="/common/rendering-utils.js"></script>
++<style>
++body {
++  width: 150vw;
++  height: 150vh;
++}
++.anchor {
++  width: 50px;
++  height: 50px;
++  background: orange;
++}
++#anchor1 {
++  anchor-name: --anchor1;
++  position: absolute;
++  top: 100px;
++  left: 350px;
++}
++#anchor2 {
++  anchor-name: --anchor2;
++  position:fixed;
++  right: 0;
++  bottom: 0;
++}
++#anchored {
++  position-anchor: --anchor1;
++  inset-area: top;
++  position-try-options: --fixed;
++  position: fixed;
++  width: 50px;
++  height: 50px;
++  background: blue;
++}
++@position-try --fixed {
++  inset-area: top left;
++  position-anchor: --anchor2;
++}
++</style>
++<div class="anchor" id="anchor1"></div>
++<div class="anchor" id="anchor2"></div>
++<div id="anchored"></div>
++<script>
++waitForAtLeastOneFrame().then(() => {
++  window.scrollTo(250, 100);
++  takeScreenshot();
++});
++</script>

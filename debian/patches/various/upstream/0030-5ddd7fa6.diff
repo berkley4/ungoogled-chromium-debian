@@ -1,0 +1,236 @@
+From 5ddd7fa6eca071e44c9d5b999c26409024670435 Mon Sep 17 00:00:00 2001
+From: Andy Phan <andyphan@chromium.org>
+Date: Wed, 22 May 2024 16:16:52 +0000
+Subject: [PATCH] [OOPIF PDF] Fix crash when saving from PDF extension host's context menu
+
+When a user opens a context menu from within the PDF extension host and
+not within the PDF content frame, and uses the "Save as..." option, a
+CHECK fails in MaybePdfViewerHandlesSave(), causing a browser crash.
+This occurs because pdf_frame_util::GetEmbedderHost() only takes in PDF
+content frames as an argument, but the provided frame in this save case
+is the PDF extension frame.
+
+In MaybePdfViewerHandlesSave(), handle getting the embedder host in the
+case that the provided frame is the PDF extension frame.
+
+Add tests to cover the PDF extension frame context menu save and the PDF
+content frame context menu save cases. Use most of the existing code in
+the primary frame context menu save test.
+
+Bug: 341882503
+Change-Id: Id22589be808dfb0b14fa9180f23e5e0478941629
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5555331
+Reviewed-by: Lei Zhang <thestig@chromium.org>
+Commit-Queue: Andy Phan <andyphan@chromium.org>
+Code-Coverage: findit-for-me@appspot.gserviceaccount.com <findit-for-me@appspot.gserviceaccount.com>
+Cr-Commit-Position: refs/heads/main@{#1304481}
+---
+
+--- a/chrome/browser/download/download_browsertest.cc
++++ b/chrome/browser/download/download_browsertest.cc
+@@ -2236,25 +2236,120 @@
+     return disabled;
+   }
+ 
++  void TestSaveMainFramePdfFromTargetFrameContextMenu(
++      content::RenderFrameHost* target_host,
++      const GURL& url) {
++    auto origin =
++        url::Origin::Create(https_test_server()->GetURL("a.test", "/"));
++    net::SiteForCookies expected_site_for_cookies =
++        net::SiteForCookies::FromOrigin(origin);
++
++    net::IsolationInfo expected_isolation_info =
++        net::IsolationInfo::Create(net::IsolationInfo::RequestType::kMainFrame,
++                                   origin, origin, expected_site_for_cookies);
++
++    // Stop the server. This makes sure we really are pulling from the cache for
++    // the download request.
++    ASSERT_TRUE(https_test_server()->ShutdownAndWaitUntilComplete());
++
++    std::optional<network::ResourceRequest::TrustedParams> trusted_params;
++    net::SiteForCookies site_for_cookies;
++
++    base::RunLoop request_waiter;
++    URLLoaderInterceptor request_listener(base::BindLambdaForTesting(
++        [&](URLLoaderInterceptor::RequestParams* params) {
++          if (params->url_request.url == url) {
++            trusted_params = params->url_request.trusted_params;
++            site_for_cookies = params->url_request.site_for_cookies;
++            request_waiter.Quit();
++          }
++          return false;
++        }));
++
++    std::unique_ptr<content::DownloadTestObserver> download_waiter(
++        CreateWaiter(browser(), 1));
++
++    content::WebContents* web_contents =
++        browser()->tab_strip_model()->GetActiveWebContents();
++
++    // Simulate saving the PDF from the context menu "Save As...".
++    content::ContextMenuParams context_menu_params;
++    context_menu_params.media_type =
++        blink::mojom::ContextMenuDataMediaType::kPlugin;
++    context_menu_params.src_url = url;
++    context_menu_params.page_url = web_contents->GetLastCommittedURL();
++    TestRenderViewContextMenu menu(*target_host, context_menu_params);
++    menu.Init();
++    menu.ExecuteCommand(IDC_SAVE_PAGE, 0);
++
++    request_waiter.Run();
++
++    ASSERT_TRUE(trusted_params.has_value());
++    EXPECT_TRUE(trusted_params->isolation_info.IsEqualForTesting(
++        expected_isolation_info));
++    EXPECT_TRUE(site_for_cookies.IsEquivalent(expected_site_for_cookies));
++
++    download_waiter->WaitForFinished();
++
++    EXPECT_EQ(1u,
++              download_waiter->NumDownloadsSeenInState(DownloadItem::COMPLETE));
++    CheckDownloadStates(1, DownloadItem::COMPLETE);
++  }
++
+  private:
+   pdf::TestPdfViewerStreamManagerFactory factory_;
+ };
+ 
+-IN_PROC_BROWSER_TEST_P(PdfDownloadTestSplitCacheEnabled,
+-                       SaveMainFramePdfFromContextMenu_IsolationInfo) {
++// Test that the PDF can be saved from the primary frame's context menu.
++IN_PROC_BROWSER_TEST_P(
++    PdfDownloadTestSplitCacheEnabled,
++    SaveMainFramePdfFromPrimaryFrameContextMenu_IsolationInfo) {
++  https_test_server()->ServeFilesFromDirectory(GetTestDataDirectory());
++  ASSERT_TRUE(https_test_server()->Start());
++  EnableFileChooser(true);
++
++  content::WebContents* web_contents =
++      browser()->tab_strip_model()->GetActiveWebContents();
++
++  // Set up a PDF page.
++  GURL url = https_test_server()->GetURL("a.test", "/pdf/test.pdf");
++  ASSERT_TRUE(ui_test_utils::NavigateToURL(browser(), url));
++  ASSERT_TRUE(pdf_extension_test_util::EnsurePDFHasLoaded(web_contents));
++
++  TestSaveMainFramePdfFromTargetFrameContextMenu(
++      web_contents->GetPrimaryMainFrame(), url);
++}
++
++// Test that the PDF can be saved from the PDf extension frame's context menu.
++IN_PROC_BROWSER_TEST_P(
++    PdfDownloadTestSplitCacheEnabled,
++    SaveMainFramePdfFromExtensionFrameContextMenu_IsolationInfo) {
+   https_test_server()->ServeFilesFromDirectory(GetTestDataDirectory());
+   ASSERT_TRUE(https_test_server()->Start());
+   EnableFileChooser(true);
+ 
+-  net::SiteForCookies expected_site_for_cookies =
+-      net::SiteForCookies::FromOrigin(
+-          url::Origin::Create(https_test_server()->GetURL("a.test", "/")));
+-
+-  net::IsolationInfo expected_isolation_info = net::IsolationInfo::Create(
+-      net::IsolationInfo::RequestType::kMainFrame,
+-      url::Origin::Create(https_test_server()->GetURL("a.test", "/")),
+-      url::Origin::Create(https_test_server()->GetURL("a.test", "/")),
+-      expected_site_for_cookies);
++  content::WebContents* web_contents =
++      browser()->tab_strip_model()->GetActiveWebContents();
++
++  // Set up a PDF page.
++  GURL url = https_test_server()->GetURL("a.test", "/pdf/test.pdf");
++  ASSERT_TRUE(ui_test_utils::NavigateToURL(browser(), url));
++  ASSERT_TRUE(pdf_extension_test_util::EnsurePDFHasLoaded(web_contents));
++
++  content::RenderFrameHost* extension_host =
++      pdf_extension_test_util::GetOnlyPdfExtensionHost(web_contents);
++  ASSERT_TRUE(extension_host);
++
++  TestSaveMainFramePdfFromTargetFrameContextMenu(extension_host, url);
++}
++
++// Test that the PDF can be saved from the PDF content frame's context menu.
++IN_PROC_BROWSER_TEST_P(
++    PdfDownloadTestSplitCacheEnabled,
++    SaveMainFramePdfFromContentFrameContextMenu_IsolationInfo) {
++  https_test_server()->ServeFilesFromDirectory(GetTestDataDirectory());
++  ASSERT_TRUE(https_test_server()->Start());
++  EnableFileChooser(true);
+ 
+   content::WebContents* web_contents =
+       browser()->tab_strip_model()->GetActiveWebContents();
+@@ -2264,50 +2359,11 @@
+   ASSERT_TRUE(ui_test_utils::NavigateToURL(browser(), url));
+   ASSERT_TRUE(pdf_extension_test_util::EnsurePDFHasLoaded(web_contents));
+ 
+-  // Stop the server. This makes sure we really are pulling from the cache for
+-  // the download request.
+-  ASSERT_TRUE(https_test_server()->ShutdownAndWaitUntilComplete());
+-
+-  std::optional<network::ResourceRequest::TrustedParams> trusted_params;
+-  net::SiteForCookies site_for_cookies;
+-
+-  base::RunLoop request_waiter;
+-  URLLoaderInterceptor request_listener(base::BindLambdaForTesting(
+-      [&](URLLoaderInterceptor::RequestParams* params) {
+-        if (params->url_request.url == url) {
+-          trusted_params = params->url_request.trusted_params;
+-          site_for_cookies = params->url_request.site_for_cookies;
+-          request_waiter.Quit();
+-        }
+-        return false;
+-      }));
+-
+-  std::unique_ptr<content::DownloadTestObserver> download_waiter(
+-      CreateWaiter(browser(), 1));
+-
+-  // Simulate saving the PDF from the context menu "Save As...".
+-  content::ContextMenuParams context_menu_params;
+-  context_menu_params.media_type =
+-      blink::mojom::ContextMenuDataMediaType::kPlugin;
+-  context_menu_params.src_url = url;
+-  context_menu_params.page_url = web_contents->GetLastCommittedURL();
+-  TestRenderViewContextMenu menu(*web_contents->GetPrimaryMainFrame(),
+-                                 context_menu_params);
+-  menu.Init();
+-  menu.ExecuteCommand(IDC_SAVE_PAGE, 0);
+-
+-  request_waiter.Run();
+-
+-  EXPECT_TRUE(trusted_params.has_value());
+-  EXPECT_TRUE(trusted_params->isolation_info.IsEqualForTesting(
+-      expected_isolation_info));
+-  EXPECT_TRUE(site_for_cookies.IsEquivalent(expected_site_for_cookies));
+-
+-  download_waiter->WaitForFinished();
+-
+-  EXPECT_EQ(1u,
+-            download_waiter->NumDownloadsSeenInState(DownloadItem::COMPLETE));
+-  CheckDownloadStates(1, DownloadItem::COMPLETE);
++  content::RenderFrameHost* content_host =
++      pdf_extension_test_util::GetOnlyPdfPluginFrame(web_contents);
++  ASSERT_TRUE(content_host);
++
++  TestSaveMainFramePdfFromTargetFrameContextMenu(content_host, url);
+ }
+ 
+ IN_PROC_BROWSER_TEST_P(PdfDownloadTestSplitCacheEnabled,
+--- a/chrome/browser/renderer_context_menu/render_view_context_menu.cc
++++ b/chrome/browser/renderer_context_menu/render_view_context_menu.cc
+@@ -797,7 +797,14 @@
+     return false;
+   }
+ 
+-  RenderFrameHost* embedder_host = pdf_frame_util::GetEmbedderHost(frame_host);
++  // Get the PDF embedder host, either from the PDF extension host or from the
++  // PDF content host.
++  // If `frame_host` is the PDF extension host, then the parent host is the
++  // embedder host. Otherwise, `frame_host` is the PDF content host.
++  RenderFrameHost* embedder_host =
++      IsPdfExtensionOrigin(frame_host->GetLastCommittedOrigin())
++          ? frame_host->GetParent()
++          : pdf_frame_util::GetEmbedderHost(frame_host);
+   CHECK(embedder_host);
+ 
+   return pdf_extension_util::MaybeDispatchSaveEvent(embedder_host);

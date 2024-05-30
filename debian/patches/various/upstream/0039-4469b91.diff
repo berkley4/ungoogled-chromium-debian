@@ -1,0 +1,36 @@
+From 4469b9190da21ac1d3cfcb1d165e11cbd6ce2f8c Mon Sep 17 00:00:00 2001
+From: Lei Zhang <thestig@chromium.org>
+Date: Tue, 28 May 2024 18:46:51 +0000
+Subject: [PATCH] Avoid crash in PrintBackendCUPS::PrinterBasicInfoFromCUPS()
+
+PrinterBasicInfoFromCUPS() relied on behavior from an earlier
+base::StringPiece implementation that accepted nullptr input. The
+transition to std::string_view removed this behavior, so now
+PrinterBasicInfoFromCUPS() crashes if it passes a nullptr to
+std::string_view. Add a nullptr check to fix this crash.
+
+Bug: 343149622
+Change-Id: I0eb7068cca2d3679682440b958891cdbfbd67b94
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5577974
+Commit-Queue: Lei Zhang <thestig@chromium.org>
+Reviewed-by: Alan Screen <awscreen@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1306909}
+---
+
+--- a/printing/backend/print_backend_cups.cc
++++ b/printing/backend/print_backend_cups.cc
+@@ -132,11 +132,9 @@
+ // static
+ std::string PrintBackendCUPS::PrinterDriverInfoFromCUPS(
+     const cups_dest_t& printer) {
+-  // std::string_view will correctly handle nullptrs from cupsGetOption(),
+-  // whereas std::string will not. Thus do not directly assign to `result`.
+-  std::string_view info(
+-      cupsGetOption(kDriverNameTagName, printer.num_options, printer.options));
+-  return std::string(info);
++  const char* info =
++      cupsGetOption(kDriverNameTagName, printer.num_options, printer.options);
++  return info ? info : std::string();
+ }
+ 
+ mojom::ResultCode PrintBackendCUPS::EnumeratePrinters(

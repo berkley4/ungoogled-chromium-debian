@@ -1,0 +1,54 @@
+From 3b8269266c842fdc8e1f4f5d61649b6ac032674b Mon Sep 17 00:00:00 2001
+From: Anders Hartvoll Ruud <andruud@chromium.org>
+Date: Thu, 16 May 2024 07:32:15 +0000
+Subject: [PATCH] [@scope] Don't crash on escapes in StyleRuleScope::SetPreludeText
+
+The CSSTokenizer needs to stay alive at least as long as the tokens
+it produces, since those tokens can hold StringViews into the
+tokenizer's string pool.
+
+Fixed: 339877158
+Change-Id: Ia4bcde5b21d127e9920d329ebbed99e68cccc7ff
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5537901
+Reviewed-by: Vladimir Levin <vmpstr@chromium.org>
+Commit-Queue: Anders Hartvoll Ruud <andruud@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1301796}
+---
+
+--- a/third_party/blink/renderer/core/css/style_rule.cc
++++ b/third_party/blink/renderer/core/css/style_rule.cc
+@@ -707,7 +707,8 @@
+                                     StyleSheetContents* style_sheet) {
+   auto* parser_context =
+       MakeGarbageCollected<CSSParserContext>(*execution_context);
+-  Vector<CSSParserToken, 32> tokens = CSSTokenizer(value).TokenizeToEOF();
++  CSSTokenizer tokenizer(value);
++  Vector<CSSParserToken, 32> tokens = tokenizer.TokenizeToEOF();
+ 
+   StyleRule* old_parent = style_scope_->RuleForNesting();
+   style_scope_ =
+--- a/third_party/blink/renderer/core/css/style_rule_test.cc
++++ b/third_party/blink/renderer/core/css/style_rule_test.cc
+@@ -167,6 +167,22 @@
+             FindParentSelector(child_rule.FirstSelector())->ParentRule());
+ }
+ 
++TEST_F(StyleRuleTest, SetPreludeTextWithEscape) {
++  auto* scope_rule = DynamicTo<StyleRuleScope>(
++      css_test_helpers::ParseRule(GetDocument(), R"CSS(
++      @scope (.a) to (.b &) {
++        .c & { }
++      }
++    )CSS"));
++
++  // Don't crash.
++  scope_rule->SetPreludeText(GetDocument().GetExecutionContext(),
++                             "(.x) to (.\\1F60A)", CSSNestingType::kNone,
++                             /* parent_rule_for_nesting */ nullptr,
++                             /* is_within_scope */ false,
++                             /* style_sheet */ nullptr);
++}
++
+ TEST_F(StyleRuleTest, SetPreludeTextPreservesNestingContext) {
+   CSSStyleSheet* sheet = css_test_helpers::CreateStyleSheet(GetDocument());
+   // Note that this test is making use of the fact that unparsed
