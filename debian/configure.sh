@@ -961,7 +961,6 @@ if [ $SYS_ICU -eq 0 ]; then
 else
   op_enable="$op_enable system/unstable/icu/"
 
-  op_disable="$op_disable fixes/convertutf-bundled"
   op_disable="$op_disable fixes/skia-allow-bundled-harfbuzz"
 
   gn_disable="$gn_disable icu_copy_icudata_to_root_build_dir=false"
