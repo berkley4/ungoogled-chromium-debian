@@ -70,7 +70,6 @@ various/disable/CollectWebGPUSupportMetrics.patch
 various/disable/crashpad-handler.patch
 various/disable/crashpad-handler_2.patch
 various/disable/crashpad-handler_3.patch
-various/disable/driver-chrome-path.patch
 various/disable/image-writer-private.patch
 various/disable/image-writer-utility.patch
 various/disable/labs-toolbar-button.patch
@@ -181,6 +180,7 @@ optional/disable/webgpu.patch
 #optional/disable/media-remoting/registry-pref.patch
 optional/fixes/convertutf-bundled.patch
 #optional/fixes/dav1d-bundled-header.patch
+optional/fixes/driver-chrome-path.patch
 #optional/fixes/opentype-svg-on-bundled-freetype.patch
 #optional/fixes/skia-allow-bundled-freetype.patch
 optional/fixes/skia-allow-bundled-harfbuzz.patch
