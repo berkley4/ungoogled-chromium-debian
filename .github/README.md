@@ -73,32 +73,35 @@ ___Security/Privacy improvements___
     - Google Translate
     - WebGPU
 - Reduced attack surface
-    - Some components/features can variously be disabled/patched out (or enabled) at compile time
+    - Some components/features can variously be disabled/patched out at compile time
         - ATK/dbus
         - Catapult
-        - Compose
-        - Feed
+        - Click-to-call
+        - Compose (autofill)
         - DNS config service
         - Enterprise watermark
+        - Feed
+        - Headless mode
         - Media remoting
+        - Media router
         - Swiftshader
-        - Supervised users
         - Visual query
         - Vulkan
         - WebGPU
     - Some other features/components are always patched out
         - Crashpad handler
-        - Image writer private API
-        - image writer utility
+        - Image writer
+        - Motherboard metrics collection
         - Removable storage writer service
 
 
 ___Other features___
 
-- Lots of extra runtime flags (via files in /etc/chromium.d)
-- Lots of extra build flags to try and prevent the building of unneeded testing/debug/development features
-- Various patches to enable system libraries
-- Experimental Opentype SVG support via third party patches
+- Extra runtime flags (via files in /etc/chromium.d)
+- Extra build flags to prevent the building of unneeded testing/debug/development features
+- Patches to force skia to use bundled freetype and harfbuzz libraries (where appropriate)
+- Experimental Opentype SVG support (via third party patches)
+- Patches to enable system libraries
 
 
 ___Build system___
