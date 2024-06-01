@@ -6,6 +6,7 @@ print_dist()
             debian) ID=Debian ;;
             devuan) ID=Devuan ;;
             ubuntu) ID=Ubuntu ;;
+            linuxmint) ID=Linux\ Mint ;;
         esac
         case "$VERSION_ID" in
             "") echo "$ID $VERSION_CODENAME" ;;
