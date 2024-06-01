@@ -299,11 +299,14 @@ if [ $CCACHE -eq 1 ]; then
 fi
 
 
-if [ $ESBUILD -eq 1  ]; then
-  op_enable="$op_enable enable-esbuild-for-official-builds"
-  gn_enable="$gn_enable devtools_fast_bundle"
-
+if [ $ESBUILD -ge 0 ]; then
+  # Avoid the hassle of having to re-obtain after deletion
   PRU_PY="$PRU_PY -e \"/third_party\/esbuild\//d\""
+
+  if [ $ESBUILD -eq 1 ]; then
+    op_enable="$op_enable enable-esbuild-for-official-builds"
+    gn_enable="$gn_enable devtools_fast_bundle"
+  fi
 fi
 
 
@@ -993,10 +996,10 @@ DSB="$DSB -e \"/^tools\/clang\//d\""
 
 
 ## Pruning/Submodule flags
+PRU="$PRU -e \"/^chrome\/build\/pgo_profiles/d\""
 PRU="$PRU -e \"/^third_party\/depot_tools/d\""
 
 if [ $PGO -eq 1 ]; then
-  PRU="$PRU -e \"/^chrome\/build\/pgo_profiles/d\""
   SMF="$SMF -e \"/^chrome_pgo_phase/d\""
 fi
 
