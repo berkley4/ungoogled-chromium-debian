@@ -324,6 +324,7 @@ prune:
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list 2>/dev/null
 
 override_dh_auto_configure:
+	test ! -f $(DEBIAN)/en-US.pak || mv $(DEBIAN)/en-US.pak $(OUT_DIR)/locales/
 	test -f $(DS_CACHE) || for f in $(UB_LIST); do test ! -f $$f || mv $$f $${f%.bundled}; done
 	test -f $(DS_CACHE) || test -z "$(SYS_LIBS)" || $(UB_REP_SCRIPT) --system-libraries $(SYS_LIBS)
 	test -f $(DS_CACHE) || $(UL_DIR)/domain_substitution.py apply -r $(UC_DIR)/domain_regex.list -f $(UC_DIR)/domain_substitution.list -c $(DS_CACHE) $(RT_DIR)
@@ -343,7 +344,8 @@ override_dh_auto_install-arch:
 	chmod 4755 $(OUT_DIR)/chrome_sandbox
 
 override_dh_auto_install-indep:
-	cp -a $(OUT_DIR)/locales/en-US.pak $(OUT_DIR)/resources/
+	mv $(OUT_DIR)/locales/en-US.pak $(DEBIAN)/
+	cp -a $(DEBIAN)/en-US.pak $(OUT_DIR)/resources/
 
 override_dh_fixperms:
 	dh_fixperms --exclude chrome-sandbox
