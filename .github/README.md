@@ -224,6 +224,21 @@ echo "kernel.unprivileged_userns_clone = 0" > /etc/systctl.d/userns
 ```
 
 
+# Apparmor profile (affects Ubuntu 24.04 and later)
+
+Unprivileged user namespace restrictions on newer Ubuntu releases mean that an apparmor profile seems to be
+required in order for ungoogle-chromium to run.
+
+A sample profile is included in the git repository, which users can manually copy to the /etc/apparmor.d
+directory. Run the following command to give the profile the correct permissions :-
+
+```sh
+chmod 0644 /etc/apparmor.d/usr.bin.chrome
+```
+
+See [here](https://discourse.ubuntu.com/t/ubuntu-24-04-lts-noble-numbat-release-notes/39890#security-improvements-14) for more info.
+
+
 - - - -
 
 # LLVM/Clang (for those wanting to self-compile)
