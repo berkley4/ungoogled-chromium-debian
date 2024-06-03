@@ -7,7 +7,6 @@ out/Release/chrome                                                             u
 out/Release/chrome_*_percent.pak                                               usr/lib/chromium
 out/Release/resources.pak                                                      usr/lib/chromium
 out/Release/v8_context_snapshot.bin                                            usr/lib/chromium
-out/Release/resources/en-US.pak                                                usr/lib/chromium/locales
 
 out/Release/libEGL.so                                                          usr/lib/chromium
 out/Release/libGLESv2.so                                                       usr/lib/chromium
@@ -19,6 +18,8 @@ out/Release/libvk_swiftshader.so                                               u
 out/Release/vk_swiftshader_icd.json                                            usr/lib/chromium
 
 third_party/icu/common/icudtl.dat                                              usr/lib/chromium
+
+debian/en-US.pak                                                               usr/lib/chromium/locales
 
 chrome/app/resources/manpage.1.in                                           => usr/share/man/man1/chromium.1
 chrome/installer/linux/common/desktop.template                              => usr/share/applications/chromium.desktop
