@@ -1,0 +1,11 @@
+--- a/components/leveldb_proto/internal/leveldb_database.cc
++++ b/components/leveldb_proto/internal/leveldb_database.cc
+@@ -56,7 +56,7 @@
+ // and decided whether to move forward with this change.
+ BASE_FEATURE(kLevelDBProtoAsyncWrite,
+              "LevelDBProtoAsyncWrite",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             base::FEATURE_ENABLED_BY_DEFAULT);
+ 
+ }  // namespace
+ 
