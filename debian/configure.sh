@@ -742,8 +742,7 @@ fi
 
 
 if [ $VISUAL_QUERY -eq 1 ]; then
-  op_disable="$op_disable disable/visual-query"
-  op_disable="$op_disable disable/visual-query_2"
+  op_disable="$op_disable disable/visual-query/"
 fi
 
 
