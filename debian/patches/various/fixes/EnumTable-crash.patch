@@ -1,23 +1,23 @@
 --- a/components/media_router/common/providers/cast/channel/enum_table.h
 +++ b/components/media_router/common/providers/cast/channel/enum_table.h
-@@ -9,6 +9,7 @@
- #include <cstring>
+@@ -10,6 +10,7 @@
  #include <optional>
  #include <ostream>
+ #include <string_view>
 +#include <vector>
  
  #include "base/check_op.h"
  #include "base/notreached.h"
 @@ -187,7 +188,6 @@
    inline constexpr GenericEnumTableEntry(int32_t value);
-   inline constexpr GenericEnumTableEntry(int32_t value, base::StringPiece str);
+   inline constexpr GenericEnumTableEntry(int32_t value, std::string_view str);
  
 -  GenericEnumTableEntry(const GenericEnumTableEntry&) = delete;
    GenericEnumTableEntry& operator=(const GenericEnumTableEntry&) = delete;
  
   private:
 @@ -253,7 +253,6 @@
-     constexpr Entry(E value, base::StringPiece str)
+     constexpr Entry(E value, std::string_view str)
          : GenericEnumTableEntry(static_cast<int32_t>(value), str) {}
  
 -    Entry(const Entry&) = delete;
@@ -44,7 +44,7 @@
    // This overload of GetString is designed for cases where the argument is a
 @@ -348,8 +346,7 @@
    // enum value directly.
-   std::optional<E> GetEnum(base::StringPiece str) const {
+   std::optional<E> GetEnum(std::string_view str) const {
      auto* entry = GenericEnumTableEntry::FindByString(
 -        reinterpret_cast<const GenericEnumTableEntry*>(data_.begin()),
 -        data_.size(), str);

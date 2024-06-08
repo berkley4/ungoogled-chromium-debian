@@ -17,7 +17,7 @@ Cr-Commit-Position: refs/heads/main@{#1303609}
 
 --- a/third_party/blink/renderer/core/style/computed_style.h
 +++ b/third_party/blink/renderer/core/style/computed_style.h
-@@ -1659,7 +1659,8 @@
+@@ -1664,7 +1664,8 @@
      // If an inline box (inline flow) is inlinified, it recursively inlinifies
      // all of its in-flow children
      return IsInInlinifyingDisplay() &&

@@ -1,6 +1,6 @@
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
-@@ -184,7 +184,7 @@
+@@ -187,7 +187,7 @@
  // swap BrowsingContextGroups(BrowsingInstances).
  BASE_FEATURE(kClearCrossSiteCrossBrowsingContextGroupWindowName,
               "ClearCrossSiteCrossBrowsingContextGroupWindowName",
@@ -11,7 +11,7 @@
               "CompositeBGColorAnimation",
 --- a/third_party/blink/renderer/core/loader/document_loader.cc
 +++ b/third_party/blink/renderer/core/loader/document_loader.cc
-@@ -2797,11 +2797,10 @@
+@@ -2844,11 +2844,10 @@
        !frame_->DomWindow()->GetSecurityOrigin()->IsSameOriginWith(
            previous_window->GetSecurityOrigin());
    if (should_clear_window_name) {
@@ -27,7 +27,7 @@
      frame_->Tree().ExperimentalSetNulledName();
    }
  
-@@ -2809,9 +2808,10 @@
+@@ -2856,9 +2855,10 @@
        previous_window && frame_->IsOutermostMainFrame() &&
        is_cross_site_cross_browsing_context_group_;
    if (should_clear_cross_site_cross_browsing_context_group_window_name) {

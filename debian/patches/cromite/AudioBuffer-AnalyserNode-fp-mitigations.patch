@@ -20,7 +20,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -3969,6 +3969,10 @@
+@@ -3905,6 +3905,10 @@
       FEATURE_VALUE_TYPE(
           ash::standalone_browser::features::kWebKioskEnableLacros)},
  #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
@@ -33,7 +33,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       flag_descriptions::kWebRtcRemoteEventLogName,
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -3662,6 +3662,11 @@
+@@ -3719,6 +3719,11 @@
      "When enabled, removes the requirement that all certificates used for "
      "WebTransport over HTTP/3 are issued by a known certificate root.";
  
@@ -47,7 +47,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  const char kWebUsbDeviceDetectionDescription[] =
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -2135,6 +2135,9 @@
+@@ -2161,6 +2161,9 @@
  extern const char kWebrtcUseMinMaxVEADimensionsName[];
  extern const char kWebrtcUseMinMaxVEADimensionsDescription[];
  
@@ -59,7 +59,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -323,6 +323,10 @@
+@@ -325,6 +325,10 @@
               "BiddingAndScoringDebugReportingAPI",
               base::FEATURE_ENABLED_BY_DEFAULT);
  
@@ -67,20 +67,20 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +             "AudioContextShuffleEnabled",
 +             base::FEATURE_ENABLED_BY_DEFAULT);
 +
- // Blink garbage collection.
- // Enables compaction of backing stores on Blink's heap.
- BASE_FEATURE(kBlinkHeapCompaction,
+ // Boost the priority of the first N not-small images.
+ // crbug.com/1431169
+ BASE_FEATURE(kBoostImagePriority,
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -201,6 +201,8 @@
+@@ -169,6 +169,8 @@
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(
-     kBlinkSchedulerPrioritizeNavigationIPCs);
+     kAvoidForcedLayoutOnInitialEmptyDocumentInSubframe);
  
 +BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kAudioContextShuffleEnabled);
 +
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(
-     kBlockingDownloadsInAdFrameWithoutUserActivation);
- 
+     kBackForwardCacheDWCOnJavaScriptExecution);
+ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kBackForwardCacheWithKeepaliveRequest);
 --- a/third_party/blink/renderer/modules/webaudio/audio_buffer.cc
 +++ b/third_party/blink/renderer/modules/webaudio/audio_buffer.cc
 @@ -196,6 +196,20 @@

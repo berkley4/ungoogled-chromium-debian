@@ -40,7 +40,7 @@ Cr-Commit-Position: refs/heads/main@{#1306784}
    if (!GetIsSorted())
      return view_index;
    DCHECK_LT(view_index, view_to_model_.size())
-@@ -787,8 +787,9 @@
+@@ -788,8 +788,9 @@
      case ax::mojom::Action::kFocus:
        RequestFocus();
        // Setting focus should not affect the current selection.
@@ -51,7 +51,7 @@ Cr-Commit-Position: refs/heads/main@{#1306784}
        break;
  
      case ax::mojom::Action::kScrollRight: {
-@@ -1328,8 +1329,10 @@
+@@ -1329,8 +1330,10 @@
    }
  
    if (!active_visible_column_index_.has_value()) {
@@ -63,7 +63,7 @@ Cr-Commit-Position: refs/heads/main@{#1306784}
      SetActiveVisibleColumnIndex(size_t{0});
      return;
    }
-@@ -1372,6 +1375,7 @@
+@@ -1373,6 +1376,7 @@
  void TableView::SelectByViewIndex(std::optional<size_t> view_index) {
    ui::ListSelectionModel new_selection;
    if (view_index.has_value()) {
@@ -71,7 +71,7 @@ Cr-Commit-Position: refs/heads/main@{#1306784}
      SelectRowsInRangeFrom(view_index.value(), true, &new_selection);
      new_selection.set_anchor(ViewToModel(view_index.value()));
      new_selection.set_active(ViewToModel(view_index.value()));
-@@ -1416,8 +1420,11 @@
+@@ -1417,8 +1421,11 @@
      bool make_header_active =
          header_ && direction == AdvanceDirection::kDecrement;
      header_row_is_active_ = make_header_active;
@@ -87,7 +87,7 @@ Cr-Commit-Position: refs/heads/main@{#1306784}
      return;
 --- a/ui/views/controls/table/table_view_unittest.cc
 +++ b/ui/views/controls/table/table_view_unittest.cc
-@@ -188,6 +188,9 @@
+@@ -183,6 +183,9 @@
    TestTableModel2(const TestTableModel2&) = delete;
    TestTableModel2& operator=(const TestTableModel2&) = delete;
  
@@ -97,7 +97,7 @@ Cr-Commit-Position: refs/heads/main@{#1306784}
    // Adds a new row at index |row| with values |c1_value| and |c2_value|.
    void AddRow(size_t row, int c1_value, int c2_value);
  
-@@ -234,6 +237,10 @@
+@@ -229,6 +232,10 @@
    AddRow(3, 3, 0);
  }
  
@@ -108,7 +108,7 @@ Cr-Commit-Position: refs/heads/main@{#1306784}
  void TestTableModel2::AddRow(size_t row, int c1_value, int c2_value) {
    DCHECK(row <= rows_.size());
    std::vector<int> new_row;
-@@ -655,6 +662,17 @@
+@@ -650,6 +657,17 @@
      testing::Combine(/*use_default_construction=*/testing::Bool(),
                       /*use_rtl=*/testing::Bool()));
  

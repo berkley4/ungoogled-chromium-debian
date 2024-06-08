@@ -555,7 +555,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
      std::string error_string = ErrorToString(result);
 --- a/net/quic/quic_chromium_client_session.cc
 +++ b/net/quic/quic_chromium_client_session.cc
-@@ -1442,7 +1442,7 @@
+@@ -1444,7 +1444,7 @@
  
    return SpdySession::CanPool(transport_security_state_, ssl_info,
                                *ssl_config_service_, session_key_.host(),
@@ -566,7 +566,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  bool QuicChromiumClientSession::ShouldCreateIncomingStream(
 --- a/net/socket/ssl_client_socket_impl.cc
 +++ b/net/socket/ssl_client_socket_impl.cc
-@@ -1130,7 +1130,8 @@
+@@ -1129,7 +1129,8 @@
      TransportSecurityState::PKPStatus pin_validity =
          context_->transport_security_state()->CheckPublicKeyPins(
              host_and_port_, server_cert_verify_result_.is_issued_by_known_root,
@@ -576,7 +576,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
      switch (pin_validity) {
        case TransportSecurityState::PKPStatus::VIOLATED:
          server_cert_verify_result_.cert_status |=
-@@ -1152,7 +1153,7 @@
+@@ -1151,7 +1152,7 @@
        IsCertStatusError(server_cert_verify_result_.cert_status) &&
        result != ERR_CERT_KNOWN_INTERCEPTION_BLOCKED &&
        context_->transport_security_state()->ShouldSSLErrorsBeFatal(
@@ -673,7 +673,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  
    // Check for reasons not to return a URLRequestHttpJob. These don't apply to
    // https and wss requests.
-@@ -1103,7 +1104,7 @@
+@@ -1101,7 +1102,7 @@
    HttpResponseHeaders* headers = GetResponseHeaders();
    std::string value;
    if (headers->EnumerateHeader(nullptr, "Strict-Transport-Security", &value))
@@ -682,7 +682,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  }
  
  void URLRequestHttpJob::OnStartCompleted(int result) {
-@@ -1173,7 +1174,7 @@
+@@ -1171,7 +1172,7 @@
      TransportSecurityState* state = context->transport_security_state();
      NotifySSLCertificateError(
          result, transaction_->GetResponseInfo()->ssl_info,
@@ -784,7 +784,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  
    // |PreconnectSockets| may receive arguments from the renderer, which is not
    // guaranteed to validate them.
-@@ -2839,12 +2844,15 @@
+@@ -2848,12 +2853,15 @@
      std::move(on_connection_close_callback_).Run(this);
  }
  
@@ -801,7 +801,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
            original_url.host())) {
      return original_url;
    }
-@@ -2892,7 +2900,8 @@
+@@ -2901,7 +2909,8 @@
          url_request_context_->transport_security_state()->CheckPublicKeyPins(
              net::HostPortPair::FromURL(pending_cert_verify->url),
              pending_cert_verify->result->is_issued_by_known_root,
@@ -838,7 +838,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
        const std::string& host,
        DeleteDynamicDataForHostCallback callback) override;
    void SetCorsOriginAccessListsForOrigin(
-@@ -722,7 +725,8 @@
+@@ -727,7 +730,8 @@
        mojo::PendingRemote<mojom::CookieAccessObserver> cookie_observer,
        net::FirstPartySetMetadata first_party_set_metadata);
  
@@ -848,7 +848,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  
  #if BUILDFLAG(IS_P2P_ENABLED)
    void DestroySocketManager(P2PSocketManager* socket_manager);
-@@ -914,6 +918,7 @@
+@@ -919,6 +923,7 @@
      VerifyCertForSignedExchangeCallback callback;
      scoped_refptr<net::X509Certificate> certificate;
      GURL url;
@@ -858,7 +858,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
    };
 --- a/services/network/public/mojom/network_context.mojom
 +++ b/services/network/public/mojom/network_context.mojom
-@@ -1518,6 +1518,7 @@
+@@ -1520,6 +1520,7 @@
    // implementation is currently specific for use by Signed Exchange.
    VerifyCertForSignedExchange(X509Certificate certificate,
                                url.mojom.Url url,
@@ -866,7 +866,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
                                string ocsp_response,
                                string sct_list) => (int32 error_code,
                                                     CertVerifyResult cv_result,
-@@ -1525,16 +1526,16 @@
+@@ -1527,16 +1528,16 @@
  
    // Adds explicitly-specified data as if it was processed from an
    // HSTS header. Used by tests and implementation of chrome://net-internals.
@@ -886,7 +886,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
        => (mojo_base.mojom.DictionaryValue state);
  
    // Sets allowed and blocked origins respectively for the URLLoaderFactory
-@@ -1553,7 +1554,7 @@
+@@ -1555,7 +1556,7 @@
    // Deletes any dynamic data stored for |host| from the transport
    // security state. Returns true iff an entry was deleted.
    // See net::TransportSecurityState::DeleteDynamicDataForHost for more detail.

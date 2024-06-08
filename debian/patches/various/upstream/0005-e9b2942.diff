@@ -17,14 +17,14 @@ Cr-Commit-Position: refs/heads/main@{#1302259}
 
 --- a/components/metrics/metrics_service.cc
 +++ b/components/metrics/metrics_service.cc
-@@ -138,6 +138,7 @@
+@@ -139,6 +139,7 @@
  #include "base/metrics/histogram_samples.h"
  #include "base/metrics/persistent_histogram_allocator.h"
  #include "base/metrics/statistics_recorder.h"
 +#include "base/metrics/user_metrics.h"
  #include "base/process/process_handle.h"
  #include "base/rand_util.h"
- #include "base/strings/string_piece.h"
+ #include "base/task/sequenced_task_runner.h"
 @@ -697,8 +698,9 @@
  }
  
@@ -58,7 +58,7 @@ Cr-Commit-Position: refs/heads/main@{#1302259}
  }
 --- a/components/metrics/metrics_service_unittest.cc
 +++ b/components/metrics/metrics_service_unittest.cc
-@@ -88,8 +88,9 @@
+@@ -89,8 +89,9 @@
        variations::MakeActiveGroupId(trial_name, group_name);
  
    for (const auto& trial : proto.field_trial()) {
@@ -69,7 +69,7 @@ Cr-Commit-Position: refs/heads/main@{#1302259}
    }
    return false;
  }
-@@ -272,8 +273,9 @@
+@@ -273,8 +274,9 @@
        const base::StatisticsRecorder::Histograms& histograms,
        uint64_t name_hash) {
      for (const base::HistogramBase* histogram : histograms) {
@@ -80,7 +80,7 @@ Cr-Commit-Position: refs/heads/main@{#1302259}
      }
      return nullptr;
    }
-@@ -1649,6 +1651,31 @@
+@@ -1650,6 +1652,31 @@
    base::StatisticsRecorder::ForgetHistogramForTesting("Test.Before.Histogram");
    base::StatisticsRecorder::ForgetHistogramForTesting("Test.After.Histogram");
  }

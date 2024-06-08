@@ -115,7 +115,7 @@ Cr-Commit-Position: refs/heads/main@{#1302649}
    const auto* bounding_container = container_ignore_layout_view_for_fixed_pos(
        *anchored_element_->GetLayoutObject());
  
-@@ -171,31 +181,24 @@
+@@ -174,31 +184,24 @@
    AdjustmentData new_adjustment_data = ComputeDefaultAnchorAdjustmentData();
  
    SnapshotDiff diff = SnapshotDiff::kNone;
@@ -164,7 +164,7 @@ Cr-Commit-Position: refs/heads/main@{#1302649}
    }
  
    if (update && diff != SnapshotDiff::kNone) {
-@@ -206,9 +209,8 @@
+@@ -209,9 +212,8 @@
  }
  
  bool AnchorPositionScrollData::IsFallbackPositionValid(
@@ -176,7 +176,7 @@ Cr-Commit-Position: refs/heads/main@{#1302649}
        GetNonOverflowingScrollRanges(anchored_element_->GetLayoutObject());
    if (!non_overflowing_scroll_ranges ||
        non_overflowing_scroll_ranges->empty()) {
-@@ -217,39 +219,31 @@
+@@ -220,39 +222,31 @@
  
    for (const NonOverflowingScrollRange& range :
         *non_overflowing_scroll_ranges) {
@@ -232,7 +232,7 @@ Cr-Commit-Position: refs/heads/main@{#1302649}
    // If this AnchorPositionScrollData is detached in the previous style recalc,
    // we no longer need to validate it.
    if (!IsActive()) {
-@@ -259,10 +253,9 @@
+@@ -262,10 +256,9 @@
    SnapshotDiff diff = TakeAndCompareSnapshot(true /* update */);
    switch (diff) {
      case SnapshotDiff::kNone:
@@ -245,7 +245,7 @@ Cr-Commit-Position: refs/heads/main@{#1302649}
        return true;
      case SnapshotDiff::kScrollersOrFallbackPosition:
        InvalidateLayoutAndPaint();
-@@ -301,6 +294,7 @@
+@@ -304,6 +297,7 @@
  
  void AnchorPositionScrollData::Trace(Visitor* visitor) const {
    visitor->Trace(anchored_element_);
@@ -325,7 +325,7 @@ Cr-Commit-Position: refs/heads/main@{#1302649}
  
 --- a/third_party/blink/renderer/core/layout/layout_box.cc
 +++ b/third_party/blink/renderer/core/layout/layout_box.cc
-@@ -4364,8 +4364,8 @@
+@@ -4357,8 +4357,8 @@
    return is_acceptable_anchor ? anchor_layout_object : nullptr;
  }
  
@@ -338,7 +338,7 @@ Cr-Commit-Position: refs/heads/main@{#1302649}
      return nullptr;
 --- a/third_party/blink/renderer/core/layout/layout_box.h
 +++ b/third_party/blink/renderer/core/layout/layout_box.h
-@@ -1266,7 +1266,8 @@
+@@ -1271,7 +1271,8 @@
    // https://drafts.csswg.org/css-anchor-position-1/#ref-for-valdef-anchor-implicit
    const LayoutObject* AcceptableImplicitAnchor() const;
  
@@ -443,7 +443,7 @@ Cr-Commit-Position: refs/heads/main@{#1302649}
  #endif  // THIRD_PARTY_BLINK_RENDERER_CORE_LAYOUT_NON_OVERFLOWING_SCROLL_RANGE_H_
 --- a/third_party/blink/renderer/core/layout/out_of_flow_layout_part.cc
 +++ b/third_party/blink/renderer/core/layout/out_of_flow_layout_part.cc
-@@ -278,8 +278,9 @@
+@@ -277,8 +277,9 @@
  
  const Element* GetPositionAnchorElement(
      const BlockNode& node,
@@ -454,7 +454,7 @@ Cr-Commit-Position: refs/heads/main@{#1302649}
      if (const LogicalAnchorReference* reference =
              anchor_query.AnchorReference(*node.GetLayoutBox(), specifier);
          reference && reference->layout_object) {
-@@ -293,6 +294,30 @@
+@@ -292,6 +293,30 @@
    return nullptr;
  }
  
@@ -485,7 +485,7 @@ Cr-Commit-Position: refs/heads/main@{#1302649}
  // Updates `node`'s associated `PaintLayer` for `position-visibility`. See:
  // https://drafts.csswg.org/css-anchor-position-1/#position-visibility. The
  // values of `no-overflow` and `anchors-valid` are computed and directly update
-@@ -333,7 +358,8 @@
+@@ -332,7 +357,8 @@
    // The spec is still in-flux about whether we should use multiple anchors
    // (from `anchor()` and `anchor-size()`), or just the default anchor.
    const Element* anchor =
@@ -495,7 +495,7 @@ Cr-Commit-Position: refs/heads/main@{#1302649}
    if (is_anchor_positioned && has_anchors_visible_visibility && anchor) {
      anchored->EnsureAnchorPositionScrollData()
          .EnsureAnchorPositionVisibilityObserver()
-@@ -1809,16 +1835,8 @@
+@@ -1826,16 +1852,8 @@
  OutOfFlowLayoutPart::OffsetInfo OutOfFlowLayoutPart::CalculateOffset(
      const NodeInfo& node_info,
      const LogicalAnchorQueryMap* anchor_queries) {
@@ -513,7 +513,7 @@ Cr-Commit-Position: refs/heads/main@{#1302649}
  
    // Note: This assumes @position-try rounds can't affect
    // writing-mode/position-anchor.
-@@ -1852,7 +1870,7 @@
+@@ -1869,7 +1887,7 @@
      // However, without @position-try, the style is the current style.
      CHECK(has_try_options || &style == &iter.GetStyle());
      std::optional<OffsetInfo> offset_info =
@@ -522,7 +522,7 @@ Cr-Commit-Position: refs/heads/main@{#1302649}
                             try_fit_available_space, &non_overflowing_range);
  
      // Also check if it fits the containing block after applying scroll offset
-@@ -1860,7 +1878,8 @@
+@@ -1877,7 +1895,8 @@
      if (offset_info) {
        if (try_fit_available_space) {
          non_overflowing_scroll_ranges.push_back(non_overflowing_range);
@@ -532,7 +532,7 @@ Cr-Commit-Position: refs/heads/main@{#1302649}
            continue;
          }
        }
-@@ -1898,7 +1917,7 @@
+@@ -1914,7 +1933,7 @@
      // offset again, using the non-base style.
      const ComputedStyle& style = iter.ActivateStyleForChosenOption();
      NonOverflowingScrollRange non_overflowing_range_unused;
@@ -541,7 +541,7 @@ Cr-Commit-Position: refs/heads/main@{#1302649}
                                       /* try_fit_available_space */ false,
                                       &non_overflowing_range_unused);
      offset_info->overflows_containing_block = overflows_containing_block;
-@@ -1919,7 +1938,7 @@
+@@ -1935,7 +1954,7 @@
  OutOfFlowLayoutPart::TryCalculateOffset(
      const NodeInfo& node_info,
      const ComputedStyle& candidate_style,
@@ -550,7 +550,7 @@ Cr-Commit-Position: refs/heads/main@{#1302649}
      bool try_fit_available_space,
      NonOverflowingScrollRange* out_non_overflowing_range) {
    // TryCalculateOffset may be called multiple times if we have multiple @try
-@@ -2186,6 +2205,8 @@
+@@ -2202,6 +2221,8 @@
          LogicalScrollRange{inline_scroll_min, inline_scroll_max,
                             block_scroll_min, block_scroll_max}
              .ToPhysical(candidate_writing_direction);
@@ -559,7 +559,7 @@ Cr-Commit-Position: refs/heads/main@{#1302649}
    }
  
    bool anchor_center_x = anchor_center_position.inline_offset.has_value();
-@@ -2194,9 +2215,9 @@
+@@ -2210,9 +2231,9 @@
      std::swap(anchor_center_x, anchor_center_y);
    }
    offset_info.needs_scroll_adjustment_in_x =
@@ -571,7 +571,7 @@ Cr-Commit-Position: refs/heads/main@{#1302649}
  
    return offset_info;
  }
-@@ -2783,6 +2804,7 @@
+@@ -2809,6 +2830,7 @@
  
  void OutOfFlowLayoutPart::OffsetInfo::Trace(Visitor* visitor) const {
    visitor->Trace(initial_layout_result);

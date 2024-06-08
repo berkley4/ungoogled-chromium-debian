@@ -1,26 +1,26 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2388,6 +2388,19 @@
-       "-Wl,-O2",
-       "-Wl,--gc-sections",
-     ]
-+
-+    if (is_clang) {
-+      polly_cflags = [
-+        "-mllvm",
-+        "-polly",
-+        "-mllvm",
-+        "-polly-vectorizer=stripmine",
-+        "-mllvm",
-+        "-polly-run-dce",
-+        "-mllvm",
-+        "-polly-invariant-load-hoisting",
-+      ]
-+    }
-   }
+@@ -2330,6 +2330,19 @@
+   common_optimize_on_cflags = []
+   common_optimize_on_ldflags = []
  
-   # We cannot rely on errno being set after math functions,
-@@ -2470,7 +2483,7 @@
++  if (is_clang) {
++    polly_cflags = [
++      "-mllvm",
++      "-polly",
++      "-mllvm",
++      "-polly-vectorizer=stripmine",
++      "-mllvm",
++      "-polly-run-dce",
++      "-mllvm",
++      "-polly-invariant-load-hoisting",
++    ]
++  }
++
+   if (is_android) {
+     # TODO(jdduke) Re-enable on mips after resolving linking
+     # issues with libc++ (crbug.com/456380).
+@@ -2455,7 +2468,7 @@
      # vectorization while otherwise optimizing for size.
      rustflags = [ "-Copt-level=s" ]
    } else {
@@ -29,7 +29,7 @@
  
      # The `-O3` for clang turns on extra optimizations compared to the standard
      # `-O2`. But for rust, `-Copt-level=3` is the default and is thus reliable
-@@ -2546,7 +2559,7 @@
+@@ -2526,7 +2539,7 @@
      } else if (optimize_for_fuzzing) {
        cflags = [ "-O1" ] + common_optimize_on_cflags
      } else {
@@ -38,7 +38,7 @@
      }
      rustflags = [ "-Copt-level=3" ]
    }
-@@ -2582,7 +2595,7 @@
+@@ -2567,7 +2580,7 @@
      } else if (optimize_for_fuzzing) {
        cflags = [ "-O1" ] + common_optimize_on_cflags
      } else {

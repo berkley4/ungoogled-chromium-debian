@@ -1,78 +1,6 @@
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -538,18 +538,6 @@
-     "external_protocol/external_protocol_observer.h",
-     "feature_engagement/tracker_factory.cc",
-     "feature_engagement/tracker_factory.h",
--    "feed/feed_service_factory.cc",
--    "feed/feed_service_factory.h",
--    "feed/rss_links_fetcher.cc",
--    "feed/rss_links_fetcher.h",
--    "feed/web_feed_page_information_fetcher.cc",
--    "feed/web_feed_page_information_fetcher.h",
--    "feed/web_feed_tab_helper.cc",
--    "feed/web_feed_tab_helper.h",
--    "feed/web_feed_ui_util.cc",
--    "feed/web_feed_ui_util.h",
--    "feed/web_feed_util.cc",
--    "feed/web_feed_util.h",
-     "file_select_helper.cc",
-     "file_select_helper.h",
-     "file_system_access/chrome_file_system_access_permission_context.cc",
-@@ -1925,6 +1913,23 @@
-     "webid/identity_provider_permission_request.h",
-   ]
- 
-+  if (enable_feed_v2) {
-+    sources += [
-+      "feed/feed_service_factory.cc",
-+      "feed/feed_service_factory.h",
-+      "feed/rss_links_fetcher.cc",
-+      "feed/rss_links_fetcher.h",
-+      "feed/web_feed_page_information_fetcher.cc",
-+      "feed/web_feed_page_information_fetcher.h",
-+      "feed/web_feed_tab_helper.cc",
-+      "feed/web_feed_tab_helper.h",
-+      "feed/web_feed_ui_util.cc",
-+      "feed/web_feed_ui_util.h",
-+      "feed/web_feed_util.cc",
-+      "feed/web_feed_util.h",
-+    ]
-+  }
-+
-   if (!is_android) {
-     sources += [
-       "accessibility/embedded_a11y_extension_loader.cc",
-@@ -2262,11 +2267,6 @@
-     "//components/favicon_base",
-     "//components/feature_engagement",
-     "//components/feed:buildflags",
--    "//components/feed:feature_list",
--    "//components/feed/core/common:feed_core_common",
--    "//components/feed/core/shared_prefs:feed_shared_prefs",
--    "//components/feed/core/v2:feed_core_v2",
--    "//components/feed/mojom:mojo_bindings",
-     "//components/filename_generation",
-     "//components/find_in_page",
-     "//components/fingerprinting_protection_filter/browser",
-@@ -2652,6 +2652,16 @@
-     "//ui/webui",
-   ]
- 
-+  if (enable_feed_v2) {
-+    deps += [
-+      "//components/feed:feature_list",
-+      "//components/feed/core/common:feed_core_common",
-+      "//components/feed/core/shared_prefs:feed_shared_prefs",
-+      "//components/feed/core/v2:feed_core_v2",
-+      "//components/feed/mojom:mojo_bindings",
-+    ]
-+  }
-+
-   if (!is_android) {
-     deps += [
-       "//chrome/browser/ui/webui/search_engine_choice:mojo_bindings",
-@@ -4108,8 +4118,6 @@
+@@ -4156,8 +4156,6 @@
        "new_tab_page/chrome_colors/chrome_colors_service.h",
        "new_tab_page/feature_promo_helper/new_tab_page_feature_promo_helper.cc",
        "new_tab_page/feature_promo_helper/new_tab_page_feature_promo_helper.h",
@@ -81,7 +9,7 @@
        "new_tab_page/modules/file_suggestion/drive_service.cc",
        "new_tab_page/modules/file_suggestion/drive_service.h",
        "new_tab_page/modules/file_suggestion/drive_service_factory.cc",
-@@ -4613,6 +4621,14 @@
+@@ -4663,6 +4661,14 @@
        "webauthn/webauthn_switches.cc",
        "webauthn/webauthn_switches.h",
      ]
@@ -96,7 +24,7 @@
      deps += [
        ":browser_themes",
        ":theme_properties",
-@@ -4630,7 +4646,6 @@
+@@ -4680,7 +4686,6 @@
        "//chrome/browser/media/router/discovery/access_code:access_code_sink_service",
        "//chrome/browser/new_tab_page/chrome_colors:generate_chrome_colors_info",
        "//chrome/browser/new_tab_page/chrome_colors:generate_colors_info",
@@ -104,7 +32,7 @@
        "//chrome/browser/new_tab_page/modules/file_suggestion:mojo_bindings",
        "//chrome/browser/new_tab_page/modules/history_clusters:mojo_bindings",
        "//chrome/browser/new_tab_page/modules/history_clusters/cart:mojo_bindings",
-@@ -4847,6 +4862,10 @@
+@@ -4906,6 +4911,10 @@
        ]
      }
  
@@ -117,7 +45,7 @@
      if (!is_win) {
 --- a/chrome/browser/chrome_browser_interface_binders.cc
 +++ b/chrome/browser/chrome_browser_interface_binders.cc
-@@ -1294,10 +1294,12 @@
+@@ -1306,10 +1306,12 @@
                                             NewTabPageUI>(map);
    }
  
@@ -130,341 +58,9 @@
  
    if (base::FeatureList::IsEnabled(ntp_features::kNtpHistoryClustersModule) ||
        base::FeatureList::IsEnabled(
---- a/chrome/browser/renderer_context_menu/render_view_context_menu.cc
-+++ b/chrome/browser/renderer_context_menu/render_view_context_menu.cc
-@@ -138,6 +138,7 @@
- #include "components/compose/core/browser/compose_features.h"
- #include "components/custom_handlers/protocol_handler.h"
- #include "components/download/public/common/download_url_parameters.h"
-+#include "components/feed/buildflags.h"
- #include "components/feed/feed_feature_list.h"
- #include "components/google/core/common/google_util.h"
- #include "components/guest_view/browser/guest_view_base.h"
-@@ -3514,6 +3515,7 @@
-       break;
-     }
- 
-+#if BUILDFLAG(ENABLE_FEED_V2)
-     case IDC_FOLLOW:
-       feed::FollowSite(source_web_contents_);
-       break;
-@@ -3521,6 +3523,7 @@
-     case IDC_UNFOLLOW:
-       feed::UnfollowSite(source_web_contents_);
-       break;
-+#endif  // BUILDFLAG(ENABLE_FEED_V2)
- 
-     default:
-       DUMP_WILL_BE_NOTREACHED_NORETURN() << "Unhandled id: " << id;
---- a/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
-+++ b/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
-@@ -221,6 +221,7 @@
- #include "components/commerce/core/proto/persisted_state_db_content.pb.h"
- #include "components/enterprise/buildflags/buildflags.h"
- #include "components/enterprise/content/clipboard_restriction_service.h"
-+#include "components/feed/buildflags.h"
- #include "components/media_effects/media_effects_service_factory.h"
- #include "components/offline_pages/buildflags/buildflags.h"
- #include "components/omnibox/browser/autocomplete_controller_emitter.h"
-@@ -816,7 +817,9 @@
-   FederatedIdentityApiPermissionContextFactory::GetInstance();
-   FederatedIdentityAutoReauthnPermissionContextFactory::GetInstance();
-   FederatedIdentityPermissionContextFactory::GetInstance();
-+#if BUILDFLAG(ENABLE_FEED_V2)
-   feed::FeedServiceFactory::GetInstance();
-+#endif
- #if !BUILDFLAG(IS_ANDROID)
-   feedback::FeedbackUploaderFactoryChrome::GetInstance();
- #endif
---- a/chrome/browser/sharing_hub/sharing_hub_model.cc
-+++ b/chrome/browser/sharing_hub/sharing_hub_model.cc
-@@ -26,6 +26,7 @@
- #include "chrome/browser/ui/browser_navigator_params.h"
- #include "chrome/browser/ui/qrcode_generator/qrcode_generator_bubble_controller.h"
- #include "chrome/grit/generated_resources.h"
-+#include "components/feed/buildflags.h"
- #include "components/vector_icons/vector_icons.h"
- #include "content/public/browser/browser_context.h"
- #include "content/public/browser/browser_thread.h"
-@@ -79,6 +80,7 @@
-               IsGeneratorAvailable(web_contents->GetLastCommittedURL())) {
-         results.push_back(action);
-       }
-+#if BUILDFLAG(ENABLE_FEED_V2)
-     } else if (action.command_id == IDC_FOLLOW) {
-       TabWebFeedFollowState follow_state =
-           feed::WebFeedTabHelper::GetFollowState(web_contents);
-@@ -89,6 +91,7 @@
-           feed::WebFeedTabHelper::GetFollowState(web_contents);
-       if (follow_state == TabWebFeedFollowState::kFollowed)
-         results.push_back(action);
-+#endif
-     } else if (action.command_id == IDC_SAVE_PAGE) {
-       if (chrome::CanSavePage(chrome::FindBrowserWithTab(web_contents))) {
-         results.push_back(action);
---- a/chrome/browser/ui/browser_commands.cc
-+++ b/chrome/browser/ui/browser_commands.cc
-@@ -125,6 +125,7 @@
- #include "components/embedder_support/user_agent_utils.h"
- #include "components/favicon/content/content_favicon_driver.h"
- #include "components/feature_engagement/public/feature_constants.h"
-+#include "components/feed/buildflags.h"
- #include "components/find_in_page/find_tab_helper.h"
- #include "components/find_in_page/find_types.h"
- #include "components/google/core/common/google_util.h"
-@@ -2194,6 +2195,7 @@
-   }
- }
- 
-+#if BUILDFLAG(ENABLE_FEED_V2)
- void FollowSite(content::WebContents* web_contents) {
-   DCHECK(!Profile::FromBrowserContext(web_contents->GetBrowserContext())
-               ->IsIncognitoProfile());
-@@ -2205,6 +2207,7 @@
-               ->IsIncognitoProfile());
-   feed::UnfollowSite(web_contents);
- }
-+#endif  // BUILDFLAG(ENABLE_FEED_V2)
- 
- #if BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
- void RunScreenAILayoutExtraction(Browser* browser) {
---- a/chrome/browser/ui/browser_commands.h
-+++ b/chrome/browser/ui/browser_commands.h
-@@ -16,6 +16,7 @@
- #include "chrome/browser/ui/chrome_pages.h"
- #include "chrome/browser/ui/tabs/tab_strip_model_delegate.h"
- #include "chrome/browser/ui/tabs/tab_strip_user_gesture_details.h"
-+#include "components/feed/buildflags.h"
- #include "content/public/common/page_zoom.h"
- #include "printing/buildflags/buildflags.h"
- #include "services/screen_ai/buildflags/buildflags.h"
-@@ -266,10 +267,12 @@
- void ProcessInterceptedChromeURLNavigationInIncognito(Browser* browser,
-                                                       const GURL& url);
- 
-+#if BUILDFLAG(ENABLE_FEED_V2)
- // Follows/unfollows a web feed associated with the main frame of specified web
- // contents.
- void FollowSite(content::WebContents* web_contents);
- void UnfollowSite(content::WebContents* web_contents);
-+#endif  // BUILDFLAG(ENABLE_FEED_V2)
- 
- #if BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
- // Triggers the Screen AI layout extraction to be run once on the |browser|.
---- a/chrome/browser/ui/browser_command_controller.cc
-+++ b/chrome/browser/ui/browser_command_controller.cc
-@@ -71,6 +71,7 @@
- #include "chrome/common/webui_url_constants.h"
- #include "components/bookmarks/common/bookmark_pref_names.h"
- #include "components/dom_distiller/core/dom_distiller_features.h"
-+#include "components/feed/buildflags.h"
- #include "components/lens/buildflags.h"
- #include "components/lens/lens_features.h"
- #include "components/password_manager/core/browser/manage_passwords_referrer.h"
-@@ -686,12 +687,14 @@
-     case IDC_SHARING_HUB_SCREENSHOT:
-       ScreenshotCapture(browser_);
-       break;
-+#if BUILDFLAG(ENABLE_FEED_V2)
-     case IDC_FOLLOW:
-       FollowSite(browser_->tab_strip_model()->GetActiveWebContents());
-       break;
-     case IDC_UNFOLLOW:
-       UnfollowSite(browser_->tab_strip_model()->GetActiveWebContents());
-       break;
-+#endif  // BUILDFLAG(ENABLE_FEED_V2)
- 
-     // Clipboard commands
-     case IDC_CUT:
---- a/chrome/browser/ui/browser_tab_strip_model_delegate.cc
-+++ b/chrome/browser/ui/browser_tab_strip_model_delegate.cc
-@@ -32,6 +32,7 @@
- #include "chrome/browser/ui/unload_controller.h"
- #include "chrome/browser/ui/web_applications/app_browser_controller.h"
- #include "chrome/common/chrome_switches.h"
-+#include "components/feed/buildflags.h"
- #include "components/reading_list/core/reading_list_model.h"
- #include "components/saved_tab_groups/features.h"
- #include "components/security_interstitials/content/security_interstitial_tab_helper.h"
-@@ -260,6 +261,7 @@
-   return !browser_->profile()->IsGuestSession() && !IsForWebApp();
- }
- 
-+#if BUILDFLAG(ENABLE_FEED_V2)
- void BrowserTabStripModelDelegate::FollowSite(
-     content::WebContents* web_contents) {
-   chrome::FollowSite(web_contents);
-@@ -269,6 +271,7 @@
-     content::WebContents* web_contents) {
-   chrome::UnfollowSite(web_contents);
- }
-+#endif
- 
- bool BrowserTabStripModelDelegate::IsForWebApp() {
-   return web_app::AppBrowserController::IsWebApp(browser_);
---- a/chrome/browser/ui/browser_tab_strip_model_delegate.h
-+++ b/chrome/browser/ui/browser_tab_strip_model_delegate.h
-@@ -8,6 +8,7 @@
- #include "base/memory/raw_ptr.h"
- #include "base/memory/weak_ptr.h"
- #include "chrome/browser/ui/tabs/tab_strip_model_delegate.h"
-+#include "components/feed/buildflags.h"
- 
- class GURL;
- 
-@@ -57,8 +58,10 @@
-   bool CanReload() const override;
-   void AddToReadLater(content::WebContents* web_contents) override;
-   bool SupportsReadLater() override;
-+#if BUILDFLAG(ENABLE_FEED_V2)
-   void FollowSite(content::WebContents* web_contents) override;
-   void UnfollowSite(content::WebContents* web_contents) override;
-+#endif
-   bool IsForWebApp() override;
-   void CopyURL(content::WebContents* web_contents) override;
-   void GoBack(content::WebContents* web_contents) override;
---- a/chrome/browser/ui/tabs/tab_strip_model.cc
-+++ b/chrome/browser/ui/tabs/tab_strip_model.cc
-@@ -69,6 +69,7 @@
- #include "components/commerce/core/commerce_utils.h"
- #include "components/content_settings/core/browser/host_content_settings_map.h"
- #include "components/feature_engagement/public/feature_constants.h"
-+#include "components/feed/buildflags.h"
- #include "components/reading_list/core/reading_list_model.h"
- #include "components/saved_tab_groups/saved_tab_group_model.h"
- #include "components/tab_groups/tab_group_id.h"
-@@ -1369,6 +1370,7 @@
-   return TabUIHelper::FromWebContents(GetWebContentsAt(index))->GetTitle();
- }
- 
-+#if BUILDFLAG(ENABLE_FEED_V2)
- void TabStripModel::FollowSites(const std::vector<int>& indices) {
-   ReentrancyCheck reentrancy_check(&reentrancy_guard_);
-   for (int index : indices)
-@@ -1380,6 +1382,7 @@
-   for (int index : indices)
-     delegate_->UnfollowSite(GetWebContentsAt(index));
- }
-+#endif
- 
- int TabStripModel::GetTabCount() const {
-   return IsContentsDataVector()
-@@ -1478,6 +1481,7 @@
-                  selected_web_contents);
-     }
- 
-+#if BUILDFLAG(ENABLE_FEED_V2)
-     case CommandFollowSite:
-     case CommandUnfollowSite: {
-       std::vector<int> indices = GetIndicesForCommand(context_index);
-@@ -1488,6 +1492,7 @@
-           Profile::FromBrowserContext(web_contents->GetBrowserContext());
-       return !profile->IsIncognitoProfile();
-     }
-+#endif
- 
-     case CommandCopyURL:
-       DCHECK(delegate()->IsForWebApp());
-@@ -1725,6 +1730,7 @@
-       break;
-     }
- 
-+#if BUILDFLAG(ENABLE_FEED_V2)
-     case CommandFollowSite: {
-       base::RecordAction(UserMetricsAction("DesktopFeed.FollowSite"));
-       FollowSites(GetIndicesForCommand(context_index));
-@@ -1736,6 +1742,7 @@
-       UnfollowSites(GetIndicesForCommand(context_index));
-       break;
-     }
-+#endif
- 
-     case CommandCopyURL: {
-       base::RecordAction(UserMetricsAction("TabContextMenu_CopyURL"));
---- a/chrome/browser/ui/tabs/tab_strip_model.h
-+++ b/chrome/browser/ui/tabs/tab_strip_model.h
-@@ -27,6 +27,7 @@
- #include "chrome/browser/ui/tabs/tab_strip_collection.h"
- #include "chrome/browser/ui/tabs/tab_strip_scrubbing_metrics.h"
- #include "chrome/browser/ui/tabs/tab_strip_user_gesture_details.h"
-+#include "components/feed/buildflags.h"
- #include "components/sessions/core/session_id.h"
- #include "components/tab_groups/tab_group_id.h"
- #include "components/tab_groups/tab_group_visual_data.h"
-@@ -514,9 +515,11 @@
-   // Saves tabs with url supported by Read Later.
-   void AddToReadLater(const std::vector<int>& indices);
- 
-+#if BUILDFLAG(ENABLE_FEED_V2)
-   // Follows/unfollows a web feed for a set of website.
-   void FollowSites(const std::vector<int>& indices);
-   void UnfollowSites(const std::vector<int>& indices);
-+#endif
- 
-   // TabGroupController:
-   void CreateTabGroup(const tab_groups::TabGroupId& group) override;
-@@ -555,8 +558,10 @@
-     CommandMoveToExistingWindow,
-     CommandMoveTabsToNewWindow,
-     CommandOrganizeTabs,
-+#if BUILDFLAG(ENABLE_FEED_V2)
-     CommandFollowSite,
-     CommandUnfollowSite,
-+#endif
-     CommandCopyURL,
-     CommandGoBack,
-     CommandCloseAllTabs,
---- a/chrome/browser/ui/tabs/tab_strip_model_delegate.h
-+++ b/chrome/browser/ui/tabs/tab_strip_model_delegate.h
-@@ -9,6 +9,7 @@
- #include <optional>
- #include <vector>
- 
-+#include "components/feed/buildflags.h"
- #include "components/sessions/core/session_id.h"
- #include "components/tab_groups/tab_group_id.h"
- 
-@@ -158,11 +159,13 @@
-   // Returns whether the tabstrip supports the read later feature.
-   virtual bool SupportsReadLater() = 0;
- 
-+#if BUILDFLAG(ENABLE_FEED_V2)
-   // Follows a web feed for the specified WebContents.
-   virtual void FollowSite(content::WebContents* web_contents) = 0;
- 
-   // Unfollows a web feed for the specified WebContents.
-   virtual void UnfollowSite(content::WebContents* web_contents) = 0;
-+#endif
- 
-   // Returns whether this tab strip model is for a web app.
-   virtual bool IsForWebApp() = 0;
---- a/chrome/browser/ui/webui/new_tab_page/new_tab_page_ui.cc
-+++ b/chrome/browser/ui/webui/new_tab_page/new_tab_page_ui.cc
-@@ -68,6 +68,7 @@
- #include "components/commerce/core/commerce_feature_list.h"
- #include "components/content_settings/core/common/content_settings_pattern.h"
- #include "components/favicon_base/favicon_url_parser.h"
-+#include "components/feed/buildflags.h"
- #include "components/feed/feed_feature_list.h"
- #include "components/google/core/common/google_util.h"
- #include "components/grit/components_scaled_resources.h"
-@@ -907,11 +908,13 @@
-                                                     profile_, web_contents());
- }
- 
-+#if BUILDFLAG(ENABLE_FEED_V2)
- void NewTabPageUI::BindInterface(
-     mojo::PendingReceiver<ntp::feed::mojom::FeedHandler> pending_receiver) {
-   feed_handler_ =
-       ntp::FeedHandler::Create(std::move(pending_receiver), profile_);
- }
-+#endif
- 
- #if !defined(OFFICIAL_BUILD)
- void NewTabPageUI::BindInterface(
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -6886,9 +6886,6 @@
+@@ -6957,9 +6957,6 @@
      "//components/favicon/core/test:test_support",
      "//components/feature_engagement/public",
      "//components/feed:buildflags",
@@ -474,7 +70,7 @@
      "//components/feed/mojom:mojo_bindings",
      "//components/feedback",
      "//components/feedback/redaction_tool",
-@@ -7154,6 +7151,14 @@
+@@ -7229,6 +7226,14 @@
      "//base:path_service_unittest",
    ]
  

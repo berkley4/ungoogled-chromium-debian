@@ -1,17 +1,6 @@
---- a/content/common/features.cc
-+++ b/content/common/features.cc
-@@ -484,7 +484,7 @@
- // https://www.chromestatus.com/feature/5687904902840320
- BASE_FEATURE(kSignedExchangeReportingForDistributors,
-              "SignedExchangeReportingForDistributors",
--             base::FEATURE_ENABLED_BY_DEFAULT);
-+             base::FEATURE_DISABLED_BY_DEFAULT);
- 
- // When enabled, ensures that an unlocked process cannot access data for
- // sites that require a dedicated process.
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
-@@ -909,7 +909,7 @@
+@@ -900,7 +900,7 @@
  // https://www.chromestatus.com/feature/5745285984681984
  BASE_FEATURE(kSignedHTTPExchange,
               "SignedHTTPExchange",

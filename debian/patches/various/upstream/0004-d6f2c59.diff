@@ -19,7 +19,7 @@ Cr-Commit-Position: refs/heads/main@{#1301805}
 @@ -81,7 +81,11 @@
          ifc_text_content.Substring(TextOffset().start, TextOffset().Length())
              .EncodeForDebugging());
-   } else if (item->Type() == InlineItem::kOpenRubyColumn && ruby_column) {
+   } else if (IsRubyColumn()) {
 -    builder.Append(item->GetLayoutObject()->ToString());
 +    if (item->GetLayoutObject()) {
 +      builder.Append(item->GetLayoutObject()->ToString());

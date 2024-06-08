@@ -20,7 +20,7 @@
  import("//media/media_options.gni")
  import("//ppapi/buildflags/buildflags.gni")
  import("//third_party/blink/public/public_features.gni")
-@@ -1723,7 +1724,7 @@
+@@ -1724,7 +1725,7 @@
          ":angle_gles_symbols",
          ":chrome_symbols",
        ]
@@ -29,7 +29,7 @@
          deps += [ ":swiftshader_vk_symbols" ]
        }
        if (!is_chromeos) {
-@@ -1759,17 +1760,19 @@
+@@ -1760,17 +1761,19 @@
          deps = [ "//components/crash/core/app:chrome_crashpad_handler" ]
        }
      }
@@ -132,4 +132,4 @@
 +  dawn_use_swiftshader = !is_android && !is_ios && enable_swiftshader
  
    # Whether we allow building DXC.
-   # DXC requires SM6.0+ which is blocklisted on x86,
+   # DXC requires SM6.0+ which is blocklisted on x86.

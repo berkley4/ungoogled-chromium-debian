@@ -18,7 +18,7 @@ Cr-Commit-Position: refs/heads/main@{#1304004}
 
 --- a/components/content_settings/browser/ui/cookie_controls_controller.cc
 +++ b/components/content_settings/browser/ui/cookie_controls_controller.cc
-@@ -265,6 +265,12 @@
+@@ -276,6 +276,12 @@
  }
  
  void CookieControlsController::OnEntryPointAnimated() {

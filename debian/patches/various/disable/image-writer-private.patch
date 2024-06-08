@@ -5,10 +5,10 @@
  import("//build/config/ui.gni")
  import("//chrome/common/features.gni")
 +import("//chrome/services/file_util/public/features.gni")
+ import("//components/enterprise/buildflags/buildflags.gni")
  import("//components/nacl/features.gni")
  import("//extensions/buildflags/buildflags.gni")
- import("//mojo/public/tools/bindings/mojom.gni")
-@@ -198,32 +199,6 @@
+@@ -200,32 +201,6 @@
      "api/identity/web_auth_flow_info_bar_delegate.h",
      "api/idltest/idltest_api.cc",
      "api/idltest/idltest_api.h",
@@ -41,7 +41,7 @@
      "api/instance_id/instance_id_api.cc",
      "api/instance_id/instance_id_api.h",
      "api/language_settings_private/language_settings_private_api.cc",
-@@ -734,6 +709,37 @@
+@@ -741,6 +716,37 @@
      "window_controller_list_observer.h",
    ]
  
@@ -79,7 +79,7 @@
    # Chrome OS does not support Native Messaging policies.
    if (!is_chromeos) {
      sources += [
-@@ -835,6 +841,7 @@
+@@ -848,6 +854,7 @@
      "//chrome/browser/web_applications/extensions",
      "//chrome/common/extensions/api:extensions_features",
      "//chrome/common/safe_browsing:proto",
@@ -87,7 +87,7 @@
      "//chrome/services/file_util/public/mojom:mojom",
      "//chrome/services/removable_storage_writer/public/mojom",
      "//components/affiliations/core/browser:affiliations",
-@@ -1100,7 +1107,6 @@
+@@ -1116,7 +1123,6 @@
      sources += [
        "api/enterprise_reporting_private/chrome_desktop_report_request_helper.cc",
        "api/enterprise_reporting_private/chrome_desktop_report_request_helper.h",
@@ -95,7 +95,7 @@
        "api/messaging/native_message_process_host.cc",
        "api/messaging/native_message_process_host.h",
        "api/messaging/native_messaging_launch_from_native.cc",
-@@ -1116,6 +1122,9 @@
+@@ -1132,6 +1138,9 @@
        "//components/enterprise/common/proto:connectors_proto",
        "//components/keep_alive_registry",
      ]
@@ -105,7 +105,7 @@
      if (is_posix) {
        sources += [ "api/messaging/native_process_launcher_posix.cc" ]
      }
-@@ -1314,7 +1323,7 @@
+@@ -1328,7 +1337,7 @@
      ]
    }
  
@@ -187,7 +187,7 @@
  import("//chrome/services/speech/buildflags/buildflags.gni")
  import("//chrome/test/include_js_tests.gni")
  import("//chrome/version.gni")
-@@ -3676,9 +3677,6 @@
+@@ -3719,9 +3720,6 @@
          "../browser/extensions/api/identity/web_auth_flow_browsertest.cc",
          "../browser/extensions/api/idle/idle_apitest.cc",
          "../browser/extensions/api/idltest/idltest_apitest.cc",
@@ -197,7 +197,7 @@
          "../browser/extensions/api/instance_id/instance_id_apitest.cc",
          "../browser/extensions/api/management/management_api_browsertest.cc",
          "../browser/extensions/api/management/management_api_non_persistent_apitest.cc",
-@@ -3881,6 +3879,14 @@
+@@ -3924,6 +3922,14 @@
          "../browser/user_bypass/user_bypass_web_contents_observer_browsertest.cc",
        ]
  
@@ -212,7 +212,7 @@
        if (is_win) {
          data_deps += [
            "//chrome/browser/extensions/api:native_messaging_test_echo_&_host",
-@@ -3957,9 +3963,12 @@
+@@ -4001,9 +4007,12 @@
        if (!is_chromeos_lacros) {
          sources += [
            "../browser/extensions/api/automation/automation_apitest.cc",
@@ -226,7 +226,7 @@
        }
  
        if (is_chromeos) {
-@@ -5354,12 +5363,17 @@
+@@ -5411,12 +5420,17 @@
      if (is_mac || is_win || is_linux || is_chromeos_lacros) {
        sources += [
          # Tests for non mobile and non CrOS (includes Linux, Win, Mac).
@@ -245,7 +245,7 @@
        if (!is_chromeos_lacros) {
          sources += [
            "../browser/browser_switcher/browser_switcher_browsertest.cc",
-@@ -9039,15 +9053,6 @@
+@@ -9143,15 +9157,6 @@
        "../browser/extensions/api/identity/identity_api_unittest.cc",
        "../browser/extensions/api/identity/identity_mint_queue_unittest.cc",
        "../browser/extensions/api/identity/identity_token_cache_unittest.cc",
@@ -261,7 +261,7 @@
        "../browser/extensions/api/language_settings_private/language_settings_private_api_unittest.cc",
        "../browser/extensions/api/language_settings_private/language_settings_private_delegate_unittest.cc",
        "../browser/extensions/api/management/management_api_unittest.cc",
-@@ -11508,6 +11513,20 @@
+@@ -11654,6 +11659,20 @@
          "../browser/ui/views/touch_events_interactive_uitest_win.cc",
        ]
  

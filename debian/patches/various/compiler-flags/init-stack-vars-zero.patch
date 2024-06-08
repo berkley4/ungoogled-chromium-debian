@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -151,7 +151,7 @@
+@@ -147,7 +147,7 @@
  
    # Zero init has favorable performance/size tradeoffs for Chrome OS
    # but was not evaluated for other platforms.

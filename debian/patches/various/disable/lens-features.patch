@@ -1,6 +1,6 @@
 --- a/components/lens/lens_features.cc
 +++ b/components/lens/lens_features.cc
-@@ -12,7 +12,7 @@
+@@ -11,7 +11,7 @@
  
  BASE_FEATURE(kLensStandalone,
               "LensStandalone",
@@ -9,7 +9,7 @@
  
  BASE_FEATURE(kLensImageCompression,
               "LensImageCompression",
-@@ -24,7 +24,7 @@
+@@ -23,7 +23,7 @@
  
  BASE_FEATURE(kEnableLatencyLogging,
               "LensImageLatencyLogging",
@@ -18,7 +18,7 @@
  
  BASE_FEATURE(kEnableRegionSearchKeyboardShortcut,
               "LensEnableRegionSearchKeyboardShortcut",
-@@ -36,7 +36,7 @@
+@@ -35,7 +35,7 @@
  
  BASE_FEATURE(kEnableImageSearchSidePanelFor3PDse,
               "EnableImageSearchSidePanelFor3PDse",
@@ -27,7 +27,7 @@
  
  BASE_FEATURE(kLensRegionSearchStaticPage,
               "LensRegionSearchStaticPage",
-@@ -44,7 +44,7 @@
+@@ -43,7 +43,7 @@
  
  BASE_FEATURE(kEnableContextMenuInLensSidePanel,
               "EnableContextMenuInLensSidePanel",
@@ -36,7 +36,7 @@
  
  BASE_FEATURE(kLensOverlay, "LensOverlay", base::FEATURE_DISABLED_BY_DEFAULT);
  const base::FeatureParam<int> kLensOverlayMinRamMb{&kLensOverlay, "min_ram_mb",
-@@ -89,7 +89,7 @@
+@@ -167,7 +167,7 @@
          true};
  
  constexpr base::FeatureParam<bool> kShouldIssuePreconnectForLens{

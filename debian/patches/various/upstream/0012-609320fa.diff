@@ -17,7 +17,7 @@ Cr-Commit-Position: refs/heads/main@{#1304459}
 
 --- a/chrome/browser/devtools/protocol/devtools_pwa_browsertest.cc
 +++ b/chrome/browser/devtools/protocol/devtools_pwa_browsertest.cc
-@@ -244,6 +244,26 @@
+@@ -322,6 +322,26 @@
    ASSERT_EQ(*result->FindString("id"), InstallableWebAppUrl().spec());
  }
  
@@ -42,8 +42,8 @@ Cr-Commit-Position: refs/heads/main@{#1304459}
 +}
 +
  IN_PROC_BROWSER_TEST_F(PWAProtocolTest, GetProcessedManifest_MismatchId) {
-   ASSERT_TRUE(ui_test_utils::NavigateToURL(browser(), InstallableWebAppUrl()));
-   EXPECT_TRUE(content::WaitForLoadStop(web_contents()));
+   ReattachToWebContents(InstallableWebAppUrl());
+   ASSERT_FALSE(SendCommandSync(
 --- /dev/null
 +++ b/chrome/test/data/web_apps/icon_with_no_sizes.json
 @@ -0,0 +1,11 @@
@@ -60,17 +60,18 @@ Cr-Commit-Position: refs/heads/main@{#1304459}
 +}
 --- a/content/browser/devtools/protocol/page_handler.cc
 +++ b/content/browser/devtools/protocol/page_handler.cc
-@@ -18,7 +18,9 @@
+@@ -18,8 +18,10 @@
  #include "base/memory/ref_counted_memory.h"
  #include "base/numerics/safe_conversions.h"
  #include "base/process/process_handle.h"
 +#include "base/ranges/algorithm.h"
  #include "base/strings/string_number_conversions.h"
+ #include "base/strings/to_string.h"
 +#include "base/strings/string_util.h"
  #include "base/strings/utf_string_conversions.h"
  #include "base/task/single_thread_task_runner.h"
  #include "base/task/thread_pool.h"
-@@ -249,13 +251,10 @@
+@@ -250,13 +252,10 @@
    auto convert_icon = [](const blink::Manifest::ImageResource& input_icon)
        -> std::unique_ptr<Page::ImageResource> {
      auto icon = Page::ImageResource::Create();

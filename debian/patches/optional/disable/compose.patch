@@ -8,13 +8,15 @@
  #include "components/content_settings/core/common/pref_names.h"
  #include "components/dom_distiller/core/pref_names.h"
  #include "components/drive/drive_pref_names.h"
-@@ -458,8 +459,10 @@
+@@ -455,10 +456,12 @@
    (*s_allowlist)
        [::permissions::prefs::kUnusedSitePermissionsRevocationEnabled] =
            settings_api::PrefType::kBoolean;
 +#if BUILDFLAG(ENABLE_COMPOSE)
    (*s_allowlist)[prefs::kEnableProactiveNudge] =
        settings_api::PrefType::kBoolean;
+   (*s_allowlist)[prefs::kProactiveNudgeDisabledSitesWithTime] =
+       settings_api::PrefType::kDictionary;
 +#endif
  
    // Clear browsing data settings.

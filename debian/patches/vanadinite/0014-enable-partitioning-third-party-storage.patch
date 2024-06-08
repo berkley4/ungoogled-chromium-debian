@@ -1,17 +1,17 @@
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -792,7 +792,7 @@
+@@ -764,7 +764,7 @@
  
  BASE_FEATURE(kDisableThirdPartyStoragePartitioningDeprecationTrial,
               "DisableThirdPartyStoragePartitioningDeprecationTrial",
 -             base::FEATURE_ENABLED_BY_DEFAULT);
 +             base::FEATURE_DISABLED_BY_DEFAULT);
  
- // When enabled, the beforeunload handler is dispatched when a frame is frozen.
- // This allows the browser to know whether discarding the frame could result in
+ // Kill switch for not WebGL DrawingBuffer using SharedImage without
+ // GpuMemoryBuffer (overlay or low latency canvas).
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -1310,7 +1310,7 @@
+@@ -1251,7 +1251,7 @@
        origin_trial_feature_name: "DisableThirdPartySessionStoragePartitioningAfterGeneralPartitioning",
        origin_trial_type: "deprecation",
        origin_trial_allows_insecure: true,
@@ -20,7 +20,7 @@
        base_feature: "none",
      },
      // This feature will represent the deprecation trial that allows first
-@@ -1322,7 +1322,7 @@
+@@ -1263,7 +1263,7 @@
        origin_trial_type: "deprecation",
        origin_trial_allows_insecure: true,
        origin_trial_allows_third_party: true,

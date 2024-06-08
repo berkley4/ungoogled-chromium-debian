@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2376,11 +2376,6 @@
+@@ -2351,11 +2351,6 @@
        "-ffunction-sections",
        "-fdebug-types-section",
      ]
@@ -10,5 +10,5 @@
 -      common_optimize_on_cflags += [ "-fno-unique-section-names" ]
 -    }
  
-     common_optimize_on_ldflags += [
-       # Specifically tell the linker to perform optimizations.
+     if (is_official_build) {
+       common_optimize_on_ldflags += [

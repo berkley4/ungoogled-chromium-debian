@@ -1,0 +1,120 @@
+From 315f35ca1d117c8cc838af716351e7c834e42746 Mon Sep 17 00:00:00 2001
+From: Christian Dullweber <dullweber@chromium.org>
+Date: Tue, 04 Jun 2024 18:36:35 +0000
+Subject: [PATCH] Reland "BrowsingData: Handle extension deletion with empty origins filter"
+
+This is a reland of commit 343ee1facac77e2be9269154f7ba4c559608daa9
+
+A check was changed to a dcheck and broke tests that asserted the
+crash. This change will be landed separately.
+
+Original change's description:
+> BrowsingData: Handle extension deletion with empty origins filter
+>
+> Deletions with an empty list of origins have no effect and trigger a
+> DCHECK. Return an error instead.
+>
+> Bug: 40072785, 339026522
+> Change-Id: I9bdc96e66e2327ebe62071d4046a4be59c297a6e
+> Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5534764
+> Commit-Queue: Christian Dullweber <dullweber@chromium.org>
+> Reviewed-by: Devlin Cronin <rdevlin.cronin@chromium.org>
+> Auto-Submit: Christian Dullweber <dullweber@chromium.org>
+> Cr-Commit-Position: refs/heads/main@{#1309845}
+
+Bug: 40072785, 339026522
+Change-Id: I0428bc6e7d94dd8928585f27040b123353ca3c76
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5595034
+Reviewed-by: Devlin Cronin <rdevlin.cronin@chromium.org>
+Auto-Submit: Christian Dullweber <dullweber@chromium.org>
+Commit-Queue: Christian Dullweber <dullweber@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1310050}
+---
+
+--- a/chrome/browser/extensions/api/browsing_data/browsing_data_api.cc
++++ b/chrome/browser/extensions/api/browsing_data/browsing_data_api.cc
+@@ -270,6 +270,8 @@
+     if (!result.has_value()) {
+       return RespondNow(std::move(result.error()));
+     }
++    EXTENSION_FUNCTION_VALIDATE(!result->empty());
++
+     origins_ = std::move(*result);
+   } else if (exclude_origins) {
+     OriginParsingResult result = ParseOrigins(*exclude_origins);
+--- a/chrome/browser/extensions/api/browsing_data/browsing_data_test.cc
++++ b/chrome/browser/extensions/api/browsing_data/browsing_data_test.cc
+@@ -11,6 +11,7 @@
+ #include "base/test/test_future.h"
+ #include "base/values.h"
+ #include "chrome/browser/extensions/api/browsing_data/browsing_data_api.h"
++#include "chrome/browser/extensions/extension_apitest.h"
+ #include "chrome/browser/profiles/profile.h"
+ #include "chrome/browser/signin/account_reconcilor_factory.h"
+ #include "chrome/browser/signin/identity_manager_factory.h"
+@@ -28,12 +29,14 @@
+ #include "content/public/browser/storage_partition.h"
+ #include "content/public/test/browser_test.h"
+ #include "extensions/browser/api_test_utils.h"
++#include "extensions/test/test_extension_dir.h"
+ #include "google_apis/gaia/gaia_urls.h"
+ #include "google_apis/gaia/google_service_auth_error.h"
+ #include "mojo/public/cpp/bindings/callback_helpers.h"
+ #include "net/cookies/canonical_cookie.h"
+ #include "net/cookies/cookie_inclusion_status.h"
+ #include "services/network/public/mojom/cookie_manager.mojom.h"
++#include "testing/gtest/include/gtest/gtest.h"
+ #include "third_party/blink/public/mojom/dom_storage/storage_area.mojom.h"
+ #include "url/gurl.h"
+ 
+@@ -381,3 +384,40 @@
+   EXPECT_FALSE(UsageInfosHasStorageKey(usage_infos, key7));
+   EXPECT_FALSE(UsageInfosHasStorageKey(usage_infos, key8));
+ }
++
++class BrowsingDataApiTest : public extensions::ExtensionApiTest {};
++
++IN_PROC_BROWSER_TEST_F(BrowsingDataApiTest, ValidateFilters) {
++  static constexpr char kManifest[] =
++      R"({
++           "name": "Test",
++           "manifest_version": 3,
++           "version": "0.1",
++           "background": {"service_worker": "background.js"},
++           "permissions": ["browsingData"]
++         })";
++
++  static constexpr char kBackgroundJs[] = R"(chrome.test.runTests([
++      async function originFilter() {
++          await chrome.browsingData.remove(
++              {'origins': ['https://example.com']},
++              {'cookies': true});
++          chrome.test.succeed();
++      },
++      async function emptyOriginsFilter() {
++          const expectedError = new RegExp(
++              '.* Array must have at least 1 items; found 0.');
++          chrome.test.assertThrows(
++              chrome.browsingData.remove,
++              chrome.browsingData,
++              [{'origins': []}, {'cookies': true}],
++              expectedError);
++          chrome.test.succeed();
++      },
++  ]);)";
++
++  extensions::TestExtensionDir test_dir;
++  test_dir.WriteManifest(kManifest);
++  test_dir.WriteFile(FILE_PATH_LITERAL("background.js"), kBackgroundJs);
++  ASSERT_TRUE(RunExtensionTest(test_dir.UnpackedPath(), {}, {})) << message_;
++}
+--- a/chrome/common/extensions/api/browsing_data.json
++++ b/chrome/common/extensions/api/browsing_data.json
+@@ -43,6 +43,7 @@
+             "type": "array",
+             "items": {"type": "string"},
+             "optional": true,
++            "minItems": 1,
+             "description": "When present, only data for origins in this list is deleted. Only supported for cookies, storage and cache. Cookies are cleared for the whole registrable domain."
+           },
+           "excludeOrigins": {

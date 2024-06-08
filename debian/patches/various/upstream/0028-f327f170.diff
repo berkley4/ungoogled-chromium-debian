@@ -1,0 +1,62 @@
+From f327f170ee05af6dc15b5d956b3f5443be42a1bf Mon Sep 17 00:00:00 2001
+From: Liam Brady <lbrady@google.com>
+Date: Wed, 05 Jun 2024 18:44:04 +0000
+Subject: [PATCH] Fenced frame: fix parseFromString() crash in sandboxed iframes.
+
+If parseFromString() is called inside a sandboxed iframe's DOMParser on
+an HTML string that contains a <fencedframe> element, a fenced frame
+will be created behind, including running the sandbox flags check. That
+will fail, and upon logging, it will attempt to check if a frame is the
+main frame, which requires getting the document's frame. Since the
+fenced frame isn't attached to any DOMWindow at this point, the frame
+will be null.
+
+The existing code dereferences the frame without checking its nullness,
+causing a crash. The fix switches that call to
+`Document::IsInMainFrame()`, which includes a nullness check on the
+frame. This CL also adds a minimal reproduction case as a test.
+
+Bug: 40277893
+Bug: 344029039
+Change-Id: I53ca200b405a3f60ba4f64962ddc1b19950824a9
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5601581
+Commit-Queue: Liam Brady <lbrady@google.com>
+Reviewed-by: Garrett Tanzer <gtanzer@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1310781}
+---
+
+--- a/third_party/blink/renderer/core/html/fenced_frame/html_fenced_frame_element.cc
++++ b/third_party/blink/renderer/core/html/fenced_frame/html_fenced_frame_element.cc
+@@ -865,7 +865,7 @@
+     RecordFencedFrameUnsandboxedFlags(
+         outer_element->GetExecutionContext()->GetSandboxFlags());
+     RecordFencedFrameFailedSandboxLoadInTopLevelFrame(
+-        outer_element->GetDocument().GetFrame()->IsMainFrame());
++        outer_element->GetDocument().IsInMainFrame());
+     return nullptr;
+   }
+ 
+--- /dev/null
++++ b/third_party/blink/web_tests/external/wpt/fenced-frame/parse-from-string-sandboxed-iframe.https.html
+@@ -0,0 +1,21 @@
++<!DOCTYPE html>
++<title>Test HTML parsing a fencedframe element in a sandboxed iframe</title>
++<script src="/resources/testharness.js"></script>
++<script src="/resources/testharnessreport.js"></script>
++<script src="/common/utils.js"></script>
++<script src="/common/dispatcher/dispatcher.js"></script>
++<script src="resources/utils.js"></script>
++
++<body>
++<script>
++promise_test(async(t) => {
++  const iframe = document.createElement("iframe");
++  iframe.sandbox = "allow-scripts allow-same-origin";
++  document.body.appendChild(iframe);
++  const parser = new iframe.contentWindow.DOMParser();
++  const parsed_value =
++      parser.parseFromString("<fencedframe></fencedframe>", 'text/html');
++}, 'Parsing HTML with a fencedframe element in a sandboxed iframe works ' +
++   'without crashing.');
++</script>
++</body>

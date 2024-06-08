@@ -16,7 +16,7 @@ Cr-Commit-Position: refs/heads/main@{#1300505}
 
 --- a/third_party/blink/renderer/core/dom/space_split_string.h
 +++ b/third_party/blink/renderer/core/dom/space_split_string.h
-@@ -64,9 +64,11 @@
+@@ -76,9 +76,11 @@
    bool IsNull() const { return !data_; }
    const AtomicString& operator[](wtf_size_t i) const { return (*data_)[i]; }
    Vector<AtomicString, 4>::const_iterator begin() const {
@@ -28,5 +28,5 @@ Cr-Commit-Position: refs/heads/main@{#1300505}
    }
 -  Vector<AtomicString, 4>::const_iterator end() const { return data_->end(); }
  
-  private:
-   class CORE_EXPORT Data : public RefCounted<Data> {
+   void Trace(Visitor* visitor) const { visitor->Trace(data_); }
+ 

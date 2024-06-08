@@ -1,14 +1,14 @@
 --- a/components/viz/common/BUILD.gn
 +++ b/components/viz/common/BUILD.gn
-@@ -8,6 +8,7 @@
- import("//gpu/vulkan/features.gni")
+@@ -9,6 +9,7 @@
  import("//skia/features.gni")
+ import("//testing/libfuzzer/fuzzer_test.gni")
  import("//testing/test.gni")
 +import("//ui/gl/features.gni")
  
  import("//third_party/inspector_protocol/inspector_protocol.gni")
  
-@@ -35,10 +36,12 @@
+@@ -36,10 +37,12 @@
      "//cc/base",
      "//gpu/vulkan:buildflags",
      "//skia",
@@ -24,20 +24,20 @@
    }
 --- a/services/on_device_model/BUILD.gn
 +++ b/services/on_device_model/BUILD.gn
-@@ -54,12 +54,14 @@
+@@ -56,12 +56,14 @@
      }
  
      if (is_linux || is_chromeos) {
 -      deps += [
 -        "//gpu/config",
--        "//third_party/dawn/src/dawn:cpp",
+-        "//third_party/dawn/include/dawn:cpp_headers",
 -        "//third_party/dawn/src/dawn:proc",
 -        "//third_party/dawn/src/dawn/native",
 -      ]
 +      deps += [ "//gpu/config" ]
 +      if (use_dawn) {
 +        deps += [
-+          "//third_party/dawn/src/dawn:cpp",
++          "//third_party/dawn/include/dawn:cpp_headers",
 +          "//third_party/dawn/src/dawn:proc",
 +          "//third_party/dawn/src/dawn/native",
 +        ]
@@ -47,15 +47,19 @@
  }
 --- a/services/on_device_model/ml/BUILD.gn
 +++ b/services/on_device_model/ml/BUILD.gn
-@@ -27,8 +27,12 @@
+@@ -27,9 +27,15 @@
      "//components/translate/core/language_detection",
      "//gpu/config",
      "//third_party/angle:includes",
+-    "//third_party/dawn/src/dawn:proc",
 -    "//third_party/dawn/src/dawn/native",
    ]
 +
 +  if (use_dawn) {
-+    deps += [ "//third_party/dawn/src/dawn/native" ]
++    deps += [
++      "//third_party/dawn/src/dawn:proc",
++      "//third_party/dawn/src/dawn/native",
++    ]
 +  }
 +
    public_deps = [
@@ -74,8 +78,8 @@
 +#endif  // BUILDFLAG(USE_DAWN)
  #endif
  
- namespace on_device_model {
-@@ -74,7 +76,7 @@
+ #if BUILDFLAG(IS_CHROMEOS_ASH)
+@@ -80,7 +82,7 @@
    }
  #endif
  

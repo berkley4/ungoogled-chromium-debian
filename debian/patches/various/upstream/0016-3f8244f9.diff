@@ -21,7 +21,7 @@ Cr-Commit-Position: refs/heads/main@{#1305353}
 
 --- a/third_party/blink/renderer/core/layout/out_of_flow_layout_part.cc
 +++ b/third_party/blink/renderer/core/layout/out_of_flow_layout_part.cc
-@@ -279,10 +279,13 @@
+@@ -278,10 +278,13 @@
  const Element* GetPositionAnchorElement(
      const BlockNode& node,
      const ComputedStyle& style,
@@ -37,7 +37,7 @@ Cr-Commit-Position: refs/heads/main@{#1305353}
          reference && reference->layout_object) {
        return DynamicTo<Element>(reference->layout_object->GetNode());
      }
-@@ -297,7 +300,7 @@
+@@ -296,7 +299,7 @@
  const LayoutObject* GetPositionAnchorObject(
      const BlockNode& node,
      const ComputedStyle& style,
@@ -46,7 +46,7 @@ Cr-Commit-Position: refs/heads/main@{#1305353}
    if (const Element* element =
            GetPositionAnchorElement(node, style, anchor_query)) {
      return element->GetLayoutObject();
-@@ -307,7 +310,7 @@
+@@ -306,7 +309,7 @@
  
  gfx::Vector2dF GetAnchorOffset(const BlockNode& node,
                                 const ComputedStyle& style,
@@ -55,7 +55,7 @@ Cr-Commit-Position: refs/heads/main@{#1305353}
    if (const LayoutObject* anchor_object =
            GetPositionAnchorObject(node, style, anchor_query)) {
      if (const AnchorPositionScrollData* data =
-@@ -358,7 +361,7 @@
+@@ -357,7 +360,7 @@
    // The spec is still in-flux about whether we should use multiple anchors
    // (from `anchor()` and `anchor-size()`), or just the default anchor.
    const Element* anchor =
@@ -64,7 +64,7 @@ Cr-Commit-Position: refs/heads/main@{#1305353}
                 : nullptr;
    if (is_anchor_positioned && has_anchors_visible_visibility && anchor) {
      anchored->EnsureAnchorPositionScrollData()
-@@ -1879,7 +1882,7 @@
+@@ -1896,7 +1899,7 @@
        if (try_fit_available_space) {
          non_overflowing_scroll_ranges.push_back(non_overflowing_range);
          if (!non_overflowing_range.Contains(GetAnchorOffset(
@@ -73,7 +73,7 @@ Cr-Commit-Position: refs/heads/main@{#1305353}
            continue;
          }
        }
-@@ -2206,7 +2209,7 @@
+@@ -2222,7 +2225,7 @@
                             block_scroll_min, block_scroll_max}
              .ToPhysical(candidate_writing_direction);
      out_non_overflowing_range->anchor_object = GetPositionAnchorObject(
