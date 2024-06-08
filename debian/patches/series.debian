@@ -82,7 +82,6 @@ various/disable/screen-ai-service.patch
 various/disable/tint-fuzzers.patch
 various/disable/unrar.patch
 various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
-various/fixes/chromedriver-BrandVersion.patch
 various/fixes/enterprise-buildflags.patch
 various/fixes/EnumTable-crash.patch
 various/fixes/extensions-missing-safe-browsing-proto.patch
@@ -170,11 +169,12 @@ optional/disable/webgpu.patch
 #optional/disable/media-remoting/media-remoting.patch
 #optional/disable/media-remoting/registry-pref.patch
 #optional/fixes/dav1d-bundled-header.patch
-optional/fixes/driver-chrome-path.patch
 #optional/fixes/opentype-svg-on-bundled-freetype.patch
 #optional/fixes/skia-allow-bundled-freetype.patch
 optional/fixes/skia-allow-bundled-harfbuzz.patch
 #optional/fixes/skia-gamma.patch
+optional/fixes/chromedriver/brandversion.patch
+optional/fixes/chromedriver/fix-paths.patch
 optional/fixes/widevine/widevine-enable-version-string.patch
 optional/fixes/widevine/widevine-locations.patch
 #optional/legacy-i386/angle-lockfree.patch

@@ -608,7 +608,7 @@ fi
 
 
 if [ $DRIVER -eq 0 ]; then
-  op_disable="$op_disable fixes/driver-chrome-path"
+  op_disable="$op_disable fixes/chromedriver/"
 
   CON="$CON -e \"/^Package: ungoogled-chromium-driver/,/^Package:/{//!d}\""
   CON="$CON -e \"/^Package: ungoogled-chromium-driver/d\""
