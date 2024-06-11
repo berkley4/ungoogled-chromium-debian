@@ -109,6 +109,7 @@ QT			1		0 - disable
 					1 - enable (need to edit /etc/chromium.d/qt to fully enable)
 					2 - enable fully (runtime autodetected ie Gnome desktops will ignore it)
 SPEECH			1		Speech service (voice recognition)
+SW_OFF_MAIN		1		Initialise service worker off the main renderer thread
 SWIFTSHADER		1		Swiftshader
 SWIFTSHADER_VULKAN	1		Swiftshader for vulkan
 SWIFTSHADER_WEBGPU	0		Swiftshader for WebGPU

@@ -81,6 +81,7 @@ various/disable/image-writer/image-writer-private.patch
 various/disable/image-writer/image-writer-utility.patch
 various/features/leveldb-proto-add-feature-to-avoid-sync-writes.patch
 various/features/leveldb-proto-enable-async-writes-by-default.patch
+various/features/stop-service-worker-init-on-main-thread.patch
 various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
 various/fixes/enterprise-buildflags.patch
 various/fixes/EnumTable-crash.patch
@@ -126,14 +127,13 @@ various/upstream/0019-1fbd955.diff
 various/upstream/0020-e07a2713.diff
 various/upstream/0021-4469b91.diff
 various/upstream/0022-674acdce.diff
-various/upstream/0023-d724878b.diff
-various/upstream/0024-c32b60a.diff
-various/upstream/0025-5a9dd86.diff
-various/upstream/0026-315f35c.diff
-various/upstream/0027-fdddadf.diff
-various/upstream/0028-f327f170.diff
-various/upstream/0029-b68b42dd.diff
-various/upstream/0030-81e6e9f.diff
+various/upstream/0023-c32b60a.diff
+various/upstream/0024-5a9dd86.diff
+various/upstream/0025-315f35c.diff
+various/upstream/0026-fdddadf.diff
+various/upstream/0027-f327f170.diff
+various/upstream/0028-b68b42dd.diff
+various/upstream/0029-81e6e9f.diff
 various/warnings/clang-excessive-warnings.patch
 
 #optional/enable-esbuild-for-official-builds.patch

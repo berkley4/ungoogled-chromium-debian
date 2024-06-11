@@ -110,6 +110,7 @@ sanitise_op() {
 [ -n "$QT" ] || QT=1
 [ -n "$SKIA_GAMMA" ] || SKIA_GAMMA=0
 [ -n "$SPEECH" ] || SPEECH=1
+[ -n "$SW_OFF_MAIN" ] || SW_OFF_MAIN=1
 [ -n "$SWIFTSHADER" ] || SWIFTSHADER=1
 [ -n "$SWIFTSHADER_VULKAN" ] || SWIFTSHADER_VULKAN=1
 [ -n "$SWIFTSHADER_WEBGPU" ] || SWIFTSHADER_WEBGPU=0
@@ -729,6 +730,12 @@ fi
 
 if [ $SPEECH -eq 0 ]; then
   gn_enable="$gn_enable enable_speech_service=false"
+fi
+
+
+if [ $SW_OFF_MAIN -eq 0 ]; then
+  sed '/ServiceWorkerAvoidMainThreadForInitialization/s@^@#@' \
+    -i $FLAG_DIR/miscellaneous
 fi
 
 
