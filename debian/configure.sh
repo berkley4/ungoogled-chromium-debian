@@ -81,6 +81,7 @@ sanitise_op() {
 [ -n "$MEDIA_OPT_SPEED" ] || MEDIA_OPT_SPEED=1
 [ -n "$MF_SPLIT" ] || MF_SPLIT=1
 
+[ -n "$ASYNC_LEVELDB" ] || ASYNC_LEVELDB=1
 [ -n "$ATK_DBUS" ] || ATK_DBUS=1
 [ -n "$BLUEZ" ] || BLUEZ=1
 [ -n "$CATAPULT" ] || CATAPULT=1
@@ -544,6 +545,11 @@ fi
 #############################################
 ## Non-library features/components/patches ##
 #############################################
+
+if [ $ASYNC_LEVELDB -eq 0 ]; then
+  sed '/LevelDBProtoAsyncWrite/s@^#@@' -i $FLAG_DIR/miscellaneous
+fi
+
 
 if [ $ATK_DBUS -eq 0 ]; then
   op_enable="$op_enable disable/atk-dbus"

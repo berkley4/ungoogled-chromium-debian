@@ -13,6 +13,9 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --show-component-extension-options"
 # Comment to disable NGShapeCache
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=LayoutNGShapeCache"
 
+# Uncomment to disable LevelDBProtoAsyncWrite
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=LevelDBProtoAsyncWrite"
+
 # Disable Autoplay features
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=PreloadMediaEngagementData,AutoplayIgnoreWebAudio,MediaEngagementBypassAutoplayPolicies"
 

@@ -70,6 +70,7 @@ DNS_CONFIG		1		Enable monitoring for changes in system DNS configuration
 
 DRIVER			1		Chromedriver package
 
+ASYNC_LEVELDB		1		Asynchronous leveldb protocol writes (faster when enabled)
 ATK_DBUS		1		Accessibility/D-Bus support (d-bus is only used for bluetooth)
 BLUEZ			1		Bluez bluetooth protocol stack (also disabled by setting ATK_DBUS=0)
 CATAPULT		1		Catapult profiling support
