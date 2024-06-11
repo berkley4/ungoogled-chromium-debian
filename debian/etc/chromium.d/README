@@ -1,1 +1,5 @@
 Any files placed in this directory will be sourced prior to executing chromium.
+
+The blocked-flags file should be a single line list of space-separated switches
+without their double hyphen prefix. Switches containing a value eg of the form
+'something-foo=bar' are allowed.
