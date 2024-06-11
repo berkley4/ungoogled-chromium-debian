@@ -56,8 +56,6 @@ vanadinite/0012-Enable-strict-origin-isolation-by-default.patch
 vanadinite/0013-enable-process-isolated-sandboxed-iframes-by-default.patch
 vanadinite/0014-enable-partitioning-third-party-storage.patch
 
-various/leveldb-proto-add-feature-to-avoid-sync-writes.patch
-various/leveldb-proto-enable-async-writes-by-default.patch
 various/compiler-flags/do-not-link-with-libatomic.patch
 various/compiler-flags/ffmpeg-optimize-speed-O3.patch
 various/compiler-flags/function-import-limits.patch
@@ -81,6 +79,8 @@ various/disable/crashpad-handler/crashpad-handler_2.patch
 various/disable/crashpad-handler/crashpad-handler_3.patch
 various/disable/image-writer/image-writer-private.patch
 various/disable/image-writer/image-writer-utility.patch
+various/features/leveldb-proto-add-feature-to-avoid-sync-writes.patch
+various/features/leveldb-proto-enable-async-writes-by-default.patch
 various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
 various/fixes/enterprise-buildflags.patch
 various/fixes/EnumTable-crash.patch
