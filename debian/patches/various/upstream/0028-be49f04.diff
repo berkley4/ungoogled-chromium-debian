@@ -1,0 +1,62 @@
+From be49f04a57ead53e5a5d30e4e8eedde3e42a01a8 Mon Sep 17 00:00:00 2001
+From: Andy Paicu <andypaicu@chromium.org>
+Date: Tue, 11 Jun 2024 16:22:27 +0000
+Subject: [PATCH] Bandaid fix for crash in RecordDismissalType.
+
+This CL adds a quick if to fix the crash. Since I was unable to deduce
+which content settings type is causing the crash, I've added a metric
+for investigation. Will revisit the original bug in 1 milestone.
+
+Bug: 346343332
+Change-Id: Ibdb4d6f42e9d7287bec454006af61ec0160f1d63
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5622173
+Reviewed-by: Ravjit Uppal <ravjit@chromium.org>
+Commit-Queue: Andy Paicu <andypaicu@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1313462}
+---
+
+diff --git a/components/permissions/permission_uma_util.cc b/components/permissions/permission_uma_util.cc
+index feaa2899..c8693807 100644
+--- a/components/permissions/permission_uma_util.cc
++++ b/components/permissions/permission_uma_util.cc
+@@ -781,8 +781,15 @@
+     const std::vector<ContentSettingsType>& content_settings_types,
+     PermissionPromptDisposition ui_disposition,
+     DismissalType dismissalType) {
+-  RequestTypeForUma type = GetUmaValueForRequestType(
+-      ContentSettingsTypeToRequestType(content_settings_types[0]));
++  std::optional<RequestType> request_type =
++      ContentSettingsTypeToRequestTypeIfExists(content_settings_types[0]);
++  if (!request_type.has_value()) {
++    base::UmaHistogramEnumeration(
++        "Permissions.Prompt.Dismissed.InvalidContentSetting",
++        content_settings_types[0]);
++    return;
++  }
++  RequestTypeForUma type = GetUmaValueForRequestType(request_type.value());
+ 
+   if (content_settings_types.size() > 1) {
+     type = RequestTypeForUma::MULTIPLE_AUDIO_AND_VIDEO_CAPTURE;
+diff --git a/tools/metrics/histograms/metadata/permissions/histograms.xml b/tools/metrics/histograms/metadata/permissions/histograms.xml
+index e23dd381..6c21f21 100644
+--- a/tools/metrics/histograms/metadata/permissions/histograms.xml
++++ b/tools/metrics/histograms/metadata/permissions/histograms.xml
+@@ -798,6 +798,18 @@
+   </summary>
+ </histogram>
+ 
++<histogram name="Permissions.Prompt.Dismissed.InvalidContentSetting"
++    enum="ContentSetting" expires_after="2025-06-01">
++  <owner>andypaicu@chromium.org</owner>
++  <owner>src/components/permissions/PERMISSIONS_OWNERS</owner>
++  <summary>
++    This metric is used to investigate a crash observed when a certain type of
++    permission prompt is dismissed. It's recorded when a permission prompt is
++    dismissed with an invalid content setting (aka one that does not have a
++    corresponding request type) and it records the content setting itself.
++  </summary>
++</histogram>
++
+ <histogram name="Permissions.Prompt.Dismissed.PriorDismissCount2" units="units"
+     expires_after="2024-07-09">
+   <owner>engedy@chromium.org</owner>

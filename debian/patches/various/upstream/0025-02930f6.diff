@@ -1,0 +1,46 @@
+From 02930f6aa8f61862fb929b6c66b136f6a1117b3c Mon Sep 17 00:00:00 2001
+From: Kevin Ellis <kevers@google.com>
+Date: Fri, 07 Jun 2024 19:54:25 +0000
+Subject: [PATCH] Handle null current-time when computing time to effect change
+
+The previous checks for whether the time to effect change should be
+nullopt were insufficient as it is possible to have a start time but
+no value for current time, if the timeline is inactive. We have adequate
+safeguards for inactive scroll timelines, but possible for a document
+timeline to become inactive during tear down.
+
+Have not been able to construct a minified test case that reliably
+reproduces the crash. Likely triggered by a race condition. Issue
+reported in a clusterfuzz test that makes use of animation worklets.
+
+
+Bug: 332281467
+Change-Id: I4b70cb83bfee05b6129b156bdb8be824cc52c210
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5603107
+Commit-Queue: Kevin Ellis <kevers@chromium.org>
+Reviewed-by: Robert Flack <flackr@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1312188}
+---
+
+diff --git a/third_party/blink/renderer/core/animation/animation.cc b/third_party/blink/renderer/core/animation/animation.cc
+index dd61115..797b8dd 100644
+--- a/third_party/blink/renderer/core/animation/animation.cc
++++ b/third_party/blink/renderer/core/animation/animation.cc
+@@ -2820,12 +2820,15 @@
+ 
+ std::optional<AnimationTimeDelta> Animation::TimeToEffectChange() {
+   DCHECK(!outdated_);
+-  if (!start_time_ || hold_time_ || !playback_rate_)
++  if (!start_time_ || hold_time_ || !playback_rate_) {
+     return std::nullopt;
++  }
+ 
+   if (!content_) {
+     std::optional<AnimationTimeDelta> current_time = CurrentTimeInternal();
+-    DCHECK(current_time);
++    if (!current_time) {
++      return std::nullopt;
++    }
+     return -current_time.value() / playback_rate_;
+   }
+ 

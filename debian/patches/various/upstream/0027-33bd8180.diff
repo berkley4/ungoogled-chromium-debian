@@ -1,0 +1,112 @@
+From 33bd81807b4fb3457c7d6fd4b8cd64cc2ae1e05a Mon Sep 17 00:00:00 2001
+From: Nate Chapin <japhet@chromium.org>
+Date: Mon, 10 Jun 2024 22:59:38 +0000
+Subject: [PATCH] Fix crash in ScriptPromiseResolver::ResolveOverridingToCurrentContext()
+
+It should override first, then check the validity of the ScriptState.
+Otherwise, we never check the vaility of the ScriptState we've
+overriden to.
+
+Fixed: 345275138
+Change-Id: I308eaff7c782b62161345cbbf6a48b4392b1a115
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5618491
+Commit-Queue: Nate Chapin <japhet@chromium.org>
+Reviewed-by: Andrey Kosyakov <caseq@chromium.org>
+Auto-Submit: Nate Chapin <japhet@chromium.org>
+Commit-Queue: Andrey Kosyakov <caseq@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1313108}
+---
+
+diff --git a/third_party/blink/renderer/bindings/core/v8/script_promise_resolver.h b/third_party/blink/renderer/bindings/core/v8/script_promise_resolver.h
+index ed91e81..eb9268e3c 100644
+--- a/third_party/blink/renderer/bindings/core/v8/script_promise_resolver.h
++++ b/third_party/blink/renderer/bindings/core/v8/script_promise_resolver.h
+@@ -265,10 +265,10 @@
+   // behavior and should only be used if a WPT needs it.
+   template <typename BlinkType>
+   void ResolveOverridingToCurrentContext(BlinkType value) {
++    OverrideScriptStateToCurrentContext();
+     if (!PrepareToResolveOrReject<kResolving>()) {
+       return;
+     }
+-    OverrideScriptStateToCurrentContext();
+     ResolveOrReject<IDLResolvedType, BlinkType>(value);
+   }
+ 
+diff --git a/third_party/blink/renderer/bindings/core/v8/script_promise_resolver_test.cc b/third_party/blink/renderer/bindings/core/v8/script_promise_resolver_test.cc
+index 1e4f834b..72767f9 100644
+--- a/third_party/blink/renderer/bindings/core/v8/script_promise_resolver_test.cc
++++ b/third_party/blink/renderer/bindings/core/v8/script_promise_resolver_test.cc
+@@ -12,6 +12,7 @@
+ #include "third_party/blink/renderer/bindings/core/v8/script_value.h"
+ #include "third_party/blink/renderer/bindings/core/v8/v8_binding_for_core.h"
+ #include "third_party/blink/renderer/core/dom/dom_exception.h"
++#include "third_party/blink/renderer/core/frame/frame_test_helpers.h"
+ #include "third_party/blink/renderer/core/frame/local_dom_window.h"
+ #include "third_party/blink/renderer/core/frame/local_frame.h"
+ #include "third_party/blink/renderer/core/testing/dummy_page_holder.h"
+@@ -19,6 +20,8 @@
+ #include "third_party/blink/renderer/platform/heap/thread_state.h"
+ #include "third_party/blink/renderer/platform/scheduler/public/thread.h"
+ #include "third_party/blink/renderer/platform/testing/task_environment.h"
++#include "third_party/blink/renderer/platform/testing/unit_test_helpers.h"
++#include "third_party/blink/renderer/platform/testing/url_test_helpers.h"
+ #include "v8/include/v8.h"
+ 
+ namespace blink {
+@@ -269,6 +272,55 @@
+   EXPECT_EQ("undefined", on_rejected);
+ }
+ 
++TEST_F(ScriptPromiseResolverBaseTest, OverrideScriptStateToCurrentContext) {
++  frame_test_helpers::WebViewHelper web_view_helper;
++  std::string base_url = "http://www.test.com/";
++  url_test_helpers::RegisterMockedURLLoadFromBase(
++      WebString::FromUTF8(base_url), test::CoreTestDataPath(),
++      WebString::FromUTF8("single_iframe.html"));
++  url_test_helpers::RegisterMockedURLLoadFromBase(
++      WebString::FromUTF8(base_url), test::CoreTestDataPath(),
++      WebString::FromUTF8("visible_iframe.html"));
++  WebViewImpl* web_view_impl =
++      web_view_helper.InitializeAndLoad(base_url + "single_iframe.html");
++
++  LocalFrame* main_frame = web_view_impl->MainFrameImpl()->GetFrame();
++  LocalFrame* iframe = To<LocalFrame>(main_frame->Tree().FirstChild());
++  ScriptState* main_script_state = ToScriptStateForMainWorld(main_frame);
++  ScriptState* iframe_script_state = ToScriptStateForMainWorld(iframe);
++
++  ScriptPromiseResolver<IDLString>* resolver = nullptr;
++  ScriptPromise<IDLString> promise;
++  {
++    ScriptState::Scope scope(main_script_state);
++    resolver = MakeGarbageCollected<ScriptPromiseResolver<IDLString>>(
++        main_script_state);
++    promise = resolver->Promise();
++  }
++
++  String on_fulfilled, on_rejected;
++  ASSERT_FALSE(promise.IsEmpty());
++  {
++    ScriptState::Scope scope(main_script_state);
++    promise.Then(MakeGarbageCollected<ScriptFunction>(
++                     main_script_state,
++                     MakeGarbageCollected<TestHelperFunction>(&on_fulfilled)),
++                 MakeGarbageCollected<ScriptFunction>(
++                     main_script_state,
++                     MakeGarbageCollected<TestHelperFunction>(&on_rejected)));
++  }
++
++  {
++    ScriptState::Scope scope(iframe_script_state);
++    iframe->DomWindow()->NotifyContextDestroyed();
++    resolver->ResolveOverridingToCurrentContext("hello");
++  }
++  PerformMicrotaskCheckpoint();
++
++  EXPECT_EQ(String(), on_fulfilled);
++  EXPECT_EQ(String(), on_rejected);
++}
++
+ }  // namespace
+ 
+ }  // namespace blink
