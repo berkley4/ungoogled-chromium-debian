@@ -1,0 +1,65 @@
+From 5d8b2b60c5d8357183f102f24743828856dcb4de Mon Sep 17 00:00:00 2001
+From: Lily Chen <chlily@chromium.org>
+Date: Tue, 11 Jun 2024 19:15:19 +0000
+Subject: [PATCH] [M126][DownloadBubble] Fix UAF when download bubble is closed while dragging
+
+This should fix a UAF that occurs when the download bubble is closed
+(deleting its contents views) while a download row is being dragged.
+The CloseOnDeactivatePin doesn't need to be a member. It just needs to
+live for as long as the drag.
+
+(cherry picked from commit e314ced3ec6c58f688349491081087071aaedc56)
+
+Bug: 344982298
+Change-Id: I88e18406ecebb510cbb14f0c040786d15d7807af
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5597216
+Reviewed-by: Daniel Rubery <drubery@chromium.org>
+Commit-Queue: Lily Chen <chlily@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1310703}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5622890
+Bot-Commit: Rubber Stamper <rubber-stamper@appspot.gserviceaccount.com>
+Cr-Commit-Position: refs/branch-heads/6478@{#1445}
+Cr-Branched-From: e6143acc03189c5e52959545b110d6d17ecd5286-refs/heads/main@{#1300313}
+---
+
+diff --git a/chrome/browser/ui/views/download/bubble/download_bubble_row_view.cc b/chrome/browser/ui/views/download/bubble/download_bubble_row_view.cc
+index 08e731a..39eb2bf 100644
+--- a/chrome/browser/ui/views/download/bubble/download_bubble_row_view.cc
++++ b/chrome/browser/ui/views/download/bubble/download_bubble_row_view.cc
+@@ -737,14 +737,17 @@
+     if (file_icon_.IsEmpty()) {
+       file_icon_ = GetDefaultIconImage(GetColorProvider());
+     }
+-    if (!download_dragging_pin_ && navigation_handler_) {
+-      download_dragging_pin_ =
++    // Make this a local to avoid UAF if `this` is deleted during dragging.
++    std::unique_ptr<DownloadBubbleNavigationHandler::CloseOnDeactivatePin>
++        download_dragging_pin;
++    if (navigation_handler_) {
++      download_dragging_pin =
+           navigation_handler_->PreventDialogCloseOnDeactivate();
+     }
+     DragDownloadItem(info_->model()->GetDownloadItem(), &file_icon_,
+                      widget ? widget->GetNativeView() : nullptr);
+     // DragDownloadItem returns when the drag is over.
+-    download_dragging_pin_.reset();
++    // `this` may be deleted by now!
+   }
+   return true;
+ }
+diff --git a/chrome/browser/ui/views/download/bubble/download_bubble_row_view.h b/chrome/browser/ui/views/download/bubble/download_bubble_row_view.h
+index f9a7353..98cc3ee 100644
+--- a/chrome/browser/ui/views/download/bubble/download_bubble_row_view.h
++++ b/chrome/browser/ui/views/download/bubble/download_bubble_row_view.h
+@@ -243,11 +243,6 @@
+   bool dragging_ = false;
+   // Position that a possible drag started at.
+   std::optional<gfx::Point> drag_start_point_;
+-  // A CloseOnDeactivate pin that prevents the download bubble from closing on
+-  // deactivating, for the duration of its lifetime. This is used to prevent
+-  // the dialog from closing when the row is being dragged.
+-  std::unique_ptr<DownloadBubbleNavigationHandler::CloseOnDeactivatePin>
+-      download_dragging_pin_;
+ 
+   // Whether the download's completion has already been logged. This is used to
+   // avoid inaccurate repeated logging.

@@ -1,0 +1,58 @@
+From 06c15c8c2fe63fd6a4268c2fffd7aa668a16d3a1 Mon Sep 17 00:00:00 2001
+From: Steinar H. Gunderson <sesse@chromium.org>
+Date: Tue, 11 Jun 2024 09:50:13 +0000
+Subject: [PATCH] Fix parsing of page-break !important.
+
+(cherry picked from commit b79880ee4b6da15219258a94c1e1eeea47d83da2)
+
+Fixed: 345092067
+Change-Id: Ie8a7d6690557ffd6579aa23cc42acecc6c598f06
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5602832
+Auto-Submit: Steinar H Gunderson <sesse@chromium.org>
+Commit-Queue: Steinar H Gunderson <sesse@chromium.org>
+Reviewed-by: Rune Lillesveen <futhark@chromium.org>
+Commit-Queue: Rune Lillesveen <futhark@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1311152}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5616431
+Reviewed-by: Srinivas Sista <srinivassista@chromium.org>
+Owners-Override: Srinivas Sista <srinivassista@chromium.org>
+Cr-Commit-Position: refs/branch-heads/6478@{#1421}
+Cr-Branched-From: e6143acc03189c5e52959545b110d6d17ecd5286-refs/heads/main@{#1300313}
+---
+
+diff --git a/third_party/blink/renderer/core/css/properties/css_parsing_utils.cc b/third_party/blink/renderer/core/css/properties/css_parsing_utils.cc
+index a0159934..a7763c8 100644
+--- a/third_party/blink/renderer/core/css/properties/css_parsing_utils.cc
++++ b/third_party/blink/renderer/core/css/properties/css_parsing_utils.cc
+@@ -383,7 +383,7 @@
+ 
+ bool ConsumeCSSValueId(CSSParserTokenRange& range, CSSValueID& value) {
+   CSSIdentifierValue* keyword = ConsumeIdent(range);
+-  if (!keyword || !range.AtEnd()) {
++  if (!keyword) {
+     return false;
+   }
+   value = keyword->GetValueID();
+diff --git a/third_party/blink/web_tests/external/wpt/css/css-break/page-break-important.html b/third_party/blink/web_tests/external/wpt/css/css-break/page-break-important.html
+new file mode 100644
+index 0000000..778e579a
+--- /dev/null
++++ b/third_party/blink/web_tests/external/wpt/css/css-break/page-break-important.html
+@@ -0,0 +1,17 @@
++<!DOCTYPE html>
++<html>
++  <head>
++    <title>CSS Break: !important flag parsing</title>
++    <link rel="help" href="https://crbug.com/345092067">
++    <script src="/resources/testharness.js"></script>
++    <script src="/resources/testharnessreport.js"></script>
++  </head>
++  <body>
++    <div id="target" style="page-break-before: always !important">Some text.</div>
++  </body>
++  <script>
++test(() => {
++  assert_equals(target.style.pageBreakBefore, 'always');
++});
++  </script>
++</html>
