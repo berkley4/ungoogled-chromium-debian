@@ -1193,9 +1193,11 @@ fi
 
 
 ## Move upstream UC patches into debian/patches
-if [ -d $UC_DIR/patches/upstream ]; then
-  UC_PATCH_DIRS="$UC_PATCH_DIRS $UC_DIR/patches/upstream"
-fi
+for dir in upstream upstream-fixes; do
+  if [ -d $UC_DIR/patches/$dir ]; then
+    UC_PATCH_DIRS="$UC_PATCH_DIRS $UC_DIR/patches/$dir"
+  fi
+done
 
 mv $UC_PATCH_DIRS $DEBIAN/patches/
 
