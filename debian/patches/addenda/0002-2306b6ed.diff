@@ -23,8 +23,6 @@ Cr-Commit-Position: refs/branch-heads/6478@{#1439}
 Cr-Branched-From: e6143acc03189c5e52959545b110d6d17ecd5286-refs/heads/main@{#1300313}
 ---
 
-diff --git a/content/browser/manifest/manifest_manager_host.cc b/content/browser/manifest/manifest_manager_host.cc
-index bcb8f5f..24e3450 100644
 --- a/content/browser/manifest/manifest_manager_host.cc
 +++ b/content/browser/manifest/manifest_manager_host.cc
 @@ -108,10 +108,6 @@

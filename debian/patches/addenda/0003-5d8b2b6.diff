@@ -22,8 +22,6 @@ Cr-Commit-Position: refs/branch-heads/6478@{#1445}
 Cr-Branched-From: e6143acc03189c5e52959545b110d6d17ecd5286-refs/heads/main@{#1300313}
 ---
 
-diff --git a/chrome/browser/ui/views/download/bubble/download_bubble_row_view.cc b/chrome/browser/ui/views/download/bubble/download_bubble_row_view.cc
-index 08e731a..39eb2bf 100644
 --- a/chrome/browser/ui/views/download/bubble/download_bubble_row_view.cc
 +++ b/chrome/browser/ui/views/download/bubble/download_bubble_row_view.cc
 @@ -737,14 +737,17 @@
@@ -47,8 +45,6 @@ index 08e731a..39eb2bf 100644
    }
    return true;
  }
-diff --git a/chrome/browser/ui/views/download/bubble/download_bubble_row_view.h b/chrome/browser/ui/views/download/bubble/download_bubble_row_view.h
-index f9a7353..98cc3ee 100644
 --- a/chrome/browser/ui/views/download/bubble/download_bubble_row_view.h
 +++ b/chrome/browser/ui/views/download/bubble/download_bubble_row_view.h
 @@ -243,11 +243,6 @@

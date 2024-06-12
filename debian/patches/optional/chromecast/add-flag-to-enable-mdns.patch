@@ -1,6 +1,6 @@
 --- a/chrome/browser/ungoogled_flag_entries.h
 +++ b/chrome/browser/ungoogled_flag_entries.h
-@@ -132,4 +132,8 @@
+@@ -132,6 +132,10 @@
       "Minimal Referrers",
       "Removes all cross-origin referrers and strips same-origin referrers down to the origin. Has lower precedence than remove-cross-origin-referrers. ungoogled-chromium flag.",
       kOsAll, FEATURE_VALUE_TYPE(features::kMinimalReferrers)},
@@ -8,7 +8,9 @@
 +     "Enable mDNS",
 +     "Enables mDNS and Service Discovery. ungoogled-chromium flag.",
 +     kOsAll, FEATURE_VALUE_TYPE(network::features::kMdns)},
- #endif  // CHROME_BROWSER_UNGOOGLED_FLAG_ENTRIES_H_
+     {"reduced-system-info",
+      "Reduced System Info",
+      "Reduces the amount of system information obatainable through headers and javascript, also causes hardwareConcurrency to respond with two cores. ungoogled-chromium flag.",
 --- a/net/dns/host_resolver_manager.cc
 +++ b/net/dns/host_resolver_manager.cc
 @@ -116,6 +116,7 @@

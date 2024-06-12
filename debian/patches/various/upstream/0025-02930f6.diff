@@ -22,11 +22,9 @@ Reviewed-by: Robert Flack <flackr@chromium.org>
 Cr-Commit-Position: refs/heads/main@{#1312188}
 ---
 
-diff --git a/third_party/blink/renderer/core/animation/animation.cc b/third_party/blink/renderer/core/animation/animation.cc
-index dd61115..797b8dd 100644
 --- a/third_party/blink/renderer/core/animation/animation.cc
 +++ b/third_party/blink/renderer/core/animation/animation.cc
-@@ -2820,12 +2820,15 @@
+@@ -2805,12 +2805,15 @@
  
  std::optional<AnimationTimeDelta> Animation::TimeToEffectChange() {
    DCHECK(!outdated_);

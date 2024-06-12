@@ -17,11 +17,9 @@ Commit-Queue: Andrey Kosyakov <caseq@chromium.org>
 Cr-Commit-Position: refs/heads/main@{#1313108}
 ---
 
-diff --git a/third_party/blink/renderer/bindings/core/v8/script_promise_resolver.h b/third_party/blink/renderer/bindings/core/v8/script_promise_resolver.h
-index ed91e81..eb9268e3c 100644
 --- a/third_party/blink/renderer/bindings/core/v8/script_promise_resolver.h
 +++ b/third_party/blink/renderer/bindings/core/v8/script_promise_resolver.h
-@@ -265,10 +265,10 @@
+@@ -267,10 +267,10 @@
    // behavior and should only be used if a WPT needs it.
    template <typename BlinkType>
    void ResolveOverridingToCurrentContext(BlinkType value) {
@@ -33,8 +31,6 @@ index ed91e81..eb9268e3c 100644
      ResolveOrReject<IDLResolvedType, BlinkType>(value);
    }
  
-diff --git a/third_party/blink/renderer/bindings/core/v8/script_promise_resolver_test.cc b/third_party/blink/renderer/bindings/core/v8/script_promise_resolver_test.cc
-index 1e4f834b..72767f9 100644
 --- a/third_party/blink/renderer/bindings/core/v8/script_promise_resolver_test.cc
 +++ b/third_party/blink/renderer/bindings/core/v8/script_promise_resolver_test.cc
 @@ -12,6 +12,7 @@

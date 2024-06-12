@@ -15,8 +15,6 @@ Commit-Queue: Daniel Murphy <dmurph@chromium.org>
 Cr-Commit-Position: refs/heads/main@{#1312925}
 ---
 
-diff --git a/chrome/browser/web_applications/commands/web_app_icon_diagnostic_command.cc b/chrome/browser/web_applications/commands/web_app_icon_diagnostic_command.cc
-index cab2363..8c71d4e 100644
 --- a/chrome/browser/web_applications/commands/web_app_icon_diagnostic_command.cc
 +++ b/chrome/browser/web_applications/commands/web_app_icon_diagnostic_command.cc
 @@ -21,7 +21,7 @@

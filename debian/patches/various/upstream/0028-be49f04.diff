@@ -15,8 +15,6 @@ Commit-Queue: Andy Paicu <andypaicu@chromium.org>
 Cr-Commit-Position: refs/heads/main@{#1313462}
 ---
 
-diff --git a/components/permissions/permission_uma_util.cc b/components/permissions/permission_uma_util.cc
-index feaa2899..c8693807 100644
 --- a/components/permissions/permission_uma_util.cc
 +++ b/components/permissions/permission_uma_util.cc
 @@ -781,8 +781,15 @@
@@ -37,8 +35,6 @@ index feaa2899..c8693807 100644
  
    if (content_settings_types.size() > 1) {
      type = RequestTypeForUma::MULTIPLE_AUDIO_AND_VIDEO_CAPTURE;
-diff --git a/tools/metrics/histograms/metadata/permissions/histograms.xml b/tools/metrics/histograms/metadata/permissions/histograms.xml
-index e23dd381..6c21f21 100644
 --- a/tools/metrics/histograms/metadata/permissions/histograms.xml
 +++ b/tools/metrics/histograms/metadata/permissions/histograms.xml
 @@ -798,6 +798,18 @@

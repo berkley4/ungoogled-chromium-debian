@@ -87,7 +87,7 @@
      "//chrome/services/file_util/public/mojom:mojom",
      "//chrome/services/removable_storage_writer/public/mojom",
      "//components/affiliations/core/browser:affiliations",
-@@ -1116,7 +1123,6 @@
+@@ -1117,7 +1124,6 @@
      sources += [
        "api/enterprise_reporting_private/chrome_desktop_report_request_helper.cc",
        "api/enterprise_reporting_private/chrome_desktop_report_request_helper.h",
@@ -95,7 +95,7 @@
        "api/messaging/native_message_process_host.cc",
        "api/messaging/native_message_process_host.h",
        "api/messaging/native_messaging_launch_from_native.cc",
-@@ -1132,6 +1138,9 @@
+@@ -1133,6 +1139,9 @@
        "//components/enterprise/common/proto:connectors_proto",
        "//components/keep_alive_registry",
      ]
@@ -105,7 +105,7 @@
      if (is_posix) {
        sources += [ "api/messaging/native_process_launcher_posix.cc" ]
      }
-@@ -1328,7 +1337,7 @@
+@@ -1329,7 +1338,7 @@
      ]
    }
  

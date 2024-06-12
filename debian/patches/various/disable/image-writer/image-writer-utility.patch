@@ -8,7 +8,7 @@
      "//components/affiliations/core/browser:affiliations",
      "//components/app_constants",
      "//components/autofill/content/browser",
-@@ -1012,6 +1011,10 @@
+@@ -1013,6 +1012,10 @@
      "//url",
    ]
  

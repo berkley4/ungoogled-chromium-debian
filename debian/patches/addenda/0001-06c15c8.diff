@@ -20,8 +20,6 @@ Cr-Commit-Position: refs/branch-heads/6478@{#1421}
 Cr-Branched-From: e6143acc03189c5e52959545b110d6d17ecd5286-refs/heads/main@{#1300313}
 ---
 
-diff --git a/third_party/blink/renderer/core/css/properties/css_parsing_utils.cc b/third_party/blink/renderer/core/css/properties/css_parsing_utils.cc
-index a0159934..a7763c8 100644
 --- a/third_party/blink/renderer/core/css/properties/css_parsing_utils.cc
 +++ b/third_party/blink/renderer/core/css/properties/css_parsing_utils.cc
 @@ -383,7 +383,7 @@
@@ -33,9 +31,6 @@ index a0159934..a7763c8 100644
      return false;
    }
    value = keyword->GetValueID();
-diff --git a/third_party/blink/web_tests/external/wpt/css/css-break/page-break-important.html b/third_party/blink/web_tests/external/wpt/css/css-break/page-break-important.html
-new file mode 100644
-index 0000000..778e579a
 --- /dev/null
 +++ b/third_party/blink/web_tests/external/wpt/css/css-break/page-break-important.html
 @@ -0,0 +1,17 @@
