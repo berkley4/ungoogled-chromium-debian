@@ -91,13 +91,14 @@ esac
 for file in /etc/chromium.d/*; do
   case $file in
     /etc/chromium.d/*.dpkg-*|/etc/chromium.d/README)
-      continue ;;
+      : ;;
 
     /etc/chromium.d/blocked-flags)
-      read BLOCKED_FLAGS < /etc/chromium.d/blocked-flags
-      continue ;;
+      read BLOCKED_FLAGS < /etc/chromium.d/blocked-flags ;;
+
+    *)
+      . $file ;;
   esac
-  . $file
 done
 
 
