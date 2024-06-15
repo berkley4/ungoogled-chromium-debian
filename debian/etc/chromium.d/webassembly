@@ -8,12 +8,6 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-webassembly-tiering"
 # See - https://v8.dev/docs/wasm-compilation-pipeline
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-webassembly-lazy-compilation"
 
-# Garbage Collection (experimental)
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-webassembly-garbage-collection"
-
-# JavaScript Promise Integration (JSPI) [experimental]
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-experimental-webassembly-stack-switching"
-
 # Disable websssembly
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --js-flags=--noexpose_wasm"
 
