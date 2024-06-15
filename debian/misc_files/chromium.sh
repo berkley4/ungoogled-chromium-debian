@@ -156,8 +156,8 @@ done
 if [ -n "$BLOCKED_FLAGS" ]; then
   for flag in $BLOCKED_FLAGS; do
     case $CHROMIUM_FLAGS in
-      *--$flag\ *|*\ --$flag)
-        CHROMIUM_FLAGS="$(echo $CHROMIUM_FLAGS | sed -e "s@--$flag @@g" -e "s@ --$flag\$@@g")" ;;
+      --$flag|*--$flag\ *|*\ --$flag)
+        CHROMIUM_FLAGS="$(echo $CHROMIUM_FLAGS | sed -e "s@--$flag *@@g" -e "s@ --$flag\$@@g")" ;;
     esac
   done
 fi
