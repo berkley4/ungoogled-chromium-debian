@@ -141,8 +141,8 @@ while [ $# -gt 0 ]; do
     --temp-profile )
       want_temp=1
       shift ;;
-    --enable-remote-extensions )
-      CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-remote-extensions"
+    --[a-z]* )
+      CHROMIUM_FLAGS="$CHROMIUM_FLAGS $1"
       shift ;;
     -- ) # Stop option prcessing
       shift
