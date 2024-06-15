@@ -87,21 +87,6 @@ case $(uname -m) in
 esac
 
 
-# Source CHROMIUM_FLAGS from flag files
-for file in /etc/chromium.d/*; do
-  case $file in
-    /etc/chromium.d/*.dpkg-*|/etc/chromium.d/README)
-      : ;;
-
-    /etc/chromium.d/blocked-flags)
-      read BLOCKED_FLAGS < /etc/chromium.d/blocked-flags ;;
-
-    *)
-      . $file ;;
-  esac
-done
-
-
 # Inform the chrome binary that it has been run via a wrapper script
 export CHROME_WRAPPER=$0
 
@@ -149,6 +134,20 @@ while [ $# -gt 0 ]; do
       break ;;
     * )
       break ;;
+  esac
+done
+
+# Source CHROMIUM_FLAGS from flag files
+for file in /etc/chromium.d/*; do
+  case $file in
+    /etc/chromium.d/*.dpkg-*|/etc/chromium.d/README)
+      : ;;
+
+    /etc/chromium.d/blocked-flags)
+      read BLOCKED_FLAGS < /etc/chromium.d/blocked-flags ;;
+
+    *)
+      . $file ;;
   esac
 done
 
