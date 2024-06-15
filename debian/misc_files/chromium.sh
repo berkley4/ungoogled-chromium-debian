@@ -102,17 +102,6 @@ for file in /etc/chromium.d/*; do
 done
 
 
-# Remove blocked flags
-if [ -n "$BLOCKED_FLAGS" ]; then
-  for flag in $BLOCKED_FLAGS; do
-    case $CHROMIUM_FLAGS in
-      *--$flag\ |*\ --$flag)
-        CHROMIUM_FLAGS="$(echo $CHROMIUM_FLAGS | sed -e "s@--$flag @@g" -e "s@ --$flag\$@@g")" ;;
-    esac
-  done
-fi
-
-
 # Inform the chrome binary that it has been run via a wrapper script
 export CHROME_WRAPPER=$0
 
@@ -162,6 +151,16 @@ while [ $# -gt 0 ]; do
       break ;;
   esac
 done
+
+# Remove blocked flags if any exist within CHROMIUM_FLAGS
+if [ -n "$BLOCKED_FLAGS" ]; then
+  for flag in $BLOCKED_FLAGS; do
+    case $CHROMIUM_FLAGS in
+      *--$flag\ |*\ --$flag)
+        CHROMIUM_FLAGS="$(echo $CHROMIUM_FLAGS | sed -e "s@--$flag @@g" -e "s@ --$flag\$@@g")" ;;
+    esac
+  done
+fi
 
 
 if [ $want_debug -eq 1 ] && [ ! -x $GDB ]; then
