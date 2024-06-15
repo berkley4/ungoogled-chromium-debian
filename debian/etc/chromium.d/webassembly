@@ -8,11 +8,6 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-webassembly-tiering"
 # See - https://v8.dev/docs/wasm-compilation-pipeline
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-webassembly-lazy-compilation"
 
-# Relaxed SIMD
-# Enables the use of WebAssembly vector operations with relaxed semantics
-# at the expense of determinism. Seems to be a speed hack.
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-webassembly-relaxed-simd"
-
 # Garbage Collection (experimental)
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-webassembly-garbage-collection"
 
@@ -22,3 +17,5 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-webassembly-relaxed-simd"
 # Disable websssembly
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --js-flags=--noexpose_wasm"
 
+# Webassembly relaxed SIMD (produces a warning about disabling --expose_wasm)
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-webassembly-relaxed-simd"
