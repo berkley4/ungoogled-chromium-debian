@@ -33,6 +33,11 @@ CHROMIUM=$LIBDIR/$BIN_NAME
 
 GDB=/usr/bin/gdb
 
+nosse3="\
+The hardware on this system lacks support for the sse3 instruction set.
+The upstream chromium project no longer supports this configuration.
+For more information, please go to https://crbug.com/1123353."
+
 output_error() {
   case "$DISPLAY" in
     "")
@@ -66,20 +71,17 @@ usage() {
 
 @PRINT_DIST@
 
-nosse3="\
-The hardware on this system lacks support for the sse3 instruction set.
-The upstream chromium project no longer supports this configuration.
-For more information, please go to https://crbug.com/1123353."
 
+# Do not allow root users to run this script
 case $USER in
   root)
     output_error "Run this script as an unprivileged user"
     exit 1 ;;
 esac
 
+# Only proceed if the system has an SSE3 (or PNI) capable cpu
 case $(uname -m) in
   i386|i586|i686|x86_64)
-    # Check whether this system supports SSE3 (or PNI)
     if ! grep -q 'sse3\|pni' /proc/cpuinfo; then
       output_error "$nosse3"
       exit 1
@@ -115,6 +117,7 @@ esac
 export LD_LIBRARY_PATH
 
 
+# Positional parameter processing (including runtime flags)
 while [ $# -gt 0 ]; do
   case "$1" in
     -h | --help | -help )
