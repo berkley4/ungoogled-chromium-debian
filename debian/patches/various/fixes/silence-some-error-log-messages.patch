@@ -1,0 +1,22 @@
+--- a/media/audio/alsa/alsa_output.cc
++++ b/media/audio/alsa/alsa_output.cc
+@@ -689,7 +689,7 @@
+     return 0;
+   }
+   if (static_cast<uint32_t>(available_frames) > alsa_buffer_frames_ * 2) {
+-    LOG(ERROR) << "ALSA returned " << available_frames << " of "
++    LOG(INFO) << "ALSA returned " << available_frames << " of "
+                << alsa_buffer_frames_ << " frames available.";
+     return alsa_buffer_frames_;
+   }
+--- a/net/cert/ev_root_ca_metadata.cc
++++ b/net/cert/ev_root_ca_metadata.cc
+@@ -159,7 +159,7 @@
+ 
+       std::string policy_der = OIDStringToDER(policy);
+       if (policy_der.empty()) {
+-        LOG(ERROR) << "Failed to decode OID: " << policy;
++        LOG(INFO) << "Failed to decode OID: " << policy;
+         continue;
+       }
+ 
