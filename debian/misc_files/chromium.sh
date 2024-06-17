@@ -117,6 +117,20 @@ esac
 export LD_LIBRARY_PATH
 
 
+# Source CHROMIUM_FLAGS from flag files
+for file in /etc/chromium.d/*; do
+  case $file in
+    /etc/chromium.d/*.dpkg-*|/etc/chromium.d/README)
+      : ;;
+
+    /etc/chromium.d/blocked-flags)
+      read BLOCKED_FLAGS < /etc/chromium.d/blocked-flags ;;
+
+    *)
+      . $file ;;
+  esac
+done
+
 # Positional parameter processing (including runtime flags)
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -137,20 +151,6 @@ while [ $# -gt 0 ]; do
       break ;;
     * )
       break ;;
-  esac
-done
-
-# Source CHROMIUM_FLAGS from flag files
-for file in /etc/chromium.d/*; do
-  case $file in
-    /etc/chromium.d/*.dpkg-*|/etc/chromium.d/README)
-      : ;;
-
-    /etc/chromium.d/blocked-flags)
-      read BLOCKED_FLAGS < /etc/chromium.d/blocked-flags ;;
-
-    *)
-      . $file ;;
   esac
 done
 
