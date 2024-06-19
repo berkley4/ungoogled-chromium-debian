@@ -36,7 +36,7 @@
  
  BASE_FEATURE(kLensOverlay, "LensOverlay", base::FEATURE_DISABLED_BY_DEFAULT);
  const base::FeatureParam<int> kLensOverlayMinRamMb{&kLensOverlay, "min_ram_mb",
-@@ -167,7 +167,7 @@
+@@ -171,7 +171,7 @@
          true};
  
  constexpr base::FeatureParam<bool> kShouldIssuePreconnectForLens{

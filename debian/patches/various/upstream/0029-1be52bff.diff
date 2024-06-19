@@ -1,0 +1,42 @@
+From 1be52bffdfb82c3ca0db29293d34f5da1c983b26 Mon Sep 17 00:00:00 2001
+From: Yoshisato Yanagisawa <yyanagisawa@chromium.org>
+Date: Thu, 13 Jun 2024 08:51:48 +0000
+Subject: [PATCH] Do not dump for the storage corruption.
+
+As far as I checked the crashes, they actually happen for register(),
+getRegistration(), or getRegistrations().  For that case, the returned
+promise is rejected, and data corruption is notified.
+We should not need to dump to investigate this more.
+
+Bug: 332136252
+Change-Id: Id5c4b6926ea557c2cc3f9ab6513b04a4447471fc
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5628925
+Reviewed-by: Shunya Shishido <sisidovski@chromium.org>
+Commit-Queue: Yoshisato Yanagisawa <yyanagisawa@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1314496}
+---
+
+--- a/content/browser/service_worker/service_worker_registration_status.cc
++++ b/content/browser/service_worker/service_worker_registration_status.cc
+@@ -70,6 +70,13 @@
+       *out_error = blink::mojom::ServiceWorkerErrorType::kAbort;
+       return;
+ 
++    case blink::ServiceWorkerStatusCode::kErrorStorageDataCorrupted:
++      // In case of storage data corruption, `register()`, `getRegistration()`
++      // or `getRegistrations()` fail. For that case, it might be fine to
++      // just return promise error.
++      // See: crbug.com/332136252
++      return;
++
+     case blink::ServiceWorkerStatusCode::kErrorActivateWorkerFailed:
+     case blink::ServiceWorkerStatusCode::kErrorIpcFailed:
+     case blink::ServiceWorkerStatusCode::kErrorFailed:
+@@ -78,7 +85,6 @@
+     case blink::ServiceWorkerStatusCode::kErrorState:
+     case blink::ServiceWorkerStatusCode::kErrorInvalidArguments:
+     case blink::ServiceWorkerStatusCode::kErrorStorageDisconnected:
+-    case blink::ServiceWorkerStatusCode::kErrorStorageDataCorrupted:
+       // Unexpected, or should have bailed out before calling this, or we don't
+       // have a corresponding blink error code yet.
+       break;  // Fall through to NOTREACHED().

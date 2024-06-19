@@ -50,7 +50,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
  
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -12382,8 +12382,6 @@
+@@ -12383,8 +12383,6 @@
        "//chrome/test/data/password/captured_sites/",
        "//chrome/test/data/web_page_replay_go_helper_scripts/automation_helper.js",
        "//components/test/data/autofill/web_page_replay_support_files/",
@@ -59,7 +59,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
      ]
  
      if (is_linux || is_chromeos || is_win) {
-@@ -12468,7 +12466,6 @@
+@@ -12469,7 +12467,6 @@
      deps = [ "//tools/perf/chrome_telemetry_build:telemetry_chrome_test" ]
  
      data = [
@@ -287,7 +287,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
    if (!is_ios) {
 --- a/content/browser/BUILD.gn
 +++ b/content/browser/BUILD.gn
-@@ -3327,7 +3327,6 @@
+@@ -3328,7 +3328,6 @@
        "//components/speech:speech",
        "//components/vector_icons",
        "//components/webauthn/json",

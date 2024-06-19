@@ -127,12 +127,14 @@ various/upstream/0019-c32b60a.diff
 various/upstream/0020-5a9dd86.diff
 various/upstream/0021-315f35c.diff
 various/upstream/0022-fdddadf.diff
-various/upstream/0023-f327f170.diff
 various/upstream/0024-b68b42dd.diff
 various/upstream/0025-02930f6.diff
 various/upstream/0026-a8823024.diff
 various/upstream/0027-33bd8180.diff
 various/upstream/0028-be49f04.diff
+various/upstream/0029-1be52bff.diff
+various/upstream/0030-f8010390.diff
+various/upstream/0031-7b57c376.diff
 various/warnings/clang-excessive-warnings.patch
 
 #optional/enable-esbuild-for-official-builds.patch
@@ -197,6 +199,4 @@ optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
 optional/translate/revert-disable.patch
 optional/translate/stop-unsupported-switch-warning.patch
 
-addenda/0001-06c15c8.diff
-addenda/0002-2306b6ed.diff
-addenda/0003-5d8b2b6.diff
+addenda/0001-5d4df51.diff
