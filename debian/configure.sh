@@ -1000,17 +1000,31 @@ fi
 ##  Domain substitution, flags and pruning list ##
 ##################################################
 
+# Check whether DEPS.patch has been applied
+if [ $TEST -eq 0 ]; then
+  grep -q 'maps_perf_test' $RT_DIR/DEPS && DEPS_PATCH=0 || DEPS_PATCH=1
+fi
+
 ## Domain substitution
 DSB="$DSB -e \"/^chrome\/browser\/flag_descriptions\.cc/d\""
 DSB="$DSB -e \"/^content\/browser\/resources\/gpu\/info_view\.ts/d\""
 DSB="$DSB -e \"/^third_party\/depot_tools\//d\""
 DSB="$DSB -e \"/^tools\/clang\//d\""
 
+if [ $DEPS_PATCH -eq 1 ]; then
+  DSB="$DSB -e \"/^build\/linux\/debian_bullseye_i386-sysroot\//d\""
+  DSB="$DSB -e \"/^build\/linux\/debian_bullseye_amd64-sysroot\//d\""
+  DSB="$DSB -e \"/^third_party\/blink\/renderer\/core\/css\/perftest_data\//d\""
+  DSB="$DSB -e \"/^third_party\/cros-components\//d\""
+  DSB="$DSB -e \"/^third_party\/crossbench\//d\""
+  DSB="$DSB -e \"/^third_party\/speedometer\//d\""
+fi
 
-## Pruning/Submodule flags
+## Pruning
 PRU="$PRU -e \"/^chrome\/build\/pgo_profiles/d\""
 PRU="$PRU -e \"/^third_party\/depot_tools/d\""
 
+## Submodule flags
 if [ $PGO -eq 1 ]; then
   SMF="$SMF -e \"/^chrome_pgo_phase/d\""
 fi
