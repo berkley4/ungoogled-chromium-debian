@@ -39,11 +39,6 @@ UC_PATCH_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 INSTALL=ungoogled-chromium.install
 P_FILE=etc/chromium/policies/managed/policies.json
 
-sanitise_op() {
-  printf '%s\n' "WARN: Unnecessary optional prefix $i"
-  i=$(echo $i | sed 's@^optional/@@')
-}
-
 
 ####################
 ## Default values ##
@@ -1079,12 +1074,12 @@ fi
 ## optional patches
 
 if [ -n "$op_disable" ]; then
-  for i in $op_disable; do
-    case $i in
-      optional/*)
-        sanitise_op ;;
-    esac
+  case $op_disable in
+    optional/*| optional/*)
+      op_disable="$(echo $op_disable | sed 's@optional/@@g')" ;;
+  esac
 
+  for i in $op_disable; do
     case $i in
       */|*.patch)
         SER_DB="$SER_DB -e \"s@^\(optional/$i\)@#\1@\"" ;;
@@ -1096,12 +1091,12 @@ if [ -n "$op_disable" ]; then
 fi
 
 if [ -n "$op_enable" ]; then
-  for i in $op_enable; do
-    case $i in
-      optional/*)
-        sanitise_op ;;
-    esac
+  case $op_enable in
+    optional/*| optional/*)
+      op_enable="$(echo $op_enable | sed 's@optional/@@g')" ;;
+  esac
 
+  for i in $op_enable; do
     case $i in
       */|*.patch)
         SER_DB="$SER_DB -e \"s@^#\(optional/$i\)@\1@\"" ;;
