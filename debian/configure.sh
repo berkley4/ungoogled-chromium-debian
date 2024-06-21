@@ -39,20 +39,6 @@ UC_PATCH_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 INSTALL=ungoogled-chromium.install
 P_FILE=etc/chromium/policies/managed/policies.json
 
-sanitise_clang_ver() {
-  case $CLANG_VER in
-    *.*)
-      CLANG_VER="$(echo $CLANG_VER | sed 's@\..*@@')" ;;
-
-    [1-9][0-9]*)
-      : ;;
-
-    *)
-      printf '%s\n' "ERROR: malformed CLANG_VER variable $CLANG_VER"
-      exit 1 ;;
-  esac
-}
-
 sanitise_op() {
   printf '%s\n' "WARN: Unnecessary optional prefix $i"
   i=$(echo $i | sed 's@^optional/@@')
@@ -330,7 +316,22 @@ else
   ## Check for clang binary existence and PGO compatibility
 
   CC_VER=$(sed -n '/^[ #]clang-/s@[-#,a-z ]@@gp' $DEBIAN/control.in)
-  [ -n "$CLANG_VER" ] && CLANG_VER_SET=1 || CLANG_VER=$CC_VER && sanitise_clang_ver
+
+  case $CLANG_VER in
+    "")
+      CLANG_VER=$CC_VER ;;
+
+    [1-9][0-9])
+      CLANG_VER_SET=1 ;;
+
+    [1-9][0-9].*)
+      CLANG_VER="$(echo $CLANG_VER | sed 's@\..*@@')"
+      CLANG_VER_SET=1 ;;
+
+    *)
+      printf '%s\n' "ERROR: malformed CLANG_VER variable $CLANG_VER"
+      exit 1 ;;
+  esac
 
   LLVM_BASE_DIR=/usr/lib/llvm-$CLANG_VER
   [ $SYS_CLANG -eq 1 ] || LLVM_BASE_DIR=/usr/local
