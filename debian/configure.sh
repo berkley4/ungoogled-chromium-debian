@@ -993,9 +993,9 @@ fi
 
 
 
-##################################################
-##  Domain substitution, flags and pruning list ##
-##################################################
+############################################################
+##  Domain substitution, submodule flags and pruning list ##
+############################################################
 
 # Check whether DEPS.patch has been applied
 if [ $TEST -eq 0 ]; then
@@ -1017,15 +1017,11 @@ if [ $DEPS_PATCH -eq 1 ]; then
   DSB="$DSB -e \"/^third_party\/speedometer\//d\""
 fi
 
-## Pruning
+## Pruning list
 PRU="$PRU -e \"/^chrome\/build\/pgo_profiles/d\""
 PRU="$PRU -e \"/^third_party\/depot_tools/d\""
 
 ## Submodule flags
-if [ $PGO -eq 1 ]; then
-  SMF="$SMF -e \"/^chrome_pgo_phase/d\""
-fi
-
 SMF="$SMF -e \"/^enable_hangout_services_extension/d\""
 SMF="$SMF -e \"/^enable_nacl/d\""
 SMF="$SMF -e \"/^enable_service_discovery/d\""
@@ -1034,14 +1030,16 @@ SMF="$SMF -e \"/^google_api_key/d\""
 SMF="$SMF -e \"/^google_default_client_id/d\""
 SMF="$SMF -e \"/^google_default_client_secret/d\""
 
+if [ $PGO -eq 1 ]; then
+  SMF="$SMF -e \"/^chrome_pgo_phase/d\""
+fi
+
 
 
 
 ##############################
 ##  Aggregate sed commands  ##
 ##############################
-
-## dependencies
 
 if [ -n "$deps_disable" ]; then
   for i in $deps_disable; do
@@ -1056,8 +1054,6 @@ if [ -n "$deps_enable" ]; then
 fi
 
 
-## install files
-
 if [ -n "$ins_disable" ]; then
   for i in $ins_disable; do
     INS="$INS -e \"/$i/s@^@#@\""
@@ -1070,8 +1066,6 @@ if [ -n "$ins_enable" ]; then
   done
 fi
 
-
-## optional patches
 
 if [ -n "$op_disable" ]; then
   case $op_disable in
@@ -1108,8 +1102,6 @@ if [ -n "$op_enable" ]; then
 fi
 
 
-## Build flags (GN_FLAGS)
-
 if [ -n "$gn_disable" ]; then
   for i in $gn_disable; do
     RUL="$RUL -e \"/^GN_FLAGS += $i=*/s@^@#@\""
@@ -1122,8 +1114,6 @@ if [ -n "$gn_enable" ]; then
   done
 fi
 
-
-## System libraries (SYS_LIBS)
 
 if [ -n "$sys_disable" ]; then
   for i in $sys_disable; do
@@ -1160,19 +1150,13 @@ echo "$SERIES_UC" "$SERIES_DB" > $DEBIAN/patches/series
 
 
 [ -z "$INS" ] || eval sed $INS < $DEBIAN/$INSTALL.in > $DEBIAN/$INSTALL
-
 [ -z "$POL" ] || eval sed $POL < $DEBIAN/$P_FILE.in > $DEBIAN/$P_FILE
-
 [ -z "$PRU_PY" ] || eval sed $PRU_PY -i $UC_DIR/utils/prune_binaries.py
 
 eval sed $CON < $DEBIAN/control.in > $DEBIAN/control
-
 eval sed $RUL < $DEBIAN/rules.in > $DEBIAN/rules
-
 eval sed $DSB -i $UC_DIR/domain_substitution.list
-
 eval sed $SMF -i $UC_DIR/flags.gn
-
 eval sed $PRU -i $UC_DIR/pruning.list
 
 
