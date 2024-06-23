@@ -30,4 +30,4 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=ServiceWorkerAvoidMainT
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-low-end-device-mode"
 
 # Uncomment to load all of the extensions installed to /usr/share/chromium/extensions
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --load-extension=$(ls -dm /usr/share/chromium/extensions/* 2>/dev/null | tr -d '\n')"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --load-extension=$(ls -dm /usr/share/chromium/extensions/* 2>/dev/null | sed -z 's@\n@@g')"
