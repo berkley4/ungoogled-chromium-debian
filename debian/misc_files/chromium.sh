@@ -62,7 +62,6 @@ usage() {
   echo "        -g or --debug              Start within $GDB"
   echo "        -h or --help               This help screen"
   echo "        --temp-profile             Start with a new and temporary profile"
-  echo "        --enable-remote-extensions Allow extensions from remote sites"
   echo
   echo " Other supported options are:"
   MANWIDTH=80 man chromium | sed -e '1,/OPTIONS/d; /ENVIRONMENT/,$d'
