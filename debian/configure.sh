@@ -37,7 +37,7 @@ UC_DIR=$DEBIAN/submodules/ungoogled-chromium
 UC_PATCH_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 
 INSTALL=ungoogled-chromium.install
-P_FILE=etc/chromium/policies/managed/policies.json
+POLICIES=etc/chromium/policies/managed/policies.json
 
 
 ####################
@@ -1150,7 +1150,7 @@ echo "$SERIES_UC" "$SERIES_DB" > $DEBIAN/patches/series
 
 
 [ -z "$INS" ] || eval sed $INS < $DEBIAN/$INSTALL.in > $DEBIAN/$INSTALL
-[ -z "$POL" ] || eval sed $POL < $DEBIAN/$P_FILE.in > $DEBIAN/$P_FILE
+[ -z "$POL" ] || eval sed $POL < $DEBIAN/$POLICIES.in > $DEBIAN/$POLICIES
 [ -z "$PRU_PY" ] || eval sed $PRU_PY -i $UC_DIR/utils/prune_binaries.py
 
 eval sed $CON < $DEBIAN/control.in > $DEBIAN/control
@@ -1161,7 +1161,7 @@ eval sed $PRU -i $UC_DIR/pruning.list
 
 
 ## Ensure ungoogled-chromium.install and policies.json exist
-for file in $INSTALL $P_FILE; do
+for file in $INSTALL $POLICIES; do
   [ -f $DEBIAN/$file ] || mv $DEBIAN/$file.in $DEBIAN/$file
 done
 
