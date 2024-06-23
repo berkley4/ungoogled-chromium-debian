@@ -6,6 +6,13 @@
 #  Fabien Tassin <fta@sofaraway.org>
 # License: GPLv2 or later
 
+# Control what gets blocked by the blocklist (/etc/chromium.d/block)
+# 0 = Block nothing
+# 1 = Block matching flags from flag files
+# 2 = Same as 1 plus block matching flags from the command line
+# 3 = Same as 2 plus all other command line flags
+SWITCH_BLOCKING=1
+
 # Anyone with an Intel GEN8+ GPU (Broadwell onwards) who is using the
 # intel-media-va-driver (iHD) package and cannot get VAAPI to work
 # might want to try installing the i965-va-driver package and
@@ -123,7 +130,9 @@ for file in /etc/chromium.d/*; do
       : ;;
 
     /etc/chromium.d/blocked-flags)
-      read BLOCKED_FLAGS < /etc/chromium.d/blocked-flags ;;
+      if [ $SWITCH_BLOCKING -gt 0 ]; then
+        read BLOCKED_FLAGS < /etc/chromium.d/blocked-flags
+      fi ;;
 
     *)
       . $file ;;
@@ -143,7 +152,15 @@ while [ $# -gt 0 ]; do
       want_temp=1
       shift ;;
     --[a-z]* )
-      CHROMIUM_FLAGS="$CHROMIUM_FLAGS $1"
+      new_flag=$1
+      if [ $SWITCH_BLOCKING -ge 2 ]; then
+        case $BLOCKED_FLAGS in
+          $new_flag|*$new_flag\ *|*\ $new_flag)
+            new_flag= ;;
+        esac
+        [ $SWITCH_BLOCKING -lt 3 ] || new_flag=
+      fi
+      [ -z "$new_flag" ] || CHROMIUM_FLAGS="$CHROMIUM_FLAGS $new_flag"
       shift ;;
     -- ) # Stop option prcessing
       shift

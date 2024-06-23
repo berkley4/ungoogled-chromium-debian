@@ -96,6 +96,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$SWIFTSHADER" ] || SWIFTSHADER=1
 [ -n "$SWIFTSHADER_VULKAN" ] || SWIFTSHADER_VULKAN=1
 [ -n "$SWIFTSHADER_WEBGPU" ] || SWIFTSHADER_WEBGPU=0
+[ -n "$SWITCH_BLOCKING" ] || SWITCH_BLOCKING=0
 [ -n "$TRANSLATE" ] || TRANSLATE=1
 [ -n "$VISUAL_QUERY" ] || VISUAL_QUERY=0
 [ -n "$VR" ] || VR=0
@@ -733,6 +734,11 @@ fi
 if [ $SW_OFF_MAIN -eq 0 ]; then
   sed '/ServiceWorkerAvoidMainThreadForInitialization/s@^@#@' \
     -i $FLAG_DIR/miscellaneous
+fi
+
+
+if [ $SWITCH_BLOCKING -ne 1 ]; then
+  sed "/^SWITCH_BLOCKING/s@=[023]@=$SWITCH_BLOCKING@" -i $DEBIAN/misc_files/chromium.sh
 fi
 
 

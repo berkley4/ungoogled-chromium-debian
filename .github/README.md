@@ -102,6 +102,7 @@ ___Other features___
 - Patches to force skia to use bundled freetype and harfbuzz libraries (where appropriate)
 - Experimental Opentype SVG support (via third party patches)
 - Patches to enable system libraries
+- The shell launcher has the ability to block switches (aka flags)
 
 
 ___Build system___
