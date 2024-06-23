@@ -82,6 +82,7 @@ CATAPULT		1		Catapult profiling support
 CHROMECAST		1		0 - disable (will also disable MEDIA_REMOTING)
 					1 - enable (need to edit /etc/chromium.d/network)
 					2 - enable fully
+
 CLICK_TO_CALL		1		Feature for using chromium to make a call via an android phone
 COMPOSE			1		An autofill-related feature which can be disabled by those who don't use autofill
 ENTERPRISE_WATERMARK	0		Watermarking security/privacy feature (for Chrome Enterprise Premium users)
@@ -93,14 +94,17 @@ HLS_PLAYER		1		Enables the HLS manifest parser/demuxer/player (experimental)
 					0 - disable
 					1 - enable (need to edit /etc/chromium.d/hls-player to fully enable)
 					2 - enable fully
+
 LABS_TOOLBAR_BUTTON	0		Experimental flag toggles via a Labs toolbar button
 LENS			1		Goodle Lens
 					0 - disable
                                         1 - enable (need to edit /etc/chromium.d/google-lens to fully enable)
                                         2 - enable fully
+
 LENS_TRANSLATE		1		Goodle Lens image translation subfeature
 MEDIA_REMOTING		1		Render and play back media on remote devices when a tab is casted
 					Depends on CHROMECAST=1 (which is the default)
+
 MUTEX_PI		1		Mutex priority inheritance
 NOTIFICATIONS		1		System notifications
 OAUTH2			0		Enable OAuth 2.0 client switches
@@ -113,6 +117,7 @@ PULSE			1		Pulseaudio
 QT			1		0 - disable
 					1 - enable (need to edit /etc/chromium.d/qt to fully enable)
 					2 - enable fully (runtime autodetected ie Gnome desktops will ignore it)
+
 SPEECH			1		Speech service (voice recognition)
 SW_OFF_MAIN		1		Initialise service worker off the main renderer thread
 SWIFTSHADER		1		Swiftshader
@@ -122,6 +127,7 @@ TRANSLATE		1		Google translate support
 					0 - disable
 					1 - enable (need to edit /etc/chromium.d/google-translate)
 					2 - enable fully
+
 VISUAL_QUERY		0		Visual query image search facility (a possible privacy concern)
 VR			0		Virtual reality hardware support
 VULKAN			1		Vulkan (disabling will also disable WebGPU)
@@ -129,6 +135,7 @@ WEBGPU			0		WebGPU (likely beta quality at the time of writing)
 					0 - disable
 					1 - enable (need to edit /etc/chromium.d/gpu)
 					2 - enable fully
+
 WIDEVINE		1		Needs various extra components to enable
 ZSTD			0		Used for the bleeding edge zstd content encoding (web server compression)
 
