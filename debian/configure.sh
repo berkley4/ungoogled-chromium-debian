@@ -998,9 +998,7 @@ fi
 ############################################################
 
 # Check whether DEPS.patch has been applied
-if [ $TEST -eq 0 ]; then
-  grep -q 'maps_perf_test' $RT_DIR/DEPS && DEPS_PATCH=0 || DEPS_PATCH=1
-fi
+[ $TEST -eq 0 ] && grep -q 'maps_perf_test' $RT_DIR/DEPS && DEPS_PATCH=0 || DEPS_PATCH=1
 
 ## Domain substitution
 DSB="$DSB -e \"/^chrome\/browser\/flag_descriptions\.cc/d\""
