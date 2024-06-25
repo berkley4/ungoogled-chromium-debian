@@ -738,7 +738,7 @@ fi
 
 
 if [ $SWITCH_BLOCKING -ne 1 ]; then
-  sed "/^SWITCH_BLOCKING/s@=[023]@=$SWITCH_BLOCKING@" -i $DEBIAN/misc_files/chromium.sh
+  sed "/^SWITCH_BLOCKING/s@=1@=$SWITCH_BLOCKING@" -i $DEBIAN/misc_files/chromium.sh
 fi
 
 
