@@ -10,7 +10,7 @@
    # Make Dawn skip its standalone dependencies
    'dawn_standalone': False,
  
-@@ -4673,6 +4676,7 @@
+@@ -4670,6 +4673,7 @@
      # Update prebuilt Rust toolchain.
      'name': 'rust-toolchain',
      'pattern': '.',

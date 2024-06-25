@@ -1009,7 +1009,6 @@ fi
 ## Domain substitution
 DSB="$DSB -e \"/^chrome\/browser\/flag_descriptions\.cc/d\""
 DSB="$DSB -e \"/^content\/browser\/resources\/gpu\/info_view\.ts/d\""
-DSB="$DSB -e \"/^third_party\/depot_tools\//d\""
 DSB="$DSB -e \"/^tools\/clang\//d\""
 
 if [ $DEPS_PATCH -eq 1 ]; then
@@ -1018,6 +1017,7 @@ if [ $DEPS_PATCH -eq 1 ]; then
   DSB="$DSB -e \"/^third_party\/blink\/renderer\/core\/css\/perftest_data\//d\""
   DSB="$DSB -e \"/^third_party\/cros-components\//d\""
   DSB="$DSB -e \"/^third_party\/crossbench\//d\""
+  DSB="$DSB -e \"/^third_party\/depot_tools\//d\""
   DSB="$DSB -e \"/^third_party\/speedometer\//d\""
 fi
 

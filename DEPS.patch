@@ -159,7 +159,7 @@
 -
    'src/clank': {
      'url': Var('chrome_git') + '/clank/internal/apps.git' + '@' +
-     '44526f472484a4212eecf1f99235a1b2d76ddfac',
+     '63ff733d3e8ffdd8169759f813cb65bbfe9285bc',
 @@ -1099,9 +1028,6 @@
    'src/net/third_party/quiche/src':
      Var('quiche_git') + '/quiche.git' + '@' +  Var('quiche_revision'),
@@ -280,7 +280,7 @@
        'dep_type': 'cipd',
    },
  
-@@ -1450,9 +1289,6 @@
+@@ -1450,18 +1289,12 @@
        'condition': 'checkout_linux or checkout_chromeos',
    },
  
@@ -290,7 +290,16 @@
  
    'src/third_party/crubit/src': {
        'url': Var('chromium_git') + '/external/github.com/google/crubit.git' + '@' + Var('crubit_revision'),
-@@ -1523,9 +1359,6 @@
+       'condition': 'checkout_crubit',
+   },
+ 
+-  'src/third_party/depot_tools':
+-    Var('chromium_git') + '/chromium/tools/depot_tools.git' + '@' + '28ece72a5d752a5e36e62124979b18530e610f6b',
+-
+   'src/third_party/devtools-frontend/src':
+     Var('chromium_git') + '/devtools/devtools-frontend' + '@' + Var('devtools_frontend_revision'),
+ 
+@@ -1523,9 +1356,6 @@
    'src/third_party/freetype/src':
      Var('chromium_git') + '/chromium/src/third_party/freetype2.git' + '@' + Var('freetype_revision'),
  
@@ -300,7 +309,7 @@
    'src/third_party/fxdiv/src':
      Var('chromium_git') + '/external/github.com/Maratyszcza/FXdiv.git' + '@' + '63058eff77e11aa15bf531df5dd34395ec3017c8',
  
-@@ -1612,7 +1445,7 @@
+@@ -1612,7 +1442,7 @@
            },
        ],
        # Needed on Linux for use on chromium_presubmit.
@@ -309,7 +318,7 @@
        'dep_type': 'cipd',
    },
  
-@@ -1668,7 +1501,7 @@
+@@ -1668,7 +1498,7 @@
            },
        ],
        # Needed on Linux for use on chromium_presubmit (for checkstyle).
@@ -318,7 +327,7 @@
        'dep_type': 'cipd',
    },
  
-@@ -1719,12 +1552,6 @@
+@@ -1719,12 +1549,6 @@
    'src/third_party/leveldatabase/src':
      Var('chromium_git') + '/external/leveldb.git' + '@' + '068d5ee1a3ac40dabd00d211d5013af44be55bea',
  
@@ -331,7 +340,7 @@
    'src/third_party/libaddressinput/src':
      Var('chromium_git') + '/external/libaddressinput.git' + '@' + 'e8712e415627f22d0b00ebee8db99547077f39bd',
  
-@@ -1749,15 +1576,9 @@
+@@ -1749,15 +1573,9 @@
    'src/third_party/securemessage/src':
      Var('chromium_git') + '/external/github.com/google/securemessage.git' + '@' + Var('securemessage_revision'),
  
@@ -347,7 +356,7 @@
    # Userspace interface to kernel DRM services.
    'src/third_party/libdrm/src': {
        'url': Var('chromium_git') + '/chromiumos/third_party/libdrm.git' + '@' + '98e1db501173303e58ef6a1def94ab7a2d84afc1',
-@@ -1937,21 +1758,6 @@
+@@ -1937,21 +1755,6 @@
      'condition': 'checkout_openxr',
    },
  
@@ -369,7 +378,7 @@
    'src/third_party/pdfium':
      Var('pdfium_git') + '/pdfium.git' + '@' +  Var('pdfium_revision'),
  
-@@ -2102,20 +1908,6 @@
+@@ -2102,20 +1905,6 @@
        'dep_type': 'cipd',
    },
  
@@ -390,7 +399,7 @@
    'src/third_party/text-fragments-polyfill/src':
      Var('chromium_git') + '/external/github.com/GoogleChromeLabs/text-fragments-polyfill.git' + '@' + 'c036420683f672d685e27415de0a5f5e85bdc23f',
  
-@@ -2192,11 +1984,6 @@
+@@ -2192,11 +1981,6 @@
        'condition': 'checkout_chromeos',
    },
  
@@ -402,7 +411,7 @@
    'src/third_party/xnnpack/src':
      Var('chromium_git') + '/external/github.com/google/XNNPACK.git' + '@' + 'e73fb4a03f658fd48cc10c8a7cf48fe7eeab9114',
  
-@@ -4531,17 +4318,6 @@
+@@ -4531,17 +4315,6 @@
      'dep_type': 'cipd',
    },
  
@@ -420,7 +429,7 @@
    'src/third_party/screen-ai/macos_amd64': {
        'packages': [
            {
-@@ -4823,17 +4599,6 @@
+@@ -4823,17 +4596,6 @@
      ],
    },
    {
@@ -438,7 +447,7 @@
      # Ensure that we don't accidentally reference any .pyc files whose
      # corresponding .py files have since been deleted.
      # We could actually try to avoid generating .pyc files, crbug.com/500078.
-@@ -4953,7 +4718,7 @@
+@@ -4953,7 +4715,7 @@
      # dump-static-initializers.py on linux.
      'name': 'objdump',
      'pattern': '.',
@@ -447,7 +456,7 @@
      'action': ['vpython3', 'src/tools/clang/scripts/update.py',
                 '--package=objdump'],
    },
-@@ -5199,16 +4964,6 @@
+@@ -5199,16 +4961,6 @@
      ],
    },
  
