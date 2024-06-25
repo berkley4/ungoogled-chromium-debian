@@ -153,12 +153,13 @@ while [ $# -gt 0 ]; do
       shift ;;
     --[a-z]* )
       new_flag=$1
-      if [ $SWITCH_BLOCKING -ge 2 ]; then
+      if [ $SWITCH_BLOCKING -eq 2 ]; then
         case $BLOCKED_FLAGS in
           $new_flag|*$new_flag\ *|*\ $new_flag)
             new_flag= ;;
         esac
-        [ $SWITCH_BLOCKING -lt 3 ] || new_flag=
+      elif [ $SWITCH_BLOCKING -eq 3 ]; then
+        new_flag=
       fi
       [ -z "$new_flag" ] || CHROMIUM_FLAGS="$CHROMIUM_FLAGS $new_flag"
       shift ;;
