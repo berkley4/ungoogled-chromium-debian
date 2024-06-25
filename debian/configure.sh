@@ -75,6 +75,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$EXTENSIONS_ROOT_MENU" ] || EXTENSIONS_ROOT_MENU=0
 [ -n "$FEED" ] || FEED=1
 [ -n "$GOOGLE_API_KEYS" ] || GOOGLE_API_KEYS=0
+[ -n "$GRCACHE_PURGE" ] || GRCACHE_PURGE=0
 [ -n "$HEADLESS" ] || HEADLESS=1
 [ -n "$HLS_PLAYER" ] || HLS_PLAYER=1
 [ -n "$LABS_TOOLBAR_BUTTON" ] || LABS_TOOLBAR_BUTTON=0
@@ -635,6 +636,11 @@ fi
 if [ $FEED -eq 0 ]; then
   op_enable="$op_enable disable/feed"
   gn_enable="$gn_enable enable_feed_v2=false"
+fi
+
+
+if [ $GRCACHE_PURGE -eq 1 ]; then
+  sed -e '/ClearGrShaderDiskCacheOnInvalidPrefix/s@^#@@' -i $FLAG_DIR/gpu
 fi
 
 

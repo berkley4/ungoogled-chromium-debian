@@ -31,6 +31,9 @@
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --num-raster-threads=2"
 
 
+# Enable purging stale entries in the GrShader disk cache on program start
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=ClearGrShaderDiskCacheOnInvalidPrefix"
+
 # Enables shared GPUImageDecodeCache for UI if gpu rasterization is enabled
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --ui-enable-shared-image-cache-for-gpu"
 

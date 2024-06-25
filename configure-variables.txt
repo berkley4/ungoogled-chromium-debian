@@ -89,6 +89,7 @@ ENTERPRISE_WATERMARK	0		Watermarking security/privacy feature (for Chrome Enterp
 EXTENSIONS_ROOT_MENU	0		Whether to put the extensions menu in the root menu (0 = put in 'More tools' menu)
 FEED			1		WebFeed (news feed) support
 GOOGLE_API_KEYS		0		Uncomment the GOOGLE_* variables in /etc/chromium.d/google-api-keys
+GRCACHE_PURGE		0		Enable purging stale entries in the GrShader disk cache on program start
 HEADLESS		1		Headless browsing mode
 HLS_PLAYER		1		Enables the HLS manifest parser/demuxer/player (experimental)
 					0 - disable
