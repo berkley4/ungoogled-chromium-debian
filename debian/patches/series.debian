@@ -132,7 +132,7 @@ various/upstream/0029-1be52bff.diff
 various/upstream/0030-f8010390.diff
 various/upstream/0031-7b57c376.diff
 various/upstream/0032-46e8044.diff
-various/upstream/0033-11bd6624.diff
+various/upstream/features/clear-GrShader-disk-cache-on-invalid-cache-key-prefix.patch
 various/upstream/features/leveldb-proto-add-feature-to-avoid-sync-writes.patch
 various/upstream/features/leveldb-proto-enable-async-writes-by-default.patch
 various/upstream/features/stop-service-worker-init-on-main-thread.patch
