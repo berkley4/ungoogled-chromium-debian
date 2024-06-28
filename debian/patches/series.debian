@@ -79,9 +79,6 @@ various/disable/crashpad-handler/crashpad-handler_2.patch
 various/disable/crashpad-handler/crashpad-handler_3.patch
 various/disable/image-writer/image-writer-private.patch
 various/disable/image-writer/image-writer-utility.patch
-various/features/leveldb-proto-add-feature-to-avoid-sync-writes.patch
-various/features/leveldb-proto-enable-async-writes-by-default.patch
-various/features/stop-service-worker-init-on-main-thread.patch
 various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
 various/fixes/enterprise-buildflags.patch
 various/fixes/EnumTable-crash.patch
@@ -136,6 +133,9 @@ various/upstream/0030-f8010390.diff
 various/upstream/0031-7b57c376.diff
 various/upstream/0032-46e8044.diff
 various/upstream/0033-11bd6624.diff
+various/upstream/features/leveldb-proto-add-feature-to-avoid-sync-writes.patch
+various/upstream/features/leveldb-proto-enable-async-writes-by-default.patch
+various/upstream/features/stop-service-worker-init-on-main-thread.patch
 various/warnings/clang-excessive-warnings.patch
 
 #optional/enable-esbuild-for-official-builds.patch
