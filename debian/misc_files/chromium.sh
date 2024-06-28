@@ -6,7 +6,7 @@
 #  Fabien Tassin <fta@sofaraway.org>
 # License: GPLv2 or later
 
-# Control what gets blocked by the blocklist (/etc/chromium.d/block)
+# Control what gets blocked by the blocklist (/etc/chromium.d/blocked-flags)
 # 0 = Block nothing
 # 1 = Block matching flags from flag files
 # 2 = Same as 1 plus block matching flags from the command line

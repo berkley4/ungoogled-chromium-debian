@@ -49,7 +49,7 @@ SKIA_GAMMA		0		Set the gamma value for text blitting
 X11_ONLY		0		When enabled is an alias for OZONE_WAYLAND=0
 					Wayland users can also enable (the ozone wayland platform is experimental)
 
-SWITCH_BLOCKING		1		Control what gets blocked by the blocklist (/etc/chromium.d/block)
+SWITCH_BLOCKING		1		Control what gets blocked by the blocklist (/etc/chromium.d/blocked-flags)
 					0 = Block nothing
 					1 = Block matching flags from flag files
 					2 = Same as 1 plus block matching flags from the command line
