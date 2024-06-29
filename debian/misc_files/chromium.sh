@@ -13,6 +13,10 @@
 # 3 = Same as 2 plus all other command line flags
 SWITCH_BLOCKING=1
 
+# List of flag files to be ignored. Should be a space-separated list of flag
+# files (from /etc/chromium.d) of the form "file1 file2 ... fileN".
+BLOCKED_FILES=
+
 # Anyone with an Intel GEN8+ GPU (Broadwell onwards) who is using the
 # intel-media-va-driver (iHD) package and cannot get VAAPI to work
 # might want to try installing the i965-va-driver package and
@@ -123,21 +127,37 @@ esac
 export LD_LIBRARY_PATH
 
 
+# Format BLOCKED_FILES for use in a case statement
+case $BLOCKED_FILES in
+  "")
+    BLOCKED_FILES='""' ;;
+
+  *)
+    BLOCKED_FILES="$(echo $BLOCKED_FILES | sed -e 's@\(\w\)@/etc/chromium.d/\1@g' -e 's@ @|@g')" ;;
+esac
+
 # Source CHROMIUM_FLAGS from flag files
+eval "
 for file in /etc/chromium.d/*; do
-  case $file in
+  if [ -n \"\$BLOCKED_FILES\" ]; then
+    case \$file in
+      $BLOCKED_FILES)
+        continue ;;
+    esac
+  fi
+
+  case \$file in
     /etc/chromium.d/*.dpkg-*|/etc/chromium.d/README)
       : ;;
 
     /etc/chromium.d/blocked-flags)
-      if [ $SWITCH_BLOCKING -gt 0 ]; then
-        read BLOCKED_FLAGS < /etc/chromium.d/blocked-flags
-      fi ;;
+      [ \$SWITCH_BLOCKING -eq 0 ] || read BLOCKED_FLAGS < \$file ;;
 
     *)
-      . $file ;;
+      . \$file ;;
   esac
 done
+"
 
 # Positional parameter processing (including runtime flags)
 while [ $# -gt 0 ]; do
