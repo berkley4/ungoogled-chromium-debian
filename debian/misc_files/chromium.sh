@@ -133,24 +133,24 @@ case $BLOCKED_FILES in
     BLOCKED_FILES='""' ;;
 
   *)
-    BLOCKED_FILES="$(echo $BLOCKED_FILES | sed -e 's@\(\w\)@/etc/chromium.d/\1@g' -e 's@ @|@g')" ;;
+    BLOCKED_FILES="$(echo $BLOCKED_FILES | sed 's@ @|@g')" ;;
 esac
 
 # Source CHROMIUM_FLAGS from flag files
 eval "
 for file in /etc/chromium.d/*; do
   if [ -n \"\$BLOCKED_FILES\" ]; then
-    case \$file in
+    case \${file##*/} in
       $BLOCKED_FILES)
         continue ;;
     esac
   fi
 
-  case \$file in
-    /etc/chromium.d/*.dpkg-*|/etc/chromium.d/README)
+  case \${file##*/} in
+    *.dpkg-*|README)
       : ;;
 
-    /etc/chromium.d/blocked-flags)
+    blocked-flags)
       [ \$SWITCH_BLOCKING -eq 0 ] || read BLOCKED_FLAGS < \$file ;;
 
     *)
