@@ -1,0 +1,63 @@
+From 851d92f2c779d1fbaf21d622e2469497a45db0b6 Mon Sep 17 00:00:00 2001
+From: Jian Li <jianli@chromium.org>
+Date: Mon, 15 Jul 2024 19:27:26 +0000
+Subject: [PATCH] M126: Add a flag to guard web feed feature
+
+(cherry picked from commit 51db31464970bf34c892cfd0d410bbb05b81d1d1)
+
+Bug: 349640001
+Change-Id: Iac83a0786fe3138c635f46aa25a13a4184c20b2f
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5661600
+Commit-Queue: Jian Li <jianli@chromium.org>
+Reviewed-by: Adam Arcaro <adamta@google.com>
+Cr-Original-Commit-Position: refs/heads/main@{#1320548}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5709168
+Auto-Submit: Jian Li <jianli@chromium.org>
+Reviewed-by: Brandon Wylie <wylieb@google.com>
+Cr-Commit-Position: refs/branch-heads/6478@{#1781}
+Cr-Branched-From: e6143acc03189c5e52959545b110d6d17ecd5286-refs/heads/main@{#1300313}
+---
+
+--- a/components/feed/core/v2/feed_stream.cc
++++ b/components/feed/core/v2/feed_stream.cc
+@@ -630,7 +630,8 @@
+ bool FeedStream::IsWebFeedEnabled() {
+   return l10n_util::GetLanguage(delegate_->GetLanguageTag()) == "en" &&
+          feed::IsWebFeedEnabledForLocale(delegate_->GetCountry()) &&
+-         !delegate_->IsSupervisedAccount();
++         !delegate_->IsSupervisedAccount() &&
++         !base::FeatureList::IsEnabled(kWebFeedKillSwitch);
+ }
+ 
+ void FeedStream::EnabledPreferencesChanged() {
+--- a/components/feed/feed_feature_list.cc
++++ b/components/feed/feed_feature_list.cc
+@@ -150,10 +150,15 @@
+              "FeedContainment",
+              base::FEATURE_DISABLED_BY_DEFAULT);
+ 
++BASE_FEATURE(kWebFeedKillSwitch,
++             "WebFeedKillSwitch",
++             base::FEATURE_DISABLED_BY_DEFAULT);
++
+ bool IsWebFeedEnabledForLocale(const std::string& country) {
+   const std::vector<std::string> launched_countries = {"AU", "CA", "GB",
+                                                        "NZ", "US", "ZA"};
+-  return base::Contains(launched_countries, country);
++  return base::Contains(launched_countries, country) &&
++         !base::FeatureList::IsEnabled(kWebFeedKillSwitch);
+ }
+ 
+ }  // namespace feed
+--- a/components/feed/feed_feature_list.h
++++ b/components/feed/feed_feature_list.h
+@@ -123,6 +123,9 @@
+ // Feature that enables feed containment.
+ BASE_DECLARE_FEATURE(kFeedContainment);
+ 
++// Kill-switch for the web feed feature.
++BASE_DECLARE_FEATURE(kWebFeedKillSwitch);
++
+ bool IsWebFeedEnabledForLocale(const std::string& country);
+ 
+ }  // namespace feed

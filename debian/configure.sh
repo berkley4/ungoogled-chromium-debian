@@ -636,6 +636,8 @@ fi
 if [ $FEED -eq 0 ]; then
   op_enable="$op_enable disable/feed"
   gn_enable="$gn_enable enable_feed_v2=false"
+
+  sed '/WebFeedKillSwitch/s@^#@@' -i $FLAG_DIR/miscellaneous
 fi
 
 

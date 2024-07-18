@@ -10,14 +10,17 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-breakpad"
 # Do not hide any extensions in the about:extensions dialog
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --show-component-extension-options"
 
-# Comment to disable NGShapeCache
+# Disable NGShapeCache
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=LayoutNGShapeCache"
 
-# Uncomment to disable LevelDBProtoAsyncWrite
+# Disable LevelDBProtoAsyncWrite
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=LevelDBProtoAsyncWrite"
 
-# Comment to disable ServiceWorkerAvoidMainThreadForInitialization
+# Enable ServiceWorkerAvoidMainThreadForInitialization
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=ServiceWorkerAvoidMainThreadForInitialization"
+
+# Kill switch for WebFeed
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=WebFeedKillSwitch"
 
 # Disable Autoplay features
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=PreloadMediaEngagementData,AutoplayIgnoreWebAudio,MediaEngagementBypassAutoplayPolicies"
@@ -29,5 +32,5 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=ServiceWorkerAvoidMainT
 # For those on slow machines
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-low-end-device-mode"
 
-# Uncomment to load all of the extensions installed to /usr/share/chromium/extensions
+# Load all of the extensions installed to /usr/share/chromium/extensions
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --load-extension=$(ls -dm /usr/share/chromium/extensions/* 2>/dev/null | sed -z 's@\n@@g')"
