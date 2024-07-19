@@ -159,7 +159,7 @@
 -
    'src/clank': {
      'url': Var('chrome_git') + '/clank/internal/apps.git' + '@' +
-     '63ff733d3e8ffdd8169759f813cb65bbfe9285bc',
+     'ab5395535fa4777654bc483794dd461de6e4aa6f',
 @@ -1099,9 +1028,6 @@
    'src/net/third_party/quiche/src':
      Var('quiche_git') + '/quiche.git' + '@' +  Var('quiche_revision'),
@@ -280,7 +280,7 @@
        'dep_type': 'cipd',
    },
  
-@@ -1450,18 +1289,12 @@
+@@ -1450,9 +1289,6 @@
        'condition': 'checkout_linux or checkout_chromeos',
    },
  
@@ -290,15 +290,6 @@
  
    'src/third_party/crubit/src': {
        'url': Var('chromium_git') + '/external/github.com/google/crubit.git' + '@' + Var('crubit_revision'),
-       'condition': 'checkout_crubit',
-   },
- 
--  'src/third_party/depot_tools':
--    Var('chromium_git') + '/chromium/tools/depot_tools.git' + '@' + '28ece72a5d752a5e36e62124979b18530e610f6b',
--
-   'src/third_party/devtools-frontend/src':
-     Var('chromium_git') + '/devtools/devtools-frontend' + '@' + Var('devtools_frontend_revision'),
- 
 @@ -1523,9 +1356,6 @@
    'src/third_party/freetype/src':
      Var('chromium_git') + '/chromium/src/third_party/freetype2.git' + '@' + Var('freetype_revision'),
