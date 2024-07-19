@@ -1,0 +1,27 @@
+From 35ecadde9e5391891a0d6fcf7e47a48e73c62db1 Mon Sep 17 00:00:00 2001
+From: Andrey Kosyakov <caseq@chromium.org>
+Date: Wed, 26 Jun 2024 19:50:15 -0700
+Subject: [PATCH] Treat invalid offset passed to MojoHandle.mapBuffer() as error
+
+Bug: 345684057, 349015781
+Change-Id: I7afff2344b857af1e893a439e2ea15395e204672
+---
+
+--- a/third_party/blink/renderer/core/mojo/mojo_handle.cc
++++ b/third_party/blink/renderer/core/mojo/mojo_handle.cc
+@@ -272,8 +272,13 @@
+ 
+   if (region.IsValid()) {
+     ArrayBufferContents contents(region, offset, num_bytes);
+-    result_dict->setResult(MOJO_RESULT_OK);
+-    result_dict->setBuffer(DOMArrayBuffer::Create(contents));
++    if (contents.IsValid()) {
++      result_dict->setResult(MOJO_RESULT_OK);
++      result_dict->setBuffer(DOMArrayBuffer::Create(contents));
++    } else {
++      // Contents would be invalid if `MapAt()` failed.
++      result_dict->setResult(MOJO_RESULT_INVALID_ARGUMENT);
++    }
+   } else {
+     result_dict->setResult(MOJO_RESULT_UNKNOWN);
+   }

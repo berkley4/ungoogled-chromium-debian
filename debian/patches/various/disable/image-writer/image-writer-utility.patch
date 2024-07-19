@@ -40,7 +40,7 @@
      if (is_chromeos) {
        deps += [
          "//chromeos/dbus/dlp:dlp",
-@@ -9445,7 +9448,6 @@
+@@ -9449,7 +9452,6 @@
        "//chrome/common/apps/platform_apps",
        "//chrome/common/extensions:extension_features_unittest",
        "//chrome/common/extensions/api",
@@ -48,7 +48,7 @@
        "//components/enterprise:test_support",
        "//components/password_manager/core/browser/features:password_features",
        "//components/password_manager/core/browser/sharing",
-@@ -9476,6 +9478,10 @@
+@@ -9480,6 +9482,10 @@
        "//tools/json_schema_compiler/test:unit_tests",
      ]
  

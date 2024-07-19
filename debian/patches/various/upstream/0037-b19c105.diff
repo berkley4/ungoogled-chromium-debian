@@ -1,0 +1,41 @@
+From b19c105c47936fe5ab0e9efa1bf639aa97cea1a8 Mon Sep 17 00:00:00 2001
+From: Noam Rosenthal <nrosenthal@chromium.org>
+Date: Wed, 10 Jul 2024 14:09:43 +0000
+Subject: [PATCH] Fix crash in moveBefore
+
+This crash was created because when we move inputs around some of their
+(shadow) descendants are text fragments, and FlatTreeParentChanged
+doesn't like that. Made it so that FlatTreeParentChanged only works on
+elements/text nodes.
+
+Bug: 352081025
+Change-Id: Ied34f1e66817fde8625b56dbbf2ed05e62eb68bd
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5691651
+Reviewed-by: Dominic Farolino <dom@chromium.org>
+Commit-Queue: Noam Rosenthal <nrosenthal@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1325460}
+---
+
+--- a/third_party/blink/renderer/core/dom/node.cc
++++ b/third_party/blink/renderer/core/dom/node.cc
+@@ -2231,7 +2231,8 @@
+     cache->NodeIsConnected(this);
+   }
+ 
+-  if (GetDocument().StatePreservingAtomicMoveInProgress()) {
++  if (GetDocument().StatePreservingAtomicMoveInProgress() &&
++      (IsElementNode() || IsTextNode())) {
+     FlatTreeParentChanged();
+   }
+   return kInsertionDone;
+--- /dev/null
++++ b/third_party/blink/web_tests/external/wpt/dom/nodes/moveBefore/tentative/input-moveBefore-crash.html
+@@ -0,0 +1,8 @@
++<!DOCTYPE html>
++<body>
++<input id="input">
++<script>
++window.onload = () => {
++    document.body.moveBefore(document.querySelector("#input"), null);
++};
++</script>

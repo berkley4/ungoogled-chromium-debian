@@ -83,5 +83,5 @@
 +  }
 +
    if (is_chromeos) {
-     sources += [ "../browser/device_reauth/chromeos/device_authenticator_chromeos_unittest.cc" ]
- 
+     sources += [
+       "../browser/chromeos/office_web_app/office_web_app_unittest.cc",

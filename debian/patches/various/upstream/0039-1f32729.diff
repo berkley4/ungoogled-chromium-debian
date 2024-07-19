@@ -1,0 +1,29 @@
+From 1f327298cff016bd295ea380952a178bba9b6d79 Mon Sep 17 00:00:00 2001
+From: Rakina Zata Amni <rakina@chromium.org>
+Date: Tue, 16 Jul 2024 01:16:09 +0000
+Subject: [PATCH] Add nullcheck to NativeRendererMessagingService::GetMessagePortHostIfExists
+
+It's somehow possible to call this with a null ScriptContext currently,
+causing crashes.
+
+Bug: 349071302
+Change-Id: I29e2dd025b81cdbc7988427bbb4ba79c183a65ec
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5706229
+Reviewed-by: David Bertoni <dbertoni@chromium.org>
+Commit-Queue: Rakina Zata Amni <rakina@chromium.org>
+Reviewed-by: Dave Tapuska <dtapuska@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1327910}
+---
+
+--- a/extensions/renderer/api/messaging/native_renderer_messaging_service.cc
++++ b/extensions/renderer/api/messaging/native_renderer_messaging_service.cc
+@@ -817,6 +817,9 @@
+ NativeRendererMessagingService::GetMessagePortHostIfExists(
+     ScriptContext* script_context,
+     const PortId& port_id) {
++  if (!script_context) {
++    return nullptr;
++  }
+   return GetMessagePortScope(script_context->GetRenderFrame())
+       ->GetMessagePortHostIfExists(port_id);
+ }

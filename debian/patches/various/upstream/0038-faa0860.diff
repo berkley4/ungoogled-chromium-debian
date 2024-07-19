@@ -1,0 +1,44 @@
+From faa0860aece705674f33e307e6f4403f8d2a1ffe Mon Sep 17 00:00:00 2001
+From: Yao Xiao <yaoxia@chromium.org>
+Date: Mon, 15 Jul 2024 18:56:06 +0000
+Subject: [PATCH] Bugfix: Check for null GetExecutionContext() in HTMLIFrameElement::ParseAttribute
+
+GetExecutionContext() here could be null as shown in clusterfuzz and
+in the crash reports. Thus, we do the null check before using it.
+
+Bug: 349639799,326564135
+Change-Id: I16073fad8b2b7c49c4e2ff354d4308943f88b951
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5708051
+Reviewed-by: Xianzhu Wang <wangxianzhu@chromium.org>
+Commit-Queue: Yao Xiao <yaoxia@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1327690}
+---
+
+--- a/third_party/blink/renderer/core/html/html_iframe_element.cc
++++ b/third_party/blink/renderer/core/html/html_iframe_element.cc
+@@ -275,7 +275,8 @@
+       UseCounter::Count(GetDocument(), WebFeature::kIFrameCSPAttribute);
+     }
+   } else if (name == html_names::kBrowsingtopicsAttr) {
+-    if (RuntimeEnabledFeatures::TopicsAPIEnabled(GetExecutionContext()) &&
++    if (GetExecutionContext() &&
++        RuntimeEnabledFeatures::TopicsAPIEnabled(GetExecutionContext()) &&
+         GetExecutionContext()->IsSecureContext()) {
+       bool old_browsing_topics = !params.old_value.IsNull();
+       bool new_browsing_topics = !params.new_value.IsNull();
+@@ -290,6 +291,7 @@
+       }
+     }
+   } else if (name == html_names::kAdauctionheadersAttr &&
++             GetExecutionContext() &&
+              RuntimeEnabledFeatures::FledgeNegativeTargetingEnabled(
+                  GetExecutionContext())) {
+     if (!GetExecutionContext()->IsSecureContext()) {
+@@ -308,6 +310,7 @@
+       }
+     }
+   } else if (name == html_names::kSharedstoragewritableAttr &&
++             GetExecutionContext() &&
+              RuntimeEnabledFeatures::SharedStorageAPIM118Enabled(
+                  GetExecutionContext())) {
+     if (!GetExecutionContext()->IsSecureContext()) {
