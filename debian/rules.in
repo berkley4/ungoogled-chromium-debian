@@ -42,7 +42,6 @@ export RUSTC_BOOTSTRAP=1
 #RUST_PATH := _RUST_PATH
 #RUST_VER := $(shell $(RUST_PATH)/bin/rustc -V)
 #GN_FLAGS += rust_sysroot_absolute=\"$(RUST_PATH)\" rustc_version=\"$(RUST_VER)\"
-#GN_FLAGS += toolchain_supports_rust_thin_lto=false
 
 # Bindgen toolchain
 #GN_FLAGS += rust_bindgen_root=\"_BINDGEN_PATH\"
