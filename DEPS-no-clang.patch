@@ -1,11 +1,11 @@
 --- a/DEPS
 +++ b/DEPS
-@@ -4666,7 +4666,7 @@
-     # Note: On Win, this should run after win_toolchain, as it may use it.
-     'name': 'clang',
-     'pattern': '.',
+@@ -743,7 +743,7 @@
+   'src/third_party/llvm-build/Release+Asserts': {
+     'dep_type': 'gcs',
+     'bucket': 'chromium-browser-clang',
 -    'condition': 'not llvm_force_head_revision',
-+    'condition': 'checkout_x86',
-     'action': ['vpython3', 'src/tools/clang/scripts/update.py'],
-   },
-   {
++    'condition': 'llvm_force_head_revision',
+     'objects': [
+       {
+         'object_name': 'Linux_x64/clang-llvmorg-19-init-10646-g084e2b53-57.tar.xz',

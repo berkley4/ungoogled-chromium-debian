@@ -1,7 +1,23 @@
 --- a/DEPS
 +++ b/DEPS
-@@ -568,7 +568,7 @@
-   },
+@@ -556,23 +556,9 @@
+ ]
+ 
+ deps = {
+-  # NPM dependencies for JavaScript code coverage.
+-  'src/third_party/js_code_coverage/node_modules': {
+-    'dep_type': 'gcs',
+-    'bucket': 'chromium-nodejs',
+-    'objects': [
+-      {
+-        'object_name': 'js_code_coverage/90d7a8ecae092222e585481b64e9928bcf4a689e723a0af4b94922280cd55a48',
+-        'sha256sum': '90d7a8ecae092222e585481b64e9928bcf4a689e723a0af4b94922280cd55a48',
+-        'size_bytes': 1472459,
+-        'generation': 1716929997740855
+-      }
+-    ]
+-
+-  },
    'src/build/linux/debian_bullseye_amd64-sysroot': {
      'bucket': 'chrome-linux-sysroot',
 -    'condition': 'checkout_linux and checkout_x64 and non_git_source',
@@ -9,7 +25,7 @@
      'dep_type': 'gcs',
      'objects': [
        {
-@@ -581,7 +581,7 @@
+@@ -585,7 +571,7 @@
    },
    'src/build/linux/debian_bullseye_arm64-sysroot': {
      'bucket': 'chrome-linux-sysroot',
@@ -18,7 +34,7 @@
      'dep_type': 'gcs',
      'objects': [
        {
-@@ -594,7 +594,7 @@
+@@ -598,7 +584,7 @@
    },
    'src/build/linux/debian_bullseye_armhf-sysroot': {
      'bucket': 'chrome-linux-sysroot',
@@ -27,7 +43,7 @@
      'dep_type': 'gcs',
      'objects': [
        {
-@@ -607,7 +607,7 @@
+@@ -611,7 +597,7 @@
    },
    'src/build/linux/debian_bullseye_i386-sysroot': {
      'bucket': 'chrome-linux-sysroot',
@@ -36,7 +52,7 @@
      'dep_type': 'gcs',
      'objects': [
        {
-@@ -620,7 +620,7 @@
+@@ -624,7 +610,7 @@
    },
    'src/build/linux/debian_bullseye_mips64el-sysroot': {
      'bucket': 'chrome-linux-sysroot',
@@ -45,7 +61,7 @@
      'dep_type': 'gcs',
      'objects': [
        {
-@@ -633,7 +633,7 @@
+@@ -637,7 +623,7 @@
    },
    'src/build/linux/debian_bullseye_mipsel-sysroot': {
      'bucket': 'chrome-linux-sysroot',
@@ -54,11 +70,11 @@
      'dep_type': 'gcs',
      'objects': [
        {
-@@ -686,47 +686,6 @@
+@@ -690,20 +676,6 @@
        },
      ],
    },
--  'src/buildtools/linux64/format': {
+-  'src/buildtools/linux64-format': {
 -    'bucket': 'chromium-clang-format',
 -    'condition': 'host_os == "linux" and non_git_source',
 -    'dep_type': 'gcs',
@@ -72,8 +88,15 @@
 -      },
 -    ],
 -  },
+   # Pull down Node binaries for WebUI toolchain.
+   # The Linux binary is always downloaded regardless of host os and architecture
+   # since remote node actions run on Linux worker.
+@@ -768,19 +740,6 @@
+           },
+       ],
+   },
 -  # Download selected models from TFHub as testdata.
--  'src/third_party/tfhub_models': {
+-  'src/third_party/tfhub_models/testdata': {
 -    'bucket': 'chromium-tfhub-models',
 -    'dep_type': 'gcs',
 -    'objects': [
@@ -85,6 +108,13 @@
 -      },
 -    ],
 -  },
+   'src/third_party/llvm-build/Release+Asserts': {
+     'dep_type': 'gcs',
+     'bucket': 'chromium-browser-clang',
+@@ -963,20 +922,6 @@
+       },
+     ],
+   },
 -  'src/third_party/clang-format/script':
 -    Var('chromium_git') +
 -    '/external/github.com/llvm/llvm-project/clang/tools/clang-format.git@' +
@@ -102,7 +132,7 @@
    'src/buildtools/mac': {
      'packages': [
        {
-@@ -747,16 +706,6 @@
+@@ -997,16 +942,6 @@
      'dep_type': 'cipd',
      'condition': 'host_os == "win"',
    },
@@ -119,7 +149,7 @@
  
    # We don't know target_cpu at deps time. At least until there's a universal
    # binary of httpd-php, pull both intel and arm versions in DEPS and then pick
-@@ -782,17 +731,6 @@
+@@ -1032,17 +967,6 @@
      'condition': 'checkout_mac or checkout_ios',
    },
  
@@ -137,7 +167,7 @@
    'src/third_party/apache-windows-arm64': {
      'packages': [
          {
-@@ -982,12 +920,6 @@
+@@ -1232,12 +1156,6 @@
      'condition': 'checkout_chromium_password_manager_test_dependencies',
    },
  
@@ -150,7 +180,7 @@
    'src/chrome/test/data/safe_browsing/dmg': {
      'packages': [
        {
-@@ -999,9 +931,6 @@
+@@ -1249,9 +1167,6 @@
      'dep_type': 'cipd',
    },
  
@@ -159,8 +189,8 @@
 -
    'src/clank': {
      'url': Var('chrome_git') + '/clank/internal/apps.git' + '@' +
-     'ab5395535fa4777654bc483794dd461de6e4aa6f',
-@@ -1099,9 +1028,6 @@
+     '65599068d951070dbecb482c21a1c3eb01f9dfa8',
+@@ -1349,9 +1264,6 @@
    'src/net/third_party/quiche/src':
      Var('quiche_git') + '/quiche.git' + '@' +  Var('quiche_revision'),
  
@@ -170,7 +200,7 @@
    'src/tools/luci-go': {
        'packages': [
          {
-@@ -1274,77 +1200,6 @@
+@@ -1524,77 +1436,6 @@
    'src/third_party/anonymous_tokens/src':
      Var('chromium_git') + '/external/github.com/google/anonymous-tokens.git' + '@' + '76bfcccb6418239183df55111f2f24782d9f3680',
  
@@ -248,12 +278,12 @@
    'src/third_party/content_analysis_sdk/src':
      Var('chromium_git') + '/external/github.com/chromium/content_analysis_sdk.git' + '@' + '9a408736204513e0e95dd2ab3c08de0d95963efc',
  
-@@ -1370,22 +1225,6 @@
+@@ -1620,22 +1461,6 @@
    'src/third_party/google_benchmark/src':
      Var('chromium_git') + '/external/github.com/google/benchmark.git' + '@' + '344117638c8ff7e239044fd0fa7085839fc03021',
  
 -  # Download test data for Maps telemetry_gpu_integration_test.
--  'src/tools/perf/page_sets/maps_perf_test/': {
+-  'src/tools/perf/page_sets/maps_perf_test/dataset': {
 -      'dep_type': 'gcs',
 -      'condition': 'non_git_source',
 -      'bucket': 'chromium-telemetry',
@@ -271,7 +301,7 @@
    'src/third_party/boringssl/src':
      Var('boringssl_git') + '/boringssl.git' + '@' +  Var('boringssl_revision'),
  
-@@ -1409,7 +1248,7 @@
+@@ -1659,7 +1484,7 @@
            },
        ],
        # Needed on Linux for use on chromium_presubmit.
@@ -280,7 +310,7 @@
        'dep_type': 'cipd',
    },
  
-@@ -1450,9 +1289,6 @@
+@@ -1700,9 +1525,6 @@
        'condition': 'checkout_linux or checkout_chromeos',
    },
  
@@ -290,7 +320,7 @@
  
    'src/third_party/crubit/src': {
        'url': Var('chromium_git') + '/external/github.com/google/crubit.git' + '@' + Var('crubit_revision'),
-@@ -1523,9 +1356,6 @@
+@@ -1773,9 +1595,6 @@
    'src/third_party/freetype/src':
      Var('chromium_git') + '/chromium/src/third_party/freetype2.git' + '@' + Var('freetype_revision'),
  
@@ -300,7 +330,7 @@
    'src/third_party/fxdiv/src':
      Var('chromium_git') + '/external/github.com/Maratyszcza/FXdiv.git' + '@' + '63058eff77e11aa15bf531df5dd34395ec3017c8',
  
-@@ -1612,7 +1442,7 @@
+@@ -1862,7 +1681,7 @@
            },
        ],
        # Needed on Linux for use on chromium_presubmit.
@@ -309,7 +339,7 @@
        'dep_type': 'cipd',
    },
  
-@@ -1668,7 +1498,7 @@
+@@ -1918,7 +1737,7 @@
            },
        ],
        # Needed on Linux for use on chromium_presubmit (for checkstyle).
@@ -318,7 +348,7 @@
        'dep_type': 'cipd',
    },
  
-@@ -1719,12 +1549,6 @@
+@@ -1969,12 +1788,6 @@
    'src/third_party/leveldatabase/src':
      Var('chromium_git') + '/external/leveldb.git' + '@' + '068d5ee1a3ac40dabd00d211d5013af44be55bea',
  
@@ -331,7 +361,7 @@
    'src/third_party/libaddressinput/src':
      Var('chromium_git') + '/external/libaddressinput.git' + '@' + 'e8712e415627f22d0b00ebee8db99547077f39bd',
  
-@@ -1749,15 +1573,9 @@
+@@ -1999,15 +1812,9 @@
    'src/third_party/securemessage/src':
      Var('chromium_git') + '/external/github.com/google/securemessage.git' + '@' + Var('securemessage_revision'),
  
@@ -347,7 +377,7 @@
    # Userspace interface to kernel DRM services.
    'src/third_party/libdrm/src': {
        'url': Var('chromium_git') + '/chromiumos/third_party/libdrm.git' + '@' + '98e1db501173303e58ef6a1def94ab7a2d84afc1',
-@@ -1937,21 +1755,6 @@
+@@ -2187,111 +1994,12 @@
      'condition': 'checkout_openxr',
    },
  
@@ -369,20 +399,110 @@
    'src/third_party/pdfium':
      Var('pdfium_git') + '/pdfium.git' + '@' +  Var('pdfium_revision'),
  
-@@ -2102,20 +1905,6 @@
+   'src/third_party/perfetto':
+     Var('android_git') + '/platform/external/perfetto.git' + '@' + '636a83a4915afdff2e5758e09a5231ff04278ede',
+ 
+-  'src/base/tracing/test/data': {
+-    'bucket': 'perfetto',
+-    'objects': [
+-      {
+-        'object_name': 'test_data/chrome_fcp_lcp_navigations.pftrace-ae01d849fbd75a98be1b7ddd5a8873217c377b393a1d5bbd788ed3364f7fefc3',
+-        'sha256sum': 'ae01d849fbd75a98be1b7ddd5a8873217c377b393a1d5bbd788ed3364f7fefc3',
+-        'size_bytes': 2398645,
+-        'generation': 1697714434866488,
+-        'output_file': 'chrome_fcp_lcp_navigations.pftrace'
+-      },
+-      {
+-        'object_name': 'test_data/chrome_input_with_frame_view.pftrace-a93548822e481508c728ccc5da3ad34afcd0aec02ca7a7a4dad84ff340ee5975',
+-        'sha256sum': 'a93548822e481508c728ccc5da3ad34afcd0aec02ca7a7a4dad84ff340ee5975',
+-        'size_bytes': 6392331,
+-        'generation': 1711402389089075,
+-        'output_file': 'chrome_input_with_frame_view.pftrace'
+-      },
+-      {
+-        'object_name': 'test_data/scroll_offsets_trace_2.pftrace-2ddd9f78d91d51e39c72c520bb54fdc9dbf1333ae722e87633fc345159296289',
+-        'sha256sum': '2ddd9f78d91d51e39c72c520bb54fdc9dbf1333ae722e87633fc345159296289',
+-        'size_bytes': 1496388,
+-        'generation': 1712592637141461,
+-        'output_file': 'scroll_offsets_trace_2.pftrace'
+-      },
+-      {
+-        'object_name': 'test_data/top_level_java_choreographer_slices-8001e73b2458e94f65a606bb558a645ba5bca553b57fe416001f6c2175675a8a',
+-        'sha256sum': '8001e73b2458e94f65a606bb558a645ba5bca553b57fe416001f6c2175675a8a',
+-        'size_bytes': 5323017,
+-        'generation': 1671708979893186,
+-        'output_file': 'top_level_java_choreographer_slices'
+-      },
+-      {
+-        'object_name': 'test_data/chrome_page_load_all_categories_not_extended.pftrace.gz-6586e9e2bbc0c996caddb321a0374328654983733e6ffd7f4635ac07db32a493',
+-        'sha256sum': '6586e9e2bbc0c996caddb321a0374328654983733e6ffd7f4635ac07db32a493',
+-        'size_bytes': 1277750,
+-        'generation': 1652442088902445,
+-        'output_file': 'chrome_page_load_all_categories_not_extended.pftrace.gz'
+-      },
+-      {
+-        'object_name': 'test_data/speedometer.perfetto_trace.gz-8a159b354d74a3ca0d38ce9cd071ef47de322db4261ee266bfafe04d70310529',
+-        'sha256sum': '8a159b354d74a3ca0d38ce9cd071ef47de322db4261ee266bfafe04d70310529',
+-        'size_bytes': 891088,
+-        'generation': 1684336047660953,
+-        'output_file': 'speedometer.perfetto_trace.gz'
+-      },
+-      {
+-        'object_name': 'test_data/scroll_jank_with_pinch.pftrace-8587d2016fdb5d39b5f852704b6e3925e9e6527af01696396be767bed04d4a45',
+-        'sha256sum': '8587d2016fdb5d39b5f852704b6e3925e9e6527af01696396be767bed04d4a45',
+-        'size_bytes': 3914720,
+-        'generation': 1717497788778335,
+-        'output_file': 'scroll_jank_with_pinch.pftrace'
+-      },
+-      {
+-        'object_name': 'test_data/cpu_powerups_1.pb-70f5511ba0cd6ce1359e3cadb4d1d9301fb6e26be85158e3384b06f41418d386',
+-        'sha256sum': '70f5511ba0cd6ce1359e3cadb4d1d9301fb6e26be85158e3384b06f41418d386',
+-        'size_bytes': 2033064,
+-        'generation': 1669652389509708,
+-        'output_file': 'cpu_powerups_1.pb'
+-      },
+-      {
+-        'object_name': 'test_data/chrome_5672_histograms.pftrace.gz-a09bd44078ac71bcfbc901b0544750e8344d0d0f6f96e220f700a5a53fa932ee',
+-        'sha256sum': 'a09bd44078ac71bcfbc901b0544750e8344d0d0f6f96e220f700a5a53fa932ee',
+-        'size_bytes': 1127472,
+-        'generation': 1684946598804577,
+-        'output_file': 'chrome_5672_histograms.pftrace.gz'
+-      },
+-      {
+-        'object_name': 'test_data/chrome_custom_navigation_trace.gz-ff68279e3cec94076b69259d756eed181a63eaf834d8b956a7f4ba665fabf939',
+-        'sha256sum': 'ff68279e3cec94076b69259d756eed181a63eaf834d8b956a7f4ba665fabf939',
+-        'size_bytes': 7572484,
+-        'generation': 1666713705258900,
+-        'output_file': 'chrome_custom_navigation_trace.gz'
+-      },
+-      {
+-        'object_name': 'test_data/scroll_offsets.pftrace-62101edb5204fec8bea30124f65d4e49bda0808d7b036e95f89445aaad6d8d98',
+-        'sha256sum': '62101edb5204fec8bea30124f65d4e49bda0808d7b036e95f89445aaad6d8d98',
+-        'size_bytes': 769741,
+-        'generation': 1693402148909129,
+-        'output_file': 'scroll_offsets.pftrace'
+-      }
+-    ],
+-    'dep_type': 'gcs'
+-  },
+-
+   'src/third_party/perl': {
+       'url': Var('chromium_git') + '/chromium/deps/perl.git' + '@' + '8ef97ff3b7332e38e61b347a2fbed425a4617151',
+       'condition': 'checkout_win',
+@@ -2436,20 +2144,6 @@
        'dep_type': 'cipd',
    },
  
--  'src/third_party/test_fonts': {
+-  'src/third_party/test_fonts/test_fonts': {
 -      'dep_type': 'gcs',
 -      'condition': 'non_git_source',
 -      'bucket': 'chromium-fonts',
 -      'objects': [
 -          {
--              'object_name': '336e775eec536b2d785cc80eff6ac39051931286',
--              'sha256sum': 'a2ca2962daf482a8f943163541e1c73ba4b2694fabcd2510981f2db4eda493c8',
--              'size_bytes': 32624734,
--              'generation': 1647440500943755,
+-              'object_name': 'f26f29c9d3bfae588207bbc9762de8d142e58935c62a86f67332819b15203b35',
+-              'sha256sum': 'f26f29c9d3bfae588207bbc9762de8d142e58935c62a86f67332819b15203b35',
+-              'size_bytes': 32750602,
+-              'generation': 1717109450425063,
 -          },
 -      ],
 -  },
@@ -390,7 +510,7 @@
    'src/third_party/text-fragments-polyfill/src':
      Var('chromium_git') + '/external/github.com/GoogleChromeLabs/text-fragments-polyfill.git' + '@' + 'c036420683f672d685e27415de0a5f5e85bdc23f',
  
-@@ -2192,11 +1981,6 @@
+@@ -2535,30 +2229,12 @@
        'condition': 'checkout_chromeos',
    },
  
@@ -400,9 +520,28 @@
 -  },
 -
    'src/third_party/xnnpack/src':
-     Var('chromium_git') + '/external/github.com/google/XNNPACK.git' + '@' + 'e73fb4a03f658fd48cc10c8a7cf48fe7eeab9114',
+     Var('chromium_git') + '/external/github.com/google/XNNPACK.git' + '@' + 'c2aef747585d1453d682e82ee431317a1e35c7f3',
  
-@@ -4531,17 +4315,6 @@
+   'src/tools/page_cycler/acid3':
+     Var('chromium_git') + '/chromium/deps/acid3.git' + '@' + 'a926d0a32e02c4c03ae95bb798e6c780e0e184ba',
+ 
+-  'src/third_party/libei/cipd': {
+-
+-    'packages': [
+-      {
+-        'package': 'chromium/third_party/libei/linux-amd64',
+-        'version': 'PQz4zG5Q3SXoAaCYq3RK99W3wg_v0NoOu1OzTSvA_oIC',
+-      },
+-    ],
+-
+-    'condition': 'checkout_linux and non_git_source',
+-    'dep_type': 'cipd',
+-  },
+-
+   'src/third_party/zstd/src':
+     Var('chromium_git') + '/external/github.com/facebook/zstd.git' + '@' + '0e2ceb2d5061f3a8357d124029ebaae16d915a3d',
+ 
+@@ -4874,17 +4550,6 @@
      'dep_type': 'cipd',
    },
  
@@ -420,7 +559,7 @@
    'src/third_party/screen-ai/macos_amd64': {
        'packages': [
            {
-@@ -4823,17 +4596,6 @@
+@@ -5166,17 +4831,6 @@
      ],
    },
    {
@@ -438,29 +577,22 @@
      # Ensure that we don't accidentally reference any .pyc files whose
      # corresponding .py files have since been deleted.
      # We could actually try to avoid generating .pyc files, crbug.com/500078.
-@@ -4953,7 +4715,7 @@
-     # dump-static-initializers.py on linux.
-     'name': 'objdump',
-     'pattern': '.',
--    'condition': 'checkout_linux or checkout_mac or checkout_android and host_os != "mac"',
-+    'condition': 'checkout_mac or checkout_android and host_os != "mac"',
-     'action': ['vpython3', 'src/tools/clang/scripts/update.py',
-                '--package=objdump'],
+@@ -5972,18 +5626,6 @@
+                'gs://aom-test-data',
+                'src/third_party/libaom/testdata']
    },
-@@ -5199,16 +4961,6 @@
-     ],
-   },
- 
--  # Download test data for Perfetto diff tests
 -  {
--    'name': 'perfetto_testdata',
--    'condition': 'host_os == "linux"',
--    'pattern': '\\.sha256',
--    'action': [ 'vpython3',
--                'src/base/tracing/test/test_data.py',
--                'download',
--    ],
+-    'name': 'libvpx_testdata',
+-    'pattern': '.',
+-    'condition': 'download_libvpx_testdata',
+-    'action': ['python3',
+-               'src/third_party/depot_tools/gsutil.py',
+-               '-q',
+-               '-m',
+-               'rsync',
+-               'gs://downloads.webmproject.org/test_data/libvpx',
+-               'src/third_party/libvpx/testdata'],
 -  },
-   # Pull down WPR Archive files
-   {
-     'name': 'Fetch WPR archive files',
+ ]
+ 
+ # Add any corresponding DEPS files from this list to chromium.exclusions in
