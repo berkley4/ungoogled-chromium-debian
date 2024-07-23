@@ -1,4 +1,4 @@
-<OPTION>	<DEFAULT>	<DESCRIPTION>
+<OPTION>	<DEFAULT/VALUES>	<DESCRIPTION>
 
 ## General options
 
@@ -29,9 +29,15 @@ SYS_CLANG		0		Use in-tree chromium clang/llvm binaries
 					Refer to Toolchain.md for more details.
 
 SYS_RUST		0		Use in-tree chromium rust binaries (default)
-			1		Use a system rustc package (eg from debian unstable/backports repo)
-			2		Use rust installed to $HOME/.cargo/bin (Recommended method)
+			1		Use rustc from the system package (eg from debian unstable/backports repo)
+			2		Use upstream rust installed to $HOME/.cargo/bin (Recommended method)
 					Refer to Rust.md for more details.
+
+SYS_BINDGEN		1		Use bindgen from the system package (eg from debian unstable/backports repo)
+			2		Use self-compiled bindgen installed in /usr/local
+					SYS_BINDGEN=1 is only compatible with SYS_CLANG=1
+					SYS_BINDGEN=2 is compatible with all values of SYS_CLANG
+					Refer to Bindgen.md for more details.
 
 CCACHE			0		Enable the use of the the ccache compilation cache utility
 

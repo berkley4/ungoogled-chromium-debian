@@ -35,7 +35,7 @@ By default, the rust script will install a stable version version of rust to
 the $HOME/.cargo directory. Try the beta or nightly versions if you run into
 build problems.
 
-Now make sure that SYS_RUST=2 is included in your configuration variable
+Now make sure that SYS_RUST=2 is included in your configuration variables
 
 ```... SYS_RUST=2 ./debian/configure.sh```
 

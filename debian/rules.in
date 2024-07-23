@@ -44,6 +44,8 @@ export RUSTC_BOOTSTRAP=1
 #GN_FLAGS += rust_sysroot_absolute=\"$(RUST_PATH)\" rustc_version=\"$(RUST_VER)\"
 #GN_FLAGS += toolchain_supports_rust_thin_lto=false
 
+# Bindgen toolchain
+#GN_FLAGS += rust_bindgen_root=\"_BINDGEN_PATH\"
 
 # Use parallel jobs if requested
 JOBS := 1

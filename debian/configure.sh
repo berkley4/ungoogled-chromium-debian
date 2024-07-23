@@ -52,6 +52,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$SYMBOLS_BLINK" ] || SYMBOLS_BLINK=0
 [ -n "$SYS_CLANG" ] || SYS_CLANG=0
 [ -n "$SYS_RUST" ] || SYS_RUST=0
+[ -n "$SYS_BINDGEN" ] || SYS_BINDGEN=2
 
 [ -n "$AES_PCLMUL" ] || AES_PCLMUL=1
 [ -n "$AVX" ] || AVX=1
@@ -402,6 +403,32 @@ if [ $SYS_RUST -ge 1 ]; then
   RUL="$RUL -e \"/^#RUST_PATH /s@^#@@\""
   RUL="$RUL -e \"/^RUST_PATH /s@_RUST_PATH@$RUST_PATH@\""
   RUL="$RUL -e \"/^#RUST_VER /s@^#@@\""
+fi
+
+
+if [ $SYS_BINDGEN -gt 0 ]; then
+  BINDGEN_PATH="/usr/local"
+
+  if [ $SYS_BINDGEN -eq 1 ]; then
+    if [ $SYS_CLANG -eq 0 ] || [ $SYS_CLANG -eq 2 ]; then
+      printf '%s\n' "SYS_BINDGEN=1 is incompatible with SYS_CLANG=0 or SYS_CLANG=2"
+      printf '%s\n' "Set SYS_BINDGEN=2 or SYS_CLANG=1 and re-run the script"
+      exit 1
+    fi
+
+    BINDGEN_PATH="/usr"
+  fi
+
+  if [ $TEST -eq 0 ] && [ ! -x $BINDGEN_PATH/bin/bindgen ]; then
+    printf '%s\n' "ERROR: $BINDGEN_PATH/bin/bindgen does not exist/is not executable"
+    exit 1
+  fi
+
+  # GN_FLAGS += rust_bindgen_root=\"_BINDGEN_PATH\"
+  gn_enable="$gn_enable rust_bindgen_root"
+
+  # Set BINDGEN_PATH in d/rules (for passing to rust_bindgen_root build flag)
+  RUL="$RUL -e \"s@_BINDGEN_PATH@$BINDGEN_PATH@\""
 fi
 
 
