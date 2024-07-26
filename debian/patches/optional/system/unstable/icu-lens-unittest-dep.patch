@@ -1,0 +1,55 @@
+--- a/chrome/browser/ui/lens/BUILD.gn
++++ b/chrome/browser/ui/lens/BUILD.gn
+@@ -248,42 +248,3 @@
+     "//testing/gtest",
+   ]
+ }
+-
+-source_set("unit_tests") {
+-  testonly = true
+-  sources = [
+-    "lens_overlay_image_helper_unittest.cc",
+-    "lens_overlay_proto_converter_unittest.cc",
+-    "lens_overlay_query_controller_unittest.cc",
+-    "lens_overlay_request_id_generator_unittest.cc",
+-    "lens_overlay_side_panel_navigation_throttle_unittest.cc",
+-    "lens_overlay_url_builder_unittest.cc",
+-  ]
+-  deps = [
+-    ":lens",
+-    "//base",
+-    "//base/test:test_support",
+-    "//chrome/browser",
+-    "//chrome/browser:browser_process",
+-    "//chrome/browser/lens/core/mojom:mojo_bindings",
+-    "//chrome/browser/themes",
+-    "//chrome/test:test_support",
+-    "//components/endpoint_fetcher",
+-    "//components/lens:features",
+-    "//content/public/browser",
+-    "//content/test:test_support",
+-    "//google_apis/common",
+-    "//net",
+-    "//net/traffic_annotation",
+-    "//testing/gtest",
+-    "//third_party/icu:icui18n",
+-    "//third_party/icu:icuuc_public",
+-    "//third_party/lens_server_proto:lens_overlay_proto",
+-    "//third_party/omnibox_proto",
+-    "//third_party/zlib/google:compression_utils",
+-    "//ui/gfx",
+-    "//ui/gfx/codec",
+-    "//ui/gfx/geometry",
+-    "//url",
+-  ]
+-}
+--- a/chrome/test/BUILD.gn
++++ b/chrome/test/BUILD.gn
+@@ -8550,7 +8550,6 @@
+       "//chrome/browser/ui/actions:unit_tests",
+       "//chrome/browser/ui/color:color_headers",
+       "//chrome/browser/ui/color:mixers",
+-      "//chrome/browser/ui/lens:unit_tests",
+       "//chrome/browser/ui/webui/cr_components/theme_color_picker",
+       "//chrome/browser/ui/webui/discards:mojo_bindings",
+       "//chrome/browser/ui/webui/downloads:mojo_bindings",

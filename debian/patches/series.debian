@@ -178,6 +178,7 @@ optional/system/openh264.patch
 #optional/system/clang/clang-version-check.patch
 #optional/system/clang/rust-clanglib.patch
 #optional/system/unstable/icu.patch
+#optional/system/unstable/icu-lens-unittest-dep.patch
 optional/system/unstable/dav1d/dav1d.patch
 optional/system/unstable/dav1d/dav1d-bundled-libavif.patch
 optional/system/unstable/dav1d/crabbyav1f-dav1d.patch
