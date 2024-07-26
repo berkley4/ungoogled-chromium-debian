@@ -1061,6 +1061,7 @@ fi
 ## Pruning list
 PRU="$PRU -e \"/^chrome\/build\/pgo_profiles/d\""
 PRU="$PRU -e \"/^third_party\/depot_tools/d\""
+PRU="$PRU -e \"/^third_party\/node/d\""
 
 ## Submodule flags
 SMF="$SMF -e \"/^enable_hangout_services_extension/d\""
