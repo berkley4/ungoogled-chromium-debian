@@ -80,7 +80,6 @@ GN_FLAGS +=					\
 	angle_has_rapidjson=false		\
 	enable_component_updater=false		\
 	enable_extractors=false			\
-	enable_maldoca=false			\
 	enable_screen_ai_service=false		\
 	use_kerberos=false			\
 	use_sysroot=false
