@@ -356,7 +356,6 @@ else
 
 
   ## Set optional patches, build flags and format d/rules and d/control
-
   op_enable="$op_enable system/clang/clang-version-check"
   gn_enable="$gn_enable clang_base_path custom_toolchain host_toolchain"
 
@@ -414,6 +413,8 @@ if [ $SYS_BINDGEN -gt 0 ]; then
       printf '%s\n' "Set SYS_BINDGEN=2 or SYS_CLANG=1 and re-run the script"
       exit 1
     fi
+
+    op_enable="$op_enable system/clang/bindgen-clang-paths"
 
     BINDGEN_PATH="/usr"
   fi

@@ -173,6 +173,7 @@ optional/opentype-svg/0002-use-FreeType-for-non-Linux-OT-SVG-support.patch
 #optional/system/freetype-COLRV1.patch
 optional/system/jpeg.patch
 optional/system/openh264.patch
+#optional/system/clang/bindgen-clang-paths.patch
 #optional/system/clang/clang-version-check.patch
 #optional/system/clang/rust-clanglib.patch
 #optional/system/unstable/icu.patch
