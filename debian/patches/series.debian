@@ -180,6 +180,7 @@ optional/system/openh264.patch
 #optional/system/unstable/icu.patch
 optional/system/unstable/dav1d/dav1d.patch
 optional/system/unstable/dav1d/dav1d-bundled-libavif.patch
+optional/system/unstable/dav1d/crabbyav1f-dav1d.patch
 #optional/system/unstable/ffmpeg/ffmpeg-first_dts.patch
 #optional/system/unstable/ffmpeg/roll-src-third_party-ffmpeg-102.patch
 #optional/system/unstable/ffmpeg/roll-src-third_party-ffmpeg-106.patch
