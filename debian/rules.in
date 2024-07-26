@@ -324,6 +324,12 @@ hardclean:
 prune:
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list 2>/dev/null
 
+revert_domsub:
+	test ! -f $(DS_CACHE) || $(UL_DIR)/domain_substitution.py revert -c $(DS_CACHE) $(RT_DIR)
+
+revert_unbundling: revert_domsub
+	for f in $(UB_LIST); do test ! -f $$f || mv $$f $${f%.bundled}; done
+
 override_dh_auto_configure:
 	test -f $(DS_CACHE) || for f in $(UB_LIST); do test ! -f $$f || mv $$f $${f%.bundled}; done
 	test -f $(DS_CACHE) || test -z "$(SYS_LIBS)" || $(UB_REP_SCRIPT) --system-libraries $(SYS_LIBS)
