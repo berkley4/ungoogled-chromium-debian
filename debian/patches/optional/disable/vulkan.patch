@@ -8,7 +8,7 @@
  import("//third_party/blink/public/public_features.gni")
  import("//third_party/widevine/cdm/widevine.gni")
  import("//tools/resources/generate_resource_allowlist.gni")
-@@ -1727,7 +1728,7 @@
+@@ -1730,7 +1731,7 @@
        if (is_linux && enable_swiftshader_vulkan) {
          deps += [ ":swiftshader_vk_symbols" ]
        }
@@ -17,7 +17,7 @@
          deps += [ ":angle_libvulkan_symbols" ]
        }
        if (build_with_internal_optimization_guide) {
-@@ -1798,7 +1799,7 @@
+@@ -1801,7 +1802,7 @@
  
        deps = [ "//third_party/angle:libGLESv2" ]
      }
@@ -28,7 +28,7 @@
  
 --- a/components/exo/wayland/BUILD.gn
 +++ b/components/exo/wayland/BUILD.gn
-@@ -377,12 +377,17 @@
+@@ -398,12 +398,17 @@
  
    deps = [
      "//base",

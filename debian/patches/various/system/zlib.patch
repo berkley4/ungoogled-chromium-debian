@@ -1,6 +1,6 @@
 --- a/net/disk_cache/simple/simple_util.cc
 +++ b/net/disk_cache/simple/simple_util.cc
-@@ -19,7 +19,7 @@
+@@ -20,7 +20,7 @@
  #include "base/threading/thread_restrictions.h"
  #include "base/time/time.h"
  #include "net/disk_cache/simple/simple_entry_format.h"
@@ -11,7 +11,7 @@
  
 --- a/net/filter/gzip_source_stream.cc
 +++ b/net/filter/gzip_source_stream.cc
-@@ -15,7 +15,7 @@
+@@ -20,7 +20,7 @@
  #include "base/notreached.h"
  #include "base/numerics/checked_math.h"
  #include "net/base/io_buffer.h"
@@ -22,7 +22,7 @@
  
 --- a/net/websockets/websocket_deflater.cc
 +++ b/net/websockets/websocket_deflater.cc
-@@ -13,7 +13,7 @@
+@@ -18,7 +18,7 @@
  #include "base/check_op.h"
  #include "base/containers/circular_deque.h"
  #include "net/base/io_buffer.h"
@@ -33,7 +33,7 @@
  
 --- a/net/websockets/websocket_inflater.cc
 +++ b/net/websockets/websocket_inflater.cc
-@@ -12,7 +12,7 @@
+@@ -17,7 +17,7 @@
  #include "base/check.h"
  #include "base/check_op.h"
  #include "net/base/io_buffer.h"
@@ -44,7 +44,7 @@
  
 --- a/net/disk_cache/simple/simple_entry_impl.cc
 +++ b/net/disk_cache/simple/simple_entry_impl.cc
-@@ -36,7 +36,7 @@
+@@ -41,7 +41,7 @@
  #include "net/disk_cache/simple/simple_util.h"
  #include "net/log/net_log.h"
  #include "net/log/net_log_source_type.h"
@@ -55,7 +55,7 @@
  namespace {
 --- a/net/disk_cache/simple/simple_synchronous_entry.cc
 +++ b/net/disk_cache/simple/simple_synchronous_entry.cc
-@@ -35,7 +35,7 @@
+@@ -39,7 +39,7 @@
  #include "net/disk_cache/simple/simple_histogram_macros.h"
  #include "net/disk_cache/simple/simple_util.h"
  #include "third_party/abseil-cpp/absl/container/inlined_vector.h"

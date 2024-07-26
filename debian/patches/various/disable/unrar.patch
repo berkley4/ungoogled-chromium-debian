@@ -4,7 +4,7 @@ bug: http://bugs.debian.org/914487
 
 --- a/chrome/common/safe_browsing/BUILD.gn
 +++ b/chrome/common/safe_browsing/BUILD.gn
-@@ -145,7 +145,6 @@
+@@ -129,7 +129,6 @@
        "//components/safe_browsing/content/common:file_type_policies",
        "//components/safe_browsing/core/common",
        "//third_party/lzma_sdk/google:seven_zip_reader",
@@ -24,7 +24,7 @@ bug: http://bugs.debian.org/914487
  #include "components/file_access/scoped_file_access.h"
 --- a/chrome/browser/safe_browsing/download_protection/file_analyzer.cc
 +++ b/chrome/browser/safe_browsing/download_protection/file_analyzer.cc
-@@ -80,7 +80,10 @@
+@@ -75,7 +75,10 @@
    if (inspection_type == DownloadFileType::ZIP) {
      StartExtractZipFeatures();
    } else if (inspection_type == DownloadFileType::RAR) {
@@ -104,7 +104,7 @@ bug: http://bugs.debian.org/914487
        "sandboxed_zip_analyzer.cc",
 --- a/chrome/utility/safe_browsing/BUILD.gn
 +++ b/chrome/utility/safe_browsing/BUILD.gn
-@@ -31,8 +31,6 @@
+@@ -11,8 +11,6 @@
      sources = [
        "archive_analyzer.cc",
        "archive_analyzer.h",
@@ -113,7 +113,7 @@ bug: http://bugs.debian.org/914487
        "seven_zip_analyzer.cc",
        "seven_zip_analyzer.h",
        "zip_analyzer.cc",
-@@ -55,7 +53,6 @@
+@@ -35,7 +33,6 @@
        "//components/safe_browsing/content/common:file_type_policies",
        "//components/safe_browsing/core/common",
        "//third_party/lzma_sdk/google:seven_zip_reader",

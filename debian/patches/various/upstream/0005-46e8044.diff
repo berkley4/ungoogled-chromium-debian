@@ -36,7 +36,7 @@ Cr-Commit-Position: refs/heads/main@{#1317829}
 
 --- a/third_party/blink/renderer/core/layout/inline/inline_cursor.cc
 +++ b/third_party/blink/renderer/core/layout/inline/inline_cursor.cc
-@@ -1732,6 +1732,7 @@
+@@ -1741,6 +1741,7 @@
  void InlineCursor::MoveToVisualFirstOrLastForCulledInline(bool last) {
    InlineCursorPosition found_position;
    std::optional<size_t> found_index;
@@ -44,7 +44,7 @@ Cr-Commit-Position: refs/heads/main@{#1317829}
  
    // Iterate through the remaining fragments to find the lowest/greatest index.
    for (; Current(); MoveToNextForSameLayoutObject()) {
-@@ -1742,6 +1743,7 @@
+@@ -1751,6 +1752,7 @@
          (!last && index < *found_index)) {
        found_position = Current();
        found_index = index;
@@ -52,7 +52,7 @@ Cr-Commit-Position: refs/heads/main@{#1317829}
  
        // Break if there cannot be any fragment lower/greater than this one.
        if ((last && index == fragment_items_->Size() - 1) ||
-@@ -1751,6 +1753,13 @@
+@@ -1760,6 +1762,13 @@
    }
  
    DCHECK(found_position);
@@ -68,7 +68,7 @@ Cr-Commit-Position: refs/heads/main@{#1317829}
  
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -2128,6 +2128,11 @@
+@@ -2148,6 +2148,11 @@
        status: "stable",
      },
      {

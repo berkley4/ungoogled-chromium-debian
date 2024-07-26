@@ -1,6 +1,6 @@
 --- a/chrome/browser/extensions/api/settings_private/prefs_util.cc
 +++ b/chrome/browser/extensions/api/settings_private/prefs_util.cc
-@@ -33,6 +33,7 @@
+@@ -34,6 +34,7 @@
  #include "components/browsing_data/core/pref_names.h"
  #include "components/commerce/core/pref_names.h"
  #include "components/component_updater/pref_names.h"
@@ -8,7 +8,7 @@
  #include "components/content_settings/core/common/pref_names.h"
  #include "components/dom_distiller/core/pref_names.h"
  #include "components/drive/drive_pref_names.h"
-@@ -455,10 +456,12 @@
+@@ -462,10 +463,12 @@
    (*s_allowlist)
        [::permissions::prefs::kUnusedSitePermissionsRevocationEnabled] =
            settings_api::PrefType::kBoolean;

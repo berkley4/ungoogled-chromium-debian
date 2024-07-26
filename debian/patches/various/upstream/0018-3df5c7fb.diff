@@ -1,0 +1,197 @@
+From 3df5c7fbc900e46e8e8e7a8f23df1d3cc7237cee Mon Sep 17 00:00:00 2001
+From: Eugene Zemtsov <eugene@chromium.org>
+Date: Fri, 19 Jul 2024 16:47:03 +0000
+Subject: [PATCH] webcodecs: Fix crash in VideoFrame readback while worker is terminated
+
+Making callback `this` weak makes sure that we don't call it on
+destroyed `BackgroundReadback` objects.
+
+Bug: 349428372
+Change-Id: I222c403b541ef6a0374e60b5a42f38a45d769ecc
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5722933
+Reviewed-by: Dale Curtis <dalecurtis@chromium.org>
+Reviewed-by: Saifuddin Hitawala <hitawala@chromium.org>
+Reviewed-by: Brian Sheedy <bsheedy@chromium.org>
+Commit-Queue: Eugene Zemtsov <eugene@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1330306}
+---
+
+--- a/content/test/content_test_bundle_data.filelist
++++ b/content/test/content_test_bundle_data.filelist
+@@ -6583,6 +6583,7 @@
+ data/gpu/webcodecs/frame-size-change.html
+ data/gpu/webcodecs/frame-size-change.js
+ data/gpu/webcodecs/svc.html
++data/gpu/webcodecs/terminate-worker.html
+ data/gpu/webcodecs/tex-image-2d.html
+ data/gpu/webcodecs/webcodecs_common.js
+ data/gpu/webcodecs/webrtc-peer-connection-worker.js
+--- /dev/null
++++ b/content/test/data/gpu/webcodecs/terminate-worker.html
+@@ -0,0 +1,80 @@
++<!DOCTYPE html>
++<!--
++Terminate a worker while it's doing readback and video encoding
++-->
++<title>Frame readback in a worker</title>
++<script src="webcodecs_common.js"></script>
++<script type="text/javascript" id="worker-script">
++  'use strict';
++
++  self.onmessage = async function(e) {
++    const frame = e.data;
++    const encoder_config = {
++        codec: 'vp8',
++        hardwareAcceleration: 'prefer-software',
++        width: frame.visibleRect.width,
++        height: frame.visibleRect.height,
++        bitrate: 5000000,
++        framerate: 24,
++        latencyMode: "realtime"
++    };
++    let resolve_callback = null;
++    const encoder_init = {
++        output(chunk, metadata) {
++          resolve_callback(chunk);
++        },
++        error(e) {}
++    };
++    const encoder = new VideoEncoder(encoder_init);
++    encoder.configure(encoder_config);
++    encoder.encode(frame);
++    await new Promise((resolve) => { resolve_callback = resolve; });
++
++    postMessage(null, []);
++
++    for (let i = 1; i < 100; i++) {
++      const new_frame = new VideoFrame(frame,
++            { timestamp: frame.timestamp + 1000 * i });
++      encoder.encode(new_frame);
++      await new Promise((resolve) => { resolve_callback = resolve; });
++    }
++  }
++
++</script>
++<script type="text/javascript">
++  'use strict';
++
++  function makeWorker() {
++    const script = document.getElementById('worker-script').innerText;
++    const url = URL.createObjectURL(new Blob([script]));
++    const worker = new Worker(url);
++    let resolve_promise = null;
++    worker.onmessage = function(e) { resolve_promise(e.data); }
++    let worker_promise = new Promise((resolve) => {
++      resolve_promise = resolve;
++    });
++    return { worker, worker_promise };
++  }
++
++  async function main(arg) {
++    let source_type = arg.source_type;
++    TEST.log('Starting test with arguments: ' + JSON.stringify(arg));
++    let source = await createFrameSource(source_type, 320, 240);
++    if (!source) {
++      TEST.skip('Unsupported source: ' + source_type);
++      return;
++    }
++
++    let frame = await source.getNextFrame();
++    let {worker, worker_promise} = makeWorker();
++    worker.postMessage(frame, [frame]);
++    await worker_promise;
++
++    worker.terminate();
++
++    frame.close();
++    source.close();
++    TEST.log('Worker termination initiated');
++  }
++  addManualTestButton([{'source_type': 'offscreen'}]);
++</script>
+--- a/content/test/gpu/gpu_tests/webcodecs_integration_test.py
++++ b/content/test/gpu/gpu_tests/webcodecs_integration_test.py
+@@ -146,6 +146,10 @@
+            'webrtc-peer-connection.html', [{
+                'use_worker': True
+            }])
++    yield ('WebCodecs_Terminate_Worker', 'terminate-worker.html', [{
++        'source_type':
++        'offscreen',
++    }])
+ 
+     source_type = 'offscreen'
+     codec = 'avc1.42001E'
+--- a/gpu/command_buffer/client/gl_helper.cc
++++ b/gpu/command_buffer/client/gl_helper.cc
+@@ -203,9 +203,9 @@
+           bytes_per_pixel(bytes_per_pixel_),
+           bytes_per_row(bytes_per_row_),
+           row_stride_bytes(row_stride_bytes_),
+-          pixels(pixels_),
+           flip_y(flip_y_),
+-          callback(std::move(callback_)) {}
++          callback(std::move(callback_)),
++          pixels(pixels_) {}
+ 
+     bool done = false;
+     bool result = false;
+@@ -213,9 +213,9 @@
+     size_t bytes_per_pixel;
+     size_t bytes_per_row;
+     size_t row_stride_bytes;
+-    raw_ptr<unsigned char> pixels;
+     bool flip_y;
+     base::OnceCallback<void(bool)> callback;
++    raw_ptr<unsigned char> pixels;
+     GLuint buffer = 0;
+     GLuint query = 0;
+   };
+--- a/gpu/command_buffer/client/raster_implementation.cc
++++ b/gpu/command_buffer/client/raster_implementation.cc
+@@ -428,7 +428,11 @@
+         query(finished_query),
+         done(false),
+         readback_successful(false) {}
+-  ~AsyncARGBReadbackRequest() { std::move(callback).Run(readback_successful); }
++  ~AsyncARGBReadbackRequest() {
++    // Sometimes `callback` owns `dst_pixels`, this prevents dangling raw ptr
++    dst_pixels = nullptr;
++    std::move(callback).Run(readback_successful);
++  }
+ 
+   raw_ptr<void> dst_pixels;
+   GLuint dst_size;
+@@ -470,6 +474,10 @@
+         release_mailbox(std::move(release_mailbox)),
+         readback_done(std::move(readback_done)) {}
+   ~AsyncYUVReadbackRequest() {
++    // Sometimes `callback` owns plane ptrs, this prevents dangling raw ptrs
++    y_plane_data = nullptr;
++    u_plane_data = nullptr;
++    v_plane_data = nullptr;
+     std::move(release_mailbox).Run();
+     std::move(readback_done).Run(readback_successful);
+   }
+--- a/third_party/blink/renderer/modules/webcodecs/background_readback.cc
++++ b/third_party/blink/renderer/modules/webcodecs/background_readback.cc
+@@ -219,7 +219,7 @@
+       texture_size, src_point, info, base::saturated_cast<GLuint>(rgba_stide),
+       dst_pixels,
+       WTF::BindOnce(&BackgroundReadback::OnARGBPixelsFrameReadCompleted,
+-                    MakeUnwrappingCrossThreadHandle(this), std::move(result_cb),
++                    WrapWeakPersistent(this), std::move(result_cb),
+                     std::move(txt_frame), std::move(result)));
+ }
+ 
+@@ -300,8 +300,8 @@
+       texture_size, src_point, info, base::saturated_cast<GLuint>(stride),
+       dst_pixels,
+       WTF::BindOnce(&BackgroundReadback::OnARGBPixelsBufferReadCompleted,
+-                    MakeUnwrappingCrossThreadHandle(this), std::move(txt_frame),
+-                    src_rect, dest_layout, dest_buffer, std::move(done_cb)));
++                    WrapWeakPersistent(this), std::move(txt_frame), src_rect,
++                    dest_layout, dest_buffer, std::move(done_cb)));
+ }
+ 
+ void BackgroundReadback::OnARGBPixelsBufferReadCompleted(

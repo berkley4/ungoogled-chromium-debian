@@ -1,0 +1,121 @@
+From cd075289746dc956f592bed0e1c174fa12260498 Mon Sep 17 00:00:00 2001
+From: m3rbi <yuval.meerbaum@island.io>
+Date: Tue, 23 Jul 2024 12:25:19 +0000
+Subject: [PATCH] Fix crash on shutdown while reporting UMA
+
+Upon destruction, PredictorDatabaseInternal is destroyed but keeps the
+timer alive, causing an edge case in which the timer triggers a call
+to ReportUMA, which causes a use of db_path_ (which is corrupted in
+this scenario).
+This patch makes ReportUMA static and removes this risk.
+
+Bug: 352467342
+Change-Id: I37febbf92b28889e6ad956380478234582f5ed21
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5728413
+Commit-Queue: Egor Pasko <pasko@chromium.org>
+Reviewed-by: Egor Pasko <pasko@chromium.org>
+Reviewed-by: Ryan Sturm <ryansturm@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1331682}
+---
+
+--- a/chrome/browser/predictors/predictor_database.cc
++++ b/chrome/browser/predictors/predictor_database.cc
+@@ -31,6 +31,17 @@
+ const base::FilePath::CharType kPredictorDatabaseName[] =
+     FILE_PATH_LITERAL("Network Action Predictor");
+ 
++void ReportUMA(const base::FilePath file_path) {
++  int64_t db_file_size;
++  if (!base::GetFileSize(file_path, &db_file_size)) {
++    return;
++  }
++  // "x>>10 == x/1024"
++  const int kb_size = base::saturated_cast<int>(db_file_size >> 10);
++  base::UmaHistogramCounts1M("LoadingPredictor.PredictorDatabaseFileSize",
++                             kb_size);
++}
++
+ }  // namespace
+ 
+ namespace predictors {
+@@ -63,10 +74,8 @@
+   // Cancels pending DB transactions. Should only be called on the UI thread.
+   void SetCancelled();
+ 
+-  void ReportUMA();
+-
+   bool is_loading_predictor_enabled_;
+-  base::FilePath db_path_;
++  const base::FilePath db_path_;
+   std::unique_ptr<sql::Database> db_;
+   scoped_refptr<base::SequencedTaskRunner> db_task_runner_;
+ 
+@@ -121,18 +130,19 @@
+   bool success = db_->Open(db_path_);
+   db_->Preload();
+ 
+-  if (!success)
++  if (!success) {
+     return;
++  }
+ 
+   autocomplete_table_->Initialize(db_.get());
+   resource_prefetch_tables_->Initialize(db_.get());
+ 
+   LogDatabaseStats();
+-  ReportUMA();
++  ReportUMA(db_path_);
+   uma_report_timer_ = std::make_unique<base::RepeatingTimer>();
+   // Report DB usage periodically to see its growth.
+-  uma_report_timer_->Start(FROM_HERE, base::Days(1), this,
+-                           &PredictorDatabaseInternal::ReportUMA);
++  uma_report_timer_->Start(FROM_HERE, base::Days(1),
++                           base::BindRepeating(&ReportUMA, db_path_));
+ }
+ 
+ void PredictorDatabaseInternal::SetCancelled() {
+@@ -147,19 +157,9 @@
+   DCHECK(db_task_runner_->RunsTasksInCurrentSequence());
+ 
+   autocomplete_table_->LogDatabaseStats();
+-  if (is_loading_predictor_enabled_)
++  if (is_loading_predictor_enabled_) {
+     resource_prefetch_tables_->LogDatabaseStats();
+-}
+-
+-void PredictorDatabaseInternal::ReportUMA() {
+-  int64_t db_file_size;
+-  if (!base::GetFileSize(db_path_, &db_file_size)) {
+-    return;
+   }
+-  // "x>>10 == x/1024"
+-  const int kb_size = base::saturated_cast<int>(db_file_size >> 10);
+-  base::UmaHistogramCounts1M("LoadingPredictor.PredictorDatabaseFileSize",
+-                             kb_size);
+ }
+ 
+ PredictorDatabase::PredictorDatabase(
+@@ -170,20 +170,19 @@
+       FROM_HERE, base::BindOnce(&PredictorDatabaseInternal::Initialize, db_));
+ }
+ 
+-PredictorDatabase::~PredictorDatabase() {
+-}
++PredictorDatabase::~PredictorDatabase() {}
+ 
+ void PredictorDatabase::Shutdown() {
+   db_->SetCancelled();
+ }
+ 
+ scoped_refptr<AutocompleteActionPredictorTable>
+-    PredictorDatabase::autocomplete_table() {
++PredictorDatabase::autocomplete_table() {
+   return db_->autocomplete_table_;
+ }
+ 
+ scoped_refptr<ResourcePrefetchPredictorTables>
+-    PredictorDatabase::resource_prefetch_tables() {
++PredictorDatabase::resource_prefetch_tables() {
+   return db_->resource_prefetch_tables_;
+ }
+ 

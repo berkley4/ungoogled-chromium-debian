@@ -1,6 +1,6 @@
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -4156,8 +4156,6 @@
+@@ -4136,8 +4136,6 @@
        "new_tab_page/chrome_colors/chrome_colors_service.h",
        "new_tab_page/feature_promo_helper/new_tab_page_feature_promo_helper.cc",
        "new_tab_page/feature_promo_helper/new_tab_page_feature_promo_helper.h",
@@ -9,7 +9,7 @@
        "new_tab_page/modules/file_suggestion/drive_service.cc",
        "new_tab_page/modules/file_suggestion/drive_service.h",
        "new_tab_page/modules/file_suggestion/drive_service_factory.cc",
-@@ -4663,6 +4661,14 @@
+@@ -4600,6 +4598,14 @@
        "webauthn/webauthn_switches.cc",
        "webauthn/webauthn_switches.h",
      ]
@@ -22,9 +22,9 @@
 +    }
 +
      deps += [
-       ":browser_themes",
-       ":theme_properties",
-@@ -4680,7 +4686,6 @@
+       "//chrome/app:command_ids",
+       "//chrome/app/theme:chrome_unscaled_resources_grit",
+@@ -4615,7 +4621,6 @@
        "//chrome/browser/media/router/discovery/access_code:access_code_sink_service",
        "//chrome/browser/new_tab_page/chrome_colors:generate_chrome_colors_info",
        "//chrome/browser/new_tab_page/chrome_colors:generate_colors_info",
@@ -32,7 +32,7 @@
        "//chrome/browser/new_tab_page/modules/file_suggestion:mojo_bindings",
        "//chrome/browser/new_tab_page/modules/history_clusters:mojo_bindings",
        "//chrome/browser/new_tab_page/modules/history_clusters/cart:mojo_bindings",
-@@ -4906,6 +4911,10 @@
+@@ -4842,6 +4847,10 @@
        ]
      }
  
@@ -45,7 +45,7 @@
      if (!is_win) {
 --- a/chrome/browser/chrome_browser_interface_binders.cc
 +++ b/chrome/browser/chrome_browser_interface_binders.cc
-@@ -1306,10 +1306,12 @@
+@@ -1329,10 +1329,12 @@
                                             NewTabPageUI>(map);
    }
  
@@ -60,7 +60,7 @@
        base::FeatureList::IsEnabled(
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -6957,9 +6957,6 @@
+@@ -7055,9 +7055,6 @@
      "//components/favicon/core/test:test_support",
      "//components/feature_engagement/public",
      "//components/feed:buildflags",
@@ -70,7 +70,7 @@
      "//components/feed/mojom:mojo_bindings",
      "//components/feedback",
      "//components/feedback/redaction_tool",
-@@ -7229,6 +7226,14 @@
+@@ -7329,6 +7326,14 @@
      "//base:path_service_unittest",
    ]
  

@@ -1,6 +1,6 @@
 --- a/components/autofill/core/browser/browser_autofill_manager.h
 +++ b/components/autofill/core/browser/browser_autofill_manager.h
-@@ -620,7 +620,7 @@
+@@ -668,7 +668,7 @@
        manual_fallback_logger_;
  
    // Have we logged whether Autofill is enabled for this page load?
@@ -11,7 +11,7 @@
    bool user_did_type_ = false;
 --- a/components/autofill/core/common/autofill_features.cc
 +++ b/components/autofill/core/common/autofill_features.cc
-@@ -815,7 +815,7 @@
+@@ -863,7 +863,7 @@
  // i.e., https://other.autofill.server:port/tbproxy/af/
  BASE_FEATURE(kAutofillServerCommunication,
               "AutofillServerCommunication",
@@ -31,7 +31,7 @@
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
    registry->RegisterBooleanPref(
        kAutofillPaymentCardBenefits, true,
-@@ -94,7 +94,7 @@
+@@ -97,7 +97,7 @@
  #endif
  
    // Deprecated prefs registered for migration.

@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -770,13 +770,6 @@
+@@ -775,13 +775,6 @@
        deps += [ "//native_client_sdk/src:nacl_core_sdk" ]
      }
  
@@ -16,7 +16,7 @@
          "//chrome/browser/vr:vr_common_perftests",
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -291,7 +291,6 @@
+@@ -294,7 +294,6 @@
            "//content/public/app",
  
            # For headless mode.
@@ -26,15 +26,15 @@
          public_deps = [
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2032,7 +2032,6 @@
+@@ -1988,7 +1988,6 @@
    public_deps = [
      "//base",
      "//chrome/browser/google",
 -    "//chrome/browser/headless",
      "//chrome/browser/profiles",
+     "//chrome/browser/ui/tabs:tab_enums",
      "//chrome/common",
-     "//chrome/common:buildflags",
-@@ -2280,7 +2279,6 @@
+@@ -2242,7 +2241,6 @@
      "//components/flags_ui",
      "//components/gcm_driver",
      "//components/handoff",
@@ -42,7 +42,7 @@
      "//components/heap_profiling/in_process",
      "//components/heap_profiling/in_process:mojom",
      "//components/heavy_ad_intervention",
-@@ -3995,8 +3993,6 @@
+@@ -3977,8 +3975,6 @@
        "first_run/first_run_internal.h",
        "font_family_cache.cc",
        "font_family_cache.h",
@@ -51,7 +51,7 @@
        "hid/chrome_hid_delegate.cc",
        "hid/chrome_hid_delegate.h",
        "hid/hid_chooser_context.cc",
-@@ -4740,8 +4736,6 @@
+@@ -4677,8 +4673,6 @@
        "//components/feedback",
        "//components/feedback/content:factory",
        "//components/feedback/redaction_tool",
@@ -60,7 +60,7 @@
        "//components/image_fetcher/core",
        "//components/keep_alive_registry",
        "//components/live_caption",
-@@ -7022,10 +7016,6 @@
+@@ -6984,10 +6978,6 @@
      ]
    }
  
@@ -71,7 +71,7 @@
    if (enable_click_to_call) {
      sources += [
        "sharing/click_to_call/click_to_call_utils.cc",
-@@ -7094,7 +7084,6 @@
+@@ -7056,7 +7046,6 @@
      deps += [
        "//chrome/common/printing",
        "//components/printing/browser",
@@ -81,15 +81,15 @@
        "//components/services/print_compositor/public/mojom",
 --- a/chrome/browser/ui/BUILD.gn
 +++ b/chrome/browser/ui/BUILD.gn
-@@ -409,7 +409,6 @@
+@@ -418,7 +418,6 @@
    # have the same dependencies. Once browser_ui is untangled from
    # browser, then we can clean up these dependencies.
    public_deps = [
 -    "//chrome/browser/headless",
+     "//chrome/browser/ui/tabs:tab_enums",
      "//components/cross_device/logging",
      "//components/dom_distiller/core",
-     "//components/paint_preview/buildflags",
-@@ -2144,7 +2143,6 @@
+@@ -2167,7 +2166,6 @@
        "//components/endpoint_fetcher:endpoint_fetcher",
        "//components/enterprise/common:files_scan_data",
        "//components/feedback/proto",
@@ -97,7 +97,7 @@
        "//components/history_embeddings",
        "//components/keep_alive_registry",
        "//components/manta",
-@@ -2249,10 +2247,6 @@
+@@ -2280,10 +2278,6 @@
        ]
        deps += [ "//chrome/browser/ui/webui/new_tab_page/foo:mojo_bindings" ]
      }
@@ -110,7 +110,7 @@
    if (enable_paint_preview) {
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -1734,7 +1734,6 @@
+@@ -1786,7 +1786,6 @@
        "//chrome/browser/dips:browser_tests",
        "//chrome/browser/favicon",
        "//chrome/browser/first_party_sets",
@@ -118,7 +118,7 @@
        "//chrome/browser/icon_transcoder:browser_tests",
        "//chrome/browser/image_decoder:browser_tests",
        "//chrome/browser/image_fetcher",
-@@ -3224,7 +3223,6 @@
+@@ -3290,7 +3289,6 @@
              "../browser/devtools/protocol/devtools_printtopdf_browsertest.cc",
            ]
            deps += [
@@ -184,7 +184,7 @@
  #include "ui/gfx/switches.h"
  #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
  
-@@ -1382,12 +1379,6 @@
+@@ -1385,12 +1382,6 @@
    language::LanguageUsageMetrics::RecordPageLanguages(
        *UrlLanguageHistogramFactory::GetForBrowserContext(profile));
  #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
@@ -197,7 +197,7 @@
  }
  
  void ChromeBrowserMainParts::PreBrowserStart() {
-@@ -1490,15 +1481,6 @@
+@@ -1493,15 +1484,6 @@
        std::make_unique<ui::SelectFileDialogLacros::Factory>());
  #endif  // BUILDFLAG(IS_WIN)
  
@@ -213,7 +213,7 @@
  #if BUILDFLAG(CHROME_FOR_TESTING)
    if (!g_browser_process->local_state()->GetBoolean(
            prefs::kChromeForTestingAllowed)) {
-@@ -2037,15 +2019,6 @@
+@@ -2040,15 +2022,6 @@
      return false;
    }
  
@@ -231,7 +231,7 @@
    // cross-apartment shell objects (via IVirtualDesktopManager). That is not
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -538,7 +538,6 @@
+@@ -544,7 +544,6 @@
  #include "chrome/browser/devtools/chrome_devtools_manager_delegate.h"
  #include "chrome/browser/devtools/devtools_window.h"
  #include "chrome/browser/direct_sockets/chrome_direct_sockets_delegate.h"
@@ -239,7 +239,7 @@
  #include "chrome/browser/media/unified_autoplay_config.h"
  #include "chrome/browser/metrics/usage_scenario/chrome_responsiveness_calculator_delegate.h"
  #include "chrome/browser/new_tab_page/new_tab_page_util.h"
-@@ -1723,11 +1722,6 @@
+@@ -1752,11 +1751,6 @@
            chrome::enterprise_util::ChromeBrowserMainExtraPartsEnterprise>());
  #endif
  
@@ -321,15 +321,15 @@
  
 --- a/chrome/browser/policy/configuration_policy_handler_list_factory.cc
 +++ b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
-@@ -147,7 +147,6 @@
- #include "chrome/browser/ui/lens/lens_overlay_permission_utils.h"
+@@ -146,7 +146,6 @@
  #include "chrome/browser/web_applications/policy/web_app_settings_policy_handler.h"
  #include "components/enterprise/connectors/connectors_prefs.h"
+ #include "components/enterprise/connectors/enterprise_connectors_policy_handler.h"
 -#include "components/headless/policy/headless_mode_policy_handler.h"
+ #include "components/lens/lens_overlay_permission_utils.h"
  #include "components/media_router/common/pref_names.h"
  #endif  // BUILDFLAG(IS_ANDROID)
- 
-@@ -2281,7 +2280,6 @@
+@@ -2318,7 +2317,6 @@
            chrome_schema));
  
    handlers->AddHandler(std::make_unique<GuestModePolicyHandler>());
@@ -339,15 +339,15 @@
        std::make_unique<DownloadAutoOpenPolicyHandler>(chrome_schema));
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -298,7 +298,6 @@
+@@ -299,7 +299,6 @@
+ #include "chrome/browser/ui/webui/side_panel/read_anything/read_anything_prefs.h"
  #include "chrome/browser/ui/webui/tab_search/tab_search_prefs.h"
- #include "chrome/browser/ui/webui/whats_new/whats_new_ui.h"
  #include "chrome/browser/upgrade_detector/upgrade_detector.h"
 -#include "components/headless/policy/headless_mode_prefs.h"
+ #include "components/lens/lens_overlay_permission_utils.h"
  #include "components/live_caption/live_caption_controller.h"
  #include "components/live_caption/live_translate_controller.h"
- #include "components/ntp_tiles/custom_links_manager_impl.h"
-@@ -1681,7 +1680,6 @@
+@@ -1773,7 +1772,6 @@
  #else   // BUILDFLAG(IS_ANDROID)
    enterprise_connectors::RegisterLocalStatePrefs(registry);
    gcm::RegisterPrefs(registry);
@@ -392,7 +392,7 @@
  
 --- a/chrome/browser/ui/startup/startup_browser_creator.cc
 +++ b/chrome/browser/ui/startup/startup_browser_creator.cc
-@@ -137,9 +137,7 @@
+@@ -138,9 +138,7 @@
  #endif  // BUILDFLAG(IS_WIN)
  
  #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN)
@@ -402,7 +402,7 @@
  #endif
  
  #if !BUILDFLAG(IS_CHROMEOS)
-@@ -965,15 +963,6 @@
+@@ -966,15 +964,6 @@
    TRACE_EVENT0("startup", "StartupBrowserCreator::ProcessCmdLineImpl");
    ComputeAndRecordLaunchMode(command_line);
  
@@ -428,7 +428,7 @@
  #include "chrome/browser/prefs/session_startup_pref.h"
  #include "chrome/browser/privacy_sandbox/privacy_sandbox_service.h"
  #include "chrome/browser/privacy_sandbox/privacy_sandbox_service_factory.h"
-@@ -247,7 +246,7 @@
+@@ -251,7 +250,7 @@
    CHECK(profile_);
  
    bool first_tab = true;
@@ -437,9 +437,9 @@
    custom_handlers::ProtocolHandlerRegistry* registry =
        ProtocolHandlerRegistryFactory::GetForBrowserContext(profile_);
    for (auto& tab : tabs) {
-@@ -272,35 +271,6 @@
-       continue;
+@@ -278,35 +277,6 @@
      }
+ #endif  // BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
  
 -    // Headless mode is restricted to only one url in the command line, so
 -    // just grab the first one assuming it's the target.
@@ -605,15 +605,15 @@
  
 --- a/chrome/browser/user_education/user_education_service_factory.cc
 +++ b/chrome/browser/user_education/user_education_service_factory.cc
-@@ -8,7 +8,6 @@
- #include <optional>
+@@ -9,7 +9,6 @@
  
+ #include "build/branding_buildflags.h"
  #include "build/build_config.h"
 -#include "chrome/browser/headless/headless_mode_util.h"
  #include "chrome/browser/profiles/profile.h"
  #include "chrome/browser/profiles/profiles_state.h"
  #include "chrome/browser/user_education/browser_feature_promo_storage_service.h"
-@@ -117,9 +116,6 @@
+@@ -122,9 +121,6 @@
      return false;
    }
  #endif
@@ -621,8 +621,8 @@
 -    return false;
 -  }
    return true;
+ #endif  // BUILDFLAG(CHROME_FOR_TESTING)
  }
- 
 --- a/components/BUILD.gn
 +++ b/components/BUILD.gn
 @@ -118,7 +118,6 @@
@@ -633,10 +633,10 @@
        "test/data/history/",
        "test/data/html_viewer/",
        "test/data/json_schema/",
-@@ -556,7 +555,6 @@
-       "//components/blocked_content:unit_tests",
+@@ -561,7 +560,6 @@
        "//components/content_settings/browser/ui:unit_tests",
        "//components/facilitated_payments/content/renderer:unit_tests",
+       "//components/fingerprinting_protection_filter/browser:unit_tests",
 -      "//components/headless/test:unit_tests",
        "//components/media_router/browser:unit_tests",
        "//components/media_router/common:unit_tests",

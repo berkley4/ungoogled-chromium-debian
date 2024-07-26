@@ -13,7 +13,7 @@
  
 --- a/media/base/BUILD.gn
 +++ b/media/base/BUILD.gn
-@@ -409,9 +409,10 @@
+@@ -412,9 +412,10 @@
    ]
  
    libs = []
@@ -87,7 +87,7 @@
      deps += [ "//media/video" ]
 --- a/media/gpu/BUILD.gn
 +++ b/media/gpu/BUILD.gn
-@@ -402,6 +402,9 @@
+@@ -408,6 +408,9 @@
      ]
      public_deps += [ "//third_party/libgav1:libgav1_parser" ]
    }

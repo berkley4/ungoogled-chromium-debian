@@ -42,7 +42,7 @@
    }
  
    // This overload of GetString is designed for cases where the argument is a
-@@ -348,8 +346,7 @@
+@@ -349,8 +347,7 @@
    // enum value directly.
    std::optional<E> GetEnum(std::string_view str) const {
      auto* entry = GenericEnumTableEntry::FindByString(
@@ -52,7 +52,7 @@
      return entry ? static_cast<E>(entry->value) : std::optional<E>();
    }
  
-@@ -364,7 +361,7 @@
+@@ -365,7 +362,7 @@
    // Align the data on a cache line boundary.
    alignas(64)
  #endif
@@ -61,7 +61,7 @@
    bool is_sorted_;
  
    constexpr EnumTable(std::initializer_list<Entry> data, bool is_sorted)
-@@ -376,8 +373,8 @@
+@@ -377,8 +374,8 @@
  
      for (std::size_t i = 0; i < data.size(); i++) {
        for (std::size_t j = i + 1; j < data.size(); j++) {

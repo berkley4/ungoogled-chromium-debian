@@ -1,0 +1,127 @@
+From ce40c44ff3ae331326058a6a2228550f0f37ddfa Mon Sep 17 00:00:00 2001
+From: Nate Chapin <japhet@chromium.org>
+Date: Wed, 17 Jul 2024 22:49:09 +0000
+Subject: [PATCH] LocalDOMWindow::CanExecuteScripts() should not crash when there's no DocumentLoader
+
+Fixed: 350874762
+Change-Id: I7143600dde04c590ff7a2b607cf32f694fc8fff6
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5689966
+Auto-Submit: Nate Chapin <japhet@chromium.org>
+Commit-Queue: Nate Chapin <japhet@chromium.org>
+Reviewed-by: Daniel Cheng <dcheng@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1329189}
+---
+
+--- a/third_party/blink/renderer/core/frame/local_dom_window.cc
++++ b/third_party/blink/renderer/core/frame/local_dom_window.cc
+@@ -460,8 +460,9 @@
+ 
+ bool LocalDOMWindow::CanExecuteScripts(
+     ReasonForCallingCanExecuteScripts reason) {
+-  if (!GetFrame())
++  if (!GetFrame()) {
+     return false;
++  }
+ 
+   // Detached frames should not be attempting to execute script.
+   DCHECK(!GetFrame()->IsDetached());
+@@ -484,11 +485,7 @@
+     }
+     return false;
+   }
+-
+-  bool allow_script_renderer = GetFrame()->GetSettings()->GetScriptEnabled();
+-  bool allow_script_content_setting =
+-      GetFrame()->GetContentSettings()->allow_script;
+-  bool script_enabled = allow_script_renderer && allow_script_content_setting;
++  bool script_enabled = GetFrame()->ScriptEnabled();
+   if (!script_enabled && reason == kAboutToExecuteScript) {
+     WebContentSettingsClient* settings_client =
+         GetFrame()->GetContentSettingsClient();
+--- a/third_party/blink/renderer/core/frame/local_dom_window_test.cc
++++ b/third_party/blink/renderer/core/frame/local_dom_window_test.cc
+@@ -340,4 +340,21 @@
+   EXPECT_TRUE(GetFrame().DomWindow()->HasStorageAccess());
+ }
+ 
++TEST_F(LocalDOMWindowTest, CanExecuteScriptsDuringDetach) {
++  GetFrame().Loader().DetachDocument();
++  EXPECT_NE(GetFrame().DomWindow(), nullptr);
++
++  // When detach has started and FrameLoader::document_loader_ is nullptr, but
++  // the window hasn't been detached from its frame yet, CanExecuteScripts()
++  // should return false and not crash.
++  // This case is reachable when the only thing blocking a main frame's load
++  // event from firing is an iframe's load event, and that iframe is detached,
++  // thus unblocking the load event. If the detaching window is accessed inside
++  // a load event listener in that case, we may call CanExecuteScripts() in this
++  // partially-detached state.
++  // See crbug.com/350874762, crbug.com/41482536 and crbug.com/41484859.
++  EXPECT_FALSE(
++      GetFrame().DomWindow()->CanExecuteScripts(kAboutToExecuteScript));
++}
++
+ }  // namespace blink
+--- a/third_party/blink/renderer/core/frame/local_frame.cc
++++ b/third_party/blink/renderer/core/frame/local_frame.cc
+@@ -2170,7 +2170,7 @@
+       return true;
+     }
+ 
+-    if (GetContentSettings()->allow_popup) {
++    if (loader_.GetDocumentLoader()->GetContentSettings()->allow_popup) {
+       return true;
+     }
+     PrintNavigationErrorMessage(
+@@ -3995,24 +3995,29 @@
+   return security_origin->IsSameOriginWith(top_security_origin);
+ }
+ 
+-const mojom::RendererContentSettingsPtr& LocalFrame::GetContentSettings() {
+-  DCHECK(!IsDetached());
+-  return loader_.GetDocumentLoader()->GetContentSettings();
+-}
+-
+ bool LocalFrame::ImagesEnabled() {
+   DCHECK(!IsDetached());
+-
++  // If this is called in the middle of detach, GetDocumentLoader() might
++  // already be nullptr.
++  if (!loader_.GetDocumentLoader()) {
++    return false;
++  }
+   bool allow_image_renderer = GetSettings()->GetImagesEnabled();
+-  bool allow_image_content_setting = GetContentSettings()->allow_image;
++  bool allow_image_content_setting =
++      loader_.GetDocumentLoader()->GetContentSettings()->allow_image;
+   return allow_image_renderer && allow_image_content_setting;
+ }
+ 
+ bool LocalFrame::ScriptEnabled() {
+   DCHECK(!IsDetached());
+-
++  // If this is called in the middle of detach, GetDocumentLoader() might
++  // already be nullptr.
++  if (!loader_.GetDocumentLoader()) {
++    return false;
++  }
+   bool allow_script_renderer = GetSettings()->GetScriptEnabled();
+-  bool allow_script_content_setting = GetContentSettings()->allow_script;
++  bool allow_script_content_setting =
++      loader_.GetDocumentLoader()->GetContentSettings()->allow_script;
+   return allow_script_renderer && allow_script_content_setting;
+ }
+ 
+--- a/third_party/blink/renderer/core/frame/local_frame.h
++++ b/third_party/blink/renderer/core/frame/local_frame.h
+@@ -923,10 +923,6 @@
+     return *v8_local_compile_hints_producer_;
+   }
+ 
+-  // Gets the content settings associated with the current navigation commit.
+-  // Can only be called while the frame is not detached.
+-  const mojom::RendererContentSettingsPtr& GetContentSettings();
+-
+   // Returns whether images are allowed to load for the current frame. This is a
+   // convenience method that checks both renderer content settings and frame
+   // settings.

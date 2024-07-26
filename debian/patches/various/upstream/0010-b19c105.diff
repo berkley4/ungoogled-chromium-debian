@@ -18,7 +18,7 @@ Cr-Commit-Position: refs/heads/main@{#1325460}
 
 --- a/third_party/blink/renderer/core/dom/node.cc
 +++ b/third_party/blink/renderer/core/dom/node.cc
-@@ -2231,7 +2231,8 @@
+@@ -2264,7 +2264,8 @@
      cache->NodeIsConnected(this);
    }
  

@@ -1,0 +1,72 @@
+From 514876471a52195d6f0f580d0bb9907ca6589a9a Mon Sep 17 00:00:00 2001
+From: Tom Anderson <thomasanderson@chromium.org>
+Date: Wed, 24 Jul 2024 16:36:11 +0000
+Subject: [PATCH] [X11] Fix crash in parsing QueryTree response
+
+R=sky
+
+Fixed: 354255359
+Change-Id: Ic66fc875456fde06eed9dd24834d1e053805b54c
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5736706
+Reviewed-by: Scott Violet <sky@chromium.org>
+Commit-Queue: Thomas Anderson <thomasanderson@chromium.org>
+Code-Coverage: findit-for-me@appspot.gserviceaccount.com <findit-for-me@appspot.gserviceaccount.com>
+Cr-Commit-Position: refs/heads/main@{#1332386}
+---
+
+--- a/ui/gfx/x/connection_unittest.cc
++++ b/ui/gfx/x/connection_unittest.cc
+@@ -103,4 +103,24 @@
+   EXPECT_EQ(drawable_error->bad_value, static_cast<uint32_t>(invalid_window));
+ }
+ 
++TEST(X11ConnectionTest, LargeQueryTree) {
++  Connection connection;
++  ASSERT_TRUE(connection.Ready());
++
++  Window root = CreateWindow(&connection);
++  for (size_t i = 0; i < 0x10000; i++) {
++    connection.CreateWindow({
++        .depth = connection.default_root_depth().depth,
++        .wid = connection.GenerateId<Window>(),
++        .parent = root,
++        .width = 1,
++        .height = 1,
++        .override_redirect = Bool32(true),
++    });
++  }
++
++  // Ensure large QueryTree requests don't cause a crash.
++  connection.QueryTree(root).Sync();
++}
++
+ }  // namespace x11
+--- a/ui/gfx/x/gen_xproto.py
++++ b/ui/gfx/x/gen_xproto.py
+@@ -620,6 +620,15 @@
+ 
+         if not t.nmemb:
+             if self.is_read:
++                if (size == 'children_len' and field.parent
++                        and field.parent[1] == ('xcb', 'QueryTree')):
++                    # Hack: `children_len` is 16 bits, but windows may have
++                    # 2^16 or more children.  In this case, the server
++                    # truncates the real child count to 16 bits, but still
++                    # sends all children in the response.  To workaround this
++                    # issue, use the reply length, which is 32 bits, as the
++                    # child count.
++                    size = 'length'
+                 self.write('%s.resize(%s);' % (name, size))
+             else:
+                 left = 'static_cast<size_t>(%s)' % size
+--- a/ui/gfx/x/generated_protos/xproto.cc
++++ b/ui/gfx/x/generated_protos/xproto.cc
+@@ -3913,7 +3913,7 @@
+   Pad(&buf, 14);
+ 
+   // children
+-  children.resize(children_len);
++  children.resize(length);
+   for (auto& children_elem : children) {
+     // children_elem
+     Read(&children_elem, &buf);

@@ -1,6 +1,6 @@
 --- a/components/component_updater/component_updater_service.cc
 +++ b/components/component_updater/component_updater_service.cc
-@@ -547,7 +547,7 @@
+@@ -546,7 +546,7 @@
  // Register prefs required by the component update service.
  void RegisterComponentUpdateServicePrefs(PrefRegistrySimple* registry) {
    // The component updates are enabled by default, if the preference is not set.

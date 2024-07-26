@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -498,7 +498,8 @@
+@@ -503,7 +503,8 @@
      }
  
      if ((is_win || is_mac || is_linux || is_chromeos || is_fuchsia) &&
@@ -20,7 +20,7 @@
  import("//media/media_options.gni")
  import("//ppapi/buildflags/buildflags.gni")
  import("//third_party/blink/public/public_features.gni")
-@@ -1724,7 +1725,7 @@
+@@ -1727,7 +1728,7 @@
          ":angle_gles_symbols",
          ":chrome_symbols",
        ]
@@ -29,7 +29,7 @@
          deps += [ ":swiftshader_vk_symbols" ]
        }
        if (!is_chromeos) {
-@@ -1760,17 +1761,19 @@
+@@ -1763,17 +1764,19 @@
          deps = [ "//components/crash/core/app:chrome_crashpad_handler" ]
        }
      }
@@ -95,7 +95,7 @@
  
    # Translator frontend support:
    angle_enable_desktop_glsl = angle_enable_gl_desktop_frontend
-@@ -570,7 +572,6 @@
+@@ -569,7 +571,6 @@
                        "$angle_root:angle_common",
                        "$angle_root:includes",
                        "$angle_root/src/tests:angle_test_expectations",
@@ -103,7 +103,7 @@
                        "$angle_root/util:angle_test_utils",
                        "//testing/gmock",
                        "//testing/gtest",
-@@ -601,6 +602,10 @@
+@@ -600,6 +601,10 @@
          ]
        }
  

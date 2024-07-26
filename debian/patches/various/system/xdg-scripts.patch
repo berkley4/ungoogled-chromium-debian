@@ -1,6 +1,6 @@
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -1832,16 +1832,11 @@
+@@ -1835,17 +1835,12 @@
  
    # Copies some scripts and resources that are used for desktop integration.
    copy("xdg_mime") {
@@ -10,12 +10,13 @@
 -      "//third_party/xdg-utils/scripts/xdg-settings",
 -    ]
      if (is_linux) {
--      sources +=
-+      sources =
-           [ "//chrome/app/theme/$branding_path_component/product_logo_48.png" ]
-     } else {
 -      sources += [
 +      sources = [
          "//chrome/app/theme/$branding_path_component/linux/product_logo_48.png",
        ]
+     } else {
+-      sources +=
++      sources =
+           [ "//chrome/app/theme/$branding_path_component/product_logo_48.png" ]
      }
+     outputs = [ "$root_out_dir/{{source_file_part}}" ]

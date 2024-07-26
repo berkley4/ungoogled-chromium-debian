@@ -22,7 +22,7 @@
      // Handle tel links by opening the Click to Call dialog. This will call back
 --- a/chrome/browser/renderer_context_menu/render_view_context_menu.cc
 +++ b/chrome/browser/renderer_context_menu/render_view_context_menu.cc
-@@ -1885,9 +1885,9 @@
+@@ -1887,9 +1887,9 @@
        AppendQRCodeGeneratorItem(/*for_image=*/true, /*draw_icon=*/true,
                                  /*add_separator*/ false);
      }
@@ -34,7 +34,7 @@
      menu_model_.AddSeparator(ui::NORMAL_SEPARATOR);
      menu_model_.AddItemWithStringId(IDC_CONTENT_CONTEXT_SAVELINKAS,
                                      IDS_CONTENT_CONTEXT_SAVELINKAS);
-@@ -2647,9 +2647,9 @@
+@@ -2697,9 +2697,9 @@
    // Check if the starting separator got added.
    size_t items_before_sharing = menu_model_.GetItemCount();
    bool starting_separator_added = items_before_sharing > items_initial;
@@ -46,19 +46,19 @@
    // Add an ending separator if there are sharing items, otherwise remove the
    // starting separator iff we added one above.
    size_t sharing_items = menu_model_.GetItemCount() - items_before_sharing;
-@@ -2659,6 +2659,7 @@
-     menu_model_.RemoveItemAt(items_initial);
+@@ -2710,6 +2710,7 @@
+   }
  }
  
 +#if BUILDFLAG(ENABLE_CLICK_TO_CALL)
  void RenderViewContextMenu::AppendClickToCallItem() {
    SharingClickToCallEntryPoint entry_point;
    std::optional<std::string> phone_number;
-@@ -2685,6 +2686,7 @@
+@@ -2737,6 +2738,7 @@
    click_to_call_context_menu_observer_->BuildMenu(*phone_number, selection_text,
                                                    entry_point);
  }
 +#endif  // BUILDFLAG(ENABLE_CLICK_TO_CALL)
  
  void RenderViewContextMenu::AppendRegionSearchItem() {
-   if (LensOverlayController::IsEnabled(GetProfile())) {
+   if (LensOverlayController::IsEnabled(GetBrowser())) {

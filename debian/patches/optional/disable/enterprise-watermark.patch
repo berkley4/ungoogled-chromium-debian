@@ -1,6 +1,6 @@
 --- a/chrome/browser/ui/views/frame/browser_view.h
 +++ b/chrome/browser/ui/views/frame/browser_view.h
-@@ -834,9 +834,11 @@
+@@ -833,9 +833,11 @@
      return web_app_frame_toolbar();
    }
  
@@ -12,25 +12,17 @@
  
    void set_on_delay_apply_data_protection_settings_if_empty_called_for_testing(
        base::OnceClosure closure) {
-@@ -1074,6 +1076,7 @@
-   // when it should not be able to.
-   void UpdateFullscreenAllowedFromPolicy(bool allowed_without_policy);
- 
-+#if BUILDFLAG(ENTERPRISE_WATERMARK)
-   // Applies data protection settings based on the verdict received by
-   // safe-browsing's realtime to `watermark_view_`.
+@@ -1086,6 +1088,7 @@
    void ApplyDataProtectionSettings(
-@@ -1094,6 +1097,7 @@
-   void DelayApplyDataProtectionSettingsIfEmpty(
        base::WeakPtr<content::WebContents> expected_web_contents,
        const enterprise_data_protection::UrlSettings& settings);
 +#endif
  
-   // The BrowserFrame that hosts this view.
-   raw_ptr<BrowserFrame, DanglingUntriaged> frame_ = nullptr;
-@@ -1221,8 +1225,10 @@
-   // Clear watermark text once the page loads.
-   bool clear_watermark_text_on_page_load_ = false;
+ #if BUILDFLAG(ENTERPRISE_WATERMARK)
+   void ApplyWatermarkSettings(const std::string& watermark_text);
+@@ -1231,8 +1234,10 @@
+   bool clear_screenshot_protection_on_page_load_ = false;
+ #endif
  
 +#if BUILDFLAG(ENTERPRISE_WATERMARK)
    // The view that overlays a watermark on the contents container.
@@ -41,7 +33,7 @@
    // Handled by ContentsLayoutManager.
 --- a/chrome/browser/ui/views/frame/browser_view.cc
 +++ b/chrome/browser/ui/views/frame/browser_view.cc
-@@ -941,6 +941,8 @@
+@@ -940,6 +940,8 @@
      watermark_view_ = contents_container->AddChildView(
          std::make_unique<enterprise_watermark::WatermarkView>());
    }
@@ -50,19 +42,19 @@
  #endif  // BUILDFLAG(ENTERPRISE_WATERMARK)
  
    contents_container->SetLayoutManager(std::make_unique<ContentsLayoutManager>(
-@@ -5467,6 +5469,7 @@
-   }
- }
+@@ -5463,6 +5465,7 @@
+ #if BUILDFLAG(ENTERPRISE_WATERMARK) || \
+     BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
  
 +#if BUILDFLAG(ENTERPRISE_WATERMARK)
  void BrowserView::ApplyDataProtectionSettings(
      base::WeakPtr<content::WebContents> expected_web_contents,
      const enterprise_data_protection::UrlSettings& settings) {
-@@ -5512,6 +5515,7 @@
-         .Run();
-   }
+@@ -5480,6 +5483,7 @@
+   ApplyScreenshotSettings(settings.allow_screenshots);
+ #endif  // BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
  }
 +#endif
  
- BEGIN_METADATA(BrowserView)
- ADD_READONLY_PROPERTY_METADATA(gfx::Rect, FindBarBoundingBox)
+ #if BUILDFLAG(ENTERPRISE_WATERMARK)
+ void BrowserView::ApplyWatermarkSettings(const std::string& watermark_text) {

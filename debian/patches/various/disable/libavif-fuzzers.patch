@@ -8,7 +8,7 @@
  
  # Public configuration exported to users of the libavif target.
  config("avif_public_config") {
-@@ -62,100 +61,3 @@
+@@ -62,105 +61,3 @@
      deps += [ "//third_party/dav1d" ]
    }
  }
@@ -77,27 +77,32 @@
 -  ]
 -}
 -
--test("avif_fuzztest_dec") {
--  sources = [ "src/tests/gtest/avif_fuzztest_dec.cc" ]
--  fuzztests = [ "DecodeAvifTest.Decode" ]
--  configs += [ ":avif_fuzztest_config" ]
--  deps = [
--    ":avif_fuzztest_helpers",
--    ":libavif_enc",
--    "//third_party/fuzztest:fuzztest_gtest_main",
--  ]
--}
--
--test("avif_fuzztest_dec_incr") {
--  sources = [ "src/tests/gtest/avif_fuzztest_dec_incr.cc" ]
--  fuzztests = [ "DecodeAvifFuzzTest.DecodeIncr" ]
--  configs += [ ":avif_fuzztest_config" ]
--  deps = [
--    ":avif_fuzztest_helpers",
--    ":libavif_enc",
--    "//third_party/fuzztest:fuzztest_gtest_main",
--  ]
--}
+-# TODO: b/308013905 - These tests require seeds from
+-# third_party/libavif/src/tests/data which
+-# aren't available in the fuzzing environment. These targets can be enabled if
+-# they are made hermetic.
+-#
+-# test("avif_fuzztest_dec") {
+-#   sources = [ "src/tests/gtest/avif_fuzztest_dec.cc" ]
+-#   fuzztests = [ "DecodeAvifTest.Decode" ]
+-#   configs += [ ":avif_fuzztest_config" ]
+-#   deps = [
+-#     ":avif_fuzztest_helpers",
+-#     ":libavif_enc",
+-#     "//third_party/fuzztest:fuzztest_gtest_main",
+-#   ]
+-# }
+-#
+-# test("avif_fuzztest_dec_incr") {
+-#   sources = [ "src/tests/gtest/avif_fuzztest_dec_incr.cc" ]
+-#   fuzztests = [ "DecodeAvifFuzzTest.DecodeIncr" ]
+-#   configs += [ ":avif_fuzztest_config" ]
+-#   deps = [
+-#     ":avif_fuzztest_helpers",
+-#     ":libavif_enc",
+-#     "//third_party/fuzztest:fuzztest_gtest_main",
+-#   ]
+-# }
 -
 -test("avif_fuzztest_yuvrgb") {
 -  sources = [ "src/tests/gtest/avif_fuzztest_yuvrgb.cc" ]

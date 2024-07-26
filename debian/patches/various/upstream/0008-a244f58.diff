@@ -71,7 +71,7 @@ Cr-Commit-Position: refs/heads/main@{#1323484}
            }
  
            // Rare but sometimes |AppliedTextDecorations| is duplicated instead
-@@ -189,6 +186,40 @@
+@@ -190,6 +187,40 @@
        }
      }
  
@@ -114,7 +114,7 @@ Cr-Commit-Position: refs/heads/main@{#1323484}
          const LayoutObject& layout_object,
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -829,6 +829,11 @@
+@@ -853,6 +853,11 @@
        status: "stable",
      },
      {

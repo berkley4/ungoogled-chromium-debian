@@ -20,8 +20,8 @@ Cr-Commit-Position: refs/heads/main@{#1303591}
 
 --- a/third_party/blink/renderer/core/editing/suggestion/text_suggestion_controller.cc
 +++ b/third_party/blink/renderer/core/editing/suggestion/text_suggestion_controller.cc
-@@ -439,6 +439,11 @@
-     suggestion_ptrs.push_back(std::move(info_ptr));
+@@ -525,6 +525,11 @@
+     suggestion_info_ptrs.push_back(std::move(info_ptr));
    }
  
 +  // |FrameSelection::AbsoluteCaretBounds()| requires clean layout.

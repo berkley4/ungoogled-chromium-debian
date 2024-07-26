@@ -1,6 +1,6 @@
 --- a/chrome/browser/extensions/BUILD.gn
 +++ b/chrome/browser/extensions/BUILD.gn
-@@ -856,7 +856,6 @@
+@@ -875,7 +875,6 @@
      "//chrome/common/safe_browsing:proto",
      "//chrome/services/file_util:buildflags",
      "//chrome/services/file_util/public/mojom:mojom",
@@ -8,7 +8,7 @@
      "//components/affiliations/core/browser:affiliations",
      "//components/app_constants",
      "//components/autofill/content/browser",
-@@ -1013,6 +1012,10 @@
+@@ -1036,6 +1035,10 @@
      "//url",
    ]
  
@@ -21,7 +21,7 @@
        "api/system_indicator/system_indicator_api.cc",
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -1788,7 +1788,6 @@
+@@ -1848,7 +1848,6 @@
        "//chrome/common/privacy_budget:test_support",
        "//chrome/renderer",
        "//chrome/renderer/companion/visual_query:browser_tests",
@@ -29,7 +29,7 @@
        "//chrome/test/data/webui:resources_grit",
        "//chrome/test/data/webui/mojo:mojo_bindings",
        "//chrome/test/media_router/access_code_cast:access_code_cast_integration_base",
-@@ -2129,6 +2128,10 @@
+@@ -2189,6 +2188,10 @@
        ]
      }
  
@@ -40,7 +40,7 @@
      if (is_chromeos) {
        deps += [
          "//chromeos/dbus/dlp:dlp",
-@@ -9449,7 +9452,6 @@
+@@ -9581,7 +9584,6 @@
        "//chrome/common/apps/platform_apps",
        "//chrome/common/extensions:extension_features_unittest",
        "//chrome/common/extensions/api",
@@ -48,7 +48,7 @@
        "//components/enterprise:test_support",
        "//components/password_manager/core/browser/features:password_features",
        "//components/password_manager/core/browser/sharing",
-@@ -9480,6 +9482,10 @@
+@@ -9613,6 +9615,10 @@
        "//tools/json_schema_compiler/test:unit_tests",
      ]
  
@@ -91,8 +91,8 @@
        ldflags = [ "/DELAYLOAD:wininet.dll" ]
 --- a/chrome/utility/services.cc
 +++ b/chrome/utility/services.cc
-@@ -86,7 +86,7 @@
- #include "chrome/services/file_util/document_analysis_service.h"  // nogncheck
+@@ -79,7 +79,7 @@
+ #include "chrome/services/file_util/file_util_service.h"  // nogncheck
  #endif
  
 -#if BUILDFLAG(ENABLE_EXTENSIONS)
@@ -100,7 +100,7 @@
  #include "chrome/services/removable_storage_writer/public/mojom/removable_storage_writer.mojom.h"
  #include "chrome/services/removable_storage_writer/removable_storage_writer.h"
  #endif
-@@ -302,7 +302,7 @@
+@@ -288,7 +288,7 @@
  }
  #endif
  
@@ -109,8 +109,8 @@
  auto RunRemovableStorageWriter(
      mojo::PendingReceiver<chrome::mojom::RemovableStorageWriter> receiver) {
    return std::make_unique<RemovableStorageWriter>(std::move(receiver));
-@@ -515,7 +515,7 @@
-   services.Add(RunDocumentAnalysis);
+@@ -497,7 +497,7 @@
+   services.Add(RunFileUtil);
  #endif
  
 -#if BUILDFLAG(ENABLE_EXTENSIONS) && !BUILDFLAG(IS_WIN)
