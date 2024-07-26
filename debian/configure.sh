@@ -414,6 +414,7 @@ if [ $SYS_BINDGEN -gt 0 ]; then
       exit 1
     fi
 
+    op_enable="$op_enable system/bindgen-crabbyav1f"
     op_enable="$op_enable system/clang/bindgen-clang-paths"
 
     BINDGEN_PATH="/usr"

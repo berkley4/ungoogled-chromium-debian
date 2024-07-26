@@ -1,0 +1,88 @@
+author: Andres Salomon <dilinger@debian.org>
+description: fix bindgen-related stuff
+
+Crabbyav1f is calling bindgen features which are not currently in
+bookworm or sid; --allowlist-item was added in bindgen 0.68. As far
+as I can tell the build.rs stuff calls allowlist_item from there as
+well, so these arguments may just be redundant? Hopefully I'm not
+breaking stuff..  Drop this for sid once bindgen gets upgraded.
+
+
+--- a/third_party/crabbyavif/BUILD.gn
++++ b/third_party/crabbyavif/BUILD.gn
+@@ -12,15 +12,6 @@
+   bindgen_flags = [
+     "no-doc-comments",
+     "generate=functions,types,vars,methods,constructors,destructors",
+-    "allowlist-item=dav1d_close",
+-    "allowlist-item=dav1d_data_unref",
+-    "allowlist-item=dav1d_data_wrap",
+-    "allowlist-item=dav1d_default_settings",
+-    "allowlist-item=dav1d_error",
+-    "allowlist-item=dav1d_get_picture",
+-    "allowlist-item=dav1d_open",
+-    "allowlist-item=dav1d_picture_unref",
+-    "allowlist-item=dav1d_send_data",
+   ]
+ }
+ 
+@@ -46,59 +37,6 @@
+   bindgen_flags = [
+     "no-doc-comments",
+     "generate=functions,types,vars,methods,constructors,destructors",
+-    "allowlist-item=ARGBAttenuate",
+-    "allowlist-item=ARGBUnattenuate",
+-    "allowlist-item=Convert16To8Plane",
+-    "allowlist-item=FilterMode",
+-    "allowlist-item=FilterMode_kFilterBilinear",
+-    "allowlist-item=FilterMode_kFilterBox",
+-    "allowlist-item=FilterMode_kFilterNone",
+-    "allowlist-item=HalfFloatPlane",
+-    "allowlist-item=I010AlphaToARGBMatrix",
+-    "allowlist-item=I010AlphaToARGBMatrixFilter",
+-    "allowlist-item=I010ToARGBMatrix",
+-    "allowlist-item=I010ToARGBMatrixFilter",
+-    "allowlist-item=I012ToARGBMatrix",
+-    "allowlist-item=I210AlphaToARGBMatrix",
+-    "allowlist-item=I210AlphaToARGBMatrixFilter",
+-    "allowlist-item=I210ToARGBMatrix",
+-    "allowlist-item=I210ToARGBMatrixFilter",
+-    "allowlist-item=I400ToARGBMatrix",
+-    "allowlist-item=I410AlphaToARGBMatrix",
+-    "allowlist-item=I410ToARGBMatrix",
+-    "allowlist-item=I420AlphaToARGBMatrix",
+-    "allowlist-item=I420AlphaToARGBMatrixFilter",
+-    "allowlist-item=I420ToARGBMatrix",
+-    "allowlist-item=I420ToARGBMatrixFilter",
+-    "allowlist-item=I420ToRGB24Matrix",
+-    "allowlist-item=I420ToRGB24MatrixFilter",
+-    "allowlist-item=I420ToRGB565Matrix",
+-    "allowlist-item=I420ToRGBAMatrix",
+-    "allowlist-item=I422AlphaToARGBMatrix",
+-    "allowlist-item=I422AlphaToARGBMatrixFilter",
+-    "allowlist-item=I422ToARGBMatrix",
+-    "allowlist-item=I422ToARGBMatrixFilter",
+-    "allowlist-item=I422ToRGB24MatrixFilter",
+-    "allowlist-item=I422ToRGB565Matrix",
+-    "allowlist-item=I422ToRGBAMatrix",
+-    "allowlist-item=I444AlphaToARGBMatrix",
+-    "allowlist-item=I444ToARGBMatrix",
+-    "allowlist-item=I444ToRGB24Matrix",
+-    "allowlist-item=ScalePlane",
+-    "allowlist-item=ScalePlane_12",
+-    "allowlist-item=YuvConstants",
+-    "allowlist-item=kYuv2020Constants",
+-    "allowlist-item=kYuvF709Constants",
+-    "allowlist-item=kYuvH709Constants",
+-    "allowlist-item=kYuvI601Constants",
+-    "allowlist-item=kYuvJPEGConstants",
+-    "allowlist-item=kYuvV2020Constants",
+-    "allowlist-item=kYvu2020Constants",
+-    "allowlist-item=kYvuF709Constants",
+-    "allowlist-item=kYvuH709Constants",
+-    "allowlist-item=kYvuI601Constants",
+-    "allowlist-item=kYvuJPEGConstants",
+-    "allowlist-item=kYvuV2020Constants",
+   ]
+ }
+ 
