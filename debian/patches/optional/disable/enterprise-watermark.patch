@@ -12,15 +12,7 @@
  
    void set_on_delay_apply_data_protection_settings_if_empty_called_for_testing(
        base::OnceClosure closure) {
-@@ -1086,6 +1088,7 @@
-   void ApplyDataProtectionSettings(
-       base::WeakPtr<content::WebContents> expected_web_contents,
-       const enterprise_data_protection::UrlSettings& settings);
-+#endif
- 
- #if BUILDFLAG(ENTERPRISE_WATERMARK)
-   void ApplyWatermarkSettings(const std::string& watermark_text);
-@@ -1231,8 +1234,10 @@
+@@ -1231,8 +1233,10 @@
    bool clear_screenshot_protection_on_page_load_ = false;
  #endif
  
