@@ -75,6 +75,7 @@ various/disable/unrar.patch
 various/disable/crashpad-handler/crashpad-handler.patch
 various/disable/crashpad-handler/crashpad-handler_2.patch
 various/disable/crashpad-handler/crashpad-handler_3.patch
+various/disable/crashpad-handler/crashpad-handler_4.patch
 various/disable/image-writer/image-writer-private.patch
 various/disable/image-writer/image-writer-utility.patch
 various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
