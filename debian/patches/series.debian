@@ -92,6 +92,7 @@ various/fixes/swiftshader-build.patch
 various/fixes/template-correction.patch
 various/fixes/unbundle-script-dh-clean-interoperabilty.patch
 various/fixes/unshrink-ui-font.patch
+various/fixes/various-ui-dependency-issues.patch
 various/fixes/xdg-basedir.patch
 various/system/libdrm.patch
 various/system/libusb-api.patch
