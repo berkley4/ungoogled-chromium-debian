@@ -69,6 +69,7 @@ various/disable/labs-toolbar-button.patch
 various/disable/lens-features.patch
 various/disable/libavif-fuzzers.patch
 various/disable/motherboard-metrics.patch
+various/disable/rtc-tools.patch
 various/disable/screen-ai-service.patch
 various/disable/tint-fuzzers.patch
 various/disable/unrar.patch
