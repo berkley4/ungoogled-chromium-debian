@@ -1,0 +1,54 @@
+--- a/third_party/webrtc/webrtc.gni
++++ b/third_party/webrtc/webrtc.gni
+@@ -562,10 +562,10 @@
+     # Abseil dependencies need to be converted to //third_party/abseil-cpp:absl when build_with_chromium=true
+     if (build_with_chromium && defined(deps)) {
+       absl_dependencies =
+-          filter_labels_include(deps, [ "//third_party/abseil-cpp/*" ])
++          filter_include(deps, [ "//third_party/abseil-cpp/*" ])
+       if (absl_dependencies != []) {
+         filtered_deps =
+-            filter_labels_exclude(deps, [ "//third_party/abseil-cpp/*" ])
++            filter_exclude(deps, [ "//third_party/abseil-cpp/*" ])
+         deps = []
+         deps = filtered_deps
+         deps += [ "//third_party/abseil-cpp:absl" ]
+@@ -679,10 +679,10 @@
+     # Abseil dependencies need to be converted to //third_party/abseil-cpp:absl when build_with_chromium=true
+     if (build_with_chromium && defined(deps)) {
+       absl_dependencies =
+-          filter_labels_include(deps, [ "//third_party/abseil-cpp/*" ])
++          filter_include(deps, [ "//third_party/abseil-cpp/*" ])
+       if (absl_dependencies != []) {
+         filtered_deps =
+-            filter_labels_exclude(deps, [ "//third_party/abseil-cpp/*" ])
++            filter_exclude(deps, [ "//third_party/abseil-cpp/*" ])
+         deps = []
+         deps = filtered_deps
+         deps += [ "//third_party/abseil-cpp:absl" ]
+@@ -771,10 +771,10 @@
+     # Abseil dependencies need to be converted to //third_party/abseil-cpp:absl when build_with_chromium=true
+     if (build_with_chromium && defined(deps)) {
+       absl_dependencies =
+-          filter_labels_include(deps, [ "//third_party/abseil-cpp/*" ])
++          filter_include(deps, [ "//third_party/abseil-cpp/*" ])
+       if (absl_dependencies != []) {
+         filtered_deps =
+-            filter_labels_exclude(deps, [ "//third_party/abseil-cpp/*" ])
++            filter_exclude(deps, [ "//third_party/abseil-cpp/*" ])
+         deps = []
+         deps = filtered_deps
+         deps += [ "//third_party/abseil-cpp:absl" ]
+@@ -913,10 +913,10 @@
+     # Abseil dependencies need to be converted to //third_party/abseil-cpp:absl when build_with_chromium=true
+     if (build_with_chromium && defined(deps)) {
+       absl_dependencies =
+-          filter_labels_include(deps, [ "//third_party/abseil-cpp/*" ])
++          filter_include(deps, [ "//third_party/abseil-cpp/*" ])
+       if (absl_dependencies != []) {
+         filtered_deps =
+-            filter_labels_exclude(deps, [ "//third_party/abseil-cpp/*" ])
++            filter_exclude(deps, [ "//third_party/abseil-cpp/*" ])
+         deps = []
+         deps = filtered_deps
+         deps += [ "//third_party/abseil-cpp:absl" ]
