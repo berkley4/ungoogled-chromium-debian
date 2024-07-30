@@ -6,7 +6,7 @@ case $USER in
     exit 1 ;;
 esac
 
-USAGE="[CLANG_VER=<version>] SYS_CLANG=<0|1|2> ${0##*/} [h|help] [c|clean|hc|hardclean]"
+USAGE="[CLANG_VER=<version>] SYS_CLANG=<0|1|2> SYS_RUST=<0|1|2> ${0##*/} [h|help] [c|clean|hc|hardclean]"
 
 bg_tag=upstream/v0.69.4
 nc_ver=Ws0ru48A4IYoYLVKbV5K5_mDYT4ml9LAQUKdkiczdlMC
@@ -54,14 +54,24 @@ esac
 case $SYS_CLANG in
   "")
     printf '%s\n' "ERROR: SYS_CLANG not set, please specify a value for it"
-    printf '%s\n' "ERROR: for example: SYS_CLANG=0 ./build-bindgen.sh"
+    printf '%s\n' "ERROR: for example: SYS_CLANG=2 SYS_RUST=1 ./build-bindgen.sh"
+    exit 1 ;;
+esac
+
+
+case $SYS_RUST in
+  "")
+    printf '%s\n' "ERROR: SYS_RUST is not set, please specify a value for it"
+    printf '%s\n' "ERROR: for example: SYS_CLANG=2 SYS_RUST=1 ./build-bindgen.sh"
     exit 1 ;;
 esac
 
 
 # Set CLANG_PATH according to value of SYS_CLANG
 CLANG_PATH=/usr/local
-if [ $SYS_CLANG -eq 1 ]; then
+if [ $SYS_CLANG -eq 0 ]; then
+  CLANG_PATH=third_party/llvm-build/Release+Asserts
+elif [ $SYS_CLANG -eq 1 ]; then
   case $CLANG_VER in
     "")
       printf '%s\n' "ERROR: SYS_CLANG=1 requires setting CLANG_VER"
@@ -70,8 +80,19 @@ if [ $SYS_CLANG -eq 1 ]; then
   esac
 
   CLANG_PATH=/usr/lib/llvm-$CLANG_VER
-elif [ $SYS_CLANG -eq 2 ]; then
-  CLANG_PATH=third_party/llvm-build/Release+Asserts
+fi
+
+
+# Set RUST_PATH according to value of SYS_RUST
+RUST_PATH=$HOME/.cargo/bin
+if [ $SYS_RUST -eq 0 ]; then
+  RUST_PATH=third_party/rust-toolchain/bin
+elif [ $SYS_RUST -eq 1 ]; then
+  RUST_PATH=/usr/bin
+fi
+
+if [ $SYS_RUST -eq 0 ] || [ $SYS_RUST -eq 2 ]; then
+  export PATH="$RUST_PATH:$PATH"
 fi
 
 
@@ -82,7 +103,7 @@ fi
 
 
 ## Check that aria2c and curl are installed
-for prog in aria2c cargo curl unzip; do
+for prog in aria2c cargo curl rustc unzip; do
   if ! command -v $prog >/dev/null 2>&1; then
     printf '%s\n' "ERROR: please install $prog and re-run the script"
     exit 1
