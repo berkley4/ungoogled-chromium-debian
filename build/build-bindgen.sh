@@ -82,7 +82,7 @@ fi
 
 
 ## Check that aria2c and curl are installed
-for prog in aria2c cargo curl; do
+for prog in aria2c cargo curl unzip; do
   if ! command -v $prog >/dev/null 2>&1; then
     printf '%s\n' "ERROR: please install $prog and re-run the script"
     exit 1
