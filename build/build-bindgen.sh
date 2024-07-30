@@ -157,7 +157,7 @@ $CLANG_PATH/bin/llvm-strip target/release/bindgen
 chmod 0755 target/release/bindgen
 
 printf '\n%s\n\n' "Run the following as root :-"
-printf '%s\n' "cp --preserve=timestamps,mode $(real_dir_path target/release/bindgen) /usr/local/bin/"
+printf '%s\n' "cp --preserve=timestamps,mode $(real_dir_path target/release)/bindgen /usr/local/bin/"
 
 
 cd - >/dev/null
