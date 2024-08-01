@@ -78,9 +78,9 @@
        host.set_host(host_name_.substr(0, host_name_.size() - 1));
 --- a/services/network/public/cpp/features.cc
 +++ b/services/network/public/cpp/features.cc
-@@ -15,6 +15,10 @@
- 
- namespace network::features {
+@@ -37,6 +37,10 @@
+   return block_accept_ch && blocked_site->IsSameOriginWith(origin);
+ }
  
 +BASE_FEATURE(kMdns,
 +             "Mdns",
@@ -91,9 +91,9 @@
               base::FEATURE_ENABLED_BY_DEFAULT);
 --- a/services/network/public/cpp/features.h
 +++ b/services/network/public/cpp/features.h
-@@ -13,6 +13,7 @@
- namespace network {
- namespace features {
+@@ -24,6 +24,7 @@
+ COMPONENT_EXPORT(NETWORK_CPP)
+ bool ShouldBlockAcceptClientHintsFor(const url::Origin& origin);
  
 +COMPONENT_EXPORT(NETWORK_CPP) BASE_DECLARE_FEATURE(kMdns);
  COMPONENT_EXPORT(NETWORK_CPP) BASE_DECLARE_FEATURE(kNetworkErrorLogging);

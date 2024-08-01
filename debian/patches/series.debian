@@ -125,6 +125,9 @@ various/upstream/0018-3df5c7fb.diff
 various/upstream/0019-cd07528.diff
 various/upstream/0020-51487647.diff
 various/upstream/0021-4862b4da.diff
+various/upstream/0022-70dcf4d.diff
+various/upstream/0023-5fa3207.diff
+various/upstream/0024-d891706e.diff
 various/upstream/features/clear-GrShader-disk-cache-on-invalid-cache-key-prefix.patch
 various/upstream/features/leveldb-proto-enable-async-writes-by-default.patch
 various/warnings/clang-excessive-warnings.patch
@@ -195,7 +198,4 @@ optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
 optional/translate/revert-disable.patch
 optional/translate/stop-unsupported-switch-warning.patch
 
-addenda/0001-b3be9f5.diff
-addenda/0002-459645d.diff
-addenda/0003-77ccbbf7.diff
-addenda/0004-8d87a26.diff
+addenda/0001-2569782.diff

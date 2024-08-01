@@ -14,7 +14,7 @@ Cr-Commit-Position: refs/heads/main@{#1320419}
 
 --- a/PRESUBMIT.py
 +++ b/PRESUBMIT.py
-@@ -844,6 +844,7 @@
+@@ -848,6 +848,7 @@
         # Needed for interop with third-party library.
         '^third_party/blink/renderer/core/typed_arrays/array_buffer/' +
           'array_buffer_contents\.(cc|h)',
@@ -24,7 +24,7 @@ Cr-Commit-Position: refs/heads/main@{#1320419}
         '^gin/array_buffer\.(cc|h)',
 --- a/third_party/blink/renderer/core/typed_arrays/dom_array_buffer.cc
 +++ b/third_party/blink/renderer/core/typed_arrays/dom_array_buffer.cc
-@@ -258,8 +258,11 @@
+@@ -260,8 +260,11 @@
    v8::Local<v8::ArrayBuffer> wrapper;
    {
      v8::Context::Scope context_scope(script_state->GetContext());

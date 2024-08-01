@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -682,7 +682,7 @@
+@@ -683,7 +683,7 @@
        ]
      }
  
@@ -81,7 +81,7 @@
        binary = "$root_out_dir/libvk_swiftshader.so"
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -585,10 +585,6 @@
+@@ -586,10 +586,6 @@
      ]
    }
  

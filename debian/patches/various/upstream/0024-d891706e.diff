@@ -1,0 +1,81 @@
+From d891706e99f3f6a6af9352af4c4ea0d1adf61f49 Mon Sep 17 00:00:00 2001
+From: Orin Jaworski <orinj@google.com>
+Date: Mon, 29 Jul 2024 21:16:33 +0000
+Subject: [PATCH] Fix data race & CHECK on BrowsingHistoryHandler::remove_visits_callback_
+
+Fixed: 356050013
+Change-Id: I383f11d5618f49831db89035ebd60211703f863e
+Low-Coverage-Reason: TRIVIAL_CHANGE Fixing crash bug
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5745832
+Reviewed-by: John Lee <johntlee@chromium.org>
+Commit-Queue: Orin Jaworski <orinj@chromium.org>
+Reviewed-by: Orin Jaworski <orinj@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1334456}
+---
+
+--- a/chrome/browser/ui/webui/history/browsing_history_handler.cc
++++ b/chrome/browser/ui/webui/history/browsing_history_handler.cc
+@@ -311,7 +311,9 @@
+   initial_results_ = std::nullopt;
+   deferred_callbacks_.clear();
+   query_history_callback_id_.clear();
+-  remove_visits_callback_.clear();
++  while (!remove_visits_callbacks_.empty()) {
++    remove_visits_callbacks_.pop();
++  }
+ }
+ 
+ void BrowsingHistoryHandler::RegisterMessages() {
+@@ -442,8 +444,7 @@
+ void BrowsingHistoryHandler::HandleRemoveVisits(const base::Value::List& args) {
+   CHECK_EQ(args.size(), 2U);
+   const base::Value& callback_id = args[0];
+-  CHECK(remove_visits_callback_.empty());
+-  remove_visits_callback_ = callback_id.GetString();
++  remove_visits_callbacks_.push(callback_id.GetString());
+ 
+   std::vector<BrowsingHistoryService::HistoryEntry> items_to_remove;
+   const base::Value& items = args[1];
+@@ -556,16 +557,17 @@
+ }
+ 
+ void BrowsingHistoryHandler::OnRemoveVisitsComplete() {
+-  CHECK(!remove_visits_callback_.empty());
+-  ResolveJavascriptCallback(base::Value(remove_visits_callback_),
++  CHECK(!remove_visits_callbacks_.empty());
++  ResolveJavascriptCallback(base::Value(remove_visits_callbacks_.front()),
+                             base::Value());
+-  remove_visits_callback_.clear();
++  remove_visits_callbacks_.pop();
+ }
+ 
+ void BrowsingHistoryHandler::OnRemoveVisitsFailed() {
+-  CHECK(!remove_visits_callback_.empty());
+-  RejectJavascriptCallback(base::Value(remove_visits_callback_), base::Value());
+-  remove_visits_callback_.clear();
++  CHECK(!remove_visits_callbacks_.empty());
++  RejectJavascriptCallback(base::Value(remove_visits_callbacks_.front()),
++                           base::Value());
++  remove_visits_callbacks_.pop();
+ }
+ 
+ void BrowsingHistoryHandler::HistoryDeleted() {
+--- a/chrome/browser/ui/webui/history/browsing_history_handler.h
++++ b/chrome/browser/ui/webui/history/browsing_history_handler.h
+@@ -8,6 +8,7 @@
+ #include <stdint.h>
+ 
+ #include <memory>
++#include <queue>
+ #include <string>
+ #include <utility>
+ #include <vector>
+@@ -103,7 +104,7 @@
+ 
+   base::OnceClosure query_history_continuation_;
+ 
+-  std::string remove_visits_callback_;
++  std::queue<std::string> remove_visits_callbacks_;
+ 
+   base::WeakPtrFactory<BrowsingHistoryHandler> weak_factory_{this};
+ };

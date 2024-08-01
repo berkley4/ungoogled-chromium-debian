@@ -58,7 +58,7 @@ Cr-Commit-Position: refs/heads/main@{#1318740}
  #if BUILDFLAG(USE_VIZ_DEBUGGER)
 --- a/components/viz/service/gl/gpu_service_impl.cc
 +++ b/components/viz/service/gl/gpu_service_impl.cc
-@@ -1086,6 +1086,14 @@
+@@ -1117,6 +1117,14 @@
        // Remove the prefix from the key before load.
        no_prefix_key = key.substr(prefix.length() + 1);
      } else {
@@ -75,9 +75,9 @@ Cr-Commit-Position: refs/heads/main@{#1318740}
    }
 --- a/gpu/config/gpu_finch_features.cc
 +++ b/gpu/config/gpu_finch_features.cc
-@@ -217,6 +217,13 @@
+@@ -229,6 +229,13 @@
               "GenGpuDiskCacheKeyPrefixInGpuService",
-              base::FEATURE_DISABLED_BY_DEFAULT);
+              base::FEATURE_ENABLED_BY_DEFAULT);
  
 +// When enabled, Grshader disk cache will be cleared on startup if any cache
 +// entry prefix does not match with the current prefix. prefix is made up of
@@ -91,7 +91,7 @@ Cr-Commit-Position: refs/heads/main@{#1318740}
  // TODO(andrescj): remove or enable by default in Chrome OS once
 --- a/gpu/config/gpu_finch_features.h
 +++ b/gpu/config/gpu_finch_features.h
-@@ -66,6 +66,8 @@
+@@ -61,6 +61,8 @@
  
  GPU_EXPORT BASE_DECLARE_FEATURE(kGenGpuDiskCacheKeyPrefixInGpuService);
  

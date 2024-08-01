@@ -1,0 +1,29 @@
+From 70dcf4de81c25a626d1aff1ff6163897fa86f404 Mon Sep 17 00:00:00 2001
+From: Yoshisato Yanagisawa <yyanagisawa@chromium.org>
+Date: Fri, 26 Jul 2024 01:01:14 +0000
+Subject: [PATCH] Do not add a controllee if it has been shutdown
+
+In the previous code, even if the ServiceWorkerVersion has been
+shutdown, AddControllee tries to add the given client.  Since `context_`
+is not available at that time, it caused the crash.
+
+Bug: 355329224
+Change-Id: I03ac01c77aff2484cf0ed282bce62c04180fcf1d
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5740637
+Reviewed-by: Shunya Shishido <sisidovski@chromium.org>
+Commit-Queue: Yoshisato Yanagisawa <yyanagisawa@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1333310}
+---
+
+--- a/content/browser/service_worker/service_worker_version.cc
++++ b/content/browser/service_worker/service_worker_version.cc
+@@ -934,6 +934,9 @@
+   // crash.
+   CHECK(!base::Contains(controllee_map_, uuid));
+ 
++  if (!context_) {
++    return;
++  }
+   controllee_map_[uuid] = service_worker_client->AsWeakPtr();
+   embedded_worker_->UpdateForegroundPriority();
+   ClearTick(&no_controllees_time_);

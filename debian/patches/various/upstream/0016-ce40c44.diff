@@ -64,7 +64,7 @@ Cr-Commit-Position: refs/heads/main@{#1329189}
  }  // namespace blink
 --- a/third_party/blink/renderer/core/frame/local_frame.cc
 +++ b/third_party/blink/renderer/core/frame/local_frame.cc
-@@ -2170,7 +2170,7 @@
+@@ -2174,7 +2174,7 @@
        return true;
      }
  
@@ -73,7 +73,7 @@ Cr-Commit-Position: refs/heads/main@{#1329189}
        return true;
      }
      PrintNavigationErrorMessage(
-@@ -3995,24 +3995,29 @@
+@@ -4020,24 +4020,29 @@
    return security_origin->IsSameOriginWith(top_security_origin);
  }
  

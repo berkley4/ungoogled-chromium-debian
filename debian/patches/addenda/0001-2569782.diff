@@ -1,0 +1,40 @@
+From 2569782d023922cd6808e68d4feaf2a9d6979bb7 Mon Sep 17 00:00:00 2001
+From: François Doray <fdoray@chromium.org>
+Date: Tue, 30 Jul 2024 16:07:29 +0000
+Subject: [PATCH] Use cached num displays in TabUsageScenarioTracker::OnWebContentsRemoved.
+
+This should have been done as part of crrev.com/c/5639196. As explained
+on the description of that CL, display::Screen::GetNumDisplays may
+return a new number of displays because OnDisplayAdded/OnDisplaysRemoved
+have been notified, which breaks assumptions made in
+TabUsageScenarioTracker. For that reason, the cached number of displays
+should always be used.
+
+(cherry picked from commit 48b6ab260bb4712f3d3eab9c7b2967ce44f1e861)
+
+Bug: 341488142
+Change-Id: I128d796a6b2eedd2786d3c3258d0cdd4af8d3a5a
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5730422
+Auto-Submit: Francois Pierre Doray <fdoray@chromium.org>
+Reviewed-by: Patrick Monette <pmonette@chromium.org>
+Commit-Queue: Patrick Monette <pmonette@chromium.org>
+Commit-Queue: Francois Pierre Doray <fdoray@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1331264}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5748821
+Commit-Queue: Miriam Polzer <mpolzer@google.com>
+Reviewed-by: Marc Treib <treib@chromium.org>
+Cr-Commit-Position: refs/branch-heads/6533@{#1858}
+Cr-Branched-From: 7e0b87ec6b8cb5cb2969e1479fc25776e582721d-refs/heads/main@{#1313161}
+---
+
+--- a/chrome/browser/metrics/usage_scenario/tab_usage_scenario_tracker.cc
++++ b/chrome/browser/metrics/usage_scenario/tab_usage_scenario_tracker.cc
+@@ -336,7 +336,7 @@
+     // video playing on a single monitor.
+     size_t num_removed = contents_playing_video_fullscreen_.erase(web_contents);
+     if (num_removed == 1 && contents_playing_video_fullscreen_.empty() &&
+-        GetNumDisplays() == 1) {
++        last_num_displays_.has_value() && last_num_displays_.value() == 1) {
+       usage_scenario_data_store_->OnFullScreenVideoEndsOnSingleMonitor();
+     }
+   }

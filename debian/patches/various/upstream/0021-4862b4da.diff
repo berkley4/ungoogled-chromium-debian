@@ -27,7 +27,7 @@ Cr-Commit-Position: refs/heads/main@{#1332592}
 
 --- a/third_party/blink/renderer/core/fileapi/public_url_manager.cc
 +++ b/third_party/blink/renderer/core/fileapi/public_url_manager.cc
-@@ -147,7 +147,7 @@
+@@ -132,7 +132,7 @@
  }
  
  PublicURLManager::PublicURLManager(

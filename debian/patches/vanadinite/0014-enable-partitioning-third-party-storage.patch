@@ -1,6 +1,6 @@
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -760,7 +760,7 @@
+@@ -756,7 +756,7 @@
  
  BASE_FEATURE(kDisableThirdPartyStoragePartitioningDeprecationTrial2,
               "DisableThirdPartyStoragePartitioningDeprecationTrial2",
