@@ -6,7 +6,7 @@ case $USER in
     exit 1 ;;
 esac
 
-USAGE="[CLANG_VER=<version>] SYS_CLANG=<0|1|2> SYS_RUST=<0|1|2> ${0##*/} [h|help] [c|clean|hc|hardclean]"
+USAGE="[CLANG_VER=<version>] [SYS_CLANG=<0|1|2>] SYS_RUST=<0|1|2> ${0##*/} [h|help] [c|clean|hc|hardclean]"
 
 bg_tag=upstream/v0.69.4
 nc_ver=Ws0ru48A4IYoYLVKbV5K5_mDYT4ml9LAQUKdkiczdlMC
@@ -66,8 +66,31 @@ case $SYS_RUST in
 esac
 
 
+# Set RUST_PATH according to value of SYS_RUST (default is SYS_RUST=0)
+RUST_PATH=third_party/rust-toolchain/bin
+if [ $SYS_RUST -eq 1 ]; then
+  RUST_PATH=/usr/bin
+elif [ $SYS_RUST -ge 2 ]; then
+  RUST_PATH=$HOME/.cargo/bin
+fi
+
+if [ $SYS_RUST -eq 0 ] || [ $SYS_RUST -ge 2 ]; then
+  export PATH="$RUST_PATH:$PATH"
+
+  if [ $SYS_RUST -eq 0 ]; then
+    if [ $SYS_CLANG -ne 0 ]; then
+      printf '%s\n' "ERROR: cannot set SYS_CLANG=$SYS_CLANG when SYS_RUST=0"
+      printf '%s\n' "ERROR: set SYS_CLANG=0 (or refrain from setting it)"
+      exit 1
+    fi
+  fi
+fi
+
+
 # Set CLANG_PATH according to value of SYS_CLANG (default is SYS_CLANG=0)
-CLANG_PATH=third_party/llvm-build/Release+Asserts
+# This variable is used for pointing at the location of the libclang.so library
+# Note: for SYS_CLANG=0 it's NOT set to third_party/llvm-build/Release+Asserts
+CLANG_PATH=${RUST_PATH%/*}
 if [ $SYS_CLANG -eq 1 ]; then
   case $CLANG_VER in
     "")
@@ -82,17 +105,8 @@ elif [ $SYS_CLANG -ge 2 ]; then
 fi
 
 
-# Set RUST_PATH according to value of SYS_RUST (default is SYS_RUST=0)
-RUST_PATH=third_party/rust-toolchain/bin
-if [ $SYS_RUST -eq 1 ]; then
-  RUST_PATH=/usr/bin
-elif [ $SYS_RUST -ge 2 ]; then
-  RUST_PATH=$HOME/.cargo/bin
-fi
-
-if [ $SYS_RUST -eq 0 ] || [ $SYS_RUST -ge 2 ]; then
-  export PATH="$RUST_PATH:$PATH"
-fi
+# Set both LIBCLANG_PATH and LIBCLANG_STATIC_PATH to this value at build time
+LIBCLANG_PATH=$CLANG_PATH/lib
 
 
 if [ ! -f build-bindgen.sh ]; then
@@ -140,8 +154,8 @@ cd rust-bindgen
 
 
 LLVM_CONFIG_PATH=$CLANG_PATH/bin/llvm-config \
-LIBCLANG_PATH=$CLANG_PATH/lib \
-LIBCLANG_STATIC_PATH=$CLANG_PATH/lib \
+LIBCLANG_PATH=$LIBCLANG_PATH \
+LIBCLANG_STATIC_PATH=$LIBCLANG_PATH \
 CC=$CLANG_PATH/bin/clang \
 CXX=$CLANG_PATH/bin/clang++ \
 LD=clang \
