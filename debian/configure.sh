@@ -408,7 +408,7 @@ if [ $SYS_BINDGEN -gt 0 ]; then
   BINDGEN_PATH="/usr/local"
 
   if [ $SYS_BINDGEN -eq 1 ]; then
-    if [ $SYS_CLANG -eq 0 ] || [ $SYS_CLANG -eq 2 ]; then
+    if [ $SYS_CLANG -eq 0 ] || [ $SYS_CLANG -ge 2 ]; then
       printf '%s\n' "SYS_BINDGEN=1 is incompatible with SYS_CLANG=0 or SYS_CLANG=2"
       printf '%s\n' "Set SYS_BINDGEN=2 or SYS_CLANG=1 and re-run the script"
       exit 1

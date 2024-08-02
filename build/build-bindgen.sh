@@ -77,7 +77,7 @@ if [ $SYS_CLANG -eq 1 ]; then
   esac
 
   CLANG_PATH=/usr/lib/llvm-$CLANG_VER
-elif [ $SYS_CLANG -eq 2 ]; then
+elif [ $SYS_CLANG -ge 2 ]; then
   CLANG_PATH=/usr/local
 fi
 
@@ -86,11 +86,11 @@ fi
 RUST_PATH=third_party/rust-toolchain/bin
 if [ $SYS_RUST -eq 1 ]; then
   RUST_PATH=/usr/bin
-elif [ $SYS_RUST -eq 2 ]; then
+elif [ $SYS_RUST -ge 2 ]; then
   RUST_PATH=$HOME/.cargo/bin
 fi
 
-if [ $SYS_RUST -eq 0 ] || [ $SYS_RUST -eq 2 ]; then
+if [ $SYS_RUST -eq 0 ] || [ $SYS_RUST -ge 2 ]; then
   export PATH="$RUST_PATH:$PATH"
 fi
 
