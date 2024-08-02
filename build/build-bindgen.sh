@@ -10,7 +10,6 @@ USAGE="[CLANG_VER=<version>] SYS_CLANG=<0|1|2> SYS_RUST=<0|1|2> ${0##*/} [h|help
 
 bg_tag=upstream/v0.69.4
 nc_ver=Ws0ru48A4IYoYLVKbV5K5_mDYT4ml9LAQUKdkiczdlMC
-in_tree_clang_ver=18
 
 bg_repo=https://chromium.googlesource.com/external/github.com/rust-lang/rust-bindgen.git
 nc_base_url=https://chrome-infra-packages.appspot.com/p/infra/3pp/static_libs/ncursesw/linux-amd64
