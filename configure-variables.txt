@@ -23,18 +23,18 @@ CLANG_VER		<major ver>	Override the default clang version.
 					get an error if you do not have a version installed which at least equals the version of
 					LLEV_VERSION in debian/rules.in. This setting has no effect if SYS_CLANG=0.
 
-SYS_CLANG		0		Use in-tree chromium clang/llvm binaries
-			1		Use a system clang package (eg from apt.llvm.org)
-			2		Use clang installed in /usr/local (self built)
+SYS_CLANG		0		Use in-tree chromium clang/llvm binaries (default)
+			1		Use a system clang package
+			2		Use clang installed in /usr/local (Recommended method)
 					Refer to Toolchain.md for more details.
 
 SYS_RUST		0		Use in-tree chromium rust binaries (default)
-			1		Use rustc from the system package (eg from debian unstable/backports repo)
+			1		Use rustc from the system package
 			2		Use upstream rust installed to $HOME/.cargo/bin (Recommended method)
 					Refer to Rust.md for more details.
 
-SYS_BINDGEN		1		Use bindgen from the system package (eg from debian unstable/backports repo)
-			2		Use self-compiled bindgen installed in /usr/local
+SYS_BINDGEN		1		Use bindgen from the system package
+			2		Use self-compiled bindgen installed in /usr/local (Recommended method)
 					SYS_BINDGEN=1 is only compatible with SYS_CLANG=1
 					SYS_BINDGEN=2 is compatible with all values of SYS_CLANG
 					Refer to Bindgen.md for more details.
