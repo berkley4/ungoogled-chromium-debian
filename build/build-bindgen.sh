@@ -66,11 +66,9 @@ case $SYS_RUST in
 esac
 
 
-# Set CLANG_PATH according to value of SYS_CLANG
-CLANG_PATH=/usr/local
-if [ $SYS_CLANG -eq 0 ]; then
-  CLANG_PATH=third_party/llvm-build/Release+Asserts
-elif [ $SYS_CLANG -eq 1 ]; then
+# Set CLANG_PATH according to value of SYS_CLANG (default is SYS_CLANG=0)
+CLANG_PATH=third_party/llvm-build/Release+Asserts
+if [ $SYS_CLANG -eq 1 ]; then
   case $CLANG_VER in
     "")
       printf '%s\n' "ERROR: SYS_CLANG=1 requires setting CLANG_VER"
@@ -79,15 +77,17 @@ elif [ $SYS_CLANG -eq 1 ]; then
   esac
 
   CLANG_PATH=/usr/lib/llvm-$CLANG_VER
+elif [ $SYS_CLANG -eq 2 ]; then
+  CLANG_PATH=/usr/local
 fi
 
 
-# Set RUST_PATH according to value of SYS_RUST
-RUST_PATH=$HOME/.cargo/bin
-if [ $SYS_RUST -eq 0 ]; then
-  RUST_PATH=third_party/rust-toolchain/bin
-elif [ $SYS_RUST -eq 1 ]; then
+# Set RUST_PATH according to value of SYS_RUST (default is SYS_RUST=0)
+RUST_PATH=third_party/rust-toolchain/bin
+if [ $SYS_RUST -eq 1 ]; then
   RUST_PATH=/usr/bin
+elif [ $SYS_RUST -eq 2 ]; then
+  RUST_PATH=$HOME/.cargo/bin
 fi
 
 if [ $SYS_RUST -eq 0 ] || [ $SYS_RUST -eq 2 ]; then
