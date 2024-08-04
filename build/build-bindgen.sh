@@ -128,10 +128,12 @@ done
 if [ ! -d rust-bindgen ]; then
   git clone --depth=1 -b $bg_tag $bg_repo
 else
+  cd rust-bindgen
   git clean -dfx
   git reset --hard HEAD
   git fetch --depth 1 origin tag $bg_tag
   git checkout tags/$bg_tag
+  cd - >/dev/null
 fi
 
 
