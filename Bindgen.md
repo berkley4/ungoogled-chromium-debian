@@ -19,8 +19,9 @@ ___Script requirements___
 
 Make sure you have copies of the following installed :-
 
-aria2c
+cargo
 curl
+rustc
 unzip
 
 

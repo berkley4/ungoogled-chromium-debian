@@ -115,8 +115,8 @@ if [ ! -f build-bindgen.sh ]; then
 fi
 
 
-## Check that aria2c and curl are installed
-for prog in aria2c cargo curl rustc unzip; do
+## Check that cargo, curl, rustc and unzip are available
+for prog in cargo curl rustc unzip; do
   if ! command -v $prog >/dev/null 2>&1; then
     printf '%s\n' "ERROR: please install $prog and re-run the script"
     exit 1
@@ -124,9 +124,31 @@ for prog in aria2c cargo curl rustc unzip; do
 done
 
 
+## Download/extract ncursesw (prefer aria2c, fall back to wget).
+command -v aria2c >/dev/null 2>&1 && D_LOADER=aria2c || D_LOADER=wget
+
+case $D_LOADER in
+  aria2c)
+    dl_args="-x1 -s1 -c -o ncursesw-linux-amd64.zip -d $DL_CACHE" ;;
+
+  *)
+    dl_args="--continue -O ncursesw-linux-amd64.zip -P $DL_CACHE" ;;
+esac
+
+if [ ! -f ncursesw-linux-amd64.zip ]; then
+  $D_LOADER $dl_args "$(curl -s $nc_page_url | get_nc_url)"
+fi
+
+if [ ! -d ncursesw ]; then
+  mkdir ncursesw
+  unzip -q ncursesw-linux-amd64.zip -d ncursesw
+  nc_path=$(realpath ncursesw)
+fi
+
+
 ## Clone/update the rust-bindgen repo
 if [ ! -d rust-bindgen ]; then
-  git clone -c advice.detachedHead=false --depth=1 -b $bg_tag $bg_repo
+  git clone --depth=1 -b $bg_tag $bg_repo
 else
   cd rust-bindgen
   git clean -dfx
@@ -134,18 +156,6 @@ else
   git fetch --depth 1 origin tag $bg_tag
   git checkout tags/$bg_tag
   cd - >/dev/null
-fi
-
-
-## Download/extract ncursesw
-if [ ! -f ncursesw-linux-amd64.zip ]; then
-  aria2c -o ncursesw-linux-amd64.zip "$(curl -s $nc_page_url | get_nc_url)"
-fi
-
-if [ ! -d ncursesw ]; then
-  mkdir ncursesw
-  unzip -q ncursesw-linux-amd64.zip -d ncursesw
-  nc_path=$(realpath ncursesw)
 fi
 
 
