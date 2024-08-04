@@ -126,7 +126,7 @@ done
 
 ## Clone/update the rust-bindgen repo
 if [ ! -d rust-bindgen ]; then
-  git clone --depth=1 -b $bg_tag $bg_repo
+  git clone -c advice.detachedHead=false --depth=1 -b $bg_tag $bg_repo
 else
   cd rust-bindgen
   git clean -dfx
@@ -144,7 +144,7 @@ fi
 
 if [ ! -d ncursesw ]; then
   mkdir ncursesw
-  unzip ncursesw-linux-amd64.zip -d ncursesw
+  unzip -q ncursesw-linux-amd64.zip -d ncursesw
   nc_path=$(realpath ncursesw)
 fi
 
