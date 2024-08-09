@@ -354,7 +354,7 @@ override_dh_auto_install-arch:
 	chmod 4755 $(OUT_DIR)/chrome_sandbox
 
 override_dh_auto_install-indep:
-	mv $(OUT_DIR)/locales/en-US.pak $(DEBIAN)/
+	test ! -f $(OUT_DIR)/locales/en-US.pak || mv $(OUT_DIR)/locales/en-US.pak $(DEBIAN)/
 
 override_dh_fixperms:
 	dh_fixperms --exclude chrome-sandbox
