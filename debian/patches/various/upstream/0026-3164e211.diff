@@ -1,0 +1,32 @@
+From 3164e21147e468b92974a29bf086e6faeeb3b6dc Mon Sep 17 00:00:00 2001
+From: Joey Arhar <jarhar@chromium.org>
+Date: Wed, 31 Jul 2024 21:01:42 +0000
+Subject: [PATCH] Add IsDetached check to ToV8ContextEvenIfDetached
+
+Calling LocalFrame::IsProvisional without first checking
+LocalFrame::IsDetached can cause a crash due to the CHECK for IsDetached
+in IsProvisional.
+
+I made the function continue to get a context from the frame because it
+seems like the correct thing to do given that the function has
+"EvenIfDetached" in its name.
+
+Bug: 355648208
+Change-Id: I14fa133660740b7d5cdf5b838698cc571e02825c
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5753883
+Reviewed-by: Daniel Cheng <dcheng@chromium.org>
+Commit-Queue: Joey Arhar <jarhar@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1335682}
+---
+
+--- a/third_party/blink/renderer/bindings/core/v8/v8_binding_for_core.cc
++++ b/third_party/blink/renderer/bindings/core/v8/v8_binding_for_core.cc
+@@ -738,7 +738,7 @@
+   // TODO(crbug.com/1046282): The following bailout is a temporary fix
+   // introduced due to crbug.com/1037985 .  Remove this temporary fix once
+   // the root cause is fixed.
+-  if (frame->IsProvisional()) {
++  if (!frame->IsDetached() && frame->IsProvisional()) {
+     base::debug::DumpWithoutCrashing();
+     return v8::Local<v8::Context>();
+   }

@@ -1,0 +1,47 @@
+From 8026a18f3f0b5a2179b5462c3469be3552733e00 Mon Sep 17 00:00:00 2001
+From: Daniel Clark <daniec@microsoft.com>
+Date: Wed, 31 Jul 2024 16:11:57 +0000
+Subject: [PATCH] Bail if attr() in css alt content fails to parse
+
+There was a crash introduced in [1] because we don't check the result
+of attempting to parse an attr() function in a content rule's alt
+text.
+
+Move an existing check down to handle this case and bail out safely.
+
+[1] https://chromium-review.googlesource.com/c/chromium/src/+/5502620
+
+Bug: 355104333
+Change-Id: Iba3da291f814e1794a21d6209c0be3293fc2dc62
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5750947
+Reviewed-by: Rune Lillesveen <futhark@chromium.org>
+Commit-Queue: Dan Clark <daniec@microsoft.com>
+Cr-Commit-Position: refs/heads/main@{#1335488}
+---
+
+--- a/third_party/blink/renderer/core/css/properties/longhands/longhands_custom.cc
++++ b/third_party/blink/renderer/core/css/properties/longhands/longhands_custom.cc
+@@ -2648,9 +2648,9 @@
+               ConsumeAttr(css_parsing_utils::ConsumeFunction(stream), context);
+         } else {
+           alt_text = css_parsing_utils::ConsumeString(stream);
+-          if (!alt_text) {
+-            break;
+-          }
++        }
++        if (!alt_text) {
++          break;
+         }
+         alt_text_values->Append(*alt_text);
+         savepoint.Release();
+--- /dev/null
++++ b/third_party/blink/web_tests/css-parser/unclosed-content-attr-bracket-crash.html
+@@ -0,0 +1,8 @@
++<!DOCTYPE html>
++<script src="../resources/testharness.js"></script>
++<script src="../resources/testharnessreport.js"></script>
++<script>
++test(() => {
++    document.documentElement.style = 'content: attr(test) / attr(';
++}, 'This test passes if it does not crash.');
++</script>

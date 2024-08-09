@@ -1,0 +1,37 @@
+From c012d199c5c94665aee664f1cb80e71b8dde2000 Mon Sep 17 00:00:00 2001
+From: Ian Kilpatrick <ikilpatrick@chromium.org>
+Date: Mon, 05 Aug 2024 01:34:00 +0000
+Subject: [PATCH] [layout] Fix null-dref crash with removed layout object.
+
+As above - we were trying to access a layout object which was
+cleared from the fragment.
+
+Fixed: 40286186
+Change-Id: Ibae87e40759f1e9ebe39062c4ba6d8752b9a8125
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5760561
+Reviewed-by: David Grogan <dgrogan@chromium.org>
+Commit-Queue: Ian Kilpatrick <ikilpatrick@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1337108}
+---
+
+--- a/third_party/blink/renderer/core/layout/layout_object.cc
++++ b/third_party/blink/renderer/core/layout/layout_object.cc
+@@ -1492,6 +1492,9 @@
+ bool HasPropagatedLayoutObjects(const LayoutObject* object) {
+   if (auto* box = DynamicTo<LayoutBox>(object)) {
+     for (const auto& fragment : box->PhysicalFragments()) {
++      if (fragment.IsLayoutObjectDestroyedOrMoved()) {
++        return true;
++      }
+       if (fragment.HasPropagatedLayoutObjects()) {
+         return true;
+       }
+--- /dev/null
++++ b/third_party/blink/web_tests/external/wpt/css/css-contain/content-visibility/crashtests/fieldset.html
+@@ -0,0 +1,6 @@
++<!DOCTYPE html>
++<span></span>
++<fieldset style="content-visibility: auto;">
++  <marquee style="content-visibility: auto;"></marquee>
++</fieldset>
++text

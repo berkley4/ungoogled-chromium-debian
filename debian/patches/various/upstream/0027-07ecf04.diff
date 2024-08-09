@@ -1,0 +1,171 @@
+From 07ecf0403f2ca8a3db0a278d442f1a1b8c5030e2 Mon Sep 17 00:00:00 2001
+From: Fredrik Hernqvist <fhernqvist@google.com>
+Date: Fri, 02 Aug 2024 10:50:08 +0000
+Subject: [PATCH] Store frame counters as clamped uint64_t in AudioFrameStatsAccumulator
+
+As it is, they overflow in less than a day of audio playout/capture
+on 32-bit Chrome, causing a crash.
+
+Bug: 355608490
+Change-Id: I20c27898d8a40c5bfb06a4e6878decd3d8e21f9b
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5752782
+Reviewed-by: Olga Sharonova <olka@chromium.org>
+Reviewed-by: Michael Wilson <mjwilson@chromium.org>
+Commit-Queue: Fredrik Hernqvist <fhernqvist@google.com>
+Cr-Commit-Position: refs/heads/main@{#1336542}
+---
+
+--- a/third_party/blink/renderer/platform/audio/audio_frame_stats_accumulator.cc
++++ b/third_party/blink/renderer/platform/audio/audio_frame_stats_accumulator.cc
+@@ -32,9 +32,11 @@
+ void AudioFrameStatsAccumulator::Absorb(AudioFrameStatsAccumulator& from) {
+   // |from| should have newer stats, so |from|'s counters should be at least as
+   // high as |this|.
+-  CHECK_GE(from.observed_frames_, observed_frames_);
++  CHECK_GE(static_cast<uint64_t>(from.observed_frames_),
++           static_cast<uint64_t>(observed_frames_));
+   CHECK_GE(from.observed_frames_duration_, observed_frames_duration_);
+-  CHECK_GE(from.glitch_frames_, glitch_frames_);
++  CHECK_GE(static_cast<uint64_t>(from.glitch_frames_),
++           static_cast<uint64_t>(glitch_frames_));
+   CHECK_GE(from.glitch_frames_duration_, glitch_frames_duration_);
+   CHECK_GE(from.glitch_event_count_, glitch_event_count_);
+ 
+--- a/third_party/blink/renderer/platform/audio/audio_frame_stats_accumulator.h
++++ b/third_party/blink/renderer/platform/audio/audio_frame_stats_accumulator.h
+@@ -5,6 +5,7 @@
+ #ifndef THIRD_PARTY_BLINK_RENDERER_PLATFORM_AUDIO_AUDIO_FRAME_STATS_ACCUMULATOR_H_
+ #define THIRD_PARTY_BLINK_RENDERER_PLATFORM_AUDIO_AUDIO_FRAME_STATS_ACCUMULATOR_H_
+ 
++#include "base/numerics/clamped_math.h"
+ #include "base/time/time.h"
+ #include "media/base/audio_glitch_info.h"
+ #include "third_party/blink/renderer/platform/platform_export.h"
+@@ -33,13 +34,14 @@
+   // durations, and current latency are simply copied from `from`.
+   void Absorb(AudioFrameStatsAccumulator& from);
+ 
+-  size_t observed_frames() const { return observed_frames_; }
++  uint64_t observed_frames() const { return observed_frames_; }
+ 
+   base::TimeDelta observed_frames_duration() const {
+     return observed_frames_duration_;
+   }
+ 
+-  size_t glitch_frames() const { return glitch_frames_; }
++  uint64_t glitch_frames() const { return glitch_frames_; }
++
+   base::TimeDelta glitch_frames_duration() const {
+     return glitch_frames_duration_;
+   }
+@@ -59,11 +61,11 @@
+   base::TimeDelta max_latency() const { return interval_maximum_latency_; }
+ 
+  private:
+-  // Counters for observed frames, glitched frames and glitch events. These only
+-  // increment.
+-  size_t observed_frames_ = 0u;
++  // Counters for observed frames, glitched frames and glitch events. These
++  // only increment.
++  base::ClampedNumeric<uint64_t> observed_frames_ = 0u;
+   base::TimeDelta observed_frames_duration_;
+-  size_t glitch_frames_ = 0u;
++  base::ClampedNumeric<uint64_t> glitch_frames_ = 0u;
+   base::TimeDelta glitch_frames_duration_;
+   size_t glitch_event_count_ = 0u;
+ 
+@@ -73,7 +75,7 @@
+   // Latency information about an interval. It is accumulated on calls to
+   // Update() and Absorb(), and reset when the object is used as an input for
+   // a call to Absorb() on another AudioFrameStatsAccumulator object.
+-  size_t interval_frames_ = 0u;
++  base::ClampedNumeric<uint64_t> interval_frames_ = 0u;
+   base::TimeDelta interval_frames_latency_sum_;
+   base::TimeDelta interval_minimum_latency_;
+   base::TimeDelta interval_maximum_latency_;
+--- a/third_party/blink/renderer/platform/audio/audio_frame_stats_accumulator_test.cc
++++ b/third_party/blink/renderer/platform/audio/audio_frame_stats_accumulator_test.cc
+@@ -16,9 +16,9 @@
+ namespace {
+ 
+ void VerifyAccumulator(const AudioFrameStatsAccumulator& accumulator,
+-                       size_t observed_frames,
++                       uint64_t observed_frames,
+                        base::TimeDelta observed_frames_duration,
+-                       size_t glitch_frames,
++                       uint64_t glitch_frames,
+                        base::TimeDelta latency,
+                        base::TimeDelta min_latency,
+                        base::TimeDelta average_latency,
+@@ -68,7 +68,7 @@
+   AudioFrameStatsAccumulator accumulator;
+ 
+   const int sample_rate = 48000;
+-  size_t total_frames = 0u;
++  uint64_t total_frames = 0u;
+   media::AudioGlitchInfo total_glitch_info;
+ 
+   int frames[] = {480, 520, 400};
+@@ -140,7 +140,7 @@
+   AudioFrameStatsAccumulator absorbing_accumulator;
+ 
+   const int sample_rate = 48000;
+-  size_t total_frames = 0u;
++  uint64_t total_frames = 0u;
+   media::AudioGlitchInfo total_glitch_info;
+ 
+   int frames[] = {480, 520, 400};
+@@ -257,7 +257,7 @@
+ TEST(AudioFrameStatsAccumulatorTest, UpdateDifferentSampleRates) {
+   AudioFrameStatsAccumulator accumulator;
+ 
+-  size_t total_frames = 0u;
++  uint64_t total_frames = 0u;
+   media::AudioGlitchInfo total_glitch_info;
+ 
+   int sample_rate[] = {16000, 48000};
+--- a/third_party/blink/renderer/platform/mediastream/media_stream_track_platform.cc
++++ b/third_party/blink/renderer/platform/mediastream/media_stream_track_platform.cc
+@@ -4,6 +4,7 @@
+ 
+ #include "third_party/blink/renderer/platform/mediastream/media_stream_track_platform.h"
+ 
++#include "base/numerics/clamped_math.h"
+ #include "third_party/blink/renderer/platform/mediastream/media_stream_component.h"
+ 
+ namespace blink {
+@@ -40,7 +41,7 @@
+   accumulator_.Absorb(from.accumulator_);
+ }
+ 
+-size_t MediaStreamTrackPlatform::AudioFrameStats::DeliveredFrames() const {
++uint64_t MediaStreamTrackPlatform::AudioFrameStats::DeliveredFrames() const {
+   return accumulator_.observed_frames();
+ }
+ 
+@@ -49,8 +50,9 @@
+   return accumulator_.observed_frames_duration();
+ }
+ 
+-size_t MediaStreamTrackPlatform::AudioFrameStats::TotalFrames() const {
+-  return accumulator_.observed_frames() + accumulator_.glitch_frames();
++uint64_t MediaStreamTrackPlatform::AudioFrameStats::TotalFrames() const {
++  return base::MakeClampedNum(accumulator_.observed_frames()) +
++         base::MakeClampedNum(accumulator_.glitch_frames());
+ }
+ 
+ base::TimeDelta MediaStreamTrackPlatform::AudioFrameStats::TotalFramesDuration()
+--- a/third_party/blink/renderer/platform/mediastream/media_stream_track_platform.h
++++ b/third_party/blink/renderer/platform/mediastream/media_stream_track_platform.h
+@@ -95,9 +95,9 @@
+     void Absorb(AudioFrameStats& from);
+ 
+     // Implementations of the getters in the API.
+-    size_t DeliveredFrames() const;
++    uint64_t DeliveredFrames() const;
+     base::TimeDelta DeliveredFramesDuration() const;
+-    size_t TotalFrames() const;
++    uint64_t TotalFrames() const;
+     base::TimeDelta TotalFramesDuration() const;
+     base::TimeDelta Latency() const;
+     base::TimeDelta AverageLatency() const;

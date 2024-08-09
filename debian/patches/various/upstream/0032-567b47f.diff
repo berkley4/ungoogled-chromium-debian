@@ -1,0 +1,88 @@
+From 567b47f86cdc301ae96254fd9785b69ab26a5567 Mon Sep 17 00:00:00 2001
+From: Yuzhu Shen <yzshen@chromium.org>
+Date: Thu, 08 Aug 2024 02:10:49 +0000
+Subject: [PATCH] SyncPointClientState: fix a crash.
+
+The crash is caused by accessing `sync_point_manager_`
+member after it has been set to nullptr.
+
+Bug: b/357343875
+Change-Id: I4689d96eb64314dc9e47e665fba4bfbf8d7d6f59
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5764302
+Reviewed-by: Yuzhu Shen <yzshen@chromium.org>
+Commit-Queue: Yuzhu Shen <yzshen@chromium.org>
+Reviewed-by: Sunny Sachanandani <sunnyps@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1338829}
+---
+
+--- a/gpu/command_buffer/service/sync_point_manager.cc
++++ b/gpu/command_buffer/service/sync_point_manager.cc
+@@ -208,8 +208,8 @@
+ std::vector<base::OnceClosure>
+ SyncPointClientState::DestroyAndReturnCallbacks() {
+   base::AutoLock lock(fence_sync_lock_);
+-  DCHECK(sync_point_manager_);  // not destroyed
+-  sync_point_manager_ = nullptr;
++  DCHECK(!destroyed_.IsSet());
++  destroyed_.Set();
+   std::vector<base::OnceClosure> callbacks;
+   callbacks.reserve(release_callback_queue_.size());
+   while (!release_callback_queue_.empty()) {
+@@ -224,7 +224,7 @@
+ 
+ bool SyncPointClientState::Wait(const SyncToken& sync_token,
+                                 base::OnceClosure callback) {
+-  DCHECK(sync_point_manager_);  // not destroyed
++  DCHECK(!destroyed_.IsSet());
+   // Validate that this Wait call is between BeginProcessingOrderNumber() and
+   // FinishProcessingOrderNumber(), or else we may deadlock.
+   DCHECK(order_data_->IsProcessingOrderNumber());
+@@ -273,8 +273,9 @@
+   // Validate that this Release call is between BeginProcessingOrderNumber() and
+   // FinishProcessingOrderNumber(), or else we may deadlock.
+   DCHECK(order_data_->IsProcessingOrderNumber());
+-  DCHECK(sync_point_manager_)
++  DCHECK(!destroyed_.IsSet())
+       << "Attempting to release fence on destroyed client state.";
++
+   ReleaseFenceSyncHelper(release);
+ }
+ 
+@@ -416,8 +417,7 @@
+   }
+   // At this point, if SyncPointClientState::Wait is called, it will (correctly)
+   // return false because client_state is removed from our map. It is safe to
+-  // call the callbacks (assuming they don't reference any of the other
+-  // SyncPointClientState methods that DCHECK(sync_point_manager_)).
++  // call the callbacks.
+   for (auto& closure : callbacks) {
+     std::move(closure).Run();
+   }
+--- a/gpu/command_buffer/service/sync_point_manager.h
++++ b/gpu/command_buffer/service/sync_point_manager.h
+@@ -20,6 +20,7 @@
+ #include "base/memory/raw_ptr.h"
+ #include "base/memory/ref_counted.h"
+ #include "base/memory/scoped_refptr.h"
++#include "base/synchronization/atomic_flag.h"
+ #include "base/synchronization/lock.h"
+ #include "base/thread_annotations.h"
+ #include "base/threading/thread_checker.h"
+@@ -250,7 +251,7 @@
+       LOCKS_EXCLUDED(fence_sync_lock_);
+ 
+   // Sync point manager is guaranteed to exist in the lifetime of the client.
+-  raw_ptr<SyncPointManager> sync_point_manager_ = nullptr;
++  const raw_ptr<SyncPointManager> sync_point_manager_;
+ 
+   // Global order data where releases will originate from.
+   const scoped_refptr<SyncPointOrderData> order_data_;
+@@ -262,6 +263,8 @@
+   // Protects fence_sync_release_, fence_callback_queue_.
+   base::Lock fence_sync_lock_;
+ 
++  base::AtomicFlag destroyed_;
++
+   // Current fence sync release that has been signaled.
+   uint64_t fence_sync_release_ GUARDED_BY(fence_sync_lock_) = 0;
+ 

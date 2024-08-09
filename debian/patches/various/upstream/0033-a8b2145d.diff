@@ -1,0 +1,26 @@
+From a8b2145d4716a9fac12aa829e73f38f2e033bd54 Mon Sep 17 00:00:00 2001
+From: Guangyue Xu <guangyue.xu@microsoft.com>
+Date: Thu, 08 Aug 2024 06:44:37 +0000
+Subject: [PATCH] fix selector stats crash issue
+
+Bug: 342194506
+Change-Id: I0832e323376c43f461918b6e625e7903bdff1329
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5770825
+Reviewed-by: Simon Zünd <szuend@chromium.org>
+Commit-Queue: Alex Rudenko <alexrudenko@chromium.org>
+Reviewed-by: Alex Rudenko <alexrudenko@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1338902}
+---
+
+--- a/third_party/blink/renderer/core/inspector/inspector_css_agent.cc
++++ b/third_party/blink/renderer/core/inspector/inspector_css_agent.cc
+@@ -1043,6 +1043,9 @@
+       if (selector->SelectorText() == selector_text) {
+         const CSSRuleSourceData* source_data =
+             style_sheet->SourceDataForRule(css_style_rule);
++        if (source_data == nullptr) {
++          continue;
++        }
+         std::unique_ptr<protocol::CSS::SourceRange> range =
+             style_sheet->BuildSourceRangeObject(source_data->rule_header_range);
+ 

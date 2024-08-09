@@ -1,0 +1,50 @@
+From f64e70b80b9ca69c4ef20627e28507b4a23734da Mon Sep 17 00:00:00 2001
+From: Kevin Ellis <kevers@google.com>
+Date: Tue, 06 Aug 2024 17:45:28 +0000
+Subject: [PATCH] Fix crash when animating flexBasis content
+
+Bug: 356194015, 313072
+Change-Id: I37a2868630011e54db6c2b978eb7d9f7575b861e
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5765894
+Commit-Queue: Kevin Ellis <kevers@chromium.org>
+Reviewed-by: David Baron <dbaron@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1337972}
+---
+
+--- a/third_party/blink/renderer/core/animation/interpolable_length.cc
++++ b/third_party/blink/renderer/core/animation/interpolable_length.cc
+@@ -94,6 +94,8 @@
+       return CSSValueID::kFitContent;
+     case Length::Type::kFillAvailable:
+       return CSSValueID::kWebkitFillAvailable;
++    case Length::Type::kContent:  // only valid for flex-basis.
++      return CSSValueID::kContent;
+     default:
+       return CSSValueID::kInvalid;
+   }
+@@ -114,6 +116,8 @@
+       return Length::Type::kFitContent;
+     case CSSValueID::kWebkitFillAvailable:
+       return Length::Type::kFillAvailable;
++    case CSSValueID::kContent:  // only valid for flex-basis.
++      return Length::Type::kContent;
+     default:
+       NOTREACHED_IN_MIGRATION();
+       return Length::Type::kFixed;
+--- /dev/null
++++ b/third_party/blink/web_tests/external/wpt/css/css-flexbox/animation/flex-basis-content-crash.html
+@@ -0,0 +1,14 @@
++<!DOCTYPE html>
++<html class="test-wait">
++<body>
++<textarea id="target"></textarea>
++<!-- crbug.com/ 356194015 -->
++<script>
++  const target = document.getElementById('target');
++  const anim = target.animate({ flexBasis: ['content', 'content'] },
++                              { duration: 1000 });
++  anim.ready.then(() => {
++    document.documentElement.classList.remove('test-wait');
++  });
++</script>
++</body>

@@ -60,7 +60,7 @@
        base::FeatureList::IsEnabled(
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -7055,9 +7055,6 @@
+@@ -7056,9 +7056,6 @@
      "//components/favicon/core/test:test_support",
      "//components/feature_engagement/public",
      "//components/feed:buildflags",
@@ -70,7 +70,7 @@
      "//components/feed/mojom:mojo_bindings",
      "//components/feedback",
      "//components/feedback/redaction_tool",
-@@ -7329,6 +7326,14 @@
+@@ -7330,6 +7327,14 @@
      "//base:path_service_unittest",
    ]
  
