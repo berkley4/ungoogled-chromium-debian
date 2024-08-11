@@ -17,6 +17,9 @@ case $0 in
     exit 1 ;;
 esac
 
+
+DL_CACHE=.download_cache
+
 bg_tag=upstream/v0.69.4
 nc_ver=Ws0ru48A4IYoYLVKbV5K5_mDYT4ml9LAQUKdkiczdlMC
 
@@ -43,9 +46,7 @@ case $1 in
 
     case $1 in
       hc|hardclean)
-        if [ -f ncursesw-linux-amd64.zip ]; then
-          files="$files ncursesw-linux-amd64.zip"
-        fi ;;
+        [ ! -d $DL_CACHE ] || files="$files $DL_CACHE" ;;
     esac
 
     rm -rf $files
@@ -136,6 +137,8 @@ done
 ## Download/extract ncursesw (prefer aria2c, fall back to wget).
 command -v aria2c >/dev/null 2>&1 && D_LOADER=aria2c || D_LOADER=wget
 
+[ -d $DL_CACHE ] || mkdir $DL_CACHE
+
 case $D_LOADER in
   aria2c)
     dl_args="-x1 -s1 -c -o ncursesw-linux-amd64.zip -d $DL_CACHE" ;;
@@ -144,13 +147,13 @@ case $D_LOADER in
     dl_args="--continue -O ncursesw-linux-amd64.zip -P $DL_CACHE" ;;
 esac
 
-if [ ! -f ncursesw-linux-amd64.zip ]; then
+if [ ! -f $DL_CACHE/ncursesw-linux-amd64.zip ]; then
   $D_LOADER $dl_args "$(curl -s $nc_page_url | get_nc_url)"
 fi
 
 if [ ! -d ncursesw ]; then
   mkdir ncursesw
-  unzip -q ncursesw-linux-amd64.zip -d ncursesw
+  unzip -q $DL_CACHE/ncursesw-linux-amd64.zip -d ncursesw
   nc_path=$(realpath ncursesw)
 fi
 
