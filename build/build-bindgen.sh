@@ -1,12 +1,21 @@
 #!/bin/sh -e
 
+USAGE="[CLANG_VER=<version>] [SYS_CLANG=<0|1|2>] SYS_RUST=<0|1|2> ${0##*/} [h|help] [c|clean|hc|hardclean]"
+
 case $USER in
   root)
     printf '%s\n' "Run this script as an unprivileged user"
     exit 1 ;;
 esac
 
-USAGE="[CLANG_VER=<version>] [SYS_CLANG=<0|1|2>] SYS_RUST=<0|1|2> ${0##*/} [h|help] [c|clean|hc|hardclean]"
+case $0 in
+  ./build-bindgen.sh|build-bindgen.sh)
+    : ;;
+
+  *)
+    printf '%s\n' "Please run this script from the directory containing it"
+    exit 1 ;;
+esac
 
 bg_tag=upstream/v0.69.4
 nc_ver=Ws0ru48A4IYoYLVKbV5K5_mDYT4ml9LAQUKdkiczdlMC
