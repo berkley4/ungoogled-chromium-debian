@@ -154,7 +154,7 @@ if [ ! -d ncursesw ]; then
   unzip -q $DL_CACHE/$nc_file -d ncursesw
 fi
 
-nc_path=$(realpath ncursesw)
+nc_path=$(real_dir_path ncursesw)
 
 
 ## Clone/update the rust-bindgen repo
