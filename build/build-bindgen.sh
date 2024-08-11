@@ -27,6 +27,7 @@ bg_repo=https://chromium.googlesource.com/external/github.com/rust-lang/rust-bin
 nc_base_url=https://chrome-infra-packages.appspot.com/p/infra/3pp/static_libs/ncursesw/linux-amd64
 
 nc_page_url="$nc_base_url/+/$nc_ver"
+nc_file=ncursesw-linux-amd64.zip
 
 
 get_nc_url() {
@@ -134,28 +135,29 @@ for prog in cargo curl rustc unzip; do
 done
 
 
-## Download/extract ncursesw (prefer aria2c, fall back to wget).
-command -v aria2c >/dev/null 2>&1 && D_LOADER=aria2c || D_LOADER=wget
-
-[ -d $DL_CACHE ] || mkdir $DL_CACHE
-
-case $D_LOADER in
-  aria2c)
-    dl_args="-x1 -s1 -c -o ncursesw-linux-amd64.zip -d $DL_CACHE" ;;
-
-  *)
-    dl_args="--continue -O ncursesw-linux-amd64.zip -P $DL_CACHE" ;;
-esac
-
-if [ ! -f $DL_CACHE/ncursesw-linux-amd64.zip ]; then
-  $D_LOADER $dl_args "$(curl -s $nc_page_url | get_nc_url)"
-fi
-
 if [ ! -d ncursesw ]; then
+  ## Download/extract ncursesw (prefer aria2c, fall back to wget).
+  command -v aria2c >/dev/null 2>&1 && D_LOADER=aria2c || D_LOADER=wget
+
   mkdir ncursesw
-  unzip -q $DL_CACHE/ncursesw-linux-amd64.zip -d ncursesw
-  nc_path=$(realpath ncursesw)
+  [ -d $DL_CACHE ] || mkdir $DL_CACHE
+
+  case $D_LOADER in
+    aria2c)
+      dl_args="-x1 -s1 -c -o $nc_file -d $DL_CACHE" ;;
+
+    *)
+      dl_args="--continue -O $nc_file -P $DL_CACHE" ;;
+  esac
+
+  if [ ! -f $DL_CACHE/$nc_file ]; then
+    $D_LOADER $dl_args "$(curl -s $nc_page_url | get_nc_url)"
+  fi
+
+  unzip -q $DL_CACHE/$nc_file -d ncursesw
 fi
+
+nc_path=$(realpath ncursesw)
 
 
 ## Clone/update the rust-bindgen repo
