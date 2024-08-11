@@ -151,6 +151,7 @@ if [ ! -d ncursesw ]; then
     $D_LOADER $dl_args "$(curl -s $nc_page_url | get_nc_url)"
   fi
 
+  printf '\n%s\n\n\n' "Extracting $nc_file..."
   unzip -q $DL_CACHE/$nc_file -d ncursesw
 fi
 
@@ -169,9 +170,10 @@ else
   cd rust-bindgen
 fi
 
-
 [ ! -d target ] || rm -rf target
 
+
+printf '\n\n%s\n\n' "Building bindgen..."
 
 LLVM_CONFIG_PATH=$CLANG_PATH/bin/llvm-config \
 LIBCLANG_PATH=$LIBCLANG_PATH \
