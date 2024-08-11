@@ -147,19 +147,16 @@ fi
 
 
 ## Clone/update the rust-bindgen repo
-if [ ! -d rust-bindgen ]; then
-  git clone --depth=1 -b $bg_tag $bg_repo
-else
+if [ -d rust-bindgen ]; then
   cd rust-bindgen
   git clean -dfx
   git reset --hard HEAD
   git fetch --depth 1 origin tag $bg_tag
   git checkout tags/$bg_tag
-  cd - >/dev/null
+else
+  git clone --depth=1 -c advice.detachedHead=false -b $bg_tag $bg_repo
+  cd rust-bindgen
 fi
-
-
-cd rust-bindgen
 
 
 [ ! -d target ] || rm -rf target
