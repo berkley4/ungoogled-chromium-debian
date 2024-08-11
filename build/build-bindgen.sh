@@ -136,7 +136,6 @@ if [ ! -d ncursesw ]; then
   ## Download/extract ncursesw (prefer aria2c, fall back to wget).
   command -v aria2c >/dev/null 2>&1 && D_LOADER=aria2c || D_LOADER=wget
 
-  mkdir ncursesw
   [ -d $DL_CACHE ] || mkdir $DL_CACHE
 
   case $D_LOADER in
@@ -150,6 +149,8 @@ if [ ! -d ncursesw ]; then
   if [ ! -f $DL_CACHE/$nc_file ]; then
     $D_LOADER $dl_args "$(curl -s $nc_page_url | get_nc_url)"
   fi
+
+  mkdir ncursesw
 
   printf '\n%s\n\n\n' "Extracting $nc_file..."
   unzip -q $DL_CACHE/$nc_file -d ncursesw
