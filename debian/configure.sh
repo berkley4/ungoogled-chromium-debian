@@ -1073,7 +1073,7 @@ PRU="$PRU -e \"/^third_party\/depot_tools\//d\""
 PRU="$PRU -e \"/^third_party\/node\//d\""
 
 ## Pruning script
-PRU_PY="$PRU_PY -e \"/^third_party\/node\//d\""
+PRU_PY="$PRU_PY -e \"/third_party\/node\//d\""
 
 ## Submodule flags
 SMF="$SMF -e \"/^enable_hangout_services_extension/d\""
