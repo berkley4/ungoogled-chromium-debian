@@ -1,0 +1,139 @@
+From 96fb33f0c56da9580befe12bb5e9ac5e5b862b48 Mon Sep 17 00:00:00 2001
+From: Nathan Memmott <memmott@chromium.org>
+Date: Wed, 14 Aug 2024 15:55:27 +0000
+Subject: [PATCH] Change Observer: Fix crash when navigating to new page
+
+The browser may crash if you navigate to a new page with an active
+FileSystemObserver observation.
+
+This is because the FileSystemAccessObserverObservation is a
+FileSystemAccessPermissionGrant::Observer of the root handle's read
+grant. And when the permission status changes, it destroys itself along
+with the read grant if its the only holder of the read grant.
+
+This means that when you navigate to a new page, RevokeActiveGrants
+attempts to iterate through all the active grants of the page and revoke
+them. But since its iterating over an array that
+FileSystemAccessObserverObservation removes an element from during that
+iteration, it get an invalid iterator.
+
+The fix is to increase the iterator before continuing.
+
+Fixed: 359567614
+Change-Id: I3eea7340527e0255bdaa7488cf6e4968b299483e
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5786874
+Reviewed-by: Daseul Lee <dslee@chromium.org>
+Commit-Queue: Nathan Memmott <memmott@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1341696}
+---
+
+--- a/chrome/browser/file_system_access/chrome_file_system_access_permission_context.cc
++++ b/chrome/browser/file_system_access/chrome_file_system_access_permission_context.cc
+@@ -1060,7 +1060,12 @@
+   auto origin_it = active_permissions_map_.find(origin);
+   if (origin_it != active_permissions_map_.end()) {
+     OriginState& origin_state = origin_it->second;
+-    for (auto& grant : origin_state.read_grants) {
++    for (auto grant_iter = origin_state.read_grants.begin(),
++              grant_end = origin_state.read_grants.end();
++         grant_iter != grant_end;) {
++      // The grant may be removed from `read_grants`, so increase the iterator
++      // before continuing.
++      auto& grant = *(grant_iter++);
+       if (file_path.empty() || grant.first == file_path) {
+         if (grant.second) {
+           grant.second->SetStatus(
+@@ -1070,7 +1075,12 @@
+         }
+       }
+     }
+-    for (auto& grant : origin_state.write_grants) {
++    for (auto grant_iter = origin_state.write_grants.begin(),
++              grant_end = origin_state.write_grants.end();
++         grant_iter != grant_end;) {
++      // The grant may be removed from `write_grants`, so increase the iterator
++      // before continuing.
++      auto& grant = *(grant_iter++);
+       if (file_path.empty() || grant.first == file_path) {
+         if (grant.second) {
+           grant.second->SetStatus(
+--- a/chrome/browser/file_system_access/chrome_file_system_access_permission_context_unittest.cc
++++ b/chrome/browser/file_system_access/chrome_file_system_access_permission_context_unittest.cc
+@@ -114,6 +114,38 @@
+   kSucceeded,
+ };
+ 
++// Observes `grant`'s permission status and destroys itself when it changes.
++class SelfDestructingPermissionGrantObserver
++    : content::FileSystemAccessPermissionGrant::Observer {
++ public:
++  static base::WeakPtr<SelfDestructingPermissionGrantObserver> Create(
++      scoped_refptr<content::FileSystemAccessPermissionGrant> grant) {
++    SelfDestructingPermissionGrantObserver* observer =
++        new SelfDestructingPermissionGrantObserver(std::move(grant));
++    return observer->weak_factory_.GetWeakPtr();
++  }
++
++  ~SelfDestructingPermissionGrantObserver() override {
++    grant_->RemoveObserver(this);
++  }
++
++ private:
++  explicit SelfDestructingPermissionGrantObserver(
++      scoped_refptr<content::FileSystemAccessPermissionGrant> grant)
++      : grant_(std::move(grant)) {
++    grant_->AddObserver(this);
++  }
++
++  // FileSystemAccessPermissionGrant::Observer override.
++  void OnPermissionStatusChanged() override { self.reset(); }
++
++  std::unique_ptr<SelfDestructingPermissionGrantObserver> self{this};
++  scoped_refptr<content::FileSystemAccessPermissionGrant> grant_;
++
++  base::WeakPtrFactory<SelfDestructingPermissionGrantObserver> weak_factory_{
++      this};
++};
++
+ constexpr char kDummyDmToken[] = "dm_token";
+ 
+ void EnableEnterpriseAnalysis(Profile* profile) {
+@@ -3023,6 +3055,38 @@
+   EXPECT_EQ(future.Get<0>()[0].path, path_foo);
+ }
+ 
++TEST_F(ChromeFileSystemAccessPermissionContextTest,
++       ReadGrantDestroyedOnRevoke) {
++  auto grant = permission_context()->GetReadPermissionGrant(
++      kTestOrigin, kTestPath, HandleType::kFile, UserAction::kSave);
++  EXPECT_EQ(grant->GetStatus(), PermissionStatus::GRANTED);
++
++  auto observer =
++      SelfDestructingPermissionGrantObserver::Create(std::move(grant));
++
++  // `observer` destroys itself when the permission gets revoked. `observer` is
++  // the only holder of `grant`, so `grant` is destroyed as well. This should
++  // work without crashing.
++  permission_context()->RevokeActiveGrantsForTesting(kTestOrigin, kTestPath);
++  EXPECT_FALSE(observer);
++}
++
++TEST_F(ChromeFileSystemAccessPermissionContextTest,
++       WriteGrantDestroyedOnRevoke) {
++  auto grant = permission_context()->GetWritePermissionGrant(
++      kTestOrigin, kTestPath, HandleType::kFile, UserAction::kSave);
++  EXPECT_EQ(grant->GetStatus(), PermissionStatus::GRANTED);
++
++  auto observer =
++      SelfDestructingPermissionGrantObserver::Create(std::move(grant));
++
++  // `observer` destroys itself when the permission gets revoked. `observer` is
++  // the only holder of `grant`, so `grant` is destroyed as well. This should
++  // work without crashing.
++  permission_context()->RevokeActiveGrantsForTesting(kTestOrigin, kTestPath);
++  EXPECT_FALSE(observer);
++}
++
+ #endif  // BUILDFLAG(ENTERPRISE_CLOUD_CONTENT_ANALYSIS)
+ 
+ #endif  // !BUILDFLAG(IS_ANDROID)

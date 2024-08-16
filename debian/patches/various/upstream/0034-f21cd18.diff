@@ -1,0 +1,179 @@
+From f21cd1873e01568ca7a58bd8a130faa6ad144e13 Mon Sep 17 00:00:00 2001
+From: Charlie Reis <creis@chromium.org>
+Date: Fri, 09 Aug 2024 21:44:52 +0000
+Subject: [PATCH] Support null frame_entry cases in CreateNavigationRequestFromLoadParams.
+
+It is sometimes possible to reach CreateNavigationRequestFromLoadParams
+for subframes, such as when loading a PDF in a subframe (in which case
+the PDF extension is loaded via NavigationController::LoadURL).
+
+Per https://crbug.com/40467594, there are some cases when the
+FrameNavigationEntry will be missing for subframes, which is causing
+crashes in CreateNavigationRequestFromLoadParams. This CL adds support
+for having a null frame_entry, until https://crbug.com/40467594 is
+fixed.
+
+Bug: 358084015, 40467594
+Change-Id: I615316a812a846f691a0c13513d4fb5c3097c975
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5775515
+Reviewed-by: Andy Phan <andyphan@chromium.org>
+Commit-Queue: Charlie Reis <creis@chromium.org>
+Reviewed-by: Nasko Oskov <nasko@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1339887}
+---
+
+--- a/chrome/browser/pdf/pdf_extension_test.cc
++++ b/chrome/browser/pdf/pdf_extension_test.cc
+@@ -3833,6 +3833,44 @@
+   EXPECT_TRUE(navigation_observer.last_navigation_succeeded());
+ }
+ 
++// Loading a PDF in a subframe without a corresponding FrameNavigationEntry
++// should not cause a crash. See https://crbug.com/358084015 and
++// https://crbug.com/40467594.
++IN_PROC_BROWSER_TEST_F(PDFExtensionOopifTest, SubframePDFMissingFrameEntry) {
++  WebContents* contents = GetActiveWebContents();
++
++  // Navigate to a test page, and then navigate same-document.
++  const GURL main_url(embedded_test_server()->GetURL("/title1.html"));
++  const GURL same_doc_url(embedded_test_server()->GetURL("/title1.html#foo"));
++  ASSERT_TRUE(ui_test_utils::NavigateToURL(browser(), main_url));
++  content::TestNavigationObserver same_doc_observer(contents);
++  EXPECT_TRUE(content::ExecJs(contents, "location.href='#foo';"));
++  same_doc_observer.Wait();
++  EXPECT_EQ(same_doc_url, contents->GetLastCommittedURL());
++
++  // Append an iframe to the document.body.
++  content::TestNavigationObserver iframe_observer(contents);
++  EXPECT_TRUE(content::ExecJs(contents,
++                              "let iframe = document.createElement('iframe');"
++                              "iframe.src = 'title1.html';"
++                              "document.body.appendChild(iframe);"));
++  iframe_observer.Wait();
++
++  // Go back to the previous same-document entry. There will be no
++  // subframe FrameNavigationEntry even though the subframe continues to exist,
++  // due to https://crbug.com/40467594.
++  content::TestNavigationObserver back_observer(contents);
++  contents->GetController().GoBack();
++  back_observer.Wait();
++
++  // Loading a PDF in the subframe at this point should not crash.
++  content::TestNavigationObserver pdf_observer(contents);
++  EXPECT_TRUE(
++      content::ExecJs(contents, "frames[0].location.href='/pdf/test.pdf';"));
++  pdf_observer.Wait();
++  EXPECT_TRUE(EnsurePDFHasLoadedInFirstChildWithValidFrameTree(contents));
++}
++
+ // Ensure that when the only other PDF instance closes in the middle of another
+ // PDF's extension frame load, the PDF extension frame can still complete its
+ // subsequent navigation. See https://crbug.com/1295431.
+--- a/content/browser/renderer_host/navigation_controller_impl.cc
++++ b/content/browser/renderer_host/navigation_controller_impl.cc
+@@ -343,7 +343,7 @@
+     const GURL& new_url,
+     ReloadType reload_type,
+     NavigationEntryImpl* entry,
+-    const FrameNavigationEntry& frame_entry,
++    FrameNavigationEntry* frame_entry,
+     bool has_pending_cross_document_commit,
+     bool is_currently_error_page,
+     bool is_same_document_history_load,
+@@ -386,7 +386,7 @@
+       !is_unfenced_top_navigation;
+ 
+   // History navigations.
+-  if (frame_entry.page_state().IsValid()) {
++  if (frame_entry && frame_entry->page_state().IsValid()) {
+     return can_be_same_document && is_same_document_history_load
+                ? blink::mojom::NavigationType::HISTORY_SAME_DOCUMENT
+                : blink::mojom::NavigationType::HISTORY_DIFFERENT_DOCUMENT;
+@@ -405,7 +405,7 @@
+   // navigation, but a different-document one. This is why history navigation
+   // are classified before this check.
+   bool is_same_doc = new_url.has_ref() && old_url.EqualsIgnoringRef(new_url) &&
+-                     frame_entry.method() == "GET";
++                     frame_entry && frame_entry->method() == "GET";
+ 
+   // The one case where we do the wrong thing here and incorrectly choose
+   // SAME_DOCUMENT is if the navigation is browser-initiated but the document in
+@@ -463,7 +463,8 @@
+   FrameNavigationEntry* frame_entry =
+       entry->GetFrameEntry(request->frame_tree_node());
+   if (!frame_entry) {
+-    NOTREACHED_IN_MIGRATION();
++    // TODO(https://crbug.com/40467594): This case should be unreachable once
++    // all subframes have FrameNavigationEntries associated with them.
+     return;
+   }
+ 
+@@ -3916,7 +3917,12 @@
+     bool is_container_initiated,
+     std::optional<std::u16string> embedder_shared_storage_context) {
+   DCHECK_EQ(-1, GetIndexOfEntry(entry));
+-  DCHECK(frame_entry);
++
++  // TODO(https://crbug.com/40467594): Add a CHECK(frame_entry) once all
++  // subframes have FrameNavigationEntries associated with them. Until then,
++  // there may be cases where a subframe navigation is missing `frame_entry`
++  // (e.g., see https://crbug.com/358084015).
++
+   // All renderer-initiated navigations must have an initiator_origin.
+   DCHECK(!params.is_renderer_initiated || params.initiator_origin.has_value());
+ 
+@@ -3945,9 +3951,11 @@
+     // NavigationRequest and FrameEntry. This will be fixed once we remove the
+     // pending NavigationEntry, as we'll only make one call to
+     // RewriteUrlForNavigation.
+-    VLOG_IF(1, (url_to_load != frame_entry->url()))
+-        << "NavigationRequest and FrameEntry have different URLs: "
+-        << url_to_load << " vs " << frame_entry->url();
++    if (frame_entry) {
++      VLOG_IF(1, (url_to_load != frame_entry->url()))
++          << "NavigationRequest and FrameEntry have different URLs: "
++          << url_to_load << " vs " << frame_entry->url();
++    }
+ 
+     // TODO(clamy): In order to remove the pending NavigationEntry,
+     // |virtual_url| and |ignored_reverse_on_redirect| should be stored in the
+@@ -3977,7 +3985,7 @@
+ 
+   blink::mojom::NavigationType navigation_type = GetNavigationType(
+       /*old_url=*/node->current_url(),
+-      /*new_url=*/url_to_load, reload_type, entry, *frame_entry,
++      /*new_url=*/url_to_load, reload_type, entry, frame_entry,
+       has_pending_cross_document_commit, is_currently_error_page,
+       /*is_same_document_history_load=*/false,
+       is_embedder_initiated_fenced_frame_navigation,
+@@ -3994,6 +4002,9 @@
+   if (is_view_source_mode)
+     download_policy.SetDisallowed(blink::NavigationDownloadType::kViewSource);
+ 
++  std::string page_state_data =
++      frame_entry ? frame_entry->page_state().ToEncodedData() : std::string();
++
+   blink::mojom::CommonNavigationParamsPtr common_params =
+       blink::mojom::CommonNavigationParams::New(
+           url_to_load, params.initiator_origin, params.initiator_base_url,
+@@ -4020,9 +4031,8 @@
+           std::vector<network::mojom::URLResponseHeadPtr>(),
+           std::vector<net::RedirectInfo>(), params.post_content_type,
+           common_params->url, common_params->method,
+-          params.can_load_local_resources,
+-          frame_entry->page_state().ToEncodedData(), entry->GetUniqueID(),
+-          entry->GetSubframeUniqueNames(node),
++          params.can_load_local_resources, page_state_data,
++          entry->GetUniqueID(), entry->GetSubframeUniqueNames(node),
+           /*intended_as_new_entry=*/true,
+           /*pending_history_list_offset=*/-1,
+           params.should_clear_history_list ? -1 : GetLastCommittedEntryIndex(),
+@@ -4156,7 +4166,7 @@
+ 
+   blink::mojom::NavigationType navigation_type = GetNavigationType(
+       /*old_url=*/frame_tree_node->current_url(),
+-      /*new_url=*/dest_url, reload_type, entry, *frame_entry,
++      /*new_url=*/dest_url, reload_type, entry, frame_entry,
+       has_pending_cross_document_commit, is_currently_error_page,
+       is_same_document_history_load,
+       /*is_embedder_initiated_fenced_frame_navigation=*/false,

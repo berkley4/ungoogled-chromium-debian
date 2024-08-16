@@ -1,0 +1,30 @@
+From 289d74e51c6e47dfd5867c47c7edade7e8bd59a8 Mon Sep 17 00:00:00 2001
+From: Scott Violet <sky@chromium.org>
+Date: Wed, 14 Aug 2024 21:44:50 +0000
+Subject: [PATCH] views: Fix possible crash when device scale changes
+
+OnDeviceScaleFactorChanged needs to check if Widget is valid
+
+Bug: 359383210
+Change-Id: If0afb1ed4abfd84165f2000516895cea78a455b4
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5784429
+Reviewed-by: Keren Zhu <kerenzhu@chromium.org>
+Commit-Queue: Scott Violet <sky@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1341966}
+---
+
+--- a/ui/views/widget/desktop_aura/desktop_native_widget_aura.cc
++++ b/ui/views/widget/desktop_aura/desktop_native_widget_aura.cc
+@@ -1265,8 +1265,10 @@
+ void DesktopNativeWidgetAura::OnDeviceScaleFactorChanged(
+     float old_device_scale_factor,
+     float new_device_scale_factor) {
+-  GetWidget()->DeviceScaleFactorChanged(old_device_scale_factor,
+-                                        new_device_scale_factor);
++  if (Widget* widget = GetWidget()) {
++    widget->DeviceScaleFactorChanged(old_device_scale_factor,
++                                     new_device_scale_factor);
++  }
+ }
+ 
+ void DesktopNativeWidgetAura::OnWindowDestroying(aura::Window* window) {

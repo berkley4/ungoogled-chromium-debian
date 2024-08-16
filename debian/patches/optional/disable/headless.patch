@@ -329,7 +329,7 @@
  #include "components/lens/lens_overlay_permission_utils.h"
  #include "components/media_router/common/pref_names.h"
  #endif  // BUILDFLAG(IS_ANDROID)
-@@ -2318,7 +2317,6 @@
+@@ -2321,7 +2320,6 @@
            chrome_schema));
  
    handlers->AddHandler(std::make_unique<GuestModePolicyHandler>());

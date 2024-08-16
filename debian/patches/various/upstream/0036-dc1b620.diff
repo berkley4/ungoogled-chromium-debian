@@ -1,0 +1,29 @@
+From dc1b62057a8ca46501f5401b1c741e5c69df28be Mon Sep 17 00:00:00 2001
+From: Mike Wasserman <msw@chromium.org>
+Date: Sat, 10 Aug 2024 00:15:53 +0000
+Subject: [PATCH] Fullscreen: Prospective crash fix for null WebContentsDelegate
+
+Crash reports indicate `delegate_` may be null here in some cases.
+
+Bug: 358629543, 358618048
+Test: No more crashes in known corner cases.
+Change-Id: I7bcb97b93c4f3c369ab9a6ecaffaddb2a1709ed0
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5778421
+Auto-Submit: Mike Wasserman <msw@chromium.org>
+Reviewed-by: Nasko Oskov <nasko@chromium.org>
+Commit-Queue: Nasko Oskov <nasko@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1339972}
+---
+
+--- a/content/browser/web_contents/web_contents_impl.cc
++++ b/content/browser/web_contents/web_contents_impl.cc
+@@ -4015,7 +4015,8 @@
+   // the screen, or that it was downstream from a WebContents when UI was
+   // blocked. Therefore, disqualify it from fullscreen if it or any upstream
+   // WebContents has an active blocker.
+-  return base::ranges::all_of(GetAllOpeningWebContents(this),
++  return delegate_ &&
++         base::ranges::all_of(GetAllOpeningWebContents(this),
+                               [](auto* opener) {
+                                 return opener->fullscreen_blocker_count_ == 0;
+                               }) &&

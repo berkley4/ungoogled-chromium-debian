@@ -137,6 +137,11 @@ various/upstream/0030-2a7c1521.diff
 various/upstream/0031-f64e70b.diff
 various/upstream/0032-567b47f.diff
 various/upstream/0033-a8b2145d.diff
+various/upstream/0034-f21cd18.diff
+various/upstream/0035-716e5d1.diff
+various/upstream/0036-dc1b620.diff
+various/upstream/0037-96fb33f.diff
+various/upstream/0038-289d74e.diff
 various/upstream/features/clear-GrShader-disk-cache-on-invalid-cache-key-prefix.patch
 various/upstream/features/leveldb-proto-enable-async-writes-by-default.patch
 various/warnings/clang-excessive-warnings.patch
