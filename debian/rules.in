@@ -66,7 +66,6 @@ GN_FLAGS +=					\
 # Enabled components
 GN_FLAGS +=					\
 	cppgc_enable_pointer_compression=true	\
-	enable_mse_mpeg2ts_stream_parser=true	\
 	enable_pointer_compression_support=true	\
 	glue_core_pools=true			\
 	proprietary_codecs=true			\
