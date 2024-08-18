@@ -80,7 +80,6 @@ GN_FLAGS +=					\
 	angle_has_rapidjson=false		\
 	enable_component_updater=false		\
 	enable_extractors=false			\
-	enable_screen_ai_service=false		\
 	use_kerberos=false			\
 	use_sysroot=false
 
@@ -104,7 +103,6 @@ GN_FLAGS +=					\
 	rtc_disable_trace_events=true		\
 	rtc_enable_google_benchmarks=false	\
 	rtc_enable_protobuf=false		\
-	rtc_include_tests=false			\
 	skia_enable_skshaper_tests=false
 
 # The items below are best configured via debian/configure.sh
