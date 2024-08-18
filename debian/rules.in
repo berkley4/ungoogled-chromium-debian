@@ -194,13 +194,13 @@ GN_FLAGS += enable_vr=false
 
 # Disable WebGPU (also see swiftshader section)
 GN_FLAGS += use_dawn=false skia_use_dawn=false
-GN_FLAGS += dawn_enable_desktop_gl=false dawn_enable_opengles=false dawn_enable_spirv_validation=false
+GN_FLAGS += dawn_enable_desktop_gl=false dawn_enable_opengles=false
 
 # Uncomment when enabling WebGPU
 #GN_FLAGS += tint_build_benchmarks=false tint_build_unittests=false
 
 # Comment out when enabling either WebGPU or vulkan (or both)
-GN_FLAGS += dawn_enable_vulkan=false dawn_enable_vulkan_loader=false dawn_enable_vulkan_validation_layers=false
+GN_FLAGS += dawn_enable_vulkan=false
 
 # Disable zstd
 GN_FLAGS += disable_zstd_filter=true
