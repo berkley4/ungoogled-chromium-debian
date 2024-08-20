@@ -25,7 +25,7 @@ Cr-Commit-Position: refs/heads/main@{#1339932}
 
 --- a/third_party/blink/renderer/core/dom/element.cc
 +++ b/third_party/blink/renderer/core/dom/element.cc
-@@ -1254,10 +1254,9 @@
+@@ -1258,10 +1258,9 @@
  
  void Element::setAnchorElement(Element* new_element) {
    CHECK(RuntimeEnabledFeatures::HTMLAnchorAttributeEnabled());
@@ -38,7 +38,7 @@ Cr-Commit-Position: refs/heads/main@{#1339932}
  }
  
  inline void Element::SynchronizeAttribute(const QualifiedName& name) const {
-@@ -2757,8 +2756,7 @@
+@@ -2781,8 +2780,7 @@
        }
      }
    } else if (params.name == html_names::kAnchorAttr) {
@@ -48,7 +48,7 @@ Cr-Commit-Position: refs/heads/main@{#1339932}
        EnsureAnchorElementObserver().Notify();
        return;
      }
-@@ -10145,21 +10143,19 @@
+@@ -10182,21 +10180,19 @@
  }
  
  AnchorElementObserver& Element::EnsureAnchorElementObserver() {
@@ -76,7 +76,7 @@ Cr-Commit-Position: refs/heads/main@{#1339932}
      if (Element* select_list = html_element->popoverOwnerSelectListElement()) {
        return select_list;
      }
-@@ -10169,8 +10165,8 @@
+@@ -10206,8 +10202,8 @@
          return select;
        }
      }
@@ -235,7 +235,7 @@ Cr-Commit-Position: refs/heads/main@{#1339932}
  
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -2032,6 +2032,7 @@
+@@ -2154,6 +2154,7 @@
      // popover API.
      {
        name: "HTMLAnchorAttribute",

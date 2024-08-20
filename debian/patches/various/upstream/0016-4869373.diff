@@ -1,0 +1,105 @@
+From 4869373ca9331c696f0d2f02de03a18b52b2801e Mon Sep 17 00:00:00 2001
+From: Nathan Memmott <memmott@chromium.org>
+Date: Mon, 19 Aug 2024 18:23:19 +0000
+Subject: [PATCH] Change Observer: Fix RevokeAllActiveGrants crash
+
+Now that FileSystemAccessObserverObservation observes permission status
+changes, there is the potential to destroy itself on the status change
+in RevokeActiveGrants and invalidate the iterator.
+
+This fixes it by incrementing the iterator before continuing.
+
+Bug: 360401213
+Change-Id: Ib5c8cce99c12cd329c39a2adff397cf736adc83a
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5784565
+Reviewed-by: Daseul Lee <dslee@chromium.org>
+Commit-Queue: Nathan Memmott <memmott@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1343614}
+---
+
+--- a/chrome/browser/file_system_access/chrome_file_system_access_permission_context.cc
++++ b/chrome/browser/file_system_access/chrome_file_system_access_permission_context.cc
+@@ -1105,12 +1105,22 @@
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+ 
+   for (auto& [origin, origin_state] : active_permissions_map_) {
+-    for (auto& [_, grant] : origin_state.read_grants) {
++    for (auto grant_iter = origin_state.read_grants.begin(),
++              grant_end = origin_state.read_grants.end();
++         grant_iter != grant_end;) {
++      // The grant may be removed from `read_grants`, so increase the iterator
++      // before continuing.
++      auto& [_, grant] = *(grant_iter++);
+       grant->SetStatus(
+           PermissionStatus::ASK,
+           PersistedPermissionOptions::kDoNotUpdatePersistedPermission);
+     }
+-    for (auto& [_, grant] : origin_state.write_grants) {
++    for (auto grant_iter = origin_state.write_grants.begin(),
++              grant_end = origin_state.write_grants.end();
++         grant_iter != grant_end;) {
++      // The grant may be removed from `write_grants`, so increase the iterator
++      // before continuing.
++      auto& [_, grant] = *(grant_iter++);
+       grant->SetStatus(
+           PermissionStatus::ASK,
+           PersistedPermissionOptions::kDoNotUpdatePersistedPermission);
+--- a/chrome/browser/file_system_access/chrome_file_system_access_permission_context_unittest.cc
++++ b/chrome/browser/file_system_access/chrome_file_system_access_permission_context_unittest.cc
+@@ -3061,7 +3061,7 @@
+ }
+ 
+ TEST_F(ChromeFileSystemAccessPermissionContextTest,
+-       ReadGrantDestroyedOnRevoke) {
++       ReadGrantDestroyedOnRevokeActiveGrants) {
+   auto grant = permission_context()->GetReadPermissionGrant(
+       kTestOrigin, kTestPath, HandleType::kFile, UserAction::kSave);
+   EXPECT_EQ(grant->GetStatus(), PermissionStatus::GRANTED);
+@@ -3077,7 +3077,7 @@
+ }
+ 
+ TEST_F(ChromeFileSystemAccessPermissionContextTest,
+-       WriteGrantDestroyedOnRevoke) {
++       WriteGrantDestroyedOnRevokeActiveGrants) {
+   auto grant = permission_context()->GetWritePermissionGrant(
+       kTestOrigin, kTestPath, HandleType::kFile, UserAction::kSave);
+   EXPECT_EQ(grant->GetStatus(), PermissionStatus::GRANTED);
+@@ -3092,6 +3092,38 @@
+   EXPECT_FALSE(observer);
+ }
+ 
++TEST_F(ChromeFileSystemAccessPermissionContextTest,
++       ReadGrantDestroyedOnRevokeAllActiveGrants) {
++  auto grant = permission_context()->GetWritePermissionGrant(
++      kTestOrigin, kTestPath, HandleType::kFile, UserAction::kSave);
++  EXPECT_EQ(grant->GetStatus(), PermissionStatus::GRANTED);
++
++  auto observer =
++      SelfDestructingPermissionGrantObserver::Create(std::move(grant));
++
++  // `observer` destroys itself when the permission gets revoked. `observer` is
++  // the only holder of `grant`, so `grant` is destroyed as well. This should
++  // work without crashing.
++  permission_context()->RevokeAllActiveGrants();
++  EXPECT_FALSE(observer);
++}
++
++TEST_F(ChromeFileSystemAccessPermissionContextTest,
++       WriteGrantDestroyedOnRevokeAllActiveGrants) {
++  auto grant = permission_context()->GetWritePermissionGrant(
++      kTestOrigin, kTestPath, HandleType::kFile, UserAction::kSave);
++  EXPECT_EQ(grant->GetStatus(), PermissionStatus::GRANTED);
++
++  auto observer =
++      SelfDestructingPermissionGrantObserver::Create(std::move(grant));
++
++  // `observer` destroys itself when the permission gets revoked. `observer` is
++  // the only holder of `grant`, so `grant` is destroyed as well. This should
++  // work without crashing.
++  permission_context()->RevokeAllActiveGrants();
++  EXPECT_FALSE(observer);
++}
++
+ #endif  // BUILDFLAG(ENTERPRISE_CLOUD_CONTENT_ANALYSIS)
+ 
+ #endif  // !BUILDFLAG(IS_ANDROID)

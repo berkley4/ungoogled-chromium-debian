@@ -14,7 +14,7 @@
    // Only for libXSLT callbacks
 --- a/third_party/blink/renderer/core/xml/xslt_processor_libxslt.cc
 +++ b/third_party/blink/renderer/core/xml/xslt_processor_libxslt.cc
-@@ -66,7 +66,11 @@
+@@ -71,7 +71,11 @@
    // It would be nice to do something with this error message.
  }
  

@@ -1,14 +1,3 @@
---- a/chrome/browser/net/dns_probe_runner.cc
-+++ b/chrome/browser/net/dns_probe_runner.cc
-@@ -18,7 +18,7 @@
- 
- namespace chrome_browser_net {
- 
--const char DnsProbeRunner::kKnownGoodHostname[] = "google.com";
-+const char DnsProbeRunner::kKnownGoodHostname[] = "example.com";
- 
- namespace {
- 
 --- a/net/dns/dns_transaction.h
 +++ b/net/dns/dns_transaction.h
 @@ -29,7 +29,7 @@

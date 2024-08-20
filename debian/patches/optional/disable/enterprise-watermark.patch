@@ -1,6 +1,6 @@
 --- a/chrome/browser/ui/views/frame/browser_view.h
 +++ b/chrome/browser/ui/views/frame/browser_view.h
-@@ -833,9 +833,11 @@
+@@ -822,9 +822,11 @@
      return web_app_frame_toolbar();
    }
  
@@ -12,7 +12,7 @@
  
    void set_on_delay_apply_data_protection_settings_if_empty_called_for_testing(
        base::OnceClosure closure) {
-@@ -1231,8 +1233,10 @@
+@@ -1227,8 +1229,10 @@
    bool clear_screenshot_protection_on_page_load_ = false;
  #endif
  
@@ -25,7 +25,7 @@
    // Handled by ContentsLayoutManager.
 --- a/chrome/browser/ui/views/frame/browser_view.cc
 +++ b/chrome/browser/ui/views/frame/browser_view.cc
-@@ -940,6 +940,8 @@
+@@ -943,6 +943,8 @@
      watermark_view_ = contents_container->AddChildView(
          std::make_unique<enterprise_watermark::WatermarkView>());
    }
@@ -34,7 +34,7 @@
  #endif  // BUILDFLAG(ENTERPRISE_WATERMARK)
  
    contents_container->SetLayoutManager(std::make_unique<ContentsLayoutManager>(
-@@ -5463,6 +5465,7 @@
+@@ -5550,6 +5552,7 @@
  #if BUILDFLAG(ENTERPRISE_WATERMARK) || \
      BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
  
@@ -42,7 +42,7 @@
  void BrowserView::ApplyDataProtectionSettings(
      base::WeakPtr<content::WebContents> expected_web_contents,
      const enterprise_data_protection::UrlSettings& settings) {
-@@ -5480,6 +5483,7 @@
+@@ -5567,6 +5570,7 @@
    ApplyScreenshotSettings(settings.allow_screenshots);
  #endif  // BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
  }

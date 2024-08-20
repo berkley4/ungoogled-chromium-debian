@@ -17,7 +17,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
 
 --- a/skia/BUILD.gn
 +++ b/skia/BUILD.gn
-@@ -379,9 +379,6 @@
+@@ -376,9 +376,6 @@
      defines += [ "SK_CODEC_DECODES_JPEG_GAINMAPS" ]
    }
  
@@ -27,7 +27,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
    if (is_win) {
      libs = [ "fontsub.lib" ]
    }
-@@ -602,6 +599,8 @@
+@@ -581,6 +578,8 @@
        "SKOTTIE_TRIVIAL_FONTRUN_ITER",
      ]
    }

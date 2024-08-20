@@ -15,7 +15,7 @@ Cr-Commit-Position: refs/heads/main@{#1341966}
 
 --- a/ui/views/widget/desktop_aura/desktop_native_widget_aura.cc
 +++ b/ui/views/widget/desktop_aura/desktop_native_widget_aura.cc
-@@ -1265,8 +1265,10 @@
+@@ -1264,8 +1264,10 @@
  void DesktopNativeWidgetAura::OnDeviceScaleFactorChanged(
      float old_device_scale_factor,
      float new_device_scale_factor) {

@@ -57,7 +57,7 @@
      "ffmpeg_common.h",
 --- a/media/filters/BUILD.gn
 +++ b/media/filters/BUILD.gn
-@@ -79,7 +79,11 @@
+@@ -67,7 +67,11 @@
      "wsola_internals.h",
    ]
  
@@ -72,7 +72,7 @@
      "//base",
 --- a/media/formats/BUILD.gn
 +++ b/media/formats/BUILD.gn
-@@ -88,7 +88,11 @@
+@@ -89,7 +89,11 @@
      "//third_party/libwebm",
    ]
  
@@ -87,7 +87,7 @@
      deps += [ "//media/video" ]
 --- a/media/gpu/BUILD.gn
 +++ b/media/gpu/BUILD.gn
-@@ -408,6 +408,9 @@
+@@ -412,6 +412,9 @@
      ]
      public_deps += [ "//third_party/libgav1:libgav1_parser" ]
    }
@@ -99,9 +99,9 @@
  # The buffer validation functionality is in its own component so that it can be
 --- a/media/muxers/BUILD.gn
 +++ b/media/muxers/BUILD.gn
-@@ -52,7 +52,11 @@
-     "//ui/gfx/geometry",
-   ]
+@@ -56,7 +56,11 @@
+   assert(use_libgav1_parser)
+   deps += [ "//third_party/libgav1:libgav1_parser" ]
  
 -  configs += [ "//media:subcomponent_config" ]
 +  configs -= [ "//build/config/compiler:default_optimization" ]
@@ -129,7 +129,7 @@
  # Note: This is a roll-up only target; do not expand the visibility. DEPS should
 --- a/media/video/BUILD.gn
 +++ b/media/video/BUILD.gn
-@@ -90,7 +90,11 @@
+@@ -55,7 +55,11 @@
      "//ui/gl",
    ]
  

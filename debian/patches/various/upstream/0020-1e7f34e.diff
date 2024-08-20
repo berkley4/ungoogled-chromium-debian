@@ -1,0 +1,89 @@
+From 1e7f34ef7fff1d25e9a6c8598d9d6ef76dfa8380 Mon Sep 17 00:00:00 2001
+From: Yue Zhao <zhaoy@microsoft.com>
+Date: Wed, 21 Aug 2024 06:07:21 +0000
+Subject: [PATCH] Fix browser crash when profile destroy
+
+This change addresses a crash issue that occurs when tasks
+from mojo continue to run in the task runner after the
+profile is closed (ShutdownStarted==true).
+
+One of the crashing cases happens when calling
+`storage_partition_impl->GetWeakPtr()` during the construction
+of `RenderProcessHostImpl`. This PR aims to prevent the
+creation of `RenderProcessHostImpl` instances during the shutdown process.
+The crash issue has been present in multiple versions but has become more
+frequent in version 126. The root cause is that tasks from mojo continue to
+run even after the profile has started shutting down, leading to an incorrect
+state.
+The ideal fix would involve resetting the mojom connection through callbacks,
+observers... However, there are challenges with this approach, such as the
+lack of an observer for the destruction of the instance holding the mojo
+object.
+This PR try a straightforward solution: it checks if `browser_context` has
+begun the shutdown process and avoid continuing to navigate or receive responses
+during this period. This approach prevents crashes by ensuring that no new
+RenderProcessHostImpl instances are created when the profile(browser_context) is
+shutting down.
+
+Bug: 356418730
+Change-Id: I5474f22d028b9bdb560c77711dd8df55b28d825a
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5755530
+Reviewed-by: Nasko Oskov <nasko@chromium.org>
+Commit-Queue: q lamry <zhaoy@microsoft.com>
+Reviewed-by: Leon Han <shulianghan@microsoft.com>
+Cr-Commit-Position: refs/heads/main@{#1344601}
+---
+
+--- a/content/browser/loader/navigation_url_loader_impl.cc
++++ b/content/browser/loader/navigation_url_loader_impl.cc
+@@ -969,6 +969,14 @@
+     early_hints_manager_.reset();
+   }
+ 
++  //  TODO(crbug.com/40496584):Resolved an issue where creating RPHI would cause
++  //  a crash when the browser context was shut down. We are actively exploring
++  //  the appropriate long-term solution. Please remove this condition once the
++  //  final fix is implemented.
++  if (browser_context_->ShutdownStarted()) {
++    return;
++  }
++
+   if (!response_body)
+     return;
+ 
+--- a/content/browser/renderer_host/navigator.cc
++++ b/content/browser/renderer_host/navigator.cc
+@@ -788,6 +788,14 @@
+   FrameTreeNode* frame_tree_node = request->frame_tree_node();
+   DCHECK_EQ(&(frame_tree_node->frame_tree()), &controller_.frame_tree());
+ 
++  //  TODO(crbug.com/40496584):Resolved an issue where creating RPHI would cause
++  //  a crash when the browser context was shut down. We are actively exploring
++  //  the appropriate long-term solution. Please remove this condition once the
++  //  final fix is implemented.
++  if (controller_.GetBrowserContext()->ShutdownStarted()) {
++    return;
++  }
++
+   metrics_data_ = std::make_unique<NavigationMetricsData>(
+       request->common_params().navigation_start, request->common_params().url,
+       GetPageUkmSourceId(*frame_tree_node->current_frame_host()),
+--- a/content/browser/renderer_host/render_frame_host_impl.cc
++++ b/content/browser/renderer_host/render_frame_host_impl.cc
+@@ -10000,6 +10000,16 @@
+     }
+   }
+ 
++  //  TODO(crbug.com/40496584):Resolved an issue where creating RPHI would cause
++  //  a crash when the browser context was shut down. We are actively exploring
++  //  the appropriate long-term solution. Please remove this condition once the
++  //  final fix is implemented.
++  BrowserContext* browser_context =
++      frame_tree_node()->navigator().controller().GetBrowserContext();
++  if (browser_context->ShutdownStarted()) {
++    return;
++  }
++
+   // See `owner_` invariants about `lifecycle_state_`.
+   // `IsInactiveAndDisallowActivation()` check cause both pending deletion and
+   // bfcached states to return early.

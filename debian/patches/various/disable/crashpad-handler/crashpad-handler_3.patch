@@ -1,6 +1,6 @@
 --- a/chrome/app/chrome_main_delegate.cc
 +++ b/chrome/app/chrome_main_delegate.cc
-@@ -198,7 +198,9 @@
+@@ -199,7 +199,9 @@
  #if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_ANDROID) || \
      BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
  #include "chrome/browser/policy/policy_path_parser.h"
@@ -10,7 +10,7 @@
  #endif
  
  #if BUILDFLAG(ENABLE_EXTENSIONS)
-@@ -1745,9 +1747,11 @@
+@@ -1752,9 +1754,11 @@
        base::android::InitJavaExceptionReporterForChildProcess();
      }
  #else
@@ -22,7 +22,7 @@
  #endif  // BUILDFLAG(IS_ANDROID)
    }
  #endif  // BUILDFLAG(IS_POSIX) && !BUILDFLAG(IS_MAC)
-@@ -1894,10 +1898,11 @@
+@@ -1901,10 +1905,11 @@
        base::CommandLine::ForCurrentProcess();
    std::string process_type =
        command_line->GetSwitchValueASCII(switches::kProcessType);
@@ -37,7 +37,7 @@
  }
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -589,7 +589,7 @@
+@@ -597,7 +597,7 @@
  #include "chrome/browser/browser_switcher/browser_switcher_navigation_throttle.h"
  #endif
  
@@ -46,7 +46,7 @@
  #include "components/crash/core/app/crash_switches.h"
  #include "components/crash/core/app/crashpad.h"
  #endif
-@@ -996,7 +996,7 @@
+@@ -1025,7 +1025,7 @@
  int GetCrashSignalFD(const base::CommandLine& command_line) {
    return crashpad::CrashHandlerHost::Get()->GetDeathSignalSocket();
  }
@@ -55,7 +55,7 @@
  int GetCrashSignalFD(const base::CommandLine& command_line) {
    int fd;
    return crash_reporter::GetHandlerSocket(&fd, nullptr) ? fd : -1;
-@@ -4714,7 +4714,7 @@
+@@ -4904,7 +4904,7 @@
    DCHECK(!app_data_path.empty());
  #endif  // BUILDFLAG(IS_ANDROID)
  
@@ -77,7 +77,7 @@
        int child_process_id,
 --- a/headless/lib/browser/headless_content_browser_client.cc
 +++ b/headless/lib/browser/headless_content_browser_client.cc
-@@ -50,8 +50,10 @@
+@@ -51,8 +51,10 @@
  #include "ui/gfx/switches.h"
  
  #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
@@ -88,16 +88,16 @@
  #include "content/public/common/content_descriptors.h"
  #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
  
-@@ -67,7 +69,7 @@
+@@ -70,7 +72,7 @@
  
- namespace headless {
+ namespace {
  
 -#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
 +#if BUILDFLAG(IS_CHROMEOS)
- namespace {
- 
  int GetCrashSignalFD(const base::CommandLine& command_line,
-@@ -165,7 +167,7 @@
+                      const HeadlessBrowser::Options& options) {
+   int fd;
+@@ -191,7 +193,7 @@
    return content::GeneratedCodeCacheSettings(true, 0, context->GetPath());
  }
  
@@ -106,9 +106,9 @@
  void HeadlessContentBrowserClient::GetAdditionalMappedFilesForChildProcess(
      const base::CommandLine& command_line,
      int child_process_id,
-@@ -184,7 +186,7 @@
- 
-   command_line->AppendSwitch(::switches::kHeadless);
+@@ -212,7 +214,7 @@
+     command_line->AppendSwitchASCII(::switches::kHeadless, "old");
+   }
  
 -#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
 +#if BUILDFLAG(IS_CHROMEOS)

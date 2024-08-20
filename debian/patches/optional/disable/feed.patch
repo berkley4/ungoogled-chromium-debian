@@ -1,6 +1,6 @@
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -4136,8 +4136,6 @@
+@@ -4086,8 +4086,6 @@
        "new_tab_page/chrome_colors/chrome_colors_service.h",
        "new_tab_page/feature_promo_helper/new_tab_page_feature_promo_helper.cc",
        "new_tab_page/feature_promo_helper/new_tab_page_feature_promo_helper.h",
@@ -9,7 +9,7 @@
        "new_tab_page/modules/file_suggestion/drive_service.cc",
        "new_tab_page/modules/file_suggestion/drive_service.h",
        "new_tab_page/modules/file_suggestion/drive_service_factory.cc",
-@@ -4600,6 +4598,14 @@
+@@ -4543,6 +4541,14 @@
        "webauthn/webauthn_switches.cc",
        "webauthn/webauthn_switches.h",
      ]
@@ -24,15 +24,7 @@
      deps += [
        "//chrome/app:command_ids",
        "//chrome/app/theme:chrome_unscaled_resources_grit",
-@@ -4615,7 +4621,6 @@
-       "//chrome/browser/media/router/discovery/access_code:access_code_sink_service",
-       "//chrome/browser/new_tab_page/chrome_colors:generate_chrome_colors_info",
-       "//chrome/browser/new_tab_page/chrome_colors:generate_colors_info",
--      "//chrome/browser/new_tab_page/modules/feed:mojo_bindings",
-       "//chrome/browser/new_tab_page/modules/file_suggestion:mojo_bindings",
-       "//chrome/browser/new_tab_page/modules/history_clusters:mojo_bindings",
-       "//chrome/browser/new_tab_page/modules/history_clusters/cart:mojo_bindings",
-@@ -4842,6 +4847,10 @@
+@@ -4752,6 +4758,10 @@
        ]
      }
  
@@ -43,10 +35,18 @@
      # On Windows, the hashes are embedded in //chrome:chrome_initial rather
      # than here in :chrome_dll.
      if (!is_win) {
+@@ -8660,7 +8670,6 @@
+       "//chrome/browser/lens/core/mojom:mojo_bindings",
+       "//chrome/browser/new_tab_page/chrome_colors:generate_chrome_colors_info",
+       "//chrome/browser/new_tab_page/chrome_colors:generate_colors_info",
+-      "//chrome/browser/new_tab_page/modules/feed:mojo_bindings",
+       "//chrome/browser/new_tab_page/modules/file_suggestion:mojo_bindings",
+       "//chrome/browser/new_tab_page/modules/history_clusters:mojo_bindings",
+       "//chrome/browser/new_tab_page/modules/history_clusters/cart:mojo_bindings",
 --- a/chrome/browser/chrome_browser_interface_binders.cc
 +++ b/chrome/browser/chrome_browser_interface_binders.cc
-@@ -1329,10 +1329,12 @@
-                                            NewTabPageUI>(map);
+@@ -1312,10 +1312,12 @@
+         file_suggestion::mojom::FileSuggestionHandler, NewTabPageUI>(map);
    }
  
 +#if BUILDFLAG(ENABLE_FEED_V2)
@@ -56,11 +56,11 @@
    }
 +#endif
  
-   if (base::FeatureList::IsEnabled(ntp_features::kNtpHistoryClustersModule) ||
-       base::FeatureList::IsEnabled(
+   if (base::FeatureList::IsEnabled(ntp_features::kNtpTabResumptionModule)) {
+     RegisterWebUIControllerInterfaceBinder<
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -7056,9 +7056,6 @@
+@@ -6834,9 +6834,6 @@
      "//components/favicon/core/test:test_support",
      "//components/feature_engagement/public",
      "//components/feed:buildflags",
@@ -70,7 +70,7 @@
      "//components/feed/mojom:mojo_bindings",
      "//components/feedback",
      "//components/feedback/redaction_tool",
-@@ -7330,6 +7327,14 @@
+@@ -7117,6 +7114,14 @@
      "//base:path_service_unittest",
    ]
  
@@ -83,5 +83,5 @@
 +  }
 +
    if (is_chromeos) {
-     sources += [
-       "../browser/chromeos/office_web_app/office_web_app_unittest.cc",
+     sources += [ "../browser/device_reauth/chromeos/device_authenticator_chromeos_unittest.cc" ]
+ 

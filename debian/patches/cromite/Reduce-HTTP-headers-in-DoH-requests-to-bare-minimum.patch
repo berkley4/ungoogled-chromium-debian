@@ -32,7 +32,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    }
 --- a/net/url_request/url_request_http_job.cc
 +++ b/net/url_request/url_request_http_job.cc
-@@ -486,6 +486,7 @@
+@@ -546,6 +546,7 @@
    // fields in the referrer.
    GURL referrer(request_->referrer());
  
@@ -40,7 +40,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // Our consumer should have made sure that this is a safe referrer (e.g. via
    // URLRequestJob::ComputeReferrerForPolicy).
    if (referrer.is_valid()) {
-@@ -493,11 +494,14 @@
+@@ -553,11 +554,14 @@
      request_info_.extra_headers.SetHeader(HttpRequestHeaders::kReferer,
                                            referer_value);
    }
@@ -55,7 +55,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
    AddExtraHeaders();
  
-@@ -743,10 +747,10 @@
+@@ -803,10 +807,10 @@
  void URLRequestHttpJob::AddExtraHeaders() {
    request_info_.extra_headers.SetAcceptEncodingIfMissing(
        request()->url(), request()->accepted_stream_types(),

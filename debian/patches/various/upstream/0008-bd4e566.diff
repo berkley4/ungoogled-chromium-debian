@@ -20,7 +20,7 @@ Cr-Commit-Position: refs/heads/main@{#1337265}
 
 --- a/third_party/blink/renderer/core/exported/web_view_impl.cc
 +++ b/third_party/blink/renderer/core/exported/web_view_impl.cc
-@@ -4033,6 +4033,10 @@
+@@ -4075,6 +4075,10 @@
  }
  
  void WebViewImpl::DraggableRegionsChanged() {

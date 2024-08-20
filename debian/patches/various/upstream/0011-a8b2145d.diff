@@ -14,7 +14,7 @@ Cr-Commit-Position: refs/heads/main@{#1338902}
 
 --- a/third_party/blink/renderer/core/inspector/inspector_css_agent.cc
 +++ b/third_party/blink/renderer/core/inspector/inspector_css_agent.cc
-@@ -1043,6 +1043,9 @@
+@@ -1044,6 +1044,9 @@
        if (selector->SelectorText() == selector_text) {
          const CSSRuleSourceData* source_data =
              style_sheet->SourceDataForRule(css_style_rule);

@@ -2,7 +2,7 @@ description: disable-gaia.patch lacks this hunk (compared to bromite/vanadium)
 
 --- a/google_apis/gaia/gaia_auth_fetcher.cc
 +++ b/google_apis/gaia/gaia_auth_fetcher.cc
-@@ -41,7 +41,9 @@
+@@ -42,7 +42,9 @@
  
  namespace {
  

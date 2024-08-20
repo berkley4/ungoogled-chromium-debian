@@ -58,7 +58,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      connection_observer_handle_ = nullptr;
 --- a/third_party/blink/renderer/platform/network/network_state_notifier.cc
 +++ b/third_party/blink/renderer/platform/network/network_state_notifier.cc
-@@ -102,6 +102,17 @@
+@@ -107,6 +107,17 @@
    }
  }
  

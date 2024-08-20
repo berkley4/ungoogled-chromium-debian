@@ -16,7 +16,7 @@ Cr-Commit-Position: refs/heads/main@{#1337108}
 
 --- a/third_party/blink/renderer/core/layout/layout_object.cc
 +++ b/third_party/blink/renderer/core/layout/layout_object.cc
-@@ -1492,6 +1492,9 @@
+@@ -1529,6 +1529,9 @@
  bool HasPropagatedLayoutObjects(const LayoutObject* object) {
    if (auto* box = DynamicTo<LayoutBox>(object)) {
      for (const auto& fragment : box->PhysicalFragments()) {

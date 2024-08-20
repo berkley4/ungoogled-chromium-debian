@@ -43,7 +43,7 @@ Cr-Commit-Position: refs/heads/main@{#1332386}
  }  // namespace x11
 --- a/ui/gfx/x/gen_xproto.py
 +++ b/ui/gfx/x/gen_xproto.py
-@@ -620,6 +620,15 @@
+@@ -622,6 +622,15 @@
  
          if not t.nmemb:
              if self.is_read:

@@ -1,0 +1,30 @@
+From 019abccb33fb4d0976d546a78cff67df7dffac38 Mon Sep 17 00:00:00 2001
+From: Daniel Clark <daniec@microsoft.com>
+Date: Tue, 20 Aug 2024 21:07:21 +0000
+Subject: [PATCH] [EditContext] Null-check DomWindow() in SetSelection
+
+It's apparently possible for DomWindow() to be null during an
+EditContext.updateSelection call, so check for this condition
+to avoid a crash.
+
+See also https://chromium-review.googlesource.com/5778495
+
+Bug: 356211970
+Change-Id: I91723194fd52d9f6ae6e4c03e1b96e8a36445727
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5799260
+Commit-Queue: Dan Clark <daniec@microsoft.com>
+Reviewed-by: Koji Ishii <kojii@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1344384}
+---
+
+--- a/third_party/blink/renderer/core/editing/ime/edit_context.cc
++++ b/third_party/blink/renderer/core/editing/ime/edit_context.cc
+@@ -660,7 +660,7 @@
+   selection_start_ = start;
+   selection_end_ = end;
+ 
+-  if (DomWindow()->GetFrame()) {
++  if (DomWindow() && DomWindow()->GetFrame()) {
+     DomWindow()->GetFrame()->Client()->DidChangeSelection(
+         /*is_selection_empty=*/selection_start_ == selection_end_,
+         blink::SyncCondition::kNotForced);

@@ -1,6 +1,6 @@
 --- a/chrome/browser/ui/ui_features.cc
 +++ b/chrome/browser/ui/ui_features.cc
-@@ -101,11 +101,10 @@
+@@ -90,7 +90,7 @@
  // with submenu to manage extensions and visit chrome web store.
  BASE_FEATURE(kExtensionsMenuInAppMenu,
               "ExtensionsMenuInAppMenu",
@@ -8,9 +8,4 @@
 +             base::FEATURE_DISABLED_BY_DEFAULT);
  
  bool IsExtensionMenuInRootAppMenu() {
--  return base::FeatureList::IsEnabled(kExtensionsMenuInAppMenu) ||
--         features::IsChromeRefresh2023();
-+  return base::FeatureList::IsEnabled(kExtensionsMenuInAppMenu);
- }
- 
- #if !defined(ANDROID)
+   return base::FeatureList::IsEnabled(kExtensionsMenuInAppMenu);

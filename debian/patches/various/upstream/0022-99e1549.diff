@@ -1,0 +1,144 @@
+From 99e15496e6c581d55522b0fad394d1ca109e3f69 Mon Sep 17 00:00:00 2001
+From: Morten Stenshorne <mstensho@chromium.org>
+Date: Mon, 19 Aug 2024 14:09:48 +0000
+Subject: [PATCH] Apply size containment to ::scroll-marker-group.
+
+There was code for this, but it was never executed, and it was wrong (if
+executed, DCHECKs would fail).
+
+It was never executed, because ApplyBaseStyleNoCache() is called for the
+originating element, not the pseudo element. Additionally,
+ScrollMarkerGroupUserAgentDeclaration() would set the `content` property
+to a simple keyword, but it expects a list. See
+Contain::ParseSingleValue().
+
+Two tests had to be updated, so that they set a fixed block-size on the
+scroll marker group, since the children are not supposed to affect its
+size (which is what the tests used to assume).
+
+scroll-marker-002.html actually relied on two layout passes in order to
+render as expected, since it places the scroll marker group before the
+scroller (and the scroll marker group is populated after the scroller
+has been laid out, which will not replace the scroll marker group
+fragment itself, only its children (the markers)). We *would* typically
+get two layout passes though, since currently we assume that the
+viewport gets a vertical scrollbar, and, if that turns out not to be the
+case (like in this case), we'll lay out again without the scrollbar. Not
+a safe thing to rely on.
+
+Add an additional test that doesn't set an explicit block-size on the
+scroll marker group, to make sure that a tall child doesn't affect its
+size.
+
+Bug: 332396355
+Change-Id: I2ace302c872ff25aaa352b44d688b4c97a7fbb24
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5794890
+Commit-Queue: Morten Stenshorne <mstensho@chromium.org>
+Reviewed-by: Daniil Sakhapov <sakhapov@chromium.org>
+Reviewed-by: Rune Lillesveen <futhark@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1343478}
+---
+
+--- a/third_party/blink/renderer/core/css/resolver/style_resolver.cc
++++ b/third_party/blink/renderer/core/css/resolver/style_resolver.cc
+@@ -57,6 +57,7 @@
+ #include "third_party/blink/renderer/core/css/css_selector_watch.h"
+ #include "third_party/blink/renderer/core/css/css_style_declaration.h"
+ #include "third_party/blink/renderer/core/css/css_style_rule.h"
++#include "third_party/blink/renderer/core/css/css_value_list.h"
+ #include "third_party/blink/renderer/core/css/element_rule_collector.h"
+ #include "third_party/blink/renderer/core/css/font_face.h"
+ #include "third_party/blink/renderer/core/css/out_of_flow_data.h"
+@@ -473,9 +474,9 @@
+       (MakeGarbageCollected<MutableCSSPropertyValueSet>(kHTMLStandardMode)));
+ 
+   if (decl->IsEmpty()) {
+-    decl->SetProperty(CSSPropertyID::kContain,
+-                      *CSSIdentifierValue::Create(CSSValueID::kSize),
+-                      true /* important */);
++    CSSValueList* list = CSSValueList::CreateSpaceSeparated();
++    list->Append(*CSSIdentifierValue::Create(CSSValueID::kSize));
++    decl->SetProperty(CSSPropertyID::kContain, *list, /*important=*/true);
+   }
+   return decl;
+ }
+@@ -1474,16 +1475,16 @@
+     }
+   }
+ 
+-  if (element->IsScrollMarkerGroupPseudoElement()) {
+-    cascade.MutableMatchResult().AddMatchedProperties(
+-        ScrollMarkerGroupUserAgentDeclaration(), CascadeOrigin::kUserAgent);
+-  }
+-
+   ElementRuleCollector collector(state.ElementContext(), style_recalc_context,
+                                  selector_filter_, cascade.MutableMatchResult(),
+                                  state.InsideLink());
+ 
+   if (style_request.IsPseudoStyleRequest()) {
++    if (style_request.pseudo_id == kPseudoIdScrollMarkerGroup) {
++      cascade.MutableMatchResult().AddMatchedProperties(
++          ScrollMarkerGroupUserAgentDeclaration(), CascadeOrigin::kUserAgent);
++    }
++
+     collector.SetPseudoElementStyleRequest(style_request);
+     GetDocument().GetStyleEngine().EnsureUAStyleForPseudoElement(
+         style_request.pseudo_id);
+--- a/third_party/blink/web_tests/wpt_internal/css/css-pseudo/scroll-marker-001.html
++++ b/third_party/blink/web_tests/wpt_internal/css/css-pseudo/scroll-marker-001.html
+@@ -22,6 +22,7 @@
+     #scroller::scroll-marker-group {
+         border: 3px solid black;
+         padding: 5px;
++        height: 20px;
+         display: block;
+     }
+ 
+@@ -42,4 +43,4 @@
+ <div id="scroller">
+     <div id="first"></div>
+     <div></div>
+-</div>
+\ No newline at end of file
++</div>
+--- a/third_party/blink/web_tests/wpt_internal/css/css-pseudo/scroll-marker-002.html
++++ b/third_party/blink/web_tests/wpt_internal/css/css-pseudo/scroll-marker-002.html
+@@ -22,6 +22,7 @@
+     #scroller::scroll-marker-group {
+         border: 3px solid black;
+         padding: 5px;
++        height: 10px;
+         display: flex;
+     }
+ 
+--- /dev/null
++++ b/third_party/blink/web_tests/wpt_internal/css/css-pseudo/scroll-marker-007.html
+@@ -0,0 +1,28 @@
++<!DOCTYPE html>
++<title>Scroll marker group with auto block-size</title>
++<link rel="author" title="Morten Stenshorne" href="mailto:mstensho@chromium.org">
++<link rel="help" href="https://drafts.csswg.org/css-overflow-5/#scroll-marker-group">
++<link rel="match" href="../reference/ref-filled-green-100px-square.xht">
++<style>
++  #scroller {
++    overflow: hidden;
++    scroll-marker-group: after;
++  }
++  #scroller::scroll-marker-group {
++    contain: none; /* It should be impossible to disable size containment for scroll marker groups, so this declaration should have no effect. */
++    display: block;
++    width: fit-content;
++    border: 50px solid green;
++    background: red;
++  }
++  #scroller > *::scroll-marker {
++    display: block;
++    width: 200px;
++    height: 200px;
++    content: "";
++  }
++</style>
++<p>Test passes if there is a filled green square and <strong>no red</strong>.</p>
++<div id="scroller">
++  <div></div>
++</div>

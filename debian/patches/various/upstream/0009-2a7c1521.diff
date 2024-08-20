@@ -32,7 +32,7 @@ Cr-Commit-Position: refs/heads/main@{#1337963}
 
 --- a/content/browser/renderer_host/render_widget_host_impl.cc
 +++ b/content/browser/renderer_host/render_widget_host_impl.cc
-@@ -2513,6 +2513,13 @@
+@@ -2436,6 +2436,13 @@
      return;
    }
  
@@ -48,7 +48,7 @@ Cr-Commit-Position: refs/heads/main@{#1337963}
    if (!delegated_ink_point_renderer) {
 --- a/content/browser/renderer_host/render_widget_host_impl.h
 +++ b/content/browser/renderer_host/render_widget_host_impl.h
-@@ -1503,6 +1503,10 @@
+@@ -1502,6 +1502,10 @@
  
    const viz::FrameSinkId frame_sink_id_;
  
@@ -71,7 +71,7 @@ Cr-Commit-Position: refs/heads/main@{#1337963}
                      int32_t pointer_id = std::numeric_limits<int32_t>::min())
 --- a/ui/gl/delegated_ink_point_renderer_gpu.cc
 +++ b/ui/gl/delegated_ink_point_renderer_gpu.cc
-@@ -207,14 +207,10 @@
+@@ -220,14 +220,10 @@
  
    const int32_t pointer_id = point.pointer_id();
  

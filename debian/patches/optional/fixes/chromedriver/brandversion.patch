@@ -1,6 +1,6 @@
 --- a/chrome/test/chromedriver/capabilities.cc
 +++ b/chrome/test/chromedriver/capabilities.cc
-@@ -346,7 +346,7 @@
+@@ -347,7 +347,7 @@
                          "'version' field of type string");
          }
  
@@ -9,7 +9,7 @@
        }
  
        client_hints.brands = std::move(brands);
-@@ -384,7 +384,7 @@
+@@ -385,7 +385,7 @@
                          "a 'version' field of type string");
          }
  

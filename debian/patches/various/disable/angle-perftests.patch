@@ -3,7 +3,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
 
 --- a/third_party/angle/src/tests/BUILD.gn
 +++ b/third_party/angle/src/tests/BUILD.gn
-@@ -199,7 +199,6 @@
+@@ -202,7 +202,6 @@
  
    deps = [
      ":angle_test_expectations",
@@ -11,7 +11,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
      "$angle_root:angle_static",
      "$angle_root:libfeature_support",
      "$angle_root/util:angle_util_static",
-@@ -422,7 +421,7 @@
+@@ -425,7 +424,7 @@
    test_utils = ":angle_common_test_utils_static"
  }
  
@@ -20,9 +20,9 @@ author: Michel Le Bihan <michel@lebihan.pl>
    import("angle_perftests.gni")
  
    # This test suite is for perf tests that use ANGLE's internals in some direct way.
-@@ -1861,10 +1860,10 @@
-     deps += [ ":angle_trace_perf_tests" ]
-     deps += [ "capture_tests:angle_capture_tests_trace" ]
+@@ -1865,10 +1864,10 @@
+     deps += [ "capture_tests:angle_capture_tests_multi_frame_trace" ]
+     deps += [ "capture_tests:angle_capture_tests_active_textures_trace" ]
    }
 -  if (is_clang) {
 +  if (false) {

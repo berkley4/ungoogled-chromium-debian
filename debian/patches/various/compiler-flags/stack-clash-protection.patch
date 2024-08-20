@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -3050,6 +3050,16 @@
+@@ -3086,6 +3086,16 @@
    }
  }
  
@@ -26,4 +26,4 @@
 +  "//build/config/compiler:default_stack_clash_prot",
    "//build/config/compiler:default_stack_frames",
    "//build/config/compiler:default_symbols",
-   "//build/config/compiler:no_exceptions",
+   "//build/config/compiler:libcxx_module",

@@ -1,6 +1,6 @@
 --- a/components/content_settings/core/browser/content_settings_registry.cc
 +++ b/components/content_settings/core/browser/content_settings_registry.cc
-@@ -374,7 +374,7 @@
+@@ -385,7 +385,7 @@
    // TODO(crbug.com/40602007): Update this to "SECURE_ONLY" once
    // DeviceOrientationEvents and DeviceMotionEvents are only fired in secure
    // contexts.

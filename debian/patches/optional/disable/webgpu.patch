@@ -24,30 +24,30 @@
    }
 --- a/services/on_device_model/BUILD.gn
 +++ b/services/on_device_model/BUILD.gn
-@@ -56,12 +56,14 @@
-     }
+@@ -51,12 +51,14 @@
+   }
  
-     if (is_linux || is_chromeos) {
--      deps += [
--        "//gpu/config",
--        "//third_party/dawn/include/dawn:cpp_headers",
--        "//third_party/dawn/src/dawn:proc",
--        "//third_party/dawn/src/dawn/native",
--      ]
-+      deps += [ "//gpu/config" ]
-+      if (use_dawn) {
-+        deps += [
-+          "//third_party/dawn/include/dawn:cpp_headers",
-+          "//third_party/dawn/src/dawn:proc",
-+          "//third_party/dawn/src/dawn/native",
-+        ]
-+      }
-     }
+   if (is_linux || is_chromeos) {
+-    deps += [
+-      "//gpu/config",
+-      "//third_party/dawn/include/dawn:cpp_headers",
+-      "//third_party/dawn/src/dawn:proc",
+-      "//third_party/dawn/src/dawn/native",
+-    ]
++    deps += [ "//gpu/config" ]
++    if (use_dawn) {
++      deps += [
++        "//third_party/dawn/include/dawn:cpp_headers",
++        "//third_party/dawn/src/dawn:proc",
++        "//third_party/dawn/src/dawn/native",
++      ]
++    }
    }
  }
+ 
 --- a/services/on_device_model/ml/BUILD.gn
 +++ b/services/on_device_model/ml/BUILD.gn
-@@ -27,9 +27,15 @@
+@@ -31,9 +31,15 @@
      "//components/translate/core/language_detection",
      "//gpu/config",
      "//third_party/angle:includes",
@@ -78,8 +78,8 @@
 +#endif  // BUILDFLAG(USE_DAWN)
  #endif
  
- #if BUILDFLAG(IS_CHROMEOS_ASH)
-@@ -80,7 +82,7 @@
+ namespace on_device_model {
+@@ -74,7 +76,7 @@
    }
  #endif
  

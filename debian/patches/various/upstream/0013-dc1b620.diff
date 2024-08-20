@@ -17,7 +17,7 @@ Cr-Commit-Position: refs/heads/main@{#1339972}
 
 --- a/content/browser/web_contents/web_contents_impl.cc
 +++ b/content/browser/web_contents/web_contents_impl.cc
-@@ -4015,7 +4015,8 @@
+@@ -4023,7 +4023,8 @@
    // the screen, or that it was downstream from a WebContents when UI was
    // blocked. Therefore, disqualify it from fullscreen if it or any upstream
    // WebContents has an active blocker.

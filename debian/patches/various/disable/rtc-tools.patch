@@ -8,7 +8,7 @@
  import("//tools/ipc_fuzzer/ipc_fuzzer.gni")
  import("//ui/base/ui_features.gni")
  import("//ui/gl/features.gni")
-@@ -1710,7 +1711,7 @@
+@@ -1744,7 +1745,7 @@
        }
      }
  
@@ -19,7 +19,7 @@
          "//third_party/webrtc/rtc_tools:rtp_generator",
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -47,6 +47,7 @@
+@@ -48,6 +48,7 @@
  import("//testing/libfuzzer/fuzzer_test.gni")
  import("//testing/test.gni")
  import("//third_party/protobuf/proto_library.gni")
@@ -27,7 +27,7 @@
  import("//third_party/widevine/cdm/widevine.gni")
  import("//ui/base/ui_features.gni")
  import("//ui/gl/features.gni")
-@@ -2223,7 +2224,7 @@
+@@ -2319,7 +2320,7 @@
        "//tools/media_engagement_preload:make_dafsa_runtime",
      ]
  

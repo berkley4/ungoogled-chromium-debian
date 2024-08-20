@@ -1,0 +1,109 @@
+From ccb7fe264ea22af1bf4de396ce7fd6ba64e32c66 Mon Sep 17 00:00:00 2001
+From: Morten Stenshorne <mstensho@chromium.org>
+Date: Mon, 19 Aug 2024 20:45:20 +0000
+Subject: [PATCH] Apply layout containment to ::scroll-marker-group.
+
+Letting scroll markers escape their scroll marker group is generally
+problematic. One of the tests included would crash without this change,
+since we'd fail to discover and lay out the marker.
+
+Bug: 332396355
+Change-Id: I52476ad8eb8fc5b001d47a4e542e3e3cfc3d4827
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5796802
+Reviewed-by: Daniil Sakhapov <sakhapov@chromium.org>
+Commit-Queue: Morten Stenshorne <mstensho@chromium.org>
+Reviewed-by: Rune Lillesveen <futhark@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1343738}
+---
+
+--- a/third_party/blink/renderer/core/css/resolver/style_resolver.cc
++++ b/third_party/blink/renderer/core/css/resolver/style_resolver.cc
+@@ -465,7 +465,7 @@
+   return decl;
+ }
+ 
+-// UA rule: ::scroll-marker-group { contain: size !important; }
++// UA rule: ::scroll-marker-group { contain: layout size !important; }
+ // The generation of ::scroll-marker pseudo-elements
+ // cannot invalidate layout outside of this pseudo-element.
+ static CSSPropertyValueSet* ScrollMarkerGroupUserAgentDeclaration() {
+@@ -475,6 +475,7 @@
+ 
+   if (decl->IsEmpty()) {
+     CSSValueList* list = CSSValueList::CreateSpaceSeparated();
++    list->Append(*CSSIdentifierValue::Create(CSSValueID::kLayout));
+     list->Append(*CSSIdentifierValue::Create(CSSValueID::kSize));
+     decl->SetProperty(CSSPropertyID::kContain, *list, /*important=*/true);
+   }
+--- /dev/null
++++ b/third_party/blink/web_tests/wpt_internal/css/css-overflow/scroll-marker-008.html
+@@ -0,0 +1,33 @@
++<!DOCTYPE html>
++<title>Scroll marker group with out-of-flow children</title>
++<link rel="author" title="Morten Stenshorne" href="mailto:mstensho@chromium.org">
++<link rel="help" href="https://drafts.csswg.org/css-overflow-5/#scroll-marker-group">
++<link rel="help" href="https://github.com/flackr/carousel/issues/31">
++<link rel="match" href="../reference/ref-filled-green-100px-square.xht">
++<style>
++  #scroller {
++    overflow: hidden;
++    scroll-marker-group: after;
++  }
++  #scroller::scroll-marker-group {
++    contain: none; /* It should be impossible to disable layout containment for scroll marker groups, so this declaration should have no effect. */
++    display: block;
++    width: 100px;
++    height: 100px;
++    background: red;
++  }
++  #scroller > *::scroll-marker {
++    display: block;
++    position: absolute;
++    right: 0;
++    top: 0;
++    width: 100px;
++    height: 100px;
++    content: "";
++    background: green;
++  }
++</style>
++<p>Test passes if there is a filled green square and <strong>no red</strong>.</p>
++<div id="scroller">
++  <div></div>
++</div>
+--- /dev/null
++++ b/third_party/blink/web_tests/wpt_internal/css/css-overflow/scroll-marker-009.html
+@@ -0,0 +1,33 @@
++<!DOCTYPE html>
++<title>Scroll marker group with out-of-flow children</title>
++<link rel="author" title="Morten Stenshorne" href="mailto:mstensho@chromium.org">
++<link rel="help" href="https://drafts.csswg.org/css-overflow-5/#scroll-marker-group">
++<link rel="help" href="https://github.com/flackr/carousel/issues/31">
++<link rel="match" href="../reference/ref-filled-green-100px-square.xht">
++<style>
++  #scroller {
++    overflow: hidden;
++    scroll-marker-group: before;
++  }
++  #scroller::scroll-marker-group {
++    contain: none; /* It should be impossible to disable layout containment for scroll marker groups, so this declaration should have no effect. */
++    display: block;
++    width: 100px;
++    height: 100px;
++    background: red;
++  }
++  #scroller > *::scroll-marker {
++    display: block;
++    position: absolute;
++    right: 0;
++    top: 0;
++    width: 100px;
++    height: 100px;
++    content: "";
++    background: green;
++  }
++</style>
++<p>Test passes if there is a filled green square and <strong>no red</strong>.</p>
++<div id="scroller">
++  <div></div>
++</div>

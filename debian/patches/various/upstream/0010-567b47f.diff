@@ -17,7 +17,7 @@ Cr-Commit-Position: refs/heads/main@{#1338829}
 
 --- a/gpu/command_buffer/service/sync_point_manager.cc
 +++ b/gpu/command_buffer/service/sync_point_manager.cc
-@@ -208,8 +208,8 @@
+@@ -219,8 +219,8 @@
  std::vector<base::OnceClosure>
  SyncPointClientState::DestroyAndReturnCallbacks() {
    base::AutoLock lock(fence_sync_lock_);
@@ -28,7 +28,7 @@ Cr-Commit-Position: refs/heads/main@{#1338829}
    std::vector<base::OnceClosure> callbacks;
    callbacks.reserve(release_callback_queue_.size());
    while (!release_callback_queue_.empty()) {
-@@ -224,7 +224,7 @@
+@@ -235,7 +235,7 @@
  
  bool SyncPointClientState::Wait(const SyncToken& sync_token,
                                  base::OnceClosure callback) {
@@ -37,7 +37,7 @@ Cr-Commit-Position: refs/heads/main@{#1338829}
    // Validate that this Wait call is between BeginProcessingOrderNumber() and
    // FinishProcessingOrderNumber(), or else we may deadlock.
    DCHECK(order_data_->IsProcessingOrderNumber());
-@@ -273,8 +273,9 @@
+@@ -285,8 +285,9 @@
    // Validate that this Release call is between BeginProcessingOrderNumber() and
    // FinishProcessingOrderNumber(), or else we may deadlock.
    DCHECK(order_data_->IsProcessingOrderNumber());
@@ -45,10 +45,10 @@ Cr-Commit-Position: refs/heads/main@{#1338829}
 +  DCHECK(!destroyed_.IsSet())
        << "Attempting to release fence on destroyed client state.";
 +
-   ReleaseFenceSyncHelper(release);
- }
- 
-@@ -416,8 +417,7 @@
+   bool updated = EnsureFenceSyncReleased(release);
+   // Suppress unused variable error in release builds.
+   (void)updated;
+@@ -435,8 +436,7 @@
    }
    // At this point, if SyncPointClientState::Wait is called, it will (correctly)
    // return false because client_state is removed from our map. It is safe to
@@ -68,7 +68,7 @@ Cr-Commit-Position: refs/heads/main@{#1338829}
  #include "base/synchronization/lock.h"
  #include "base/thread_annotations.h"
  #include "base/threading/thread_checker.h"
-@@ -250,7 +251,7 @@
+@@ -252,7 +253,7 @@
        LOCKS_EXCLUDED(fence_sync_lock_);
  
    // Sync point manager is guaranteed to exist in the lifetime of the client.
@@ -77,7 +77,7 @@ Cr-Commit-Position: refs/heads/main@{#1338829}
  
    // Global order data where releases will originate from.
    const scoped_refptr<SyncPointOrderData> order_data_;
-@@ -262,6 +263,8 @@
+@@ -264,6 +265,8 @@
    // Protects fence_sync_release_, fence_callback_queue_.
    base::Lock fence_sync_lock_;
  

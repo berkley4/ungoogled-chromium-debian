@@ -21,7 +21,7 @@ Cr-Commit-Position: refs/heads/main@{#1335488}
 
 --- a/third_party/blink/renderer/core/css/properties/longhands/longhands_custom.cc
 +++ b/third_party/blink/renderer/core/css/properties/longhands/longhands_custom.cc
-@@ -2648,9 +2648,9 @@
+@@ -2668,9 +2668,9 @@
                ConsumeAttr(css_parsing_utils::ConsumeFunction(stream), context);
          } else {
            alt_text = css_parsing_utils::ConsumeString(stream);

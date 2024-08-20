@@ -13,7 +13,7 @@
       "Reduces the amount of system information obatainable through headers and javascript, also causes hardwareConcurrency to respond with two cores. ungoogled-chromium flag.",
 --- a/net/dns/host_resolver_manager.cc
 +++ b/net/dns/host_resolver_manager.cc
-@@ -116,6 +116,7 @@
+@@ -117,6 +117,7 @@
  #include "net/log/net_log_with_source.h"
  #include "net/socket/client_socket_factory.h"
  #include "net/url_request/url_request_context.h"
@@ -21,7 +21,7 @@
  #include "third_party/abseil-cpp/absl/types/variant.h"
  #include "url/scheme_host_port.h"
  #include "url/url_constants.h"
-@@ -153,6 +154,8 @@
+@@ -154,6 +155,8 @@
  
  // True if |hostname| ends with either ".local" or ".local.".
  bool ResemblesMulticastDNSName(std::string_view hostname) {
@@ -32,7 +32,7 @@
  
 --- a/net/dns/mdns_client_impl.cc
 +++ b/net/dns/mdns_client_impl.cc
-@@ -30,6 +30,7 @@
+@@ -31,6 +31,7 @@
  #include "net/dns/public/util.h"
  #include "net/dns/record_rdata.h"
  #include "net/socket/datagram_socket.h"
@@ -40,7 +40,7 @@
  
  // TODO(gene): Remove this temporary method of disabling NSEC support once it
  // becomes clear whether this feature should be
-@@ -491,6 +492,8 @@
+@@ -492,6 +493,8 @@
  }
  
  int MDnsClientImpl::StartListening(MDnsSocketFactory* socket_factory) {
@@ -51,15 +51,15 @@
    int rv = core_->Init(socket_factory);
 --- a/services/network/p2p/socket_manager.cc
 +++ b/services/network/p2p/socket_manager.cc
-@@ -9,6 +9,7 @@
+@@ -14,6 +14,7 @@
  #include <optional>
  #include <utility>
  
 +#include "base/feature_list.h"
  #include "base/functional/bind.h"
  #include "base/memory/raw_ptr.h"
- #include "base/task/single_thread_task_runner.h"
-@@ -30,6 +31,7 @@
+ #include "base/not_fatal_until.h"
+@@ -36,6 +37,7 @@
  #include "net/url_request/url_request_context_getter.h"
  #include "services/network/p2p/socket.h"
  #include "services/network/proxy_resolving_client_socket_factory.h"
@@ -67,7 +67,7 @@
  #include "services/network/public/cpp/p2p_param_traits.h"
  #include "third_party/webrtc/media/base/rtp_utils.h"
  #include "third_party/webrtc/media/base/turn_utils.h"
-@@ -114,7 +116,7 @@
+@@ -120,7 +122,7 @@
      net::HostPortPair host(host_name_, 0);
  
      net::HostResolver::ResolveHostParameters parameters;
