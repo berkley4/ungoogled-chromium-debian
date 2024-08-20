@@ -1,6 +1,6 @@
 --- a/DEPS
 +++ b/DEPS
-@@ -743,7 +743,7 @@
+@@ -786,7 +786,7 @@
    'src/third_party/llvm-build/Release+Asserts': {
      'dep_type': 'gcs',
      'bucket': 'chromium-browser-clang',
@@ -8,4 +8,4 @@
 +    'condition': 'llvm_force_head_revision',
      'objects': [
        {
-         'object_name': 'Linux_x64/clang-llvmorg-19-init-10646-g084e2b53-57.tar.xz',
+         'object_name': 'Linux_x64/clang-llvmorg-19-init-14561-gecea8371-3000.tar.xz',
