@@ -79,6 +79,7 @@ GN_FLAGS +=					\
 	angle_has_rapidjson=false		\
 	enable_component_updater=false		\
 	enable_extractors=false			\
+	safe_browsing_use_unrar=false		\
 	use_kerberos=false			\
 	use_sysroot=false
 
