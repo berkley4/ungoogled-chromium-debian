@@ -636,7 +636,6 @@ fi
 
 
 if [ $COMPOSE -eq 0 ]; then
-  op_enable="$op_enable disable/compose"
   gn_enable="$gn_enable enable_compose"
 fi
 
@@ -1014,8 +1013,6 @@ if [ $SYS_ICU -eq 0 ]; then
   RUL="$RUL -e \"/icudtl.dat/s@#@@\""
 else
   op_enable="$op_enable system/unstable/icu"
-  op_enable="$op_enable system/unstable/icu-lens-unittest-dep"
-
   op_disable="$op_disable fixes/skia-allow-bundled-harfbuzz"
 
   gn_disable="$gn_disable icu_copy_icudata_to_root_build_dir=false"

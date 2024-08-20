@@ -164,7 +164,6 @@ optional/compiler-flags/cpu/avx.patch
 #optional/disable/atk-dbus.patch
 #optional/disable/catapult.patch
 #optional/disable/click-to-call.patch
-#optional/disable/compose.patch
 #optional/disable/dns_config_service.patch
 optional/disable/enterprise-watermark.patch
 optional/disable/extensions-in-root-menu.patch
@@ -198,7 +197,6 @@ optional/system/openh264.patch
 #optional/system/clang/clang-version-check.patch
 #optional/system/clang/rust-clanglib.patch
 #optional/system/unstable/icu.patch
-#optional/system/unstable/icu-lens-unittest-dep.patch
 optional/system/unstable/dav1d/dav1d.patch
 optional/system/unstable/dav1d/dav1d-bundled-libavif.patch
 optional/system/unstable/dav1d/crabbyav1f-dav1d.patch
