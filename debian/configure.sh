@@ -1042,7 +1042,7 @@ fi
 ############################################################
 
 # Check whether DEPS.patch has been applied
-[ $TEST -eq 0 ] && grep -q 'maps_perf_test' $RT_DIR/DEPS && DEPS_PATCH=0 || DEPS_PATCH=1
+[ $TEST -eq 0 ] && grep -q 'webvr_info' $RT_DIR/DEPS && DEPS_PATCH=0 || DEPS_PATCH=1
 
 # Check whether DEPS-no-rust.patch has been applied
 if [ $TEST -eq 0 ] && [ $DEPS_PATCH -eq 1 ]; then
