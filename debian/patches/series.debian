@@ -174,8 +174,8 @@ optional/disable/extensions-in-root-menu.patch
 optional/disable/webgpu.patch
 #optional/disable/media-remoting/media-remoting.patch
 #optional/disable/media-remoting/registry-pref.patch
-optional/disable/visual-query/visual-query.patch
-optional/disable/visual-query/visual-query_2.patch
+optional/disable/visual-query/headless/visual-query.patch
+optional/disable/visual-query/headless/visual-query_2.patch
 #optional/fixes/dav1d-bundled-header.patch
 #optional/fixes/opentype-svg-on-bundled-freetype.patch
 #optional/fixes/skia-allow-bundled-freetype.patch
