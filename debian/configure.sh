@@ -1051,7 +1051,7 @@ fi
 
 ## Domain substitution
 DSB="$DSB -e \"/^chrome\/browser\/flag_descriptions\.cc/d\""
-DSB="$DSB -e \"/^chrome/common/url_constants\.h/d\""
+DSB="$DSB -e \"/^chrome\/common\/url_constants\.h/d\""
 DSB="$DSB -e \"/^content\/browser\/resources\/gpu\/info_view\.ts/d\""
 DSB="$DSB -e \"/^tools\/clang\//d\""
 
