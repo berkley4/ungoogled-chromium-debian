@@ -81,7 +81,6 @@ various/disable/image-writer/image-writer-utility.patch
 various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
 various/fixes/enterprise-buildflags.patch
 various/fixes/EnumTable-crash.patch
-various/fixes/extensions-missing-safe-browsing-proto.patch
 various/fixes/GaiaAuthFetcher-kMaxMessageSize.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/remove-main-main10-profile-limit.patch
