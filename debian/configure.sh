@@ -76,6 +76,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$EXTENSIONS_ROOT_MENU" ] || EXTENSIONS_ROOT_MENU=0
 [ -n "$FEED" ] || FEED=1
 [ -n "$GOOGLE_API_KEYS" ] || GOOGLE_API_KEYS=0
+[ -n "$GOOGLE_UI_URLS" ] || GOOGLE_UI_URLS=1
 [ -n "$GRCACHE_PURGE" ] || GRCACHE_PURGE=0
 [ -n "$HEADLESS" ] || HEADLESS=1
 [ -n "$HLS_PLAYER" ] || HLS_PLAYER=1
@@ -668,6 +669,11 @@ if [ $FEED -eq 0 ]; then
 fi
 
 
+if [ $GOOGLE_UI_URLS -eq 0 ]; then
+  DSB="$DSB -e \"/^chrome\/common\/url_constants\.h/d\""
+fi
+
+
 if [ $GRCACHE_PURGE -eq 1 ]; then
   sed -e '/ClearGrShaderDiskCacheOnInvalidPrefix/s@^#@@' -i $FLAG_DIR/gpu
 fi
@@ -1051,7 +1057,6 @@ fi
 
 ## Domain substitution
 DSB="$DSB -e \"/^chrome\/browser\/flag_descriptions\.cc/d\""
-DSB="$DSB -e \"/^chrome\/common\/url_constants\.h/d\""
 DSB="$DSB -e \"/^content\/browser\/resources\/gpu\/info_view\.ts/d\""
 DSB="$DSB -e \"/^tools\/clang\//d\""
 
