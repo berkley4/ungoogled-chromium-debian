@@ -519,7 +519,7 @@ if [ $AVX2 -eq 1 ]; then
 fi
 
 if [ $AVX -eq 0 ]; then
-  POLLY=0
+  POLLY_VEC=0
   op_disable="$op_disable compiler-flags/cpu/avx"
 else
   AES_PCLMUL=1
@@ -541,9 +541,19 @@ fi
 
 # Our Polly implementation currently depends on AVX
 if [ $POLLY -eq 1 ]; then
-  op_enable="$op_enable compiler-flags/polly"
+  op_enable="$op_enable compiler-flags/polly.patch"
+
+  [ -n "$POLLY_VEC" ] || POLLY_VEC=1
 fi
 
+if [ $POLLY_VEC -eq 1 ]; then
+  op_enable="$op_enable compiler-flags/polly-vectorizer"
+
+  if [ $POLLY -eq 0 ]; then
+    printf '%s\n' "Cannot set POLLY_VEC=1 when POLLY=0"
+    exit 1
+  fi
+fi
 
 
 

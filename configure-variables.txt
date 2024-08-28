@@ -196,5 +196,9 @@ AVX2			1		Intel Haswell/AMD Excavator or newer
 RTC_AVX2		1		AVX2 for RTC (builds and runs on non-AVX2 capable hosts)
 V8_AVX2			1		AVX2 for v8 javascript (builds and runs on non-AVX2 capable hosts)
 
-POLLY			0		Clang/LLVM Polly optimisations.
-					Unless explicitly disabled, POLLY will be auto-enabled if SYS_CLANG > 0.
+POLLY			0		Clang/LLVM Polly optimisations
+					Unless explicitly disabled, POLLY will be auto-enabled if SYS_CLANG > 0
+
+POLLY_VEC		0		Clang/LLVM Polly vectorizer optimisation.
+					Unless explicitly disabled, POLLY_VEC will be auto-enabled if POLLY=1
+					Will be hard-disabled when AVX=0
