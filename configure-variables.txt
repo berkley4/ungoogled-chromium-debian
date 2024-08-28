@@ -184,9 +184,11 @@ MF_SPLIT		1		Machine function splitting (requires PGO=1)
 MARCH			x86-64-v2	Matches MTUNE if MTUNE is set and MARCH is not specified
 					Will not match MTUNE if MTUNE is set to generic
 					Setting MARCH to generic will reset MARCH and MTUNE to their defaults
+					Setting MARCH=0 will disable the march and mtune patches (for people with ancient pre-2011 cpus)
 
 MTUNE			generic		Matches MARCH if MARCH is set and MTUNE is not specified
 					Will be set to generic if MARCH is an x86-64 microarchitecture level
+					Will have no effect when setting MARCH=0
 
 AES_PCLMUL		1		Intel Westmere/AMD Jaguar (might be missing on some earlier/lower end)
 AVX			1		Intel Sandybridge/AMD Bulldozer era (circa 2011) onwards

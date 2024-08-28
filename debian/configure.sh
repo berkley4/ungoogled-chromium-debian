@@ -442,11 +442,6 @@ if [ $PGO -eq 0 ] && [ $MF_SPLIT -eq 1 ]; then
 fi
 
 
-if [ $POLLY -eq 1 ]; then
-  op_enable="$op_enable compiler-flags/polly"
-fi
-
-
 
 
 #####################################################
@@ -484,6 +479,12 @@ if [ $MARCH_SET -eq 1 ] || [ $MTUNE_SET -eq 1 ]; then
     generic)
       MARCH=x86-64-v2
       MTUNE=generic ;;
+
+    0)
+      SER_DB=$SER_DB -e \"/\/cpu\/march\.patch/s@^@#@\""
+      SER_DB=$SER_DB -e \"/\/cpu\/mtune\.patch/s@^@#@\""
+
+      AES_PCLMUL=0; AVX=0; RTC_AVX2=0; V8_AVX2=0 ;;
   esac
 
   if [ "$OLD_MARCH" != "$MARCH" ] || [ "$OLD_MTUNE" != "$MTUNE" ]; then
@@ -494,8 +495,10 @@ fi
 
 ## Check if we have any patches to alter due to non-default cpu options
 
-[ "$MARCH" = "x86-64-v2" ] || arch_patches="march"
-[ "$MTUNE" = "generic" ] || arch_patches="$arch_patches mtune"
+if [ "$MARCH" != "0" ]; then
+  [ "$MARCH" = "x86-64-v2" ] || arch_patches="march"
+  [ "$MTUNE" = "generic" ] || arch_patches="$arch_patches mtune"
+fi
 
 [ $AVX -eq 0 ] || arch_patches="$arch_patches avx"
 [ $AVX2 -eq 0 ] || arch_patches="$arch_patches avx2"
@@ -516,6 +519,7 @@ if [ $AVX2 -eq 1 ]; then
 fi
 
 if [ $AVX -eq 0 ]; then
+  POLLY=0
   op_disable="$op_disable compiler-flags/cpu/avx"
 else
   AES_PCLMUL=1
@@ -531,6 +535,13 @@ fi
 
 if [ $V8_AVX2 -eq 0 ]; then
   gn_disable="$gn_disable v8_enable_wasm_simd256_revec=true"
+fi
+
+
+
+# Our Polly implementation currently depends on AVX
+if [ $POLLY -eq 1 ]; then
+  op_enable="$op_enable compiler-flags/polly"
 fi
 
 
