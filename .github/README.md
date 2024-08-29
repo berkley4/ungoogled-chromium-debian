@@ -6,9 +6,9 @@ There are debs in the release section which are built with -march=x86-64-v2 --mt
 These should run on CPUs which support AVX instructions, which should encompass the Intel Sandybridge/AMD Bulldozer era (circa 2011) onwards.
 There's also a patch which can be used by builders to enable AVX2 support (cat /proc/cpuinfo is your friend here).
 
-There are currently two release branches: stable and unstable
-
-Currently there are deb packages for unstable, with build support for stable.
+There are currently two release branches, stable and unstable, which correspond to debian unstable and debian stable.
+Older releases of debian-derived distros are advised to build the stable release. Anything sufficiently new, eg newer
+Ubuntu releases, are advised to build the unstable release.
 
 
 # Installation
