@@ -68,6 +68,8 @@ CAP_AUD			1		Audio capture
 CAP_SCR			1		Screen capture (desktop sharing)
 CAP_VID			1		Video capture
 
+DL_RESTRICT		0		Any value greater than zero sets DownloadRestrictions key to 3 to block all downloads
+
 DNS_BUILTIN		0		Controls whether to use the internal chromium DNS-over-HTTPS client
 DNS_INTERCEPT		1		DNS interception detection (helps protect against hijacking/poisoning)
 DNS_HOST		<hostname>	To set https://dns.example.net/dns-query{?dns} as DNS-over-HTTPS

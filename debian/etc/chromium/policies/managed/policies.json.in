@@ -15,6 +15,7 @@
   "DNSInterceptionChecksEnabled": true,
   "DnsOverHttpsMode": "secure",
   "DnsOverHttpsTemplates": "https://doh.opendns.com/dns-query{?dns}",
+  "DownloadRestrictions": 0,
   "NativeMessagingUserLevelHosts": false,
   "NetworkPredictionOptions": 2,
   "PromotionalTabsEnabled": false,

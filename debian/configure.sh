@@ -139,6 +139,9 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$CAP_SCR" ] || CAP_SCR=1
 [ -n "$CAP_VID" ] || CAP_VID=1
 
+## Managed Policy: Block all downloads
+[ -n "$DL_RESTRICT" ] || DL_RESTRICT=0
+
 ## Managed Policy: DNS_BUILTIN can be enabled by editing the managed policy file
 [ -n "$DNS_BUILTIN" ] || DNS_BUILTIN=0
 [ -n "$DNS_HOST" ] || DNS_HOST=
@@ -565,6 +568,7 @@ fi
 [ $CAP_SCR -eq 1 ] || POL="$POL -e \"/ScreenCaptureAllowed/s@true@false@\""
 [ $CAP_VID -eq 1 ] || POL="$POL -e \"/VideoCaptureAllowed/s@true@false@\""
 
+[ $DL_RESTRICT -eq 0 ] || POL="$POL -e \"/DownloadRestrictions/s@0@3@\""
 
 if [ -n "$DNS_HOST" ]; then
   POL="$POL -e \"/doh.opendns.com/s@doh.opendns.com@$DNS_HOST@\""
