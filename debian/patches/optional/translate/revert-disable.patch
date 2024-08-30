@@ -1,14 +1,3 @@
---- a/chrome/browser/spellchecker/spellcheck_hunspell_dictionary.cc
-+++ b/chrome/browser/spellchecker/spellcheck_hunspell_dictionary.cc
-@@ -274,7 +274,7 @@
-   DCHECK(!bdict_file.empty());
- 
-   static const char kDownloadServerUrl[] =
--      "trk:173:https://redirector.gvt1.com/edgedl/chrome/dict/";
-+      "https://redirector.gvt1.com/edgedl/chrome/dict/";
- 
-   return GURL(std::string(kDownloadServerUrl) +
-               base::ToLowerASCII(bdict_file));
 --- a/components/translate/core/browser/translate_url_fetcher.cc
 +++ b/components/translate/core/browser/translate_url_fetcher.cc
 @@ -99,7 +99,6 @@
