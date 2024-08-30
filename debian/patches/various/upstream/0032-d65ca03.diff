@@ -1,0 +1,36 @@
+From d65ca03e13a291fbcf75d1a8dd40ab80e46fdee5 Mon Sep 17 00:00:00 2001
+From: Kramer Ge <fangzhoug@chromium.org>
+Date: Mon, 26 Aug 2024 16:00:56 +0000
+Subject: [PATCH] Exit GLContextEGL Initialization if Config is NULL
+
+We are seeing a group of gpu crashes that occur at engle
+glGetConfigAttrib, with SEGV_MAPERR @0x0000006c. 0x6c is the member
+offset for egl::Config::renderableType, which means the egl::Config is
+NULL. Unclear yet why chrome running on a VM with 0x0 as gpu vendor
+does not fallback to software mode earlier and crashed here.
+
+Adding a guard to early out the context initialization here for now, it
+should help gpu fallback to software mode.
+
+Bug: 359987747
+Change-Id: Ia335e8d13246af6b3c9eecb9ee3c1be011eecdff
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5806075
+Reviewed-by: Zhenyao Mo <zmo@chromium.org>
+Commit-Queue: Kramer Ge <fangzhoug@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1346757}
+---
+
+--- a/ui/gl/gl_context_egl.cc
++++ b/ui/gl/gl_context_egl.cc
+@@ -154,6 +154,11 @@
+   // contexts are compatible
+   if (!gl_display_->ext->b_EGL_KHR_no_config_context) {
+     config_ = compatible_surface->GetConfig();
++    if (!config_) {
++      LOG(ERROR) << "Failed to get config for surface "
++                 << compatible_surface->GetHandle();
++      return false;
++    }
+     EGLint config_renderable_type = 0;
+     if (!eglGetConfigAttrib(gl_display_->GetDisplay(), config_,
+                             EGL_RENDERABLE_TYPE, &config_renderable_type)) {

@@ -187,7 +187,7 @@
  import("//chrome/services/speech/buildflags/buildflags.gni")
  import("//chrome/test/include_js_tests.gni")
  import("//chrome/version.gni")
-@@ -3880,9 +3881,6 @@
+@@ -3878,9 +3879,6 @@
          "../browser/extensions/api/identity/web_auth_flow_browsertest.cc",
          "../browser/extensions/api/idle/idle_apitest.cc",
          "../browser/extensions/api/idltest/idltest_apitest.cc",
@@ -197,7 +197,7 @@
          "../browser/extensions/api/instance_id/instance_id_apitest.cc",
          "../browser/extensions/api/management/management_api_browsertest.cc",
          "../browser/extensions/api/management/management_api_non_persistent_apitest.cc",
-@@ -4088,6 +4086,14 @@
+@@ -4086,6 +4084,14 @@
          "../browser/user_bypass/user_bypass_web_contents_observer_browsertest.cc",
        ]
  
@@ -212,7 +212,7 @@
        if (is_win) {
          data_deps += [
            "//chrome/browser/extensions/api:native_messaging_test_echo_&_host",
-@@ -4165,9 +4171,12 @@
+@@ -4163,9 +4169,12 @@
        if (!is_chromeos_lacros) {
          sources += [
            "../browser/extensions/api/automation/automation_apitest.cc",
@@ -226,7 +226,7 @@
        }
  
        if (is_chromeos) {
-@@ -5236,12 +5245,17 @@
+@@ -5234,12 +5243,17 @@
      if (is_mac || is_win || is_linux || is_chromeos_lacros) {
        sources += [
          # Tests for non mobile and non CrOS (includes Linux, Win, Mac).
@@ -245,7 +245,7 @@
        if (!is_chromeos_lacros) {
          sources += [
            "../browser/browser_switcher/browser_switcher_browsertest.cc",
-@@ -9117,15 +9131,6 @@
+@@ -9115,15 +9129,6 @@
        "../browser/extensions/api/identity/identity_api_unittest.cc",
        "../browser/extensions/api/identity/identity_mint_queue_unittest.cc",
        "../browser/extensions/api/identity/identity_token_cache_unittest.cc",
@@ -261,7 +261,7 @@
        "../browser/extensions/api/language_settings_private/language_settings_private_api_unittest.cc",
        "../browser/extensions/api/language_settings_private/language_settings_private_delegate_unittest.cc",
        "../browser/extensions/api/management/management_api_unittest.cc",
-@@ -11664,6 +11669,20 @@
+@@ -11662,6 +11667,20 @@
          "//ui/display/win/test/virtual_display_util_win_interactive_uitest.cc",
        ]
  

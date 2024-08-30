@@ -1,0 +1,226 @@
+From c714ba910028917daa6d2f861100efe75106481a Mon Sep 17 00:00:00 2001
+From: Will Harris <wfh@chromium.org>
+Date: Thu, 22 Aug 2024 22:54:56 +0000
+Subject: [PATCH] Ensure IsEncryptionAvailable always returns a value on all platforms
+
+If key storage on Linux has not yet been fully initialized
+by either setting a config (e.g. browser process), or by
+passing an encryption key (e.g. network service process) then
+IsEncryptionAvailable will cause a CHECK to hit.
+
+This behavior does not match other OS behavior of
+IsEncryptionAvailable, so this CL fixes this so that in
+the case that IsEncryptionAvailable is called and encryption
+is not available due to no config or key, it simply returns false.
+
+This still causes the CHECK if any encryption operations are
+performed in this state, as before, so that behavior remains
+the same. This change only affects IsEncryptionAvailable.
+
+UseMockKeyStorageForTesting is wrapped in OSCrypt lock to ensure
+no concurrency issues with setting/checking the testing factory.
+
+To test that the crash no longer occurs, a call to
+IsEncryptionAvailable is made from a utility process running
+the EchoService, which is tested elsewhere in browser tests.
+This previously crashed on Linux before this CL and now does
+not.
+
+BUG=340606797
+
+Change-Id: Iae54bcb3fec3394c254ab5c9cf11583406678f85
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5800773
+Commit-Queue: Will Harris <wfh@chromium.org>
+Reviewed-by: Lei Zhang <thestig@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1345714}
+---
+
+--- a/components/os_crypt/sync/os_crypt.h
++++ b/components/os_crypt/sync/os_crypt.h
+@@ -232,16 +232,13 @@
+ #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_APPLE)
+ 
+ #if BUILDFLAG(IS_LINUX)
+-  // Create the KeyStorage. Will be null if no service is found. A Config must
+-  // be set before every call to this method.
+-  std::unique_ptr<KeyStorageLinux> CreateKeyStorage();
+-
+   // Returns a cached string of "peanuts". Is thread-safe.
+   crypto::SymmetricKey* GetPasswordV10();
+ 
+   // Caches and returns the password from the KeyStorage or null if there is no
+-  // service. Is thread-safe.
+-  crypto::SymmetricKey* GetPasswordV11();
++  // service. Is thread-safe. Set `probe` to true if caller wishes to get
++  // nullptr back rather than crashing due to no config being set.
++  crypto::SymmetricKey* GetPasswordV11(bool probe);
+ 
+   // For password_v10, nullptr means uninitialised.
+   std::unique_ptr<crypto::SymmetricKey> password_v10_cache_;
+@@ -255,7 +252,7 @@
+   std::unique_ptr<os_crypt::Config> config_;
+ 
+   base::OnceCallback<std::unique_ptr<KeyStorageLinux>()>
+-      storage_provider_factory_;
++      storage_provider_factory_for_testing_;
+ #endif  // BUILDFLAG(IS_LINUX)
+ 
+ #if BUILDFLAG(IS_WIN)
+--- a/components/os_crypt/sync/os_crypt_linux.cc
++++ b/components/os_crypt/sync/os_crypt_linux.cc
+@@ -127,9 +127,7 @@
+                          base::LeakySingletonTraits<OSCryptImpl>>::get();
+ }
+ 
+-OSCryptImpl::OSCryptImpl()
+-    : storage_provider_factory_(base::BindOnce(&OSCryptImpl::CreateKeyStorage,
+-                                               base::Unretained(this))) {}
++OSCryptImpl::OSCryptImpl() = default;
+ 
+ OSCryptImpl::~OSCryptImpl() = default;
+ 
+@@ -158,7 +156,7 @@
+ 
+   // If we are able to create a V11 key (i.e. a KeyStorage was available), then
+   // we'll use it. If not, we'll use V10.
+-  crypto::SymmetricKey* encryption_key = GetPasswordV11();
++  crypto::SymmetricKey* encryption_key = GetPasswordV11(/*probe=*/false);
+   std::string obfuscation_prefix = kObfuscationPrefixV11;
+   if (!encryption_key) {
+     encryption_key = GetPasswordV10();
+@@ -202,7 +200,7 @@
+     obfuscation_prefix = kObfuscationPrefixV10;
+   } else if (base::StartsWith(ciphertext, kObfuscationPrefixV11,
+                               base::CompareCase::SENSITIVE)) {
+-    encryption_key = GetPasswordV11();
++    encryption_key = GetPasswordV11(/*probe=*/false);
+     obfuscation_prefix = kObfuscationPrefixV11;
+   } else {
+     // If the prefix is not found then we'll assume we're dealing with
+@@ -246,7 +244,7 @@
+ }
+ 
+ bool OSCryptImpl::IsEncryptionAvailable() {
+-  return GetPasswordV11();
++  return GetPasswordV11(/*probe=*/true);
+ }
+ 
+ void OSCryptImpl::SetRawEncryptionKey(const std::string& raw_key) {
+@@ -263,13 +261,13 @@
+   }
+   // Always set |is_password_v11_cached_|, even if given an empty string.
+   // Note that |raw_key| can be an empty string if real V11 encryption is not
+-  // available, and setting |is_password_v11_cached_| causes GetPasswordV11() to
++  // available, and setting |is_password_v11_cached_| causes GetPasswordV11 to
+   // correctly return nullptr in that case.
+   is_password_v11_cached_ = true;
+ }
+ 
+ std::string OSCryptImpl::GetRawEncryptionKey() {
+-  if (crypto::SymmetricKey* key = GetPasswordV11()) {
++  if (crypto::SymmetricKey* key = GetPasswordV11(/*probe=*/false)) {
+     return key->key();
+   }
+   return std::string();
+@@ -285,22 +283,8 @@
+ void OSCryptImpl::UseMockKeyStorageForTesting(
+     base::OnceCallback<std::unique_ptr<KeyStorageLinux>()>
+         storage_provider_factory) {
+-  if (storage_provider_factory) {
+-    storage_provider_factory_ = std::move(storage_provider_factory);
+-  } else {
+-    storage_provider_factory_ =
+-        base::BindOnce(&OSCryptImpl::CreateKeyStorage, base::Unretained(this));
+-  }
+-}
+-
+-// Create the KeyStorage. Will be null if no service is found. A Config must be
+-// set before every call to this function.
+-std::unique_ptr<KeyStorageLinux> OSCryptImpl::CreateKeyStorage() {
+-  CHECK(config_);
+-  std::unique_ptr<KeyStorageLinux> key_storage =
+-      KeyStorageLinux::CreateService(*config_);
+-  config_.reset();
+-  return key_storage;
++  base::AutoLock auto_lock(OSCryptImpl::GetLock());
++  storage_provider_factory_for_testing_ = std::move(storage_provider_factory);
+ }
+ 
+ void OSCryptImpl::SetEncryptionPasswordForTesting(const std::string& password) {
+@@ -320,19 +304,31 @@
+ 
+ // Caches and returns the password from the KeyStorage or null if there is no
+ // service. Is thread-safe.
+-crypto::SymmetricKey* OSCryptImpl::GetPasswordV11() {
++crypto::SymmetricKey* OSCryptImpl::GetPasswordV11(bool probe) {
+   base::AutoLock auto_lock(OSCryptImpl::GetLock());
+-  if (!is_password_v11_cached_) {
+-    std::unique_ptr<KeyStorageLinux> key_storage =
+-        std::move(storage_provider_factory_).Run();
+-    if (key_storage) {
+-      std::optional<std::string> key = key_storage->GetKey();
+-      if (key.has_value()) {
+-        password_v11_cache_ = GenerateEncryptionKey(*key);
+-      }
++  if (is_password_v11_cached_) {
++    return password_v11_cache_.get();
++  }
++
++  std::unique_ptr<KeyStorageLinux> key_storage;
++  if (storage_provider_factory_for_testing_) {
++    key_storage = std::move(storage_provider_factory_for_testing_).Run();
++  } else {
++    CHECK(probe || config_);
++    if (config_) {
++      key_storage = KeyStorageLinux::CreateService(*config_);
++      config_.reset();
+     }
+-    is_password_v11_cached_ = true;
+   }
++
++  if (key_storage) {
++    std::optional<std::string> key = key_storage->GetKey();
++    if (key.has_value()) {
++      password_v11_cache_ = GenerateEncryptionKey(*key);
++    }
++  }
++
++  is_password_v11_cached_ = true;
+   return password_v11_cache_.get();
+ }
+ 
+--- a/services/test/echo/BUILD.gn
++++ b/services/test/echo/BUILD.gn
+@@ -13,6 +13,7 @@
+   deps = [
+     "//base",
+     "//components/os_crypt/async/common",
++    "//components/os_crypt/sync",
+     "//services/service_manager/public/cpp",
+     "//services/service_manager/public/mojom",
+     "//services/test/echo/public/mojom",
+--- a/services/test/echo/DEPS
++++ b/services/test/echo/DEPS
+@@ -1,3 +1,4 @@
+ include_rules = [
+   "+components/os_crypt/async/common",
++  "+components/os_crypt/sync",
+ ]
+--- a/services/test/echo/echo_service.cc
++++ b/services/test/echo/echo_service.cc
+@@ -10,6 +10,7 @@
+ #include "base/immediate_crash.h"
+ #include "base/memory/shared_memory_mapping.h"
+ #include "build/build_config.h"
++#include "components/os_crypt/sync/os_crypt.h"
+ 
+ #if BUILDFLAG(IS_WIN)
+ #include <windows.h>
+@@ -94,6 +95,7 @@
+ void EchoService::DecryptEncrypt(os_crypt_async::Encryptor encryptor,
+                                  const std::vector<uint8_t>& input,
+                                  DecryptEncryptCallback callback) {
++  std::ignore = OSCrypt::IsEncryptionAvailable();
+   // Take the input, which was encrypted in the caller process, and decrypt it.
+   const auto plaintext = encryptor.DecryptData(input);
+   if (!plaintext.has_value()) {

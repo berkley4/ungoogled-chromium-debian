@@ -1,0 +1,77 @@
+From 9251e84884b5243123678100492b2b0d15fce01f Mon Sep 17 00:00:00 2001
+From: Lichen Liu <lichenliu@microsoft.com>
+Date: Thu, 22 Aug 2024 01:42:20 +0000
+Subject: [PATCH] [Extension] Fix for Dangling Pointer Crash in DispatchOnInstalledEvent
+
+The method RuntimeEventRouter::DispatchOnInstalledEvent is bound to a content::BrowserContext* and passed using raw_ptr<content::BrowserContext> in the OnExtensionInstalledAndLoaded and OnExtensionLoaded methods of the RuntimeAPI class. This method is then wrapped and posted to the current single-thread task runner.
+
+However, before the task is executed, the browser_context may already have been destroyed, leading to a potential crash. This occurs because the browser_context, being a raw_ptr, could become a dangling pointer.
+
+Notably, DispatchOnInstalledEvent already includes a safeguard:
+ExtensionsBrowserClient::Get()->IsValidContext(context). This check ensures that even if browser_context is a dangling pointer, the method can still protect itself from crashing. Therefore, converting BrowserContext* to void* in DispatchOnInstalledEvent aligns with how other handles are managed elsewhere in the codebase.
+
+Bug: 360903464
+Change-Id: I909ef870fe967add5813ef32f980320615c9fddf
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5799405
+Reviewed-by: David Bertoni <dbertoni@chromium.org>
+Reviewed-by: Emilia Paz <emiliapaz@chromium.org>
+Commit-Queue: Lichen Liu <lichenliu@microsoft.com>
+Reviewed-by: Leon Han <shulianghan@microsoft.com>
+Cr-Commit-Position: refs/heads/main@{#1345193}
+---
+
+--- a/extensions/browser/api/runtime/runtime_api.cc
++++ b/extensions/browser/api/runtime/runtime_api.cc
+@@ -274,9 +274,9 @@
+ 
+   // Dispatch the onInstalled event with reason "chrome_update".
+   base::SingleThreadTaskRunner::GetCurrentDefault()->PostTask(
+-      FROM_HERE,
+-      base::BindOnce(&RuntimeEventRouter::DispatchOnInstalledEvent,
+-                     browser_context_, extension->id(), base::Version(), true));
++      FROM_HERE, base::BindOnce(&RuntimeEventRouter::DispatchOnInstalledEvent,
++                                static_cast<void*>(browser_context_),
++                                extension->id(), base::Version(), true));
+ }
+ 
+ void RuntimeAPI::OnExtensionUninstalled(
+@@ -481,13 +481,15 @@
+ 
+ // static
+ void RuntimeEventRouter::DispatchOnInstalledEvent(
+-    content::BrowserContext* context,
++    void* context_id,
+     const ExtensionId& extension_id,
+     const base::Version& old_version,
+     bool chrome_updated) {
+-  if (!ExtensionsBrowserClient::Get()->IsValidContext(context)) {
++  if (!ExtensionsBrowserClient::Get()->IsValidContext(context_id)) {
+     return;
+   }
++  content::BrowserContext* context =
++      reinterpret_cast<content::BrowserContext*>(context_id);
+   ExtensionSystem* system = ExtensionSystem::Get(context);
+   if (!system) {
+     return;
+@@ -638,8 +640,8 @@
+     const base::Version& previous_version) {
+   base::SingleThreadTaskRunner::GetCurrentDefault()->PostTask(
+       FROM_HERE, base::BindOnce(&RuntimeEventRouter::DispatchOnInstalledEvent,
+-                                browser_context_, extension->id(),
+-                                previous_version, false));
++                                static_cast<void*>(browser_context_),
++                                extension->id(), previous_version, false));
+ }
+ 
+ ExtensionFunction::ResponseAction RuntimeGetBackgroundPageFunction::Run() {
+--- a/extensions/browser/api/runtime/runtime_api.h
++++ b/extensions/browser/api/runtime/runtime_api.h
+@@ -200,7 +200,7 @@
+                                      const ExtensionId& extension_id);
+ 
+   // Dispatches the onInstalled event to the given extension.
+-  static void DispatchOnInstalledEvent(content::BrowserContext* context,
++  static void DispatchOnInstalledEvent(void* context_id,
+                                        const ExtensionId& extension_id,
+                                        const base::Version& old_version,
+                                        bool chrome_updated);

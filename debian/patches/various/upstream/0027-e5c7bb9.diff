@@ -1,0 +1,35 @@
+From e5c7bb951b8a5db7e57bbd482616a01618ff284a Mon Sep 17 00:00:00 2001
+From: Florian Leimgruber <fleimgruber@google.com>
+Date: Thu, 22 Aug 2024 08:17:30 +0000
+Subject: [PATCH] Use raw_ptr<> in WebDatabase::TableMap
+
+See description of crrev.com/c/5797107 why this is safe.
+
+Bug: n/a
+Change-Id: I6454d6b595ed3658cdff80fd3a510ab48fb3642a
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5797355
+Commit-Queue: Florian Leimgruber <fleimgruber@google.com>
+Reviewed-by: Peter Kasting <pkasting@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1345288}
+---
+
+--- a/components/webdata/common/web_database.h
++++ b/components/webdata/common/web_database.h
+@@ -9,6 +9,7 @@
+ #include <string>
+ 
+ #include "base/files/file_path.h"
++#include "base/memory/raw_ptr.h"
+ #include "components/webdata/common/web_database_table.h"
+ #include "components/webdata/common/webdata_export.h"
+ #include "sql/database.h"
+@@ -116,8 +117,7 @@
+ 
+   // Map of all the different tables that have been added to this
+   // object. Non-owning.
+-  typedef std::map<WebDatabaseTable::TypeKey, WebDatabaseTable*> TableMap;
+-  TableMap tables_;
++  std::map<WebDatabaseTable::TypeKey, raw_ptr<WebDatabaseTable>> tables_;
+ };
+ 
+ #endif  // COMPONENTS_WEBDATA_COMMON_WEB_DATABASE_H_

@@ -1,0 +1,115 @@
+From 745fc1700dd5b3d03e815d50d65375269a67fc8c Mon Sep 17 00:00:00 2001
+From: Florian Leimgruber <fleimgruber@google.com>
+Date: Thu, 22 Aug 2024 08:20:25 +0000
+Subject: [PATCH] Fix dangling pointers in web_database_table.h
+
+Each (class deriving from) WebDatabaseTable has raw_ptrs to an
+sql::Database and sql::MetaTable. These pointers are dangling briefly
+during destructions - which is fixed by this CL. Below is an overflow
+of the lifetimes of the relevant classes.
+
+sql::Database and sql::MetaTable:
+- Owned by WebDatabase [1].
+- Lifetimes match that of WebDatabase (see below).
+
+WebDatabaseTable:
+- Owned by WebDatabaseBackend [2].
+- Added one by one to the WebDatabaseBackend after construction of the
+  KeyedService that indirectly owns the WebDatabaseBackend through
+  WebDatabaseService. E.g. [3].
+- Destroyed in ~WebDatabaseBackend().
+
+WebDatabase:
+- Owned by WebDatabaseBackend [4].
+- Created during WebDatabaseBackend::InitDatabase(). This is called
+  directly after all WebDatabaseTable were added.
+- Destroyed in ~WebDatabaseBackend() *before* the WebDatabaseTables [5].
+
+What makes the raw_ptrs in WebDatabaseTable dangling is the fact that
+the WebDatabaseTables are owned by the WebDatabaseBackend, while the
+sql::Database and sql::MetaTable are owned by WebDatabase, which is
+destroyed first. That is, after [5], the pointers are dangling.
+
+This CL fixes this by adding logic to ~WebDatabase() resetting the
+raw_ptrs in the WebDatabaseTables. This seems to make sense with the
+current code structure, since WebDatabase holds non-owning pointers [6]
+to the WebDatabTables* and since it sets the dangling raw_ptrs to begin
+with in WebDatabase::Init() [7].
+
+* These should be raw_ptrs. They can never become dangling, since
+  the WebDatabaseBackend owning the WebDatabaseTable outlives the
+  WebDatabase. This is fixed by crrev.com/c/5797355.
+
+[1] https://source.chromium.org/chromium/chromium/src/+/main:components/webdata/common/web_database.h;l=114-115;drc=291724da60a081b27b7218cd4d1a3481d7836e6b
+[2] https://source.chromium.org/chromium/chromium/src/+/main:components/webdata/common/web_database_backend.h;l=114;drc=82dff63dbf9db05e9274e11d9128af7b9f51ceaa
+[3] https://source.chromium.org/chromium/chromium/src/+/main:components/webdata_services/web_data_service_wrapper.cc;l=124-140;drc=82dff63dbf9db05e9274e11d9128af7b9f51ceaa
+[4] https://source.chromium.org/chromium/chromium/src/+/main:components/webdata/common/web_database_backend.h;l=116;drc=82dff63dbf9db05e9274e11d9128af7b9f51ceaa
+[5] https://source.chromium.org/chromium/chromium/src/+/main:components/webdata/common/web_database_backend.cc;l=41;drc=82dff63dbf9db05e9274e11d9128af7b9f51ceaa
+[6] https://source.chromium.org/chromium/chromium/src/+/main:components/webdata/common/web_database.h;l=117-119;drc=291724da60a081b27b7218cd4d1a3481d7836e6b
+[7] https://source.chromium.org/chromium/chromium/src/+/main:components/webdata/common/web_database.cc;l=147,160;drc=f50669a00440c7ced87c92195b95f33c8bcea64e
+
+Fixed: 41485291
+Change-Id: Ib4a2ff5863cb24437a9de8ffa2e0a6bb8a6cf837
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5797107
+Commit-Queue: Florian Leimgruber <fleimgruber@google.com>
+Reviewed-by: Peter Kasting <pkasting@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1345290}
+---
+
+--- a/components/webdata/common/web_database.cc
++++ b/components/webdata/common/web_database.cc
+@@ -81,7 +81,11 @@
+            // quite infrequent. So we go with a small cache size.
+            .cache_size = 32}) {}
+ 
+-WebDatabase::~WebDatabase() = default;
++WebDatabase::~WebDatabase() {
++  for (auto& [key, table] : tables_) {
++    table->Shutdown();
++  }
++}
+ 
+ void WebDatabase::AddTable(WebDatabaseTable* table) {
+   tables_[table->GetTypeKey()] = table;
+--- a/components/webdata/common/web_database_table.cc
++++ b/components/webdata/common/web_database_table.cc
+@@ -11,3 +11,8 @@
+   db_ = db;
+   meta_table_ = meta_table;
+ }
++
++void WebDatabaseTable::Shutdown() {
++  db_ = nullptr;
++  meta_table_ = nullptr;
++}
+--- a/components/webdata/common/web_database_table.h
++++ b/components/webdata/common/web_database_table.h
+@@ -36,6 +36,9 @@
+   // Stores the passed members as instance variables.
+   void Init(sql::Database* db, sql::MetaTable* meta_table);
+ 
++  // Resets the members stored during `Init()`.
++  void Shutdown();
++
+   // Create all of the expected SQL tables if they do not already exist.
+   // Returns true on success, false on failure.
+   virtual bool CreateTablesIfNecessary() = 0;
+@@ -51,12 +54,12 @@
+                                 bool* update_compatible_version) = 0;
+ 
+  protected:
+-  // Non-owning. These are owned by WebDatabase, valid as long as that
+-  // class exists. Since lifetime of WebDatabaseTable objects slightly
+-  // exceeds that of WebDatabase, they should not be used in
+-  // ~WebDatabaseTable.
+-  raw_ptr<sql::Database, AcrossTasksDanglingUntriaged> db_;
+-  raw_ptr<sql::MetaTable, AcrossTasksDanglingUntriaged> meta_table_;
++  // Non-null, except before `Init()` and after `Shutdown()`. Effectively, this
++  // means that they are non-null except during the constructor and destructor.
++  // They point to objects owned by `WebDatabase` whose lifetime is slightly
++  // shorter than that of the `WebDatabaseBackend` owning `this`.
++  raw_ptr<sql::Database> db_;
++  raw_ptr<sql::MetaTable> meta_table_;
+ };
+ 
+ #endif  // COMPONENTS_WEBDATA_COMMON_WEB_DATABASE_TABLE_H_

@@ -1,0 +1,38 @@
+From f50b84cf5edf9a3ef09ddee9a24aeae5da55c630 Mon Sep 17 00:00:00 2001
+From: Noam Rosenthal <nrosenthal@chromium.org>
+Date: Mon, 26 Aug 2024 16:11:58 +0000
+Subject: [PATCH] Don't perform pseudo-element ident parsing on non-ASCII
+
+ParsePseudoType crashes on ASAN when given non-ASCII characters,
+so returning early if those are present.
+
+Bug: 350779647
+Change-Id: Ic77351a1c95437a226dce66c7826b7b8481b8d91
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5686295
+Commit-Queue: Noam Rosenthal <nrosenthal@chromium.org>
+Reviewed-by: Rune Lillesveen <futhark@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1346768}
+---
+
+--- a/third_party/blink/renderer/core/css/parser/css_selector_parser.cc
++++ b/third_party/blink/renderer/core/css/parser/css_selector_parser.cc
+@@ -1002,7 +1002,7 @@
+     CSSParserToken selector_name_token = stream.Peek();
+     if (selector_name_token.GetType() == kIdentToken) {
+       stream.Consume();
+-      if (!selector_name_token.Value().Is8Bit()) {
++      if (!selector_name_token.Value().ContainsOnlyASCIIOrEmpty()) {
+         return kPseudoIdInvalid;
+       }
+       if (stream.Peek().GetType() != kEOFToken) {
+--- /dev/null
++++ b/third_party/blink/web_tests/external/wpt/css/cssom/getComputedStyle-special-chars-crash.html
+@@ -0,0 +1,7 @@
++<!DOCTYPE html>
++<body>
++<script>
++    window.getComputedStyle(document.body, String.fromCharCode( 92, 109, 107, 78, 80, 113, 90, 102, 76, 49));
++</script>
++This test shouldn't crash.
++</body>
+\ No newline at end of file

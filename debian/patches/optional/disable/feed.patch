@@ -60,7 +60,7 @@
      RegisterWebUIControllerInterfaceBinder<
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -6834,9 +6834,6 @@
+@@ -6832,9 +6832,6 @@
      "//components/favicon/core/test:test_support",
      "//components/feature_engagement/public",
      "//components/feed:buildflags",
@@ -70,7 +70,7 @@
      "//components/feed/mojom:mojo_bindings",
      "//components/feedback",
      "//components/feedback/redaction_tool",
-@@ -7117,6 +7114,14 @@
+@@ -7115,6 +7112,14 @@
      "//base:path_service_unittest",
    ]
  

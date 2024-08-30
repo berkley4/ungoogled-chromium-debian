@@ -1,0 +1,33 @@
+From 17527e1d595eb0aa22845d053bdd0d04c82fc7b5 Mon Sep 17 00:00:00 2001
+From: Paul Semel <paulsemel@chromium.org>
+Date: Wed, 28 Aug 2024 13:15:22 +0000
+Subject: [PATCH] mojolpm: fix buffer overflow in generated code
+
+The code was taking the address of the string object instead of taking
+the address of the underlying data that it contains. As a a consequence,
+we were simply overwriting the content of the string object. Using
+`data` here completely remove the confusion.
+
+Bug: 361601756,361992470
+Change-Id: I646771b98e05028501b17c80f441b52f95ed58b8
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5816731
+Auto-Submit: Paul Semel <paulsemel@chromium.org>
+Reviewed-by: Daniel Cheng <dcheng@chromium.org>
+Commit-Queue: Paul Semel <paulsemel@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1347960}
+---
+
+--- a/mojo/public/tools/bindings/generators/mojolpm_templates/mojolpm_to_proto_macros.tmpl
++++ b/mojo/public/tools/bindings/generators/mojolpm_templates/mojolpm_to_proto_macros.tmpl
+@@ -330,8 +330,9 @@
+     {{proto_type}}& output) {
+ {%-   if struct|is_native_only_kind %}
+   {{struct_type}}* new_instance = output.mutable_new_();
+-  new_instance->mutable_native_bytes()->resize(sizeof({{mojom_type}}), 0);
+-  memcpy(&new_instance->mutable_native_bytes()[0], (void*)&input, sizeof({{mojom_type}}));
++  std::string* bytes = new_instance->mutable_native_bytes();
++  bytes->resize(sizeof({{mojom_type}}), 0);
++  memcpy(bytes->data(), (void*)&input, sizeof({{mojom_type}}));
+   return true;
+ {%-   elif struct|is_typemapped_kind %}
+   // TODO(markbrand): ToProto for typemapped struct kind

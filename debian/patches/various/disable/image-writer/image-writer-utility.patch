@@ -21,7 +21,7 @@
        "api/system_indicator/system_indicator_api.cc",
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -1853,7 +1853,6 @@
+@@ -1852,7 +1852,6 @@
        "//chrome/common/privacy_budget:test_support",
        "//chrome/renderer",
        "//chrome/renderer/companion/visual_query:browser_tests",
@@ -29,7 +29,7 @@
        "//chrome/test/data/webui:resources_grit",
        "//chrome/test/data/webui/mojo:mojo_bindings",
        "//chrome/test/media_router/access_code_cast:access_code_cast_integration_base",
-@@ -2206,6 +2205,10 @@
+@@ -2204,6 +2203,10 @@
        ]
      }
  
@@ -40,7 +40,7 @@
      if (is_chromeos) {
        deps += [
          "//chrome/browser/chromeos:browser_tests",
-@@ -9416,7 +9419,6 @@
+@@ -9414,7 +9417,6 @@
        "//chrome/common/apps/platform_apps",
        "//chrome/common/extensions:extension_features_unittest",
        "//chrome/common/extensions/api",
@@ -48,7 +48,7 @@
        "//components/enterprise:test_support",
        "//components/password_manager/core/browser/features:password_features",
        "//components/password_manager/core/browser/sharing",
-@@ -9448,6 +9450,10 @@
+@@ -9446,6 +9448,10 @@
        "//tools/json_schema_compiler/test:unit_tests",
      ]
  

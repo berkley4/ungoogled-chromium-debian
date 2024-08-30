@@ -86,7 +86,7 @@ Cr-Commit-Position: refs/heads/main@{#1343698}
  }  // namespace blink
 --- a/third_party/blink/renderer/core/loader/image_loader.cc
 +++ b/third_party/blink/renderer/core/loader/image_loader.cc
-@@ -885,8 +885,10 @@
+@@ -886,8 +886,10 @@
      return true;
    }
  
