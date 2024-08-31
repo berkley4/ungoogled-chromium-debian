@@ -12,7 +12,7 @@
      "//url",
    ]
  
-+  if (!is_linux) {
++  if (enable_extractors) {
 +    deps += [ "//chrome/services/removable_storage_writer/public/mojom" ]
 +  }
 +
@@ -33,7 +33,7 @@
        ]
      }
  
-+    if (!is_linux) {
++    if (enable_extractors) {
 +      deps += [ "//chrome/services/removable_storage_writer:lib" ]
 +    }
 +
@@ -52,7 +52,7 @@
        "//tools/json_schema_compiler/test:unit_tests",
      ]
  
-+    if (!is_linux) {
++    if (enable_extractors) {
 +      deps += [ "//chrome/utility/image_writer:unit_tests" ]
 +    }
 +
@@ -61,7 +61,15 @@
      }
 --- a/chrome/utility/BUILD.gn
 +++ b/chrome/utility/BUILD.gn
-@@ -155,16 +155,24 @@
+@@ -6,6 +6,7 @@
+ import("//build/config/features.gni")
+ import("//build/config/sysroot.gni")
+ import("//chrome/common/features.gni")
++import("//chrome/services/file_util/public/features.gni")
+ import("//chrome/services/speech/buildflags/buildflags.gni")
+ import("//chromeos/ash/components/assistant/assistant.gni")
+ import("//crypto/features.gni")
+@@ -155,16 +156,24 @@
    if (enable_extensions) {
      deps += [
        "//chrome/common/extensions/api",
@@ -75,7 +83,7 @@
        "//mojo/public/cpp/bindings",
      ]
  
-+    if (!is_linux) {
++    if (enable_extractors) {
 +      deps += [
 +        "//chrome/services/removable_storage_writer:lib",
 +        "//chrome/utility/image_writer",
@@ -91,30 +99,38 @@
        ldflags = [ "/DELAYLOAD:wininet.dll" ]
 --- a/chrome/utility/services.cc
 +++ b/chrome/utility/services.cc
-@@ -79,7 +79,7 @@
+@@ -9,6 +9,7 @@
+ 
+ #include "build/build_config.h"
+ #include "build/chromeos_buildflags.h"
++#include "chrome/services/file_util/buildflags.h"
+ #include "chrome/services/on_device_translation/on_device_translation_service.h"
+ #include "chrome/services/speech/buildflags/buildflags.h"
+ #include "components/paint_preview/buildflags/buildflags.h"
+@@ -79,7 +80,7 @@
  #include "chrome/services/file_util/file_util_service.h"  // nogncheck
  #endif
  
 -#if BUILDFLAG(ENABLE_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_EXTENSIONS) && !BUILDFLAG(IS_LINUX)
++#if BUILDFLAG(ENABLE_EXTENSIONS) && BUILDFLAG(ENABLE_EXTRACTORS)
  #include "chrome/services/removable_storage_writer/public/mojom/removable_storage_writer.mojom.h"
  #include "chrome/services/removable_storage_writer/removable_storage_writer.h"
  #endif
-@@ -288,7 +288,7 @@
+@@ -288,7 +289,7 @@
  }
  #endif
  
 -#if BUILDFLAG(ENABLE_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_EXTENSIONS) && !BUILDFLAG(IS_LINUX)
++#if BUILDFLAG(ENABLE_EXTENSIONS) && BUILDFLAG(ENABLE_EXTRACTORS)
  auto RunRemovableStorageWriter(
      mojo::PendingReceiver<chrome::mojom::RemovableStorageWriter> receiver) {
    return std::make_unique<RemovableStorageWriter>(std::move(receiver));
-@@ -497,7 +497,7 @@
+@@ -497,7 +498,7 @@
    services.Add(RunFileUtil);
  #endif
  
 -#if BUILDFLAG(ENABLE_EXTENSIONS) && !BUILDFLAG(IS_WIN)
-+#if BUILDFLAG(ENABLE_EXTENSIONS) && !BUILDFLAG(IS_WIN) && !BUILDFLAG(IS_LINUX)
++#if BUILDFLAG(ENABLE_EXTENSIONS) && BUILDFLAG(ENABLE_EXTRACTORS) && !BUILDFLAG(IS_WIN)
    // On Windows, this service runs in an elevated utility process.
    services.Add(RunRemovableStorageWriter);
  #endif
