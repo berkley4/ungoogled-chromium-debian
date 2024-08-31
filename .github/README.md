@@ -90,18 +90,18 @@ ___Security/Privacy improvements___
         - WebGPU
     - Some other features/components are always patched out
         - Crashpad handler
-        - Image writer
+        - Image writer (+ removable storage writer service)
         - Motherboard metrics collection
-        - Removable storage writer service
 
 
 ___Other features___
 
 - Extra runtime flags (via files in /etc/chromium.d)
+- A managed policy file is installed by default (/etc/chromium/policies/managed/policies.json)
 - Extra build flags to prevent the building of unneeded testing/debug/development features
 - Patches to force skia to use bundled freetype and harfbuzz libraries (where appropriate)
+- System libraries are enabled only when they don't clash with built-in libraries
 - Experimental Opentype SVG support (via third party patches)
-- Patches to enable system libraries
 - The shell launcher has the ability to block switches (aka flags)
 
 
@@ -110,11 +110,12 @@ ___Build system___
 - Uses git to obtain and update source (release tarballs are not currently supported)
 - Self-built BOLT/LTO/PGO optimised and polly-enabled clang/llvm is preferred for building
     - requiring a recent version of clang often means fewer build headaches
-- Upstream rust is preferred (a simple script-based install)
-- A configure shell script is provided to enable easy customisation of the build
-    - it takes out much of the complexity might otherwise be present in debian/rules
+- Upstream rust is only used when system rust is too old (stable releases)
+- A script is provided to build bindgen
+- A configuration shell script is provided to enable easy customisation of the build
+    - it takes out much of the complexity that might otherwise be present in debian/rules
     - it handles dependencies, patches, enabling/disabling system libraries and components
-    - set variables when running the script eg PIPEWIRE=0 PULSE=0 QT=0 ./debian/configure.sh
+    - it allows users to easily customise the build via the setting of variables
 - A script is provided to automate the building of a Widevine CDM deb package
 
 - - - -
