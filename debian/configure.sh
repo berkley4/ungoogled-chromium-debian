@@ -694,7 +694,7 @@ if [ $FEED -eq 0 ]; then
 fi
 
 
-if [ $GOOGLE_UI_URLS -eq 0 ]; then
+if [ $GOOGLE_UI_URLS -eq 1 ]; then
   DSB="$DSB -e \"/^chrome\/common\/url_constants\.h/d\""
 fi
 
