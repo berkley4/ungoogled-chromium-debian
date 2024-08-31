@@ -86,7 +86,7 @@ DRIVER			1		Chromedriver package
 ASYNC_LEVELDB		1		Asynchronous leveldb protocol writes (faster when enabled)
 ATK_DBUS		1		Accessibility/D-Bus support (d-bus is only used for bluetooth)
 BLUEZ			1		Bluez bluetooth protocol stack (also disabled by setting ATK_DBUS=0)
-CATAPULT		1		Catapult profiling support
+CATAPULT		0		Catapult profiling support
 CHROMECAST		1		0 - disable (will also disable MEDIA_REMOTING)
 					1 - enable (need to edit /etc/chromium.d/network)
 					2 - enable fully
