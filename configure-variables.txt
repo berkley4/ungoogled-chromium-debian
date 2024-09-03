@@ -29,7 +29,7 @@ SYS_CLANG		0		Use in-tree chromium clang/llvm binaries (default)
 					Refer to Toolchain.md for more details.
 
 SYS_RUST		0		Use in-tree chromium rust binaries (default)
-			1		Use rustc from the system package
+			1		Use rustc from the system package (generally safest on unstable)
 			2		Use upstream rust installed to $HOME/.cargo/bin (Recommended method)
 					Refer to Rust.md for more details.
 

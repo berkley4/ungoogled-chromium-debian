@@ -111,7 +111,7 @@ ___Build system___
 - Self-built BOLT/LTO/PGO optimised and polly-enabled clang/llvm is preferred for building
     - requiring a recent version of clang often means fewer build headaches
 - Upstream rust is only used when system rust is too old (stable releases)
-- A script is provided to build bindgen
+- A script is provided to build bindgen (build/build-bindgen.sh)
 - A configuration shell script is provided to enable easy customisation of the build
     - it takes out much of the complexity that might otherwise be present in debian/rules
     - it handles dependencies, patches, enabling/disabling system libraries and components
@@ -263,6 +263,13 @@ optimisation in addition to LTO and PGO.
 Rough instructions for self-building are available [here](https://github.com/berkley4/ungoogled-chromium-debian/blob/unstable/Toolchain.md).
 
 
+- - - -
+
+
+# Bindgen - REQUIRED to compile
+
+A script (build/build-bindgen.sh) is supplied to compile bindgen, see [here](https://github.com/berkley4/ungoogled-chromium-debian/blob/unstable/Bindgen.md) for more info.
+
 
 - - - -
 
@@ -348,12 +355,11 @@ patch -p1 < DEPS.patch
 # Do not download chromium's pre-built clang toolchain
 patch -p1 < DEPS-no-clang.patch
 
-# To omit downloading the pre-buil rust toolchain one needs to add the following
-# to the custom_vars section of build/.gclient (and also apply DEPS-no-rust.patch)
-"checkout_rust": False,
-
-# Make the above 'checkout_rust' variable active by applying a patch
+# Omit the pre-built rust toolchain by applying a patch (generally only on unstable)
 patch -p1 < DEPS-no-rust.patch
+
+# Omit the pre-built node toolchain by applying a patch (safest on unstable)
+patch -p1 < DEPS-no-node.patch
 
 
 
