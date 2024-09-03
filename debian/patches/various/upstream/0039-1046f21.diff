@@ -1,0 +1,35 @@
+From 1046f21b4d5029e7b4d3ce990f8e1c574efd023f Mon Sep 17 00:00:00 2001
+From: Dominique Fauteux-Chapleau <domfc@chromium.org>
+Date: Fri, 30 Aug 2024 16:04:18 +0000
+Subject: [PATCH] Return early in IsClipboardCopyAllowedByPolicy on empty endpoint
+
+The DCHECKs in that function are wrong as
+`source.data_transfer_endpoint()` can be null, which leads to a crash in
+later code. An early return is added to avoid that issue until the root
+cause of the issue is fully understood.
+
+Bug: 362674391
+Change-Id: I2fe3fc470061d881a958503907c37a0ca075d0d3
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5827397
+Commit-Queue: Dominique Fauteux-Chapleau <domfc@chromium.org>
+Reviewed-by: Nancy Xiao <nancylanxiao@google.com>
+Commit-Queue: Nancy Xiao <nancylanxiao@google.com>
+Auto-Submit: Dominique Fauteux-Chapleau <domfc@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1349244}
+---
+
+--- a/chrome/browser/enterprise/data_protection/data_protection_clipboard_utils.cc
++++ b/chrome/browser/enterprise/data_protection/data_protection_clipboard_utils.cc
+@@ -434,6 +434,12 @@
+     const content::ClipboardMetadata& metadata,
+     const content::ClipboardPasteData& data,
+     content::ContentBrowserClient::IsClipboardCopyAllowedCallback callback) {
++  // TODO(crbug.com/362674391): Find a long term fix for this issue.
++  if (SkipDataControlOrContentAnalysisChecks(source)) {
++    std::move(callback).Run(metadata.format_type, data, std::nullopt);
++    return;
++  }
++
+   DCHECK(source.web_contents());
+   DCHECK(source.browser_context());
+   DCHECK(source.data_transfer_endpoint());
