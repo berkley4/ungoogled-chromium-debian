@@ -189,6 +189,7 @@ optional/opentype-svg/0002-use-FreeType-for-non-Linux-OT-SVG-support.patch
 #optional/system/bindgen-crabbyav1f.patch
 #optional/system/freetype-COLRV1.patch
 optional/system/jpeg.patch
+#optional/system/node.patch
 optional/system/openh264.patch
 #optional/system/clang/bindgen-clang-paths.patch
 #optional/system/clang/clang-version-check.patch

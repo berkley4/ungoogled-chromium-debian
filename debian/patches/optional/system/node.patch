@@ -1,0 +1,50 @@
+--- a/third_party/devtools-frontend/src/scripts/devtools_paths.py
++++ b/third_party/devtools-frontend/src/scripts/devtools_paths.py
+@@ -38,13 +38,7 @@
+ 
+ # This points to the node binary downloaded as part of the checkout.
+ def node_path():
+-    try:
+-        old_sys_path = sys.path[:]
+-        sys.path.append(path.join(third_party_path(), 'node'))
+-        import node
+-    finally:
+-        sys.path = old_sys_path
+-    return node.GetBinaryPath()
++    return '/usr/bin/nodejs'
+ 
+ 
+ def devtools_root_path():
+--- a/third_party/node/node.py
++++ b/third_party/node/node.py
+@@ -11,18 +11,7 @@
+ 
+ 
+ def GetBinaryPath():
+-  if platform.machine() == 'arm64':
+-    darwin_path = 'mac_arm64'
+-    darwin_name = 'node-darwin-arm64'
+-  else:
+-    darwin_path = 'mac'
+-    darwin_name = 'node-darwin-x64'
+-  return os_path.join(os_path.dirname(__file__), *{
+-    'Darwin': (darwin_path, darwin_name, 'bin', 'node'),
+-    'Linux': ('linux', 'node-linux-x64', 'bin', 'node'),
+-    'Windows': ('win', 'node.exe'),
+-  }[platform.system()])
+-
++  return '/usr/bin/nodejs'
+ 
+ def RunNode(cmd_parts, stdout=None):
+   cmd = [GetBinaryPath()] + cmd_parts
+--- a/third_party/node/node.gni
++++ b/third_party/node/node.gni
+@@ -23,7 +23,7 @@
+     # When use_remoteexec=true, node actions may run on remote
+     # Linux worker. So it should include linux node binary in inputs.
+     if (is_linux || is_chromeos || use_remoteexec) {
+-      inputs += [ "//third_party/node/linux/node-linux-x64/bin/node" ]
++      inputs += [ "/usr/bin/nodejs" ]
+     }
+     if (is_win && host_os == "win") {
+       inputs += [ "//third_party/node/win/node.exe" ]

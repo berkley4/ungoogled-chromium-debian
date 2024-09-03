@@ -13,6 +13,7 @@ Build-Depends:
 #clang-19,
 #libclang-rt-19-dev,
 #rustc (>= 1.70.0+dfsg1-5),
+#nodejs,
  python-is-python3,
  generate-ninja,
  ninja-build,

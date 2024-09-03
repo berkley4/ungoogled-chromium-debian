@@ -53,6 +53,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$SYS_CLANG" ] || SYS_CLANG=0
 [ -n "$SYS_RUST" ] || SYS_RUST=0
 [ -n "$SYS_BINDGEN" ] || SYS_BINDGEN=2
+[ -n "$SYS_NODE" ] || SYS_NODE=0
 
 [ -n "$AES_PCLMUL" ] || AES_PCLMUL=1
 [ -n "$AVX" ] || AVX=1
@@ -434,6 +435,12 @@ if [ $SYS_BINDGEN -gt 0 ]; then
 
   # Set BINDGEN_PATH in d/rules (for passing to rust_bindgen_root build flag)
   RUL="$RUL -e \"s@_BINDGEN_PATH@$BINDGEN_PATH@\""
+fi
+
+
+if [ $SYS_NODE -eq 1 ]; then
+  op_enable="$op_enable system/node"
+  deps_enable="$deps_enable nodejs"
 fi
 
 
@@ -1102,10 +1109,12 @@ fi
 ## Pruning list
 PRU="$PRU -e \"/^chrome\/build\/pgo_profiles\//d\""
 PRU="$PRU -e \"/^third_party\/depot_tools\//d\""
-PRU="$PRU -e \"/^third_party\/node\//d\""
+PRU="$PRU -e \"/^third_party\/node\/node_modules\//d\""
 
 ## Pruning script
-PRU_PY="$PRU_PY -e \"/third_party\/node\//d\""
+if [ $SYS_NODE -eq 0 ]; then
+  PRU_PY="$PRU_PY -e \"/third_party\/node\/linux\//d\""
+fi
 
 ## Submodule flags
 SMF="$SMF -e \"/^enable_hangout_services_extension/d\""

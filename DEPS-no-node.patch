@@ -1,0 +1,11 @@
+--- a/DEPS
++++ b/DEPS
+@@ -710,7 +710,7 @@
+   # See also //third_party/node/node.gni
+   'src/third_party/node/linux': {
+       'dep_type': 'gcs',
+-      'condition': 'non_git_source',
++      'condition': 'checkout_src_internal and non_git_source',
+       'bucket': 'chromium-nodejs',
+       'objects': [
+           {

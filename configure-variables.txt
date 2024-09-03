@@ -39,6 +39,9 @@ SYS_BINDGEN		1		Use bindgen from the system package
 					SYS_BINDGEN=2 is compatible with all values of SYS_CLANG
 					Refer to Bindgen.md for more details.
 
+SYS_NODE		0		Use in-tree node
+			1		Use system node package (safest on unstable)
+
 CCACHE			0		Enable the use of the the ccache compilation cache utility
 
 ESBUILD			0		Use the faster ESbuild javascript bundler instead of the default rollup
