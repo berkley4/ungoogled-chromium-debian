@@ -1164,7 +1164,7 @@ fi
 
 if [ -n "$op_disable" ]; then
   case $op_disable in
-    optional/*| optional/*)
+    *optional/*)
       op_disable="$(echo $op_disable | sed 's@optional/@@g')" ;;
   esac
 
@@ -1181,7 +1181,7 @@ fi
 
 if [ -n "$op_enable" ]; then
   case $op_enable in
-    optional/*| optional/*)
+    *optional/*)
       op_enable="$(echo $op_enable | sed 's@optional/@@g')" ;;
   esac
 
