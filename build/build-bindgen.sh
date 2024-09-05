@@ -164,6 +164,10 @@ fi
 [ ! -d target ] || rm -rf target
 
 
+## Hack to silence missing edition warning
+sed '/^build =/a edition = "2018"' -i bindgen-integration/Cargo.toml
+
+
 printf '\n\n%s\n\n' "Building bindgen..."
 
 LLVM_CONFIG_PATH=$CLANG_PATH/bin/llvm-config \
@@ -181,6 +185,11 @@ cargo build --no-default-features --features=logging,runtime --release --bin bin
 
 $CLANG_PATH/bin/llvm-strip target/release/bindgen
 chmod 0755 target/release/bindgen
+
+
+## Undo the missing edition warning hack
+sed '/^edition = /d' -i bindgen-integration/Cargo.toml
+
 
 printf '\n%s\n\n' "Run the following as root :-"
 printf '%s\n' "cp --preserve=timestamps,mode $(real_dir_path target/release)/bindgen /usr/local/bin/"
