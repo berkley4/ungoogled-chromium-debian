@@ -83,6 +83,7 @@ various/fixes/enterprise-buildflags.patch
 various/fixes/EnumTable-crash.patch
 various/fixes/GaiaAuthFetcher-kMaxMessageSize.patch
 various/fixes/InkDropHost-crash.patch
+various/fixes/libxslt-undefined-isoc23-sscanf.patch
 various/fixes/remove-main-main10-profile-limit.patch
 various/fixes/revert-fix-linking-chromedriver.patch
 various/fixes/revert-fix-linking-content-shell.patch

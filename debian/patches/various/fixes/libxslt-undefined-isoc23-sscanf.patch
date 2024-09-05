@@ -1,0 +1,11 @@
+--- a/third_party/libxslt/src/libxslt/preproc.c
++++ b/third_party/libxslt/src/libxslt/preproc.c
+@@ -41,6 +41,8 @@
+ #include "extensions.h"
+ #include "pattern.h"
+ 
++#include "stdlib.h"
++
+ #ifdef WITH_XSLT_DEBUG
+ #define WITH_XSLT_DEBUG_PREPROC
+ #endif
