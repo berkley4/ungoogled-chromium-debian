@@ -79,12 +79,8 @@ SYS_BINDGEN=2 is compatible with all values of SYS_CLANG
 
 ___Cleaning bindgen build files___
 
-The script can delete the rust-bindgen and ncursesw folders when 'c'
-(or 'clean') is supplied as a positional argument :-
+The script can delete the .download_cache folder (which contains
+ncursesw-linux-amd64.zip) and the extracted ncursesw folder when
+the 'c' (or 'clean') positional argument is supplied :-
 
 ```./build-bindgen.sh c```
-
-The 'hc' (or 'hardclean') argument will additionally delete the
-ncursesw-linux-amd64.zip file.
-
-```./build-bindgen.sh hc```

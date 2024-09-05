@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-USAGE="[CLANG_VER=<version>] [SYS_CLANG=<0|1|2>] SYS_RUST=<0|1|2> ${0##*/} [h|help] [c|clean|hc|hardclean]"
+USAGE="[CLANG_VER=<version>] [SYS_CLANG=<0|1|2>] SYS_RUST=<0|1|2> ${0##*/} [h|help] [c|clean]"
 
 case $USER in
   root)
@@ -40,18 +40,8 @@ real_dir_path() {
 
 
 case $1 in
-  c|clean|hc|hardclean)
-    for dir in rust-bindgen ncursesw; do
-      [ ! -d $dir ] || files="$files $dir"
-    done
-
-    case $1 in
-      hc|hardclean)
-        [ ! -d $DL_CACHE ] || files="$files $DL_CACHE" ;;
-    esac
-
-    rm -rf $files
-
+  c|clean)
+    rm -rf $DL_CACHE ncursesw
     exit $? ;;
 
   h|help)
