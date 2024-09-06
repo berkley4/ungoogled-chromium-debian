@@ -7,6 +7,7 @@
 
 debian/debianization/master-preferences.patch
 debian/fixes/atspi.patch
+debian/fixes/gpu-crash.patch
 debian/fixes/ps-print.patch
 debian/disable/android.patch
 debian/disable/font-tests.patch
