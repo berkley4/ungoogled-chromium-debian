@@ -12,7 +12,7 @@ Build-Depends:
 #lld-19,
 #clang-19,
 #libclang-rt-19-dev,
-#rustc (>= 1.70.0+dfsg1-5),
+#rustc (>= 1.79.0+dfsg1-2) | rust-web (>= 1.78.0+dfsg1-2~deb12u3),
 #nodejs,
  python-is-python3,
  generate-ninja,

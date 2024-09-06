@@ -21,7 +21,6 @@ ___System rustc package___
 
 ```apt-get install rustc```
 
-System rustc packages might be too old, especially on stable distributions.
 To proceed, configure with SYS_RUST=1.
 
 ```... SYS_RUST=1 ./debian/configure.sh```

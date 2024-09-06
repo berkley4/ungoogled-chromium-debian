@@ -110,7 +110,6 @@ ___Build system___
 - Uses git to obtain and update source (release tarballs are not currently supported)
 - Self-built BOLT/LTO/PGO optimised and polly-enabled clang/llvm is preferred for building
     - requiring a recent version of clang often means fewer build headaches
-- Upstream rust is only used when system rust is too old (stable releases)
 - A script is provided to build bindgen (build/build-bindgen.sh)
 - A configuration shell script is provided to enable easy customisation of the build
     - it takes out much of the complexity that might otherwise be present in debian/rules
@@ -355,7 +354,7 @@ patch -p1 < DEPS.patch
 # Do not download chromium's pre-built clang toolchain
 patch -p1 < DEPS-no-clang.patch
 
-# Omit the pre-built rust toolchain by applying a patch (generally only on unstable)
+# Omit the pre-built rust toolchain by applying a patch
 patch -p1 < DEPS-no-rust.patch
 
 # Omit the pre-built node toolchain by applying a patch (safest on unstable)
