@@ -1,0 +1,70 @@
+From 468b9c8a52555953618ba1677fffb0a778dd6d87 Mon Sep 17 00:00:00 2001
+From: Ho Cheung <hocheung@chromium.org>
+Date: Sun, 01 Sep 2024 08:43:04 +0800
+Subject: [PATCH] [libavcodec] Check nullptr to fix crash in hevcdec
+
+The previous CL forgot to check nullptr and caused
+a crash in hevcdec. This CL fixes this crash.
+
+Bug: chromium:362007482
+Change-Id: I67a2c36318f7b188e81ad453b1e6466743d85351
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/third_party/ffmpeg/+/5825845
+Reviewed-by: Dale Curtis <dalecurtis@chromium.org>
+---
+
+--- a/third_party/ffmpeg/libavcodec/hevcdec.c
++++ b/third_party/ffmpeg/libavcodec/hevcdec.c
+@@ -390,9 +390,12 @@
+         avctx->color_trc = s->sei.common.alternative_transfer.preferred_transfer_characteristics;
+     }
+ 
+-    if (s->sei.common.film_grain_characteristics->present ||
+-        s->sei.common.aom_film_grain->enable)
+-        avctx->properties |= FF_CODEC_PROPERTY_FILM_GRAIN;
++    if ((s->sei.common.film_grain_characteristics &&
++         s->sei.common.film_grain_characteristics->present) ||
++        (s->sei.common.aom_film_grain &&
++         s->sei.common.aom_film_grain->enable)) {
++      avctx->properties |= FF_CODEC_PROPERTY_FILM_GRAIN;
++    }
+ 
+     return 0;
+ }
+@@ -2888,8 +2891,11 @@
+     else
+         s->ref->frame->flags &= ~AV_FRAME_FLAG_KEY;
+ 
+-    s->ref->needs_fg = (s->sei.common.film_grain_characteristics->present ||
+-                        s->sei.common.aom_film_grain->enable) &&
++    s->ref->needs_fg =
++        ((s->sei.common.film_grain_characteristics &&
++          s->sei.common.film_grain_characteristics->present) ||
++         (s->sei.common.aom_film_grain &&
++          s->sei.common.aom_film_grain->enable)) &&
+         !(s->avctx->export_side_data & AV_CODEC_EXPORT_DATA_FILM_GRAIN) &&
+         !s->avctx->hwaccel;
+ 
+@@ -2898,13 +2904,16 @@
+         goto fail;
+ 
+     if (s->ref->needs_fg &&
+-        (s->sei.common.film_grain_characteristics->present &&
+-         !ff_h274_film_grain_params_supported(s->sei.common.film_grain_characteristics->model_id,
+-                                              s->ref->frame->format)
+-         || !av_film_grain_params_select(s->ref->frame))) {
+-        av_log_once(s->avctx, AV_LOG_WARNING, AV_LOG_DEBUG, &s->film_grain_warning_shown,
+-                    "Unsupported film grain parameters. Ignoring film grain.\n");
+-        s->ref->needs_fg = 0;
++         (s->sei.common.film_grain_characteristics &&
++             s->sei.common.film_grain_characteristics->present &&
++             !ff_h274_film_grain_params_supported(
++                 s->sei.common.film_grain_characteristics->model_id,
++                 s->ref->frame->format) ||
++         !av_film_grain_params_select(s->ref->frame))) {
++      av_log_once(s->avctx, AV_LOG_WARNING, AV_LOG_DEBUG,
++                  &s->film_grain_warning_shown,
++                  "Unsupported film grain parameters. Ignoring film grain.\n");
++      s->ref->needs_fg = 0;
+     }
+ 
+     if (s->ref->needs_fg) {

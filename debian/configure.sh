@@ -80,6 +80,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$GOOGLE_UI_URLS" ] || GOOGLE_UI_URLS=1
 [ -n "$GRCACHE_PURGE" ] || GRCACHE_PURGE=0
 [ -n "$HEADLESS" ] || HEADLESS=1
+[ -n "$HEVC_DECODE" ] || HEVC_DECODE=1
 [ -n "$HLS_PLAYER" ] || HLS_PLAYER=1
 [ -n "$LABS_TOOLBAR_BUTTON" ] || LABS_TOOLBAR_BUTTON=0
 [ -n "$LENS" ] || LENS=1
@@ -698,6 +699,11 @@ if [ $FEED -eq 0 ]; then
   gn_enable="$gn_enable enable_feed_v2=false"
 
   sed '/WebFeedKillSwitch/s@^#@@' -i $FLAG_DIR/miscellaneous
+fi
+
+
+if [ $HEVC_DECODE -eq 0 ]; then
+  op_disable="$op_disable ffmpeg-hevc/"
 fi
 
 

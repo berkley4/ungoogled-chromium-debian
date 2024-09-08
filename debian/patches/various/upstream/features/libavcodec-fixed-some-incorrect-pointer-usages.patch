@@ -1,0 +1,46 @@
+From 3f8a122bfa6c383460c4bf48db654379b68dc959 Mon Sep 17 00:00:00 2001
+From: Ho Cheung <hocheung@chromium.org>
+Date: Sun, 25 Aug 2024 22:56:23 +0800
+Subject: [PATCH] [libavcodec] Fixed some incorrect pointer usages
+
+Bug: chromium:362007482
+Change-Id: I4ddbfc17da5ad273eac6de94e8dbf411dde76c4c
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/third_party/ffmpeg/+/5802680
+Reviewed-by: Dale Curtis <dalecurtis@chromium.org>
+---
+
+--- a/third_party/ffmpeg/libavcodec/hevcdec.c
++++ b/third_party/ffmpeg/libavcodec/hevcdec.c
+@@ -390,8 +390,8 @@
+         avctx->color_trc = s->sei.common.alternative_transfer.preferred_transfer_characteristics;
+     }
+ 
+-    if (s->sei.common.film_grain_characteristics.present ||
+-        s->sei.common.aom_film_grain.enable)
++    if (s->sei.common.film_grain_characteristics->present ||
++        s->sei.common.aom_film_grain->enable)
+         avctx->properties |= FF_CODEC_PROPERTY_FILM_GRAIN;
+ 
+     return 0;
+@@ -2888,8 +2888,8 @@
+     else
+         s->ref->frame->flags &= ~AV_FRAME_FLAG_KEY;
+ 
+-    s->ref->needs_fg = (s->sei.common.film_grain_characteristics.present ||
+-                        s->sei.common.aom_film_grain.enable) &&
++    s->ref->needs_fg = (s->sei.common.film_grain_characteristics->present ||
++                        s->sei.common.aom_film_grain->enable) &&
+         !(s->avctx->export_side_data & AV_CODEC_EXPORT_DATA_FILM_GRAIN) &&
+         !s->avctx->hwaccel;
+ 
+@@ -2898,8 +2898,8 @@
+         goto fail;
+ 
+     if (s->ref->needs_fg &&
+-        (s->sei.common.film_grain_characteristics.present &&
+-         !ff_h274_film_grain_params_supported(s->sei.common.film_grain_characteristics.model_id,
++        (s->sei.common.film_grain_characteristics->present &&
++         !ff_h274_film_grain_params_supported(s->sei.common.film_grain_characteristics->model_id,
+                                               s->ref->frame->format)
+          || !av_film_grain_params_select(s->ref->frame))) {
+         av_log_once(s->avctx, AV_LOG_WARNING, AV_LOG_DEBUG, &s->film_grain_warning_shown,

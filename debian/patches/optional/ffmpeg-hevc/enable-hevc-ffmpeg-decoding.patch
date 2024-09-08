@@ -1,0 +1,80 @@
+From f2690de69556f1a3cde4cd83ebbc966eb2d7740c Mon Sep 17 00:00:00 2001
+From: Sta Zhu <zhusidayoyo@hotmail.com>
+Date: Mon, 15 Jul 2024 17:12:05 +0800
+Subject: [PATCH] Video: Enable HEVC ffmpeg decoding
+
+This will consider all HEVC profile as to supported, let FFMpegVideoDecoder
+handle SW fallback and help you be able to play video's like HEVC Rext, SCC 
+etc... as long as ffmpeg support it.
+---
+ media/base/supported_types.cc         | 29 ++++-----------------------
+ media/filters/ffmpeg_glue.cc          |  3 +++
+ media/filters/ffmpeg_video_decoder.cc |  2 +-
+ 3 files changed, 8 insertions(+), 26 deletions(-)
+
+--- a/media/base/supported_types.cc
++++ b/media/base/supported_types.cc
+@@ -222,33 +222,7 @@
+ #endif  // !BUILDFLAG(USE_PROPRIETARY_CODECS)
+ 
+ bool IsHevcProfileSupported(const VideoType& type) {
+-  if (!IsColorSpaceSupported(type.color_space))
+-    return false;
+-
+-#if BUILDFLAG(ENABLE_PLATFORM_HEVC)
+-#if BUILDFLAG(PLATFORM_HAS_OPTIONAL_HEVC_SUPPORT)
+-#if BUILDFLAG(IS_CHROMEOS_LACROS)
+-  // TODO(b/171813538): For Lacros, the supplemental profile cache will be
+-  // asking lacros-gpu, but we will be doing decoding in ash-gpu. Until the
+-  // codec detection is plumbed through to ash-gpu we can do this extra check
+-  // for HEVC support.
+-  if (base::CommandLine::ForCurrentProcess()->HasSwitch(
+-          switches::kLacrosEnablePlatformHevc)) {
+     return true;
+-  }
+-#endif  // BUILDFLAG(IS_CHROMEOS_LACROS)
+-#if BUILDFLAG(IS_CHROMEOS_ASH)
+-  if (!base::FeatureList::IsEnabled(kPlatformHEVCDecoderSupport)) {
+-    return false;
+-  }
+-#endif  // BUILDFLAG(IS_CHROMEOS_ASH)
+-  return GetSupplementalProfileCache()->IsProfileSupported(type.profile);
+-#else
+-  return true;
+-#endif  // BUIDFLAG(PLATFORM_HAS_OPTIONAL_HEVC_SUPPORT)
+-#else
+-  return false;
+-#endif  // BUILDFLAG(ENABLE_PLATFORM_HEVC)
+ }
+ 
+ bool IsVp9ProfileSupported(const VideoType& type) {
+--- a/media/filters/ffmpeg_glue.cc
++++ b/media/filters/ffmpeg_glue.cc
+@@ -155,6 +155,9 @@
+     std::vector<std::string> allowed_decoders;
+ #if BUILDFLAG(USE_PROPRIETARY_CODECS)
+     allowed_decoders.push_back("h264");
++#if BUILDFLAG(ENABLE_PLATFORM_HEVC)
++    allowed_decoders.push_back("hevc");
++#endif  // BUILDFLAG(ENABLE_PLATFORM_HEVC)
+ #endif  // BUILDFLAG(USE_PROPRIETARY_CODECS)
+     return base::JoinString(allowed_decoders, ",");
+ #else
+--- a/media/filters/ffmpeg_video_decoder.cc
++++ b/media/filters/ffmpeg_video_decoder.cc
+@@ -76,7 +76,6 @@
+     case VideoCodec::kUnknown:
+     case VideoCodec::kVC1:
+     case VideoCodec::kMPEG2:
+-    case VideoCodec::kHEVC:
+     case VideoCodec::kVP9:
+     case VideoCodec::kAV1:
+     case VideoCodec::kDolbyVision:
+@@ -87,6 +86,7 @@
+       NOTREACHED();
+ 
+     case VideoCodec::kH264:
++    case VideoCodec::kHEVC:
+       // Normalize to three threads for 1080p content, then scale linearly
+       // with number of pixels.
+       // Examples:

@@ -85,7 +85,6 @@ various/fixes/EnumTable-crash.patch
 various/fixes/GaiaAuthFetcher-kMaxMessageSize.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/libxslt-undefined-isoc23-sscanf.patch
-various/fixes/remove-main-main10-profile-limit.patch
 various/fixes/revert-fix-linking-chromedriver.patch
 various/fixes/revert-fix-linking-content-shell.patch
 various/fixes/shim-fix-for-official-builds.patch
@@ -142,6 +141,10 @@ various/upstream/0039-1046f21.diff
 various/upstream/0040-8a55006.diff
 various/upstream/features/enable-renderdocument-subframe-by-default.patch
 various/upstream/features/leveldb-proto-enable-async-writes-by-default.patch
+various/upstream/features/libavcodec-allocate-h-274-film-grain-metadata-dynamically.patch
+various/upstream/features/libavcodec-fixed-some-incorrect-pointer-usages.patch
+various/upstream/features/libavcodec-check-nullptr-to-fix-crash-in-hevcdec.patch
+various/upstream/features/libavcodec-h264-use-small-padding.patch
 various/warnings/clang-excessive-warnings.patch
 
 #optional/enable-esbuild-for-official-builds.patch
@@ -176,6 +179,8 @@ optional/disable/webgpu.patch
 #optional/disable/media-remoting/registry-pref.patch
 optional/disable/visual-query/headless/visual-query.patch
 optional/disable/visual-query/headless/visual-query_2.patch
+optional/ffmpeg-hevc/add-hevc-ffmpeg-decoder-parser-for-linux.patch
+optional/ffmpeg-hevc/enable-hevc-ffmpeg-decoding.patch
 #optional/fixes/dav1d-bundled-header.patch
 #optional/fixes/opentype-svg-on-bundled-freetype.patch
 #optional/fixes/skia-allow-bundled-freetype.patch
@@ -208,3 +213,5 @@ optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
 #optional/system/zstd/zstd-feature-flag.patch
 optional/translate/revert-disable.patch
 optional/translate/stop-unsupported-switch-warning.patch
+
+

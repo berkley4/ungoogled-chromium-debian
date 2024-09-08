@@ -1,0 +1,38 @@
+From 14d16cd143ad1993900c276e37592956702443a9 Mon Sep 17 00:00:00 2001
+From: Dale Curtis <dalecurtis@chromium.org>
+Date: Thu, 15 Aug 2024 17:06:30 +0000
+Subject: [PATCH] [h264] Use small padding with the checked bitstream reader.
+
+MAX_MBPAIR_SIZE was added in 23f5cff92cdcfa55a735c458fcb5f95c0e0f3b1f
+to prevent CABAC/CAVLC overread issues. It adds 256kb of padding to
+RBSP allocations. AFAICT it seems unnecessary with the checked
+bitstream reader. Dropping this padding is a substantial memory
+improvement for constrained devices.
+
+782865bf3094e36cbb4bd9cfacda252307e6589d removed the small padding
+when AV_CODEC_FLAG2_FAST was set, but I don't have access to that
+fuzzer test case to check this patch. I've asked for it upstream.
+
+This passes all our tests in ASAN. AFAICT if the buffer is undersized
+we just end up with a few reallocations. Most playbacks don't
+trigger any reallocations though and the correct size is chosen.
+
+R=tguilbert
+
+Bug: 355485812, 348538294, 359358875
+Change-Id: I5c887b12ebd0fb58d62dae08035967aa2b0cdac7
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/third_party/ffmpeg/+/5791445
+Reviewed-by: Thomas Guilbert <tguilbert@chromium.org>
+---
+
+--- a/third_party/ffmpeg/libavcodec/h264dec.c
++++ b/third_party/ffmpeg/libavcodec/h264dec.c
+@@ -615,7 +615,7 @@
+     }
+ 
+     ret = ff_h2645_packet_split(&h->pkt, buf, buf_size, avctx, h->is_avc, h->nal_length_size,
+-                                avctx->codec_id, 0, 0);
++                                avctx->codec_id, UNCHECKED_BITSTREAM_READER ? 0 : 1, 0);
+     if (ret < 0) {
+         av_log(avctx, AV_LOG_ERROR,
+                "Error splitting the input into NAL units.\n");

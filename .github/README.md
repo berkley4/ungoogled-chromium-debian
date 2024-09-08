@@ -101,6 +101,7 @@ ___Other features___
 - Extra build flags to prevent the building of unneeded testing/debug/development features
 - Patches to force skia to use bundled freetype and harfbuzz libraries (where appropriate)
 - System libraries are enabled only when they don't clash with built-in libraries
+- HEVC (h265) playback support (via third party patches)
 - Experimental Opentype SVG support (via third party patches)
 - The shell launcher has the ability to block switches (aka flags)
 
