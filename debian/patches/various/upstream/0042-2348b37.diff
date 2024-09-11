@@ -1,0 +1,201 @@
+From 2348b375f9053c66a9fb7fce5fa5bf831bdc13f6 Mon Sep 17 00:00:00 2001
+From: Alex Moshchuk <alexmos@chromium.org>
+Date: Thu, 05 Sep 2024 21:59:46 +0000
+Subject: [PATCH] Fix process model for hosted apps embedding same-site PDFs.
+
+Currently, the hosted app process model allows same-site subframes to
+stay in the app's SiteInstance process, even if they are not covered
+by the app's extent. This exception is implemented by skipping a call
+to IsSuitableForUrlInfo(), and it inadvertently also allowed same-site
+PDF documents to stay in the app's process, which is incorrect and led
+to crashes, since PDF documents need to be in PDF-specific processes
+with special command-line flags, etc. This CL fixes this by modifying
+SiteInstanceImpl::IsNavigationSameSite() to never consider non-PDF and
+PDF URLs to be same-site, similar to how this is already done for
+unsandboxed vs sandboxed documents. This is a short-term fix for the
+crashes to unblock the PDF OOPIF rollout; longer-term,
+IsNavigationSameSite() should consider the other bits in SiteInfo as
+well when determining if a navigation is same-site, and the function
+should also be renamed to convey that it's performing a check on
+security principals, not sites (see https://crbug.com/349777779).
+
+Bug: 359345045
+Change-Id: Id9820f7bca6a578b10cbf2150f54632b23a8146e
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5839205
+Reviewed-by: Lei Zhang <thestig@chromium.org>
+Reviewed-by: Charlie Reis <creis@chromium.org>
+Commit-Queue: Alex Moshchuk <alexmos@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1351722}
+---
+
+--- a/chrome/browser/ui/extensions/hosted_app_browsertest.cc
++++ b/chrome/browser/ui/extensions/hosted_app_browsertest.cc
+@@ -88,6 +88,7 @@
+ #include "net/test/embedded_test_server/http_request.h"
+ #include "net/test/embedded_test_server/http_response.h"
+ #include "net/test/embedded_test_server/request_handler_util.h"
++#include "pdf/buildflags.h"
+ #include "testing/gtest/include/gtest/gtest-param-test.h"
+ #include "testing/gtest/include/gtest/gtest.h"
+ #include "third_party/blink/public/common/features.h"
+@@ -95,6 +96,11 @@
+ #include "third_party/blink/public/common/switches.h"
+ #include "third_party/blink/public/mojom/manifest/display_mode.mojom.h"
+ 
++#if BUILDFLAG(ENABLE_PDF)
++#include "chrome/browser/pdf/test_pdf_viewer_stream_manager.h"
++#include "pdf/pdf_features.h"
++#endif
++
+ #if BUILDFLAG(IS_CHROMEOS_ASH)
+ #include "ash/constants/ash_features.h"
+ #include "base/containers/extend.h"
+@@ -1901,6 +1907,101 @@
+   EXPECT_TRUE(process_map->Contains(bar_process->GetID()));
+ }
+ 
++#if BUILDFLAG(ENABLE_PDF)
++class HostedAppSitePerProcessPDFTest : public HostedAppSitePerProcessTest {
++ public:
++  HostedAppSitePerProcessPDFTest() {
++    feature_list_.InitAndEnableFeature(chrome_pdf::features::kPdfOopif);
++  }
++
++  HostedAppSitePerProcessPDFTest(const HostedAppSitePerProcessPDFTest&) =
++      delete;
++  HostedAppSitePerProcessPDFTest& operator=(
++      const HostedAppSitePerProcessPDFTest&) = delete;
++
++  ~HostedAppSitePerProcessPDFTest() override = default;
++
++  // Return value is always non-nullptr. This should only be called after a PDF
++  // navigation occurs in a `content::WebContents`.
++  pdf::TestPdfViewerStreamManager* GetTestPdfViewerStreamManager(
++      content::WebContents* web_contents) {
++    return factory_.GetTestPdfViewerStreamManager(web_contents);
++  }
++
++ private:
++  base::test::ScopedFeatureList feature_list_;
++  pdf::TestPdfViewerStreamManagerFactory factory_;
++};
++
++// Check that a same-site PDF embedded in a hosted app does not crash and does
++// not stay in the app process. Instead, it should use its own PDF SiteInstance
++// and process. See https://crbug.com/359345045.
++IN_PROC_BROWSER_TEST_P(HostedAppSitePerProcessPDFTest,
++                       SameSitePDFEmbeddedInApp) {
++  // Set up a hosted app covering http://foo.com, and launch the app with a
++  // foo.com URL in a new window.
++  GURL foo_app_url(embedded_test_server()->GetURL("foo.com", "/title1.html"));
++  constexpr char kHostedAppManifest[] =
++      R"( { "name": "Hosted App With SitePerProcess Test",
++            "version": "1",
++            "manifest_version": 2,
++            "app": {
++              "launch": {
++                "web_url": "%s"
++              },
++              "urls": ["http://%s/"]
++            }
++          } )";
++  {
++    extensions::TestExtensionDir test_app_dir;
++    test_app_dir.WriteManifest(base::StringPrintf(
++        kHostedAppManifest, foo_app_url.spec().c_str(), "foo.com"));
++    SetupApp(test_app_dir.UnpackedPath());
++  }
++  content::WebContents* foo_contents =
++      app_browser_->tab_strip_model()->GetActiveWebContents();
++  EXPECT_TRUE(content::WaitForLoadStop(foo_contents));
++  EXPECT_EQ(foo_app_url, foo_contents->GetLastCommittedURL());
++
++  // Ensure the app URL loaded in a hosted app process.
++  auto* process_map = extensions::ProcessMap::Get(browser()->profile());
++  content::RenderFrameHost* app_frame = foo_contents->GetPrimaryMainFrame();
++  EXPECT_TRUE(process_map->Contains(app_frame->GetProcess()->GetID()));
++
++  // Add a same-site PDF subframe and wait for it to load.
++  GURL pdf_url = embedded_test_server()->GetURL("foo.com", "/pdf/test.pdf");
++  EXPECT_TRUE(ExecJs(foo_contents,
++                     "var frame = document.createElement('iframe');\n"
++                     "frame.src = '" +
++                         pdf_url.spec() +
++                         "';\n"
++                         "document.body.appendChild(frame);"));
++  EXPECT_TRUE(content::WaitForLoadStop(foo_contents));
++  content::RenderFrameHost* subframe = ChildFrameAt(app_frame, 0);
++  ASSERT_TRUE(subframe);
++  ASSERT_TRUE(GetTestPdfViewerStreamManager(foo_contents)
++                  ->WaitUntilPdfLoaded(subframe));
++
++  // Look up the PDF document frame, which should be embedded in the PDF
++  // extension frame, which is in turn embedded in the PDF container subframe
++  // that was just added. The PDF document should *not* stay in the main frame's
++  // SiteInstance and process, but rather it should go into its own PDF process.
++  content::RenderFrameHost* pdf_extension_frame = ChildFrameAt(subframe, 0);
++  ASSERT_TRUE(pdf_extension_frame);
++  content::RenderFrameHost* pdf_document_frame =
++      ChildFrameAt(pdf_extension_frame, 0);
++  ASSERT_TRUE(pdf_document_frame);
++  EXPECT_NE(pdf_document_frame->GetSiteInstance(),
++            app_frame->GetSiteInstance());
++  EXPECT_NE(pdf_document_frame->GetProcess(), app_frame->GetProcess());
++
++  // The current behavior is that the PDF process is also considered to be an
++  // app process, since its URL matched the app's extent. This is probably not
++  // necessary and is something to consider changing in future.
++  EXPECT_TRUE(process_map->Contains(pdf_document_frame->GetProcess()->GetID()));
++}
++#endif  // BUILDFLAG(ENABLE_PDF)
++
+ template <bool jit_disabled_by_default>
+ class HostedAppJitTestBase : public HostedAppProcessModelTest {
+  public:
+@@ -2455,6 +2556,10 @@
+     ::testing::Values(AppType::HOSTED_APP));
+ 
+ INSTANTIATE_TEST_SUITE_P(All,
++                         HostedAppSitePerProcessPDFTest,
++                         ::testing::Values(AppType::HOSTED_APP));
++
++INSTANTIATE_TEST_SUITE_P(All,
+                          HostedAppJitTestBaseDefaultEnabled,
+                          ::testing::Values(AppType::HOSTED_APP));
+ 
+--- a/content/browser/site_instance_impl.cc
++++ b/content/browser/site_instance_impl.cc
+@@ -1076,12 +1076,17 @@
+   if (!SandboxConfigurationsMatch(GetSiteInfo(), dest_url_info))
+     return false;
+ 
++  // Similarly, do not consider PDF and non-PDF documents to be same-site; they
++  // should never share a SiteInstance. See https://crbug.com/359345045.
++  if (IsPdf() != dest_url_info.is_pdf) {
++    return false;
++  }
++
+   const GURL& dest_url = dest_url_info.url;
+   BrowserContext* browser_context = GetBrowserContext();
+ 
+   bool should_compare_effective_urls = ShouldCompareEffectiveURLs(
+       browser_context, this, for_outermost_main_frame, dest_url);
+-
+   // If IsSuitableForUrlInfo finds a process type mismatch, return false
+   // even if |dest_url| is same-site.  (The URL may have been installed as an
+   // app since the last time we visited it.)
+@@ -1090,6 +1095,14 @@
+   // app to non-hosted app, and vice versa, to keep them in the same process
+   // due to scripting requirements. Otherwise, this would return false due to
+   // a process privilege level mismatch.
++  //
++  // TODO(alexmos): Skipping this check is dangerous, since other bits in
++  // SiteInfo may disqualify the navigation from being same-site, even when a
++  // hosted app URL embeds a non-hosted-app same-site URL. Two of these cases,
++  // sandboxed frames and PDF, are currently handled explicitly above, and a
++  // couple more are handled in the callers of this function, but this should be
++  // refactored to more systematically check everything else in SiteInfo. See
++  // https://crbug.com/349777779.
+   bool should_check_for_wrong_process =
+       !IsNavigationAllowedToStayInSameProcessDueToEffectiveURLs(
+           browser_context, for_outermost_main_frame, dest_url);

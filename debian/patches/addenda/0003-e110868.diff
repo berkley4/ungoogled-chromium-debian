@@ -1,0 +1,139 @@
+From e110868905c37e363be32fb60a504e600b0428d3 Mon Sep 17 00:00:00 2001
+From: Adithya Srinivasan <adithyas@chromium.org>
+Date: Tue, 10 Sep 2024 20:40:34 +0000
+Subject: [PATCH] [M128] SpeculationRules: Handle detached document in SpeculationRuleLoader::NotifyFinished
+
+Ordinarily we cancel resource loads when the document is detached,
+but there's a small window of time where the document could detach
+after the load completes but before the notification is sent to
+SpeculationRuleLoader.
+
+(cherry picked from commit 98c51a71df1e64740e29c3bf9dc3b8477f7606a9)
+
+Bug: 356767669
+Change-Id: I8885ee597c425139ae3088e7042739cf128a4796
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5756187
+Reviewed-by: Jeremy Roman <jbroman@chromium.org>
+Commit-Queue: Adithya Srinivasan <adithyas@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1336747}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5849533
+Auto-Submit: Adithya Srinivasan <adithyas@chromium.org>
+Reviewed-by: Harry Souders <harrysouders@google.com>
+Commit-Queue: Harry Souders <harrysouders@google.com>
+Owners-Override: Harry Souders <harrysouders@google.com>
+Cr-Commit-Position: refs/branch-heads/6613@{#1742}
+Cr-Branched-From: 03c1799e6f9c7239802827eab5e935b9e14fceae-refs/heads/main@{#1331488}
+---
+
+--- a/third_party/blink/renderer/core/loader/speculation_rule_loader.cc
++++ b/third_party/blink/renderer/core/loader/speculation_rule_loader.cc
+@@ -83,6 +83,10 @@
+     return;
+   }
+ 
++  if (!document_->GetExecutionContext()) {
++    return;
++  }
++
+   String source_text = resource_->DecodedText();
+   auto* source = SpeculationRuleSet::Source::FromRequest(
+       source_text, response.ResponseUrl(), resource_->InspectorId());
+--- a/third_party/blink/renderer/core/speculation_rules/speculation_rule_set.cc
++++ b/third_party/blink/renderer/core/speculation_rules/speculation_rule_set.cc
+@@ -5,6 +5,7 @@
+ #include "third_party/blink/renderer/core/speculation_rules/speculation_rule_set.h"
+ 
+ #include "base/containers/contains.h"
++#include "base/not_fatal_until.h"
+ #include "services/network/public/mojom/no_vary_search.mojom-shared.h"
+ #include "services/network/public/mojom/referrer_policy.mojom-shared.h"
+ #include "third_party/blink/public/mojom/speculation_rules/speculation_rules.mojom-shared.h"
+@@ -556,6 +557,7 @@
+ // static
+ SpeculationRuleSet* SpeculationRuleSet::Parse(Source* source,
+                                               ExecutionContext* context) {
++  CHECK(context, base::NotFatalUntil::M131);
+   // https://wicg.github.io/nav-speculation/speculation-rules.html#parse-speculation-rules
+ 
+   const String& source_text = source->GetSourceText();
+--- a/third_party/blink/renderer/core/speculation_rules/speculation_rules_header_test.cc
++++ b/third_party/blink/renderer/core/speculation_rules/speculation_rules_header_test.cc
+@@ -4,6 +4,7 @@
+ 
+ #include "third_party/blink/renderer/core/speculation_rules/speculation_rules_header.h"
+ 
++#include "base/test/bind.h"
+ #include "base/test/metrics/histogram_tester.h"
+ #include "net/base/net_errors.h"
+ #include "net/http/http_status_code.h"
+@@ -60,6 +61,11 @@
+             "speculation_rules/single_url_prefetch_relative.json"),
+         "application/speculationrules+json");
+ 
++    url_test_helpers::RegisterMockedURLLoad(
++        KURL("https://speculationrules.test/document_rule_prefetch.json"),
++        test::CoreTestDataPath("speculation_rules/document_rule_prefetch.json"),
++        "application/speculationrules+json");
++
+     KURL redirect_url(
+         "https://speculationrules.test/"
+         "redirect/single_url_prefetch_relative.json");
+@@ -399,5 +405,44 @@
+       DocumentSpeculationRules::From(page_holder.GetDocument()).rule_sets(),
+       ::testing::IsEmpty());
+ }
++
++// Regression test for crbug.com/356767669.
++// Order of events:
++// 1) The load of the speculation rules header completes
++// 2) The document detaches
++// 3) SpeculationRuleLoader::NotifyFinished is called
++TEST(SpeculationRulesHeaderTest, DocumentDetached) {
++  test::TaskEnvironment task_environment;
++  base::HistogramTester histogram_tester;
++  auto* chrome_client = MakeGarbageCollected<ConsoleCapturingChromeClient>();
++  DummyPageHolder page_holder(/*initial_view_size=*/{}, chrome_client);
++  ScopedRegisterMockedURLLoads mock_url_loads;
++
++  ResourceResponse document_response(KURL("https://speculation-rules.test/"));
++  document_response.SetHttpStatusCode(200);
++  document_response.SetMimeType(AtomicString("text/html"));
++  document_response.SetTextEncodingName(AtomicString("UTF-8"));
++  document_response.AddHttpHeaderField(
++      http_names::kSpeculationRules,
++      AtomicString("\"https://speculationrules.test/"
++                   "document_rule_prefetch.json\""));
++  SpeculationRulesHeader::ProcessHeadersForDocumentResponse(
++      document_response, *page_holder.GetFrame().DomWindow());
++
++  page_holder.GetDocument()
++      .GetTaskRunner(TaskType::kDOMManipulation)
++      ->PostTask(FROM_HERE, base::BindLambdaForTesting([&]() {
++                   page_holder.GetDocument().Shutdown();
++                 }));
++  url_test_helpers::ServeAsynchronousRequests();
++
++  histogram_tester.ExpectUniqueSample("Blink.SpeculationRules.LoadOutcome",
++                                      SpeculationRulesLoadOutcome::kSuccess, 0);
++  histogram_tester.ExpectTotalCount("Blink.SpeculationRules.FetchTime", 1);
++  EXPECT_THAT(chrome_client->ConsoleMessages(),
++              Not(Contains(ResultOf([](const auto& m) { return m.Utf8(); },
++                                    HasSubstr("Speculation-Rules")))));
++}
++
+ }  // namespace
+ }  // namespace blink
+--- a/third_party/blink/renderer/core/testing/data/core_test_bundle_data.filelist
++++ b/third_party/blink/renderer/core/testing/data/core_test_bundle_data.filelist
+@@ -452,6 +452,7 @@
+ testing/data/smartclip_user_select_none.html
+ testing/data/sometext.html
+ testing/data/specify_size.html
++testing/data/speculation_rules/document_rule_prefetch.json
+ testing/data/speculation_rules/single_url_prefetch.json
+ testing/data/speculation_rules/single_url_prefetch_invalid_no_vary_search_hint.json
+ testing/data/speculation_rules/single_url_prefetch_not_a_string_no_vary_search_hint.json
+--- /dev/null
++++ b/third_party/blink/renderer/core/testing/data/speculation_rules/document_rule_prefetch.json
+@@ -0,0 +1 @@
++{"prefetch": [{"source": "document", "where": {"href_matches": "/next.html"}}]}

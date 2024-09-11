@@ -245,7 +245,7 @@
        if (!is_chromeos_lacros) {
          sources += [
            "../browser/browser_switcher/browser_switcher_browsertest.cc",
-@@ -9115,15 +9129,6 @@
+@@ -9117,15 +9131,6 @@
        "../browser/extensions/api/identity/identity_api_unittest.cc",
        "../browser/extensions/api/identity/identity_mint_queue_unittest.cc",
        "../browser/extensions/api/identity/identity_token_cache_unittest.cc",
@@ -261,7 +261,7 @@
        "../browser/extensions/api/language_settings_private/language_settings_private_api_unittest.cc",
        "../browser/extensions/api/language_settings_private/language_settings_private_delegate_unittest.cc",
        "../browser/extensions/api/management/management_api_unittest.cc",
-@@ -11662,6 +11667,20 @@
+@@ -11664,6 +11669,20 @@
          "//ui/display/win/test/virtual_display_util_win_interactive_uitest.cc",
        ]
  

@@ -1,0 +1,99 @@
+From 1a9000afdb29fca05d6b4e983451180be90f4423 Mon Sep 17 00:00:00 2001
+From: Devlin Cronin <rdevlin.cronin@chromium.org>
+Date: Fri, 06 Sep 2024 18:34:06 +0000
+Subject: [PATCH] [Extensions] Fix addition of keepalive for extension functions
+
+Currently, the ExtensionFunctionDispatcher adds a keepalive for
+extension functions after the initial execution of the
+ExtensionFunction completes. This keepalive is then removed when
+the ExtensionFunction is destroyed.
+
+This is not ideal. Conceptually, this keepalive should happen
+*before* the ExtensionFunction begins executing. Since many
+ExtensionFunctions complete synchronously, having it afterwards
+results in the keepalive being added after the work has already
+been done.
+
+Apart from being a "code smell", this typically isn't a problem
+because of an implementation detail (a local scoped_refptr variable)
+that ensures the ExtensionFunction is destroyed after the keepalive
+is added. However, this *can* cause a problem if the execution of
+the ExtensionFunction results in the termination of the calling
+context, such as the service worker shutting down. This is one
+suspected cause of the linked crash bug.
+
+Move the keepalive to be added before the ExtensionFunction executes.
+This should help with the linked crash and may also prevent service
+workers from shutting down while executing an extension function if
+the execution of that function resulted in removing keepalive counts.
+
+Bug: 356668774
+Change-Id: I983959305fa155734456d1b0e8007d80133a9609
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5830084
+Commit-Queue: Devlin Cronin <rdevlin.cronin@chromium.org>
+Reviewed-by: Justin Lulejian <jlulejian@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1352180}
+---
+
+--- a/extensions/browser/extension_function_dispatcher.cc
++++ b/extensions/browser/extension_function_dispatcher.cc
+@@ -464,6 +464,26 @@
+       quota->Assess(extension->id(), function.get(), params.arguments,
+                     base::TimeTicks::Now());
+ 
++  function->set_request_uuid(base::Uuid::GenerateRandomV4());
++
++  // Increment the keepalive to ensure the extension doesn't shut down while
++  // it's executing an API function. This is balanced in
++  // `OnExtensionFunctionCompleted()`.
++  if (IsRequestFromServiceWorker(params)) {
++    CHECK(function->worker_id());
++    content::ServiceWorkerExternalRequestTimeoutType timeout_type =
++        function->ShouldKeepWorkerAliveIndefinitely()
++            ? content::ServiceWorkerExternalRequestTimeoutType::kDoesNotTimeout
++            : content::ServiceWorkerExternalRequestTimeoutType::kDefault;
++    function->set_service_worker_keepalive(
++        std::make_unique<ServiceWorkerKeepalive>(
++            browser_context_, *function->worker_id(), timeout_type,
++            Activity::API_FUNCTION, function->name()));
++  } else {
++    process_manager->IncrementLazyKeepaliveCount(
++        function->extension(), Activity::API_FUNCTION, function->name());
++  }
++
+   if (violation_error.empty()) {
+     // See crbug.com/39178.
+     ExtensionsBrowserClient::Get()->PermitExternalProtocolHandler();
+@@ -521,30 +541,8 @@
+   }
+ 
+   // Note: do not access |this| after this point. We may have been deleted
+-  // if function->Run() ended up closing the tab that owns us.
+-
+-  // Check if extension was uninstalled by management.uninstall.
+-  if (!registry->enabled_extensions().GetByID(params.extension_id))
+-    return;
+-
+-  function->set_request_uuid(base::Uuid::GenerateRandomV4());
+-
+-  // Increment the keepalive to ensure the extension doesn't shut down while
+-  // it's executing an API function.
+-  if (IsRequestFromServiceWorker(params)) {
+-    CHECK(function->worker_id());
+-    content::ServiceWorkerExternalRequestTimeoutType timeout_type =
+-        function->ShouldKeepWorkerAliveIndefinitely()
+-            ? content::ServiceWorkerExternalRequestTimeoutType::kDoesNotTimeout
+-            : content::ServiceWorkerExternalRequestTimeoutType::kDefault;
+-    function->set_service_worker_keepalive(
+-        std::make_unique<ServiceWorkerKeepalive>(
+-            browser_context_, *function->worker_id(), timeout_type,
+-            Activity::API_FUNCTION, function->name()));
+-  } else {
+-    process_manager->IncrementLazyKeepaliveCount(
+-        function->extension(), Activity::API_FUNCTION, function->name());
+-  }
++  // if `function->RunWithValidation()` resulted in closing the execution
++  // context for this function.
+ }
+ 
+ void ExtensionFunctionDispatcher::OnExtensionFunctionCompleted(

@@ -40,7 +40,7 @@
      if (is_chromeos) {
        deps += [
          "//chrome/browser/chromeos:browser_tests",
-@@ -9414,7 +9417,6 @@
+@@ -9416,7 +9419,6 @@
        "//chrome/common/apps/platform_apps",
        "//chrome/common/extensions:extension_features_unittest",
        "//chrome/common/extensions/api",
@@ -48,7 +48,7 @@
        "//components/enterprise:test_support",
        "//components/password_manager/core/browser/features:password_features",
        "//components/password_manager/core/browser/sharing",
-@@ -9446,6 +9448,10 @@
+@@ -9448,6 +9450,10 @@
        "//tools/json_schema_compiler/test:unit_tests",
      ]
  

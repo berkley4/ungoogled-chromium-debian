@@ -1,8 +1,6 @@
-Index: chromium-128.0.6613.113/gpu/command_buffer/service/shared_image_interface_in_process.cc
-===================================================================
---- chromium-128.0.6613.113.orig/gpu/command_buffer/service/shared_image_interface_in_process.cc
-+++ chromium-128.0.6613.113/gpu/command_buffer/service/shared_image_interface_in_process.cc
-@@ -166,7 +166,7 @@ void SharedImageInterfaceInProcess::SetU
+--- a/gpu/command_buffer/service/shared_image_interface_in_process.cc
++++ b/gpu/command_buffer/service/shared_image_interface_in_process.cc
+@@ -166,7 +166,7 @@
              params->gpu_preferences, params->gpu_workarounds,
              params->gpu_feature_info, params->context_state,
              params->shared_image_manager,

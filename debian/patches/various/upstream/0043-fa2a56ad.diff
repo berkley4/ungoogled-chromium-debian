@@ -1,0 +1,38 @@
+From fa2a56ad86e9c88efaa1340081bb4e6a2df34325 Mon Sep 17 00:00:00 2001
+From: Momoko Hattori <momohatt@google.com>
+Date: Fri, 06 Sep 2024 17:38:39 +0000
+Subject: [PATCH] FilePathWatcher: Return early in OnFilePathChanged() when cancelled
+
+FilePathWatcherImpl::OnFilePathChanged() in file_path_watcher_inotify.cc
+can run even after the watch has been cancelled, in which case the
+`DUMP_WILL_BE_CHECK(!watches_.empty())` at the beginning of the method
+fails as `watches_` has already been emptied in Cancel(). Hence this CL
+replaces the DUMP_WILL_BE_CHECK() with an early return.
+
+BUG=b:361487830
+TEST=Check that the crash no longer happens after the steps described in
+     b/361487830#comment2.
+
+Change-Id: I62492402e48c0b10c9319c4646916cf028d6e27e
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5831652
+Reviewed-by: Lei Zhang <thestig@chromium.org>
+Commit-Queue: Lei Zhang <thestig@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1352147}
+---
+
+--- a/base/files/file_path_watcher_inotify.cc
++++ b/base/files/file_path_watcher_inotify.cc
+@@ -451,7 +451,12 @@
+     bool created,
+     bool deleted) {
+   DUMP_WILL_BE_CHECK(task_runner()->RunsTasksInCurrentSequence());
+-  DUMP_WILL_BE_CHECK(!watches_.empty());
++
++  // Check to see if Cancel() has already been called.
++  if (watches_.empty()) {
++    return;
++  }
++
+   DUMP_WILL_BE_CHECK(HasValidWatchVector());
+ 
+   // Used below to avoid multiple recursive updates.

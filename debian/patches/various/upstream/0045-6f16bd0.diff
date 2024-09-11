@@ -1,0 +1,52 @@
+From 6f16bd09b6f4c75fa5a615f7922543fe021ec612 Mon Sep 17 00:00:00 2001
+From: Anders Hartvoll Ruud <andruud@chromium.org>
+Date: Sat, 07 Sep 2024 18:57:50 +0000
+Subject: [PATCH] [css-typed-om] Don't crash for unrepresentable shorthands
+
+ComputedStylePropertyMap::SerializationForShorthand for some reason
+expects that CSSValueFromComputedStyle can't return nullptr, when in
+reality this can easily happen as soon as you have a shorthand
+which can't represent the currently held longhands.
+
+We have likely exercised this code for a long time, but ever since
+CL:5577948, we began crashing, since NOTREACHED() is fatal now.
+
+Looking briefly over the spec, it is not defined what to return in
+this situation, hence adding a crash test which doesn't make assertions
+about the return value.
+
+Fixed: 364443014
+Change-Id: I5c6bcc4ef75285194aed2fc0a6b57429655c7610
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5840236
+Reviewed-by: Rune Lillesveen <futhark@chromium.org>
+Commit-Queue: Anders Hartvoll Ruud <andruud@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1352461}
+---
+
+--- a/third_party/blink/renderer/core/css/cssom/computed_style_property_map.cc
++++ b/third_party/blink/renderer/core/css/cssom/computed_style_property_map.cc
+@@ -164,7 +164,6 @@
+     return value->CssText();
+   }
+ 
+-  NOTREACHED_IN_MIGRATION();
+   return "";
+ }
+ 
+--- /dev/null
++++ b/third_party/blink/web_tests/external/wpt/css/css-typed-om/the-stylepropertymap/computed/get-border-shorthand-crash.html
+@@ -0,0 +1,14 @@
++<!DOCTYPE html>
++<title>CSS Typed OM: Don't crash when calling get() with unrepresentable shorthand</title>
++<link rel="help" href="https://crbug.com/364443014">
++<style>
++  div {
++    border: 1px solid black;
++    border-left: 42px dashed red;
++  }
++</style>
++<p>PASS if no crash.</p>
++<div id=div>div</div>
++<script>
++  div.computedStyleMap().get('border');
++</script>

@@ -136,9 +136,12 @@ various/upstream/0034-ecb05bf.diff
 various/upstream/0035-5d905ce.diff
 various/upstream/0036-17527e1.diff
 various/upstream/0037-b1b449d4.diff
-various/upstream/0038-69e4bbf0.diff
-various/upstream/0039-1046f21.diff
 various/upstream/0040-8a55006.diff
+various/upstream/0041-e569d6d1.diff
+various/upstream/0042-2348b37.diff
+various/upstream/0043-fa2a56ad.diff
+various/upstream/0044-1a9000a.diff
+various/upstream/0045-6f16bd0.diff
 various/upstream/features/enable-renderdocument-subframe-by-default.patch
 various/upstream/features/leveldb-proto-enable-async-writes-by-default.patch
 various/upstream/features/libavcodec-allocate-h-274-film-grain-metadata-dynamically.patch
@@ -214,4 +217,6 @@ optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
 optional/translate/revert-disable.patch
 optional/translate/stop-unsupported-switch-warning.patch
 
-
+addenda/0001-f55eb0e.diff
+addenda/0002-500c490.diff
+addenda/0003-e110868.diff
