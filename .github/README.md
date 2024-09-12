@@ -112,7 +112,7 @@ ___Build system___
 - Uses git to obtain and update source (release tarballs are not currently supported)
 - Self-built BOLT/LTO/PGO optimised and polly-enabled clang/llvm is preferred for building
     - requiring a recent version of clang often means fewer build headaches
-- Support for building with system rust (the rustc package on unstable and rust-web on stable)
+- Support for building with system rust (the rustc package on unstable and rustc-web on stable)
 - Support for building with system node (the nodejs package on both stable and unstable)
 - A script is provided to build bindgen (build/build-bindgen.sh)
 - A configuration shell script is provided to enable easy customisation of the build

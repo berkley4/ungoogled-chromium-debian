@@ -24,6 +24,8 @@ curl
 rustc
 unzip
 
+(Note: use the rustc-web package on stable instead of rustc)
+
 
 ___System bindgen package___
 

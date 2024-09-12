@@ -11,7 +11,7 @@ ___System rustc package___
 
 On unstable : ```apt-get install rustc```
 
-On stable   : ```apt-get install rust-web```
+On stable   : ```apt-get install rustc-web```
 
 
 To proceed, configure with SYS_RUST=1.
