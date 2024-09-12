@@ -1,0 +1,47 @@
+--- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
++++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
+@@ -341,7 +341,7 @@
+ #define CONFIG_AC3_DECODER 0
+ #define CONFIG_AC3_FIXED_DECODER 0
+ #define CONFIG_ACELP_KELVIN_DECODER 0
+-#define CONFIG_ALAC_DECODER 0
++#define CONFIG_ALAC_DECODER 1
+ #define CONFIG_ALS_DECODER 0
+ #define CONFIG_AMRNB_DECODER 0
+ #define CONFIG_AMRWB_DECODER 0
+--- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/libavcodec/codec_list.c
++++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/libavcodec/codec_list.c
+@@ -1,6 +1,7 @@
+ static const FFCodec * const codec_list[] = {
+     &ff_h264_decoder,
+     &ff_aac_decoder,
++    &ff_alac_decoder,
+     &ff_flac_decoder,
+     &ff_mp3_decoder,
+     &ff_vorbis_decoder,
+--- a/third_party/ffmpeg/ffmpeg_generated.gni
++++ b/third_party/ffmpeg/ffmpeg_generated.gni
+@@ -265,6 +265,13 @@
+     "libavcodec/h274.c",
+     "libavcodec/startcode.c",
+   ]
++
++  ffmpeg_c_sources += [
++    "libavcodec/alac.c",
++    "libavcodec/alac_data.c",
++    "libavcodec/alacdsp.c",
++    "libavcodec/alacenc.c",
++  ]
+ }
+ 
+ if ((is_apple && current_cpu == "x64" && ffmpeg_branding == "Chrome") ||
+@@ -493,6 +500,9 @@
+     "libavcodec/x86/aacpsdsp_init.c",
+     "libavcodec/x86/sbrdsp_init.c",
+   ]
++
++  ffmpeg_c_sources += [ "libavcodec/x86/alacdsp_init.c" ]
++  ffmpeg_asm_sources += [ "libavcodec/x86/alacdsp.asm" ]
+ }
+ 
+ if ((is_android && current_cpu == "arm" && arm_use_neon &&

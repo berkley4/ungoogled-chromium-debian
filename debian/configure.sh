@@ -76,11 +76,11 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$ENTERPRISE_WATERMARK" ] || ENTERPRISE_WATERMARK=0
 [ -n "$EXTENSIONS_ROOT_MENU" ] || EXTENSIONS_ROOT_MENU=0
 [ -n "$FEED" ] || FEED=1
+[ -n "$FF_EXTRA_CODECS" ] || FF_EXTRA_CODECS=1
 [ -n "$GOOGLE_API_KEYS" ] || GOOGLE_API_KEYS=0
 [ -n "$GOOGLE_UI_URLS" ] || GOOGLE_UI_URLS=1
 [ -n "$GRCACHE_PURGE" ] || GRCACHE_PURGE=0
 [ -n "$HEADLESS" ] || HEADLESS=1
-[ -n "$HEVC_DECODE" ] || HEVC_DECODE=1
 [ -n "$HLS_PLAYER" ] || HLS_PLAYER=1
 [ -n "$LABS_TOOLBAR_BUTTON" ] || LABS_TOOLBAR_BUTTON=0
 [ -n "$LENS" ] || LENS=1
@@ -702,8 +702,8 @@ if [ $FEED -eq 0 ]; then
 fi
 
 
-if [ $HEVC_DECODE -eq 0 ]; then
-  op_disable="$op_disable ffmpeg-hevc/"
+if [ $FF_EXTRA_CODECS -eq 0 ]; then
+  op_disable="$op_disable ffmpeg-extra-codecs/"
 fi
 
 

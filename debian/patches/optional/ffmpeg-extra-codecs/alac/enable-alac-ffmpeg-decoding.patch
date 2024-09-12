@@ -1,0 +1,65 @@
+--- a/media/base/mime_util_internal.h
++++ b/media/base/mime_util_internal.h
+@@ -39,6 +39,7 @@
+     MPEG2_AAC,
+     MPEG4_AAC,
+     MPEG4_XHE_AAC,
++    ALAC,
+     VORBIS,
+     OPUS,
+     FLAC,
+--- a/media/base/mime_util_internal.cc
++++ b/media/base/mime_util_internal.cc
+@@ -105,6 +105,7 @@
+       {"ac-4", MimeUtil::AC4},
+       {"mp4a.ae", MimeUtil::AC4},
+       {"mp4a.AE", MimeUtil::AC4},
++      {"alac", MimeUtil::ALAC},
+   });
+ 
+   return *kStringToCodecMap;
+@@ -198,6 +199,8 @@
+       return AudioCodec::kAC4;
+     case MimeUtil::IAMF:
+       return AudioCodec::kIAMF;
++    case MimeUtil::ALAC:
++      return AudioCodec::kALAC;
+     default:
+       break;
+   }
+@@ -599,6 +602,9 @@
+       // with MSE/EME) or with a software decoder (the unified pipeline).
+       return true;
+ 
++    case ALAC:
++      return true;
++
+     case MPEG4_XHE_AAC:
+       return true;
+ 
+--- a/media/base/supported_types.cc
++++ b/media/base/supported_types.cc
+@@ -392,11 +392,11 @@
+     case AudioCodec::kPCM_S24BE:
+     case AudioCodec::kPCM_ALAW:
+     case AudioCodec::kVorbis:
++    case AudioCodec::kALAC:
+       return true;
+     case AudioCodec::kAMR_NB:
+     case AudioCodec::kAMR_WB:
+     case AudioCodec::kGSM_MS:
+-    case AudioCodec::kALAC:
+     case AudioCodec::kMpegHAudio:
+     case AudioCodec::kIAMF:
+     case AudioCodec::kUnknown:
+--- a/media/filters/ffmpeg_glue.cc
++++ b/media/filters/ffmpeg_glue.cc
+@@ -140,7 +140,7 @@
+         "vorbis,libopus,flac,pcm_u8,pcm_s16le,pcm_s24le,pcm_s32le,pcm_f32le,"
+         "mp3,pcm_s16be,pcm_s24be,pcm_mulaw,pcm_alaw");
+ #if BUILDFLAG(USE_PROPRIETARY_CODECS)
+-    allowed_decoders += ",aac";
++    allowed_decoders += ",aac,alac";
+ #endif
+     return allowed_decoders;
+   }());
