@@ -4,22 +4,15 @@
 ___Pre-build___
 
 You can prevent gclient runhooks from pulling in the whole rust toolchain by
-running the following command.
-
-```'checkout_rust': False,```
-
-If things don't work out, you can run the following from the build directory
-to pull in the rust toolchain.
-
-```./src/tools/rust/update_rust.py```
-
-After that you will need to comment out the 'export RUSTC_BOOTSTRAP=1' and
-GN_FLAGS lines in debian/rules.
+applying DEPS-no-rust.patch. Refer to README.md for more information.
 
 
 ___System rustc package___
 
-```apt-get install rustc```
+On unstable : ```apt-get install rustc```
+
+On stable   : ```apt-get install rust-web```
+
 
 To proceed, configure with SYS_RUST=1.
 
@@ -42,3 +35,9 @@ More information on installation is available at the following links :-
 
 https://rust-lang.github.io/rustup/
 https://rust-lang.github.io/rustup/installation/other.html
+
+
+To restore a the in-tree rust toolchain, run the following from the build
+directory to pull in the rust toolchain.
+
+```./src/tools/rust/update_rust.py```

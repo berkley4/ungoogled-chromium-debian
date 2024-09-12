@@ -102,6 +102,7 @@ ___Other features___
 - Patches to force skia to use bundled freetype and harfbuzz libraries (where appropriate)
 - System libraries are enabled only when they don't clash with built-in libraries
 - HEVC (h265) playback support (via third party patches)
+- ALAC (Apple Lossless Audio Codec) playblack support
 - Experimental Opentype SVG support (via third party patches)
 - The shell launcher has the ability to block switches (aka flags)
 
@@ -111,6 +112,8 @@ ___Build system___
 - Uses git to obtain and update source (release tarballs are not currently supported)
 - Self-built BOLT/LTO/PGO optimised and polly-enabled clang/llvm is preferred for building
     - requiring a recent version of clang often means fewer build headaches
+- Support for building with system rust (the rustc package on unstable and rust-web on stable)
+- Support for building with system node (the nodejs package on both stable and unstable)
 - A script is provided to build bindgen (build/build-bindgen.sh)
 - A configuration shell script is provided to enable easy customisation of the build
     - it takes out much of the complexity that might otherwise be present in debian/rules
@@ -265,10 +268,14 @@ Rough instructions for self-building are available [here](https://github.com/ber
 
 - - - -
 
+# Rust - REQUIRED to compile
+
+See [Rust.md](https://github.com/berkley4/ungoogled-chromium-debian/blob/unstable/Rust.md) for more info.
+
 
 # Bindgen - REQUIRED to compile
 
-A script (build/build-bindgen.sh) is supplied to compile bindgen, see [here](https://github.com/berkley4/ungoogled-chromium-debian/blob/unstable/Bindgen.md) for more info.
+A script (build/build-bindgen.sh) is supplied to compile bindgen, see [Bindgen.md](https://github.com/berkley4/ungoogled-chromium-debian/blob/unstable/Bindgen.md) for more info.
 
 
 - - - -
