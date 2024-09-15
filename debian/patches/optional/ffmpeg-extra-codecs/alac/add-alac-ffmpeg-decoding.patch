@@ -11,14 +11,14 @@
  #define CONFIG_AMRWB_DECODER 0
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/libavcodec/codec_list.c
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/libavcodec/codec_list.c
-@@ -1,6 +1,7 @@
- static const FFCodec * const codec_list[] = {
-     &ff_h264_decoder,
-     &ff_aac_decoder,
-+    &ff_alac_decoder,
+@@ -4,6 +4,7 @@
      &ff_flac_decoder,
      &ff_mp3_decoder,
      &ff_vorbis_decoder,
++    &ff_alac_decoder,
+     &ff_pcm_alaw_decoder,
+     &ff_pcm_f32le_decoder,
+     &ff_pcm_mulaw_decoder,
 --- a/third_party/ffmpeg/ffmpeg_generated.gni
 +++ b/third_party/ffmpeg/ffmpeg_generated.gni
 @@ -265,6 +265,13 @@

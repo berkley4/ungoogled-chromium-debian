@@ -101,9 +101,10 @@ ___Other features___
 - Extra build flags to prevent the building of unneeded testing/debug/development features
 - Patches to force skia to use bundled freetype and harfbuzz libraries (where appropriate)
 - System libraries are enabled only when they don't clash with built-in libraries
+- Experimental Opentype SVG support (via third party patches)
 - HEVC (h265) playback support (via third party patches)
 - ALAC (Apple Lossless Audio Codec) playblack support
-- Experimental Opentype SVG support (via third party patches)
+- xHE-AAC playback support via the FDK AAC decodert (build support only)
 - The shell launcher has the ability to block switches (aka flags)
 
 

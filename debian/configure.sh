@@ -77,6 +77,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$EXTENSIONS_ROOT_MENU" ] || EXTENSIONS_ROOT_MENU=0
 [ -n "$FEED" ] || FEED=1
 [ -n "$FF_EXTRA_CODECS" ] || FF_EXTRA_CODECS=1
+[ -n "$FF_FDK_AAC" ] || FF_FDK_AAC=0
 [ -n "$GOOGLE_API_KEYS" ] || GOOGLE_API_KEYS=0
 [ -n "$GOOGLE_UI_URLS" ] || GOOGLE_UI_URLS=1
 [ -n "$GRCACHE_PURGE" ] || GRCACHE_PURGE=0
@@ -159,13 +160,18 @@ POLICIES=etc/chromium/policies/managed/policies.json
 
 ## Disable non-free stuff if NON_FREE=0
 [ -n "$NON_FREE" ] || NON_FREE=1
+
 if [ $NON_FREE -eq 0 ]; then
   ins_disable="$ins_disable anti-audio-fingerprint"
   SER_DB="$SER_DB -e \"s@^\(cromite/\)@#\1@\" -e \"s@^\(vanadium/\)@#\1@\""
 
+  if [ $FF_FDK_AAC -eq 1 ]; then
+    printf '%s\n' "ERROR: Cannot set FF_FDK_AAC=0 when NON_FREE=0"
+    exit 1
+  fi
+
   if [ $OPENH264 -eq 1 ] && [ $SYS_OPENH264 -eq 0 ]; then
-    printf '%s\n' "ERROR: Not a non-free build"
-    printf '%s\n' "ERROR: When NON_FREE=0, you must set SYS_OPENH264=1"
+    printf '%s\n' "ERROR: Cannot set SYS_OPENH264=1 when NON_FREE=0"
     exit 1
   fi
 fi
@@ -704,6 +710,16 @@ fi
 
 if [ $FF_EXTRA_CODECS -eq 0 ]; then
   op_disable="$op_disable ffmpeg-extra-codecs/"
+else
+  if [ $FF_FDK_AAC -eq 1 ]; then
+    op_enable="$op_enable ffmpeg-extra-codecs/fdk-aac/"
+    FDK_DIR=$RT_DIR/third_party/ffmpeg/libavcodec/fdk-aac
+
+    if [ $TEST -eq 0 ] && [ ! -d $FDK_DIR ]; then
+      printf '%s\n' "ERROR: Cannot find $FDK_DIR"
+      exit 1
+    fi
+  fi
 fi
 
 

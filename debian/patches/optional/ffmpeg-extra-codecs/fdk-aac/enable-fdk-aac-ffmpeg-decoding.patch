@@ -1,0 +1,45 @@
+--- a/media/base/supported_types.cc
++++ b/media/base/supported_types.cc
+@@ -273,9 +273,13 @@
+ }
+ 
+ bool IsAACSupported(const AudioType& type) {
++#if BUILDFLAG(IS_LINUX) && BUILDFLAG(USE_PROPRIETARY_CODECS)
++  return true;
++#else
+   if (type.profile != AudioCodecProfile::kXHE_AAC) {
+     return true;
+   }
++#endif
+ #if BUILDFLAG(ENABLE_MOJO_AUDIO_DECODER) && \
+     (BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN))
+   return GetSupplementalAudioTypeCache()->IsProfileSupported(type);
+--- a/media/filters/ffmpeg_audio_decoder.cc
++++ b/media/filters/ffmpeg_audio_decoder.cc
+@@ -91,15 +91,6 @@
+     return;
+   }
+ 
+-  // TODO(dalecurtis): Remove this if ffmpeg ever gets xHE-AAC support.
+-  if (config.profile() == AudioCodecProfile::kXHE_AAC) {
+-    std::move(bound_init_cb)
+-        .Run(DecoderStatus(DecoderStatus::Codes::kUnsupportedProfile)
+-                 .WithData("decoder", "FFmpegAudioDecoder")
+-                 .WithData("profile", config.profile()));
+-    return;
+-  }
+-
+   if (!ConfigureDecoder(config)) {
+     av_sample_format_ = 0;
+     std::move(bound_init_cb).Run(DecoderStatus::Codes::kUnsupportedConfig);
+--- a/media/filters/ffmpeg_glue.cc
++++ b/media/filters/ffmpeg_glue.cc
+@@ -140,7 +140,7 @@
+         "vorbis,libopus,flac,pcm_u8,pcm_s16le,pcm_s24le,pcm_s32le,pcm_f32le,"
+         "mp3,pcm_s16be,pcm_s24be,pcm_mulaw,pcm_alaw");
+ #if BUILDFLAG(USE_PROPRIETARY_CODECS)
+-    allowed_decoders += ",aac,alac";
++    allowed_decoders += ",libfdk_aac,alac";
+ #endif
+     return allowed_decoders;
+   }());

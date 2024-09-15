@@ -186,6 +186,8 @@ optional/ffmpeg-extra-codecs/hevc/add-hevc-ffmpeg-decoder-parser-for-linux.patch
 optional/ffmpeg-extra-codecs/hevc/enable-hevc-ffmpeg-decoding.patch
 optional/ffmpeg-extra-codecs/alac/add-alac-ffmpeg-decoding.patch
 optional/ffmpeg-extra-codecs/alac/enable-alac-ffmpeg-decoding.patch
+#optional/ffmpeg-extra-codecs/fdk-aac/add-fdk-aac-ffmpeg-decoding.patch
+#optional/ffmpeg-extra-codecs/fdk-aac/enable-fdk-aac-ffmpeg-decoding.patch
 #optional/fixes/dav1d-bundled-header.patch
 #optional/fixes/opentype-svg-on-bundled-freetype.patch
 #optional/fixes/skia-allow-bundled-freetype.patch
