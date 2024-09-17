@@ -76,8 +76,9 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$ENTERPRISE_WATERMARK" ] || ENTERPRISE_WATERMARK=0
 [ -n "$EXTENSIONS_ROOT_MENU" ] || EXTENSIONS_ROOT_MENU=0
 [ -n "$FEED" ] || FEED=1
-[ -n "$FF_EXTRA_CODECS" ] || FF_EXTRA_CODECS=1
+[ -n "$FF_ALAC" ] || FF_ALAC=1
 [ -n "$FF_FDK_AAC" ] || FF_FDK_AAC=0
+[ -n "$FF_HEVC" ] || FF_HEVC=1
 [ -n "$GOOGLE_API_KEYS" ] || GOOGLE_API_KEYS=0
 [ -n "$GOOGLE_UI_URLS" ] || GOOGLE_UI_URLS=1
 [ -n "$GRCACHE_PURGE" ] || GRCACHE_PURGE=0
@@ -708,18 +709,24 @@ if [ $FEED -eq 0 ]; then
 fi
 
 
-if [ $FF_EXTRA_CODECS -eq 0 ]; then
-  op_disable="$op_disable ffmpeg-extra-codecs/"
-else
-  if [ $FF_FDK_AAC -eq 1 ]; then
-    op_enable="$op_enable ffmpeg-extra-codecs/fdk-aac/"
-    FDK_DIR=$RT_DIR/third_party/ffmpeg/libavcodec/fdk-aac
+if [ $FF_ALAC -eq 0 ]; then
+  op_disable="$op_disable ffmpeg-extra-codecs/alac/"
+fi
 
-    if [ $TEST -eq 0 ] && [ ! -d $FDK_DIR ]; then
-      printf '%s\n' "ERROR: Cannot find $FDK_DIR"
-      exit 1
-    fi
+
+if [ $FF_FDK_AAC -eq 1 ]; then
+  op_enable="$op_enable ffmpeg-extra-codecs/fdk-aac/"
+  FDK_DIR=$RT_DIR/third_party/ffmpeg/libavcodec/fdk-aac
+
+  if [ $TEST -eq 0 ] && [ ! -d $FDK_DIR ]; then
+    printf '%s\n' "ERROR: Cannot find $FDK_DIR"
+    exit 1
   fi
+fi
+
+
+if [ $FF_HEVC -eq 0 ]; then
+  op_disable="$op_disable ffmpeg-extra-codecs/hevc/"
 fi
 
 
