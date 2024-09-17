@@ -11,6 +11,7 @@ debian/fixes/gpu-crash.patch
 debian/fixes/ps-print.patch
 debian/disable/android.patch
 debian/disable/font-tests.patch
+debian/disable/tests-swiftshader.patch
 debian/disable/widevine-cdm-cu.patch
 debian/system/openjpeg.patch
 debian/system/zlib.patch
