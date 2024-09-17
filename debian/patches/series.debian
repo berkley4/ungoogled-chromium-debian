@@ -174,7 +174,6 @@ optional/compiler-flags/cpu/avx.patch
 #optional/disable/dns_config_service.patch
 optional/disable/enterprise-watermark.patch
 optional/disable/extensions-in-root-menu.patch
-#optional/disable/feed.patch
 #optional/disable/headless.patch
 #optional/disable/media-router.patch
 #optional/disable/vulkan.patch

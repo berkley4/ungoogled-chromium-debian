@@ -75,7 +75,6 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$DRIVER" ] || DRIVER=1
 [ -n "$ENTERPRISE_WATERMARK" ] || ENTERPRISE_WATERMARK=0
 [ -n "$EXTENSIONS_ROOT_MENU" ] || EXTENSIONS_ROOT_MENU=0
-[ -n "$FEED" ] || FEED=1
 [ -n "$FF_ALAC" ] || FF_ALAC=1
 [ -n "$FF_FDK_AAC" ] || FF_FDK_AAC=0
 [ -n "$FF_HEVC" ] || FF_HEVC=1
@@ -699,14 +698,6 @@ fi
 
 if [ $EXTENSIONS_ROOT_MENU -eq 1 ]; then
   op_disable="$op_disable disable/extensions-in-root-menu"
-fi
-
-
-if [ $FEED -eq 0 ]; then
-  op_enable="$op_enable disable/feed"
-  gn_enable="$gn_enable enable_feed_v2=false"
-
-  sed '/WebFeedKillSwitch/s@^#@@' -i $FLAG_DIR/miscellaneous
 fi
 
 

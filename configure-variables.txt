@@ -98,7 +98,6 @@ CLICK_TO_CALL		1		Feature for using chromium to make a call via an android phone
 COMPOSE			1		An autofill-related feature which can be disabled by those who don't use autofill
 ENTERPRISE_WATERMARK	0		Watermarking security/privacy feature (for Chrome Enterprise Premium users)
 EXTENSIONS_ROOT_MENU	0		Whether to put the extensions menu in the root menu (0 = put in 'More tools' menu)
-FEED			1		WebFeed (news feed) support
 FF_ALAC			1		ALAC (Apple Lossless Audio Codec) playback support
 FF_FDK_AAC		0		Enable AAC playback via the fraunhofer FDK AAC decoder (supports xHE-AAC decoding)
 					Requires FF_EXTRA_CODECS=1 and NON_FREE=1

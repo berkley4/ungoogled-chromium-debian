@@ -80,7 +80,6 @@ ___Security/Privacy improvements___
         - Compose (autofill)
         - DNS config service
         - Enterprise watermark
-        - Feed
         - Headless mode
         - Media remoting
         - Media router

@@ -132,9 +132,6 @@ GN_FLAGS += enterprise_watermark=false
 # Enable ESbuild
 #GN_FLAGS += devtools_fast_bundle=true
 
-# Disable feed v2
-#GN_FLAGS += enable_feed_v2=false
-
 # Disable headless mode
 #GN_FLAGS += headless_enable_commands=false headless_mode_policy_supported=false
 #GN_FLAGS += headless_use_policy=false headless_use_prefs=false ozone_platform_headless=false
