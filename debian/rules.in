@@ -344,8 +344,6 @@ override_dh_auto_build:
 	ninja -j $(JOBS) -C $(OUT_DIR) chrome chrome_sandbox chromedriver
 
 override_dh_prep:
-	# TODO: remove the $(OUT_DIR)/resources/en-US.pak test/delete line after a couple of releases
-	test ! -f $(OUT_DIR)/resources/en-US.pak || rm -f $(OUT_DIR)/resources/en-US.pak
 	test ! -f $(DS_CACHE) || $(UL_DIR)/domain_substitution.py revert -c $(DS_CACHE) $(RT_DIR)
 	for f in $(UB_LIST); do test ! -f $$f || mv $$f $${f%.bundled}; done
 	dh_prep
