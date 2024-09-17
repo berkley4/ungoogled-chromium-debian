@@ -111,6 +111,9 @@ GN_FLAGS +=					\
 
 ### General components
 
+# Enable angle GL (GLX) desktop frontend
+#GN_FLAGS += angle_enable_gl_desktop_frontend=true
+
 # Disable atk/dbus
 #GN_FLAGS += use_atk=false use_dbus=false
 
@@ -151,7 +154,7 @@ GN_FLAGS += enable_mutex_priority_inheritance=true
 # Disable notifications (system notifications)
 #GN_FLAGS += enable_system_notifications=false
 
-# Diable pdfium javascript and XFA forms support
+# Disable pdfium javascript and XFA forms support
 GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
 
 # Disable openh264

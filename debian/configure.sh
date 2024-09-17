@@ -79,6 +79,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$FF_ALAC" ] || FF_ALAC=1
 [ -n "$FF_FDK_AAC" ] || FF_FDK_AAC=0
 [ -n "$FF_HEVC" ] || FF_HEVC=1
+[ -n "$GL_DESKTOP_FRONTEND" ] || GL_DESKTOP_FRONTEND=0
 [ -n "$GOOGLE_API_KEYS" ] || GOOGLE_API_KEYS=0
 [ -n "$GOOGLE_UI_URLS" ] || GOOGLE_UI_URLS=1
 [ -n "$GRCACHE_PURGE" ] || GRCACHE_PURGE=0
@@ -727,6 +728,11 @@ fi
 
 if [ $FF_HEVC -eq 0 ]; then
   op_disable="$op_disable ffmpeg-extra-codecs/hevc/"
+fi
+
+
+if [ $GL_DESKTOP_FRONTEND -eq 1 ]; then
+  gn_enable="$gn_enable angle_enable_gl_desktop_frontend"
 fi
 
 
