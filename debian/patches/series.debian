@@ -189,6 +189,7 @@ optional/ffmpeg-extra-codecs/alac/enable-alac-ffmpeg-decoding.patch
 #optional/ffmpeg-extra-codecs/fdk-aac/add-fdk-aac-ffmpeg-decoding.patch
 #optional/ffmpeg-extra-codecs/fdk-aac/enable-fdk-aac-ffmpeg-decoding.patch
 #optional/fixes/dav1d-bundled-header.patch
+optional/fixes/icudata-file-path.patch
 #optional/fixes/opentype-svg-on-bundled-freetype.patch
 #optional/fixes/skia-allow-bundled-freetype.patch
 optional/fixes/skia-allow-bundled-harfbuzz.patch

@@ -1,0 +1,16 @@
+--- a/v8/BUILD.gn
++++ b/v8/BUILD.gn
+@@ -2454,11 +2454,10 @@
+     sources = []
+ 
+     if (icu_use_data_file) {
+-      deps += [ "//third_party/icu:copy_icudata" ]
+       if (host_byteorder == "big") {
+-        sources += [ "$root_out_dir/icudtb.dat" ]
++        sources += [ "//third_party/icu/common/icudtb.dat" ]
+       } else {
+-        sources += [ "$root_out_dir/icudtl.dat" ]
++        sources += [ "//third_party/icu/common/icudtl.dat" ]
+       }
+     }
+ 

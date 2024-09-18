@@ -1081,7 +1081,7 @@ if [ $SYS_ICU -eq 0 ]; then
   RUL="$RUL -e \"/icudtl.dat/s@#@@\""
 else
   op_enable="$op_enable system/unstable/icu"
-  op_disable="$op_disable fixes/skia-allow-bundled-harfbuzz"
+  op_disable="$op_disable fixes/icudata-file-path fixes/skia-allow-bundled-harfbuzz"
 
   gn_disable="$gn_disable icu_copy_icudata_to_root_build_dir=false"
   gn_enable="$gn_enable use_system_harfbuzz"

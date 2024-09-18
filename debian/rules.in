@@ -290,7 +290,7 @@ SYS_LIBS += fontconfig freetype brotli libpng
 
 # Enable to unbundle icu
 #SYS_LIBS += harfbuzz-ng libxslt libxml icu
-#GN_FLAGS += use_system_harfbuzz=true
+#GN_FLAGS += icu_use_data_file=false use_system_harfbuzz=true
 
 # Disable if unbundling icu
 GN_FLAGS += icu_copy_icudata_to_root_build_dir=false
