@@ -176,6 +176,7 @@ optional/disable/enterprise-watermark.patch
 optional/disable/extensions-in-root-menu.patch
 #optional/disable/headless.patch
 #optional/disable/media-router.patch
+#optional/disable/speech.patch
 #optional/disable/vulkan.patch
 optional/disable/webgpu.patch
 #optional/disable/media-remoting/media-remoting.patch

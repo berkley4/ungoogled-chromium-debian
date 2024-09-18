@@ -830,6 +830,7 @@ fi
 
 
 if [ $SPEECH -eq 0 ]; then
+  op_enable="$op_enable disable/speech"
   gn_enable="$gn_enable enable_speech_service=false"
 fi
 
