@@ -1,6 +1,6 @@
 --- a/DEPS
 +++ b/DEPS
-@@ -710,7 +710,7 @@
+@@ -714,7 +714,7 @@
    # See also //third_party/node/node.gni
    'src/third_party/node/linux': {
        'dep_type': 'gcs',
