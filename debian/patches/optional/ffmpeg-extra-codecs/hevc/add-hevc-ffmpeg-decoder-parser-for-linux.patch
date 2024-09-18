@@ -339,8 +339,8 @@ profiles to have software HEVC decoding ability.
      NULL };
 --- a/third_party/ffmpeg/ffmpeg_generated.gni
 +++ b/third_party/ffmpeg/ffmpeg_generated.gni
-@@ -214,6 +214,27 @@
- if ((is_apple && ffmpeg_branding == "Chrome") ||
+@@ -217,6 +217,27 @@
+     (is_apple && ffmpeg_branding == "Chrome") ||
      (is_win && ffmpeg_branding == "Chrome") ||
      (use_linux_config && ffmpeg_branding == "Chrome")) {
 +
@@ -367,7 +367,7 @@ profiles to have software HEVC decoding ability.
    ffmpeg_c_sources += [
      "libavcodec/atsc_a53.c",
      "libavcodec/autorename_libavcodec_videodsp.c",
-@@ -450,6 +471,24 @@
+@@ -415,6 +436,24 @@
      (is_android && current_cpu == "x86" && ffmpeg_branding == "Chrome") ||
      (is_win && current_cpu == "x86" && ffmpeg_branding == "Chrome") ||
      (use_linux_config && current_cpu == "x86" && ffmpeg_branding == "Chrome")) {
@@ -391,7 +391,7 @@ profiles to have software HEVC decoding ability.
 +
    ffmpeg_c_sources += [
      "libavcodec/x86/aacpsdsp_init.c",
-     "libavcodec/x86/sbrdsp_init.c",
+     "libavcodec/x86/h264_intrapred_init.c",
 --- /dev/null
 +++ b/third_party/ffmpeg/libavcodec/autorename_libavcodec_bswapdsp.c
 @@ -0,0 +1,2 @@

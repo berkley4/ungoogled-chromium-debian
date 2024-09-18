@@ -36,7 +36,7 @@ Cr-Commit-Position: refs/heads/main@{#1344601}
 
 --- a/content/browser/loader/navigation_url_loader_impl.cc
 +++ b/content/browser/loader/navigation_url_loader_impl.cc
-@@ -969,6 +969,14 @@
+@@ -971,6 +971,14 @@
      early_hints_manager_.reset();
    }
  
@@ -70,7 +70,7 @@ Cr-Commit-Position: refs/heads/main@{#1344601}
        GetPageUkmSourceId(*frame_tree_node->current_frame_host()),
 --- a/content/browser/renderer_host/render_frame_host_impl.cc
 +++ b/content/browser/renderer_host/render_frame_host_impl.cc
-@@ -10000,6 +10000,16 @@
+@@ -10038,6 +10038,16 @@
      }
    }
  

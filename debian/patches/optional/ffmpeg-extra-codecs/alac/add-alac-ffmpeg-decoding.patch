@@ -21,7 +21,7 @@
      &ff_pcm_mulaw_decoder,
 --- a/third_party/ffmpeg/ffmpeg_generated.gni
 +++ b/third_party/ffmpeg/ffmpeg_generated.gni
-@@ -265,6 +265,13 @@
+@@ -268,6 +268,13 @@
      "libavcodec/h274.c",
      "libavcodec/startcode.c",
    ]
@@ -34,14 +34,14 @@
 +  ]
  }
  
- if ((is_apple && current_cpu == "x64" && ffmpeg_branding == "Chrome") ||
-@@ -493,6 +500,9 @@
-     "libavcodec/x86/aacpsdsp_init.c",
+ if ((current_cpu == "arm64" && ffmpeg_branding == "Chrome") ||
+@@ -463,6 +470,9 @@
      "libavcodec/x86/sbrdsp_init.c",
+     "libavcodec/x86/videodsp_init.c",
    ]
 +
 +  ffmpeg_c_sources += [ "libavcodec/x86/alacdsp_init.c" ]
 +  ffmpeg_asm_sources += [ "libavcodec/x86/alacdsp.asm" ]
  }
  
- if ((is_android && current_cpu == "arm" && arm_use_neon &&
+ if (use_linux_config && current_cpu == "arm" && arm_use_neon &&

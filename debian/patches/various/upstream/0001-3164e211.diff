@@ -21,7 +21,7 @@ Cr-Commit-Position: refs/heads/main@{#1335682}
 
 --- a/third_party/blink/renderer/bindings/core/v8/v8_binding_for_core.cc
 +++ b/third_party/blink/renderer/bindings/core/v8/v8_binding_for_core.cc
-@@ -757,7 +757,7 @@
+@@ -750,7 +750,7 @@
    // TODO(crbug.com/1046282): The following bailout is a temporary fix
    // introduced due to crbug.com/1037985 .  Remove this temporary fix once
    // the root cause is fixed.

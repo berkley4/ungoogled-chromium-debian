@@ -1,6 +1,6 @@
 --- a/chrome/browser/media/router/media_router_feature.cc
 +++ b/chrome/browser/media/router/media_router_feature.cc
-@@ -148,7 +148,7 @@
+@@ -152,7 +152,7 @@
      pref_values.insert(std::make_pair(context, allowed));
      return allowed;
    }

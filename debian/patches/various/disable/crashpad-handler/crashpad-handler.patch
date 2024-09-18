@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -702,7 +702,7 @@
+@@ -699,7 +699,7 @@
        ]
      }
  
@@ -11,27 +11,28 @@
          "//third_party/crashpad/crashpad/handler:crashpad_handler",
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -4609,7 +4609,6 @@
+@@ -4306,7 +4306,6 @@
        "//components/webauthn/core/browser:passkey_model",
        "//services/device/public/cpp/bluetooth",
        "//services/device/public/cpp/hid",
 -      "//third_party/crashpad/crashpad/client:common",
        "//third_party/zxcvbn-cpp",
-       "//ui/webui/resources/cr_components/app_management:mojo_bindings",
-       "//ui/webui/resources/cr_components/help_bubble:mojo_bindings",
-@@ -4636,6 +4635,9 @@
-       # //chrome/browser instead.
-       "//chrome/browser/smart_card",
+       "//ui/views",
+       "//ui/web_dialogs",
+@@ -4316,6 +4315,10 @@
+       "//ui/webui/resources/cr_components/history_embeddings:mojo_bindings",
      ]
+ 
 +    if (!is_linux) {
 +      deps += [ "//third_party/crashpad/crashpad/client:common" ]
 +    }
-     if (!is_android && !is_chromeos) {
-       sources += [
-         "device_notifications/device_status_icon_renderer.cc",
++
+     #!is_android
+     # Any circular includes must depend on the target
+     # "browser_public_dependencies".
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -308,7 +308,9 @@
+@@ -312,7 +312,9 @@
            "//chrome/common:buildflags",
          ]
  
@@ -42,7 +43,7 @@
  
          ldflags = []
  
-@@ -1713,7 +1715,6 @@
+@@ -1728,7 +1730,6 @@
        deps = [
          ":angle_egl_symbols",
          ":angle_gles_symbols",
@@ -50,7 +51,7 @@
          ":chrome_symbols",
        ]
        if (is_linux) {
-@@ -1738,17 +1739,19 @@
+@@ -1753,17 +1754,19 @@
  
        deps = [ ":chrome" ]
      }
@@ -81,7 +82,7 @@
        binary = "$root_out_dir/libvk_swiftshader.so"
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -593,10 +593,6 @@
+@@ -642,10 +642,6 @@
      ]
    }
  
@@ -114,7 +115,7 @@
    executable("chrome_crashpad_handler") {
 --- a/content/shell/BUILD.gn
 +++ b/content/shell/BUILD.gn
-@@ -759,7 +759,7 @@
+@@ -757,7 +757,7 @@
      if (is_win) {
        data_deps +=
            [ "//third_party/crashpad/crashpad/handler:crashpad_handler" ]
@@ -125,7 +126,7 @@
  
 --- a/headless/BUILD.gn
 +++ b/headless/BUILD.gn
-@@ -479,7 +479,7 @@
+@@ -478,7 +478,7 @@
      deps += [ "//sandbox" ]
    }
  

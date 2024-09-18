@@ -1,6 +1,6 @@
 --- a/third_party/swiftshader/BUILD.gn
 +++ b/third_party/swiftshader/BUILD.gn
-@@ -76,16 +76,11 @@ if (build_with_chromium) {
+@@ -76,16 +76,11 @@
    group("swiftshader_tests") {
      testonly = true
  

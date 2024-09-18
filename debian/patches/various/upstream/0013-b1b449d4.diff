@@ -21,7 +21,7 @@ Cr-Commit-Position: refs/heads/main@{#1348670}
 
 --- a/gpu/command_buffer/service/gles2_cmd_decoder_passthrough.cc
 +++ b/gpu/command_buffer/service/gles2_cmd_decoder_passthrough.cc
-@@ -2680,6 +2680,12 @@
+@@ -2693,6 +2693,12 @@
        return TextureTarget::kExternal;
      case GL_TEXTURE_RECTANGLE_ARB:
        return TextureTarget::kRectangle;
@@ -51,7 +51,7 @@ Cr-Commit-Position: refs/heads/main@{#1348670}
    static TextureTarget GLenumToTextureTarget(GLenum target);
 --- a/gpu/command_buffer/service/gles2_cmd_decoder_passthrough_doers.cc
 +++ b/gpu/command_buffer/service/gles2_cmd_decoder_passthrough_doers.cc
-@@ -532,7 +532,8 @@
+@@ -556,7 +556,8 @@
    }
  
    // Track the currently bound textures
@@ -61,7 +61,7 @@ Cr-Commit-Position: refs/heads/main@{#1348670}
    scoped_refptr<TexturePassthrough> texture_passthrough;
  
    if (service_id != 0) {
-@@ -554,7 +555,7 @@
+@@ -578,7 +579,7 @@
    }
  
    BoundTexture* bound_texture =

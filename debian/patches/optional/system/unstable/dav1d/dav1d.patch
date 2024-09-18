@@ -11,7 +11,7 @@
  
 --- a/media/filters/dav1d_video_decoder.cc
 +++ b/media/filters/dav1d_video_decoder.cc
-@@ -23,7 +23,7 @@
+@@ -28,7 +28,7 @@
  #include "media/base/video_util.h"
  
  extern "C" {

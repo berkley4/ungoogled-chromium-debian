@@ -1,0 +1,60 @@
+From ed7395cf50b9f64d61a89825934fb743a4915be3 Mon Sep 17 00:00:00 2001
+From: Koji Ishii <kojii@chromium.org>
+Date: Tue, 17 Sep 2024 03:43:47 +0000
+Subject: [PATCH] [text-wrap] Fix a `DCHECK` failure in `LineBreaker::HandleOverflow`
+
+While handling overflow for a hyphenated line. Because
+`position_` is changed by a call to `RemoveHyphen`,
+`width_to_rewind`, which is dependent on `position_`, should
+be computed after the change.
+
+The tests for crbug.com/40943808 hits this `DCHECK`. Tests
+will be in the CL for the issue.
+
+Fixed: 366640434
+Change-Id: Iaec8602eb6180598d0f4cd82fa78a833a05e60f3
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5863589
+Commit-Queue: Kent Tamura <tkent@chromium.org>
+Auto-Submit: Koji Ishii <kojii@chromium.org>
+Reviewed-by: Kent Tamura <tkent@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1356263}
+---
+
+--- a/third_party/blink/renderer/core/layout/inline/line_breaker.cc
++++ b/third_party/blink/renderer/core/layout/inline/line_breaker.cc
+@@ -3975,11 +3975,19 @@
+ // At this point, item_results does not fit into the current line, and there
+ // are no break opportunities in item_results.back().
+ void LineBreaker::HandleOverflow(LineInfo* line_info) {
++  const LayoutUnit available_width = AvailableWidthToFit();
++  DCHECK_GT(position_, available_width);
++
++  // Save the hyphenation states before we may make changes.
++  InlineItemResults* item_results = line_info->MutableResults();
++  std::optional<wtf_size_t> hyphen_index_before = hyphen_index_;
++  if (HasHyphen()) [[unlikely]] {
++    position_ -= RemoveHyphen(item_results);
++  }
++
+   // Compute the width needing to rewind. When |width_to_rewind| goes negative,
+   // items can fit within the line.
+-  LayoutUnit available_width = AvailableWidthToFit();
+   LayoutUnit width_to_rewind = position_ - available_width;
+-  DCHECK_GT(width_to_rewind, 0);
+ 
+   // Keep track of the shortest break opportunity.
+   unsigned break_before = 0;
+@@ -3987,13 +3995,6 @@
+   // True if there is at least one item that has `break-word`.
+   bool has_break_anywhere_if_overflow = break_anywhere_if_overflow_;
+ 
+-  // Save the hyphenation states before we may make changes.
+-  InlineItemResults* item_results = line_info->MutableResults();
+-  std::optional<wtf_size_t> hyphen_index_before = hyphen_index_;
+-  if (HasHyphen()) [[unlikely]] {
+-    position_ -= RemoveHyphen(item_results);
+-  }
+-
+   // Search for a break opportunity that can fit.
+   for (unsigned i = item_results->size(); i;) {
+     InlineItemResult* item_result = &(*item_results)[--i];

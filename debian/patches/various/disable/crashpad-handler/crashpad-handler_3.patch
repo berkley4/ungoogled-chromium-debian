@@ -1,6 +1,6 @@
 --- a/chrome/app/chrome_main_delegate.cc
 +++ b/chrome/app/chrome_main_delegate.cc
-@@ -199,7 +199,9 @@
+@@ -204,7 +204,9 @@
  #if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_ANDROID) || \
      BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
  #include "chrome/browser/policy/policy_path_parser.h"
@@ -10,7 +10,7 @@
  #endif
  
  #if BUILDFLAG(ENABLE_EXTENSIONS)
-@@ -1752,9 +1754,11 @@
+@@ -1757,9 +1759,11 @@
        base::android::InitJavaExceptionReporterForChildProcess();
      }
  #else
@@ -22,7 +22,7 @@
  #endif  // BUILDFLAG(IS_ANDROID)
    }
  #endif  // BUILDFLAG(IS_POSIX) && !BUILDFLAG(IS_MAC)
-@@ -1901,10 +1905,11 @@
+@@ -1906,10 +1910,11 @@
        base::CommandLine::ForCurrentProcess();
    std::string process_type =
        command_line->GetSwitchValueASCII(switches::kProcessType);
@@ -37,7 +37,7 @@
  }
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -597,7 +597,7 @@
+@@ -609,7 +609,7 @@
  #include "chrome/browser/browser_switcher/browser_switcher_navigation_throttle.h"
  #endif
  
@@ -46,7 +46,7 @@
  #include "components/crash/core/app/crash_switches.h"
  #include "components/crash/core/app/crashpad.h"
  #endif
-@@ -1025,7 +1025,7 @@
+@@ -1037,7 +1037,7 @@
  int GetCrashSignalFD(const base::CommandLine& command_line) {
    return crashpad::CrashHandlerHost::Get()->GetDeathSignalSocket();
  }
@@ -55,7 +55,7 @@
  int GetCrashSignalFD(const base::CommandLine& command_line) {
    int fd;
    return crash_reporter::GetHandlerSocket(&fd, nullptr) ? fd : -1;
-@@ -4904,7 +4904,7 @@
+@@ -4944,7 +4944,7 @@
    DCHECK(!app_data_path.empty());
  #endif  // BUILDFLAG(IS_ANDROID)
  

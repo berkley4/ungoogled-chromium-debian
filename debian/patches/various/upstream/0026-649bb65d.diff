@@ -1,0 +1,89 @@
+From 649bb65dbae27fef178aff6b8edfed0e800c37e6 Mon Sep 17 00:00:00 2001
+From: Daniel Cheng <dcheng@chromium.org>
+Date: Mon, 16 Sep 2024 20:53:29 +0000
+Subject: [PATCH] Speculative fix for dangling ptr crashes on DownloadFileImpl::SourceStream
+
+This is likely to be a false positive because code like this is "safe"
+and doesn't crash:
+  auto x = std::make_unique<MyClass>();
+  auto* p = new int(444);
+  auto cb = base::BindOnce(&MyClass::Method, x->GetWeakPtr(), p);
+  delete p;
+  x.reset();
+  // `p` is dangling but this is "okay" since the callback is cancelled,
+  // since the `WeakPtr` is a receiver and is invalidated.
+  std::move(cb).Run();
+
+However, breaking this up into a nested callback like this:
+  auto x = std::make_unique<MyClass>();
+  auto* p = new int(444);
+  auto inner = base::BindOnce(&MyClass::Method, x->GetWeakPtr());
+  auto outer = base::BindOnce(std::move(inner), p);
+  delete p;
+  x.reset();
+  // Crashes in the dangling pointer check.
+  std::move(cb).Run();
+
+The special cancellation logic doesn't take effect here, so the callback
+implementation must assume that the pointer might be dereferenced and
+check if it is dangling.
+
+It is possible that callbacks should check for chained cancellation
+here and allow "safe" dangling pointers here as well. However, nesting
+callbacks like this is inherently inefficient, so for now, just avoid
+nesting callbacks as a fix / workaround.
+
+Bug: 365775467
+Change-Id: Ie644ad11049e00e723853c610fd81393af2ecd74
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5858326
+Reviewed-by: Shakti Sahu <shaktisahu@chromium.org>
+Commit-Queue: Daniel Cheng <dcheng@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1356118}
+---
+
+--- a/components/download/internal/common/download_file_impl.cc
++++ b/components/download/internal/common/download_file_impl.cc
+@@ -159,10 +159,12 @@
+   return input_stream_->GetCompletionStatus();
+ }
+ 
+-void DownloadFileImpl::SourceStream::RegisterCompletionCallback(
+-    DownloadFileImpl::SourceStream::CompletionCallback callback) {
+-  input_stream_->RegisterCompletionCallback(
+-      base::BindOnce(std::move(callback), base::Unretained(this)));
++void DownloadFileImpl::SourceStream::RequestCompletionNotification(
++    base::WeakPtr<DownloadFileImpl> download_file) {
++  input_stream_->RegisterCompletionCallback(base::BindOnce(
++      &DownloadFileImpl::OnStreamCompleted, std::move(download_file),
++      // Precondition: `download_file` owns `this`.
++      base::Unretained(this)));
+ }
+ 
+ InputStream::StreamState DownloadFileImpl::SourceStream::Read(
+@@ -623,8 +625,8 @@
+         }
+       } break;
+       case InputStream::WAIT_FOR_COMPLETION:
+-        source_stream->RegisterCompletionCallback(base::BindOnce(
+-            &DownloadFileImpl::OnStreamCompleted, weak_factory_.GetWeakPtr()));
++        source_stream->RequestCompletionNotification(
++            weak_factory_.GetWeakPtr());
+         break;
+       case InputStream::COMPLETE:
+         break;
+--- a/components/download/public/common/download_file_impl.h
++++ b/components/download/public/common/download_file_impl.h
+@@ -132,9 +132,10 @@
+     // DownloadItem/DownloadFile somewhere.
+     DownloadInterruptReason GetCompletionStatus() const;
+ 
+-    using CompletionCallback = base::OnceCallback<void(SourceStream*)>;
+-    // Register an callback to be called when download completes.
+-    void RegisterCompletionCallback(CompletionCallback callback);
++    // Requests that on completion, `StreamSource` invokes
++    // `DownloadFileImpl::OnStreamCompleted` with `this`.
++    void RequestCompletionNotification(
++        base::WeakPtr<DownloadFileImpl> download_file);
+ 
+     InputStream::StreamState Read(scoped_refptr<net::IOBuffer>* data,
+                                   size_t* length);

@@ -47,24 +47,22 @@
  
 --- a/services/on_device_model/ml/BUILD.gn
 +++ b/services/on_device_model/ml/BUILD.gn
-@@ -31,9 +31,15 @@
+@@ -35,9 +35,13 @@
+     "//components/optimization_guide/core:features",
      "//components/translate/core/language_detection",
-     "//gpu/config",
      "//third_party/angle:includes",
 -    "//third_party/dawn/src/dawn:proc",
 -    "//third_party/dawn/src/dawn/native",
    ]
-+
 +  if (use_dawn) {
 +    deps += [
 +      "//third_party/dawn/src/dawn:proc",
 +      "//third_party/dawn/src/dawn/native",
 +    ]
 +  }
-+
-   public_deps = [
-     ":api",
-     "//base",
+   if (!is_ios) {
+     deps += [ "//gpu/config" ]
+   }
 --- a/services/on_device_model/pre_sandbox_init.cc
 +++ b/services/on_device_model/pre_sandbox_init.cc
 @@ -16,9 +16,11 @@

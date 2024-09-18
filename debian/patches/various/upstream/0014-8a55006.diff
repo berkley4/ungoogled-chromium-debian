@@ -20,7 +20,7 @@ Cr-Commit-Position: refs/heads/main@{#1349289}
 
 --- a/third_party/blink/renderer/core/inspector/inspector_dom_agent.cc
 +++ b/third_party/blink/renderer/core/inspector/inspector_dom_agent.cc
-@@ -1749,7 +1749,7 @@
+@@ -1755,7 +1755,7 @@
          "No layout object for node, perhaps orphan or hidden node");
    }
  

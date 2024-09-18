@@ -1,6 +1,6 @@
 --- a/chrome/browser/external_protocol/external_protocol_handler.cc
 +++ b/chrome/browser/external_protocol/external_protocol_handler.cc
-@@ -36,7 +36,8 @@
+@@ -37,7 +37,8 @@
  #include "url/gurl.h"
  #include "url/origin.h"
  
@@ -10,7 +10,7 @@
  #include "chrome/browser/sharing/click_to_call/click_to_call_ui_controller.h"
  #include "chrome/browser/sharing/click_to_call/click_to_call_utils.h"
  #endif
-@@ -231,7 +232,8 @@
+@@ -232,7 +233,8 @@
    bool chrome_is_default_handler = state == shell_integration::IS_DEFAULT;
  
    // On ChromeOS, Click to Call is integrated into the external protocol dialog.
@@ -22,7 +22,7 @@
      // Handle tel links by opening the Click to Call dialog. This will call back
 --- a/chrome/browser/renderer_context_menu/render_view_context_menu.cc
 +++ b/chrome/browser/renderer_context_menu/render_view_context_menu.cc
-@@ -1898,9 +1898,9 @@
+@@ -1901,9 +1901,9 @@
        AppendQRCodeGeneratorItem(/*for_image=*/true, /*draw_icon=*/true,
                                  /*add_separator*/ false);
      }
@@ -34,7 +34,7 @@
      menu_model_.AddSeparator(ui::NORMAL_SEPARATOR);
      menu_model_.AddItemWithStringId(IDC_CONTENT_CONTEXT_SAVELINKAS,
                                      IDS_CONTENT_CONTEXT_SAVELINKAS);
-@@ -2706,9 +2706,9 @@
+@@ -2709,9 +2709,9 @@
    // Check if the starting separator got added.
    size_t items_before_sharing = menu_model_.GetItemCount();
    bool starting_separator_added = items_before_sharing > items_initial;
@@ -46,7 +46,7 @@
    // Add an ending separator if there are sharing items, otherwise remove the
    // starting separator iff we added one above.
    size_t sharing_items = menu_model_.GetItemCount() - items_before_sharing;
-@@ -2719,6 +2719,7 @@
+@@ -2722,6 +2722,7 @@
    }
  }
  
@@ -54,7 +54,7 @@
  void RenderViewContextMenu::AppendClickToCallItem() {
    SharingClickToCallEntryPoint entry_point;
    std::optional<std::string> phone_number;
-@@ -2746,6 +2747,7 @@
+@@ -2749,6 +2750,7 @@
    click_to_call_context_menu_observer_->BuildMenu(*phone_number, selection_text,
                                                    entry_point);
  }

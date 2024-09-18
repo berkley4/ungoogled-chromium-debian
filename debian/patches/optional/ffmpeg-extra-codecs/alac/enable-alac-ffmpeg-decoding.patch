@@ -27,7 +27,7 @@
      default:
        break;
    }
-@@ -599,6 +602,9 @@
+@@ -609,6 +612,9 @@
        // with MSE/EME) or with a software decoder (the unified pipeline).
        return true;
  
@@ -39,7 +39,7 @@
  
 --- a/media/base/supported_types.cc
 +++ b/media/base/supported_types.cc
-@@ -392,11 +392,11 @@
+@@ -393,11 +393,11 @@
      case AudioCodec::kPCM_S24BE:
      case AudioCodec::kPCM_ALAW:
      case AudioCodec::kVorbis:
@@ -54,7 +54,7 @@
      case AudioCodec::kUnknown:
 --- a/media/filters/ffmpeg_glue.cc
 +++ b/media/filters/ffmpeg_glue.cc
-@@ -140,7 +140,7 @@
+@@ -163,7 +163,7 @@
          "vorbis,libopus,flac,pcm_u8,pcm_s16le,pcm_s24le,pcm_s32le,pcm_f32le,"
          "mp3,pcm_s16be,pcm_s24be,pcm_mulaw,pcm_alaw");
  #if BUILDFLAG(USE_PROPRIETARY_CODECS)

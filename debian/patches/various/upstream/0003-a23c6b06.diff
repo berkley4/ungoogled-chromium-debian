@@ -21,7 +21,7 @@ Cr-Commit-Position: refs/heads/main@{#1344892}
 
 --- a/chrome/browser/file_system_access/chrome_file_system_access_permission_context.cc
 +++ b/chrome/browser/file_system_access/chrome_file_system_access_permission_context.cc
-@@ -524,42 +524,50 @@
+@@ -527,42 +527,50 @@
  
        // Content setting grants write permission without asking.
        if (content_setting == CONTENT_SETTING_ALLOW) {
@@ -84,7 +84,7 @@ Cr-Commit-Position: refs/heads/main@{#1344892}
        return;
      }
  
-@@ -681,6 +689,8 @@
+@@ -684,6 +692,8 @@
      return type_;
    }
  
@@ -93,7 +93,7 @@ Cr-Commit-Position: refs/heads/main@{#1344892}
    void SetStatus(PermissionStatus new_status,
                   PersistedPermissionOptions update_options) {
      DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
-@@ -742,6 +752,7 @@
+@@ -745,6 +755,7 @@
      }
  
      if (permission_changed) {
@@ -101,7 +101,7 @@ Cr-Commit-Position: refs/heads/main@{#1344892}
        NotifyPermissionStatusChanged();
      }
    }
-@@ -805,18 +816,26 @@
+@@ -808,18 +819,26 @@
      }
  
      switch (result) {
@@ -134,7 +134,7 @@ Cr-Commit-Position: refs/heads/main@{#1344892}
        case PermissionAction::DISMISSED:
        case PermissionAction::IGNORED:
          RunCallbackAndRecordPermissionRequestOutcome(
-@@ -904,9 +923,7 @@
+@@ -907,9 +926,7 @@
      }
    }
  
@@ -145,7 +145,7 @@ Cr-Commit-Position: refs/heads/main@{#1344892}
      DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
      if (context_ &&
          (outcome ==
-@@ -940,6 +957,12 @@
+@@ -943,6 +960,12 @@
              outcome);
        }
      }
@@ -158,7 +158,7 @@ Cr-Commit-Position: refs/heads/main@{#1344892}
  
      std::move(callback).Run(outcome);
    }
-@@ -970,6 +993,7 @@
+@@ -973,6 +996,7 @@
        }
      }
  

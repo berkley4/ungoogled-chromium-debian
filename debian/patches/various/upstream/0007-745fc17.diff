@@ -58,7 +58,7 @@ Cr-Commit-Position: refs/heads/main@{#1345290}
 
 --- a/components/webdata/common/web_database.cc
 +++ b/components/webdata/common/web_database.cc
-@@ -81,7 +81,11 @@
+@@ -82,7 +82,11 @@
             // quite infrequent. So we go with a small cache size.
             .cache_size = 32}) {}
  

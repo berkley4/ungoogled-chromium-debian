@@ -21,7 +21,7 @@ Cr-Commit-Position: refs/heads/main@{#1345697}
 
 --- a/chrome/browser/file_system_access/chrome_file_system_access_permission_context.cc
 +++ b/chrome/browser/file_system_access/chrome_file_system_access_permission_context.cc
-@@ -1169,7 +1169,7 @@
+@@ -1172,7 +1172,7 @@
    // but that is exactly what we want.
    auto& origin_state = active_permissions_map_[origin];
    auto*& existing_grant = origin_state.read_grants[path];
@@ -30,7 +30,7 @@ Cr-Commit-Position: refs/heads/main@{#1345697}
  
    if (existing_grant && existing_grant->handle_type() != handle_type) {
      // |path| changed from being a directory to being a file or vice versa,
-@@ -1181,27 +1181,30 @@
+@@ -1184,27 +1184,30 @@
      existing_grant = nullptr;
    }
  
@@ -67,7 +67,7 @@ Cr-Commit-Position: refs/heads/main@{#1345697}
              PermissionStatus::GRANTED,
              PersistedPermissionOptions::kUpdatePersistedPermission);
          break;
-@@ -1216,7 +1219,7 @@
+@@ -1219,7 +1222,7 @@
            [[fallthrough]];
          case UserAction::kDragAndDrop:
            // Drag&drop grants read access for all handles.
@@ -76,7 +76,7 @@ Cr-Commit-Position: refs/heads/main@{#1345697}
                PermissionStatus::GRANTED,
                PersistedPermissionOptions::kUpdatePersistedPermission);
            break;
-@@ -1229,8 +1232,8 @@
+@@ -1232,8 +1235,8 @@
        // Don't bother revoking persisted permissions. If the permissions have
        // not yet expired when the ContentSettingValue is changed, they will
        // effectively be reinstated.
@@ -87,7 +87,7 @@ Cr-Commit-Position: refs/heads/main@{#1345697}
              PermissionStatus::DENIED,
              PersistedPermissionOptions::kDoNotUpdatePersistedPermission);
        } else {
-@@ -1242,11 +1245,11 @@
+@@ -1245,11 +1248,11 @@
        break;
    }
  
@@ -101,7 +101,7 @@ Cr-Commit-Position: refs/heads/main@{#1345697}
  }
  
  scoped_refptr<content::FileSystemAccessPermissionGrant>
-@@ -1260,7 +1263,7 @@
+@@ -1263,7 +1266,7 @@
    // but that is exactly what we want.
    auto& origin_state = active_permissions_map_[origin];
    auto*& existing_grant = origin_state.write_grants[path];
@@ -110,7 +110,7 @@ Cr-Commit-Position: refs/heads/main@{#1345697}
  
    if (existing_grant && existing_grant->handle_type() != handle_type) {
      // |path| changed from being a directory to being a file or vice versa,
-@@ -1272,27 +1275,30 @@
+@@ -1275,27 +1278,30 @@
      existing_grant = nullptr;
    }
  
@@ -147,7 +147,7 @@ Cr-Commit-Position: refs/heads/main@{#1345697}
              PermissionStatus::GRANTED,
              PersistedPermissionOptions::kUpdatePersistedPermission);
          break;
-@@ -1300,7 +1306,7 @@
+@@ -1303,7 +1309,7 @@
        switch (user_action) {
          case UserAction::kSave:
            // Only automatically grant write access for save dialogs.
@@ -156,7 +156,7 @@ Cr-Commit-Position: refs/heads/main@{#1345697}
                PermissionStatus::GRANTED,
                PersistedPermissionOptions::kUpdatePersistedPermission);
            break;
-@@ -1315,8 +1321,8 @@
+@@ -1318,8 +1324,8 @@
        // Don't bother revoking persisted permissions. If the permissions have
        // not yet expired when the ContentSettingValue is changed, they will
        // effectively be reinstated.
@@ -167,7 +167,7 @@ Cr-Commit-Position: refs/heads/main@{#1345697}
              PermissionStatus::DENIED,
              PersistedPermissionOptions::kDoNotUpdatePersistedPermission);
        } else {
-@@ -1328,11 +1334,11 @@
+@@ -1331,11 +1337,11 @@
        break;
    }
  

@@ -8,7 +8,7 @@
  import("//third_party/blink/public/public_features.gni")
  import("//third_party/widevine/cdm/widevine.gni")
  import("//tools/resources/generate_resource_allowlist.gni")
-@@ -1720,7 +1721,7 @@
+@@ -1735,7 +1736,7 @@
        if (is_linux && enable_swiftshader_vulkan) {
          deps += [ ":swiftshader_vk_symbols" ]
        }
@@ -17,7 +17,7 @@
          deps += [ ":angle_libvulkan_symbols" ]
        }
        if (build_with_internal_optimization_guide) {
-@@ -1791,7 +1792,7 @@
+@@ -1806,7 +1807,7 @@
  
        deps = [ "//third_party/angle:libGLESv2" ]
      }
@@ -80,7 +80,7 @@
  #include "third_party/angle/src/gpu_info_util/SystemInfo.h"  // nogncheck
  #endif
  
-@@ -289,6 +290,7 @@
+@@ -274,6 +275,7 @@
               base::FEATURE_DISABLED_BY_DEFAULT);
  
  bool IsDefaultANGLEVulkan() {
@@ -88,7 +88,7 @@
  #if defined(MEMORY_SANITIZER)
    return false;
  #else  // !defined(MEMORY_SANITIZER)
-@@ -330,6 +332,9 @@
+@@ -315,6 +317,9 @@
  #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
    return base::FeatureList::IsEnabled(kDefaultANGLEVulkan);
  #endif  // !defined(MEMORY_SANITIZER)

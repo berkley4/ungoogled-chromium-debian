@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2387,6 +2387,17 @@
+@@ -2407,6 +2407,17 @@
    common_optimize_on_cflags = []
    common_optimize_on_ldflags = []
  
@@ -18,7 +18,7 @@
    if (is_android) {
      # TODO(jdduke) Re-enable on mips after resolving linking
      # issues with libc++ (crbug.com/456380).
-@@ -2517,7 +2528,7 @@
+@@ -2540,7 +2551,7 @@
      # vectorization while otherwise optimizing for size.
      rustflags = [ "-Copt-level=s" ]
    } else {
@@ -27,7 +27,7 @@
  
      # The `-O3` for clang turns on extra optimizations compared to the standard
      # `-O2`. But for rust, `-Copt-level=3` is the default and is thus reliable
-@@ -2593,7 +2604,7 @@
+@@ -2616,7 +2627,7 @@
      } else if (optimize_for_fuzzing) {
        cflags = [ "-O1" ] + common_optimize_on_cflags
      } else {
@@ -36,7 +36,7 @@
      }
      rustflags = [ "-Copt-level=3" ]
    }
-@@ -2629,7 +2640,7 @@
+@@ -2652,7 +2663,7 @@
      } else if (optimize_for_fuzzing) {
        cflags = [ "-O1" ] + common_optimize_on_cflags
      } else {

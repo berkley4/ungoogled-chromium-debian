@@ -1,6 +1,6 @@
 --- a/components/feed/feed_feature_list.cc
 +++ b/components/feed/feed_feature_list.cc
-@@ -28,7 +28,7 @@
+@@ -27,7 +27,7 @@
  // changed, please update the cached one's default value in CachedFeatureFlags.
  BASE_FEATURE(kInterestFeedV2,
               "InterestFeedV2",

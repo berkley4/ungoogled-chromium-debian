@@ -14,7 +14,7 @@ etc... as long as ffmpeg support it.
 
 --- a/media/base/supported_types.cc
 +++ b/media/base/supported_types.cc
-@@ -222,33 +222,7 @@
+@@ -223,33 +223,7 @@
  #endif  // !BUILDFLAG(USE_PROPRIETARY_CODECS)
  
  bool IsHevcProfileSupported(const VideoType& type) {
@@ -50,19 +50,18 @@ etc... as long as ffmpeg support it.
  bool IsVp9ProfileSupported(const VideoType& type) {
 --- a/media/filters/ffmpeg_glue.cc
 +++ b/media/filters/ffmpeg_glue.cc
-@@ -155,6 +155,9 @@
-     std::vector<std::string> allowed_decoders;
- #if BUILDFLAG(USE_PROPRIETARY_CODECS)
-     allowed_decoders.push_back("h264");
-+#if BUILDFLAG(ENABLE_PLATFORM_HEVC)
-+    allowed_decoders.push_back("hevc");
-+#endif  // BUILDFLAG(ENABLE_PLATFORM_HEVC)
- #endif  // BUILDFLAG(USE_PROPRIETARY_CODECS)
-     return base::JoinString(allowed_decoders, ",");
+@@ -174,7 +174,7 @@
+ const char* FFmpegGlue::GetAllowedVideoDecoders() {
+   // This should match the configured lists in //third_party/ffmpeg.
+ #if BUILDFLAG(USE_PROPRIETARY_CODECS) && BUILDFLAG(ENABLE_FFMPEG_VIDEO_DECODERS)
+-  return IsBuiltInVideoCodec(VideoCodec::kH264) ? "h264" : "";
++  return IsBuiltInVideoCodec(VideoCodec::kH264) ? "h264,hevc" : "";
  #else
+   return "";
+ #endif
 --- a/media/filters/ffmpeg_video_decoder.cc
 +++ b/media/filters/ffmpeg_video_decoder.cc
-@@ -76,7 +76,6 @@
+@@ -82,7 +82,6 @@
      case VideoCodec::kUnknown:
      case VideoCodec::kVC1:
      case VideoCodec::kMPEG2:
@@ -70,7 +69,7 @@ etc... as long as ffmpeg support it.
      case VideoCodec::kVP9:
      case VideoCodec::kAV1:
      case VideoCodec::kDolbyVision:
-@@ -87,6 +86,7 @@
+@@ -93,6 +92,7 @@
        NOTREACHED();
  
      case VideoCodec::kH264:
@@ -78,3 +77,15 @@ etc... as long as ffmpeg support it.
        // Normalize to three threads for 1080p content, then scale linearly
        // with number of pixels.
        // Examples:
+@@ -126,8 +126,9 @@
+ 
+ // static
+ bool FFmpegVideoDecoder::IsCodecSupported(VideoCodec codec) {
+-  // We only build support for H.264.
+-  return codec == VideoCodec::kH264 && IsBuiltInVideoCodec(codec);
++  // We only build support for H.264 / H.264.
++  return (codec == VideoCodec::kH264 || codec == VideoCodec::kHEVC) &&
++         IsBuiltInVideoCodec(codec);
+ }
+ 
+ FFmpegVideoDecoder::FFmpegVideoDecoder(MediaLog* media_log)

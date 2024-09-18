@@ -22,7 +22,7 @@
  #include "chrome/browser/ash/profiles/profile_helper.h"
 --- a/chrome/browser/media/webrtc/webrtc_log_uploader.cc
 +++ b/chrome/browser/media/webrtc/webrtc_log_uploader.cc
-@@ -38,7 +38,7 @@
+@@ -43,7 +43,7 @@
  #include "services/network/public/cpp/simple_url_loader.h"
  #include "services/network/public/mojom/url_loader_factory.mojom.h"
  #include "services/network/public/mojom/url_response_head.mojom.h"

@@ -1,0 +1,206 @@
+From 804a29325dfc251ec437072a9c2ec2d533ff586f Mon Sep 17 00:00:00 2001
+From: Koji Ishii <kojii@chromium.org>
+Date: Mon, 16 Sep 2024 23:55:08 +0900
+Subject: [PATCH] [text-wrap] Fix when the last word has hyphenation points
+
+When `text-wrap: pretty` tries to eliminate typographic
+orphans, it increases the penalty of the last break
+opportunity.
+
+When `hyphens: auto` is also specified, this can be a
+hyphenation point. This patch fixes to increase penalties
+until it finds a break opportunity that is not a hyphenation
+point.
+
+Fixed: 40943808
+Change-Id: I024daad5b1bfbfc39baacddce4b9aa2fcf0f8f91
+---
+
+--- a/third_party/blink/renderer/core/layout/inline/score_line_breaker.cc
++++ b/third_party/blink/renderer/core/layout/inline/score_line_breaker.cc
+@@ -181,7 +181,15 @@
+   if (candidates.size() >= 4) {
+     // Increase penalties to minimize typographic orphans.
+     constexpr float kOrphansPenalty = 10000;
+-    candidates[candidates.size() - 2].penalty += kOrphansPenalty * zoom_;
++    const float orphans_penalty = kOrphansPenalty * zoom_;
++    const auto candidates_span =
++        base::span(candidates).first(candidates.size() - 1);
++    for (LineBreakCandidate& candidate : base::Reversed(candidates_span)) {
++      candidate.penalty += orphans_penalty;
++      if (!candidate.is_hyphenated) {
++        break;
++      }
++    }
+   }
+ 
+   ComputeLineWidths(line_info_list);
+--- /dev/null
++++ b/third_party/blink/web_tests/wpt_internal/css/css-text/white-space/text-wrap-pretty-orphans-001.html
+@@ -0,0 +1,166 @@
++<!DOCTYPE html>
++<meta name="variant" content="?default">
++<meta name="variant" content="?hyphens">
++<meta name="variant" content="?hyphens&justify">
++<meta name="variant" content="?justify">
++<script src="/resources/testharness.js"></script>
++<script src="/resources/testharnessreport.js"></script>
++<style>
++#container {
++  font-family: sans-serif;
++  font-size: 16px;
++}
++#container > p {
++  width: 500px;
++  outline: 1px solid;
++  overflow: hidden;
++  resize: horizontal;
++}
++.hyphens { hyphens: auto; }
++.justify { text-align: justify; }
++.pretty { text-wrap: pretty; }
++.no-orphans { background: limegreen; }
++.has-orphans { background: red; }
++.unknown-orphans { background: yellow; }
++</style>
++<div id="log"></div>
++<div>
++  <input id="hyphens" type="checkbox">
++  <label for="hyphens">hyphens: auto</label>
++  <input id="justify" type="checkbox">
++  <label for="justify">text-align: justify</label>
++  <button id="rerun">Re-run</button>
++  <input id="pretty" type="checkbox">
++  <label for="pretty">text-wrap: pretty</label>
++</div>
++
++<div id="container" lang="en">
++<p>
++Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Pellentesque adipiscing commodo elit at imperdiet dui. Aliquam faucibus purus in massa tempor nec feugiat nisl. Luctus accumsan tortor posuere ac ut consequat semper viverra nam.
++</p>
++<p>
++Velit ut tortor pretium viverra suspendisse potenti nullam ac. Diam quam nulla porttitor massa id neque. Cursus euismod quis viverra nibh cras. Bibendum enim facilisis gravida neque convallis. Id porta nibh venenatis cras. Ridiculus mus mauris vitae ultricies leo integer malesuada nunc. Aenean et tortor at risus viverra adipiscing at in. Mollis aliquam ut porttitor leo a diam sollicitudin tempor.
++</p>
++<p>
++Ullamcorper dignissim cras tincidunt lobortis feugiat vivamus at augue eget. Placerat duis ultricies lacus sed turpis tincidunt id aliquet risus. Aliquam vestibulum morbi blandit cursus. Vel risus commodo viverra maecenas. Sociis natoque penatibus et magnis dis parturient montes nascetur. Sapien et ligula ullamcorper malesuada proin libero nunc consequat interdum. Consequat nisl vel pretium lectus quam. Egestas congue quisque egestas diam in arcu. Turpis egestas pretium aenean pharetra magna ac. Cursus in hac habitasse platea dictumst quisque. At consectetur lorem donec massa sapien faucibus.
++</p>
++</div>
++<script>
++const container = document.getElementById('container');
++setupUI();
++
++class TestParagraph {
++  constructor(element) {
++    this.element = element;
++    this.last_word_index = indexOfLastWord(element);
++    this.is_adjusted = this.last_word_index >= 0 &&
++        adjustWithForLastLineToStartAt(element, this.last_word_index);
++  }
++
++  checkOrphans() {
++    const element = this.element;
++    const index_of_last_line = indexOfLastLine(element);
++    if (!this.is_adjusted || index_of_last_line < 0) {
++      element.classList.add('unknown-orphans');
++      return;
++    }
++    test(() => {
++      try {
++        assert_not_equals(index_of_last_line, this.last_word_index);
++        element.classList.add('no-orphans');
++      } catch (e) {
++        element.classList.add('has-orphans');
++        throw e;
++      }
++    }, ellipsize(element.innerText, 20));
++  }
++}
++
++// Make test paragraphs to have orphans (single word on the last line).
++const test_paragraphs = [];
++for (const element of container.children) {
++  test_paragraphs.push(new TestParagraph(element));
++}
++
++// Check if the orphans are eliminated by applying `text-wrap: pretty`.
++setCheckboxWithEvent(pretty, true);
++for (const test_paragraph of test_paragraphs) {
++  test_paragraph.checkOrphans();
++}
++
++// UI utility functions.
++function setupUI() {
++  const params = new URLSearchParams(window.location.search);
++  for (const key of params.keys()) {
++    const element = document.getElementById(key);
++    if (element) {
++      element.checked = true;
++    }
++  }
++  bindCheckboxToClassName('hyphens', 'hyphens');
++  bindCheckboxToClassName('justify', 'justify');
++  bindCheckboxToClassName('pretty', 'pretty');
++  document.getElementById('rerun').addEventListener('click', rerun);
++}
++
++function bindCheckboxToClassName(id, className) {
++  const element = document.getElementById(id);
++  container.classList.toggle(className, element.checked);
++  element.addEventListener('change', (e) => {
++    container.classList.toggle(className, e.target.checked);
++  });
++}
++
++function setCheckboxWithEvent(element, value) {
++  element.checked = value;
++  element.dispatchEvent(new Event('change'));
++}
++
++function ellipsize(str, max) {
++  return str.length <= max ? str : str.substr(0, max) + '...';
++}
++
++function rerun() {
++  pretty.checked = false;
++  const keys = [];
++  for (const element of document.querySelectorAll('input[type="checkbox"]')) {
++    if (element.checked) {
++      keys.push(element.id);
++    }
++  }
++  window.location.search = '?' + keys.join('&');
++}
++
++// Utility functions.
++function indexOfLastWord(element) {
++  const text = element.innerText;
++  const last_space_index = text.lastIndexOf(' ');
++  return last_space_index >= 0 ? last_space_index + 1 : -1;
++}
++
++function indexOfLastLine(element) {
++  const x = element.offsetLeft;
++  const y = element.offsetTop + element.offsetHeight - 5;
++  const position = document.caretPositionFromPoint(x, y);
++  if (!position) {
++    return -1;
++  }
++  // `CaretPosition.offset` is 1-indexed, convert it to 0-indexed.
++  return position.offset - 1;
++}
++
++function adjustWithForLastLineToStartAt(element, index) {
++  for (let width = 300; ; width += 1) {
++    element.style.width = `${width}px`;
++    const last_line_index = indexOfLastLine(element);
++    if (last_line_index == index) {
++      break;
++    }
++    if (width > 1000) {
++      element.style.width = ''
++      return false;
++    }
++  }
++  return true;
++}
++</script>

@@ -1,15 +1,15 @@
 --- a/components/lens/lens_features.cc
 +++ b/components/lens/lens_features.cc
-@@ -11,7 +11,7 @@
+@@ -12,7 +12,7 @@
  
  BASE_FEATURE(kLensStandalone,
               "LensStandalone",
 -             base::FEATURE_ENABLED_BY_DEFAULT);
 +             base::FEATURE_DISABLED_BY_DEFAULT);
  
- BASE_FEATURE(kLensImageCompression,
-              "LensImageCompression",
-@@ -23,7 +23,7 @@
+ BASE_FEATURE(kLensSearchOptimizations,
+              "LensSearchOptimizations",
+@@ -20,7 +20,7 @@
  
  BASE_FEATURE(kEnableLatencyLogging,
               "LensImageLatencyLogging",
@@ -18,7 +18,7 @@
  
  BASE_FEATURE(kEnableRegionSearchKeyboardShortcut,
               "LensEnableRegionSearchKeyboardShortcut",
-@@ -35,7 +35,7 @@
+@@ -32,7 +32,7 @@
  
  BASE_FEATURE(kEnableImageSearchSidePanelFor3PDse,
               "EnableImageSearchSidePanelFor3PDse",
@@ -27,16 +27,21 @@
  
  BASE_FEATURE(kLensRegionSearchStaticPage,
               "LensRegionSearchStaticPage",
-@@ -43,7 +43,7 @@
+@@ -40,11 +40,11 @@
  
  BASE_FEATURE(kEnableContextMenuInLensSidePanel,
               "EnableContextMenuInLensSidePanel",
 -             base::FEATURE_ENABLED_BY_DEFAULT);
 +             base::FEATURE_DISABLED_BY_DEFAULT);
  
- BASE_FEATURE(kLensOverlay, "LensOverlay", base::FEATURE_DISABLED_BY_DEFAULT);
- const base::FeatureParam<int> kLensOverlayMinRamMb{&kLensOverlay, "min_ram_mb",
-@@ -227,7 +227,7 @@
+ BASE_FEATURE(kLensOverlay,
+              "LensOverlay",
+-#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_IOS)
++#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_IOS) || BUILDFLAG(IS_LINUX)
+              base::FEATURE_DISABLED_BY_DEFAULT
+ #else
+              base::FEATURE_ENABLED_BY_DEFAULT
+@@ -243,7 +243,7 @@
          true};
  
  constexpr base::FeatureParam<bool> kShouldIssuePreconnectForLens{

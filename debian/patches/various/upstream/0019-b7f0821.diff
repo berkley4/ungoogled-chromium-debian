@@ -1,0 +1,120 @@
+From b7f08219add7d22ae36045bf77901204ed9cb97b Mon Sep 17 00:00:00 2001
+From: Alex Moshchuk <alexmos@chromium.org>
+Date: Wed, 11 Sep 2024 22:57:35 +0000
+Subject: [PATCH] Check if ref counts are disabled when changing keep alive ref count
+
+There was a crash in the wild in RenderProcessHost and SiteInstanceGroup
+DecrementNavigationStateKeepAliveCount. Fix that by checking if
+ref counts are disabled before incrementing/decrementing the ref count.
+
+Test: Added a regression test in NavigationBrowserTest
+Bug: 348150830
+Change-Id: Iefc032e60b4ae164f67ea4cae1712333da3e7484
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5841865
+Reviewed-by: Charlie Reis <creis@chromium.org>
+Commit-Queue: Alex Moshchuk <alexmos@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1354245}
+---
+
+--- a/content/browser/navigation_browsertest.cc
++++ b/content/browser/navigation_browsertest.cc
+@@ -4486,6 +4486,56 @@
+   EXPECT_EQ(GURL("about:blank"), web_contents_b->GetLastCommittedURL());
+ }
+ 
++// Check that when RenderProcessHostImpl::DisableRefCounts is called while a
++// NavigationStateKeepAlive exists, the navigation still succeeds. This is a
++// regression test for crbug.com/348150830.
++IN_PROC_BROWSER_TEST_F(NavigationBrowserTest,
++                       DisableRefCountsWhileKeepAliveExists) {
++  GURL main_url(embedded_test_server()->GetURL("a.com", "/title1.html"));
++  EXPECT_TRUE(NavigateToURL(shell(), main_url));
++
++  // This test needs the browser process to call DisableRefCounts after the form
++  // submission's NavigationStateKeepAlive is created and before the task that
++  // sends the BeginNavigation IPC. To do this, use EvalJS to return a string to
++  // the test framework between those two renderer-side tasks, allowing the
++  // browser process to reset the counts before the BeginNavigation IPC is
++  // received and the NavigationStateKeepAlive is destroyed.
++  std::string expected_str("Placeholder value");
++  std::string js_str = base::StringPrintf(
++      "f = document.createElement('form');"
++      "f.action = 'about:blank';"
++      "document.body.appendChild(f);"
++      "f.submit();"
++      "'%s';",
++      expected_str.c_str());
++
++  TestNavigationObserver observer(shell()->web_contents());
++  EXPECT_EQ(expected_str, EvalJs(shell(), js_str).ExtractString());
++
++  // Expect at this point that a NavigationStateKeepAlive has been created for
++  // the form submission.
++  NavigationStateKeepAlive* keep_alive =
++      current_frame_host()->GetStoragePartition()->GetNavigationStateKeepAlive(
++          current_frame_host()->GetFrameToken());
++  ASSERT_TRUE(keep_alive);
++
++  // Disable ref counts on the process, which resets all ref counts to 0. This
++  // seems to happen in practice in https://crbug.com/348150830 when a
++  // BrowserContext is closed before all of its frames are properly cleaned up,
++  // but the exact repro steps for this aren't known, so simulate this behavior
++  // with an explicit DisableRefCounts() call.
++  current_frame_host()->GetProcess()->DisableRefCounts();
++
++  // Wait for the navigation to complete. At that point, the
++  // NavigationStateKeepAlive goes away, which can possibly decrement the
++  // associated ref count. Since DisableRefCounts() was called, the ref count
++  // should not be further decremented, and the navigation should complete
++  // successfully.
++  observer.Wait();
++  EXPECT_TRUE(observer.last_navigation_succeeded());
++  EXPECT_TRUE(current_frame_host()->GetLastCommittedURL().IsAboutBlank());
++}
++
+ using MediaNavigationBrowserTest = NavigationBaseBrowserTest;
+ 
+ // Media navigations synchronously complete the time of the `CommitNavigation`
+--- a/content/browser/renderer_host/render_process_host_impl.cc
++++ b/content/browser/renderer_host/render_process_host_impl.cc
+@@ -2566,10 +2566,12 @@
+ }
+ 
+ void RenderProcessHostImpl::IncrementNavigationStateKeepAliveCount() {
++  CHECK(!are_ref_counts_disabled_);
+   navigation_state_keepalive_count_++;
+ }
+ 
+ void RenderProcessHostImpl::DecrementNavigationStateKeepAliveCount() {
++  CHECK(!are_ref_counts_disabled_);
+   CHECK_GT(navigation_state_keepalive_count_, 0);
+   navigation_state_keepalive_count_--;
+   if (navigation_state_keepalive_count_ == 0) {
+--- a/content/browser/site_instance_group.cc
++++ b/content/browser/site_instance_group.cc
+@@ -82,8 +82,10 @@
+ 
+ void SiteInstanceGroup::IncrementKeepAliveCount() {
+   keep_alive_count_++;
+-  static_cast<RenderProcessHostImpl*>(process())
+-      ->IncrementNavigationStateKeepAliveCount();
++  auto* rphi = static_cast<RenderProcessHostImpl*>(process());
++  if (!rphi->AreRefCountsDisabled()) {
++    rphi->IncrementNavigationStateKeepAliveCount();
++  }
+ }
+ 
+ void SiteInstanceGroup::DecrementKeepAliveCount() {
+@@ -93,8 +95,10 @@
+       observer.KeepAliveCountIsZero(this);
+     }
+   }
+-  static_cast<RenderProcessHostImpl*>(process())
+-      ->DecrementNavigationStateKeepAliveCount();
++  auto* rphi = static_cast<RenderProcessHostImpl*>(process());
++  if (!rphi->AreRefCountsDisabled()) {
++    rphi->DecrementNavigationStateKeepAliveCount();
++  }
+ }
+ 
+ bool SiteInstanceGroup::IsRelatedSiteInstanceGroup(SiteInstanceGroup* group) {

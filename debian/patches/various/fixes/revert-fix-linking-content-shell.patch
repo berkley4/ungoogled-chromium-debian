@@ -1,6 +1,6 @@
 --- a/content/shell/BUILD.gn
 +++ b/content/shell/BUILD.gn
-@@ -315,7 +315,6 @@
+@@ -313,7 +313,6 @@
      "//base:base_static",
      "//build:chromeos_buildflags",
      "//cc/base",

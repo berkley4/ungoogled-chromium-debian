@@ -12,7 +12,7 @@
      "//components/embedder_support",
 --- a/tools/v8_context_snapshot/BUILD.gn
 +++ b/tools/v8_context_snapshot/BUILD.gn
-@@ -83,7 +83,6 @@
+@@ -87,7 +87,6 @@
        sources = [ "v8_context_snapshot_generator.cc" ]
  
        deps = [
