@@ -1,6 +1,14 @@
 --- a/chrome/browser/external_protocol/external_protocol_handler.cc
 +++ b/chrome/browser/external_protocol/external_protocol_handler.cc
-@@ -37,7 +37,8 @@
+@@ -28,6 +28,7 @@
+ #include "components/prefs/pref_registry_simple.h"
+ #include "components/prefs/pref_service.h"
+ #include "components/prefs/scoped_user_pref_update.h"
++#include "components/sharing_message/buildflags.h"
+ #include "components/url_matcher/url_matcher.h"
+ #include "components/url_matcher/url_util.h"
+ #include "content/public/browser/browser_thread.h"
+@@ -37,7 +38,8 @@
  #include "url/gurl.h"
  #include "url/origin.h"
  
@@ -10,7 +18,7 @@
  #include "chrome/browser/sharing/click_to_call/click_to_call_ui_controller.h"
  #include "chrome/browser/sharing/click_to_call/click_to_call_utils.h"
  #endif
-@@ -232,7 +233,8 @@
+@@ -232,7 +234,8 @@
    bool chrome_is_default_handler = state == shell_integration::IS_DEFAULT;
  
    // On ChromeOS, Click to Call is integrated into the external protocol dialog.
@@ -22,7 +30,15 @@
      // Handle tel links by opening the Click to Call dialog. This will call back
 --- a/chrome/browser/renderer_context_menu/render_view_context_menu.cc
 +++ b/chrome/browser/renderer_context_menu/render_view_context_menu.cc
-@@ -1901,9 +1901,9 @@
+@@ -165,6 +165,7 @@
+ #include "components/search_engines/template_url_service.h"
+ #include "components/send_tab_to_self/metrics_util.h"
+ #include "components/services/app_service/public/cpp/app_launch_util.h"
++#include "components/sharing_message/buildflags.h"
+ #include "components/sharing_message/features.h"
+ #include "components/spellcheck/browser/pref_names.h"
+ #include "components/spellcheck/browser/spellcheck_host_metrics.h"
+@@ -1901,9 +1902,9 @@
        AppendQRCodeGeneratorItem(/*for_image=*/true, /*draw_icon=*/true,
                                  /*add_separator*/ false);
      }
@@ -34,7 +50,7 @@
      menu_model_.AddSeparator(ui::NORMAL_SEPARATOR);
      menu_model_.AddItemWithStringId(IDC_CONTENT_CONTEXT_SAVELINKAS,
                                      IDS_CONTENT_CONTEXT_SAVELINKAS);
-@@ -2709,9 +2709,9 @@
+@@ -2709,9 +2710,9 @@
    // Check if the starting separator got added.
    size_t items_before_sharing = menu_model_.GetItemCount();
    bool starting_separator_added = items_before_sharing > items_initial;
@@ -46,7 +62,7 @@
    // Add an ending separator if there are sharing items, otherwise remove the
    // starting separator iff we added one above.
    size_t sharing_items = menu_model_.GetItemCount() - items_before_sharing;
-@@ -2722,6 +2722,7 @@
+@@ -2722,6 +2723,7 @@
    }
  }
  
@@ -54,7 +70,7 @@
  void RenderViewContextMenu::AppendClickToCallItem() {
    SharingClickToCallEntryPoint entry_point;
    std::optional<std::string> phone_number;
-@@ -2749,6 +2750,7 @@
+@@ -2749,6 +2751,7 @@
    click_to_call_context_menu_observer_->BuildMenu(*phone_number, selection_text,
                                                    entry_point);
  }
