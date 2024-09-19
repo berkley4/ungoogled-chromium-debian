@@ -38,6 +38,15 @@
  
    contents_container->SetLayoutManager(std::make_unique<ContentsLayoutManager>(
        devtools_web_view_, contents_web_view_, watermark_view_));
+@@ -1108,7 +1112,7 @@
+ 
+   // `watermark_view_` is a raw pointer to a child view, so it needs to be set
+   // to null before `RemoveAllChildViews()` is called to avoid dangling.
+-  watermark_view_ = nullptr;
++  views::View* watermark_view_ = nullptr;
+ 
+   // Child views maintain PrefMember attributes that point to
+   // OffTheRecordProfile's PrefService which gets deleted by ~Browser.
 @@ -5565,11 +5569,13 @@
    }
  }
@@ -52,3 +61,52 @@
  
  #if BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
  void BrowserView::ApplyScreenshotSettings(bool allow) {
+--- a/chrome/browser/enterprise/data_protection/data_protection_navigation_controller.cc
++++ b/chrome/browser/enterprise/data_protection/data_protection_navigation_controller.cc
+@@ -10,6 +10,7 @@
+ #include "chrome/browser/ui/browser_finder.h"
+ #include "chrome/browser/ui/tabs/public/tab_interface.h"
+ #include "chrome/browser/ui/views/frame/browser_view.h"
++#include "components/enterprise/buildflags/buildflags.h"
+ #include "content/public/browser/web_contents.h"
+ #include "data_protection_navigation_controller.h"
+ 
+@@ -133,6 +134,7 @@
+   }
+ #endif  // BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
+ 
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+   if (!settings.watermark_text.empty()) {
+     browser_view->ApplyWatermarkSettings(settings.watermark_text);
+   } else {
+@@ -140,6 +142,7 @@
+     // finishes loading.
+     clear_watermark_text_on_page_load_ = true;
+   }
++#endif  // BUILDFLAG(ENTERPRISE_WATERMARK)
+ 
+   if (!on_delay_apply_data_protection_settings_if_empty_called_for_testing_
+            .is_null()) {
+@@ -171,7 +174,9 @@
+     return;
+   }
+ 
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+   browser_view->ApplyWatermarkSettings(settings.watermark_text);
++#endif
+ 
+ #if BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
+   browser_view->ApplyScreenshotSettings(settings.allow_screenshots);
+@@ -217,10 +222,12 @@
+   if (!browser_view) {
+     return;
+   }
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+   if (clear_watermark_text_on_page_load_) {
+     browser_view->ApplyWatermarkSettings(std::string());
+     clear_watermark_text_on_page_load_ = false;
+   }
++#endif
+ 
+ #if BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
+   if (clear_screenshot_protection_on_page_load_) {
