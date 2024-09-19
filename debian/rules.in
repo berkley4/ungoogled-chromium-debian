@@ -70,7 +70,6 @@ GN_FLAGS +=					\
 	glue_core_pools=true			\
 	proprietary_codecs=true			\
 	use_cfi_cast=true			\
-	use_crash_key_stubs=true		\
 	use_text_section_splitting=true
 
 # Disabled components
