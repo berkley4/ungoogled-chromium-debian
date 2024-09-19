@@ -23,6 +23,7 @@ Build-Depends:
  libncurses-dev,
  libcups2-dev,
  libdrm-dev,
+ libdbus-1-dev,
  libnss3-dev,
  libkrb5-dev,
  libcurl4-openssl-dev,

@@ -1,0 +1,13 @@
+--- a/build/config/ui.gni
++++ b/build/config/ui.gni
+@@ -41,7 +41,9 @@
+ 
+ assert(!use_glib || (is_linux && !is_castos))
+ 
+-use_atk = use_glib && current_toolchain == default_toolchain
++declare_args() {
++  use_atk = use_glib && current_toolchain == default_toolchain
++}
+ 
+ # Whether using Xvfb to provide a display server for a test might be
+ # necessary.

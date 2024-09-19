@@ -87,8 +87,7 @@ DNS_CONFIG		1		Enable monitoring for changes in system DNS configuration
 DRIVER			1		Chromedriver package
 
 ASYNC_LEVELDB		1		Asynchronous leveldb protocol writes (faster when enabled)
-ATK_DBUS		1		Accessibility/D-Bus support (d-bus is only used for bluetooth)
-BLUEZ			1		Bluez bluetooth protocol stack (also disabled by setting ATK_DBUS=0)
+ATK			1		Accessibility toolkit
 CATAPULT		0		Catapult profiling support
 CHROMECAST		1		0 - disable (will also disable MEDIA_REMOTING)
 					1 - enable (need to edit /etc/chromium.d/network)
@@ -123,7 +122,7 @@ MEDIA_REMOTING		1		Render and play back media on remote devices when a tab is ca
 					Depends on CHROMECAST=1 (which is the default)
 
 MUTEX_PI		1		Mutex priority inheritance
-NOTIFICATIONS		1		System notifications
+SYS_NOTIFICATIONS	1		System notifications (chrome will fall back to using native notifications if disabled)
 OAUTH2			0		Enable OAuth 2.0 client switches
 OPENTYPE_SVG		1		Opentype SVG support
 OZONE_WAYLAND		1		Wayland ozone platform (experimental; can be disabled by wayland users)

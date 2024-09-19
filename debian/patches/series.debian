@@ -95,6 +95,7 @@ various/fixes/unbundle-script-dh-clean-interoperabilty.patch
 various/fixes/unshrink-ui-font.patch
 various/fixes/webrtc-filter-labels.patch
 various/fixes/xdg-basedir.patch
+various/system/libdbus.patch
 various/system/libdrm.patch
 various/system/libusb-api.patch
 various/system/libxml2.patch
@@ -152,7 +153,7 @@ optional/compiler-flags/cpu/avx.patch
 #optional/compiler-flags/cpu/avx2.patch
 #optional/compiler-flags/cpu/intel-cet/intel-control-flow-enforcement.patch
 #optional/compiler-flags/cpu/intel-cet/intel-cet-v8-drop-frames.patch
-#optional/disable/atk-dbus.patch
+#optional/disable/atk.patch
 #optional/disable/catapult.patch
 #optional/disable/click-to-call.patch
 #optional/disable/dns_config_service.patch

@@ -74,7 +74,6 @@ ___Security/Privacy improvements___
     - WebGPU
 - Reduced attack surface
     - Some components/features can variously be disabled/patched out at compile time
-        - ATK/dbus
         - Catapult
         - Click-to-call
         - Compose (autofill)
@@ -389,7 +388,7 @@ cp -a ../../debian .
 # variables (read the script and look at GN_FLAGS/SYS_LIBS in debian/rules)
 #
 # Example for unstable :-
-ATK_DBUS=0 CATAPULT=0 DRIVER=0 MARCH=native MTUNE=native ./debian/configure.sh
+CATAPULT=0 DRIVER=0 MARCH=native MTUNE=native ./debian/configure.sh
 # Example for stable :-
 DRIVER=0 MARCH=native MTUNE=native TRANSLATE=1 STABLE=1 ./debian/configure.sh
 

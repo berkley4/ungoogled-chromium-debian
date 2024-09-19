@@ -113,11 +113,8 @@ GN_FLAGS +=					\
 # Enable angle GL (GLX) desktop frontend
 #GN_FLAGS += angle_enable_gl_desktop_frontend=true
 
-# Disable atk/dbus
-#GN_FLAGS += use_atk=false use_dbus=false
-
-# Disable bluez bluetooth protocol stack (disabling atk/dbus will also disable bluez)
-#GN_FLAGS += use_bluez=false
+# Disable ATK
+#GN_FLAGS += use_atk=false
 
 # Disable click-to-call
 #GN_FLAGS += enable_click_to_call=false
@@ -147,14 +144,11 @@ GN_FLAGS += enable_hls_demuxer=true
 # Enable mutex priority inheritance
 GN_FLAGS += enable_mutex_priority_inheritance=true
 
-# Disable notifications (system notifications)
-#GN_FLAGS += enable_system_notifications=false
+# Disable openh264
+#GN_FLAGS += media_use_openh264=false rtc_use_h264=false
 
 # Disable pdfium javascript and XFA forms support
 GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
-
-# Disable openh264
-#GN_FLAGS += media_use_openh264=false rtc_use_h264=false
 
 # Enable pipewire
 GN_FLAGS += rtc_use_pipewire=true

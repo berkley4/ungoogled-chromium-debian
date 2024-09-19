@@ -66,8 +66,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$MF_SPLIT" ] || MF_SPLIT=1
 
 [ -n "$ASYNC_LEVELDB" ] || ASYNC_LEVELDB=1
-[ -n "$ATK_DBUS" ] || ATK_DBUS=1
-[ -n "$BLUEZ" ] || BLUEZ=1
+[ -n "$ATK" ] || ATK=1
 [ -n "$CATAPULT" ] || CATAPULT=0
 [ -n "$CHROMECAST" ] || CHROMECAST=1
 [ -n "$CLICK_TO_CALL" ] || CLICK_TO_CALL=1
@@ -88,7 +87,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$LENS" ] || LENS=1
 [ -n "$LENS_TRANSLATE" ] || LENS_TRANSLATE=1
 [ -n "$MUTEX_PI" ] || MUTEX_PI=1
-[ -n "$NOTIFICATIONS" ] || NOTIFICATIONS=1
+[ -n "$SYS_NOTIFICATIONS" ] || SYS_NOTIFICATIONS=1
 [ -n "$OAUTH2" ] || OAUTH2=0
 [ -n "$OPENTYPE_SVG" ] || OPENTYPE_SVG=1
 [ -n "$OZONE_WAYLAND" ] || OZONE_WAYLAND=1
@@ -620,19 +619,8 @@ if [ $ASYNC_LEVELDB -eq 0 ]; then
 fi
 
 
-if [ $ATK_DBUS -eq 0 ]; then
-  op_enable="$op_enable disable/atk-dbus"
-
-  # GN_FLAGS += use_atk=false use_dbus=false
-  gn_enable="$gn_enable use_atk"
-
-  # No point disabling BLUEZ since use_bluez depends on use_dbus
-  BLUEZ=1
-fi
-
-
-if [ $BLUEZ -eq 0 ]; then
-  gn_enable="$gn_enable use_bluez=false"
+if [ $ATK -eq 0 ]; then
+  gn_enable="$gn_enable use_atk=false"
 fi
 
 
@@ -791,8 +779,8 @@ if [ $MUTEX_PI -eq 0 ]; then
 fi
 
 
-if [ $NOTIFICATIONS -eq 0 ]; then
-  gn_enable="$gn_enable enable_system_notifications=false"
+if [ $SYS_NOTIFICATIONS -eq 0 ]; then
+  sed -e '/SystemNotifications/s@^#@@' -i $FLAG_DIR/ui
 fi
 
 

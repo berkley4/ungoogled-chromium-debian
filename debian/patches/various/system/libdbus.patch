@@ -1,0 +1,13 @@
+--- a/chrome/browser/BUILD.gn
++++ b/chrome/browser/BUILD.gn
+@@ -6827,6 +6827,10 @@
+         "upgrade_detector/directory_monitor.h",
+         "upgrade_detector/get_installed_version_linux.cc",
+       ]
++      include_dirs = [
++        "/usr/include/dbus-1.0",
++        "/usr/lib/x86_64-linux-gnu/dbus-1.0/include",
++      ]
+     }
+ 
+     if (is_linux) {
