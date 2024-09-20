@@ -3,12 +3,24 @@
 # One can also try editing /etc/chromium.d/gpu to enable the following...
 #   --ignore-gpu-blocklist
 #   --disable-gpu-driver-bug-workaround
+#   --ozone-platform-hint=wayland
+#
+# Note: some of the GL and vulkan flags might not be mutually compatible
+#
+
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiIgnoreDriverChecks"
 
 
-# Currently required for hardware decoding on linux
+### GL
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-angle=gl"
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoDecodeLinuxGL"
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-angle=gl"
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-gl=angle"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoDecodeLinuxZeroCopyGL"
+
+
+### VULKAN
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-angle=vulkan"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=Vulkan,DefaultANGLEVulkan,VulkanFromANGLE"
+
 
 # Experimental VA-API support for Nvidia GPUs
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiOnNvidiaGPUs"
