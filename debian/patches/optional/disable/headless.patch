@@ -217,7 +217,15 @@
      return false;
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -565,7 +565,6 @@
+@@ -83,7 +83,6 @@
+ #include "chrome/browser/first_party_sets/first_party_sets_navigation_throttle.h"
+ #include "chrome/browser/font_family_cache.h"
+ #include "chrome/browser/gpu/chrome_browser_main_extra_parts_gpu.h"
+-#include "chrome/browser/headless/headless_mode_util.h"
+ #include "chrome/browser/hid/chrome_hid_delegate.h"
+ #include "chrome/browser/history/history_service_factory.h"
+ #include "chrome/browser/interstitials/enterprise_util.h"
+@@ -565,7 +564,6 @@
  #include "chrome/browser/devtools/devtools_window.h"
  #include "chrome/browser/direct_sockets/chrome_direct_sockets_delegate.h"
  #include "chrome/browser/enterprise/connectors/connectors_service.h"
@@ -225,7 +233,7 @@
  #include "chrome/browser/media/unified_autoplay_config.h"
  #include "chrome/browser/media_effects/media_effects_manager_binder.h"
  #include "chrome/browser/metrics/usage_scenario/chrome_responsiveness_calculator_delegate.h"
-@@ -1875,7 +1874,7 @@
+@@ -1875,7 +1873,7 @@
            enterprise_util::ChromeBrowserMainExtraPartsEnterprise>());
  #endif
  
@@ -234,6 +242,15 @@
    main_parts->AddParts(
        std::make_unique<headless::ChromeBrowserMainExtraPartsHeadless>());
  #endif
+@@ -2117,7 +2115,7 @@
+   static bool is_devtools_user = true;
+ #else
+   static bool is_devtools_user =
+-      DetermineIfDevToolsUserForProcessPerSite() || headless::IsHeadlessMode();
++      DetermineIfDevToolsUserForProcessPerSite();
+ #endif
+ 
+   if (is_devtools_user && base::FeatureList::IsEnabled(
 --- a/chrome/browser/chrome_content_browser_client_receiver_bindings.cc
 +++ b/chrome/browser/chrome_content_browser_client_receiver_bindings.cc
 @@ -15,7 +15,6 @@
