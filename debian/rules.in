@@ -30,7 +30,7 @@ GN_FLAGS := $(shell sed -z -e 's@\x22@\x5c\x22@g' -e 's@\n@ @g' $(UC_DIR)/flags.
 #export DEB_CXXFLAGS_MAINT_SET := -ffile-prefix-map=$(CURDIR)=.
 
 # Enable ccache
-#GN_FLAGS += cc_wrapper=ccache
+#GN_FLAGS += cc_wrapper=\"ccache\"
 
 # Clang toolchain
 #GN_FLAGS += clang_base_path=\"_LLVM_BASE_DIR\" clang_version=\"_LLVM_VER\"
