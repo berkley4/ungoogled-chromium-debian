@@ -39,7 +39,7 @@ kryptonite/remove-window-name-on-cross-origin-navigation.patch
 kryptonite/replace-dns-probe-hostname-with-example-com.patch
 kryptonite/stop-omnibar-searches-triggering-dns-requests.patch
 
-vanadium/0052-stub-out-the-battery-status-API.patch
+vanadium/0053-stub-out-the-battery-status-API.patch
 
 vanadinite/0001-switch-to-fstack-protector-strong.patch
 vanadinite/0002-enable-fwrapv-in-Clang-for-non-UBSan-builds.patch
