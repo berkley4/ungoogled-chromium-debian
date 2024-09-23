@@ -1073,7 +1073,9 @@ else
   op_disable="$op_disable fixes/icudata-file-path fixes/skia-allow-bundled-harfbuzz"
 
   gn_disable="$gn_disable icu_copy_icudata_to_root_build_dir=false"
-  gn_enable="$gn_enable use_system_harfbuzz"
+
+  # GN_FLAGS += icu_use_data_file=false use_system_harfbuzz=true
+  gn_enable="$gn_enable icu_use_data_file=false"
 
   # SYS_LIBS += harfbuzz-ng libxslt libxml icu
   sys_enable="$sys_enable harfbuzz-ng"
