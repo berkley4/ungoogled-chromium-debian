@@ -620,6 +620,7 @@ fi
 
 
 if [ $ATK -eq 0 ]; then
+  op_enable="$op_enable disable/atk"
   gn_enable="$gn_enable use_atk=false"
 fi
 
