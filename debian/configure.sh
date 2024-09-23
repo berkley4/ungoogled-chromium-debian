@@ -295,6 +295,7 @@ fi
 ## Enable the use of ccache
 if [ $CCACHE -eq 1 ]; then
   gn_enable="$gn_enable cc_wrapper=ccache"
+  RUL="$RUL -e \"/CCACHE_BASEDIR=/s@^#@@\""
 fi
 
 

@@ -31,6 +31,7 @@ GN_FLAGS := $(shell sed -z -e 's@\x22@\x5c\x22@g' -e 's@\n@ @g' $(UC_DIR)/flags.
 
 # Enable ccache
 #GN_FLAGS += cc_wrapper=\"ccache\"
+#export CCACHE_BASEDIR=$(RT_DIR) PATH="/usr/lib/ccache:$PATH"
 
 # Clang toolchain
 #GN_FLAGS += clang_base_path=\"_LLVM_BASE_DIR\" clang_version=\"_LLVM_VER\"
