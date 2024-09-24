@@ -192,7 +192,7 @@ GN_FLAGS += dawn_enable_desktop_gl=false dawn_enable_opengles=false
 # Uncomment when enabling WebGPU
 #GN_FLAGS += tint_build_benchmarks=false tint_build_unittests=false
 
-# Comment out when enabling either WebGPU or vulkan (or both)
+# Comment out if enabling both WebGPU and vulkan
 GN_FLAGS += dawn_enable_vulkan=false
 
 # Disable zstd
