@@ -1,0 +1,105 @@
+From f0e6e4339c8ed0cddc0c735b65c31a0cb4491119 Mon Sep 17 00:00:00 2001
+From: Lei Zhang <thestig@chromium.org>
+Date: Thu, 12 Sep 2024 00:06:35 +0000
+Subject: [PATCH] Fix Headless build issue with DBus on Linux
+
+Update more build rules to only build dbus code when GN use_dbus=true.
+This fixes the Headless build issue that started with
+https://crrev.com/1354077
+
+Bug: 40086962
+Change-Id: I20660825f83e193d5967a40709ceae3cc9f8c059
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5854776
+Reviewed-by: Thomas Anderson <thomasanderson@chromium.org>
+Reviewed-by: Scott Violet <sky@chromium.org>
+Commit-Queue: Lei Zhang <thestig@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1354276}
+---
+
+--- a/chrome/browser/BUILD.gn
++++ b/chrome/browser/BUILD.gn
+@@ -6799,10 +6799,7 @@
+       "first_run/upgrade_util_linux.cc",
+       "first_run/upgrade_util_linux.h",
+     ]
+-    deps += [
+-      "//chrome/app/theme:chrome_unscaled_resources_grit",
+-      "//components/dbus/thread_linux",
+-    ]
++    deps += [ "//chrome/app/theme:chrome_unscaled_resources_grit" ]
+ 
+     if (is_chromeos_lacros) {
+       sources += [
+@@ -6818,9 +6815,6 @@
+       sources += [
+         "download/download_status_updater_linux.cc",
+         "icon_loader_auralinux.cc",
+-        "notifications/notification_platform_bridge_linux.cc",
+-        "notifications/notification_platform_bridge_linux.h",
+-        "platform_util_linux.cc",
+         "shell_integration_linux.cc",
+         "shell_integration_linux.h",
+         "upgrade_detector/directory_monitor.cc",
+@@ -6839,6 +6833,15 @@
+       configs +=
+           [ "//third_party/webrtc/modules/desktop_capture:pipewire_config" ]
+     }
++
++    if (is_linux && use_dbus) {
++      sources += [
++        "notifications/notification_platform_bridge_linux.cc",
++        "notifications/notification_platform_bridge_linux.h",
++        "platform_util_linux.cc",
++      ]
++      deps += [ "//components/dbus/thread_linux" ]
++    }
+   }
+ 
+   if (is_posix) {
+--- a/chrome/test/BUILD.gn
++++ b/chrome/test/BUILD.gn
+@@ -9341,16 +9341,17 @@
+ 
+   if (is_linux) {
+     sources += [
+-      "../browser/notifications/notification_platform_bridge_linux_unittest.cc",
+       "../browser/shell_integration_linux_unittest.cc",
+       "../browser/upgrade_detector/directory_monitor_unittest.cc",
+       "../browser/upgrade_detector/get_installed_version_linux_unittest.cc",
+     ]
+ 
+-    deps += [
+-      "../browser/enterprise/connectors/device_trust/key_management/installer/management_service:unit_tests",
+-      "//components/dbus/thread_linux",
+-    ]
++    deps += [ "../browser/enterprise/connectors/device_trust/key_management/installer/management_service:unit_tests" ]
++
++    if (use_dbus) {
++      sources += [ "../browser/notifications/notification_platform_bridge_linux_unittest.cc" ]
++      deps += [ "//components/dbus/thread_linux" ]
++    }
+ 
+     if (use_ozone) {
+       deps += [ "//ui/ozone" ]
+--- a/ui/shell_dialogs/BUILD.gn
++++ b/ui/shell_dialogs/BUILD.gn
+@@ -54,10 +54,7 @@
+       "shell_dialog_linux.cc",
+       "shell_dialog_linux.h",
+     ]
+-    deps += [
+-      "//components/dbus/thread_linux",
+-      "//ui/linux:linux_ui",
+-    ]
++    deps += [ "//ui/linux:linux_ui" ]
+     if (use_dbus) {
+       defines += [ "USE_DBUS" ]
+       sources += [
+@@ -65,6 +62,7 @@
+         "select_file_dialog_linux_portal.h",
+       ]
+       deps += [
++        "//components/dbus/thread_linux",
+         "//dbus",
+         "//ui/views",
+       ]

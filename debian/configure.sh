@@ -18,6 +18,7 @@ sys_disable=; sys_enable=
 SER_DB=; SER_U=; SERIES_DB=; SERIES_UC=
 
 CLANG_VER_SET=0
+DBUS_SET=0
 MARCH_SET=0
 MEDIA_REMOTING_SET=0
 MTUNE_SET=0
@@ -87,7 +88,6 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$LENS" ] || LENS=1
 [ -n "$LENS_TRANSLATE" ] || LENS_TRANSLATE=1
 [ -n "$MUTEX_PI" ] || MUTEX_PI=1
-[ -n "$SYS_NOTIFICATIONS" ] || SYS_NOTIFICATIONS=1
 [ -n "$OAUTH2" ] || OAUTH2=0
 [ -n "$OPENTYPE_SVG" ] || OPENTYPE_SVG=1
 [ -n "$OZONE_WAYLAND" ] || OZONE_WAYLAND=1
@@ -103,6 +103,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$SWIFTSHADER_VULKAN" ] || SWIFTSHADER_VULKAN=1
 [ -n "$SWIFTSHADER_WEBGPU" ] || SWIFTSHADER_WEBGPU=0
 [ -n "$SWITCH_BLOCKING" ] || SWITCH_BLOCKING=1
+[ -n "$SYS_NOTIFICATIONS" ] || SYS_NOTIFICATIONS=1
 [ -n "$TRANSLATE" ] || TRANSLATE=1
 [ -n "$VISUAL_QUERY" ] || VISUAL_QUERY=0
 [ -n "$VR" ] || VR=0
@@ -183,6 +184,10 @@ fi
 ## can also set X11_ONLY=1 (or alternatively OZONE_WAYLAND=0)
 [ -n "$X11_ONLY" ] && [ $X11_ONLY -eq 1 ] && OZONE_WAYLAND=0 || X11_ONLY=0
 
+
+## Make NOTIFICATIONS an alias for DBUS (but have DBUS take precedence)
+[ -n "$DBUS" ] && DBUS_SET=1 || DBUS=1
+[ -z "$NOTIFICATIONS" ] || [ $DBUS_SET -eq 1 ] || DBUS=$NOTIFICATIONS
 
 
 
@@ -672,6 +677,17 @@ if [ $COMPOSE -eq 0 ]; then
 fi
 
 
+if [ $DBUS -eq 0 ]; then
+  op_disable="$op_disable system/libdbus"
+  op_enable="$op_enable disable/dbus-and-notifications/"
+
+  gn_enable="$gn_enable use_dbus"
+  deps_disable="$deps_disable libdbus-1"
+
+  SYS_NOTIFICATIONS=0
+fi
+
+
 if [ $DRIVER -eq 0 ]; then
   op_disable="$op_disable fixes/chromedriver/"
 
@@ -782,11 +798,6 @@ if [ $MUTEX_PI -eq 0 ]; then
 fi
 
 
-if [ $SYS_NOTIFICATIONS -eq 0 ]; then
-  ins_enable="$ins_enable sys-notifications"
-fi
-
-
 if [ $OAUTH2 -eq 1 ]; then
   op_enable="$op_enable use-oauth2-client-switches-as-default"
 fi
@@ -834,6 +845,11 @@ fi
 
 if [ $SWITCH_BLOCKING -ne 1 ]; then
   sed "/^SWITCH_BLOCKING/s@=1@=$SWITCH_BLOCKING@" -i $DEBIAN/misc_files/chromium.sh
+fi
+
+
+if [ $SYS_NOTIFICATIONS -eq 0 ]; then
+  ins_enable="$ins_enable sys-notifications"
 fi
 
 

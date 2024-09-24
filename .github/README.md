@@ -74,9 +74,11 @@ ___Security/Privacy improvements___
     - WebGPU
 - Reduced attack surface
     - Some components/features can variously be disabled/patched out at compile time
+        - ATK
         - Catapult
         - Click-to-call
         - Compose (autofill)
+        - D-Bus/Notifications
         - DNS config service
         - Enterprise watermark
         - Headless mode

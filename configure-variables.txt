@@ -95,6 +95,8 @@ CHROMECAST		1		0 - disable (will also disable MEDIA_REMOTING)
 
 CLICK_TO_CALL		1		Feature for using chromium to make a call via an android phone
 COMPOSE			1		An autofill-related feature which can be disabled by those who don't use autofill
+DBUS			1		Disabling this will disable dbus, its interaction with bluetooth (bluez) and the notifications system
+
 ENTERPRISE_WATERMARK	0		Watermarking security/privacy feature (for Chrome Enterprise Premium users)
 EXTENSIONS_ROOT_MENU	0		Whether to put the extensions menu in the root menu (0 = put in 'More tools' menu)
 FF_ALAC			1		ALAC (Apple Lossless Audio Codec) playback support
@@ -122,7 +124,10 @@ MEDIA_REMOTING		1		Render and play back media on remote devices when a tab is ca
 					Depends on CHROMECAST=1 (which is the default)
 
 MUTEX_PI		1		Mutex priority inheritance
+
+NOTIFICATIONS		1		An alias for DBUS
 SYS_NOTIFICATIONS	1		System notifications (chrome will fall back to using native notifications if disabled)
+
 OAUTH2			0		Enable OAuth 2.0 client switches
 OPENTYPE_SVG		1		Opentype SVG support
 OZONE_WAYLAND		1		Wayland ozone platform (experimental; can be disabled by wayland users)

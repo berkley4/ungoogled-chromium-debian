@@ -95,7 +95,6 @@ various/fixes/unbundle-script-dh-clean-interoperabilty.patch
 various/fixes/unshrink-ui-font.patch
 various/fixes/webrtc-filter-labels.patch
 various/fixes/xdg-basedir.patch
-various/system/libdbus.patch
 various/system/libdrm.patch
 various/system/libusb-api.patch
 various/system/libxml2.patch
@@ -164,6 +163,10 @@ optional/disable/extensions-in-root-menu.patch
 #optional/disable/speech.patch
 #optional/disable/vulkan.patch
 optional/disable/webgpu.patch
+#optional/disable/dbus-and-notifications/fix-headless-build-issue-with-dbus-on-linux.patch
+#optional/disable/dbus-and-notifications/include-platform-util-linux-on-non-dbus.patch
+#optional/disable/dbus-and-notifications/notifications-depend-on-dbus.patch
+#optional/disable/dbus-and-notifications/stub-out-bluetooth-dbus.patch
 #optional/disable/media-remoting/media-remoting.patch
 #optional/disable/media-remoting/registry-pref.patch
 optional/disable/visual-query/headless/visual-query.patch
@@ -189,6 +192,7 @@ optional/fixes/widevine/widevine-locations.patch
 optional/opentype-svg/0001-OT-SVG-hook.patch
 optional/opentype-svg/0002-use-FreeType-for-non-Linux-OT-SVG-support.patch
 #optional/system/bindgen-crabbyav1f.patch
+optional/system/libdbus.patch
 #optional/system/freetype-COLRV1.patch
 optional/system/jpeg.patch
 #optional/system/node.patch

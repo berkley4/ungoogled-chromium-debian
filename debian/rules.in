@@ -124,6 +124,9 @@ GN_FLAGS +=					\
 # Disable compose
 #GN_FLAGS += enable_compose=false
 
+# Disable dBus
+#GN_FLAGS += use_dbus=false
+
 # Disable enterprise watermark
 GN_FLAGS += enterprise_watermark=false
 

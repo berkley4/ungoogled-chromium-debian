@@ -1,0 +1,151 @@
+--- a/chrome/browser/about_flags.cc
++++ b/chrome/browser/about_flags.cc
+@@ -5057,13 +5057,13 @@
+      kOsLinux | kOsAndroid | kOsCrOS | kOsLacros,
+      FEATURE_VALUE_TYPE(features::kVulkanFromANGLE)},
+ 
+-#if !BUILDFLAG(IS_CHROMEOS_ASH)
++#if defined(USE_DBUS) && !BUILDFLAG(IS_CHROMEOS_ASH)
+     {"enable-system-notifications",
+      flag_descriptions::kNotificationsSystemFlagName,
+      flag_descriptions::kNotificationsSystemFlagDescription,
+      kOsMac | kOsLinux | kOsWin,
+      FEATURE_VALUE_TYPE(features::kSystemNotifications)},
+-#endif  // !BUILDFLAG(IS_CHROMEOS_ASH)
++#endif  // defined(USE_DBUS) && !BUILDFLAG(IS_CHROMEOS_ASH)
+ #if BUILDFLAG(IS_CHROMEOS_ASH)
+     {"enable-ongoing-processes", flag_descriptions::kEnableOngoingProcessesName,
+      flag_descriptions::kEnableOngoingProcessesDescription, kOsCrOS,
+--- a/chrome/browser/browser_process_impl.cc
++++ b/chrome/browser/browser_process_impl.cc
+@@ -863,9 +863,13 @@
+ }
+ 
+ NotificationPlatformBridge* BrowserProcessImpl::notification_platform_bridge() {
++#if defined(USE_DBUS)
+   if (!created_notification_bridge_)
+     CreateNotificationPlatformBridge();
+   return notification_bridge_.get();
++#else
++  return nullptr;
++#endif
+ }
+ 
+ policy::ChromeBrowserPolicyConnector*
+@@ -1397,9 +1401,11 @@
+ }
+ 
+ void BrowserProcessImpl::CreateNotificationPlatformBridge() {
++#if defined(USE_DBUS)
+   DCHECK(!notification_bridge_);
+   notification_bridge_ = NotificationPlatformBridge::Create();
+   created_notification_bridge_ = true;
++#endif
+ }
+ 
+ void BrowserProcessImpl::CreateNotificationUIManager() {
+--- a/chrome/browser/browser_process_impl.h
++++ b/chrome/browser/browser_process_impl.h
+@@ -349,7 +349,9 @@
+ 
+   std::unique_ptr<StatusTray> status_tray_;
+ 
++#if defined(USE_DBUS)
+   bool created_notification_bridge_ = false;
++#endif
+ 
+   std::unique_ptr<NotificationPlatformBridge> notification_bridge_;
+ 
+--- a/chrome/browser/notifications/notification_interactive_uitest_support.cc
++++ b/chrome/browser/notifications/notification_interactive_uitest_support.cc
+@@ -99,8 +99,10 @@
+ NotificationsTest::NotificationsTest() {
+ // Temporary change while the whole support class is changed to deal
+ // with system notifications. crbug.com/714679
++#if defined(USE_DBUS)
+   feature_list_.InitWithFeatures(
+       {}, {features::kNativeNotifications, features::kSystemNotifications});
++#endif  // defined(USE_DBUS)
+ }
+ 
+ int NotificationsTest::GetNotificationCount() {
+@@ -260,8 +262,15 @@
+ 
+ NotificationsTestWithPermissionsEmbargo ::
+     NotificationsTestWithPermissionsEmbargo() {
++#if defined(USE_DBUS)
+   feature_list_.InitWithFeatures(
+       {permissions::features::kBlockPromptsIfDismissedOften,
+        permissions::features::kBlockPromptsIfIgnoredOften},
+       {features::kSystemNotifications});
++#else
++  feature_list_.InitWithFeatures(
++      {permissions::features::kBlockPromptsIfDismissedOften,
++       permissions::features::kBlockPromptsIfIgnoredOften},
++      {});
++#endif  //  defined(USE_DBUS)
+ }
+--- a/chrome/browser/notifications/notification_platform_bridge_delegator.cc
++++ b/chrome/browser/notifications/notification_platform_bridge_delegator.cc
+@@ -51,6 +51,7 @@
+ // Please try to keep this comment up to date when changing behaviour on one of
+ // the platforms supported by the browser.
+ bool SystemNotificationsEnabled(Profile* profile) {
++#if defined(USE_DBUS)
+ #if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_ANDROID)
+   return true;
+ #elif BUILDFLAG(IS_WIN)
+@@ -68,6 +69,9 @@
+   return base::FeatureList::IsEnabled(features::kNativeNotifications) &&
+          base::FeatureList::IsEnabled(features::kSystemNotifications);
+ #endif  // BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_ANDROID)
++#else
++  return false;
++#endif  // defined(USE_DBUS)
+ }
+ 
+ NotificationPlatformBridge* GetSystemNotificationPlatformBridge(
+@@ -164,9 +168,11 @@
+ NotificationPlatformBridge*
+ NotificationPlatformBridgeDelegator::GetBridgeForType(
+     NotificationHandler::Type type) {
++#if defined(USE_DBUS)
+   // Prefer the system bridge if available and it can handle |type|.
+   if (system_bridge_ && NotificationPlatformBridge::CanHandleType(type))
+     return system_bridge_;
++#endif  // defined(USE_DBUS)
+   return message_center_bridge_;
+ }
+ 
+--- a/chrome/common/chrome_features.cc
++++ b/chrome/common/chrome_features.cc
+@@ -940,6 +940,7 @@
+ // Enables the use of system notification centers instead of using the Message
+ // Center for displaying the toasts. The feature is hardcoded to enabled for
+ // Chrome OS.
++#if defined(USE_DBUS) && !BUILDFLAG(IS_CHROMEOS_ASH)
+ BASE_FEATURE(kNativeNotifications,
+              "NativeNotifications",
+              base::FEATURE_ENABLED_BY_DEFAULT);
+@@ -947,6 +948,7 @@
+ BASE_FEATURE(kSystemNotifications,
+              "SystemNotifications",
+              base::FEATURE_ENABLED_BY_DEFAULT);
++#endif  // defined(USE_DBUS) && !BUILDFLAG(IS_CHROMEOS_ASH)
+ 
+ #if BUILDFLAG(IS_MAC)
+ // Enables the usage of Apple's new Notification API.
+--- a/chrome/common/chrome_features.h
++++ b/chrome/common/chrome_features.h
+@@ -562,9 +562,11 @@
+ COMPONENT_EXPORT(CHROME_FEATURES)
+ extern const base::FeatureParam<std::string> kMoveWebAppInstallStartUrl;
+ 
++#if defined(USE_DBUS)
+ COMPONENT_EXPORT(CHROME_FEATURES) BASE_DECLARE_FEATURE(kNativeNotifications);
+ 
+ COMPONENT_EXPORT(CHROME_FEATURES) BASE_DECLARE_FEATURE(kSystemNotifications);
++#endif
+ 
+ #if BUILDFLAG(IS_MAC)
+ COMPONENT_EXPORT(CHROME_FEATURES) BASE_DECLARE_FEATURE(kNewMacNotificationAPI);
