@@ -12,9 +12,6 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --start-maximized"
 # Choices are: always, never, incognito-and-guest
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --scroll-tabs=never"
 
-# Disable system notifications
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=SystemNotifications"
-
 
 # Enable dark modes
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --force-dark-mode"

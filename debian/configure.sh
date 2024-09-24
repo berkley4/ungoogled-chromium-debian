@@ -783,7 +783,7 @@ fi
 
 
 if [ $SYS_NOTIFICATIONS -eq 0 ]; then
-  sed -e '/SystemNotifications/s@^#@@' -i $FLAG_DIR/ui
+  ins_enable="$ins_enable sys-notifications"
 fi
 
 
