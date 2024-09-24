@@ -11,10 +11,13 @@
 # Skia graphite (dawn-swiftshader, dawn-vulkan, dawn-metal or metal)
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --skia-graphite-backend=dawn-vulkan"
 
-
 # Vulkan
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-angle=vulkan"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-vulkan"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-vulkan-surface"
+
+# GL
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-angle=gl"
 
 
 # For troubleshooting problems or attempting to increase performance

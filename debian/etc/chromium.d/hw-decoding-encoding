@@ -4,6 +4,7 @@
 #   --ignore-gpu-blocklist
 #   --disable-gpu-driver-bug-workaround
 #   --ozone-platform-hint=wayland
+#   --use-angle=vulkan | --use-angle=gl
 #
 # Note: some of the GL and vulkan flags might not be mutually compatible
 #
@@ -12,13 +13,10 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiIgnoreDriverChecks
 
 
 ### GL
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-angle=gl"
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoDecodeLinuxGL"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoDecodeLinuxZeroCopyGL"
 
-
 ### VULKAN
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-angle=vulkan"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=Vulkan,DefaultANGLEVulkan,VulkanFromANGLE"
 
 
