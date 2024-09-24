@@ -152,6 +152,7 @@ WEBGPU			0		WebGPU (likely beta quality at the time of writing)
 					1 - enable (need to edit /etc/chromium.d/gpu)
 					2 - enable fully
 
+WEBFEED			1		Webfeed - toggles the --enable-features=WebFeedKillSwitch runtime flag (0 = disable webfeed)
 WIDEVINE		1		Needs various extra components to enable
 ZSTD			0		Used for the bleeding edge zstd content encoding (web server compression)
 

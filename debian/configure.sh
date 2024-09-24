@@ -108,6 +108,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$VR" ] || VR=0
 [ -n "$VAAPI" ] || VAAPI=1
 [ -n "$VULKAN" ] || VULKAN=1
+[ -n "$WEBFEED" ] || WEBFEED=1
 [ -n "$WEBGPU" ] || WEBGPU=0
 [ -n "$WIDEVINE" ] || WIDEVINE=1
 [ -n "$ZSTD" ] || ZSTD=0
@@ -873,6 +874,11 @@ if [ $VULKAN -eq 0 ]; then
 
   SWIFTSHADER=0
   WEBGPU=0
+fi
+
+
+if [ $WEBFEED -eq 0 ]; then
+  sed -e '/WebFeedKillSwitch/s@^#@@' -i $FLAG_DIR/miscellaneous
 fi
 
 
