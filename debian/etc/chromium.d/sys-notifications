@@ -1,2 +1,2 @@
 # Disable system notifications
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=SystemNotifications"
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=SystemNotifications"
