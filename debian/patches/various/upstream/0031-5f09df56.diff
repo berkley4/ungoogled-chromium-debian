@@ -1,0 +1,80 @@
+From 5f09df564c22309b957748eea4e82f9e943cdc89 Mon Sep 17 00:00:00 2001
+From: Yiren Wang <yrw@chromium.org>
+Date: Wed, 25 Sep 2024 00:59:45 +0000
+Subject: [PATCH] Fix logic for OnMediaItemUIDestroyed
+
+When we call OnMediaItemUIDestroyed() from MediaItemUIView,
+MediaItemUIObserverSet will try to call RemoveObserver() back on
+MediaItemUIView, which is not ideal since we do not want to change
+observers_ in MediaItemUIView when we are still looping it.
+
+This CL fixes this issue by removing the RemoveObserver() call in
+MediaItemUIObserverSet and do it in MediaItemUIView afterwards.
+The same thing applies to MediaItemUIUpdatedView. This hopefully fixes
+the crash in ~MediaItemUIView().
+
+Bug: 368135848
+Change-Id: Ia95b128c49893cfe25ac8fac0896f6e7ce174aa7
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5884342
+Commit-Queue: Yiren Wang <yrw@chromium.org>
+Reviewed-by: Tommy Steimel <steimel@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1359695}
+---
+
+--- a/chrome/browser/ui/views/global_media_controls/media_dialog_view.cc
++++ b/chrome/browser/ui/views/global_media_controls/media_dialog_view.cc
+@@ -363,17 +363,9 @@
+ 
+ void MediaDialogView::OnMediaItemUIDestroyed(const std::string& id) {
+   if (media_color_theme_.has_value()) {
+-    auto iter = updated_items_.find(id);
+-    CHECK(iter != updated_items_.end());
+-
+-    iter->second->RemoveObserver(this);
+-    updated_items_.erase(iter);
++    updated_items_.erase(id);
+   } else {
+-    auto iter = observed_items_.find(id);
+-    CHECK(iter != observed_items_.end());
+-
+-    iter->second->RemoveObserver(this);
+-    observed_items_.erase(iter);
++    observed_items_.erase(id);
+   }
+ }
+ 
+--- a/components/global_media_controls/public/media_item_ui_observer_set.cc
++++ b/components/global_media_controls/public/media_item_ui_observer_set.cc
+@@ -56,7 +56,7 @@
+ 
+ void MediaItemUIObserverSet::OnMediaItemUIDestroyed(const std::string& id) {
+   owner_->OnMediaItemUIDestroyed(id);
+-  StopObserving(id);
++  observed_item_uis_.erase(id);
+ }
+ 
+ void MediaItemUIObserverSet::OnMediaItemUIShowDevices(const std::string& id) {
+--- a/components/global_media_controls/public/views/media_item_ui_updated_view.cc
++++ b/components/global_media_controls/public/views/media_item_ui_updated_view.cc
+@@ -310,6 +310,7 @@
+   for (auto& observer : observers_) {
+     observer.OnMediaItemUIDestroyed(id_);
+   }
++  observers_.Clear();
+ }
+ 
+ ///////////////////////////////////////////////////////////////////////////////
+--- a/components/global_media_controls/public/views/media_item_ui_view.cc
++++ b/components/global_media_controls/public/views/media_item_ui_view.cc
+@@ -171,8 +171,10 @@
+ }
+ 
+ MediaItemUIView::~MediaItemUIView() {
+-  for (auto& observer : observers_)
++  for (auto& observer : observers_) {
+     observer.OnMediaItemUIDestroyed(id_);
++  }
++  observers_.Clear();
+ }
+ 
+ void MediaItemUIView::AddedToWidget() {

@@ -18,7 +18,7 @@ Cr-Commit-Position: refs/heads/main@{#1354276}
 
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -6799,10 +6799,7 @@
+@@ -6804,10 +6804,7 @@
        "first_run/upgrade_util_linux.cc",
        "first_run/upgrade_util_linux.h",
      ]
@@ -30,7 +30,7 @@ Cr-Commit-Position: refs/heads/main@{#1354276}
  
      if (is_chromeos_lacros) {
        sources += [
-@@ -6818,9 +6815,6 @@
+@@ -6823,9 +6820,6 @@
        sources += [
          "download/download_status_updater_linux.cc",
          "icon_loader_auralinux.cc",
@@ -40,7 +40,7 @@ Cr-Commit-Position: refs/heads/main@{#1354276}
          "shell_integration_linux.cc",
          "shell_integration_linux.h",
          "upgrade_detector/directory_monitor.cc",
-@@ -6839,6 +6833,15 @@
+@@ -6844,6 +6838,15 @@
        configs +=
            [ "//third_party/webrtc/modules/desktop_capture:pipewire_config" ]
      }
@@ -58,7 +58,7 @@ Cr-Commit-Position: refs/heads/main@{#1354276}
    if (is_posix) {
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -9341,16 +9341,17 @@
+@@ -9347,16 +9347,17 @@
  
    if (is_linux) {
      sources += [

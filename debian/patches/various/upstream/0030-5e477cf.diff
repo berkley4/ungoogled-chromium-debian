@@ -1,0 +1,54 @@
+From 5e477cfe5250de30608c1cd6b3c39e4b612853de Mon Sep 17 00:00:00 2001
+From: Munira Tursunova <moonira@google.com>
+Date: Tue, 24 Sep 2024 19:11:45 +0000
+Subject: [PATCH] Fix crash in skia_text_metrics.cc
+
+Some of the DCHECKs in skia_text_metrics.cc does not include cases when
+codepoint=kUnmatchedVSGlyphId, see [0]. Fixed that.
+
+[0] https://ci.chromium.org/ui/p/chromium/builders/try/mac-rel/1930283/overview
+
+Bug: 40244183, 40628044
+Change-Id: Ic6c8256f75133a631913917d67c8c81cbfea46fd
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5883096
+Reviewed-by: Dominik Röttsches <drott@chromium.org>
+Commit-Queue: Munira Tursunova <moonira@google.com>
+Cr-Commit-Position: refs/heads/main@{#1359515}
+---
+
+--- a/third_party/blink/renderer/platform/fonts/skia/skia_text_metrics.cc
++++ b/third_party/blink/renderer/platform/fonts/skia/skia_text_metrics.cc
+@@ -10,6 +10,7 @@
+ #include "third_party/blink/renderer/platform/fonts/skia/skia_text_metrics.h"
+ 
+ #include "build/build_config.h"
++#include "third_party/blink/renderer/platform/fonts/shaping/harfbuzz_face.h"
+ #include "third_party/blink/renderer/platform/wtf/math_extras.h"
+ #include "third_party/skia/include/core/SkFont.h"
+ #include "third_party/skia/include/core/SkPath.h"
+@@ -34,6 +35,12 @@
+ void SkFontGetGlyphWidthForHarfBuzz(const SkFont& font,
+                                     hb_codepoint_t codepoint,
+                                     hb_position_t* width) {
++  // We don't want to compute glyph extents for kUnmatchedVSGlyphId
++  // cases yet. Since we will do that during the second shaping pass,
++  // when VariationSelectorMode is set to kIgnoreVariationSelector.
++  if (codepoint == kUnmatchedVSGlyphId) {
++    return;
++  }
+   DCHECK_LE(codepoint, 0xFFFFu);
+   CHECK(width);
+ 
+@@ -84,6 +91,12 @@
+ void SkFontGetGlyphExtentsForHarfBuzz(const SkFont& font,
+                                       hb_codepoint_t codepoint,
+                                       hb_glyph_extents_t* extents) {
++  // We don't want to compute glyph extents for kUnmatchedVSGlyphId
++  // cases yet. Since we will do that during the second shaping pass,
++  // when VariationSelectorMode is set to kIgnoreVariationSelector.
++  if (codepoint == kUnmatchedVSGlyphId) {
++    return;
++  }
+   DCHECK_LE(codepoint, 0xFFFFu);
+   CHECK(extents);
+ 

@@ -120,7 +120,6 @@ various/upstream/0015-fa2a56ad.diff
 various/upstream/0016-1a9000a.diff
 various/upstream/0017-6f16bd0.diff
 various/upstream/0018-3361fa2.diff
-various/upstream/0019-b7f0821.diff
 various/upstream/0020-fbf4d64.diff
 various/upstream/0021-4e0a213.diff
 various/upstream/0022-e325b5c.diff
@@ -129,6 +128,10 @@ various/upstream/0024-89555ad8.diff
 various/upstream/0025-f3f5fd21.diff
 various/upstream/0026-649bb65d.diff
 various/upstream/0027-ed7395cf.diff
+various/upstream/0028-85a8ae94.diff
+various/upstream/0029-3d9dd37.diff
+various/upstream/0030-5e477cf.diff
+various/upstream/0031-5f09df56.diff
 various/upstream/features/enable-renderdocument-subframe-by-default.patch
 various/upstream/features/leveldb-proto-enable-async-writes-by-default.patch
 various/upstream/features/libavcodec-fixed-some-incorrect-pointer-usages.patch

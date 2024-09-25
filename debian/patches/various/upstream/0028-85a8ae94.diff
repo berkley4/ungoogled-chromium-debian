@@ -1,0 +1,36 @@
+From 85a8ae94e9ce7c4bddd54f1862b12dde2dbed6ee Mon Sep 17 00:00:00 2001
+From: Joey Arhar <jarhar@chromium.org>
+Date: Wed, 18 Sep 2024 21:30:27 +0000
+Subject: [PATCH] Add IsDetached check in AnimationFrameTimingMonitor
+
+I added an IsDetached check here to prevent a subsequent call to
+IsProvisional from crashing here:
+https://chromium-review.googlesource.com/c/chromium/src/+/5753883
+
+However, according to crash reports there is still a case where the same
+crash occurs because if the same function is called when IsDetached then
+ContextIfInitialized also calls IsProvisional which crashes.
+
+This patch adds an IsDetached check in the remaining case based on the
+crash reporting.
+
+Fixed: 355648208
+Change-Id: I961202977590e43e93ab9461e1a1c09b1b6b56b1
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5861868
+Reviewed-by: Daniel Cheng <dcheng@chromium.org>
+Commit-Queue: Joey Arhar <jarhar@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1357322}
+---
+
+--- a/third_party/blink/renderer/core/frame/animation_frame_timing_monitor.cc
++++ b/third_party/blink/renderer/core/frame/animation_frame_timing_monitor.cc
+@@ -197,7 +197,8 @@
+         ScriptTimingInfo::InvokerType::kPromiseResolve) ||
+        (pending_script_info_->invoker_type ==
+         ScriptTimingInfo::InvokerType::kPromiseReject))) {
+-    if (frame && frame->DomWindow()) {
++    if (frame && !frame->IsDetached()) {
++      DCHECK(frame->DomWindow());
+       PopScriptEntryPoint(ToScriptStateForMainWorld(frame),
+                           /*probe_data=*/nullptr, end_time);
+     }

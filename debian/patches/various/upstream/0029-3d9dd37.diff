@@ -1,0 +1,81 @@
+From 3d9dd3774edb6be8c06b467a585e1f1e52001185 Mon Sep 17 00:00:00 2001
+From: Thomas Nguyen <tungnh@google.com>
+Date: Mon, 23 Sep 2024 13:44:48 +0000
+Subject: [PATCH] Use WeakPtr of PermissionManager
+
+During Profile shutdown, the PermissionsManager is deleted, but the
+destructor of PermissionResponseCallback tries to access
+PermissionsManager through a raw_ptr, causing a crash.
+
+Fixed: 361659885
+Change-Id: I1fa5cead06672a070e2b18735681159f385e4c4f
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5881913
+Reviewed-by: Elias Klim <elklm@chromium.org>
+Commit-Queue: Thomas Nguyen <tungnh@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1358777}
+---
+
+--- a/components/permissions/permission_manager.cc
++++ b/components/permissions/permission_manager.cc
+@@ -123,9 +123,10 @@
+ // object.
+ class PermissionManager::PermissionResponseCallback {
+  public:
+-  PermissionResponseCallback(PermissionManager* permission_manager,
+-                             PendingRequestLocalId request_local_id,
+-                             int permission_id)
++  PermissionResponseCallback(
++      const base::WeakPtr<PermissionManager>& permission_manager,
++      PendingRequestLocalId request_local_id,
++      int permission_id)
+       : permission_manager_(permission_manager),
+         request_local_id_(request_local_id),
+         permission_id_(permission_id),
+@@ -136,20 +137,23 @@
+       delete;
+ 
+   ~PermissionResponseCallback() {
+-    if (!request_answered_ &&
++    if (!request_answered_ && permission_manager_ &&
+         permission_manager_->pending_requests_.Lookup(request_local_id_)) {
+       permission_manager_->pending_requests_.Remove(request_local_id_);
+     }
+   }
+ 
+   void OnPermissionsRequestResponseStatus(ContentSetting content_setting) {
++    if (!permission_manager_) {
++      return;
++    }
+     request_answered_ = true;
+     permission_manager_->OnPermissionsRequestResponseStatus(
+         request_local_id_, permission_id_, content_setting);
+   }
+ 
+  private:
+-  raw_ptr<PermissionManager> permission_manager_;
++  base::WeakPtr<PermissionManager> permission_manager_;
+   PendingRequestLocalId request_local_id_;
+   int permission_id_;
+   bool request_answered_;
+@@ -269,8 +273,8 @@
+     const GURL canonical_requesting_origin = PermissionUtil::GetCanonicalOrigin(
+         permission, request_description.requesting_origin, embedding_origin);
+ 
+-    auto response_callback =
+-        std::make_unique<PermissionResponseCallback>(this, request_local_id, i);
++    auto response_callback = std::make_unique<PermissionResponseCallback>(
++        weak_factory_.GetWeakPtr(), request_local_id, i);
+     PermissionContextBase* context = GetPermissionContext(permission);
+     if (!context || PermissionUtil::IsPermissionBlockedInPartition(
+                         permission, request_description.requesting_origin,
+--- a/components/permissions/permission_manager.h
++++ b/components/permissions/permission_manager.h
+@@ -199,6 +199,8 @@
+   PermissionContextMap permission_contexts_;
+ 
+   bool is_shutting_down_ = false;
++
++  base::WeakPtrFactory<PermissionManager> weak_factory_{this};
+ };
+ 
+ }  // namespace permissions
