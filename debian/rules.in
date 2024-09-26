@@ -81,6 +81,8 @@ GN_FLAGS +=					\
 	enable_extractors=false			\
 	libyuv_disable_rvv=true			\
 	safe_browsing_use_unrar=false		\
+	tint_build_benchmarks=false		\
+	tint_build_unittests=false		\
 	use_kerberos=false			\
 	use_sysroot=false
 
@@ -191,9 +193,8 @@ GN_FLAGS += enable_vr=false
 # Disable WebGPU (also see swiftshader section)
 GN_FLAGS += use_dawn=false skia_use_dawn=false
 GN_FLAGS += dawn_enable_desktop_gl=false dawn_enable_opengles=false
-
-# Uncomment when enabling WebGPU
-#GN_FLAGS += tint_build_benchmarks=false tint_build_unittests=false
+GN_FLAGS += tint_build_glsl_validator=false tint_build_ir_binary=false 
+GN_FLAGS += tint_build_glsl_writer=false tint_build_hlsl_writer=false tint_build_msl_writer=false
 
 # Comment out if enabling both WebGPU and vulkan
 GN_FLAGS += dawn_enable_vulkan=false

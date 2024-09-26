@@ -913,9 +913,8 @@ if [ $WEBGPU -ge 1 ]; then
   # Refer to debian/rules.in to see which flags are disabled
   gn_disable="$gn_disable use_dawn=false"
   gn_disable="$gn_disable dawn_enable_desktop_gl=false"
-
-  # Disable certain flags in debian/rules which will go out of scope
-  gn_enable="$gn_enable tint_build_benchmarks=false"
+  gn_disable="$gn_disable tint_build_glsl_validator=false"
+  gn_disable="$gn_disable tint_build_glsl_writer=false"
 
   SWIFTSHADER_WEBGPU=1
 
