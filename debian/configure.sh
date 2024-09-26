@@ -252,7 +252,7 @@ if [ -n "$LTO_DIR" ]; then
 
   op_enable="$op_enable compiler-flags/thinlto-cache-location"
 
-  sed -e "s@^\(+.*thinlto-cache-dir=\)[-_a-zA-Z0-9/]*@\1$LTO_DIR@" \
+  sed -e "s@_thinlto_cache_dir@$LTO_DIR@" \
       -i $OP_DIR/compiler-flags/thinlto-cache-location.patch
 fi
 
