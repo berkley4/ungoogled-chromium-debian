@@ -115,7 +115,7 @@ HLS_PLAYER		1		Enables the HLS manifest parser/demuxer/player (experimental)
 					2 - enable fully
 
 LABS_TOOLBAR_BUTTON	0		Experimental flag toggles via a Labs toolbar button
-LENS			1		Goodle Lens
+LENS			0		Goodle Lens
 					0 - disable
                                         1 - enable (need to edit /etc/chromium.d/google-lens to fully enable)
                                         2 - enable fully
