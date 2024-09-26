@@ -347,11 +347,8 @@ else
     "")
       CLANG_VER=$CC_VER ;;
 
-    [1-9][0-9])
-      CLANG_VER_SET=1 ;;
-
-    [1-9][0-9].*)
-      CLANG_VER="$(echo $CLANG_VER | sed 's@\..*@@')"
+    [1-9][0-9]*)
+      CLANG_VER=${CLANG_VER%%.*}
       CLANG_VER_SET=1 ;;
 
     *)
