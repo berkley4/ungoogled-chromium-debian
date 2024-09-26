@@ -536,8 +536,8 @@ fi
 
 if [ -n "$arch_patches" ]; then
   for i in $arch_patches; do
-    sed -e "s@\(march=\)[-a-z0-9]*@\1$MARCH@" \
-        -e "s@\(mtune=\)[-a-z0-9]*@\1$MTUNE@" \
+    sed -e "s@x86-64-v2@$MARCH@" \
+        -e "s@generic@$MTUNE@" \
         -i $OP_DIR/compiler-flags/cpu/$i.patch
   done
 fi
