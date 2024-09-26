@@ -924,7 +924,7 @@ if [ $WEBGPU -ge 1 ]; then
 fi
 
 
-if [ $VULKAN -eq 1 ] && [ $WEBGPU -eq 1 ]; then
+if [ $VULKAN -eq 1 ] && [ $WEBGPU -ge 1 ]; then
   # Refer to debian/rules.in to see which flags are disabled
   gn_disable="$gn_disable dawn_enable_vulkan=false"
 fi
