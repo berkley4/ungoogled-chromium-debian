@@ -301,7 +301,16 @@ fi
 ## Enable the use of ccache
 if [ $CCACHE -eq 1 ]; then
   gn_enable="$gn_enable cc_wrapper"
-  RUL="$RUL -e \"/CCACHE_BASEDIR=/s@^#@@\""
+
+  case $CCACHE_BASEDIR in
+    "")
+      RUL="$RUL -e \"/CCACHE_BASEDIR=/s@_CCACHE_BASEDIR@\x24\x28RT_DIR\x29@\"" ;;
+
+    *)
+      RUL="$RUL -e \"/CCACHE_BASEDIR=/s@_CCACHE_BASEDIR@$CCACHE_BASEDIR@\"" ;;
+  esac
+
+  RUL="$RUL -e \"/^#export CCACHE_BASEDIR=/s@^#@@\""
 fi
 
 
