@@ -43,7 +43,12 @@ SYS_NODE		0		Use in-tree node
 			1		Use system node package (safest on unstable)
 
 CCACHE			0		Enable the use of the the ccache compilation cache utility
-CCACHE_BASEDIR		<dir>		Sets the CCACHE_BASEDIR variable in debian/rules (defaults to the root of the source tree)
+
+CCACHE_BASEDIR		<dir>		Set CCACHE_BASEDIR to <dir> (must be an absolute path)
+			unset		Do not set CCACHE_BASEDIR (the same as 1 but the export is commented out in debian/rules)
+			0		Same as unset
+			1		Set CCACHE_BASEDIR to the root directory of the source tree
+					Unless you have multiple source trees that you want to share with ccache then it's perhaps best to leave unset
 
 ESBUILD			0		Use the faster ESbuild javascript bundler instead of the default rollup
 					The slight package size increase means this is probably only worth enabling on fast machines

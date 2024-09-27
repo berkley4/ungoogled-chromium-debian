@@ -301,16 +301,23 @@ fi
 ## Enable the use of ccache
 if [ $CCACHE -eq 1 ]; then
   gn_enable="$gn_enable cc_wrapper"
+  RUL="$RUL -e \"/^#export PATH/s@^#@@\""
 
   case $CCACHE_BASEDIR in
-    "")
+    ""|0|1)
       RUL="$RUL -e \"/CCACHE_BASEDIR=/s@_CCACHE_BASEDIR@\x24\x28RT_DIR\x29@\"" ;;
 
-    *)
+    /*)
       RUL="$RUL -e \"/CCACHE_BASEDIR=/s@_CCACHE_BASEDIR@$CCACHE_BASEDIR@\"" ;;
   esac
 
-  RUL="$RUL -e \"/^#export CCACHE_BASEDIR=/s@^#@@\""
+  case $CCACHE_BASEDIR in
+    ""|0)
+      : ;;
+
+    /*)
+      RUL="$RUL -e \"/^#export CCACHE_BASEDIR=/s@^#@@\"" ;;
+  esac
 fi
 
 
@@ -536,8 +543,8 @@ fi
 
 if [ -n "$arch_patches" ]; then
   for i in $arch_patches; do
-    sed -e "s@x86-64-v2@$MARCH@" \
-        -e "s@generic@$MTUNE@" \
+    sed -e "s@\(march=\)[-a-z0-9]*@\1$MARCH@" \
+        -e "s@\(mtune=\)[-a-z0-9]*@\1$MTUNE@" \
         -i $OP_DIR/compiler-flags/cpu/$i.patch
   done
 fi
