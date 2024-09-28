@@ -175,6 +175,7 @@ optional/disable/webgpu.patch
 optional/disable/visual-query/headless/visual-query.patch
 optional/disable/visual-query/headless/visual-query_2.patch
 optional/ffmpeg-extra-codecs/hevc/add-hevc-ffmpeg-decoder-parser-for-linux.patch
+optional/ffmpeg-extra-codecs/hevc/add-hevc-ffmpeg-decoder-parser-for-linux-asm.patch
 optional/ffmpeg-extra-codecs/hevc/enable-hevc-ffmpeg-decoding.patch
 optional/ffmpeg-extra-codecs/alac/add-alac-ffmpeg-decoding.patch
 optional/ffmpeg-extra-codecs/alac/enable-alac-ffmpeg-decoding.patch

@@ -1,0 +1,13 @@
+--- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.asm
++++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.asm
+@@ -700,8 +700,8 @@
+ %define CONFIG_H264PRED 1
+ %define CONFIG_H264QPEL 1
+ %define CONFIG_H264_SEI 1
+-%define CONFIG_HEVCPARSE 0
+-%define CONFIG_HEVC_SEI 0
++%define CONFIG_HEVCPARSE 1
++%define CONFIG_HEVC_SEI 1
+ %define CONFIG_HPELDSP 0
+ %define CONFIG_HUFFMAN 0
+ %define CONFIG_HUFFYUVDSP 0
