@@ -1,16 +1,16 @@
-From f2690de69556f1a3cde4cd83ebbc966eb2d7740c Mon Sep 17 00:00:00 2001
+From 71024c860e2d86c2ff02d5cb78bea617f466d7a7 Mon Sep 17 00:00:00 2001
 From: Sta Zhu <zhusidayoyo@hotmail.com>
-Date: Mon, 15 Jul 2024 17:12:05 +0800
+Date: Tue, 30 Jul 2024 22:45:31 +0800
 Subject: [PATCH] Video: Enable HEVC ffmpeg decoding
 
 This will consider all HEVC profile as to supported, let FFMpegVideoDecoder
 handle SW fallback and help you be able to play video's like HEVC Rext, SCC 
 etc... as long as ffmpeg support it.
 ---
- media/base/supported_types.cc         | 29 ++++-----------------------
- media/filters/ffmpeg_glue.cc          |  3 +++
- media/filters/ffmpeg_video_decoder.cc |  2 +-
- 3 files changed, 8 insertions(+), 26 deletions(-)
+ media/base/supported_types.cc         | 29 ++++++---------------------
+ media/filters/ffmpeg_glue.cc          |  2 +-
+ media/filters/ffmpeg_video_decoder.cc |  8 +++++---
+ 3 files changed, 12 insertions(+), 27 deletions(-)
 
 --- a/media/base/supported_types.cc
 +++ b/media/base/supported_types.cc
@@ -48,6 +48,17 @@ etc... as long as ffmpeg support it.
  }
  
  bool IsVp9ProfileSupported(const VideoType& type) {
+@@ -442,7 +416,9 @@
+ 
+ bool IsBuiltInVideoCodec(VideoCodec codec) {
+ #if BUILDFLAG(ENABLE_FFMPEG_VIDEO_DECODERS) && BUILDFLAG(USE_PROPRIETARY_CODECS)
+-  if (codec == VideoCodec::kH264 &&
++  // Android does bundle `FFMpegVideoDecoder` for `non-arm32` devices,
++  // but not enabled by default.
++  if ((codec == VideoCodec::kH264 || codec == VideoCodec::kHEVC) &&
+       base::FeatureList::IsEnabled(kBuiltInH264Decoder)) {
+     return true;
+   }
 --- a/media/filters/ffmpeg_glue.cc
 +++ b/media/filters/ffmpeg_glue.cc
 @@ -174,7 +174,7 @@
@@ -61,7 +72,15 @@ etc... as long as ffmpeg support it.
  #endif
 --- a/media/filters/ffmpeg_video_decoder.cc
 +++ b/media/filters/ffmpeg_video_decoder.cc
-@@ -82,7 +82,6 @@
+@@ -2,6 +2,7 @@
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
++#include "media/base/video_codecs.h"
+ #ifdef UNSAFE_BUFFERS_BUILD
+ // TODO(crbug.com/40285824): Remove this and convert code to safer constructs.
+ #pragma allow_unsafe_buffers
+@@ -82,7 +83,6 @@
      case VideoCodec::kUnknown:
      case VideoCodec::kVC1:
      case VideoCodec::kMPEG2:
@@ -69,7 +88,7 @@ etc... as long as ffmpeg support it.
      case VideoCodec::kVP9:
      case VideoCodec::kAV1:
      case VideoCodec::kDolbyVision:
-@@ -93,6 +92,7 @@
+@@ -93,6 +93,7 @@
        NOTREACHED();
  
      case VideoCodec::kH264:
@@ -77,7 +96,7 @@ etc... as long as ffmpeg support it.
        // Normalize to three threads for 1080p content, then scale linearly
        // with number of pixels.
        // Examples:
-@@ -126,8 +126,9 @@
+@@ -126,8 +127,9 @@
  
  // static
  bool FFmpegVideoDecoder::IsCodecSupported(VideoCodec codec) {
