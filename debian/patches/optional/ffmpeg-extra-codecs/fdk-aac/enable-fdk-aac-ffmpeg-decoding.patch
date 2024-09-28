@@ -1,6 +1,6 @@
 --- a/media/base/supported_types.cc
 +++ b/media/base/supported_types.cc
-@@ -274,9 +274,13 @@
+@@ -274,6 +274,9 @@
  }
  
  bool IsAACSupported(const AudioType& type) {
@@ -10,10 +10,14 @@
    if (type.profile != AudioCodecProfile::kXHE_AAC) {
      return true;
    }
-+#endif
- #if BUILDFLAG(ENABLE_MOJO_AUDIO_DECODER) && \
-     (BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN))
-   return GetSupplementalAudioTypeCache()->IsProfileSupported(type);
+@@ -283,6 +286,7 @@
+ #else
+   return false;
+ #endif
++#endif  //BUILDFLAG(IS_LINUX) && BUILDFLAG(USE_PROPRIETARY_CODECS)
+ }
+ 
+ bool IsDolbyVisionProfileSupported(const VideoType& type) {
 --- a/media/filters/ffmpeg_audio_decoder.cc
 +++ b/media/filters/ffmpeg_audio_decoder.cc
 @@ -96,15 +96,6 @@
