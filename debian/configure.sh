@@ -858,7 +858,7 @@ fi
 
 
 if [ $SYS_NOTIFICATIONS -eq 0 ]; then
-  ins_enable="$ins_enable sys-notifications"
+  ins_disable="$ins_disable sys-notifications"
 fi
 
 
