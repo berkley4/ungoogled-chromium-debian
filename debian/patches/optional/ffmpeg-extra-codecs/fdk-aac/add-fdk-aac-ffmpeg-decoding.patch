@@ -40,7 +40,7 @@
  import("ffmpeg_options.gni")
  
  # Declare empty versions of each variable for easier +=ing later.
-@@ -535,3 +536,113 @@
+@@ -558,3 +559,113 @@
      (is_android && current_cpu == "x86")) {
    ffmpeg_c_sources += [ "compat/strtod.c" ]
  }

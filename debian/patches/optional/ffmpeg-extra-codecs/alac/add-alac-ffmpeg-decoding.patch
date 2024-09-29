@@ -21,7 +21,7 @@
      &ff_pcm_mulaw_decoder,
 --- a/third_party/ffmpeg/ffmpeg_generated.gni
 +++ b/third_party/ffmpeg/ffmpeg_generated.gni
-@@ -272,6 +272,20 @@
+@@ -284,6 +284,20 @@
  
  if ((current_cpu == "arm64" && ffmpeg_branding == "Chrome") ||
      (current_cpu == "x64" && ffmpeg_branding == "Chrome") ||
@@ -42,7 +42,7 @@
      (is_android && current_cpu == "arm" && arm_use_neon &&
       ffmpeg_branding == "Chrome") ||
      (is_android && current_cpu == "x86" && ffmpeg_branding == "Chrome") ||
-@@ -465,6 +479,14 @@
+@@ -488,6 +502,14 @@
    ]
  }
  

@@ -179,6 +179,8 @@ optional/ffmpeg-extra-codecs/context-fixup.patch
 optional/ffmpeg-extra-codecs/hevc/add-hevc-ffmpeg-decoder-parser-for-linux.patch
 optional/ffmpeg-extra-codecs/hevc/add-hevc-ffmpeg-decoder-parser-for-linux-asm.patch
 optional/ffmpeg-extra-codecs/hevc/enable-hevc-ffmpeg-decoding.patch
+optional/ffmpeg-extra-codecs/ac3/add-ac3-ffmpeg-decoding.patch
+optional/ffmpeg-extra-codecs/ac3/enable-ac3-ffmpeg-decoding.patch
 optional/ffmpeg-extra-codecs/alac/add-alac-ffmpeg-decoding.patch
 optional/ffmpeg-extra-codecs/alac/enable-alac-ffmpeg-decoding.patch
 #optional/ffmpeg-extra-codecs/fdk-aac/add-fdk-aac-ffmpeg-decoding.patch

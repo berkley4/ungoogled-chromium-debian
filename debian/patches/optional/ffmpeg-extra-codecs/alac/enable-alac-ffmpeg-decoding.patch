@@ -39,7 +39,7 @@
  
 --- a/media/base/supported_types.cc
 +++ b/media/base/supported_types.cc
-@@ -393,11 +393,11 @@
+@@ -395,11 +395,11 @@
      case AudioCodec::kPCM_S24BE:
      case AudioCodec::kPCM_ALAW:
      case AudioCodec::kVorbis:

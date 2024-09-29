@@ -1,0 +1,147 @@
+--- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.asm
++++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.asm
+@@ -660,7 +660,7 @@
+ %define CONFIG_MUXERS 0
+ %define CONFIG_PROTOCOLS 0
+ %define CONFIG_AANDCTTABLES 0
+-%define CONFIG_AC3DSP 0
++%define CONFIG_AC3DSP 1
+ %define CONFIG_ADTS_HEADER 1
+ %define CONFIG_ATSC_A53 1
+ %define CONFIG_AUDIO_FRAME_QUEUE 0
+--- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
++++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
+@@ -10,7 +10,7 @@
+ #define CONFIG_DCA_CORE_BSF 0
+ #define CONFIG_DTS2PTS_BSF 0
+ #define CONFIG_DV_ERROR_MARKER_BSF 0
+-#define CONFIG_EAC3_CORE_BSF 0
++#define CONFIG_EAC3_CORE_BSF 1
+ #define CONFIG_EVC_FRAME_MERGE_BSF 0
+ #define CONFIG_EXTRACT_EXTRADATA_BSF 0
+ #define CONFIG_FILTER_UNITS_BSF 0
+@@ -338,7 +338,7 @@
+ #define CONFIG_ZEROCODEC_DECODER 0
+ #define CONFIG_ZLIB_DECODER 0
+ #define CONFIG_ZMBV_DECODER 0
+-#define CONFIG_AC3_DECODER 0
++#define CONFIG_AC3_DECODER 1
+ #define CONFIG_AC3_FIXED_DECODER 0
+ #define CONFIG_ACELP_KELVIN_DECODER 0
+ #define CONFIG_ALS_DECODER 0
+@@ -370,7 +370,7 @@
+ #define CONFIG_DSICINAUDIO_DECODER 0
+ #define CONFIG_DSS_SP_DECODER 0
+ #define CONFIG_DST_DECODER 0
+-#define CONFIG_EAC3_DECODER 0
++#define CONFIG_EAC3_DECODER 1
+ #define CONFIG_EVRC_DECODER 0
+ #define CONFIG_FASTAUDIO_DECODER 0
+ #define CONFIG_FFWAVESYNTH_DECODER 0
+@@ -953,7 +953,7 @@
+ #define CONFIG_WMV3_VDPAU_HWACCEL 0
+ #define CONFIG_AAC_PARSER 1
+ #define CONFIG_AAC_LATM_PARSER 0
+-#define CONFIG_AC3_PARSER 0
++#define CONFIG_AC3_PARSER 1
+ #define CONFIG_ADX_PARSER 0
+ #define CONFIG_AMR_PARSER 0
+ #define CONFIG_AV1_PARSER 0
+@@ -1621,7 +1621,7 @@
+ #define CONFIG_AA_DEMUXER 0
+ #define CONFIG_AAC_DEMUXER 1
+ #define CONFIG_AAX_DEMUXER 0
+-#define CONFIG_AC3_DEMUXER 0
++#define CONFIG_AC3_DEMUXER 1
+ #define CONFIG_AC4_DEMUXER 0
+ #define CONFIG_ACE_DEMUXER 0
+ #define CONFIG_ACM_DEMUXER 0
+@@ -1705,7 +1705,7 @@
+ #define CONFIG_DXA_DEMUXER 0
+ #define CONFIG_EA_DEMUXER 0
+ #define CONFIG_EA_CDATA_DEMUXER 0
+-#define CONFIG_EAC3_DEMUXER 0
++#define CONFIG_EAC3_DEMUXER 1
+ #define CONFIG_EPAF_DEMUXER 0
+ #define CONFIG_EVC_DEMUXER 0
+ #define CONFIG_FFMETADATA_DEMUXER 0
+--- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.h
++++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.h
+@@ -674,7 +674,7 @@
+ #define CONFIG_MUXERS 0
+ #define CONFIG_PROTOCOLS 0
+ #define CONFIG_AANDCTTABLES 0
+-#define CONFIG_AC3DSP 0
++#define CONFIG_AC3DSP 1
+ #define CONFIG_ADTS_HEADER 1
+ #define CONFIG_ATSC_A53 1
+ #define CONFIG_AUDIO_FRAME_QUEUE 0
+--- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/libavcodec/codec_list.c
++++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/libavcodec/codec_list.c
+@@ -13,6 +13,8 @@
+     &ff_pcm_s24le_decoder,
+     &ff_pcm_s32le_decoder,
+     &ff_pcm_u8_decoder,
++    &ff_ac3_decoder,
++    &ff_eac3_decoder,
+     &ff_libopus_decoder,
+     &ff_hevc_decoder,
+     NULL };
+--- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/libavcodec/parser_list.c
++++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/libavcodec/parser_list.c
+@@ -1,5 +1,6 @@
+ static const AVCodecParser * const parser_list[] = {
+     &ff_aac_parser,
++    &ff_ac3_parser,
+     &ff_flac_parser,
+     &ff_h264_parser,
+     &ff_mpegaudio_parser,
+--- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/libavformat/demuxer_list.c
++++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/libavformat/demuxer_list.c
+@@ -1,5 +1,7 @@
+ static const FFInputFormat * const demuxer_list[] = {
+     &ff_aac_demuxer,
++    &ff_ac3_demuxer,
++    &ff_eac3_demuxer,
+     &ff_flac_demuxer,
+     &ff_matroska_demuxer,
+     &ff_mov_demuxer,
+--- a/third_party/ffmpeg/ffmpeg_generated.gni
++++ b/third_party/ffmpeg/ffmpeg_generated.gni
+@@ -268,6 +268,18 @@
+     "libavcodec/h274.c",
+     "libavcodec/startcode.c",
+   ]
++
++  ffmpeg_c_sources += [
++    "libavcodec/ac3.c",
++    "libavcodec/ac3dec_data.c",
++    "libavcodec/ac3dec_float.c",
++    "libavcodec/ac3dsp.c",
++    "libavcodec/ac3tab.c",
++    "libavcodec/eac3_data.c",
++    "libavcodec/eac3dec.c",
++    "libavcodec/fmtconvert.c",
++    "libavformat/ac3dec.c",
++  ]
+ }
+ 
+ if ((current_cpu == "arm64" && ffmpeg_branding == "Chrome") ||
+@@ -463,6 +475,17 @@
+     "libavcodec/x86/sbrdsp_init.c",
+     "libavcodec/x86/videodsp_init.c",
+   ]
++
++  ffmpeg_c_sources += [
++    "libavcodec/x86/ac3dsp_init.c",
++    "libavcodec/x86/fmtconvert_init.c",
++ ]
++
++  ffmpeg_asm_sources += [
++    "libavcodec/x86/ac3dsp.asm",
++    "libavcodec/x86/ac3dsp_downmix.asm",
++    "libavcodec/x86/fmtconvert.asm",
++  ]
+ }
+ 
+ if (use_linux_config && current_cpu == "arm" && arm_use_neon &&

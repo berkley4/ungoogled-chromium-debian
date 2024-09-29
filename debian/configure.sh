@@ -77,6 +77,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$DRIVER" ] || DRIVER=1
 [ -n "$ENTERPRISE_WATERMARK" ] || ENTERPRISE_WATERMARK=0
 [ -n "$EXTENSIONS_ROOT_MENU" ] || EXTENSIONS_ROOT_MENU=0
+[ -n "$FF_AC3" ] || FF_AC3=1
 [ -n "$FF_ALAC" ] || FF_ALAC=1
 [ -n "$FF_FDK_AAC" ] || FF_FDK_AAC=0
 [ -n "$FF_HEVC" ] || FF_HEVC=1
@@ -719,10 +720,18 @@ if [ $EXTENSIONS_ROOT_MENU -eq 1 ]; then
 fi
 
 
+if [ $FF_AC3 -eq 0 ]; then
+  op_disable="$op_disable ffmpeg-extra-codecs/ac3/"
+  gn_disable="$gn_disable enable_platform_ac3_eac3_audio"
+else
+  FF_AUDIO=1
+fi
+
+
 if [ $FF_ALAC -eq 0 ]; then
   op_disable="$op_disable ffmpeg-extra-codecs/alac/"
 else
-  FF_AUDIO=1
+  FF_AUDIO=$((FF_AUDIO+2))
 fi
 
 
@@ -735,7 +744,7 @@ if [ $FF_FDK_AAC -eq 1 ]; then
     exit 1
   fi
 
-  FF_AUDIO=$((FF_AUDIO+2))
+  FF_AUDIO=$((FF_AUDIO+4))
 fi
 
 
@@ -963,11 +972,19 @@ if [ $FF_AUDIO -eq 0 ]; then
   op_disable="$op_disable ffmpeg-extra-codecs/context-fixup"
 else
   if [ $FF_AUDIO -eq 1 ]; then
-    FF_AD="aac,alac"
+    FF_AD="aac,ac3,eac3"
   elif [ $FF_AUDIO -eq 2 ]; then
-    FF_AD="libfdk_aac"
+    FF_AD="aac,alac"
   elif [ $FF_AUDIO -eq 3 ]; then
+    FF_AD="aac,ac3,eac3,alac"
+  elif [ $FF_AUDIO -eq 4 ]; then
+    FF_AD="libfdk_aac"
+  elif [ $FF_AUDIO -eq 5 ]; then
+    FF_AD="libfdk_aac,ac3,eac3"
+  elif [ $FF_AUDIO -eq 6 ]; then
     FF_AD="libfdk_aac,alac"
+  elif [ $FF_AUDIO -eq 7 ]; then
+    FF_AD="libfdk_aac,ac3,eac3,alac"
   fi
 
   sed "s@_ff_ac@$FF_AD@" -i $OP_DIR/ffmpeg-extra-codecs/audio-codecs.patch

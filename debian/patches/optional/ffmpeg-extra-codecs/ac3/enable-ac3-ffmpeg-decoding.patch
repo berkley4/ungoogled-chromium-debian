@@ -1,0 +1,24 @@
+--- a/media/base/supported_types.cc
++++ b/media/base/supported_types.cc
+@@ -305,6 +305,8 @@
+   return true;
+ #endif  // BUILDFLAG(ENABLE_MOJO_AUDIO_DECODER) && (BUILDFLAG(IS_WIN) ||
+         // BUILDFLAG(IS_MAC))
++#elif BUILDFLAG(IS_LINUX)
++  return true;
+ #else
+   return false;
+ #endif  // BUILDFLAG(ENABLE_PLATFORM_AC3_EAC3_AUDIO)
+--- a/media/ffmpeg/ffmpeg_common.cc
++++ b/media/ffmpeg/ffmpeg_common.cc
+@@ -168,6 +168,10 @@
+       return AV_CODEC_ID_PCM_MULAW;
+     case AudioCodec::kOpus:
+       return AV_CODEC_ID_OPUS;
++    case AudioCodec::kAC3:
++      return AV_CODEC_ID_AC3;
++    case AudioCodec::kEAC3:
++      return AV_CODEC_ID_EAC3;
+ #if BUILDFLAG(ENABLE_PLATFORM_MPEG_H_AUDIO)
+     case AudioCodec::kMpegHAudio:
+       return AV_CODEC_ID_MPEGH_3D_AUDIO;
