@@ -1,0 +1,39 @@
+From 60ff64ed13833eb67c522e31b3688311e47a202b Mon Sep 17 00:00:00 2001
+From: Amy Huang <akhuang@google.com>
+Date: Tue, 17 Sep 2024 19:23:46 +0000
+Subject: [PATCH] Enable ELF CREL, which reduces the size of ELF relocatable object files.
+
+Some docs about CREL:
+- https://discourse.llvm.org/t/rfc-crel-a-compact-relocation-format-for-elf/77600
+- https://maskray.me/blog/2024-03-09-a-compact-relocation-format-for-elf
+
+For a linux build of all targets, the total object file size went down 11% for a default build and 40% for an ASan build.
+
+Enable for linux only, because we are running into some linker crashes
+on Android.
+
+Bug: 357878242
+Change-Id: I98b279a880e3b9b23b766e349ae229922398d746
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5847372
+Reviewed-by: Hans Wennborg <hans@chromium.org>
+Commit-Queue: Amy Huang <akhuang@google.com>
+Reviewed-by: Arthur Eubanks <aeubanks@google.com>
+Cr-Commit-Position: refs/heads/main@{#1356653}
+---
+
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -558,6 +558,13 @@
+     } else {
+       ldflags += [ "-Wl,--color-diagnostics" ]
+     }
++
++    # Enable ELF CREL (see crbug.com/357878242) for all platforms that use ELF
++    # (excluding ChromeOS and NaCl toolchains). Exclude android because lld
++    # crashes due to the partitions feature that Android uses.
++    if (is_linux && !is_nacl) {
++        cflags += [ "-Wa,--crel,--allow-experimental-crel" ]
++    }
+   }
+ 
+   # Enable text section splitting only on linux when using lld for now. Other

@@ -50,6 +50,10 @@ CCACHE_BASEDIR		<dir>		Set CCACHE_BASEDIR to <dir> (must be an absolute path)
 			1		Set CCACHE_BASEDIR to the root directory of the source tree
 					Unless you have multiple source trees that you want to share with ccache then it's perhaps best to leave unset
 
+ELF_CREL		0		Reduces the size of ELF relocatable object files (in out/Release/obj) by around 10%
+					No effect on binary size but could save several hundred megabytes in disk space
+					Needs a new-enough clang/llvm toolchain
+
 ESBUILD			0		Use the faster ESbuild javascript bundler instead of the default rollup
 					The slight package size increase means this is probably only worth enabling on fast machines
 
