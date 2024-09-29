@@ -312,10 +312,7 @@ if [ $CCACHE -eq 1 ]; then
   esac
 
   case $CCACHE_BASEDIR in
-    ""|0)
-      : ;;
-
-    /*)
+    /*|1)
       RUL="$RUL -e \"/^#export CCACHE_BASEDIR=/s@^#@@\"" ;;
   esac
 fi
