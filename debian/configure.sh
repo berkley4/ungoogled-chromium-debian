@@ -17,6 +17,8 @@ sys_disable=; sys_enable=
 
 SER_DB=; SER_U=; SERIES_DB=; SERIES_UC=
 
+FF_AUDIO=0; FF_AD=
+
 CLANG_VER_SET=0
 DBUS_SET=0
 MARCH_SET=0
@@ -719,6 +721,8 @@ fi
 
 if [ $FF_ALAC -eq 0 ]; then
   op_disable="$op_disable ffmpeg-extra-codecs/alac/"
+else
+  FF_AUDIO=1
 fi
 
 
@@ -730,6 +734,8 @@ if [ $FF_FDK_AAC -eq 1 ]; then
     printf '%s\n' "ERROR: Cannot find $FDK_DIR"
     exit 1
   fi
+
+  FF_AUDIO=$((FF_AUDIO+2))
 fi
 
 
@@ -947,6 +953,24 @@ fi
 if [ $WIDEVINE -eq 0 ]; then
   op_disable="$op_disable fixes/widevine/"
   SMF="$SMF -e \"/^enable_widevine=/s@true@false@\""
+fi
+
+
+
+## Handle audio codecs with a single patch to avoid patch conflict
+if [ $FF_AUDIO -eq 0 ]; then
+  op_disable="$op_disable ffmpeg-extra-codecs/audio-codecs"
+  op_disable="$op_disable ffmpeg-extra-codecs/context-fixup"
+else
+  if [ $FF_AUDIO -eq 1 ]; then
+    FF_AD="aac,alac"
+  elif [ $FF_AUDIO -eq 2 ]; then
+    FF_AD="libfdk_aac"
+  elif [ $FF_AUDIO -eq 3 ]; then
+    FF_AD="libfdk_aac,alac"
+  fi
+
+  sed "s@_ff_ac@$FF_AD@" -i $OP_DIR/ffmpeg-extra-codecs/audio-codecs.patch
 fi
 
 
