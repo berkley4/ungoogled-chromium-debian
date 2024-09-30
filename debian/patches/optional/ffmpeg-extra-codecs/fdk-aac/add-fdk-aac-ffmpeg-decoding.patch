@@ -11,6 +11,15 @@
  #define CONFIG_LIBARIBB24 0
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
+@@ -45,7 +45,7 @@
+ #define CONFIG_VP9_SUPERFRAME_SPLIT_BSF 0
+ #define CONFIG_VVC_METADATA_BSF 0
+ #define CONFIG_VVC_MP4TOANNEXB_BSF 0
+-#define CONFIG_AAC_DECODER 1
++#define CONFIG_AAC_DECODER 0
+ #define CONFIG_AAC_FIXED_DECODER 0
+ #define CONFIG_AAC_LATM_DECODER 0
+ #define CONFIG_AASC_DECODER 0
 @@ -579,7 +579,7 @@
  #define CONFIG_LIBCODEC2_DECODER 0
  #define CONFIG_LIBDAV1D_DECODER 0
@@ -40,7 +49,27 @@
  import("ffmpeg_options.gni")
  
  # Declare empty versions of each variable for easier +=ing later.
-@@ -558,3 +559,113 @@
+@@ -305,19 +306,9 @@
+     (is_win && ffmpeg_branding == "Chrome") ||
+     (use_linux_config && ffmpeg_branding == "Chrome")) {
+   ffmpeg_c_sources += [
+-    "libavcodec/aac/aacdec.c",
+-    "libavcodec/aac/aacdec_float.c",
+-    "libavcodec/aac/aacdec_tab.c",
+     "libavcodec/aac_ac3_parser.c",
+     "libavcodec/aac_parser.c",
+-    "libavcodec/aacps_common.c",
+-    "libavcodec/aacps_float.c",
+-    "libavcodec/aacpsdsp_float.c",
+-    "libavcodec/aacsbr.c",
+-    "libavcodec/aactab.c",
+     "libavcodec/adts_header.c",
+-    "libavcodec/autorename_libavcodec_sbrdsp.c",
+-    "libavcodec/cbrt_data.c",
+     "libavcodec/kbdwin.c",
+     "libavcodec/sinewin.c",
+     "libavformat/apetag.c",
+@@ -558,3 +549,113 @@
      (is_android && current_cpu == "x86")) {
    ffmpeg_c_sources += [ "compat/strtod.c" ]
  }
