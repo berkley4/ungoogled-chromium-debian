@@ -79,7 +79,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$ENTERPRISE_WATERMARK" ] || ENTERPRISE_WATERMARK=0
 [ -n "$EXTENSIONS_ROOT_MENU" ] || EXTENSIONS_ROOT_MENU=0
 [ -n "$FF_AC3" ] || FF_AC3=1
-[ -n "$FF_ALAC" ] || FF_ALAC=1
+[ -n "$FF_ALAC" ] || FF_ALAC=0
 [ -n "$FF_FDK_AAC" ] || FF_FDK_AAC=0
 [ -n "$FF_HEVC" ] || FF_HEVC=1
 [ -n "$GL_DESKTOP_FRONTEND" ] || GL_DESKTOP_FRONTEND=0
@@ -734,9 +734,8 @@ else
 fi
 
 
-if [ $FF_ALAC -eq 0 ]; then
-  op_disable="$op_disable ffmpeg-extra-codecs/alac/"
-else
+if [ $FF_ALAC -eq 1 ]; then
+  op_enable="$op_enable ffmpeg-extra-codecs/alac/"
   FF_AUDIO=$((FF_AUDIO+2))
 fi
 

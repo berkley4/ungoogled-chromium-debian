@@ -103,7 +103,7 @@ ___Other features___
 - System libraries are enabled only when they don't clash with built-in libraries
 - Experimental Opentype SVG support (via third party patches)
 - HEVC (h265) playback support (via third party patches)
-- ALAC (Apple Lossless Audio Codec) playblack support
+- ALAC (Apple Lossless Audio Codec) playblack support (build support only)
 - xHE-AAC playback support via the FDK AAC decodert (build support only)
 - The shell launcher has the ability to block switches (aka flags)
 

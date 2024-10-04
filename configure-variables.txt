@@ -110,7 +110,7 @@ DBUS			1		Disabling this will disable dbus, its interaction with bluetooth (blue
 ENTERPRISE_WATERMARK	0		Watermarking security/privacy feature (for Chrome Enterprise Premium users)
 EXTENSIONS_ROOT_MENU	0		Whether to put the extensions menu in the root menu (0 = put in 'More tools' menu)
 FF_AC3			1		AC3/EAC3 playback support
-FF_ALAC			1		ALAC (Apple Lossless Audio Codec) playback support
+FF_ALAC			0		ALAC (Apple Lossless Audio Codec) playback support
 FF_FDK_AAC		0		Enable AAC playback via the fraunhofer FDK AAC decoder (supports xHE-AAC decoding)
 					Requires FF_EXTRA_CODECS=1 and NON_FREE=1
 FF_HEVC			1		HEVC (H.265) playback support
