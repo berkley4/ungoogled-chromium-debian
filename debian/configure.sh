@@ -19,6 +19,7 @@ SER_DB=; SER_U=; SERIES_DB=; SERIES_UC=
 
 FF_AUDIO=0; FF_AD=
 
+BLUEZ_SET=0
 CLANG_VER_SET=0
 DBUS_SET=0
 MARCH_SET=0
@@ -191,6 +192,17 @@ fi
 ## Make NOTIFICATIONS an alias for DBUS (but have DBUS take precedence)
 [ -n "$DBUS" ] && DBUS_SET=1 || DBUS=1
 [ -z "$NOTIFICATIONS" ] || [ $DBUS_SET -eq 1 ] || DBUS=$NOTIFICATIONS
+
+
+## Check if BLUEZ is explicitly set
+[ -n "$BLUEZ" ] && BLUEZ_SET=1 || BLUEZ=1
+
+## DBUS=0 will (implicitly) disable BLUEZ
+## Only error out if BLUEZ is explicitly enabled when DBUS=0
+if [ $BLUEZ_SET -eq 1 ] && [ $BLUEZ -eq 1 ] && [ $DBUS -eq 0 ]; then
+  printf '%s\n' "ERROR: Cannot set BLUEZ=1 when DBUS=0 (BLUEZ depends on DBUS)"
+  exit 1
+fi
 
 
 
@@ -702,6 +714,12 @@ if [ $DBUS -eq 0 ]; then
   deps_disable="$deps_disable libdbus-1"
 
   SYS_NOTIFICATIONS=0
+else
+  # BLUEZ=0 should only effect DBUS=1
+  if [ $BLUEZ -eq 0 ]; then
+    op_enable="$op_enable disable/bluez"
+    gn_enable="$gn_enable use_bluez=false"
+  fi
 fi
 
 

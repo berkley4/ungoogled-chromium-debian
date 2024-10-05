@@ -75,6 +75,7 @@ ___Security/Privacy improvements___
 - Reduced attack surface
     - Some components/features can variously be disabled/patched out at compile time
         - ATK
+        - Bluez
         - Catapult
         - Click-to-call
         - Compose (autofill)

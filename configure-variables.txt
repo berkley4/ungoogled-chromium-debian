@@ -98,6 +98,9 @@ DRIVER			1		Chromedriver package
 
 ASYNC_LEVELDB		1		Asynchronous leveldb protocol writes (faster when enabled)
 ATK			1		Accessibility toolkit
+BLUEZ			1		Support for the linux bluetooth protocol stack
+					Note that BLUEZ=0 is only effective when DBUS=1 since the former is effectively a subset of DBUS=0 
+
 CATAPULT		0		Catapult profiling support
 CHROMECAST		1		0 - disable (will also disable MEDIA_REMOTING)
 					1 - enable (need to edit /etc/chromium.d/network)
@@ -105,7 +108,8 @@ CHROMECAST		1		0 - disable (will also disable MEDIA_REMOTING)
 
 CLICK_TO_CALL		1		Feature for using chromium to make a call via an android phone
 COMPOSE			1		An autofill-related feature which can be disabled by those who don't use autofill
-DBUS			1		Disabling this will disable dbus, its interaction with bluetooth (bluez) and the notifications system
+DBUS			1		Disabling this will disable dbusand the notifications system
+					Note that DBUS=0 is a effectively a superset of BLUEZ=0 (use_dbus=false makes use_bluez false)
 
 ENTERPRISE_WATERMARK	0		Watermarking security/privacy feature (for Chrome Enterprise Premium users)
 EXTENSIONS_ROOT_MENU	0		Whether to put the extensions menu in the root menu (0 = put in 'More tools' menu)

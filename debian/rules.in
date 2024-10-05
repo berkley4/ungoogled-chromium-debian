@@ -124,6 +124,9 @@ GN_FLAGS += enable_platform_ac3_eac3_audio=true
 # Disable ATK
 #GN_FLAGS += use_atk=false
 
+# Disable bluez
+#GN_FLAGS += use_bluez=false
+
 # Disable click-to-call
 #GN_FLAGS += enable_click_to_call=false
 
