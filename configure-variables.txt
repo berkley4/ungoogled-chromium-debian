@@ -186,12 +186,6 @@ SYS_JPEG		1		Set to zero if building for both debian and ubuntu (unsupported)
 SYS_OPENH264		1		The bundled OpenH264 library (SYS_OPENH264=0) cannot be redistributed
 
 
-# Unsupported
-SYS_FFMPEG		0		Unsupported upstream for security reasons
-					Functional issues (eg media not playing)
-					Only enable if you have patched and rebuilt your system ffmpeg
-
-
 ## CPU threading options
 
 LTO_JOBS		0		<0-99> : number of threads to use for linking (with lld)

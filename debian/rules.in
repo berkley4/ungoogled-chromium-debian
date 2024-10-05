@@ -302,12 +302,6 @@ GN_FLAGS += icu_copy_icudata_to_root_build_dir=false
 #SYS_LIBS += libpng
 
 
-### UNSUPPORTED - unbundling ffmeg is buggy/problematic
-
-# If your system ffmpeg is self-built with patches from system_ffmpeg
-#SYS_LIBS += ffmpeg
-
-
 # Add extra flags for system libs
 GN_FLAGS +=				\
         perfetto_use_system_zlib=true	\

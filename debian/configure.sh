@@ -118,7 +118,6 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$WIDEVINE" ] || WIDEVINE=1
 [ -n "$ZSTD" ] || ZSTD=0
 
-[ -n "$SYS_FFMPEG" ] || SYS_FFMPEG=0
 [ -n "$SYS_ICU" ] || SYS_ICU=0
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
 
@@ -1063,14 +1062,6 @@ if [ $VAAPI -eq 0 ]; then
   ins_disable="$ins_disable 10-chromium.conf"
 fi
 
-
-
-if [ $SYS_FFMPEG -eq 1 ]; then
-  op_enable="$op_enable system/unstable/ffmpeg/"
-
-  sys_enable="$sys_enable ffmpeg"
-  deps_enable="$deps_enable libavutil libavcodec libavformat"
-fi
 
 
 if [ $SYS_JPEG -eq 0 ]; then

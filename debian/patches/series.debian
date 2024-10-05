@@ -211,9 +211,6 @@ optional/system/openh264.patch
 #optional/system/clang/rust-clanglib.patch
 optional/system/unstable/dav1d/dav1d.patch
 optional/system/unstable/dav1d/dav1d-bundled-libavif.patch
-#optional/system/unstable/ffmpeg/ffmpeg-first_dts.patch
-#optional/system/unstable/ffmpeg/roll-src-third_party-ffmpeg-102.patch
-#optional/system/unstable/ffmpeg/roll-src-third_party-ffmpeg-106.patch
 optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
 optional/system/vaapi/zero-copy-for-VA-API-video-decoding-for-vulkan.patch
 optional/system/vaapi/zero-copy-video-formats-with-GL-on-Linux.patch
