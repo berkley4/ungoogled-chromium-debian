@@ -17,7 +17,7 @@ sys_disable=; sys_enable=
 
 SER_DB=; SER_U=; SERIES_DB=; SERIES_UC=
 
-FF_AUDIO=0; FF_AD=
+FF_AUDIO=0; FF_AC=
 
 BLUEZ_SET=0
 CLANG_VER_SET=0
@@ -994,22 +994,22 @@ if [ $FF_AUDIO -eq 0 ]; then
   op_disable="$op_disable ffmpeg-extra-codecs/context-fixup"
 else
   if [ $FF_AUDIO -eq 1 ]; then
-    FF_AD="aac,ac3,eac3"
+    FF_AC="aac,ac3,eac3"
   elif [ $FF_AUDIO -eq 2 ]; then
-    FF_AD="aac,alac"
+    FF_AC="aac,alac"
   elif [ $FF_AUDIO -eq 3 ]; then
-    FF_AD="aac,ac3,eac3,alac"
+    FF_AC="aac,ac3,eac3,alac"
   elif [ $FF_AUDIO -eq 4 ]; then
-    FF_AD="libfdk_aac"
+    FF_AC="libfdk_aac"
   elif [ $FF_AUDIO -eq 5 ]; then
-    FF_AD="libfdk_aac,ac3,eac3"
+    FF_AC="libfdk_aac,ac3,eac3"
   elif [ $FF_AUDIO -eq 6 ]; then
-    FF_AD="libfdk_aac,alac"
+    FF_AC="libfdk_aac,alac"
   elif [ $FF_AUDIO -eq 7 ]; then
-    FF_AD="libfdk_aac,ac3,eac3,alac"
+    FF_AC="libfdk_aac,ac3,eac3,alac"
   fi
 
-  sed "s@_ff_ac@$FF_AD@" -i $OP_DIR/ffmpeg-extra-codecs/audio-codecs.patch
+  sed "s@_ff_ac@$FF_AC@" -i $OP_DIR/ffmpeg-extra-codecs/audio-codecs.patch
 fi
 
 
