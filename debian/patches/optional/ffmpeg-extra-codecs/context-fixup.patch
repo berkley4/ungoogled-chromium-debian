@@ -32,3 +32,29 @@
  #define CONFIG_BINKAUDIO_DCT_DECODER 0
  #define CONFIG_BINKAUDIO_RDFT_DECODER 0
  #define CONFIG_BMV_AUDIO_DECODER 0
+@@ -1622,7 +1622,6 @@
+ #define CONFIG_AAC_DEMUXER 1
+ #define CONFIG_AAX_DEMUXER 0
+ #define CONFIG_AC3_DEMUXER 0
+-#define CONFIG_AC4_DEMUXER 0
+ #define CONFIG_ACE_DEMUXER 0
+ #define CONFIG_ACM_DEMUXER 0
+ #define CONFIG_ACT_DEMUXER 0
+@@ -1662,6 +1661,7 @@
+ #define CONFIG_AVS_DEMUXER 0
+ #define CONFIG_AVS2_DEMUXER 0
+ #define CONFIG_AVS3_DEMUXER 0
++#define CONFIG_AC4_DEMUXER 0
+ #define CONFIG_BETHSOFTVID_DEMUXER 0
+ #define CONFIG_BFI_DEMUXER 0
+ #define CONFIG_BINTEXT_DEMUXER 0
+--- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/libavcodec/codec_list.c
++++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/libavcodec/codec_list.c
+@@ -1,6 +1,6 @@
+ static const FFCodec * const codec_list[] = {
+-    &ff_h264_decoder,
+     &ff_aac_decoder,
++    &ff_h264_decoder,
+     &ff_flac_decoder,
+     &ff_mp3_decoder,
+     &ff_vorbis_decoder,

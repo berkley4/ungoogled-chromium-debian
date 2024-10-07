@@ -118,6 +118,9 @@ GN_FLAGS +=					\
 # Enable AC3/EAC3 decoding
 GN_FLAGS += enable_platform_ac3_eac3_audio=true
 
+# Enable AC4 decoding
+#GN_FLAGS += enable_platform_ac4_audio=true
+
 # Enable angle GL (GLX) desktop frontend
 #GN_FLAGS += angle_enable_gl_desktop_frontend=true
 

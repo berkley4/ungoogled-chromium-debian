@@ -80,6 +80,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$ENTERPRISE_WATERMARK" ] || ENTERPRISE_WATERMARK=0
 [ -n "$EXTENSIONS_ROOT_MENU" ] || EXTENSIONS_ROOT_MENU=0
 [ -n "$FF_AC3" ] || FF_AC3=1
+[ -n "$FF_AC4" ] || FF_AC4=0
 [ -n "$FF_ALAC" ] || FF_ALAC=0
 [ -n "$FF_FDK_AAC" ] || FF_FDK_AAC=0
 [ -n "$FF_HEVC" ] || FF_HEVC=1
@@ -751,9 +752,16 @@ else
 fi
 
 
+if [ $FF_AC4 -eq 1 ]; then
+  op_enable="$op_enable ffmpeg-extra-codecs/ac4/"
+  gn_enable="$gn_enable enable_platform_ac4_audio"
+  FF_AUDIO=$((FF_AUDIO+2))
+fi
+
+
 if [ $FF_ALAC -eq 1 ]; then
   op_enable="$op_enable ffmpeg-extra-codecs/alac/"
-  FF_AUDIO=$((FF_AUDIO+2))
+  FF_AUDIO=$((FF_AUDIO+4))
 fi
 
 
@@ -766,7 +774,7 @@ if [ $FF_FDK_AAC -eq 1 ]; then
     exit 1
   fi
 
-  FF_AUDIO=$((FF_AUDIO+4))
+  FF_AUDIO=$((FF_AUDIO+8))
 fi
 
 
@@ -996,17 +1004,33 @@ else
   if [ $FF_AUDIO -eq 1 ]; then
     FF_AC="aac,ac3,eac3"
   elif [ $FF_AUDIO -eq 2 ]; then
-    FF_AC="aac,alac"
+    FF_AC="aac,ac4"
   elif [ $FF_AUDIO -eq 3 ]; then
-    FF_AC="aac,ac3,eac3,alac"
+    FF_AC="aac,ac3,eac3,ac4"
   elif [ $FF_AUDIO -eq 4 ]; then
-    FF_AC="libfdk_aac"
+    FF_AC="aac,alac"
   elif [ $FF_AUDIO -eq 5 ]; then
-    FF_AC="libfdk_aac,ac3,eac3"
+    FF_AC="aac,ac3,eac3,alac"
   elif [ $FF_AUDIO -eq 6 ]; then
-    FF_AC="libfdk_aac,alac"
+    FF_AC="aac,ac4,alac"
   elif [ $FF_AUDIO -eq 7 ]; then
+    FF_AC="aac,ac3,eac3,ac4,alac"
+  elif [ $FF_AUDIO -eq 8 ]; then
+    FF_AC="libfdk_aac"
+  elif [ $FF_AUDIO -eq 9 ]; then
+    FF_AC="libfdk_aac,ac3,eac3"
+  elif [ $FF_AUDIO -eq 10 ]; then
+    FF_AC="libfdk_aac,ac4"
+  elif [ $FF_AUDIO -eq 11 ]; then
+    FF_AC="libfdk_aac,ac3,eac3,ac4"
+  elif [ $FF_AUDIO -eq 12 ]; then
+    FF_AC="libfdk_aac,alac"
+  elif [ $FF_AUDIO -eq 13 ]; then
     FF_AC="libfdk_aac,ac3,eac3,alac"
+  elif [ $FF_AUDIO -eq 14 ]; then
+    FF_AC="libfdk_aac,ac4,alac"
+  elif [ $FF_AUDIO -eq 15 ]; then
+    FF_AC="libfdk_aac,ac3,eac3,ac4,alac"
   fi
 
   sed "s@_ff_ac@$FF_AC@" -i $OP_DIR/ffmpeg-extra-codecs/audio-codecs.patch

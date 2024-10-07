@@ -11,17 +11,17 @@
  #define CONFIG_BMV_AUDIO_DECODER 0
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/libavcodec/codec_list.c
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/libavcodec/codec_list.c
-@@ -4,6 +4,7 @@
-     &ff_flac_decoder,
-     &ff_mp3_decoder,
-     &ff_vorbis_decoder,
-+    &ff_alac_decoder,
-     &ff_pcm_alaw_decoder,
+@@ -9,6 +9,7 @@
      &ff_pcm_f32le_decoder,
      &ff_pcm_mulaw_decoder,
+     &ff_pcm_s16be_decoder,
++    &ff_alac_decoder,
+     &ff_pcm_s16le_decoder,
+     &ff_pcm_s24be_decoder,
+     &ff_pcm_s24le_decoder,
 --- a/third_party/ffmpeg/ffmpeg_generated.gni
 +++ b/third_party/ffmpeg/ffmpeg_generated.gni
-@@ -284,6 +284,20 @@
+@@ -289,6 +289,20 @@
  
  if ((current_cpu == "arm64" && ffmpeg_branding == "Chrome") ||
      (current_cpu == "x64" && ffmpeg_branding == "Chrome") ||
@@ -42,7 +42,7 @@
      (is_android && current_cpu == "arm" && arm_use_neon &&
       ffmpeg_branding == "Chrome") ||
      (is_android && current_cpu == "x86" && ffmpeg_branding == "Chrome") ||
-@@ -488,6 +502,14 @@
+@@ -493,6 +507,14 @@
    ]
  }
  

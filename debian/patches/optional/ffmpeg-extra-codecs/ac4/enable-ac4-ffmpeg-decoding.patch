@@ -1,0 +1,65 @@
+--- a/media/base/supported_types.cc
++++ b/media/base/supported_types.cc
+@@ -313,15 +313,17 @@
+ }
+ 
+ bool IsDolbyAc4Supported(const AudioType& type) {
+-#if BUILDFLAG(ENABLE_PLATFORM_AC4_AUDIO) && \
+-    BUILDFLAG(ENABLE_MOJO_AUDIO_DECODER) && BUILDFLAG(IS_WIN)
++#if BUILDFLAG(ENABLE_PLATFORM_AC4_AUDIO)
++#if BUILDFLAG(ENABLE_MOJO_AUDIO_DECODER) && BUILDFLAG(IS_WIN)
+   return GetSupplementalAudioTypeCache()->IsProfileSupported(type);
++#elif BUILDFLAG(IS_LINUX)
++  return true;
+ #else
+   return false;
+-#endif  // BUILDFLAG(ENABLE_PLATFORM_AC4_AUDIO) &&
+-        // BUILDFLAG(ENABLE_MOJO_AUDIO_DECODER) && BUILDFLAG(IS_WIN)
++#endif  // BUILDFLAG(ENABLE_MOJO_AUDIO_DECODER) && BUILDFLAG(IS_WIN)
+ }
+ 
++#endif  // BUILDFLAG(ENABLE_PLATFORM_AC4_AUDIO)
+ }  // namespace
+ 
+ bool IsSupportedAudioType(const AudioType& type) {
+--- a/media/ffmpeg/ffmpeg_common.cc
++++ b/media/ffmpeg/ffmpeg_common.cc
+@@ -95,6 +95,10 @@
+     case AV_CODEC_ID_EAC3:
+       return AudioCodec::kEAC3;
+ #endif
++#if BUILDFLAG(ENABLE_PLATFORM_AC4_AUDIO)
++    case AV_CODEC_ID_AC4:
++      return AudioCodec::kAC4;
++#endif
+     case AV_CODEC_ID_MP3:
+       return AudioCodec::kMP3;
+     case AV_CODEC_ID_VORBIS:
+@@ -172,6 +176,8 @@
+       return AV_CODEC_ID_AC3;
+     case AudioCodec::kEAC3:
+       return AV_CODEC_ID_EAC3;
++    case AudioCodec::kAC4:
++      return AV_CODEC_ID_AC4;
+ #if BUILDFLAG(ENABLE_PLATFORM_MPEG_H_AUDIO)
+     case AudioCodec::kMpegHAudio:
+       return AV_CODEC_ID_MPEGH_3D_AUDIO;
+@@ -349,7 +355,8 @@
+     // not fill |sample_fmt|.
+     case AudioCodec::kAC3:
+     case AudioCodec::kEAC3:
+-#if BUILDFLAG(ENABLE_PLATFORM_AC3_EAC3_AUDIO)
++    case AudioCodec::kAC4:
++#if BUILDFLAG(ENABLE_PLATFORM_AC3_EAC3_AUDIO) || BUILDFLAG(ENABLE_PLATFORM_AC4_AUDIO)
+       // The spec for AC3/EAC3 audio is ETSI TS 102 366. According to sections
+       // F.3.1 and F.5.1 in that spec the sample_format for AC3/EAC3 must be 16.
+       sample_format = kSampleFormatS16;
+@@ -399,7 +406,7 @@
+ #if BUILDFLAG(ENABLE_PLATFORM_AC3_EAC3_AUDIO)
+   // These are bitstream formats unknown to ffmpeg, so they don't have
+   // a known sample format size.
+-  if (codec == AudioCodec::kAC3 || codec == AudioCodec::kEAC3)
++  if (codec == AudioCodec::kAC3 || codec == AudioCodec::kEAC3 || codec == AudioCodec::kAC4)
+     return true;
+ #endif
+ #if BUILDFLAG(ENABLE_PLATFORM_MPEG_H_AUDIO)
