@@ -149,6 +149,9 @@ GN_FLAGS += enterprise_watermark=false
 #GN_FLAGS += headless_enable_commands=false headless_mode_policy_supported=false
 #GN_FLAGS += headless_use_policy=false headless_use_prefs=false ozone_platform_headless=false
 
+# Enable HEVC (h265) decoding
+GN_FLAGS += enable_platform_hevc=true
+
 # Enable HLS manifest parser and demuxer
 GN_FLAGS += enable_hls_demuxer=true
 

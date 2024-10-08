@@ -780,6 +780,7 @@ fi
 
 if [ $FF_HEVC -eq 0 ]; then
   op_disable="$op_disable ffmpeg-extra-codecs/hevc/"
+  gn_disable="$gn_disable enable_platform_hevc"
 fi
 
 
