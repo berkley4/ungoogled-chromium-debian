@@ -1,0 +1,197 @@
+From 7b4da00804526d4843494187913741a5baa9b20a Mon Sep 17 00:00:00 2001
+From: Kramer Ge <fangzhoug@chromium.org>
+Date: Thu, 03 Oct 2024 17:53:11 +0000
+Subject: [PATCH] Plumb native pixmap formats that can be imported the GL context
+
+On Ozone/X11, this list contains only BGRA_8888. Hence, it prevents
+unintentionally allowing vaapi video decoder from being used.
+
+Bug: 343352540
+Change-Id: I1b25f4903ca30be13407feb2a144f5009ccc00a6
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5899270
+Reviewed-by: Peter McNeeley <petermcneeley@chromium.org>
+Commit-Queue: Kramer Ge <fangzhoug@chromium.org>
+Reviewed-by: Colin Blundell <blundell@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1363738}
+---
+
+--- a/gpu/config/gpu_feature_info.h
++++ b/gpu/config/gpu_feature_info.h
+@@ -11,6 +11,7 @@
+ #include <string>
+ #include <vector>
+ 
++#include "build/build_config.h"
+ #include "gpu/config/gpu_feature_type.h"
+ #include "gpu/gpu_export.h"
+ 
+@@ -70,6 +71,11 @@
+   // by the platform.
+   std::vector<gfx::BufferFormat>
+       supported_buffer_formats_for_allocation_and_texturing;
++#if BUILDFLAG(IS_OZONE)
++  // BufferFormats of native pixmaps that can be imported in GL context.
++  std::vector<gfx::BufferFormat>
++      supported_buffer_formats_for_gl_native_pixmap_import;
++#endif  // BUILDFLAG(IS_OZONE)
+ };
+ 
+ }  // namespace gpu
+--- a/gpu/ipc/service/gpu_init.cc
++++ b/gpu/ipc/service/gpu_init.cc
+@@ -757,6 +757,11 @@
+       ui::OzonePlatform::GetInstance()
+           ->GetSurfaceFactoryOzone()
+           ->GetSupportedFormatsForTexturing();
++  std::vector<gfx::BufferFormat>
++      supported_buffer_formats_for_gl_native_pixmap_import =
++          ui::OzonePlatform::GetInstance()
++              ->GetSurfaceFactoryOzone()
++              ->GetSupportedFormatsForGLNativePixmapImport();
+ #endif  // BUILDFLAG(IS_OZONE)
+ 
+   InitializePlatformOverlaySettings(&gpu_info_, gpu_feature_info_);
+@@ -876,6 +881,8 @@
+   ui::OzonePlatform::GetInstance()->AfterSandboxEntry();
+   gpu_feature_info_.supported_buffer_formats_for_allocation_and_texturing =
+       std::move(supported_buffer_formats_for_texturing);
++  gpu_feature_info_.supported_buffer_formats_for_gl_native_pixmap_import =
++      std::move(supported_buffer_formats_for_gl_native_pixmap_import);
+   [[maybe_unused]] auto* factory =
+       ui::OzonePlatform::GetInstance()->GetSurfaceFactoryOzone();
+   bool filter_set = false;
+@@ -1091,8 +1098,15 @@
+       ui::OzonePlatform::GetInstance()
+           ->GetSurfaceFactoryOzone()
+           ->GetSupportedFormatsForTexturing();
++  const std::vector<gfx::BufferFormat>
++      supported_buffer_formats_for_gl_native_pixmap_import =
++          ui::OzonePlatform::GetInstance()
++              ->GetSurfaceFactoryOzone()
++              ->GetSupportedFormatsForGLNativePixmapImport();
+   gpu_feature_info_.supported_buffer_formats_for_allocation_and_texturing =
+       std::move(supported_buffer_formats_for_texturing);
++  gpu_feature_info_.supported_buffer_formats_for_gl_native_pixmap_import =
++      std::move(supported_buffer_formats_for_gl_native_pixmap_import);
+ #endif
+ 
+   DisableInProcessGpuVulkan(&gpu_feature_info_, &gpu_preferences_);
+--- a/media/mojo/services/gpu_mojo_media_client_linux.cc
++++ b/media/mojo/services/gpu_mojo_media_client_linux.cc
+@@ -6,6 +6,7 @@
+ 
+ #include "base/metrics/histogram_functions.h"
+ #include "base/task/sequenced_task_runner.h"
++#include "gpu/config/gpu_feature_info.h"
+ #include "media/base/audio_decoder.h"
+ #include "media/base/audio_encoder.h"
+ #include "media/base/media_log.h"
+@@ -13,6 +14,7 @@
+ #include "media/gpu/chromeos/mailbox_video_frame_converter.h"
+ #include "media/gpu/chromeos/platform_video_frame_pool.h"
+ #include "media/gpu/chromeos/video_decoder_pipeline.h"
++#include "ui/gfx/buffer_types.h"
+ 
+ namespace media {
+ 
+@@ -47,7 +49,8 @@
+ }
+ 
+ std::vector<Fourcc> GetPreferredRenderableFourccs(
+-    const gpu::GpuPreferences& gpu_preferences) {
++    const gpu::GpuPreferences& gpu_preferences,
++    const gpu::GpuFeatureInfo& gpu_feature_info) {
+   std::vector<Fourcc> renderable_fourccs;
+ #if BUILDFLAG(ENABLE_VULKAN)
+   // Support for zero-copy NV12/P010 textures preferentially.
+@@ -56,13 +59,29 @@
+     renderable_fourccs.emplace_back(Fourcc::P010);
+   } else
+ #endif  // BUILDFLAG(ENABLE_VULKAN)
++#if BUILDFLAG(IS_OZONE)
+     // Allow zero-copy formats with GL for testing or in controlled
+     // environments.
+     if (gpu_preferences.gr_context_type == gpu::GrContextType::kGL &&
+         base::FeatureList::IsEnabled(kVaapiVideoDecodeLinuxZeroCopyGL)) {
+-      renderable_fourccs.emplace_back(Fourcc::NV12);
+-      renderable_fourccs.emplace_back(Fourcc::P010);
++      // Importing NV12 and P010 buffers requires EGL_EXT_image_dma_buf_import.
++      // GLX can only import native pixmap of format AR24. Ozone expose this
++      // capability through gpu_feature_info so we can selectively allow hw
++      // accelerated formats.
++      if (base::Contains(
++              gpu_feature_info
++                  .supported_buffer_formats_for_gl_native_pixmap_import,
++              gfx::BufferFormat::YUV_420_BIPLANAR)) {
++        renderable_fourccs.emplace_back(Fourcc::NV12);
++      }
++      if (base::Contains(
++              gpu_feature_info
++                  .supported_buffer_formats_for_gl_native_pixmap_import,
++              gfx::BufferFormat::P010)) {
++        renderable_fourccs.emplace_back(Fourcc::P010);
++      }
+     }
++#endif  // BUILDFLAG(IS_OZONE)
+ 
+   // Support 1-copy argb textures.
+   //
+@@ -170,7 +189,7 @@
+         return VideoDecoderPipeline::Create(
+             gpu_workarounds_, traits.task_runner, std::move(frame_pool),
+             std::move(frame_converter),
+-            GetPreferredRenderableFourccs(gpu_preferences_),
++            GetPreferredRenderableFourccs(gpu_preferences_, gpu_feature_info_),
+             traits.media_log->Clone(), std::move(traits.oop_video_decoder),
+             /*in_video_decoder_process=*/false);
+       }
+@@ -182,7 +201,7 @@
+         return VideoDecoderPipeline::Create(
+             gpu_workarounds_, traits.task_runner, std::move(frame_pool),
+             std::move(frame_converter),
+-            GetPreferredRenderableFourccs(gpu_preferences_),
++            GetPreferredRenderableFourccs(gpu_preferences_, gpu_feature_info_),
+             traits.media_log->Clone(), /*oop_video_decoder=*/{},
+             /*in_video_decoder_process=*/false);
+       }
+--- a/ui/ozone/public/surface_factory_ozone.cc
++++ b/ui/ozone/public/surface_factory_ozone.cc
+@@ -139,6 +139,23 @@
+   return std::vector<gfx::BufferFormat>();
+ }
+ 
++std::vector<gfx::BufferFormat>
++SurfaceFactoryOzone::GetSupportedFormatsForGLNativePixmapImport() {
++  std::vector<gfx::BufferFormat> supported_buffer_formats;
++  auto* gl_ozone = GetCurrentGLOzone();
++  if (!gl_ozone) {
++    return supported_buffer_formats;
++  }
++
++  for (int j = 0; j <= static_cast<int>(gfx::BufferFormat::LAST); ++j) {
++    const gfx::BufferFormat buffer_format = static_cast<gfx::BufferFormat>(j);
++    if (gl_ozone->CanImportNativePixmap(buffer_format)) {
++      supported_buffer_formats.push_back(buffer_format);
++    }
++  }
++  return supported_buffer_formats;
++}
++
+ std::optional<gfx::BufferFormat>
+ SurfaceFactoryOzone::GetPreferredFormatForSolidColor() const {
+   return std::nullopt;
+--- a/ui/ozone/public/surface_factory_ozone.h
++++ b/ui/ozone/public/surface_factory_ozone.h
+@@ -218,6 +218,12 @@
+   virtual std::vector<gfx::BufferFormat> GetSupportedFormatsForTexturing()
+       const;
+ 
++  // Enumerates the BufferFormats that the platform can import via
++  // CreateNativePixmapFromHandle() to use for GL, or returns empty if those
++  // could not be retrieved or the platform doesn't know in advance.
++  // Enumeration should not be assumed to take a trivial amount of time.
++  std::vector<gfx::BufferFormat> GetSupportedFormatsForGLNativePixmapImport();
++
+   // This returns a preferred format for solid color image on Wayland.
+   virtual std::optional<gfx::BufferFormat> GetPreferredFormatForSolidColor()
+       const;
