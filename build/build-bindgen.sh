@@ -76,12 +76,12 @@ elif [ $SYS_RUST -ge 2 ]; then
 fi
 
 if [ $SYS_RUST -eq 0 ] || [ $SYS_RUST -ge 2 ]; then
-  export PATH="$RUST_PATH:$PATH"
-
   if [ $SYS_RUST -eq 0 ] && [ $SYS_CLANG -ne 0 ]; then
     printf '%s\n' "ERROR: cannot set SYS_CLANG=$SYS_CLANG when SYS_RUST=0"
     exit 1
   fi
+
+  export PATH="$RUST_PATH:$PATH"
 fi
 
 
