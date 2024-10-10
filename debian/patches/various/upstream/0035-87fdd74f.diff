@@ -1,0 +1,31 @@
+From 87fdd74f2b8d81fa44c176bd4a94a35e9f2b9f20 Mon Sep 17 00:00:00 2001
+From: Joey Arhar <jarhar@chromium.org>
+Date: Mon, 30 Sep 2024 20:29:21 +0000
+Subject: [PATCH] Downgrade DisplayLocking DUMP to DCHECK
+
+This DUMP_WILL_BE_NOTREACHED is hit thousands of times in stable every
+day, which causes issues and could hide real crashes.
+
+I still don't have a repro for this bug.
+
+Bug: 41494130
+Change-Id: If3800629538513ca878f77018c09f5cad123c3d5
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5900096
+Reviewed-by: Vladimir Levin <vmpstr@chromium.org>
+Commit-Queue: Joey Arhar <jarhar@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1361988}
+---
+
+--- a/third_party/blink/renderer/core/display_lock/display_lock_document_state.cc
++++ b/third_party/blink/renderer/core/display_lock/display_lock_document_state.cc
+@@ -396,7 +396,9 @@
+       if (context->HasElement()) {
+         context->DidForceActivatableDisplayLocks();
+       } else {
+-        DUMP_WILL_BE_NOTREACHED()
++        // This used to be a DUMP_WILL_BE_NOTREACHED(), but the crash volume was
++        // too high. See crbug.com/41494130
++        DCHECK(false)
+             << "The DisplayLockContext's element has been garbage collected or"
+             << " otherwise deleted, but the DisplayLockContext is still alive!"
+             << " This shouldn't happen and could cause a crash. See"

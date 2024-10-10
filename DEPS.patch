@@ -139,7 +139,7 @@
 -
    'src/clank': {
      'url': Var('chrome_git') + '/clank/internal/apps.git' + '@' +
-     '9ff34e280332fd21b143ba68d7bdc5338e58b712',
+     '23718e2e81ef73e6ab2cf2bd64ff9d1d628dbd93',
 @@ -1392,9 +1365,6 @@
    'src/net/third_party/quiche/src':
      Var('quiche_git') + '/quiche.git' + '@' +  Var('quiche_revision'),

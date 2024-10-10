@@ -1,0 +1,114 @@
+From 81684f2ca658e65729d2605edf524e0ef155ba51 Mon Sep 17 00:00:00 2001
+From: Fredrik Söderquist <fs@opera.com>
+Date: Wed, 02 Oct 2024 16:06:16 +0000
+Subject: [PATCH] Make SVGImage::CurrentFrameHasSingleSecurityOrigin() less strict
+
+The call to CheckLoaded() applies the restriction that the image must
+have completed loading before the overall check can be performed. This
+in turn means that callers ImageResourceContent::IsAccessAllowed() can
+only be safely do after the resource has finished loading. This clashes
+with all forms of progressive rendering of images.
+
+Drop the CheckLoaded() call since we've locked down the loading of
+subresources for SVGImage in a more thorough way since the check was
+added. This allows answering the security-origin query in a
+progressive way and avoids the crash in the referenced bug.
+
+Fixed: 366547215
+Change-Id: I2adfe7b3406572f0e1b1a956ac6aa4bf50b19c5d
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5892795
+Reviewed-by: Philip Rogers <pdr@chromium.org>
+Commit-Queue: Fredrik Söderquist <fs@opera.com>
+Cr-Commit-Position: refs/heads/main@{#1363100}
+---
+
+--- a/third_party/blink/renderer/core/loader/image_loader.cc
++++ b/third_party/blink/renderer/core/loader/image_loader.cc
+@@ -767,11 +767,8 @@
+     Image& image = *image_content_->GetImage();
+ 
+     if (auto* svg_image = DynamicTo<SVGImage>(image)) {
+-      // SVG's document should be completely loaded before access control
+-      // checks, which can occur anytime after ImageNotifyFinished()
+-      // (See SVGImage::CurrentFrameHasSingleSecurityOrigin()).
+-      // We check the document is loaded here to catch violation of the
+-      // assumption reliably.
++      // Check that the SVGImage has completed loading (i.e the 'load' event
++      // has been dispatched in the SVG document).
+       svg_image->CheckLoaded();
+       svg_image->UpdateUseCounters(GetElement()->GetDocument());
+       svg_image->MaybeRecordSvgImageProcessingTime(GetElement()->GetDocument());
+--- a/third_party/blink/renderer/core/style/style_fetched_image.cc
++++ b/third_party/blink/renderer/core/style/style_fetched_image.cc
+@@ -234,11 +234,8 @@
+     Image& image = *image_->GetImage();
+ 
+     if (auto* svg_image = DynamicTo<SVGImage>(image)) {
+-      // SVG's document should be completely loaded before access control
+-      // checks, which can occur anytime after ImageNotifyFinished()
+-      // (See SVGImage::CurrentFrameHasSingleSecurityOrigin()).
+-      // We check the document is loaded here to catch violation of the
+-      // assumption reliably.
++      // Check that the SVGImage has completed loading (i.e the 'load' event
++      // has been dispatched in the SVG document).
+       svg_image->CheckLoaded();
+       svg_image->UpdateUseCounters(*document_);
+       svg_image->MaybeRecordSvgImageProcessingTime(*document_);
+--- a/third_party/blink/renderer/core/style/style_image.h
++++ b/third_party/blink/renderer/core/style/style_image.h
+@@ -90,9 +90,8 @@
+   // Any underlying resources this <image> references failed to load.
+   virtual bool ErrorOccurred() const { return false; }
+ 
+-  // Is the <image> considered same-origin? Can only be called if IsLoaded()
+-  // returns true. |failing_url| is set to the (potentially formatted) URL of
+-  // the first non-same-origin <image>.
++  // Is the <image> considered same-origin? `failing_url` is set to the
++  // (potentially formatted) URL of the first non-same-origin <image>.
+   virtual bool IsAccessAllowed(WTF::String& failing_url) const = 0;
+ 
+   // Determine the natural dimensions (width, height, aspect ratio) of this
+--- a/third_party/blink/renderer/core/svg/graphics/svg_image.cc
++++ b/third_party/blink/renderer/core/svg/graphics/svg_image.cc
+@@ -145,8 +145,6 @@
+     return true;
+   }
+ 
+-  CheckLoaded();
+-
+   SVGSVGElement* root_element = RootElement();
+   if (!root_element)
+     return true;
+--- /dev/null
++++ b/third_party/blink/web_tests/external/wpt/css/filter-effects/feimage-svg-image-with-nested-data-url-crash.html
+@@ -0,0 +1,30 @@
++<!doctype html>
++<title>Nested data URL in SVG image in &lt;feImage></title>
++<link rel="help" href="https://drafts.fxtf.org/filter-effects-1/#FilterProperty">
++<link rel="help" href="https://drafts.fxtf.org/filter-effects-1/#feImageElement">
++<style>
++  #target {
++    width: 100px;
++    height: 100px;
++    background-color: red;
++  }
++</style>
++<div id="target"></div>
++<script>
++  const svg3Content =
++        `<svg xmlns='http://www.w3.org/2000/svg'>
++           <rect width='100%' height='100%' fill='green'/>
++         </svg>`;
++  const svg2Content =
++        `<svg xmlns="http://www.w3.org/2000/svg">
++           <image href="data:image/svg+xml;base64,${btoa(svg3Content)}" width="100%" height="100%"/>
++         </svg>`;
++  const svg1Content =
++        `<svg xmlns="http://www.w3.org/2000/svg">
++           <filter id="f" x="0" y="0" width="1" height="1">
++             <feImage href="data:image/svg+xml;base64,${btoa(svg2Content)}" preserveAspectRatio="none"/>
++           </filter>
++         </svg>`;
++  const filterDataUrl = `data:image/svg+xml;base64,${btoa(svg1Content)}#f`;
++  document.querySelector("#target").style.filter = `url(${filterDataUrl})`;
++</script>

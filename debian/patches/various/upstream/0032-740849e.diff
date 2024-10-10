@@ -1,0 +1,27 @@
+From 740849eb07b4924491b39097781da086eabbd480 Mon Sep 17 00:00:00 2001
+From: Sam Maddock <samuelmaddock@electronjs.org>
+Date: Thu, 26 Sep 2024 23:01:58 +0000
+Subject: [PATCH] Fix crash in blink::GetTextContentOffset
+
+Handles case where offset_mapping is a nullptr.
+
+Bug: 369148753
+Change-Id: Ia0025e8f8c2adf5058c6ed5d2fb754c8371b10b6
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5883953
+Reviewed-by: Yoichi Osato <yoichio@chromium.org>
+Commit-Queue: Ethan Jimenez <ethavar@microsoft.com>
+Reviewed-by: Ian Kilpatrick <ikilpatrick@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1360832}
+---
+
+--- a/third_party/blink/renderer/core/editing/layout_selection.cc
++++ b/third_party/blink/renderer/core/editing/layout_selection.cc
+@@ -478,6 +478,8 @@
+   DCHECK(ShouldUseLayoutNGTextContent(*position.AnchorNode()));
+   const OffsetMapping* const offset_mapping = OffsetMapping::GetFor(position);
+   DCHECK(offset_mapping);
++  if (offset_mapping == nullptr)
++    return std::nullopt;
+   const std::optional<unsigned>& ng_offset =
+       offset_mapping->GetTextContentOffset(position);
+   return ng_offset;

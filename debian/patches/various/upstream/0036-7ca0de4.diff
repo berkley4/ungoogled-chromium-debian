@@ -1,0 +1,45 @@
+From 7ca0de4c91e131bd3a8f3b98d9d7c90a0675754c Mon Sep 17 00:00:00 2001
+From: Omer Katz <omerkatz@chromium.org>
+Date: Tue, 01 Oct 2024 10:30:47 +0200
+Subject: [PATCH] [heap] Fix crash due to null address in EPT
+
+crrev.com/c/5805957 introduced overwriting of EPT evacuation entries
+with null addresses in case an object is reclaimed by scavenge after
+it was already marked by incremental marking.
+
+In a following Scavenge, berfore incremental marking is finalized
+the null address evacuation entry  will be observed and will
+currently crash when trying to access the corresponding page.
+
+Bug: 364396306
+Change-Id: Ie8206b7dfddcbf20046cdc696bdf5189ffc0c5d0
+Reviewed-on: https://chromium-review.googlesource.com/c/v8/v8/+/5899522
+Reviewed-by: Anton Bikineev <bikineev@chromium.org>
+Commit-Queue: Omer Katz <omerkatz@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#96354}
+---
+
+--- a/v8/src/heap/incremental-marking.cc
++++ b/v8/src/heap/incremental-marking.cc
+@@ -502,9 +502,12 @@
+ #ifdef V8_COMPRESS_POINTERS
+   if (!IsMajorMarking()) return;
+   DCHECK(!v8_flags.separate_gc_phases);
+-
+   heap_->isolate()->external_pointer_table().UpdateAllEvacuationEntries(
+       heap_->young_external_pointer_space(), [](Address old_handle_location) {
++        if (old_handle_location == kNullAddress) {
++          // Handle was clobbered by a previous Scavenger cycle.
++          return kNullAddress;
++        }
+         // 1) Resolve object start from the marking bitmap. Note that it's safe
+         //    since there is no black allocation for the young space (and hence
+         //    no range or page marking).
+@@ -521,6 +524,7 @@
+         // mark-bits).
+         const MemoryChunk* chunk =
+             MemoryChunk::FromAddress(old_handle_location);
++        DCHECK_NOT_NULL(chunk);
+         if (!chunk->InYoungGeneration()) {
+           return old_handle_location;
+         }

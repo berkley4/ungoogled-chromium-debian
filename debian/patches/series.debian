@@ -132,6 +132,15 @@ various/upstream/0028-85a8ae94.diff
 various/upstream/0029-3d9dd37.diff
 various/upstream/0030-5e477cf.diff
 various/upstream/0031-5f09df56.diff
+various/upstream/0032-740849e.diff
+various/upstream/0033-05c62eb.diff
+various/upstream/0034-7c81171.diff
+various/upstream/0035-87fdd74f.diff
+various/upstream/0036-7ca0de4.diff
+various/upstream/0037-81684f2c.diff
+various/upstream/0038-0e12358.diff
+various/upstream/0039-37f4dff.diff
+various/upstream/0040-87e19b2.diff
 various/upstream/features/enable-renderdocument-subframe-by-default.patch
 various/upstream/features/leveldb-proto-enable-async-writes-by-default.patch
 various/upstream/features/libavcodec-fixed-some-incorrect-pointer-usages.patch
@@ -223,3 +232,5 @@ optional/system/vaapi/gl-native-pixmap-formats.patch
 #optional/system/zstd/zstd-feature-flag.patch
 optional/translate/revert-disable.patch
 optional/translate/stop-unsupported-switch-warning.patch
+
+addenda/0001-2b72d95.diff

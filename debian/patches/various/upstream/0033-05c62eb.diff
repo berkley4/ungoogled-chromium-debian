@@ -1,0 +1,109 @@
+From 05c62ebcadf1489a5968e16db9b1c5bb00c19fce Mon Sep 17 00:00:00 2001
+From: Shahbaz Youssefi <syoussefi@chromium.org>
+Date: Tue, 24 Sep 2024 13:41:57 -0400
+Subject: [PATCH] Fix check for whether stencil write is masked out
+
+The stencil write mask is the only thing that decides what bits get
+written to.  Previously, this was masked with the reference bitmask to
+determine if any bits get written to, which is incorrect.
+
+The effect of this was that the Vulkan backend would use the READ_ONLY
+layout for the depth/stencil attachment even though stencil could have
+been written to the attachment.
+
+Bug: angleproject:42266334
+Change-Id: Ice6a35f4691fc8e09c7d5e1db6439c3079dfa039
+Reviewed-on: https://chromium-review.googlesource.com/c/angle/angle/+/5887905
+Reviewed-by: Geoff Lang <geofflang@chromium.org>
+Reviewed-by: Charlie Lao <cclao@google.com>
+Auto-Submit: Shahbaz Youssefi <syoussefi@chromium.org>
+Commit-Queue: Shahbaz Youssefi <syoussefi@chromium.org>
+---
+
+--- a/third_party/angle/src/libANGLE/Context.cpp
++++ b/third_party/angle/src/libANGLE/Context.cpp
+@@ -4728,7 +4728,7 @@
+ 
+     // If depth write is disabled, don't attempt to clear depth.
+     if (mState.getDrawFramebuffer()->getDepthAttachment() == nullptr ||
+-        !mState.getDepthStencilState().depthMask)
++        mState.getDepthStencilState().isDepthMaskedOut())
+     {
+         mask &= ~GL_DEPTH_BUFFER_BIT;
+     }
+--- a/third_party/angle/src/libANGLE/angletypes.cpp
++++ b/third_party/angle/src/libANGLE/angletypes.cpp
+@@ -167,7 +167,7 @@
+ 
+ bool DepthStencilState::isStencilMaskedOut() const
+ {
+-    return (stencilMask & stencilWritemask) == 0;
++    return stencilWritemask == 0;
+ }
+ 
+ bool DepthStencilState::isStencilNoOp() const
+@@ -178,7 +178,7 @@
+ 
+ bool DepthStencilState::isStencilBackNoOp() const
+ {
+-    const bool isStencilBackMaskedOut = (stencilBackMask & stencilBackWritemask) == 0;
++    const bool isStencilBackMaskedOut = stencilBackWritemask == 0;
+     return isStencilBackMaskedOut ||
+            IsStencilNoOp(stencilBackFunc, stencilBackFail, stencilBackPassDepthFail,
+                          stencilBackPassDepthPass);
+--- a/third_party/angle/src/tests/gl_tests/ClearTest.cpp
++++ b/third_party/angle/src/tests/gl_tests/ClearTest.cpp
+@@ -1425,6 +1425,53 @@
+     EXPECT_PIXEL_NEAR(0, 0, 0, 127, 255, 255, 1);
+ }
+ 
++// Test that stencil clears works if reference and write mask have no common bits.  The write mask
++// is the only thing that dictates which bits should be written to, and this is a regression test
++// for a bug where the clear was no-oped if the (reference & writemask) == 0 instead of just
++// writemask == 0.
++TEST_P(ClearTestES3, ClearStencilWithNonOverlappingWriteMaskAndReferenceBits)
++{
++    constexpr uint32_t kSize = 16;
++
++    glBindFramebuffer(GL_FRAMEBUFFER, mFBOs[0]);
++
++    GLTexture textures;
++    GLRenderbuffer depthStencil;
++
++    glBindTexture(GL_TEXTURE_2D, textures);
++    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, kSize, kSize, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
++    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textures, 0);
++
++    glBindRenderbuffer(GL_RENDERBUFFER, depthStencil);
++    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, kSize, kSize);
++    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER,
++                              depthStencil);
++    // Initialize the stencil buffer.
++    glClearDepthf(0);
++    glClearStencil(0xEC);
++
++    glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
++    verifyStencil(0xEC, kSize);
++
++    // Clear the color buffer again to make sure there are no stale data.
++    glClearColor(0.25, 0.5, 0.75, 1.0);
++    glClear(GL_COLOR_BUFFER_BIT);
++    EXPECT_PIXEL_NEAR(0, 0, 63, 127, 191, 255, 1.0);
++
++    // Set the stencil write mask to 0xF0
++    glStencilMask(0xF0);
++
++    // Set the stencil reference to 0x0F.  It shouldn't matter
++    glStencilFunc(GL_EQUAL, 0x55, 0x0F);
++    glStencilOp(GL_INCR, GL_INCR, GL_INCR);
++
++    // Clear stencil again.  Only the top four bits should be written.
++    const GLint kStencilClearValue = 0x59;
++    glClearBufferiv(GL_STENCIL, 0, &kStencilClearValue);
++    verifyStencil(0x5C, kSize);
++}
++
++// Regression test for a serial tracking bug.
+ TEST_P(ClearTestES3, BadFBOSerialBug)
+ {
+     // First make a simple framebuffer, and clear it to green

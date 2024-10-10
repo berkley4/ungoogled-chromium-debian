@@ -1,0 +1,32 @@
+From 37f4dffe8bdd877e5059d32a50be368606830ec9 Mon Sep 17 00:00:00 2001
+From: Evan Stade <estade@chromium.org>
+Date: Mon, 07 Oct 2024 19:47:37 +0000
+Subject: [PATCH] Don't use blob UUID when deserializing from blob index.
+
+Under normal operation, WebBlobInfo always has a BlobDataHandle.
+The bail-out case is left in place only because data could be
+coming from an untrusted process, so the null data handle case
+shouldn't crash.
+
+Bug: 40529364
+
+Change-Id: Ie9611fc1bbe23bfb69dc72596ecf5a579b3783b5
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5913357
+Reviewed-by: Andrey Kosyakov <caseq@chromium.org>
+Commit-Queue: Evan Stade <estade@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1365094}
+---
+
+--- a/third_party/blink/renderer/bindings/core/v8/serialization/v8_script_value_deserializer.cc
++++ b/third_party/blink/renderer/bindings/core/v8/serialization/v8_script_value_deserializer.cc
+@@ -319,10 +319,6 @@
+         return nullptr;
+       const WebBlobInfo& info = (*blob_info_array_)[index];
+       auto blob_handle = info.GetBlobHandle();
+-      if (!blob_handle) {
+-        blob_handle =
+-            GetOrCreateBlobDataHandle(info.Uuid(), info.GetType(), info.size());
+-      }
+       if (!blob_handle)
+         return nullptr;
+       return MakeGarbageCollected<Blob>(std::move(blob_handle));

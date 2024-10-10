@@ -1,0 +1,40 @@
+From 87e19b2a505adf17cd944daeef23f4724b6bc0cd Mon Sep 17 00:00:00 2001
+From: Andy Phan <andyphan@chromium.org>
+Date: Tue, 08 Oct 2024 21:43:38 +0000
+Subject: [PATCH] [OOPIF PDF] Fix closing form renderer crash
+
+Fix a nullptr dereference in the PDF renderer process that can occur
+when PdfViewWebPluginClient::PostMessage() is called while the PDF is
+being closed.
+
+This can happen when a user edits a PDF's textbox form for the first
+time, and exits the PDF without removing focus from the textbox.
+PdfViewWebPlugin will try to send an edit mode message, but the plugin
+container's document frame is already null from trying to close the PDF.
+
+Bug: 372239820
+Change-Id: I7a901b2e8dd072deceffa51cf262d0d8fb4ace6d
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5917167
+Reviewed-by: Lei Zhang <thestig@chromium.org>
+Commit-Queue: Andy Phan <andyphan@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1365831}
+---
+
+--- a/components/pdf/renderer/pdf_view_web_plugin_client.cc
++++ b/components/pdf/renderer/pdf_view_web_plugin_client.cc
+@@ -91,9 +91,14 @@
+ }
+ 
+ void PdfViewWebPluginClient::PostMessage(base::Value::Dict message) {
++  blink::WebLocalFrame* frame = GetFrame();
++  if (!frame) {
++    return;
++  }
++
+   v8::Isolate::Scope isolate_scope(isolate_);
+   v8::HandleScope handle_scope(isolate_);
+-  v8::Local<v8::Context> context = GetFrame()->MainWorldScriptContext();
++  v8::Local<v8::Context> context = frame->MainWorldScriptContext();
+   DCHECK_EQ(isolate_, context->GetIsolate());
+   v8::Context::Scope context_scope(context);
+ 

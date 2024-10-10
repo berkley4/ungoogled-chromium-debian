@@ -1,0 +1,46 @@
+From 0e12358c50f32d6312f010aef48660ebc5b10938 Mon Sep 17 00:00:00 2001
+From: Noam Rosenthal <nrosenthal@chromium.org>
+Date: Fri, 04 Oct 2024 17:33:02 +0000
+Subject: [PATCH] Add ScriptState null check in AnimationFrameTimingMonitor
+
+There is a crash report which shows that ToScriptStateForMainWorld is
+returning null and hitting a check after null it passed into
+PopScriptEntryPoint. This patch fixes this by checking whether the
+ScriptState is null.
+
+It looks like this case can happen when the frame is attached and
+provisional, which causes ToV8ContextEvenIfDetached to return an empty
+context which in return makes ToScriptStateForMainWorld to return null.
+
+Fixed: 360742350
+Change-Id: Ib5f36c4ed6413b26e41571262715559dfe0eeb21
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5907916
+Commit-Queue: Joey Arhar <jarhar@chromium.org>
+Reviewed-by: Annie Sullivan <sullivan@chromium.org>
+Reviewed-by: Yoav Weiss (@Shopify) <yoavweiss@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1364306}
+---
+
+--- a/third_party/blink/renderer/core/frame/animation_frame_timing_monitor.cc
++++ b/third_party/blink/renderer/core/frame/animation_frame_timing_monitor.cc
+@@ -518,8 +518,6 @@
+     ScriptState* script_state,
+     const probe::ProbeBase* probe,
+     base::TimeTicks end_time) {
+-  CHECK(script_state);
+-  ExecutionContext* context = ToExecutionContext(script_state);
+   if (!entry_point_depth_) {
+     return nullptr;
+   }
+@@ -531,6 +529,11 @@
+   std::optional<PendingScriptInfo> script_info;
+   std::swap(script_info, pending_script_info_);
+ 
++  // script_state can be null in situations such as the frame being in a
++  // provisional state.
++  ExecutionContext* context =
++      script_state ? ToExecutionContext(script_state) : nullptr;
++
+   if (!enabled_ || !context || !context->IsWindow() ||
+       !client_.ShouldReportLongAnimationFrameTiming()) {
+     return nullptr;
