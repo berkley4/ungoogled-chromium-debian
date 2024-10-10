@@ -1,0 +1,11 @@
+--- a/chrome/installer/linux/common/desktop.template
++++ b/chrome/installer/linux/common/desktop.template
+@@ -105,7 +105,7 @@
+ Comment[zh_CN]=访问互联网
+ Comment[zh_HK]=連線到網際網路
+ Comment[zh_TW]=連線到網際網路
+-Exec=/usr/bin/chromium %U
++Exec=sh -c "/usr/bin/chromium %U"
+ StartupNotify=true
+ Terminal=false
+ Icon=chromium
