@@ -52,12 +52,15 @@
        // The spec for AC3/EAC3 audio is ETSI TS 102 366. According to sections
        // F.3.1 and F.5.1 in that spec the sample_format for AC3/EAC3 must be 16.
        sample_format = kSampleFormatS16;
-@@ -399,7 +406,7 @@
- #if BUILDFLAG(ENABLE_PLATFORM_AC3_EAC3_AUDIO)
-   // These are bitstream formats unknown to ffmpeg, so they don't have
-   // a known sample format size.
--  if (codec == AudioCodec::kAC3 || codec == AudioCodec::kEAC3)
-+  if (codec == AudioCodec::kAC3 || codec == AudioCodec::kEAC3 || codec == AudioCodec::kAC4)
+@@ -402,6 +409,11 @@
+   if (codec == AudioCodec::kAC3 || codec == AudioCodec::kEAC3)
      return true;
  #endif
++#if BUILDFLAG(ENABLE_PLATFORM_AC4_AUDIO)
++  // As with AC3/EAC3, no known sample format size.
++  if (codec == AudioCodec::kAC4)
++    return true;
++#endif
  #if BUILDFLAG(ENABLE_PLATFORM_MPEG_H_AUDIO)
+   if (codec == AudioCodec::kMpegHAudio)
+     return true;
