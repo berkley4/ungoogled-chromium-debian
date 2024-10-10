@@ -1,6 +1,6 @@
 --- a/media/base/supported_types.cc
 +++ b/media/base/supported_types.cc
-@@ -313,15 +313,17 @@
+@@ -313,13 +313,15 @@
  }
  
  bool IsDolbyAc4Supported(const AudioType& type) {
@@ -16,12 +16,10 @@
 -#endif  // BUILDFLAG(ENABLE_PLATFORM_AC4_AUDIO) &&
 -        // BUILDFLAG(ENABLE_MOJO_AUDIO_DECODER) && BUILDFLAG(IS_WIN)
 +#endif  // BUILDFLAG(ENABLE_MOJO_AUDIO_DECODER) && BUILDFLAG(IS_WIN)
++#endif  // BUILDFLAG(ENABLE_PLATFORM_AC4_AUDIO)
  }
  
-+#endif  // BUILDFLAG(ENABLE_PLATFORM_AC4_AUDIO)
  }  // namespace
- 
- bool IsSupportedAudioType(const AudioType& type) {
 --- a/media/ffmpeg/ffmpeg_common.cc
 +++ b/media/ffmpeg/ffmpeg_common.cc
 @@ -95,6 +95,10 @@
