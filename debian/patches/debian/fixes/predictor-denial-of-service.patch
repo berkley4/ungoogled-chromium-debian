@@ -1,0 +1,34 @@
+--- a/chrome/browser/predictors/loading_data_collector.h
++++ b/chrome/browser/predictors/loading_data_collector.h
+@@ -22,6 +22,9 @@
+ #include "url/gurl.h"
+ #include "url/origin.h"
+ 
++// base::flat_set is O(n), limit to a reasonable history length
++#define MAX_PREDICTOR_SUBRESOURCE_URL_HISTORY 4096
++
+ namespace content {
+ class NavigationHandle;
+ }  // namespace content
+--- a/chrome/browser/predictors/loading_data_collector.cc
++++ b/chrome/browser/predictors/loading_data_collector.cc
+@@ -125,8 +125,18 @@
+           net::SimplifyUrlForRequest(resource_load_info.final_url);
+       if (is_low_priority) {
+         low_priority_subresource_urls.insert(final_url);
++        // Prevent history bloat on long running pathological Web sites
++	 if (low_priority_subresource_urls.size() >
++              MAX_PREDICTOR_SUBRESOURCE_URL_HISTORY) {
++          low_priority_subresource_urls.erase(
++              low_priority_subresource_urls.begin());
++        }
+       } else {
+         subresource_urls.insert(final_url);
++        // Prevent history bloat on long running pathological Web sites
++	 if (subresource_urls.size() > MAX_PREDICTOR_SUBRESOURCE_URL_HISTORY) {
++          subresource_urls.erase(subresource_urls.begin());
++        }
+       }
+       return;
+   }
+k
