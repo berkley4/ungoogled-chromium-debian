@@ -1,0 +1,110 @@
+commit 000064171db044f98d1c9e025e16007d8269e26a
+Author: Orko Garai <orko@igalia.com>
+Date:   Fri Sep 20 16:05:11 2024 +0000
+
+    [ozone/wayland] Check format supported by gbm for creating native pixmap
+    
+    When creating native pixmap without handle,
+    OzonePlatform::IsNativePixmapConfigSupported should return false in
+    wayland if gbm does not support a format. This is because gbm is the
+    only method used when creating native pixmap without handle.
+    
+    Also check if format is supported by gbm in
+    WaylandSurfaceFactory::CreateNativePixmap().
+    
+    Fixed: 331796411, 365399706
+    Change-Id: I522601f5872e5581d5e7d8acf83419c8b2881ab7
+    Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5873796
+    Reviewed-by: Kramer Ge <fangzhoug@chromium.org>
+    Commit-Queue: Orko Garai <orko@igalia.com>
+    Cr-Commit-Position: refs/heads/main@{#1358193}
+
+
+
+commit 1fbf24a85bffd14169c7bc17db6c5120cef1c643
+Author: Orko Garai <orko@igalia.com>
+Date:   Fri Sep 20 22:55:39 2024 +0000
+
+    wayland: Check gbm device is not null
+    
+    Ensure gbm device returned by WaylandBufferManagerGpu is checked for
+    null.
+    
+    Fixed: 368622622
+    Change-Id: I2b59d3c5b3e7b53bd3fff50a40a06760c48b5bd7
+    Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5879075
+    Reviewed-by: Shrek Shao <shrekshao@google.com>
+    Auto-Submit: Orko Garai <orko@igalia.com>
+    Reviewed-by: Nick Yamane <nickdiego@igalia.com>
+    Commit-Queue: Nick Yamane <nickdiego@igalia.com>
+    Cr-Commit-Position: refs/heads/main@{#1358439}
+
+
+
+--- a/ui/ozone/platform/wayland/gpu/wayland_surface_factory.cc
++++ b/ui/ozone/platform/wayland/gpu/wayland_surface_factory.cc
+@@ -250,17 +250,20 @@ scoped_refptr<gfx::NativePixmap> Wayland
+     return nullptr;
+   }
+ #if defined(WAYLAND_GBM)
+-  scoped_refptr<GbmPixmapWayland> pixmap =
+-      base::MakeRefCounted<GbmPixmapWayland>(buffer_manager_);
++  auto* gbm_device = buffer_manager_->GetGbmDevice();
++  if (gbm_device && gbm_device->CanCreateBufferForFormat(
++          GetFourCCFormatFromBufferFormat(format))) {
++    scoped_refptr<GbmPixmapWayland> pixmap =
++        base::MakeRefCounted<GbmPixmapWayland>(buffer_manager_);
+ 
+-  if (!pixmap->InitializeBuffer(widget, size, format, usage,
+-                                framebuffer_size)) {
+-    return nullptr;
++    if (!pixmap->InitializeBuffer(widget, size, format, usage,
++                                  framebuffer_size)) {
++      return nullptr;
++    }
++    return pixmap;
+   }
+-  return pixmap;
+-#else
+-  return nullptr;
+ #endif
++  return nullptr;
+ }
+ 
+ void WaylandSurfaceFactory::CreateNativePixmapAsync(
+@@ -284,7 +287,7 @@ WaylandSurfaceFactory::CreateNativePixma
+     gfx::NativePixmapHandle handle) {
+ #if defined(WAYLAND_GBM)
+   auto* gbm_device = buffer_manager_->GetGbmDevice();
+-  if (gbm_device->CanCreateBufferForFormat(
++  if (gbm_device && gbm_device->CanCreateBufferForFormat(
+           GetFourCCFormatFromBufferFormat(format))) {
+     scoped_refptr<GbmPixmapWayland> pixmap =
+         base::MakeRefCounted<GbmPixmapWayland>(buffer_manager_);
+--- a/ui/ozone/platform/wayland/ozone_platform_wayland.cc
++++ b/ui/ozone/platform/wayland/ozone_platform_wayland.cc
+@@ -77,6 +77,8 @@
+ #endif
+ 
+ #if defined(WAYLAND_GBM)
++#include "ui/gfx/linux/drm_util_linux.h"
++#include "ui/gfx/linux/gbm_device.h"
+ #include "ui/ozone/platform/wayland/gpu/drm_render_node_path_finder.h"
+ #endif
+ 
+@@ -204,6 +206,15 @@ class OzonePlatformWayland : public Ozon
+       if (!buffer_manager_->SupportsFormat(format)) {
+         return false;
+       }
++      // Return false here if creating buffers for certain formats is not
++      // possible (e.g. YUV formats are not supported by linux system libgbm
++      // gbm_bo_create) even though |buffer_manager_| may indicate it can be
++      // imported as wl_buffer.
++      auto* gbm_device = buffer_manager_->GetGbmDevice();
++      if (!gbm_device || !gbm_device->CanCreateBufferForFormat(
++              GetFourCCFormatFromBufferFormat(format))) {
++        return false;
++      }
+     } else {
+       if (supported_buffer_formats_.find(format) ==
+           supported_buffer_formats_.end()) {

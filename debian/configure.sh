@@ -865,6 +865,7 @@ fi
 
 
 if [ $OZONE_WAYLAND -eq 0 ]; then
+  op_disable="$op_disable fixes/wayland-gbm-pixmap"
   gn_enable="$gn_enable ozone_platform_wayland=false"
 fi
 

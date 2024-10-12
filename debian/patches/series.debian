@@ -206,6 +206,7 @@ optional/fixes/icudata-file-path.patch
 #optional/fixes/skia-allow-bundled-freetype.patch
 optional/fixes/skia-allow-bundled-harfbuzz.patch
 #optional/fixes/skia-gamma.patch
+optional/fixes/wayland-gbm-pixmap.patch
 optional/fixes/chromedriver/brandversion.patch
 optional/fixes/chromedriver/fix-paths.patch
 optional/fixes/widevine/widevine-enable-version-string.patch
