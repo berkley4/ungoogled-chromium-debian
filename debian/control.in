@@ -40,7 +40,6 @@ Build-Depends:
  libevent-dev,
  liblcms2-dev,
  libopenjp2-7-dev,
- libtiff-dev,
  libdouble-conversion-dev,
  libxnvctrl-dev,
  libopenh264-dev,
@@ -55,6 +54,7 @@ Build-Depends:
 #libharfbuzz-dev,
 #libicu-dev (>= 73),
 #libpng-dev,
+#libtiff-dev,
 #libxslt1-dev,
 #libzstd-dev
 

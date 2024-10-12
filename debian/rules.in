@@ -167,8 +167,11 @@ GN_FLAGS += enable_mutex_priority_inheritance=true
 # Disable openh264
 #GN_FLAGS += media_use_openh264=false rtc_use_h264=false
 
-# Disable pdfium javascript and XFA forms support
+# Disable pdfium javascript/XFA forms support
 GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
+
+# Enable when enabling pdfium javascript/XFA forms support
+#GN_FLAGS += use_system_libtiff=true
 
 # Enable pipewire
 GN_FLAGS += rtc_use_pipewire=true
