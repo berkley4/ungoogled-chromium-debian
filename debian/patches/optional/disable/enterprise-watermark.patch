@@ -1,6 +1,6 @@
 --- a/chrome/browser/ui/views/frame/browser_view.h
 +++ b/chrome/browser/ui/views/frame/browser_view.h
-@@ -809,9 +809,11 @@
+@@ -810,9 +810,11 @@
      return web_app_frame_toolbar();
    }
  
@@ -12,7 +12,7 @@
  
    // This value is used in a common calculation in NonClientFrameView
    // subclasses. This must be added to the origin of the first painted pixel of
-@@ -1176,8 +1178,10 @@
+@@ -1180,8 +1182,10 @@
    raw_ptr<views::WebView, AcrossTasksDanglingUntriaged> devtools_web_view_ =
        nullptr;
  
@@ -25,7 +25,7 @@
    // Handled by ContentsLayoutManager.
 --- a/chrome/browser/ui/views/frame/browser_view.cc
 +++ b/chrome/browser/ui/views/frame/browser_view.cc
-@@ -989,8 +989,12 @@
+@@ -1008,8 +1008,12 @@
    contents_web_view_ =
        contents_container->AddChildView(std::move(contents_web_view));
    contents_web_view_->set_is_primary_web_contents_for_window(true);
@@ -38,7 +38,7 @@
  
    contents_container->SetLayoutManager(std::make_unique<ContentsLayoutManager>(
        devtools_web_view_, contents_web_view_, watermark_view_));
-@@ -1108,7 +1112,7 @@
+@@ -1127,7 +1131,7 @@
  
    // `watermark_view_` is a raw pointer to a child view, so it needs to be set
    // to null before `RemoveAllChildViews()` is called to avoid dangling.
@@ -47,7 +47,7 @@
  
    // Child views maintain PrefMember attributes that point to
    // OffTheRecordProfile's PrefService which gets deleted by ~Browser.
-@@ -5565,11 +5569,13 @@
+@@ -5599,11 +5603,13 @@
    }
  }
  
@@ -69,9 +69,9 @@
  #include "chrome/browser/ui/views/frame/browser_view.h"
 +#include "components/enterprise/buildflags/buildflags.h"
  #include "content/public/browser/web_contents.h"
- #include "data_protection_navigation_controller.h"
  
-@@ -133,6 +134,7 @@
+ namespace {
+@@ -136,6 +137,7 @@
    }
  #endif  // BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
  
@@ -79,7 +79,7 @@
    if (!settings.watermark_text.empty()) {
      browser_view->ApplyWatermarkSettings(settings.watermark_text);
    } else {
-@@ -140,6 +142,7 @@
+@@ -143,6 +145,7 @@
      // finishes loading.
      clear_watermark_text_on_page_load_ = true;
    }
@@ -87,7 +87,7 @@
  
    if (!on_delay_apply_data_protection_settings_if_empty_called_for_testing_
             .is_null()) {
-@@ -171,7 +174,9 @@
+@@ -174,7 +177,9 @@
      return;
    }
  
@@ -97,7 +97,7 @@
  
  #if BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
    browser_view->ApplyScreenshotSettings(settings.allow_screenshots);
-@@ -217,10 +222,12 @@
+@@ -220,10 +225,12 @@
    if (!browser_view) {
      return;
    }

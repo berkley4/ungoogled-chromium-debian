@@ -16,7 +16,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/storage/browser/blob/blob_url_store_impl.cc
 +++ b/storage/browser/blob/blob_url_store_impl.cc
-@@ -82,6 +82,20 @@
+@@ -83,6 +83,20 @@
    }
  }
  
@@ -37,7 +37,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  void BlobURLStoreImpl::Register(
      mojo::PendingRemote<blink::mojom::Blob> blob,
      const GURL& url,
-@@ -116,6 +130,8 @@
+@@ -117,6 +131,8 @@
  void BlobURLStoreImpl::ResolveAsURLLoaderFactory(
      const GURL& url,
      mojo::PendingReceiver<network::mojom::URLLoaderFactory> receiver,
@@ -46,7 +46,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      ResolveAsURLLoaderFactoryCallback callback) {
    if (!registry_) {
      BlobURLLoaderFactory::Create(mojo::NullRemote(), url, std::move(receiver));
-@@ -123,6 +139,12 @@
+@@ -132,6 +148,12 @@
      return;
    }
  
@@ -58,8 +58,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +
    BlobURLLoaderFactory::Create(registry_->GetBlobFromUrl(url), url,
                                 std::move(receiver));
-   std::move(callback).Run(registry_->GetUnsafeAgentClusterID(url),
-@@ -132,11 +154,17 @@
+   // When a fragment URL is present, registry_->GetUnsafeAgentClusterID(url) and
+@@ -145,11 +167,17 @@
  void BlobURLStoreImpl::ResolveForNavigation(
      const GURL& url,
      mojo::PendingReceiver<blink::mojom::BlobURLToken> token,

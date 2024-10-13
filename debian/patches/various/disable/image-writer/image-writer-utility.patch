@@ -1,6 +1,6 @@
 --- a/chrome/browser/extensions/BUILD.gn
 +++ b/chrome/browser/extensions/BUILD.gn
-@@ -866,7 +866,6 @@
+@@ -830,7 +830,6 @@
      "//chrome/common/safe_browsing:proto",
      "//chrome/services/file_util:buildflags",
      "//chrome/services/file_util/public/mojom:mojom",
@@ -8,7 +8,7 @@
      "//components/affiliations/core/browser:affiliations",
      "//components/app_constants",
      "//components/autofill/content/browser",
-@@ -1029,6 +1028,10 @@
+@@ -993,6 +992,10 @@
      "//url",
    ]
  
@@ -21,7 +21,7 @@
        "api/system_indicator/system_indicator_api.cc",
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -1855,7 +1855,6 @@
+@@ -2014,7 +2014,6 @@
        "//chrome/common/privacy_budget:test_support",
        "//chrome/renderer",
        "//chrome/renderer/companion/visual_query:browser_tests",
@@ -29,7 +29,7 @@
        "//chrome/test/data/webui:resources_grit",
        "//chrome/test/data/webui/mojo:mojo_bindings",
        "//chrome/test/media_router/access_code_cast:access_code_cast_integration_base",
-@@ -2209,6 +2208,10 @@
+@@ -2368,6 +2367,10 @@
        "//v8",
      ]
  
@@ -40,15 +40,15 @@
      allow_circular_includes_from = []
  
      if (is_chromeos) {
-@@ -9205,7 +9208,6 @@
-       "//chrome/common/apps/platform_apps",
-       "//chrome/common/extensions:extension_features_unittest",
+@@ -9306,7 +9309,6 @@
        "//chrome/common/extensions/api",
+       "//chrome/common/safe_browsing:proto",
+       "//chrome/renderer/extensions",
 -      "//chrome/utility/image_writer:unit_tests",
        "//components/enterprise:test_support",
        "//components/password_manager/core/browser/features:password_features",
        "//components/password_manager/core/browser/sharing",
-@@ -9237,6 +9239,10 @@
+@@ -9338,6 +9340,10 @@
        "//tools/json_schema_compiler/test:unit_tests",
      ]
  
@@ -104,9 +104,9 @@
  #include "build/build_config.h"
  #include "build/chromeos_buildflags.h"
 +#include "chrome/services/file_util/buildflags.h"
- #include "chrome/services/on_device_translation/on_device_translation_service.h"
  #include "chrome/services/speech/buildflags/buildflags.h"
  #include "components/paint_preview/buildflags/buildflags.h"
+ #include "components/password_manager/core/common/password_manager_features.h"
 @@ -73,7 +74,7 @@
  #include "chrome/services/file_util/file_util_service.h"  // nogncheck
  #endif

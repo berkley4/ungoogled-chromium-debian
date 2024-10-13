@@ -1,6 +1,6 @@
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -6959,7 +6959,7 @@
+@@ -7041,7 +7041,7 @@
      ]
    }
  
@@ -11,7 +11,7 @@
        "metrics/chrome_metrics_service_crash_reporter.h",
 --- a/chrome/browser/metrics/chrome_metrics_service_client.cc
 +++ b/chrome/browser/metrics/chrome_metrics_service_client.cc
-@@ -200,7 +200,7 @@
+@@ -199,7 +199,7 @@
  #include "components/metrics/motherboard_metrics_provider.h"
  #endif
  

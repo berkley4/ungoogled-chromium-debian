@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -368,7 +368,7 @@
+@@ -371,7 +371,7 @@
        } else if ((is_posix && !is_chromeos && !is_nacl) || is_fuchsia) {
          if (current_os != "aix") {
            # Not available on aix.

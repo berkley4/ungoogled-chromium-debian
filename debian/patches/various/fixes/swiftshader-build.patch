@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -499,7 +499,8 @@
+@@ -508,7 +508,8 @@
      }
  
      if ((is_win || is_mac || is_linux || is_chromeos || is_fuchsia) &&
@@ -12,7 +12,7 @@
          "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan",
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -23,6 +23,7 @@
+@@ -24,6 +24,7 @@
  import("//components/nacl/features.gni")
  import("//components/optimization_guide/features.gni")
  import("//extensions/buildflags/buildflags.gni")
@@ -20,7 +20,7 @@
  import("//media/media_options.gni")
  import("//ppapi/buildflags/buildflags.gni")
  import("//third_party/blink/public/public_features.gni")
-@@ -1732,7 +1733,7 @@
+@@ -1739,7 +1740,7 @@
          ":angle_gles_symbols",
          ":chrome_symbols",
        ]
@@ -29,7 +29,7 @@
          deps += [ ":swiftshader_vk_symbols" ]
        }
        if (!is_chromeos) {
-@@ -1768,17 +1769,19 @@
+@@ -1775,17 +1776,19 @@
          deps = [ "//components/crash/core/app:chrome_crashpad_handler" ]
        }
      }
@@ -85,7 +85,7 @@
  
  declare_args() {
    is_ggp = false
-@@ -245,7 +246,8 @@
+@@ -247,7 +248,8 @@
    # Currently SwiftShader's Vulkan front-end doesn't build on Android.
    # Disabled by default on MSVC because of compiler warnings/errors.
    angle_enable_swiftshader =
@@ -95,25 +95,6 @@
  
    # Translator frontend support:
    angle_enable_desktop_glsl = angle_enable_gl_desktop_frontend
-@@ -575,7 +577,6 @@
-                       "$angle_root:angle_common",
-                       "$angle_root:includes",
-                       "$angle_root/src/tests:angle_test_expectations",
--                      "$angle_root/third_party/rapidjson:rapidjson",
-                       "$angle_root/util:angle_test_utils",
-                       "//testing/gmock",
-                       "//testing/gtest",
-@@ -606,6 +607,10 @@
-         ]
-       }
- 
-+      if (angle_has_rapidjson) {
-+        public_deps += [ "$angle_root/third_party/rapidjson:rapidjson" ]
-+      }
-+
-       if (is_mac) {
-         if (angle_enable_metal) {
-           # On macOS, compiling Metal shader sometimes takes very long time due to internal caching
 --- a/third_party/dawn/scripts/dawn_features.gni
 +++ b/third_party/dawn/scripts/dawn_features.gni
 @@ -26,6 +26,7 @@

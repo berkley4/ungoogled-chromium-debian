@@ -11,7 +11,7 @@
               "CompositeBGColorAnimation",
 --- a/third_party/blink/renderer/core/loader/document_loader.cc
 +++ b/third_party/blink/renderer/core/loader/document_loader.cc
-@@ -2874,11 +2874,10 @@
+@@ -2883,11 +2883,10 @@
        !frame_->DomWindow()->GetSecurityOrigin()->IsSameOriginWith(
            previous_window->GetSecurityOrigin());
    if (should_clear_window_name) {
@@ -27,7 +27,7 @@
      frame_->Tree().ExperimentalSetNulledName();
    }
  
-@@ -2886,9 +2885,10 @@
+@@ -2895,9 +2894,10 @@
        previous_window && frame_->IsOutermostMainFrame() &&
        is_cross_site_cross_browsing_context_group_;
    if (should_clear_cross_site_cross_browsing_context_group_window_name) {

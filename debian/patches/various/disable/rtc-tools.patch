@@ -8,7 +8,7 @@
  import("//tools/ipc_fuzzer/ipc_fuzzer.gni")
  import("//ui/base/ui_features.gni")
  import("//ui/gl/features.gni")
-@@ -1735,7 +1736,7 @@
+@@ -1771,7 +1772,7 @@
        }
      }
  
@@ -27,7 +27,7 @@
  import("//third_party/widevine/cdm/widevine.gni")
  import("//ui/base/ui_features.gni")
  import("//ui/gl/features.gni")
-@@ -2331,7 +2332,7 @@
+@@ -2496,7 +2497,7 @@
        "//tools/media_engagement_preload:make_dafsa_runtime",
      ]
  

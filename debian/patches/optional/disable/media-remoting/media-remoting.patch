@@ -1,6 +1,6 @@
 --- a/chrome/browser/media/cast_mirroring_service_host.cc
 +++ b/chrome/browser/media/cast_mirroring_service_host.cc
-@@ -482,10 +482,12 @@
+@@ -483,10 +483,12 @@
      mojo::PendingReceiver<media::mojom::RemotingSource> receiver) {
    if (source_media_id_.type == content::DesktopMediaID::TYPE_WEB_CONTENTS) {
      content::WebContents* source_contents = web_contents();

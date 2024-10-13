@@ -9,9 +9,9 @@
  import("//third_party/inspector_protocol/inspector_protocol.gni")
  
 @@ -36,10 +37,12 @@
-     "//cc/base",
      "//gpu/vulkan:buildflags",
      "//skia",
+     "//third_party/angle:includes",
 -    "//third_party/dawn/include/dawn:cpp_headers",
      "//ui/gfx:buffer_types",
      "//ui/gfx/geometry",
@@ -24,7 +24,7 @@
    }
 --- a/services/on_device_model/BUILD.gn
 +++ b/services/on_device_model/BUILD.gn
-@@ -51,12 +51,14 @@
+@@ -41,12 +41,14 @@
    }
  
    if (is_linux || is_chromeos) {
@@ -47,22 +47,30 @@
  
 --- a/services/on_device_model/ml/BUILD.gn
 +++ b/services/on_device_model/ml/BUILD.gn
-@@ -35,9 +35,13 @@
-     "//components/optimization_guide/core:features",
-     "//components/translate/core/language_detection",
-     "//third_party/angle:includes",
--    "//third_party/dawn/src/dawn:proc",
--    "//third_party/dawn/src/dawn/native",
-   ]
-+  if (use_dawn) {
-+    deps += [
-+      "//third_party/dawn/src/dawn:proc",
-+      "//third_party/dawn/src/dawn/native",
-+    ]
-+  }
-   if (!is_ios) {
-     deps += [ "//gpu/config" ]
-   }
+@@ -4,6 +4,7 @@
+ 
+ import("//build/config/features.gni")
+ import("//services/on_device_model/on_device_model.gni")
++import("//ui/gl/features.gni")
+ 
+ source_set("api") {
+   public = [
+@@ -46,9 +47,13 @@
+       "//components/optimization_guide/core:features",
+       "//components/translate/core/language_detection",
+       "//third_party/angle:includes",
+-      "//third_party/dawn/src/dawn:proc",
+-      "//third_party/dawn/src/dawn/native",
+     ]
++    if (use_dawn) {
++      deps += [
++        "//third_party/dawn/src/dawn:proc",
++        "//third_party/dawn/src/dawn/native",
++      ]
++    }
+     if (use_blink) {
+       deps += [ "//gpu/config" ]
+     }
 --- a/services/on_device_model/pre_sandbox_init.cc
 +++ b/services/on_device_model/pre_sandbox_init.cc
 @@ -16,9 +16,11 @@

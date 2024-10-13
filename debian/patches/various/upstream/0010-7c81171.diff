@@ -85,7 +85,7 @@ Commit-Queue: Geoff Lang <geofflang@chromium.org>
      void addRef() const { mRefCount++; }
 --- a/third_party/angle/src/libANGLE/Framebuffer.cpp
 +++ b/third_party/angle/src/libANGLE/Framebuffer.cpp
-@@ -733,25 +733,30 @@
+@@ -740,25 +740,30 @@
  
  bool FramebufferState::hasDepth() const
  {
@@ -120,7 +120,7 @@ Commit-Queue: Geoff Lang <geofflang@chromium.org>
  }
  
  bool FramebufferState::isMultiview() const
-@@ -1241,31 +1246,6 @@
+@@ -1248,31 +1253,6 @@
      }
  }
  
@@ -152,7 +152,7 @@ Commit-Queue: Geoff Lang <geofflang@chromium.org>
  bool Framebuffer::usingExtendedDrawBuffers() const
  {
      for (size_t drawbufferIdx = 1; drawbufferIdx < mState.mDrawBufferStates.size(); ++drawbufferIdx)
-@@ -2490,7 +2470,8 @@
+@@ -2508,7 +2488,8 @@
  
      bool color = (mask & GL_COLOR_BUFFER_BIT) != 0 && !glState.allActiveDrawBufferChannelsMasked();
      bool depth = (mask & GL_DEPTH_BUFFER_BIT) != 0 && !depthStencil.isDepthMaskedOut();
@@ -162,7 +162,7 @@ Commit-Queue: Geoff Lang <geofflang@chromium.org>
  
      if (!color && !depth && !stencil)
      {
-@@ -2518,7 +2499,8 @@
+@@ -2536,7 +2517,8 @@
  {
      if (!context->isRobustResourceInitEnabled() ||
          context->getState().isRasterizerDiscardEnabled() ||
@@ -340,7 +340,7 @@ Commit-Queue: Geoff Lang <geofflang@chromium.org>
      }
  
      // Use finalLayout instead of extra barrier for layout change to present
-@@ -8566,7 +8572,7 @@
+@@ -8570,7 +8576,7 @@
  
      if (isStencilTexture)
      {
@@ -373,7 +373,7 @@ Commit-Queue: Geoff Lang <geofflang@chromium.org>
  
 --- a/third_party/angle/src/libANGLE/renderer/vulkan/vk_helpers.cpp
 +++ b/third_party/angle/src/libANGLE/renderer/vulkan/vk_helpers.cpp
-@@ -3050,10 +3050,12 @@
+@@ -3021,10 +3021,12 @@
  
  void RenderPassCommandBufferHelper::invalidateRenderPassStencilAttachment(
      const gl::DepthStencilState &dsState,
@@ -389,7 +389,7 @@ Commit-Queue: Geoff Lang <geofflang@chromium.org>
  }
 --- a/third_party/angle/src/libANGLE/renderer/vulkan/vk_helpers.h
 +++ b/third_party/angle/src/libANGLE/renderer/vulkan/vk_helpers.h
-@@ -1840,6 +1840,7 @@
+@@ -1834,6 +1834,7 @@
      void invalidateRenderPassDepthAttachment(const gl::DepthStencilState &dsState,
                                               const gl::Rectangle &invalidateArea);
      void invalidateRenderPassStencilAttachment(const gl::DepthStencilState &dsState,

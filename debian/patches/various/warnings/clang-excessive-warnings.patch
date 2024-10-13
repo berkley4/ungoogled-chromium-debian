@@ -1,7 +1,7 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1913,6 +1913,17 @@
-       "-Wno-unused-parameter",  # Unused function parameters.
+@@ -1924,6 +1924,17 @@
+                                 # (crbug.com/40285259)
      ]
  
 +    if (is_linux && is_clang) {

@@ -1,6 +1,6 @@
 --- a/third_party/ffmpeg/BUILD.gn
 +++ b/third_party/ffmpeg/BUILD.gn
-@@ -250,7 +250,7 @@
+@@ -257,7 +257,7 @@
    # that are under "if (0)" style sections.  Which lead to link time errors
    # when for example it tries to link an ARM symbol on X86.
    configs -= [ "//build/config/compiler:default_optimization" ]

@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -3109,6 +3109,16 @@
+@@ -3131,6 +3131,16 @@
    }
  }
  
@@ -26,4 +26,4 @@
 +  "//build/config/compiler:default_stack_clash_prot",
    "//build/config/compiler:default_stack_frames",
    "//build/config/compiler:default_symbols",
-   "//build/config/compiler:libcxx_module",
+   "//build/config/compiler:libcxx_hardening",

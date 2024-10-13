@@ -22,7 +22,7 @@ Cr-Commit-Position: refs/heads/main@{#1356263}
 
 --- a/third_party/blink/renderer/core/layout/inline/line_breaker.cc
 +++ b/third_party/blink/renderer/core/layout/inline/line_breaker.cc
-@@ -3975,11 +3975,19 @@
+@@ -3854,11 +3854,19 @@
  // At this point, item_results does not fit into the current line, and there
  // are no break opportunities in item_results.back().
  void LineBreaker::HandleOverflow(LineInfo* line_info) {
@@ -44,7 +44,7 @@ Cr-Commit-Position: refs/heads/main@{#1356263}
  
    // Keep track of the shortest break opportunity.
    unsigned break_before = 0;
-@@ -3987,13 +3995,6 @@
+@@ -3866,13 +3874,6 @@
    // True if there is at least one item that has `break-word`.
    bool has_break_anywhere_if_overflow = break_anywhere_if_overflow_;
  

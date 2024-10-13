@@ -17,7 +17,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
 
 --- a/skia/BUILD.gn
 +++ b/skia/BUILD.gn
-@@ -388,9 +388,6 @@
+@@ -404,9 +404,6 @@
      defines += [ "SK_CODEC_DECODES_JPEG_GAINMAPS" ]
    }
  
@@ -27,15 +27,15 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
    if (is_win) {
      libs = [ "fontsub.lib" ]
    }
-@@ -593,6 +590,8 @@
+@@ -609,6 +606,8 @@
        "SKOTTIE_TRIVIAL_FONTRUN_ITER",
      ]
    }
 +  import("//third_party/skia/modules/svg/svg.gni")
 +  sources += skia_svg_sources
- }
  
- component("skia_switches") {
+   if (enable_rust_png) {
+     deps += [ ":rust_png_ffi" ]
 --- a/skia/ext/font_utils.cc
 +++ b/skia/ext/font_utils.cc
 @@ -10,6 +10,8 @@

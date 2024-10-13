@@ -1,11 +1,12 @@
 --- a/components/component_updater/component_updater_service.cc
 +++ b/components/component_updater/component_updater_service.cc
-@@ -546,7 +546,7 @@
- // Register prefs required by the component update service.
- void RegisterComponentUpdateServicePrefs(PrefRegistrySimple* registry) {
-   // The component updates are enabled by default, if the preference is not set.
--  registry->RegisterBooleanPref(prefs::kComponentUpdatesEnabled, true);
-+  registry->RegisterBooleanPref(prefs::kComponentUpdatesEnabled, false);
- }
+@@ -549,8 +549,7 @@
+   // If the preference is not set the component updates are enabled by default
+   // unless in Chrome for Testing where we never want components to be updated
+   // automatically.
+-  constexpr bool kComponentUpdatesEnabledByDefault =
+-      !BUILDFLAG(CHROME_FOR_TESTING);
++  constexpr bool kComponentUpdatesEnabledByDefault = false;
  
- }  // namespace component_updater
+   registry->RegisterBooleanPref(prefs::kComponentUpdatesEnabled,
+                                 kComponentUpdatesEnabledByDefault);

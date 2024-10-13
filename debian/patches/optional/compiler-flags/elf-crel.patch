@@ -23,7 +23,7 @@ Cr-Commit-Position: refs/heads/main@{#1356653}
 
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -558,6 +558,13 @@
+@@ -561,6 +561,13 @@
      } else {
        ldflags += [ "-Wl,--color-diagnostics" ]
      }

@@ -37,7 +37,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      }
 --- a/third_party/blink/renderer/core/inspector/inspector_network_agent.cc
 +++ b/third_party/blink/renderer/core/inspector/inspector_network_agent.cc
-@@ -2440,7 +2440,7 @@
+@@ -2436,7 +2436,7 @@
    Resource* cached_resource = document->Fetcher()->CachedResource(url);
    if (!cached_resource) {
      cached_resource = MemoryCache::Get()->ResourceForURL(
@@ -74,7 +74,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
          CanReuseFromListOfAvailableImages(
 --- a/third_party/blink/renderer/platform/loader/fetch/memory_cache.cc
 +++ b/third_party/blink/renderer/platform/loader/fetch/memory_cache.cc
-@@ -207,7 +207,7 @@
+@@ -197,7 +197,7 @@
  }
  
  bool MemoryCache::Contains(const Resource* resource) const {
@@ -83,7 +83,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      return false;
  
    const auto resource_maps_it =
-@@ -223,13 +223,9 @@
+@@ -213,13 +213,9 @@
    return resource == resources_it->value->GetResource();
  }
  
@@ -111,18 +111,18 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
    void Add(Resource*);
    void Remove(Resource*);
-@@ -177,6 +174,8 @@
+@@ -168,6 +165,8 @@
        base::MemoryPressureListener::MemoryPressureLevel) override;
  
   private:
 +   HeapVector<Member<Resource>> ResourcesForURL(const KURL&) const;
 +
-   enum PruneStrategy {
-     // Automatically decide how much to prune.
-     kAutomaticPrune,
+   // A URL-based map of all resources that are in the cache (including the
+   // freshest version of objects that are currently being referenced by a Web
+   // page). removeFragmentIdentifierIfNeeded() should be called for the url
 --- a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc
 +++ b/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc
-@@ -980,7 +980,8 @@
+@@ -992,7 +992,8 @@
    if (!archive_ && factory.GetType() == ResourceType::kRaw)
      return nullptr;
  
@@ -132,28 +132,28 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // Most off-main-thread resource fetches use Resource::kRaw and don't reach
    // this point, but off-main-thread module fetches might.
    if (IsMainThread()) {
-@@ -1423,7 +1424,9 @@
-         resource = nullptr;
-       } else {
-         resource = MemoryCache::Get()->ResourceForURL(
--            params.Url(), GetCacheIdentifier(params.Url()));
-+            params.Url(),
+@@ -1408,7 +1409,9 @@
+       MakePreloadedResourceBlockOnloadIfNeeded(resource, params);
+     } else if (IsMainThread()) {
+       resource = MemoryCache::Get()->ResourceForURL(
+-          params.Url(), GetCacheIdentifier(params.Url()));
++          params.Url(),
 +            GetCacheIdentifier(params.Url(),
 +              params.GetResourceRequest().TopFrameOrigin()));
-       }
        if (resource) {
          policy = DetermineRevalidationPolicy(resource_type, params, *resource,
-@@ -1721,7 +1724,8 @@
+                                              is_static_data);
+@@ -1719,7 +1722,8 @@
      const FetchParameters& params,
      const ResourceFactory& factory) {
    const String cache_identifier =
 -      GetCacheIdentifier(params.GetResourceRequest().Url());
 +      GetCacheIdentifier(params.GetResourceRequest().Url(),
 +        params.GetResourceRequest().TopFrameOrigin());
-   if (!base::FeatureList::IsEnabled(
-           blink::features::kScopeMemoryCachePerContext)) {
-     DCHECK(!IsMainThread() || params.IsStaleRevalidation() ||
-@@ -2793,10 +2797,13 @@
+   DCHECK(!IsMainThread() || params.IsStaleRevalidation() ||
+          !MemoryCache::Get()->ResourceForURL(params.GetResourceRequest().Url(),
+                                              cache_identifier));
+@@ -2788,10 +2792,13 @@
    to_be_removed.clear();
  }
  
@@ -169,7 +169,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    }
  
    // Requests that can be satisfied via `archive_` (i.e. MHTML) or
-@@ -2809,7 +2816,7 @@
+@@ -2804,7 +2811,7 @@
    if (bundle)
      return bundle->GetCacheIdentifier();
  

@@ -60,7 +60,7 @@ Cr-Commit-Position: refs/heads/main@{#1356118}
  }
  
  InputStream::StreamState DownloadFileImpl::SourceStream::Read(
-@@ -623,8 +625,8 @@
+@@ -626,8 +628,8 @@
          }
        } break;
        case InputStream::WAIT_FOR_COMPLETION:
@@ -73,7 +73,7 @@ Cr-Commit-Position: refs/heads/main@{#1356118}
          break;
 --- a/components/download/public/common/download_file_impl.h
 +++ b/components/download/public/common/download_file_impl.h
-@@ -132,9 +132,10 @@
+@@ -133,9 +133,10 @@
      // DownloadItem/DownloadFile somewhere.
      DownloadInterruptReason GetCompletionStatus() const;
  

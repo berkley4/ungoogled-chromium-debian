@@ -24,7 +24,7 @@ Cr-Commit-Position: refs/heads/main@{#1363100}
 
 --- a/third_party/blink/renderer/core/loader/image_loader.cc
 +++ b/third_party/blink/renderer/core/loader/image_loader.cc
-@@ -767,11 +767,8 @@
+@@ -768,11 +768,8 @@
      Image& image = *image_content_->GetImage();
  
      if (auto* svg_image = DynamicTo<SVGImage>(image)) {
@@ -40,7 +40,7 @@ Cr-Commit-Position: refs/heads/main@{#1363100}
        svg_image->MaybeRecordSvgImageProcessingTime(GetElement()->GetDocument());
 --- a/third_party/blink/renderer/core/style/style_fetched_image.cc
 +++ b/third_party/blink/renderer/core/style/style_fetched_image.cc
-@@ -234,11 +234,8 @@
+@@ -230,11 +230,8 @@
      Image& image = *image_->GetImage();
  
      if (auto* svg_image = DynamicTo<SVGImage>(image)) {
