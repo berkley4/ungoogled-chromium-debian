@@ -73,6 +73,7 @@ various/disable/libavif-fuzzers.patch
 various/disable/motherboard-metrics.patch
 various/disable/rtc-tools.patch
 various/disable/screen-ai-service.patch
+various/disable/tint-benchmarks.patch
 various/disable/tint-fuzzers.patch
 various/disable/crashpad-handler/crashpad-handler.patch
 various/disable/crashpad-handler/crashpad-handler_2.patch
@@ -150,6 +151,7 @@ optional/disable/extensions-in-root-menu.patch
 #optional/disable/speech.patch
 #optional/disable/vulkan.patch
 optional/disable/webgpu.patch
+#optional/disable/dbus-and-notifications/dbus-secret-portal-depends-on-dbus.patch
 #optional/disable/dbus-and-notifications/include-platform-util-linux-on-non-dbus.patch
 #optional/disable/dbus-and-notifications/notifications-depend-on-dbus.patch
 #optional/disable/dbus-and-notifications/stub-out-bluetooth-dbus.patch
