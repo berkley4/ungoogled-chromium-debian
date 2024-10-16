@@ -1187,6 +1187,7 @@ else
   op_disable="$op_disable fixes/icudata-file-path fixes/skia-allow-bundled-harfbuzz"
 
   gn_disable="$gn_disable icu_copy_icudata_to_root_build_dir=false"
+  gn_disable="$gn_disable v8_depend_on_icu_data_file"
 
   # GN_FLAGS += icu_use_data_file=false use_system_harfbuzz=true
   gn_enable="$gn_enable icu_use_data_file=false"
