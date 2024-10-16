@@ -1,6 +1,6 @@
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5525,12 +5525,12 @@
+@@ -5560,12 +5560,12 @@
  #endif
  #endif  // BUILDFLAG(IS_ANDROID)
  #endif  // ENABLE_VR
@@ -18,46 +18,42 @@
       FEATURE_VALUE_TYPE(features::kSystemKeyboardLock)},
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -5894,12 +5894,22 @@
+@@ -5837,7 +5837,7 @@
  
- #if BUILDFLAG(IS_CHROMEOS_ASH)
+ // ChromeOS -------------------------------------------------------------------
  
-+#endif
-+
-+#if BUILDFLAG(IS_CHROMEOS_ASH) || (BUILDFLAG(IS_LINUX) && !BUILDFLAG(IS_ANDROID))
-+
+-#if BUILDFLAG(IS_CHROMEOS_ASH)
++#if BUILDFLAG(IS_CHROMEOS_ASH) || BUILDFLAG(IS_LINUX)
+ 
  const char kAcceleratedMjpegDecodeName[] =
      "Hardware-accelerated mjpeg decode for captured frame";
- const char kAcceleratedMjpegDecodeDescription[] =
+@@ -5845,6 +5845,10 @@
      "Enable hardware-accelerated mjpeg decode for captured frame where "
      "available.";
  
-+#endif
-+
-+// Chrome OS -------------------------------------------------------------------
-+
-+#if BUILDFLAG(IS_CHROMEOS)
-+
- const char kAdaptiveChargingForTestingName[] =
-     "Show adaptive charging notifications for testing";
- const char kAdaptiveChargingForTestingDescription[] =
---- a/chrome/browser/flag_descriptions.h
-+++ b/chrome/browser/flag_descriptions.h
-@@ -3412,9 +3412,17 @@
- 
- #if BUILDFLAG(IS_CHROMEOS_ASH)
- 
-+#endif
-+
-+#if BUILDFLAG(IS_CHROMEOS_ASH) || (BUILDFLAG(IS_LINUX) && !BUILDFLAG(IS_ANDROID))
-+
- extern const char kAcceleratedMjpegDecodeName[];
- extern const char kAcceleratedMjpegDecodeDescription[];
- 
-+#endif
++#endif  // BUILDFLAG(IS_CHROMEOS_ASH) || BUILDFLAG(IS_LINUX)
 +
 +#if BUILDFLAG(IS_CHROMEOS_ASH)
 +
- extern const char kAdaptiveChargingName[];
- extern const char kAdaptiveChargingDescription[];
+ const char kAccessibilityFilterKeysName[] = "Filter keys";
+ const char kAccessibilityFilterKeysDescription[] =
+     "Enables settings to filter key presses in various ways, such as slow keys "
+--- a/chrome/browser/flag_descriptions.h
++++ b/chrome/browser/flag_descriptions.h
+@@ -3373,11 +3373,15 @@
+ 
+ // ChromeOS -------------------------------------------------------------------
+ 
+-#if BUILDFLAG(IS_CHROMEOS_ASH)
++#if BUILDFLAG(IS_CHROMEOS_ASH) || BUILDFLAG(IS_LINUX)
+ 
+ extern const char kAcceleratedMjpegDecodeName[];
+ extern const char kAcceleratedMjpegDecodeDescription[];
+ 
++#endif  // BUILDFLAG(IS_CHROMEOS_ASH) || BUILDFLAG(IS_LINUX)
++
++#if BUILDFLAG(IS_CHROMEOS_ASH)
++
+ extern const char kAccessibilityFilterKeysName[];
+ extern const char kAccessibilityFilterKeysDescription[];
  
