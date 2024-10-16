@@ -803,10 +803,6 @@ fi
 if [ $HEADLESS -eq 0 ]; then
   op_enable="$op_enable disable/headless"
   gn_enable="$gn_enable headless_enable_commands=false headless_use_policy=false"
-
-  if [ $VISUAL_QUERY -eq 0 ]; then
-    SER_DB="$SER_DB -e \"s@\(visual-query\)/headless@\1@\""
-  fi
 fi
 
 
