@@ -108,7 +108,7 @@ CHROMECAST		1		0 - disable (will also disable MEDIA_REMOTING)
 
 CLICK_TO_CALL		1		Feature for using chromium to make a call via an android phone
 COMPOSE			1		An autofill-related feature which can be disabled by those who don't use autofill
-DBUS			1		Disabling this will disable dbusand the notifications system
+DBUS			1		Disabling this will disable dbus and the notifications system
 					Note that DBUS=0 is a effectively a superset of BLUEZ=0 (use_dbus=false makes use_bluez false)
 
 ENTERPRISE_WATERMARK	0		Watermarking security/privacy feature (for Chrome Enterprise Premium users)

@@ -209,7 +209,7 @@ GN_FLAGS += enable_vr=false
 # Disable WebGPU (also see swiftshader section)
 GN_FLAGS += use_dawn=false skia_use_dawn=false
 GN_FLAGS += dawn_enable_desktop_gl=false dawn_enable_opengles=false
-GN_FLAGS += tint_build_glsl_validator=false tint_build_ir_binary=false 
+GN_FLAGS += tint_build_glsl_validator=false tint_build_ir_binary=false
 GN_FLAGS += tint_build_glsl_writer=false tint_build_hlsl_writer=false tint_build_msl_writer=false
 
 # Comment out if enabling both WebGPU and vulkan
