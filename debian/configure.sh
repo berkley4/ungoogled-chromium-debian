@@ -269,7 +269,7 @@ if [ -n "$LTO_DIR" ]; then
     exit 1
   fi
 
-  op_enable="$op_enable compiler-flags/thinlto-cache-location"
+  op_enable="$op_enable compiler-flags/thinlto-cache-location.patch"
 
   sed -e "s@_thinlto_cache_dir@$LTO_DIR@" \
       -i $OP_DIR/compiler-flags/thinlto-cache-location.patch
@@ -277,7 +277,7 @@ fi
 
 case $LTO_JOBS in
   [1-9]|[1-9][0-9])
-    op_enable="$op_enable compiler-flags/thinlto-jobs"
+    op_enable="$op_enable compiler-flags/thinlto-jobs.patch"
 
     case $LTO_JOBS in
       [2-9]|[1-9][0-9])
@@ -338,7 +338,7 @@ fi
 
 
 if [ $ELF_CREL -eq 1 ]; then
-  op_enable="$op_enable compiler-flags/elf-crel"
+  op_enable="$op_enable compiler-flags/elf-crel.patch"
 fi
 
 
@@ -347,7 +347,7 @@ if [ $ESBUILD -ge 0 ]; then
   PRU_PY="$PRU_PY -e \"/third_party\/esbuild\//d\""
 
   if [ $ESBUILD -eq 1 ]; then
-    op_enable="$op_enable enable-esbuild-for-official-builds"
+    op_enable="$op_enable enable-esbuild-for-official-builds.patch"
     gn_enable="$gn_enable devtools_fast_bundle"
   fi
 fi
@@ -411,7 +411,7 @@ else
   fi
 
   ## Set optional patches, build flags and format d/rules and d/control
-  op_enable="$op_enable system/clang/clang-version-check"
+  op_enable="$op_enable system/clang/clang-version-check.patch"
   gn_enable="$gn_enable clang_base_path custom_toolchain host_toolchain"
 
   RUL="$RUL -e \"/^#export LLVM_DIR /s@^#@@\""
@@ -422,7 +422,7 @@ else
   RUL="$RUL -e \"s@_LLVM_VER@$LLVM_VER@\""
 
   if [ $SYS_CLANG -eq 1 ]; then
-    op_enable="$op_enable system/clang/rust-clanglib"
+    op_enable="$op_enable system/clang/rust-clanglib.patch"
     deps_enable="$deps_enable lld clang libclang-rt"
 
     # Change version in d/control and d/rules if CC_VER and LLVM_VER differ
@@ -480,8 +480,8 @@ if [ $SYS_BINDGEN -gt 0 ]; then
       exit 1
     fi
 
-    op_enable="$op_enable system/bindgen-crabbyav1f"
-    op_enable="$op_enable system/clang/bindgen-clang-paths"
+    op_enable="$op_enable system/bindgen-crabbyav1f.patch"
+    op_enable="$op_enable system/clang/bindgen-clang-paths.patch"
 
     BINDGEN_PATH="/usr"
   fi
@@ -500,7 +500,7 @@ fi
 
 
 if [ $SYS_NODE -eq 1 ]; then
-  op_enable="$op_enable system/node"
+  op_enable="$op_enable system/node.patch"
   deps_enable="$deps_enable nodejs"
 fi
 
@@ -524,11 +524,11 @@ if [ $INTEL_CET -eq 1 ]; then
 fi
 
 if [ $MEDIA_OPT_SPEED -eq 0 ]; then
-  op_disable="$op_disable compiler-flags/media-optimize-speed-O3"
+  op_disable="$op_disable compiler-flags/media-optimize-speed-O3.patch"
 fi
 
 if [ $MF_SPLIT -eq 0 ]; then
-  op_disable="$op_disable compiler-flags/machine-function-splitting"
+  op_disable="$op_disable compiler-flags/machine-function-splitting.patch"
 fi
 
 
@@ -585,12 +585,12 @@ fi
 
 if [ $AVX2 -eq 1 ]; then
   AVX=1
-  op_enable="$op_enable compiler-flags/cpu/avx2"
+  op_enable="$op_enable compiler-flags/cpu/avx2.patch"
 fi
 
 if [ $AVX -eq 0 ]; then
   POLLY_VEC=0
-  op_disable="$op_disable compiler-flags/cpu/avx"
+  op_disable="$op_disable compiler-flags/cpu/avx.patch"
 else
   AES_PCLMUL=1
 
@@ -599,7 +599,7 @@ else
 fi
 
 if [ $AES_PCLMUL -eq 0 ]; then
-  op_disable="$op_disable compiler-flags/cpu/aes-pclmul"
+  op_disable="$op_disable compiler-flags/cpu/aes-pclmul.patch"
 fi
 
 if [ $RTC_AVX2 -eq 0 ]; then
@@ -617,7 +617,7 @@ if [ $POLLY -eq 1 ]; then
   op_enable="$op_enable compiler-flags/polly.patch"
 
   if [ $POLLY_VEC -eq 1 ]; then
-    op_enable="$op_enable compiler-flags/polly-vectorizer"
+    op_enable="$op_enable compiler-flags/polly-vectorizer.patch"
   fi
 fi
 
@@ -653,7 +653,7 @@ fi
 
 # Not part of managed policy but DNS_INTERCEPT=1 depends on DNS_CONFIG=1
 if [ $DNS_CONFIG -eq 0 ]; then
-  op_enable="$op_enable disable/dns_config_service"
+  op_enable="$op_enable disable/dns_config_service.patch"
 fi
 
 
@@ -669,18 +669,18 @@ fi
 
 
 if [ $ATK -eq 0 ]; then
-  op_enable="$op_enable disable/atk"
+  op_enable="$op_enable disable/atk.patch"
   gn_enable="$gn_enable use_atk=false"
 fi
 
 
 if [ $CATAPULT -eq 1 ]; then
-  op_disable="$op_disable disable/catapult"
+  op_disable="$op_disable disable/catapult.patch"
 fi
 
 
 if [ $CHROMECAST -eq 0 ]; then
-  op_enable="$op_enable disable/media-router"
+  op_enable="$op_enable disable/media-router.patch"
   op_disable="$op_disable chromecast/"
 
   if [ $MEDIA_REMOTING -eq 1 ]; then
@@ -709,7 +709,7 @@ fi
 
 
 if [ $CLICK_TO_CALL -eq 0 ]; then
-  op_enable="$op_enable disable/click-to-call"
+  op_enable="$op_enable disable/click-to-call.patch"
   gn_enable="$gn_enable enable_click_to_call=false"
 fi
 
@@ -720,7 +720,7 @@ fi
 
 
 if [ $DBUS -eq 0 ]; then
-  op_disable="$op_disable system/libdbus"
+  op_disable="$op_disable system/libdbus.patch"
   op_enable="$op_enable disable/dbus-and-notifications/"
 
   gn_enable="$gn_enable use_dbus"
@@ -730,7 +730,7 @@ if [ $DBUS -eq 0 ]; then
 else
   # BLUEZ=0 should only effect DBUS=1
   if [ $BLUEZ -eq 0 ]; then
-    op_enable="$op_enable disable/bluez"
+    op_enable="$op_enable disable/bluez.patch"
     gn_enable="$gn_enable use_bluez=false"
   fi
 fi
@@ -746,13 +746,13 @@ fi
 
 
 if [ $ENTERPRISE_WATERMARK -eq 1 ]; then
-  op_disable="$op_disable disable/enterprise-watermark"
+  op_disable="$op_disable disable/enterprise-watermark.patch"
   gn_disable="$gn_disable enterprise_watermark=false"
 fi
 
 
 if [ $EXTENSIONS_ROOT_MENU -eq 1 ]; then
-  op_disable="$op_disable disable/extensions-in-root-menu"
+  op_disable="$op_disable disable/extensions-in-root-menu.patch"
 fi
 
 
@@ -812,7 +812,7 @@ fi
 
 
 if [ $HEADLESS -eq 0 ]; then
-  op_enable="$op_enable disable/headless"
+  op_enable="$op_enable disable/headless.patch"
   gn_enable="$gn_enable headless_enable_commands=false headless_use_policy=false"
 fi
 
@@ -856,13 +856,13 @@ fi
 
 
 if [ $MUTEX_PI -eq 0 ]; then
-  op_disable="$op_disable mutex-priority-inheritance"
+  op_disable="$op_disable mutex-priority-inheritance.patch"
   gn_disable="$gn_disable enable_mutex_priority_inheritance"
 fi
 
 
 if [ $OAUTH2 -eq 1 ]; then
-  op_enable="$op_enable use-oauth2-client-switches-as-default"
+  op_enable="$op_enable use-oauth2-client-switches-as-default.patch"
 fi
 
 
@@ -872,7 +872,7 @@ fi
 
 
 if [ $OZONE_WAYLAND -eq 0 ]; then
-  op_disable="$op_disable fixes/wayland-gbm-pixmap"
+  op_disable="$op_disable fixes/wayland-gbm-pixmap.patch"
   gn_enable="$gn_enable ozone_platform_wayland=false"
 fi
 
@@ -896,7 +896,7 @@ fi
 
 
 if [ $SPEECH -eq 0 ]; then
-  op_enable="$op_enable disable/speech"
+  op_enable="$op_enable disable/speech.patch"
   gn_enable="$gn_enable enable_speech_service=false"
 fi
 
@@ -943,7 +943,7 @@ fi
 
 
 if [ $VULKAN -eq 0 ]; then
-  op_enable="$op_enable disable/vulkan"
+  op_enable="$op_enable disable/vulkan.patch"
 
   # Refer to debian/rules.in to see which flags are disabled
   gn_enable="$gn_enable enable_vulkan=false"
@@ -968,7 +968,7 @@ fi
 
 
 if [ $WEBGPU -ge 1 ]; then
-  op_disable="$op_disable disable/webgpu"
+  op_disable="$op_disable disable/webgpu.patch"
 
   # Refer to debian/rules.in to see which flags are disabled
   gn_disable="$gn_disable use_dawn=false"
@@ -1013,8 +1013,8 @@ fi
 
 ## Handle audio codecs with a single patch to avoid patch conflict
 if [ $FF_AUDIO -eq 0 ]; then
-  op_disable="$op_disable ffmpeg-extra-codecs/audio-codecs"
-  op_disable="$op_disable ffmpeg-extra-codecs/context-fixup"
+  op_disable="$op_disable ffmpeg-extra-codecs/audio-codecs.patch"
+  op_disable="$op_disable ffmpeg-extra-codecs/context-fixup.patch"
 else
   if [ $FF_AUDIO -eq 1 ]; then
     FF_AC="aac,ac3,eac3"
@@ -1074,7 +1074,7 @@ case $SKIA_GAMMA in
         sed "s@2\.2@$SKIA_GAMMA@" -i $OP_DIR/fixes/skia-gamma.patch ;;
     esac
 
-    op_enable="$op_enable skia-gamma" ;;
+    op_enable="$op_enable skia-gamma.patch" ;;
 esac
 
 
@@ -1122,13 +1122,13 @@ fi
 
 
 if [ $SYS_JPEG -eq 0 ]; then
-  op_disable="$op_disable system/jpeg"
+  op_disable="$op_disable system/jpeg.patch"
   sys_disable="$sys_disable libjpeg"
 fi
 
 
 if [ $SYS_OPENH264 -eq 0 ]; then
-  op_disable="$op_disable system/openh264"
+  op_disable="$op_disable system/openh264.patch"
   sys_disable="$sys_disable openh264"
   deps_disable="$deps_disable libopenh264"
 fi
@@ -1156,12 +1156,12 @@ if [ $STABLE -eq 1 ]; then
 
   if [ $SYS_BROTLI -eq 1 ]; then
     # Implied enablement of system freetype when SYS_BROTLI=1
-    op_enable="$op_enable system/freetype-COLRV1"
+    op_enable="$op_enable system/freetype-COLRV1.patch"
   fi
 
   # Disable dav1d (too old)
   op_disable="$op_disable system/unstable/dav1d/"
-  op_enable="$op_enable fixes/dav1d-bundled-header"
+  op_enable="$op_enable fixes/dav1d-bundled-header.patch"
   sys_disable="$sys_disable dav1d"
   deps_disable="$deps_disable libdav1d"
 
@@ -1171,10 +1171,10 @@ fi
 
 
 if [ $SYS_BROTLI -eq 0 ]; then
-  op_enable="$op_enable fixes/skia-allow-bundled-freetype"
+  op_enable="$op_enable fixes/skia-allow-bundled-freetype.patch"
 
   if [ $OPENTYPE_SVG -eq 1 ]; then
-    op_enable="$op_enable fixes/opentype-svg-on-bundled-freetype"
+    op_enable="$op_enable fixes/opentype-svg-on-bundled-freetype.patch"
   fi
 
   # SYS_LIBS += fontconfig freetype brotli libpng
