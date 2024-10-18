@@ -112,7 +112,7 @@
  Comment[zh_HK]=連線到網際網路
  Comment[zh_TW]=連線到網際網路
 -Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@ %U
-+Exec=/usr/bin/chromium %U
++Exec=sh -c "/usr/bin/chromium %U"
  StartupNotify=true
  Terminal=false
 -Icon=@@PACKAGE@@
@@ -125,7 +125,7 @@
  Name[zh_CN]=新建窗口
  Name[zh_TW]=開新視窗
 -Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@
-+Exec=/usr/bin/chromium
++Exec=sh -c "/usr/bin/chromium"
  
  [Desktop Action new-private-window]
  Name=New Incognito Window
@@ -134,4 +134,4 @@
  Name[zh_CN]=新建隐身窗口
  Name[zh_TW]=新增無痕式視窗
 -Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@ --incognito
-+Exec=/usr/bin/chromium --incognito
++Exec=sh -c "/usr/bin/chromium --incognito"
