@@ -82,7 +82,6 @@ various/disable/crashpad-handler/crashpad-handler_4.patch
 various/disable/image-writer/image-writer-private.patch
 various/disable/image-writer/image-writer-utility.patch
 various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
-various/fixes/desktop-exec-as-script.patch
 various/fixes/enterprise-buildflags.patch
 various/fixes/EnumTable-crash.patch
 various/fixes/GaiaAuthFetcher-kMaxMessageSize.patch
