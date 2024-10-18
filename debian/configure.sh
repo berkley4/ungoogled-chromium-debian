@@ -410,7 +410,6 @@ else
     exit 1
   fi
 
-
   ## Set optional patches, build flags and format d/rules and d/control
   op_enable="$op_enable system/clang/clang-version-check"
   gn_enable="$gn_enable clang_base_path custom_toolchain host_toolchain"
@@ -433,6 +432,17 @@ else
       CON="$CON -e \"/^#libclang-rt-/s@$CC_VER@$LLVM_VER@\""
     fi
   fi
+fi
+
+
+if [ $LLVM_VER -ge 19 ]; then
+  # Do not apply hardware destructive interference patch for clang versions >= 19
+  P=upstream-fixes/hardware_destructive_interference_size.patch
+  SER_UC="$SER_UC -e \"s@^\($P\)@#\1@\""
+else
+  # Enable the non-hdis version of the enum table patch for older clang versions
+  op_disable="$op_disable fixes/enum-table-crash-hdis.patch"
+  op_enable="$op_enable fixes/enum-table-crash.patch"
 fi
 
 
