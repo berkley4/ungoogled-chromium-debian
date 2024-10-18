@@ -578,6 +578,9 @@ if [ $AVX -eq 0 ]; then
   op_disable="$op_disable compiler-flags/cpu/avx"
 else
   AES_PCLMUL=1
+
+  # Let users be able to turn this off
+  [ -n "$POLLY_VEC" ] || POLLY_VEC=1
 fi
 
 if [ $AES_PCLMUL -eq 0 ]; then
@@ -598,15 +601,8 @@ fi
 if [ $POLLY -eq 1 ]; then
   op_enable="$op_enable compiler-flags/polly.patch"
 
-  [ -n "$POLLY_VEC" ] || POLLY_VEC=1
-fi
-
-if [ $POLLY_VEC -eq 1 ]; then
-  op_enable="$op_enable compiler-flags/polly-vectorizer"
-
-  if [ $POLLY -eq 0 ]; then
-    printf '%s\n' "Cannot set POLLY_VEC=1 when POLLY=0"
-    exit 1
+  if [ $POLLY_VEC -eq 1 ]; then
+    op_enable="$op_enable compiler-flags/polly-vectorizer"
   fi
 fi
 
