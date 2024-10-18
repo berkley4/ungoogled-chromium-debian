@@ -868,7 +868,7 @@ fi
 
 if [ $PDF_JS -eq 1 ]; then
   gn_enable="$gn_enable use_system_libtiff"
-  gn_disable="$gn_disable pdf_enable_v8 use_system_libtiff"
+  gn_disable="$gn_disable pdf_enable_v8"
   deps_enable="$deps_enable libtiff"
 
   # Prevent libzstd being enabled twice
