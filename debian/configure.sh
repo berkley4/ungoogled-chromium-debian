@@ -1314,13 +1314,7 @@ if [ -n "$op_disable" ]; then
   esac
 
   for i in $op_disable; do
-    case $i in
-      */|*.patch)
-        SER_DB="$SER_DB -e \"s@^\(optional/$i\)@#\1@\"" ;;
-
-      *)
-        SER_DB="$SER_DB -e \"s@^\(optional/$i\.patch\)@#\1@\"" ;;
-    esac
+    SER_DB="$SER_DB -e \"s@^\(optional/$i\)@#\1@\""
   done
 fi
 
@@ -1331,13 +1325,7 @@ if [ -n "$op_enable" ]; then
   esac
 
   for i in $op_enable; do
-    case $i in
-      */|*.patch)
-        SER_DB="$SER_DB -e \"s@^#\(optional/$i\)@\1@\"" ;;
-
-      *)
-        SER_DB="$SER_DB -e \"s@^#\(optional/$i\.patch\)@\1@\"" ;;
-    esac
+    SER_DB="$SER_DB -e \"s@^#\(optional/$i\)@\1@\""
   done
 fi
 
