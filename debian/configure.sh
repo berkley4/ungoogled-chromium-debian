@@ -319,7 +319,7 @@ fi
 
 ## Enable the use of ccache
 if [ $CCACHE -eq 1 ]; then
-  gn_enable="$gn_enable cc_wrapper"
+  gn_enable="$gn_enable cc_wrapper="
   RUL="$RUL -e \"/^#export PATH/s@^#@@\""
 
   case $CCACHE_BASEDIR in
@@ -348,7 +348,7 @@ if [ $ESBUILD -ge 0 ]; then
 
   if [ $ESBUILD -eq 1 ]; then
     op_enable="$op_enable enable-esbuild-for-official-builds.patch"
-    gn_enable="$gn_enable devtools_fast_bundle"
+    gn_enable="$gn_enable devtools_fast_bundle=true"
   fi
 fi
 
@@ -412,7 +412,7 @@ else
 
   ## Set optional patches, build flags and format d/rules and d/control
   op_enable="$op_enable system/clang/clang-version-check.patch"
-  gn_enable="$gn_enable clang_base_path custom_toolchain host_toolchain"
+  gn_enable="$gn_enable clang_base_path= custom_toolchain= host_toolchain="
 
   RUL="$RUL -e \"/^#export LLVM_DIR /s@^#@@\""
   RUL="$RUL -e \"/^#export.*:= \x24\x28LLVM_DIR\x29\//s@^#@@\""
@@ -448,7 +448,7 @@ fi
 
 if [ $SYS_RUST -ge 1 ]; then
   # GN_FLAGS += rust_sysroot_absolute=\"$(RUST_PATH)\" rustc_version=\"$(RUST_VER)\"
-  gn_enable="$gn_enable rust_sysroot_absolute"
+  gn_enable="$gn_enable rust_sysroot_absolute="
 
   RUST_PATH="$HOME/.cargo"
 
@@ -492,7 +492,7 @@ if [ $SYS_BINDGEN -gt 0 ]; then
   fi
 
   # GN_FLAGS += rust_bindgen_root=\"_BINDGEN_PATH\"
-  gn_enable="$gn_enable rust_bindgen_root"
+  gn_enable="$gn_enable rust_bindgen_root="
 
   # Set BINDGEN_PATH in d/rules (for passing to rust_bindgen_root build flag)
   RUL="$RUL -e \"s@_BINDGEN_PATH@$BINDGEN_PATH@\""
@@ -715,7 +715,7 @@ fi
 
 
 if [ $COMPOSE -eq 0 ]; then
-  gn_enable="$gn_enable enable_compose"
+  gn_enable="$gn_enable enable_compose=false"
 fi
 
 
@@ -723,7 +723,7 @@ if [ $DBUS -eq 0 ]; then
   op_disable="$op_disable system/libdbus.patch"
   op_enable="$op_enable disable/dbus-and-notifications/"
 
-  gn_enable="$gn_enable use_dbus"
+  gn_enable="$gn_enable use_dbus=false"
   deps_disable="$deps_disable libdbus-1"
 
   SYS_NOTIFICATIONS=0
@@ -758,7 +758,7 @@ fi
 
 if [ $FF_AC3 -eq 0 ]; then
   op_disable="$op_disable ffmpeg-extra-codecs/ac3/"
-  gn_disable="$gn_disable enable_platform_ac3_eac3_audio"
+  gn_disable="$gn_disable enable_platform_ac3_eac3_audio=true"
 else
   FF_AUDIO=1
 fi
@@ -766,7 +766,7 @@ fi
 
 if [ $FF_AC4 -eq 1 ]; then
   op_enable="$op_enable ffmpeg-extra-codecs/ac4/"
-  gn_enable="$gn_enable enable_platform_ac4_audio"
+  gn_enable="$gn_enable enable_platform_ac4_audio=true"
   FF_AUDIO=$((FF_AUDIO+2))
 fi
 
@@ -792,12 +792,12 @@ fi
 
 if [ $FF_HEVC -eq 0 ]; then
   op_disable="$op_disable ffmpeg-extra-codecs/hevc/"
-  gn_disable="$gn_disable enable_platform_hevc"
+  gn_disable="$gn_disable enable_platform_hevc=true"
 fi
 
 
 if [ $GL_DESKTOP_FRONTEND -eq 1 ]; then
-  gn_enable="$gn_enable angle_enable_gl_desktop_frontend"
+  gn_enable="$gn_enable angle_enable_gl_desktop_frontend=true"
 fi
 
 
@@ -818,7 +818,7 @@ fi
 
 
 if [ $HLS_PLAYER -eq 0 ]; then
-  gn_disable="$gn_disable enable_hls_demuxer"
+  gn_disable="$gn_disable enable_hls_demuxer=true"
   ins_disable="$ins_disable hls-player"
 elif [ $HLS_PLAYER -ge 2 ]; then
   sed -e '/enable-builtin-hls/s@^#@@' \
@@ -857,7 +857,7 @@ fi
 
 if [ $MUTEX_PI -eq 0 ]; then
   op_disable="$op_disable mutex-priority-inheritance.patch"
-  gn_disable="$gn_disable enable_mutex_priority_inheritance"
+  gn_disable="$gn_disable enable_mutex_priority_inheritance=true"
 fi
 
 
@@ -878,9 +878,11 @@ fi
 
 
 if [ $PDF_JS -eq 1 ]; then
-  gn_enable="$gn_enable use_system_libtiff"
-  gn_disable="$gn_disable pdf_enable_v8"
+  gn_enable="$gn_enable use_system_libtiff=true"
   deps_enable="$deps_enable libtiff"
+
+  # GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
+  gn_disable="$gn_disable pdf_enable_v8=false"
 
   # Prevent libzstd being enabled twice
   if [ $ZSTD -eq 0 ]; then
@@ -891,7 +893,7 @@ fi
 
 if [ $PRINT_PREVIEW -eq 0 ]; then
   # GN_FLAGS += enable_print_preview=false enable_oop_printing=false
-  gn_enable="$gn_enable enable_print_preview"
+  gn_enable="$gn_enable enable_print_preview=false"
 fi
 
 
@@ -938,7 +940,7 @@ fi
 
 
 if [ $VR -eq 1 ]; then
-  gn_disable="$gn_disable enable_vr"
+  gn_disable="$gn_disable enable_vr=false"
 fi
 
 
@@ -1094,12 +1096,12 @@ fi
 
 if [ $OPENH264 -eq 0 ]; then
   # GN_FLAGS += media_use_openh264=false rtc_use_h264=false
-  gn_enable="$gn_enable media_use_openh264"
+  gn_enable="$gn_enable media_use_openh264=false"
 fi
 
 
 if [ $PIPEWIRE -eq 0 ]; then
-  gn_disable="$gn_disable rtc_use_pipewire"
+  gn_disable="$gn_disable rtc_use_pipewire=false"
   deps_disable="$deps_disable libpipewire"
 fi
 
