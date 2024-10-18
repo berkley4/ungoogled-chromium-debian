@@ -659,8 +659,8 @@ if [ $ATK -eq 0 ]; then
 fi
 
 
-if [ $CATAPULT -eq 0 ]; then
-  op_enable="$op_enable disable/catapult"
+if [ $CATAPULT -eq 1 ]; then
+  op_disable="$op_disable disable/catapult"
 fi
 
 
