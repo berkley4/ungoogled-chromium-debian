@@ -30,6 +30,8 @@ RELEASE_SET=0
 SYS_BROTLI_SET=0
 XZ_THREADED_SET=0
 
+LLVM_PGO_VER=20
+
 # ${example%/*} = $(dirname example)
 DEBIAN=${0%/*}
 RT_DIR=${DEBIAN%/*}
@@ -361,6 +363,8 @@ if [ $SYS_CLANG -eq 0 ]; then
   # Stop bundled toolchain directories from being pruned
   PRU="$PRU -e \"/^tools\/clang/d\""
   PRU_PY="$PRU_PY -e \"/third_party\/llvm\//d\""
+
+  LLVM_VER=$LLVM_PGO_VER
 else
   # Default enable POLLY when SYS_CLANG > 0 unless explicitly disabled
   [ $POLLY_SET -eq 1 ] && [ $POLLY -eq 0 ] || POLLY=1
@@ -387,7 +391,7 @@ else
 
   if [ $TEST -eq 0 ]; then
     if [ $CLANG_VER_SET -eq 0 ]; then
-      # If CLANG_VER has NOT been set explicity then get the version from the binary
+      # If CLANG_VER has NOT been set explicity then set LLVM_VER via querying the clang binary
       LLVM_VER=$($LLVM_BASE_DIR/bin/clang --version | sed -n 's@.*version \([^.]*\).*@\1@p')
     else
       # If CLANG_VER has been set explicity then trust the version and do a quick usability check
@@ -398,10 +402,11 @@ else
     fi
   fi
 
+  # Start using LLVM_VER instead of CLANG_VER now that the actual version is known
   [ -n "$LLVM_VER" ] || LLVM_VER=$CLANG_VER
 
-  if [ $PGO -eq 1 ] && [ $LLVM_VER -lt $CC_VER ]; then
-    printf '%s\n' "ERROR: Clang versions below $CC_VER are incompatible with PGO"
+  if [ $PGO -eq 1 ] && [ $LLVM_VER -lt $LLVM_PGO_VER ]; then
+    printf '%s\n' "ERROR: Clang versions below $LLVM_PGO_VER are incompatible with PGO"
     exit 1
   fi
 
@@ -421,11 +426,11 @@ else
     op_enable="$op_enable system/clang/rust-clanglib"
     deps_enable="$deps_enable lld clang libclang-rt"
 
-    # Change version in d/control and d/rules if CC_VER and CLANG_VER differ
-    if [ $CC_VER -ne $CLANG_VER ]; then
-      CON="$CON -e \"/^#lld-/s@$CC_VER@$CLANG_VER@\""
-      CON="$CON -e \"/^#clang-/s@$CC_VER@$CLANG_VER@\""
-      CON="$CON -e \"/^#libclang-rt-/s@$CC_VER@$CLANG_VER@\""
+    # Change version in d/control and d/rules if CC_VER and LLVM_VER differ
+    if [ $CC_VER -ne $LLVM_VER ]; then
+      CON="$CON -e \"/^#lld-/s@$CC_VER@$LLVM_VER@\""
+      CON="$CON -e \"/^#clang-/s@$CC_VER@$LLVM_VER@\""
+      CON="$CON -e \"/^#libclang-rt-/s@$CC_VER@$LLVM_VER@\""
     fi
   fi
 fi
