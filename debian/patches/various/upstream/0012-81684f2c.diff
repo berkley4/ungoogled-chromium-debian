@@ -24,7 +24,7 @@ Cr-Commit-Position: refs/heads/main@{#1363100}
 
 --- a/third_party/blink/renderer/core/loader/image_loader.cc
 +++ b/third_party/blink/renderer/core/loader/image_loader.cc
-@@ -768,11 +768,8 @@
+@@ -767,11 +767,8 @@
      Image& image = *image_content_->GetImage();
  
      if (auto* svg_image = DynamicTo<SVGImage>(image)) {

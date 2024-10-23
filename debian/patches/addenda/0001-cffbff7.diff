@@ -1,0 +1,77 @@
+From cffbff7f3c5b1127aeb994cc053ea5b283f22809 Mon Sep 17 00:00:00 2001
+From: Keren Zhu <kerenzhu@chromium.org>
+Date: Mon, 21 Oct 2024 22:18:36 +0000
+Subject: [PATCH] [m130] Fix crash when open URL in history side panel if preloaded
+
+This change fixes a crash that happens when opening a URL in a history
+side panel that was preloaded.
+
+When the browser interface is passed to HistoryClustersSidePanelUI, it
+needs to also be passed to the page handler.
+
+(cherry picked from commit ecb55aa59811c8f394c4a3faa000e34165f57977)
+
+Bug: 366000131
+Change-Id: I119ac5b2175d1117ef34e9ec54617ada7d201a6d
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5940510
+Reviewed-by: John Lee <johntlee@chromium.org>
+Code-Coverage: findit-for-me@appspot.gserviceaccount.com <findit-for-me@appspot.gserviceaccount.com>
+Commit-Queue: Keren Zhu <kerenzhu@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1370768}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5949844
+Bot-Commit: Rubber Stamper <rubber-stamper@appspot.gserviceaccount.com>
+Commit-Queue: John Lee <johntlee@chromium.org>
+Auto-Submit: Keren Zhu <kerenzhu@chromium.org>
+Cr-Commit-Position: refs/branch-heads/6723@{#1463}
+Cr-Branched-From: 985f2961df230630f9cbd75bd6fe463009855a11-refs/heads/main@{#1356013}
+---
+
+--- a/chrome/browser/ui/webui/history_clusters/history_clusters_handler.cc
++++ b/chrome/browser/ui/webui/history_clusters/history_clusters_handler.cc
+@@ -250,6 +250,10 @@
+   history_clusters_side_panel_embedder_ = side_panel_embedder;
+ }
+ 
++void HistoryClustersHandler::SetContextInterface(ContextInterface interface) {
++  interface_ = interface;
++}
++
+ void HistoryClustersHandler::SetQuery(const std::string& query) {
+   if (page_) {
+     page_->OnQueryChangedByUser(query);
+--- a/chrome/browser/ui/webui/history_clusters/history_clusters_handler.h
++++ b/chrome/browser/ui/webui/history_clusters/history_clusters_handler.h
+@@ -85,6 +85,11 @@
+ 
+   void SetSidePanelUIEmbedder(
+       base::WeakPtr<TopChromeWebUIController::Embedder> side_panel_embedder);
++
++  using ContextInterface =
++      absl::variant<BrowserWindowInterface*, tabs::TabInterface*>;
++  void SetContextInterface(ContextInterface interface);
++
+   // Used to set the in-page query from the browser.
+   void SetQuery(const std::string& query);
+ 
+@@ -146,7 +151,7 @@
+   raw_ptr<Profile> profile_;
+   raw_ptr<content::WebContents> web_contents_;
+ 
+-  absl::variant<BrowserWindowInterface*, tabs::TabInterface*> interface_;
++  ContextInterface interface_;
+ 
+   // Used to observe the service.
+   base::ScopedObservation<HistoryClustersService,
+--- a/chrome/browser/ui/webui/side_panel/history_clusters/history_clusters_side_panel_ui.cc
++++ b/chrome/browser/ui/webui/side_panel/history_clusters/history_clusters_side_panel_ui.cc
+@@ -90,6 +90,10 @@
+ void HistoryClustersSidePanelUI::SetBrowserWindowInterface(
+     BrowserWindowInterface* browser_window_interface) {
+   browser_window_interface_ = browser_window_interface;
++  // The page handler may already exist if preloaded.
++  if (history_clusters_handler_) {
++    history_clusters_handler_->SetContextInterface(browser_window_interface);
++  }
+ }
+ 
+ void HistoryClustersSidePanelUI::BindInterface(

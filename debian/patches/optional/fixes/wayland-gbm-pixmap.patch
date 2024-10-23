@@ -43,7 +43,7 @@ Date:   Fri Sep 20 22:55:39 2024 +0000
 
 --- a/ui/ozone/platform/wayland/gpu/wayland_surface_factory.cc
 +++ b/ui/ozone/platform/wayland/gpu/wayland_surface_factory.cc
-@@ -250,17 +250,20 @@ scoped_refptr<gfx::NativePixmap> Wayland
+@@ -250,17 +250,20 @@
      return nullptr;
    }
  #if defined(WAYLAND_GBM)
@@ -72,7 +72,7 @@ Date:   Fri Sep 20 22:55:39 2024 +0000
  }
  
  void WaylandSurfaceFactory::CreateNativePixmapAsync(
-@@ -284,7 +287,7 @@ WaylandSurfaceFactory::CreateNativePixma
+@@ -284,7 +287,7 @@
      gfx::NativePixmapHandle handle) {
  #if defined(WAYLAND_GBM)
    auto* gbm_device = buffer_manager_->GetGbmDevice();
@@ -92,7 +92,7 @@ Date:   Fri Sep 20 22:55:39 2024 +0000
  #include "ui/ozone/platform/wayland/gpu/drm_render_node_path_finder.h"
  #endif
  
-@@ -204,6 +206,15 @@ class OzonePlatformWayland : public Ozon
+@@ -204,6 +206,15 @@
        if (!buffer_manager_->SupportsFormat(format)) {
          return false;
        }
