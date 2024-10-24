@@ -205,3 +205,6 @@ optional/system/vaapi/gl-native-pixmap-formats.patch
 #optional/system/zstd/zstd-feature-flag.patch
 optional/translate/revert-disable.patch
 optional/translate/stop-unsupported-switch-warning.patch
+
+addenda/0001-cffbff7.diff
+addenda/0002-fad5a09f.diff
