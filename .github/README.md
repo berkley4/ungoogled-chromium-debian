@@ -305,6 +305,29 @@ git submodule update --init --recursive
 cd ..
 ```
 
+## Optional: manually updating the submodule from an upstream pull request
+
+```sh
+# Add '.patch' to the end of the pull request url
+https://github.com/ungoogled-software/ungoogled-chromium/pull/99999.patch
+
+# Right click the webpage and click on 'Save as...'
+
+# Change to the submodule root directory
+cd debian/submodules/ungoogled-chromium
+
+# Apply the patch saved above to the ungoogled chromium submodule
+git am path/to/99999.patch
+
+# Reverse the update
+# Navigate to the ungoogled chromium commits url
+https://github.com/ungoogled-software/ungoogled-chromium/commits/master
+
+# Click on the double-square icon of the topmost commit ('Copy full SHA for')
+# Paste the SHA in the command below (replace SHA with the copied SHA)
+git reset --hard SHA
+```
+
 ## Cloning the chromium git repo
 
 ```sh
