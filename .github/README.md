@@ -316,16 +316,17 @@ https://github.com/ungoogled-software/ungoogled-chromium/pull/99999.patch
 # Change to the submodule root directory
 cd debian/submodules/ungoogled-chromium
 
-# Apply the patch saved above to the ungoogled chromium submodule
+# Note the commit hash of HEAD
+export HEAD_SHA=$(git rev-parse HEAD)
+
+# Update to the latest commit
+git pull origin master
+
+# Apply the PR patch (saved above) to the submodule
 git am path/to/99999.patch
 
 # Reverse the update
-# Navigate to the ungoogled chromium commits url
-https://github.com/ungoogled-software/ungoogled-chromium/commits/master
-
-# Click on the double-square icon of the topmost commit ('Copy full SHA for')
-# Paste the SHA in the command below (replace SHA with the copied SHA)
-git reset --hard SHA
+git reset --hard $HEAD_SHA
 ```
 
 ## Cloning the chromium git repo
