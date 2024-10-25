@@ -1217,11 +1217,11 @@ fi
 ############################################################
 
 # Check whether DEPS.patch has been applied
-[ $TEST -eq 0 ] && grep -q 'webvr_info' $RT_DIR/DEPS && DEPS_PATCH=0 || DEPS_PATCH=1
+[ $TEST -eq 0 ] && [ -n "$(sed -n '/webvr_info/p' $RT_DIR/DEPS)" ] && DEPS_PATCH=0 || DEPS_PATCH=1
 
 # Check whether DEPS-no-rust.patch has been applied
 if [ $TEST -eq 0 ] && [ $DEPS_PATCH -eq 1 ]; then
-  grep -q -A9 'src/third_party/rust-toolchain' $RT_DIR/DEPS | grep -q 'host_os == "linux"' || DEPS_PATCH=2
+  [ -n "$(sed -n '/Linux_x64\/rust-toolchain-/,/condition/{/==/p}' $RT_DIR/DEPS)" ] || DEPS_PATCH=2
 fi
 
 ## Domain substitution
