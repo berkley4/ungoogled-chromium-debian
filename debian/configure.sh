@@ -161,7 +161,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$DNS_INTERCEPT" ] || DNS_INTERCEPT=1
 
 ## DNS config service
-[ -n "$DNS_CONFIG" ] || DNS_CONFIG=1
+[ -n "$DNS_CONFIG" ] || DNS_CONFIG=0
 
 ## Package conpression: XZ_THREADED is disabled If XZ_EXTREME=0 or XZ_THREADED=0 (or both)
 [ -n "$XZ_EXTREME" ] || XZ_EXTREME=0
@@ -633,29 +633,23 @@ fi
 
 [ $DL_RESTRICT -eq 0 ] || POL="$POL -e \"/DownloadRestrictions/s@0@3@\""
 
+
 if [ -n "$DNS_HOST" ]; then
   POL="$POL -e \"/doh.opendns.com/s@doh.opendns.com@$DNS_HOST@\""
-fi
-
-if [ $DNS_INTERCEPT -eq 0 ]; then
-  POL="$POL -e \"/DNSInterceptionChecksEnabled/s@true@false@\""
-else
-  # The DNS config service is needed for DNS interception checking
-  if [ $DNS_CONFIG -eq 0 ]; then
-    printf '%s\n' "ERROR: cannot set DNS_CONFIG=0 with DNS_INTERCEPT=1"
-    exit 1
-  fi
 fi
 
 if [ $DNS_BUILTIN -eq 1 ]; then
   POL="$POL -e \"/BuiltInDnsClientEnabled/s@false@true@\""
 fi
 
-# Not part of managed policy but DNS_INTERCEPT=1 depends on DNS_CONFIG=1
-if [ $DNS_CONFIG -eq 0 ]; then
-  op_enable="$op_enable disable/dns_config_service.patch"
+if [ $DNS_INTERCEPT -eq 0 ]; then
+  POL="$POL -e \"/DNSInterceptionChecksEnabled/s@true@false@\""
 fi
 
+# Not part of managed policy but set this here with the other dns variables
+if [ $DNS_CONFIG -eq 1 ]; then
+  op_disable="$op_disable disable/dns_config_service.patch"
+fi
 
 
 

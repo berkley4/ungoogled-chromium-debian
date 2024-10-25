@@ -84,13 +84,10 @@ CAP_VID			1		Video capture
 DL_RESTRICT		0		Any value greater than zero sets DownloadRestrictions key to 3 to block all downloads
 
 DNS_BUILTIN		0		Controls whether to use the internal chromium DNS-over-HTTPS client
+DNS_CONFIG		0		Enable monitoring for changes in system DNS configuration
 DNS_INTERCEPT		1		DNS interception detection (helps protect against hijacking/poisoning)
 DNS_HOST		<hostname>	To set https://dns.example.net/dns-query{?dns} as DNS-over-HTTPS
 					resolver, run: DNS_HOST=dns.example.net ./debian/configure.sh
-
-# Required for DNS interception detection
-DNS_CONFIG		1		Enable monitoring for changes in system DNS configuration
-
 
 ## Enable/Disable features/components/patches
 
