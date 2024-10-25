@@ -371,11 +371,11 @@ else
 
   ## Check for clang binary existence and PGO compatibility
 
-  CC_VER=$(sed -n '/^[ #]clang-/s@[-#,a-z ]@@gp' $DEBIAN/control.in)
+  LLVM_CTRL_VER=$(sed -n '/^[ #]clang-/s@[-#,a-z ]@@gp' $DEBIAN/control.in)
 
   case $CLANG_VER in
     "")
-      CLANG_VER=$CC_VER ;;
+      CLANG_VER=$LLVM_CTRL_VER ;;
 
     [1-9][0-9]*)
       CLANG_VER=${CLANG_VER%%.*}
@@ -425,11 +425,11 @@ else
     op_enable="$op_enable system/clang/rust-clanglib.patch"
     deps_enable="$deps_enable lld clang libclang-rt"
 
-    # Change version in d/control and d/rules if CC_VER and LLVM_VER differ
-    if [ $CC_VER -ne $LLVM_VER ]; then
-      CON="$CON -e \"/^#lld-/s@$CC_VER@$LLVM_VER@\""
-      CON="$CON -e \"/^#clang-/s@$CC_VER@$LLVM_VER@\""
-      CON="$CON -e \"/^#libclang-rt-/s@$CC_VER@$LLVM_VER@\""
+    # Change version in d/control and d/rules if LLVM_CTRL_VER & LLVM_VER differ
+    if [ $LLVM_CTRL_VER -ne $LLVM_VER ]; then
+      CON="$CON -e \"/^#lld-/s@$LLVM_CTRL_VER@$LLVM_VER@\""
+      CON="$CON -e \"/^#clang-/s@$LLVM_CTRL_VER@$LLVM_VER@\""
+      CON="$CON -e \"/^#libclang-rt-/s@$LLVM_CTRL_VER@$LLVM_VER@\""
     fi
   fi
 fi
