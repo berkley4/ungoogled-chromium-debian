@@ -108,9 +108,11 @@ Description: web browser - language packs
  browsing experience.
  .
  This package contains language packages for:
- af, am, ar, bg, bn, ca, cs, da, de, el, en-GB, es-419, es, et, fa, fi, fil, fr,
- gu, he, hi, hr, hu, id, it, ja, kn, ko, lt, lv, ml, mr, ms, nb, nl, pl, pt-BR,
- pt-PT, ro, ru, sk, sl, sr, sv, sw, ta, te, th, tr, uk, ur, vi, zh-CN, zh-TW
+ af, am, ar, as, az, be, bg, bn, bs, ca, cs, cy, da, de, el, en-GB, es,  es-419,
+ et, eu, fa, fi, fil, fr, fr-CA, gl, gu, he, hi, hr, hu, hy, id,  is, it, ja,
+ ka, kk, km, kn, ko, ky, lo, lt, lv, mk, ml, mn, mr, ms, my,  nb, ne, nl, or,
+ pa, pl, pt-BR, pt-PT, ro, ru, si, sk, sl, sq, sr, sr-Latn,  sv, sw, ta, te,
+ th, tr, uk, ur, uz, vi, zh-CN, zh-HK, zh-TW, zu
 
 Package: ungoogled-chromium-driver
 Architecture: i386 amd64 arm64 armhf
