@@ -1,0 +1,87 @@
+From 03c690d016cd22df5ee5386d1f1459539178aa25 Mon Sep 17 00:00:00 2001
+From: mark a. foltz <mfoltz@chromium.org>
+Date: Thu, 10 Oct 2024 20:18:57 +0000
+Subject: [PATCH] [Media] Fix dangling pointers in AudioInputStream.
+
+AudioInputStream::Close() deletes `this` so pointers to an
+AudioInputStream have to be cleared before calling it.
+
+Fixed: 329133428
+Change-Id: I033a8161a82a8c9a15a3ce169d1757b5e8e4192c
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5922810
+Commit-Queue: Mark Foltz <mfoltz@chromium.org>
+Reviewed-by: Dale Curtis <dalecurtis@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1367057}
+---
+
+--- a/media/audio/audio_input_stream_data_interceptor.cc
++++ b/media/audio/audio_input_stream_data_interceptor.cc
+@@ -46,7 +46,9 @@
+ 
+ void AudioInputStreamDataInterceptor::Close() {
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+-  stream_->Close();
++  AudioInputStream* stream_to_close = stream_;
++  stream_ = nullptr;
++  stream_to_close->Close();
+   delete this;
+ }
+ 
+--- a/media/audio/audio_input_stream_data_interceptor.h
++++ b/media/audio/audio_input_stream_data_interceptor.h
+@@ -64,7 +64,7 @@
+  private:
+   const CreateDebugRecorderCB create_debug_recorder_cb_;
+   std::unique_ptr<AudioDebugRecorder> debug_recorder_;
+-  const raw_ptr<AudioInputStream, DanglingUntriaged> stream_;
++  raw_ptr<AudioInputStream> stream_;
+   raw_ptr<AudioInputStream::AudioInputCallback> callback_;
+   SEQUENCE_CHECKER(sequence_checker_);
+ };
+--- a/media/audio/audio_input_unittest.cc
++++ b/media/audio/audio_input_unittest.cc
+@@ -166,9 +166,10 @@
+   }
+ 
+   void CloseAudioInputStreamOnAudioThread() {
+-    RunOnAudioThread(base::BindOnce(&AudioInputStream::Close,
+-                                    base::Unretained(audio_input_stream_)));
++    AudioInputStream* stream_to_close = audio_input_stream_;
+     audio_input_stream_ = nullptr;
++    RunOnAudioThread(base::BindOnce(&AudioInputStream::Close,
++                                    base::Unretained(stream_to_close)));
+   }
+ 
+   void OpenAndCloseAudioInputStreamOnAudioThread() {
+@@ -209,8 +210,9 @@
+     ASSERT_TRUE(audio_input_stream_);
+     EXPECT_EQ(audio_input_stream_->Open(),
+               AudioInputStream::OpenOutcome::kSuccess);
+-    audio_input_stream_->Close();
++    AudioInputStream* stream_to_close = audio_input_stream_;
+     audio_input_stream_ = nullptr;
++    stream_to_close->Close();
+   }
+ 
+   void OpenAndStart(AudioInputStream::AudioInputCallback* sink) {
+@@ -227,16 +229,18 @@
+     EXPECT_EQ(audio_input_stream_->Open(),
+               AudioInputStream::OpenOutcome::kSuccess);
+     audio_input_stream_->Stop();
+-    audio_input_stream_->Close();
++    AudioInputStream* stream_to_close = audio_input_stream_;
+     audio_input_stream_ = nullptr;
++    stream_to_close->Close();
+   }
+ 
+   void StopAndClose() {
+     DCHECK(audio_manager_->GetTaskRunner()->BelongsToCurrentThread());
+     ASSERT_TRUE(audio_input_stream_);
+     audio_input_stream_->Stop();
+-    audio_input_stream_->Close();
++    AudioInputStream* stream_to_close = audio_input_stream_;
+     audio_input_stream_ = nullptr;
++    stream_to_close->Close();
+   }
+ 
+   // Synchronously runs the provided callback/closure on the audio thread.

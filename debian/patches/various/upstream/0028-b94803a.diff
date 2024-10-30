@@ -1,0 +1,327 @@
+From b94803ac9209dda25dad3db059ef14efbd7c5daf Mon Sep 17 00:00:00 2001
+From: Morten Stenshorne <mstensho@chromium.org>
+Date: Tue, 15 Oct 2024 10:54:27 +0000
+Subject: [PATCH] Always add new line box for content pushed down by float.
+
+Don't put floats together with inline content inside the same line box,
+if the inline content is pushed down by floats. This could happen if
+text-indent was involved.
+
+If a container has text indentation, and there's only room for leading
+floats on the first "line", and no room for real inline content, also
+rewind indentation, to prevent it from creating an overflowed line.
+Otherwise we'd try to place the inline content below the float(s) (next
+layout opportunity), within the same line box fragment, like this:
+
+  box container fragment
+    line box fragment
+      float
+      inline content below the float
+
+based on this example:
+
+  <div style="text-indent:1px;">
+    <div style="float:left; width:100%; height:100px;"></div>
+    text
+  </div>
+
+This was special-behavior that would only occur for text-indent (due to
+the line overflow mentioned further up). With no text indent, on the
+other hand:
+
+  box container fragment
+    line box fragment
+      float
+    line box fragment
+      inline content below the float
+
+With this code change, there will be no such special-behavior for
+text-indent. A new line will be created for inline content that's pushed
+down by leading floats.
+
+Placing text content below the float within the same line box fragment
+was problematic for block fragmentation, for two reasons:
+
+  1. Correctness: Line boxes are monolithic, so it's impossible to break
+     inside them. If the inline content doesn't really fit below the
+     float, we'd be unable to push it into the next fragmentainer.
+
+  2. Freeze: The geometry of line boxes only includes the actual inline
+     content, not the floats, so that with inline content pushed below a
+     float, we'd get a block-offset greater than zero, thanks to the
+     float, which in turn would trick the fragmentation machinery into
+     thinking that we were able to place something preceding the line,
+     meaning that it would be safe to break before it, whereas in
+     reality, there was just this one line box, and breaking before it
+     would lead to no progress -> infinite loop.
+
+With this change, now that the first line box may no longer necessarily
+be the first formatted line (if it only contains leading floats, and
+thus isn't a real line), we need to store this information on inline
+break tokens, so that we instead apply text indentation in a subsequent
+line (the first formatted line). This incidentally fixed another bug,
+with ::first-line not being applied on the first actual formatted line,
+if there was a preceding wide float.
+Test included: css/css-pseudo/first-line-below-float.html
+
+I also realized that there was no test coverage at all for text
+indentation being pushed below a float, even if it was working.
+Added css/css-text/text-indent/below-float.html for this.
+
+css/css-break/text-indent-and-wide-float.html is the actual test for
+this bugfix, which is also a correctness test that verifies that the
+line pushed below a float is actually pushed all the way into the next
+fragmentainer, if it doesn't fit below the float.
+
+Bug: 365814218
+Change-Id: I5ad327b91bf6dd6b87538b3e8e865a8f529a72bd
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5921254
+Reviewed-by: Koji Ishii <kojii@chromium.org>
+Commit-Queue: Morten Stenshorne <mstensho@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1368698}
+---
+
+--- a/third_party/blink/renderer/core/layout/break_token.h
++++ b/third_party/blink/renderer/core/layout/break_token.h
+@@ -96,7 +96,7 @@
+   // The following bitfields are only to be used by InlineBreakToken (it's
+   // defined here to save memory, since that class has no bitfields).
+ 
+-  const unsigned flags_ : 5;  // InlineBreakTokenFlags
++  const unsigned flags_ : 6;  // InlineBreakTokenFlags
+ 
+   // The following bitfields are only to be used by BlockBreakToken (it's
+   // defined here to save memory, since that class has no bitfields).
+--- a/third_party/blink/renderer/core/layout/inline/inline_break_token.h
++++ b/third_party/blink/renderer/core/layout/inline/inline_break_token.h
+@@ -10,6 +10,7 @@
+ #include "third_party/blink/renderer/core/layout/break_token.h"
+ #include "third_party/blink/renderer/core/layout/inline/inline_item_text_index.h"
+ #include "third_party/blink/renderer/core/layout/inline/inline_node.h"
++#include "third_party/blink/renderer/platform/runtime_enabled_features.h"
+ #include "third_party/blink/renderer/platform/wtf/casting.h"
+ 
+ namespace blink {
+@@ -52,6 +53,7 @@
+     kUseFirstLineStyle = 1 << 2,
+     kHasClonedBoxDecorations = 1 << 3,
+     kIsInParallelBlockFlow = 1 << 4,
++    kIsPastFirstFormattedLine = 1 << 5,
+     // When adding values, ensure |flags_| has enough storage.
+   };
+ 
+@@ -110,6 +112,16 @@
+   // https://www.w3.org/TR/css-break-3/#parallel-flows
+   bool IsInParallelBlockFlow() const { return flags_ & kIsInParallelBlockFlow; }
+ 
++  // Return true if we're past the first formatted line, meaning that we have at
++  // least one line with actual inline content (as opposed to e.g. "lines"
++  // consisting only of floats).
++  bool IsPastFirstFormattedLine() const {
++    if (!RuntimeEnabledFeatures::LineBoxBelowLeadingFloatsEnabled()) {
++      return !Start().IsZero();
++    }
++    return flags_ & kIsPastFirstFormattedLine;
++  }
++
+   using PassKey = base::PassKey<InlineBreakToken>;
+   InlineBreakToken(PassKey,
+                    InlineNode node,
+--- a/third_party/blink/renderer/core/layout/inline/line_breaker.cc
++++ b/third_party/blink/renderer/core/layout/inline/line_breaker.cc
+@@ -38,6 +38,7 @@
+ #include "third_party/blink/renderer/core/svg/svg_text_content_element.h"
+ #include "third_party/blink/renderer/platform/fonts/shaping/shape_result_view.h"
+ #include "third_party/blink/renderer/platform/fonts/shaping/shaping_line_breaker.h"
++#include "third_party/blink/renderer/platform/runtime_enabled_features.h"
+ #include "third_party/blink/renderer/platform/text/bidi_paragraph.h"
+ #include "third_party/blink/renderer/platform/text/character.h"
+ 
+@@ -450,7 +451,7 @@
+       is_svg_text_(node.IsSvgText()),
+       is_text_combine_(node.IsTextCombine()),
+       is_first_formatted_line_(
+-          (!break_token || break_token->Start().IsZero()) &&
++          (!break_token || !break_token->IsPastFirstFormattedLine()) &&
+           node.CanContainFirstFormattedLine()),
+       use_first_line_style_(is_first_formatted_line_ &&
+                             node.UseFirstLineStyle()),
+@@ -777,8 +778,16 @@
+     // We're past the first line
+     previous_line_had_forced_break_ = is_after_forced_break_;
+     is_after_forced_break_ = false;
+-    is_first_formatted_line_ = false;
+-    use_first_line_style_ = false;
++    // If we resumed at a break token, and we're past the resume point stored
++    // there, we're also past the first formatted line (otherwise, there may be
++    // lines solely consisting of leading floats, and those don't count as
++    // "formatted lines", since they aren't actually lines, as far as the spec
++    // is concerned).
++    if (!RuntimeEnabledFeatures::LineBoxBelowLeadingFloatsEnabled() ||
++        !break_token_ || current_ != break_token_->Start()) {
++      is_first_formatted_line_ = false;
++      use_first_line_style_ = false;
++    }
+   }
+ 
+   line_info->SetStart(current_);
+@@ -816,7 +825,8 @@
+ 
+   // Use 'text-indent' as the initial position. This lets tab positions to align
+   // regardless of 'text-indent'.
+-  position_ = line_info->TextIndent();
++  applied_text_indent_ = line_info->TextIndent();
++  position_ = applied_text_indent_;
+ 
+   has_cloned_box_decorations_ = false;
+   if ((break_token_ && break_token_->HasClonedBoxDecorations()) ||
+@@ -3578,6 +3588,10 @@
+     item_result->exclusion_space_before_position_float.CopyFrom(
+         *exclusion_space_);
+ 
++    if (RuntimeEnabledFeatures::LineBoxBelowLeadingFloatsEnabled()) {
++      return;
++    }
++
+     // Don't break after leading floats if indented.
+     if (position_ != 0)
+       item_result->can_break_after = false;
+@@ -3994,6 +4008,30 @@
+     }
+   }
+ 
++  if (applied_text_indent_ && width_to_rewind > LayoutUnit() &&
++      is_first_formatted_line_ && !leading_floats_.floats.empty() &&
++      RuntimeEnabledFeatures::LineBoxBelowLeadingFloatsEnabled()) {
++    // If there is no inflow content and there are only leading floats, also
++    // rewind text indentation. The idea here is that text-indent alone
++    // shouldn't contribute to overflow (and it doesn't even belong on this
++    // line, since we've rewound past everything else), so that we won't attempt
++    // to place inline content in the layout opportunity below the floats, but
++    // rather create a "line" with just the leading floats, and then another
++    // line for any real inline content.
++    //
++    // This matters for block fragmentation. If there's one line box with both
++    // leading floats and a real inline content below them, the fragmentation
++    // engine has no means of inserting a fragmentation break between the float
++    // and the inline content, since lines are monolithic.
++    position_ -= applied_text_indent_;
++    width_to_rewind -= applied_text_indent_;
++    applied_text_indent_ = LayoutUnit();
++    if (width_to_rewind <= LayoutUnit()) {
++      state_ = LineBreakState::kDone;
++      return;
++    }
++  }
++
+   // Reaching here means that the rewind point was not found.
+ 
+   if (break_iterator_.BreakType() == LineBreakType::kPhrase &&
+@@ -4499,6 +4537,9 @@
+     sub_break_token = block_in_inline_fragment.GetBreakToken();
+   }
+ 
++  bool is_past_first_formatted_line =
++      !is_first_formatted_line_ || !line_info.IsEmptyLine();
++
+   DCHECK_EQ(line_info.HasForcedBreak(), is_after_forced_break_);
+   unsigned flags =
+       (is_after_forced_break_ ? InlineBreakToken::kIsForcedBreak : 0) |
+@@ -4506,6 +4547,9 @@
+                                      : 0) |
+       (cloned_box_decorations_count_
+            ? InlineBreakToken::kHasClonedBoxDecorations
++           : 0) |
++      (is_past_first_formatted_line
++           ? InlineBreakToken::kIsPastFirstFormattedLine
+            : 0);
+ 
+   return InlineBreakToken::Create(node_, current_style_, current_, flags,
+--- a/third_party/blink/renderer/core/layout/inline/line_breaker.h
++++ b/third_party/blink/renderer/core/layout/inline/line_breaker.h
+@@ -335,6 +335,7 @@
+   // The current position from inline_start. Unlike InlineLayoutAlgorithm
+   // that computes position in visual order, this position in logical order.
+   LayoutUnit position_;
++  LayoutUnit applied_text_indent_;
+   LayoutUnit available_width_;
+   LineLayoutOpportunity line_opportunity_;
+ 
+--- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
++++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
+@@ -2570,6 +2570,11 @@
+       base_feature: "none",
+     },
+     {
++      // crbug.com/365814218
++      name: "LineBoxBelowLeadingFloats",
++      status: "stable",
++    },
++    {
+       name: "LockedMode",
+       status: "test",
+       // Enabled by features::kLockedMode.
+--- /dev/null
++++ b/third_party/blink/web_tests/external/wpt/css/css-break/text-indent-and-wide-float.html
+@@ -0,0 +1,18 @@
++<!DOCTYPE html>
++<link rel="author" title="Morten Stenshorne" href="mailto:mstensho@chromium.org">
++<link rel="help" href="http://crbug.com/365814218">
++<meta name="assert" content="Floats are not part of lines, so if a float is too wide to fit any inline content beside it, the first formatted line goes below it, or even into the next fragmentainer if there's insufficient room below.">
++<link rel="match" href="../reference/ref-filled-green-100px-square.xht">
++<link rel="stylesheet" type="text/css" href="/fonts/ahem.css">
++<p>Test passes if there is a filled green square and <strong>no red</strong>.</p>
++<div style="width:100px; height:100px; background:red;">
++  <div style="columns:2; column-fill:auto; gap:0; height:110px; font:25px/25px Ahem; text-indent:25px;">
++    <span style="color:green;">
++      <div style="float:left; width:100%; height:100px; background:green;">
++        <!-- Bleed into the next column, to cover the text indentation there. -->
++        <div style="width:150%; height:25px; background:green;"></div>
++      </div>
++      x xx xx xx
++    </span>
++  </div>
++</div>
+--- /dev/null
++++ b/third_party/blink/web_tests/external/wpt/css/css-pseudo/first-line-below-float.html
+@@ -0,0 +1,23 @@
++<!DOCTYPE html>
++<link rel="author" title="Morten Stenshorne" href="mailto:mstensho@chromium.org">
++<link rel="help" href="https://www.w3.org/TR/css-pseudo-4/#first-text-line">
++<meta name="assert" content="Floats are not part of lines, so if a float is too wide to fit any inline content beside it, the first formatted line goes below it">
++<link rel="match" href="../reference/ref-filled-green-100px-square.xht">
++<link rel="stylesheet" type="text/css" href="/fonts/ahem.css">
++<style>
++  .container {
++    width: 100px;
++    height: 100px;
++    font: 50px/50px Ahem;
++    color: red;
++    background: red;
++  }
++  .container::first-line {
++    color: green;
++  }
++</style>
++<p>Test passes if there is a filled green square and <strong>no red</strong>.</p>
++<div class="container">
++  <div style="float:left; width:100px; height:50px; background:green;"></div>
++  xx
++</div>
+--- /dev/null
++++ b/third_party/blink/web_tests/external/wpt/css/css-text/text-indent/below-float.html
+@@ -0,0 +1,14 @@
++<!DOCTYPE html>
++<link rel="author" title="Morten Stenshorne" href="mailto:mstensho@chromium.org">
++<link rel="help" href="https://www.w3.org/TR/css-text-4/#text-indent-property">
++<meta name="assert" content="Floats are not part of lines, so if a float is too wide to fit any inline content beside it, the first formatted line goes below it">
++<link rel="match" href="../../reference/ref-filled-green-100px-square.xht">
++<link rel="stylesheet" type="text/css" href="/fonts/ahem.css">
++<p>Test passes if there is a filled green square and <strong>no red</strong>.</p>
++<div style="position:relative; width:100px; height:100px; font:50px/50px Ahem; text-indent:50px; color:green; background:red;">
++  <div style="position:absolute; top:50px; width:50px; height:50px; background:green;"></div>
++  <span>
++    <div style="float:left; width:100px; height:50px; background:green;"></div>
++    x
++  </span>
++</div>

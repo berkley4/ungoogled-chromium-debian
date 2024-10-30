@@ -1,0 +1,39 @@
+From 7817f4ac560e80f4436dc0381663eaa4bfbe6a12 Mon Sep 17 00:00:00 2001
+From: Katherine Lai <laikatherine@google.com>
+Date: Fri, 11 Oct 2024 18:39:39 +0000
+Subject: [PATCH] [floss] Make a copy of scanners before iterating over it
+
+Fixes a crash where iterator is invalidated while clearing
+the scanners.
+
+BUG=b:371632698
+TEST=device_unittests
+
+Change-Id: I6d5ed630457480d3e1a2b05a683ec0382eb916ce
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5925869
+Commit-Queue: Michael Sun <michaelfsun@google.com>
+Reviewed-by: Michael Sun <michaelfsun@google.com>
+Auto-Submit: Katherine Lai <laikatherine@chromium.org>
+Commit-Queue: Katherine Lai <laikatherine@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1367641}
+---
+
+--- a/device/bluetooth/floss/bluetooth_adapter_floss.cc
++++ b/device/bluetooth/floss/bluetooth_adapter_floss.cc
+@@ -164,8 +164,14 @@
+   FlossDBusManager::Get()->GetManagerClient()->RemoveObserver(this);
+   dbus_is_shutdown_ = true;
+ 
+-  for (const auto& [key, scanner] : scanners_) {
+-    scanner->OnRelease();
++  // Copy scanners_ to avoid iterating over it while it's being modified.
++  std::map<device::BluetoothUUID,
++           base::WeakPtr<BluetoothLowEnergyScanSessionFloss>>
++      scanners_copy(scanners_);
++  for (const auto& [_, scanner] : scanners_copy) {
++    if (scanner) {
++      scanner->OnRelease();
++    }
+   }
+   scanners_.clear();
+ }

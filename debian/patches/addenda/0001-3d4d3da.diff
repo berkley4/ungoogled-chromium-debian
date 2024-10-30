@@ -1,0 +1,69 @@
+From 3d4d3dabe35ab6ffbba952ee4f813a5bffd2e06d Mon Sep 17 00:00:00 2001
+From: Yi Xu <yiyix@chromium.org>
+Date: Mon, 28 Oct 2024 20:42:18 +0000
+Subject: [PATCH] TextRenderingMode not being updated on FontDescription
+
+The textRenderingMode is mapped to the wrong value. This cl fixes the
+mapping.
+
+(cherry picked from commit eaf54951300788dc93f0d79b952ce4c89fd6fa0e)
+
+Bug: 375388418
+Change-Id: I39bdd518d690e693194150db00f9924a0bfb5d40
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5963036
+Reviewed-by: Fernando Serboncini <fserb@chromium.org>
+Commit-Queue: Yi Xu <yiyix@chromium.org>
+Commit-Queue: Fernando Serboncini <fserb@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1373507}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5971777
+Reviewed-by: Aaron Krajeski <aaronhk@chromium.org>
+Cr-Commit-Position: refs/branch-heads/6723@{#1522}
+Cr-Branched-From: 985f2961df230630f9cbd75bd6fe463009855a11-refs/heads/main@{#1356013}
+---
+
+--- a/third_party/blink/renderer/modules/canvas/canvas2d/canvas_rendering_context_2d_state.cc
++++ b/third_party/blink/renderer/modules/canvas/canvas2d/canvas_rendering_context_2d_state.cc
+@@ -133,7 +133,7 @@
+   return stretch_value;
+ }
+ 
+-TextRenderingMode CanvasTextRenderingToTextRendering(
++TextRenderingMode CanvasTextRenderingToTextRenderingMode(
+     V8CanvasTextRendering text_rendering) {
+   TextRenderingMode text_rendering_mode;
+   switch (text_rendering.AsEnum()) {
+@@ -141,13 +141,13 @@
+       text_rendering_mode = TextRenderingMode::kAutoTextRendering;
+       break;
+     case (V8CanvasTextRendering::Enum::kOptimizeSpeed):
+-      text_rendering_mode = TextRenderingMode::kAutoTextRendering;
++      text_rendering_mode = TextRenderingMode::kOptimizeSpeed;
+       break;
+     case (V8CanvasTextRendering::Enum::kOptimizeLegibility):
+-      text_rendering_mode = TextRenderingMode::kAutoTextRendering;
++      text_rendering_mode = TextRenderingMode::kOptimizeLegibility;
+       break;
+     case (V8CanvasTextRendering::Enum::kGeometricPrecision):
+-      text_rendering_mode = TextRenderingMode::kAutoTextRendering;
++      text_rendering_mode = TextRenderingMode::kGeometricPrecision;
+       break;
+     default:
+       NOTREACHED_IN_MIGRATION();
+@@ -387,7 +387,7 @@
+   }
+   font_description.SetKerning(font_kerning_);
+   font_description.SetTextRendering(
+-      CanvasTextRenderingToTextRendering(text_rendering_mode_));
++      CanvasTextRenderingToTextRenderingMode(text_rendering_mode_));
+   font_variant_caps_ = font_description.VariantCaps();
+   std::optional<blink::V8CanvasFontStretch> font_value =
+       V8CanvasFontStretch::Create(
+@@ -920,7 +920,7 @@
+     FontSelector* selector) {
+   DCHECK(realized_font_);
+   TextRenderingMode text_rendering_mode =
+-      CanvasTextRenderingToTextRendering(text_rendering);
++      CanvasTextRenderingToTextRenderingMode(text_rendering);
+   FontDescription font_description(GetFontDescription());
+   font_description.SetTextRendering(text_rendering_mode);
+   text_rendering_mode_ = text_rendering;

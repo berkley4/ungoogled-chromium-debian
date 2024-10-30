@@ -1,0 +1,148 @@
+From ac7f7b3e2f15062a1498046afa38a11078cb6ef3 Mon Sep 17 00:00:00 2001
+From: Elly <ellyjones@chromium.org>
+Date: Mon, 07 Oct 2024 17:21:37 +0000
+Subject: [PATCH] views: don't dangle mouse press handler on view destruction
+
+View::SetMouseAndGestureHandler()'s documentation alleges:
+
+  // Note: if the mouse handler is no longer connected to a
+  // view hierarchy, events won't be sent.
+
+but actually this is not true. There is logic in
+RootView::ViewHierarchyChanged() which clears mouse_pressed_handler_ if
+that view is removed from the RootView's tree, but that logic *doesn't*
+trigger if the handler was explicitly set. That means that doing this:
+
+  View* v = root->AddChildView(std::make_unique<View>());
+  root->SetMouseAndGestureHandler(v);
+  root->RemoveChildViewT(v);
+
+will leave root with a dangling mouse_pressed_handler_. If another mouse
+event then arrives, it will be sent to that dangling pointer. It's not
+easy to trigger this in production but there is a unit test
+(RootViewTest.EventHandlersResetWhenDeleted) that trips the dangling
+pointer detector in a similar way.
+
+To fix that problem, have RootView clear the handler *even if it was
+explicitly set* when it is removed from the RootView's view hierarchy.
+
+Bug: 361651894
+Change-Id: I75fe49e2c8439b3986a5937ed887f4334fda1a2d
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5906230
+Commit-Queue: Elly FJ <ellyjones@chromium.org>
+Reviewed-by: Robert Liao <robliao@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1365015}
+---
+
+--- a/ui/views/widget/root_view.cc
++++ b/ui/views/widget/root_view.cc
+@@ -62,36 +62,6 @@
+   }
+ };
+ 
+-// TODO(crbug.com/40821061): This class is for debug purpose only.
+-// Remove it after resolving the issue.
+-class DanglingMouseMoveHandlerOnViewDestroyingChecker
+-    : public views::ViewObserver {
+- public:
+-  explicit DanglingMouseMoveHandlerOnViewDestroyingChecker(
+-      const raw_ptr<views::View, AcrossTasksDanglingUntriaged>&
+-          mouse_move_handler)
+-      : mouse_move_handler_(mouse_move_handler) {
+-    scoped_observation.Observe(mouse_move_handler_);
+-  }
+-
+-  // views::ViewObserver:
+-  void OnViewIsDeleting(views::View* view) override {
+-    // `mouse_move_handler_` should be nulled before `view` dies. Otherwise
+-    // `mouse_move_handler_` will become a dangling pointer.
+-    CHECK(!mouse_move_handler_);
+-    scoped_observation.Reset();
+-  }
+-
+- private:
+-  base::ScopedObservation<views::View, views::ViewObserver> scoped_observation{
+-      this};
+-  // RAW_PTR_EXCLUSION: Avoid turning this into a `raw_ref<raw_ptr<>>`. The
+-  // current `raw_ptr&` setup is intentional and used to observe the pointer
+-  // without counting as a live reference to the underlying memory.
+-  RAW_PTR_EXCLUSION const raw_ptr<views::View, AcrossTasksDanglingUntriaged>&
+-      mouse_move_handler_;
+-};
+-
+ }  // namespace
+ 
+ // Used by RootView to create a hidden child that can be used to make screen
+@@ -735,16 +705,21 @@
+   widget_->ViewHierarchyChanged(details);
+ 
+   if (!details.is_add && !details.move_view) {
+-    if (!explicit_mouse_handler_ && mouse_pressed_handler_ == details.child)
+-      mouse_pressed_handler_ = nullptr;
+-    if (mouse_move_handler_ == details.child)
++    if (mouse_pressed_handler_ == details.child) {
++      SetMouseHandler(nullptr);
++    }
++    if (mouse_move_handler_ == details.child) {
+       mouse_move_handler_ = nullptr;
+-    if (gesture_handler_ == details.child)
++    }
++    if (gesture_handler_ == details.child) {
+       gesture_handler_ = nullptr;
+-    if (event_dispatch_target_ == details.child)
++    }
++    if (event_dispatch_target_ == details.child) {
+       event_dispatch_target_ = nullptr;
+-    if (old_dispatch_target_ == details.child)
++    }
++    if (old_dispatch_target_ == details.child) {
+       old_dispatch_target_ = nullptr;
++    }
+   }
+ }
+ 
+@@ -847,8 +822,6 @@
+       mouse_move_handler_ = v;
+       // TODO(crbug.com/40821061): This is for debug purpose only.
+       // Remove it after resolving the issue.
+-      DanglingMouseMoveHandlerOnViewDestroyingChecker
+-          mouse_move_handler_dangling_checker(mouse_move_handler_);
+       if (!mouse_move_handler_->GetNotifyEnterExitOnChild() ||
+           !mouse_move_handler_->Contains(old_handler)) {
+         MouseEnterExitEvent entered(event, ui::EventType::kMouseEntered);
+--- a/ui/views/widget/root_view.h
++++ b/ui/views/widget/root_view.h
+@@ -135,6 +135,9 @@
+   const views::View* gesture_handler_for_testing() const {
+     return gesture_handler_;
+   }
++  const views::View* mouse_pressed_handler_for_testing() const {
++    return mouse_pressed_handler_.get();
++  }
+ 
+  protected:
+   // View:
+@@ -209,7 +212,7 @@
+   //                   ViewTargeter / RootViewTargeter.
+ 
+   // The view currently handing down - drag - up
+-  raw_ptr<View, AcrossTasksDanglingUntriaged> mouse_pressed_handler_ = nullptr;
++  raw_ptr<View> mouse_pressed_handler_ = nullptr;
+ 
+   // The view currently handling enter / exit
+   raw_ptr<View, AcrossTasksDanglingUntriaged> mouse_move_handler_ = nullptr;
+--- a/ui/views/widget/root_view_unittest.cc
++++ b/ui/views/widget/root_view_unittest.cc
+@@ -252,10 +252,12 @@
+   View* event_handler = state.AddChildView(std::make_unique<View>());
+   root_view->SetMouseAndGestureHandler(event_handler);
+   ASSERT_EQ(event_handler, root_view->gesture_handler_for_testing());
++  ASSERT_EQ(event_handler, root_view->mouse_pressed_handler_for_testing());
+ 
+   // Delete the child and expect that there is no longer a mouse handler.
+   root_view->GetContentsView()->RemoveChildViewT(event_handler);
+   EXPECT_EQ(nullptr, root_view->gesture_handler_for_testing());
++  EXPECT_EQ(nullptr, root_view->mouse_pressed_handler_for_testing());
+ }
+ 
+ TEST_F(RootViewTest, EventHandlersNotResetWhenReparented) {

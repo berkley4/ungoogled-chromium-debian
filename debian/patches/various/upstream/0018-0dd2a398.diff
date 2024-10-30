@@ -1,0 +1,31 @@
+From 0dd2a3982ce6d4c4651b926b92c8b6a81215992d Mon Sep 17 00:00:00 2001
+From: Marijn Kruisselbrink <mek@chromium.org>
+Date: Thu, 10 Oct 2024 04:51:53 +0000
+Subject: [PATCH] Null-check weak ptr in Service Worker re-warm-up code.
+
+This code passes a weak ptr to a (async) task, and then tries to
+dereference it without making sure it is non-null. Since there is
+nothing that would make sure this is non-null this is not safe
+and can result in crashes (observed in at least flaky test failures).
+
+Change-Id: Ie0db47f3040953ede20e8730f976b01b0865615f
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5922673
+Reviewed-by: Yoshisato Yanagisawa <yyanagisawa@chromium.org>
+Commit-Queue: Yoshisato Yanagisawa <yyanagisawa@chromium.org>
+Auto-Submit: Marijn Kruisselbrink <mek@chromium.org>
+Reviewed-by: Minoru Chikamune <chikamune@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1366623}
+---
+
+--- a/content/browser/service_worker/service_worker_version.cc
++++ b/content/browser/service_worker/service_worker_version.cc
+@@ -2851,6 +2851,9 @@
+         FROM_HERE, base::BindOnce(
+                        [](base::WeakPtr<ServiceWorkerContextCore> context,
+                           const GURL scope, const blink::StorageKey key) {
++                         if (!context) {
++                           return;
++                         }
+                          context->wrapper()->WarmUpServiceWorker(
+                              scope, key, base::DoNothing());
+                        },

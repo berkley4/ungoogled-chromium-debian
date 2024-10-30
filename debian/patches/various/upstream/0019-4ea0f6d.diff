@@ -1,0 +1,51 @@
+From 4ea0f6dff6bcaf2173d0a3b8afe4f95932940998 Mon Sep 17 00:00:00 2001
+From: Takashi Sakamoto <tasak@google.com>
+Date: Thu, 10 Oct 2024 08:37:20 +0000
+Subject: [PATCH] [PA] UnmapShadowMetadata() must be invoked before UnreserveAndCommit().
+
+Since unreserved memory may be reserved very quickly in another thread,
+a thread which unreserved the memory may invoke UnmapShaowMetadata()
+after the other thread invokes MapShadowMetadata(). So we will see
+memory access error and chrome will crash.
+
+Bug: chromium:40238514, b/372048403
+Change-Id: I1905d0ade4969e1824d2c124bb685359913f72c5
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5920727
+Reviewed-by: Yuki Shiino <yukishiino@chromium.org>
+Commit-Queue: Takashi Sakamoto <tasak@google.com>
+Cr-Commit-Position: refs/heads/main@{#1366676}
+---
+
+--- a/base/allocator/partition_allocator/src/partition_alloc/partition_page.cc
++++ b/base/allocator/partition_allocator/src/partition_alloc/partition_page.cc
+@@ -408,6 +408,17 @@
+     *offset_ptr++ = kOffsetTagNotAllocated;
+   }
+ 
++#if PA_CONFIG(ENABLE_SHADOW_METADATA)
++  // UnmapShadowMetadata must be done before unreserving memory, because
++  // Unreserved memory may be allocated by PartitionDirectMap() in another
++  // thread. In the case, MapShadowMetadata() and UnmapShadowMetadata()
++  // will be executed for the same system pages in wrong order. It causes
++  // memory access error.
++  if (internal::PartitionAddressSpace::IsShadowMetadataEnabled(pool)) {
++    PartitionAddressSpace::UnmapShadowMetadata(reservation_start, pool);
++  }
++#endif
++
+ #if !PA_BUILDFLAG(HAS_64_BIT_POINTERS)
+   AddressPoolManager::GetInstance().MarkUnused(pool, reservation_start,
+                                                reservation_size);
+@@ -416,12 +427,6 @@
+   // After resetting the table entries, unreserve and decommit the memory.
+   AddressPoolManager::GetInstance().UnreserveAndDecommit(
+       pool, reservation_start, reservation_size);
+-
+-#if PA_CONFIG(ENABLE_SHADOW_METADATA)
+-  if (internal::PartitionAddressSpace::IsShadowMetadataEnabled(pool)) {
+-    PartitionAddressSpace::UnmapShadowMetadata(reservation_start, pool);
+-  }
+-#endif
+ }
+ 
+ }  // namespace

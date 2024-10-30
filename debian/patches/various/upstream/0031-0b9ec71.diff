@@ -1,0 +1,150 @@
+From 0b9ec713a09d7ab3f3a2ff9c17cd718f6fefc1cb Mon Sep 17 00:00:00 2001
+From: Kenichi Ishibashi <bashi@chromium.org>
+Date: Fri, 18 Oct 2024 03:52:19 +0000
+Subject: [PATCH] Partial revert of "Fix dangling pointers in QuicSessionPool::CreateSessionAsync"
+
+This CL partially reverts crrev.com/c/5912741, which removed return
+values from CreateSessionOnProxyStream() and CreateSessionAsync()
+assuming that these never complete synchronously. For
+CreateSessionAsync(), the assumption still holds, but it seems that
+CreateSessionOnProxyStream() could complete synchronously. Revive
+return values for both methods for consistency.
+
+Bug: 374074822
+Change-Id: Ieaceccdedb70ceab2ed583a58634298544eda40d
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5937159
+Reviewed-by: Ryan Hamilton <rch@chromium.org>
+Commit-Queue: Kenichi Ishibashi <bashi@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1370398}
+---
+
+--- a/net/quic/quic_session_attempt.cc
++++ b/net/quic/quic_session_attempt.cc
+@@ -166,6 +166,7 @@
+       NetLogEventType::QUIC_SESSION_POOL_JOB_CONNECT, NetLogEventPhase::BEGIN,
+       "require_confirmation", require_confirmation);
+ 
++  int rv;
+   if (proxy_stream_) {
+     std::string user_agent;
+     if (http_user_agent_settings_) {
+@@ -173,35 +174,34 @@
+     }
+     // Proxied connections are not on any specific network.
+     network_ = handles::kInvalidNetworkHandle;
+-    pool()->CreateSessionOnProxyStream(
++    rv = pool()->CreateSessionOnProxyStream(
+         base::BindOnce(&QuicSessionAttempt::OnCreateSessionComplete,
+                        weak_ptr_factory_.GetWeakPtr()),
+         key(), quic_version_, cert_verify_flags_, require_confirmation,
+         std::move(local_endpoint_), std::move(ip_endpoint_),
+         std::move(proxy_stream_), user_agent, net_log(), network_);
+-    return ERR_IO_PENDING;
+   } else {
+     if (base::FeatureList::IsEnabled(net::features::kAsyncQuicSession)) {
+-      pool()->CreateSessionAsync(
++      return pool()->CreateSessionAsync(
+           base::BindOnce(&QuicSessionAttempt::OnCreateSessionComplete,
+                          weak_ptr_factory_.GetWeakPtr()),
+           key(), quic_version_, cert_verify_flags_, require_confirmation,
+           ip_endpoint_, metadata_, dns_resolution_start_time_,
+           dns_resolution_end_time_, net_log(), network_);
+-      return ERR_IO_PENDING;
+     }
+-    int rv = pool()->CreateSessionSync(
++    rv = pool()->CreateSessionSync(
+         key(), quic_version_, cert_verify_flags_, require_confirmation,
+         ip_endpoint_, metadata_, dns_resolution_start_time_,
+         dns_resolution_end_time_, net_log(), &session_, &network_);
+-    if (rv == ERR_QUIC_PROTOCOL_ERROR) {
+-      DCHECK(!session_);
+-      HistogramProtocolErrorLocation(
+-          JobProtocolErrorLocation::kCreateSessionFailedSync);
+-    }
++
+     DVLOG(1) << "Created session on network: " << network_;
+-    return rv;
+   }
++  if (rv == ERR_QUIC_PROTOCOL_ERROR) {
++    DCHECK(!session_);
++    HistogramProtocolErrorLocation(
++        JobProtocolErrorLocation::kCreateSessionFailedSync);
++  }
++  return rv;
+ }
+ 
+ int QuicSessionAttempt::DoCreateSessionComplete(int rv) {
+--- a/net/quic/quic_session_pool.cc
++++ b/net/quic/quic_session_pool.cc
+@@ -1482,7 +1482,7 @@
+   return OK;
+ }
+ 
+-void QuicSessionPool::CreateSessionAsync(
++int QuicSessionPool::CreateSessionAsync(
+     CreateSessionCallback callback,
+     QuicSessionAliasKey key,
+     quic::ParsedQuicVersion quic_version,
+@@ -1508,13 +1508,12 @@
+ 
+   // If migrate_sessions_on_network_change_v2 is on, passing in
+   // handles::kInvalidNetworkHandle will bind the socket to the default network.
+-  int rv = ConnectAndConfigureSocket(std::move(connect_and_configure_callback),
+-                                     socket_ptr, std::move(peer_address),
+-                                     network, key.session_key().socket_tag());
+-  CHECK_EQ(rv, ERR_IO_PENDING);
++  return ConnectAndConfigureSocket(std::move(connect_and_configure_callback),
++                                   socket_ptr, std::move(peer_address), network,
++                                   key.session_key().socket_tag());
+ }
+ 
+-void QuicSessionPool::CreateSessionOnProxyStream(
++int QuicSessionPool::CreateSessionOnProxyStream(
+     CreateSessionCallback callback,
+     QuicSessionAliasKey key,
+     quic::ParsedQuicVersion quic_version,
+@@ -1576,10 +1575,9 @@
+       dns_resolution_time, dns_resolution_time, session_max_packet_length,
+       net_log, network, std::move(socket));
+ 
+-  int rv = socket_ptr->ConnectViaStream(
++  return socket_ptr->ConnectViaStream(
+       std::move(local_address), std::move(proxy_peer_address),
+       std::move(proxy_stream), std::move(on_connected_via_stream));
+-  CHECK_EQ(rv, ERR_IO_PENDING);
+ }
+ 
+ void QuicSessionPool::FinishCreateSession(
+--- a/net/quic/quic_session_pool.h
++++ b/net/quic/quic_session_pool.h
+@@ -587,18 +587,18 @@
+   // the commit description of crrev.com/c/5858326.
+   using CreateSessionCallback = base::OnceCallback<void(
+       base::expected<QuicSessionAttempt::CreateSessionResult, int>)>;
+-  void CreateSessionAsync(CreateSessionCallback callback,
+-                          QuicSessionAliasKey key,
+-                          quic::ParsedQuicVersion quic_version,
+-                          int cert_verify_flags,
+-                          bool require_confirmation,
+-                          IPEndPoint peer_address,
+-                          ConnectionEndpointMetadata metadata,
+-                          base::TimeTicks dns_resolution_start_time,
+-                          base::TimeTicks dns_resolution_end_time,
+-                          const NetLogWithSource& net_log,
+-                          handles::NetworkHandle network);
+-  void CreateSessionOnProxyStream(
++  int CreateSessionAsync(CreateSessionCallback callback,
++                         QuicSessionAliasKey key,
++                         quic::ParsedQuicVersion quic_version,
++                         int cert_verify_flags,
++                         bool require_confirmation,
++                         IPEndPoint peer_address,
++                         ConnectionEndpointMetadata metadata,
++                         base::TimeTicks dns_resolution_start_time,
++                         base::TimeTicks dns_resolution_end_time,
++                         const NetLogWithSource& net_log,
++                         handles::NetworkHandle network);
++  int CreateSessionOnProxyStream(
+       CreateSessionCallback callback,
+       QuicSessionAliasKey key,
+       quic::ParsedQuicVersion quic_version,

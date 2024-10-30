@@ -1,0 +1,46 @@
+From 23743a517d96c334349cb4c4302f7908823b79d0 Mon Sep 17 00:00:00 2001
+From: Taylor Bergquist <tbergquist@chromium.org>
+Date: Tue, 29 Oct 2024 23:49:37 +0000
+Subject: [PATCH] [M130]Unexpire tab scrolling flags.
+
+Pushing back to 145.
+
+(cherry picked from commit 4746df95f1f2f40d5cdd2ca77ec1b2cda312aaa1)
+
+Bug: 361124116
+Change-Id: I2c10828b8e60deacaae3ec3ee4b2bf347a1417eb
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5947389
+Reviewed-by: David Pennington <dpenning@chromium.org>
+Auto-Submit: Taylor Bergquist <tbergquist@chromium.org>
+Commit-Queue: Taylor Bergquist <tbergquist@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1372318}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5975505
+Commit-Queue: David Pennington <dpenning@chromium.org>
+Bot-Commit: Rubber Stamper <rubber-stamper@appspot.gserviceaccount.com>
+Cr-Commit-Position: refs/branch-heads/6723@{#1571}
+Cr-Branched-From: 985f2961df230630f9cbd75bd6fe463009855a11-refs/heads/main@{#1356013}
+---
+
+--- a/chrome/browser/flag-metadata.json
++++ b/chrome/browser/flag-metadata.json
+@@ -8080,17 +8080,17 @@
+   {
+     "name": "scrollable-tabstrip",
+     "owners": [ "chrome-desktop-ui-sea@google.com", "tbergquist@chromium.org" ],
+-    "expiry_milestone": 130
++    "expiry_milestone": 145
+   },
+   {
+     "name": "scrollable-tabstrip-overflow",
+     "owners": [ "chrome-desktop-ui-sea@google.com", "dpenning@chromium.org" ],
+-    "expiry_milestone": 130
++    "expiry_milestone": 145
+   },
+   {
+     "name": "scrollable-tabstrip-with-dragging",
+     "owners": [ "chrome-desktop-ui-sea@google.com", "shibalik@chromium.org" ],
+-    "expiry_milestone": 130
++    "expiry_milestone": 145
+   },
+   {
+     "name": "sct-auditing",

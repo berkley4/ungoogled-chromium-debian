@@ -1,0 +1,210 @@
+From 486a40271e7b2f538e8f2c6140735566bd70426d Mon Sep 17 00:00:00 2001
+From: Frank Li <frankli@microsoft.com>
+Date: Mon, 14 Oct 2024 21:00:53 +0000
+Subject: [PATCH] [media] avoid heap-use-after-free in OverlayStateObserverImpl::Create
+
+In PS38 of
+https://chromium-review.googlesource.com/c/chromium/src/+/3403933/37..38,
+`scoped_refptr<OverlayStateServiceProvider>` parameter of
+`OverlayStateObserverImpl::Create()' was changed into
+`OverlayStateServiceProvider*`. This causes the heap-use-after-free
+issue described in https://issuetracker.google.com/issues/354824998.
+
+This CL is to follow existing code pattern of producing `scoped_refptr`
+in `RenderThreadImpl::GetStreamTextureFactory()`/
+`RenderThreadImpl::GetDCOMPTextureFactor()` instead of returning a raw
+pointer in `RenderThreadImpl::GetOverlayStateServiceProvider()`.
+
+Bug: 354824998
+Change-Id: Ic188bf18b28a5f024488bd92fb11f6fca6c5d05a
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5910432
+Reviewed-by: Dale Curtis <dalecurtis@chromium.org>
+Reviewed-by: Daniel Cheng <dcheng@chromium.org>
+Commit-Queue: Frank Li <frankli@microsoft.com>
+Cr-Commit-Position: refs/heads/main@{#1368423}
+---
+
+--- a/content/renderer/media/media_factory.cc
++++ b/content/renderer/media/media_factory.cc
+@@ -690,8 +690,7 @@
+ 
+     media::ObserveOverlayStateCB observe_overlay_state_cb = base::BindRepeating(
+         &OverlayStateObserverImpl::Create,
+-        base::UnsafeDanglingUntriaged(
+-            render_thread->GetOverlayStateServiceProvider()));
++        base::RetainedRef(render_thread->GetOverlayStateServiceProvider()));
+ 
+     factory_selector->AddFactory(
+         RendererType::kMediaFoundation,
+--- a/content/renderer/media/win/overlay_state_observer_impl.cc
++++ b/content/renderer/media/win/overlay_state_observer_impl.cc
+@@ -16,7 +16,7 @@
+     StateChangedCB state_changed_cb) {
+   if (overlay_state_service_provider) {
+     return base::WrapUnique(new OverlayStateObserverImpl(
+-        overlay_state_service_provider, mailbox, state_changed_cb));
++        overlay_state_service_provider, mailbox, std::move(state_changed_cb)));
+   }
+   return nullptr;
+ }
+--- a/content/renderer/media/win/overlay_state_observer_impl_unittest.cc
++++ b/content/renderer/media/win/overlay_state_observer_impl_unittest.cc
+@@ -3,8 +3,10 @@
+ // found in the LICENSE file.
+ 
+ #include "content/renderer/media/win/overlay_state_observer_impl.h"
++
+ #include "base/test/task_environment.h"
+ #include "base/unguessable_token.h"
++#include "content/renderer/media/win/overlay_state_service_provider.h"
+ #include "gpu/command_buffer/common/mailbox.h"
+ #include "mojo/public/cpp/bindings/pending_receiver.h"
+ #include "mojo/public/cpp/bindings/pending_remote.h"
+@@ -41,6 +43,9 @@
+     }
+   }
+ 
++ protected:
++  ~MockOverlayStateService() override = default;
++
+  private:
+   mojo::Remote<gpu::mojom::OverlayStateObserver> overlay_state_observer_;
+   gpu::Mailbox mailbox_;
+@@ -48,7 +53,10 @@
+ 
+ class OverlayStateObserverImplTest : public testing::Test {
+  public:
+-  OverlayStateObserverImplTest() = default;
++  OverlayStateObserverImplTest() {
++    mock_overlay_state_service_ =
++        base::MakeRefCounted<MockOverlayStateService>();
++  }
+   ~OverlayStateObserverImplTest() override = default;
+ 
+   void OnStateChanged(bool promoted) {
+@@ -58,7 +66,7 @@
+ 
+  protected:
+   base::test::SingleThreadTaskEnvironment task_environment_;
+-  MockOverlayStateService mock_overlay_state_service;
++  scoped_refptr<MockOverlayStateService> mock_overlay_state_service_;
+   int callback_count_ = 0;
+   bool promoted_ = false;
+ };
+@@ -67,27 +75,27 @@
+   // Create a OverlayStateObserverImpl & register a mailbox to listen to
+   gpu::Mailbox mailbox = gpu::Mailbox::Generate();
+   auto overlay_state_observer_subscription = OverlayStateObserverImpl::Create(
+-      &mock_overlay_state_service, mailbox,
++      mock_overlay_state_service_.get(), mailbox,
+       base::BindRepeating(&OverlayStateObserverImplTest::OnStateChanged,
+                           base::Unretained(this)));
+   task_environment_.RunUntilIdle();
+   EXPECT_EQ(callback_count_, 0);
+ 
+   // Set overlay state to false
+-  mock_overlay_state_service.SetOverlayState(mailbox, false);
++  mock_overlay_state_service_->SetOverlayState(mailbox, false);
+   task_environment_.RunUntilIdle();
+   EXPECT_EQ(callback_count_, 1);
+   EXPECT_EQ(promoted_, false);
+ 
+   // Set overlay state to true
+-  mock_overlay_state_service.SetOverlayState(mailbox, true);
++  mock_overlay_state_service_->SetOverlayState(mailbox, true);
+   task_environment_.RunUntilIdle();
+   EXPECT_EQ(callback_count_, 2);
+   EXPECT_EQ(promoted_, true);
+ 
+   // Set overlay state for another mailbox & ensure no callback
+   gpu::Mailbox mailbox2 = gpu::Mailbox::Generate();
+-  mock_overlay_state_service.SetOverlayState(mailbox2, false);
++  mock_overlay_state_service_->SetOverlayState(mailbox2, false);
+   task_environment_.RunUntilIdle();
+   EXPECT_EQ(callback_count_, 2);
+   EXPECT_EQ(promoted_, true);
+--- a/content/renderer/media/win/overlay_state_service_provider.h
++++ b/content/renderer/media/win/overlay_state_service_provider.h
+@@ -15,11 +15,19 @@
+ 
+ namespace content {
+ 
+-class OverlayStateServiceProvider {
++class OverlayStateServiceProvider
++    : public base::RefCountedThreadSafe<OverlayStateServiceProvider> {
+  public:
+   virtual bool RegisterObserver(
+       mojo::PendingRemote<gpu::mojom::OverlayStateObserver> pending_remote,
+       const gpu::Mailbox& mailbox) = 0;
++
++ protected:
++  friend class base::RefCountedThreadSafe<OverlayStateServiceProvider>;
++  OverlayStateServiceProvider() = default;
++  OverlayStateServiceProvider(const OverlayStateServiceProvider&) = delete;
++  OverlayStateServiceProvider& operator=(const OverlayStateServiceProvider&) =
++      delete;
+   virtual ~OverlayStateServiceProvider() = default;
+ };
+ 
+@@ -29,7 +37,6 @@
+  public:
+   explicit OverlayStateServiceProviderImpl(
+       scoped_refptr<gpu::GpuChannelHost> channel);
+-  ~OverlayStateServiceProviderImpl() override;
+ 
+   bool RegisterObserver(
+       mojo::PendingRemote<gpu::mojom::OverlayStateObserver> pending_remote,
+@@ -43,6 +50,7 @@
+       delete;
+   OverlayStateServiceProviderImpl& operator=(
+       const OverlayStateServiceProviderImpl&) = delete;
++  ~OverlayStateServiceProviderImpl() override;
+ 
+   scoped_refptr<gpu::GpuChannelHost> channel_;
+ };
+--- a/content/renderer/render_thread_impl.cc
++++ b/content/renderer/render_thread_impl.cc
+@@ -1218,7 +1218,7 @@
+   return dcomp_texture_factory_;
+ }
+ 
+-OverlayStateServiceProvider*
++scoped_refptr<OverlayStateServiceProvider>
+ RenderThreadImpl::GetOverlayStateServiceProvider() {
+   DCHECK(IsMainThread());
+   // Only set 'overlay_state_service_provider_' if Media Foundation for clear
+@@ -1232,11 +1232,12 @@
+         return nullptr;
+       }
+       overlay_state_service_provider_ =
+-          std::make_unique<OverlayStateServiceProviderImpl>(std::move(channel));
++          base::MakeRefCounted<OverlayStateServiceProviderImpl>(
++              std::move(channel));
+     }
+   }
+ 
+-  return overlay_state_service_provider_.get();
++  return overlay_state_service_provider_;
+ }
+ #endif  // BUILDFLAG(IS_WIN)
+ 
+--- a/content/renderer/render_thread_impl.h
++++ b/content/renderer/render_thread_impl.h
+@@ -264,7 +264,7 @@
+   // The OverlayStateService is only available where Media Foundation for
+   // clear is supported, otherwise GetOverlayStateServiceProvider will return
+   // nullptr.
+-  OverlayStateServiceProvider* GetOverlayStateServiceProvider();
++  scoped_refptr<OverlayStateServiceProvider> GetOverlayStateServiceProvider();
+ #endif
+ 
+   blink::WebVideoCaptureImplManager* video_capture_impl_manager() const {
+@@ -533,7 +533,7 @@
+ 
+ #if BUILDFLAG(IS_WIN)
+   scoped_refptr<DCOMPTextureFactory> dcomp_texture_factory_;
+-  std::unique_ptr<OverlayStateServiceProviderImpl>
++  scoped_refptr<OverlayStateServiceProviderImpl>
+       overlay_state_service_provider_;
+ #endif
+ 

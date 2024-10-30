@@ -115,7 +115,26 @@ various/upstream/0009-05c62eb.diff
 various/upstream/0010-7c81171.diff
 various/upstream/0011-7ca0de4.diff
 various/upstream/0012-81684f2c.diff
-various/upstream/0013-37f4dff.diff
+various/upstream/0013-ac7f7b3.diff
+various/upstream/0014-37f4dff.diff
+various/upstream/0015-c7e06b90.diff
+various/upstream/0016-2d579e8.diff
+various/upstream/0017-b82aa1e.diff
+various/upstream/0018-0dd2a398.diff
+various/upstream/0019-4ea0f6d.diff
+various/upstream/0020-d5bb740.diff
+various/upstream/0021-d1a50085.diff
+various/upstream/0022-03c690d.diff
+various/upstream/0023-c7df112.diff
+various/upstream/0024-7817f4a.diff
+various/upstream/0025-ddf5ea4.diff
+various/upstream/0026-486a402.diff
+various/upstream/0027-14c9714.diff
+various/upstream/0028-b94803a.diff
+various/upstream/0029-9f0e9b8.diff
+various/upstream/0030-fd55b3e.diff
+various/upstream/0031-0b9ec71.diff
+various/upstream/0032-9cf6656.diff
 various/upstream/features/leveldb-proto-enable-async-writes-by-default.patch
 various/warnings/clang-excessive-warnings.patch
 
@@ -206,5 +225,7 @@ optional/system/vaapi/gl-native-pixmap-formats.patch
 optional/translate/revert-disable.patch
 optional/translate/stop-unsupported-switch-warning.patch
 
-addenda/0001-cffbff7.diff
-addenda/0002-fad5a09f.diff
+addenda/0001-3d4d3da.diff
+addenda/0002-4e10fc2.diff
+addenda/0003-e699ac35.diff
+addenda/0004-23743a51.diff

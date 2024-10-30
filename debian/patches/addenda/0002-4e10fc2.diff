@@ -1,0 +1,187 @@
+From 4e10fc270e62f4854537dbc232b8a71f6ee3cccc Mon Sep 17 00:00:00 2001
+From: Yoichi Osato <yoichio@chromium.org>
+Date: Tue, 29 Oct 2024 08:35:45 +0000
+Subject: [PATCH] [M130][Urgent Release Blocker] Handle invalid EncodedFormData.
+
+This CL introduces temporary fix to the crash that an invalid
+EncodedFormData returns nullptr in FormDataBytesConsumer::GetImpl().
+The quick fix here is simply cutting off the tail elements
+making the form invalid as old implementation does in each
+XXXBytesConsumer.
+
+(cherry picked from commit d255f331bcda94938323d76eb50128711fb480f1)
+
+Bug: 374124998, 374550348
+Change-Id: I6a74d78432c846bac83ccc46ff6e7494b6960aa8
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5974573
+Reviewed-by: Adam Rice <ricea@chromium.org>
+Auto-Submit: Yoichi Osato <yoichio@chromium.org>
+Commit-Queue: Adam Rice <ricea@chromium.org>
+Cr-Commit-Position: refs/branch-heads/6723@{#1542}
+Cr-Branched-From: 985f2961df230630f9cbd75bd6fe463009855a11-refs/heads/main@{#1356013}
+---
+
+--- a/third_party/blink/renderer/core/fetch/form_data_bytes_consumer.cc
++++ b/third_party/blink/renderer/core/fetch/form_data_bytes_consumer.cc
+@@ -9,6 +9,7 @@
+ 
+ #include "third_party/blink/renderer/core/fetch/form_data_bytes_consumer.h"
+ 
++#include "base/debug/dump_without_crashing.h"
+ #include "third_party/blink/public/platform/platform.h"
+ #include "third_party/blink/public/platform/task_type.h"
+ #include "third_party/blink/renderer/core/execution_context/execution_context.h"
+@@ -481,6 +482,43 @@
+   Member<BytesConsumer> blob_bytes_consumer_;
+ };
+ 
++scoped_refptr<EncodedFormData> StripUnhandledElements(
++    scoped_refptr<EncodedFormData> form_data) {
++  scoped_refptr<EncodedFormData> new_data = EncodedFormData::Create();
++  new_data->SetBoundary(form_data->Boundary());
++  new_data->SetIdentifier(form_data->Identifier());
++  new_data->SetContainsPasswordData(form_data->ContainsPasswordData());
++  EncodedFormData::FormDataType type = EncodedFormData::FormDataType::kDataOnly;
++  for (auto& element : form_data->MutableElements()) {
++    switch (element.type_) {
++      case FormDataElement::kData:
++        break;
++      case FormDataElement::kEncodedFile:
++      case FormDataElement::kEncodedBlob:
++        if (type == EncodedFormData::FormDataType::kDataAndDataPipe) {
++          type = EncodedFormData::FormDataType::kInvalid;
++        } else {
++          type = EncodedFormData::FormDataType::kDataAndEncodedFileOrBlob;
++        }
++        break;
++      case FormDataElement::kDataPipe:
++        if (type == EncodedFormData::FormDataType::kDataAndEncodedFileOrBlob) {
++          type = EncodedFormData::FormDataType::kInvalid;
++        } else {
++          type = EncodedFormData::FormDataType::kDataAndDataPipe;
++        }
++        break;
++    }
++    if (type == EncodedFormData::FormDataType::kInvalid) {
++      return new_data;
++    }
++    new_data->MutableElements().push_back(std::move(element));
++  }
++  DUMP_WILL_BE_CHECK_NE(EncodedFormData::FormDataType::kInvalid,
++                        form_data->GetType());
++  return new_data;
++}
++
+ }  // namespace
+ 
+ FormDataBytesConsumer::FormDataBytesConsumer(const String& string)
+@@ -524,6 +562,14 @@
+     scoped_refptr<EncodedFormData> form_data,
+     BytesConsumer* consumer_for_testing) {
+   DCHECK(form_data);
++  // TODO(crbug.com/374124998): introduce canonical way not to lose elements.
++  // Also see https://issues.chromium.org/u/1/issues/356183778#comment57
++  if (form_data->GetType() == EncodedFormData::FormDataType::kInvalid) {
++    base::debug::DumpWithoutCrashing();
++    form_data = StripUnhandledElements(form_data);
++    DUMP_WILL_BE_CHECK_NE(EncodedFormData::FormDataType::kInvalid,
++                          form_data->GetType());
++  }
+   switch (form_data->GetType()) {
+     case EncodedFormData::FormDataType::kDataOnly:
+       return MakeGarbageCollected<DataOnlyBytesConsumer>(std::move(form_data));
+--- a/third_party/blink/renderer/core/fetch/form_data_bytes_consumer_test.cc
++++ b/third_party/blink/renderer/core/fetch/form_data_bytes_consumer_test.cc
+@@ -30,6 +30,7 @@
+ #include "third_party/blink/renderer/platform/heap/garbage_collected.h"
+ #include "third_party/blink/renderer/platform/loader/testing/bytes_consumer_test_reader.h"
+ #include "third_party/blink/renderer/platform/network/encoded_form_data.h"
++#include "third_party/blink/renderer/platform/network/wrapped_data_pipe_getter.h"
+ #include "third_party/blink/renderer/platform/wtf/text/wtf_string.h"
+ #include "third_party/blink/renderer/platform/wtf/vector.h"
+ 
+@@ -144,6 +145,22 @@
+         GetFrame().GetDocument()->GetExecutionContext());
+   }
+ 
++  String DrainAsString(scoped_refptr<EncodedFormData> input_form_data) {
++    auto* consumer = MakeGarbageCollected<FormDataBytesConsumer>(
++        GetFrame().DomWindow(), input_form_data);
++    auto* reader = MakeGarbageCollected<BytesConsumerTestReader>(consumer);
++    std::pair<BytesConsumer::Result, Vector<char>> result = reader->Run();
++    EXPECT_EQ(Result::kDone, result.first);
++    return BytesConsumerTestUtil::CharVectorToString(result.second);
++  }
++
++  scoped_refptr<EncodedFormData> DrainAsFormData(
++      scoped_refptr<EncodedFormData> input_form_data) {
++    auto* consumer = MakeGarbageCollected<FormDataBytesConsumer>(
++        GetFrame().DomWindow(), input_form_data);
++    return consumer->DrainAsFormData();
++  }
++
+  private:
+   std::unique_ptr<FileBackedBlobFactoryTestHelper> file_factory_helper_;
+ };
+@@ -526,5 +543,61 @@
+             BytesConsumerTestUtil::CharVectorToString(result.second));
+ }
+ 
++void AppendDataPipe(scoped_refptr<EncodedFormData> data, String content) {
++  mojo::PendingRemote<network::mojom::blink::DataPipeGetter> data_pipe_getter;
++  // Object deletes itself.
++  new SimpleDataPipeGetter(content,
++                           data_pipe_getter.InitWithNewPipeAndPassReceiver());
++  auto wrapped =
++      base::MakeRefCounted<WrappedDataPipeGetter>(std::move(data_pipe_getter));
++  data->AppendDataPipe(std::move(wrapped));
++}
++
++scoped_refptr<EncodedFormData> CreateDataPipeData() {
++  scoped_refptr<EncodedFormData> data = EncodedFormData::Create();
++
++  data->AppendData("foo", 3);
++  AppendDataPipe(data, " hello world");
++  return data;
++}
++
++TEST_F(FormDataBytesConsumerTest, InvalidType1) {
++  const String kExpected = "foo hello world";
++  ASSERT_EQ(kExpected, DrainAsString(CreateDataPipeData()));
++
++  scoped_refptr<EncodedFormData> data = CreateDataPipeData();
++  data->AppendFileRange("/foo/bar/baz", 3, 4,
++                        base::Time::FromSecondsSinceUnixEpoch(5));
++  ASSERT_EQ(EncodedFormData::FormDataType::kInvalid, data->GetType());
++
++  EXPECT_EQ(kExpected, DrainAsString(data));
++}
++
++scoped_refptr<EncodedFormData> CreateBlobData() {
++  scoped_refptr<EncodedFormData> data = EncodedFormData::Create();
++
++  data->AppendData("foo", 3);
++  auto blob_data = std::make_unique<BlobData>();
++  blob_data->AppendText("hello", false);
++  auto size = blob_data->length();
++  scoped_refptr<BlobDataHandle> blob_data_handle =
++      BlobDataHandle::Create(std::move(blob_data), size);
++  data->AppendBlob(blob_data_handle->Uuid(), blob_data_handle);
++  Vector<char> boundary;
++  boundary.Append("\0", 1);
++  data->SetBoundary(boundary);
++  return data;
++}
++
++TEST_F(FormDataBytesConsumerTest, InvaidType2) {
++  scoped_refptr<EncodedFormData> data = CreateBlobData();
++  AppendDataPipe(data, " hello world!");
++  ASSERT_EQ(EncodedFormData::FormDataType::kInvalid, data->GetType());
++
++  auto* consumer =
++      MakeGarbageCollected<FormDataBytesConsumer>(GetFrame().DomWindow(), data);
++  EXPECT_TRUE(consumer->DrainAsFormData());
++}
++
+ }  // namespace
+ }  // namespace blink
