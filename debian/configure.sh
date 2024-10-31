@@ -95,6 +95,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$LABS_TOOLBAR_BUTTON" ] || LABS_TOOLBAR_BUTTON=0
 [ -n "$LENS" ] || LENS=0
 [ -n "$LENS_TRANSLATE" ] || LENS_TRANSLATE=1
+[ -n "$LOCALES_EXTRA" ] || LOCALES_EXTRA=1
 [ -n "$MUTEX_PI" ] || MUTEX_PI=1
 [ -n "$OAUTH2" ] || OAUTH2=0
 [ -n "$OPENTYPE_SVG" ] || OPENTYPE_SVG=1
@@ -840,6 +841,21 @@ else
 
     eval sed $L -i $FLAG_DIR/google-lens
   fi
+fi
+
+
+if [ $LOCALES_EXTRA -eq 0 ]; then
+  a="af, am, ar, bg, bn, ca, cs, da, de, el, en-GB, es-419, es, et, fa, fi, fil, fr,"
+  b="gu, he, hi, hr, hu, id, it, ja, kn, ko, lt, lv, ml, mr, ms, nb, nl, pl, pt-BR,"
+  c="pt-PT, ro, ru, sk, sl, sr, sv, sw, ta, te, th, tr, uk, ur, vi, zh-CN, zh-TW"
+  CON="$CON -e \"s@af, am, ar, as, az, be, bg,.*@$a@\""
+  CON="$CON -e \"s@et, eu, fa, fi, fil, fr, fr-CA,.*@$b@\""
+  CON="$CON -e \"s@ka, kk, km, kn, ko, ky, lo, lt,.*@$c@\""
+  CON="$CON -e \"/pa, pl, pt-BR, pt-PT, ro, ru,/d\""
+  CON="$CON -e \"/th, tr, uk, ur, uz, vi, zh-CN,/d\""
+
+  P=extra/ungoogled-chromium/enable-extra-locales.patch
+  SER_UC="$SER_UC -e \"s@^\($P\)@#\1@\""
 fi
 
 
