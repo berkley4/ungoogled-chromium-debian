@@ -1232,12 +1232,21 @@ fi
 ##  Domain substitution, submodule flags and pruning list ##
 ############################################################
 
-# Check whether DEPS.patch has been applied
-[ $TEST -eq 0 ] && [ -n "$(sed -n '/webvr_info/p' $RT_DIR/DEPS)" ] && DEPS_PATCH=0 || DEPS_PATCH=1
+# Check whether DEPS.patch and DEPS-no-rust.patch have been applied
+if [ $TEST -eq 0 ]; then
+  case $(sed -n '/webvr_info/p' $RT_DIR/DEPS) in
+    *src/chrome/test/data/xr/webvr_info*)
+      DEPS_PATCH=0 ;;
 
-# Check whether DEPS-no-rust.patch has been applied
-if [ $TEST -eq 0 ] && [ $DEPS_PATCH -eq 1 ]; then
-  [ -n "$(sed -n '/Linux_x64\/rust-toolchain-/,/condition/{/==/p}' $RT_DIR/DEPS)" ] || DEPS_PATCH=2
+    *)
+      case $(sed -n '/Linux_x64\/rust-toolchain-/,/condition/{/==/p}' $RT_DIR/DEPS) in
+        *condition*==*)
+          DEPS_PATCH=1 ;;
+
+        *)
+          DEPS_PATCH=2 ;;
+      esac ;;
+  esac
 fi
 
 ## Domain substitution
