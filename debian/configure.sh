@@ -74,7 +74,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 
 [ -n "$ATK" ] || ATK=1
 [ -n "$CATAPULT" ] || CATAPULT=0
-[ -n "$CHROMECAST" ] || CHROMECAST=1
+[ -n "$CHROMECAST" ] || CHROMECAST=0
 [ -n "$CLICK_TO_CALL" ] || CLICK_TO_CALL=1
 [ -n "$COMPOSE" ] || COMPOSE=1
 [ -n "$DRIVER" ] || DRIVER=1
@@ -128,8 +128,8 @@ POLICIES=etc/chromium/policies/managed/policies.json
 ## Allow force-enabling brotli for stable users who have installed my deb packages
 [ -n "$SYS_BROTLI" ] && SYS_BROTLI_SET=1 || SYS_BROTLI=1
 
-## Need to error out if MEDIA_REMOTING explicitly set with CHROMECAST=0
-[ -n "$MEDIA_REMOTING" ] && MEDIA_REMOTING_SET=1 || MEDIA_REMOTING=1
+## Need to error out if MEDIA_REMOTING is explicitly enabled when CHROMECAST=0
+[ -n "$MEDIA_REMOTING" ] && MEDIA_REMOTING_SET=1 || MEDIA_REMOTING=0
 
 ## OpenH254 support
 [ -n "$OPENH264" ] && [ $OPENH264 -eq 0 ] && SYS_OPENH264=0 || OPENH264=1
@@ -668,9 +668,6 @@ fi
 
 
 if [ $CHROMECAST -eq 0 ]; then
-  op_enable="$op_enable disable/media-router.patch"
-  op_disable="$op_disable chromecast/"
-
   if [ $MEDIA_REMOTING -eq 1 ]; then
     if [ $MEDIA_REMOTING_SET -eq 0 ]; then
       printf '$s\n' "WARN: Setting MEDIA_REMOTING=0 since CHROMECAST=0"
@@ -682,6 +679,9 @@ if [ $CHROMECAST -eq 0 ]; then
     fi
   fi
 else
+  op_disable="$op_disable disable/media-router.patch"
+  op_enable="$op_enable chromecast/"
+
   P=fix-building-without-mdns-and-service-discovery
   SER_UC="$SER_UC -e \"s@^\(extra/ungoogled-chromium/$P\)@#\1@\""
 
@@ -852,9 +852,9 @@ if [ $LOCALES_EXTRA -eq 0 ]; then
 fi
 
 
-if [ $MEDIA_REMOTING -eq 0 ]; then
-  op_enable="$op_enable disable/media-remoting/"
-  gn_enable="$gn_enable enable_media_remoting=false"
+if [ $MEDIA_REMOTING -eq 1 ]; then
+  op_disable="$op_disable disable/media-remoting/"
+  gn_disable="$gn_disable enable_media_remoting=false"
 fi
 
 

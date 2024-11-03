@@ -159,7 +159,7 @@ GN_FLAGS += enable_hls_demuxer=true
 #GN_FLAGS += enable_lens_desktop=false
 
 # Disable media remoting
-#GN_FLAGS += enable_media_remoting=false
+GN_FLAGS += enable_media_remoting=false
 
 # Enable mutex priority inheritance
 GN_FLAGS += enable_mutex_priority_inheritance=true

@@ -98,7 +98,8 @@ BLUEZ			1		Support for the linux bluetooth protocol stack
 					Note that BLUEZ=0 is only effective when DBUS=1 since the former is effectively a subset of DBUS=0 
 
 CATAPULT		0		Catapult profiling support
-CHROMECAST		1		0 - disable (will also disable MEDIA_REMOTING)
+CHROMECAST		0		Note that enabling (CHROMECAST=1) is untested
+					0 - disable (will also disable MEDIA_REMOTING)
 					1 - enable (need to edit /etc/chromium.d/network)
 					2 - enable fully
 
@@ -133,8 +134,8 @@ LENS			0		Goodle Lens
                                         2 - enable fully
 
 LOCALES_EXTRA		1		Extra locales (via upstream ungoogled chromium patch)
-MEDIA_REMOTING		1		Render and play back media on remote devices when a tab is casted
-					Depends on CHROMECAST=1 (which is the default)
+MEDIA_REMOTING		0		Render and play back media on remote devices when a tab is casted
+					Depends on CHROMECAST=1 (which is not the default)
 
 MUTEX_PI		1		Mutex priority inheritance
 
