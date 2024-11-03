@@ -93,7 +93,6 @@ DNS_HOST		<hostname>	To set https://dns.example.net/dns-query{?dns} as DNS-over-
 
 DRIVER			1		Chromedriver package
 
-ASYNC_LEVELDB		1		Asynchronous leveldb protocol writes (faster when enabled)
 ATK			1		Accessibility toolkit
 BLUEZ			1		Support for the linux bluetooth protocol stack
 					Note that BLUEZ=0 is only effective when DBUS=1 since the former is effectively a subset of DBUS=0 

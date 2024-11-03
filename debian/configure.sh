@@ -72,7 +72,6 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$MEDIA_OPT_SPEED" ] || MEDIA_OPT_SPEED=1
 [ -n "$MF_SPLIT" ] || MF_SPLIT=1
 
-[ -n "$ASYNC_LEVELDB" ] || ASYNC_LEVELDB=1
 [ -n "$ATK" ] || ATK=1
 [ -n "$CATAPULT" ] || CATAPULT=0
 [ -n "$CHROMECAST" ] || CHROMECAST=1
@@ -656,11 +655,6 @@ fi
 #############################################
 ## Non-library features/components/patches ##
 #############################################
-
-if [ $ASYNC_LEVELDB -eq 0 ]; then
-  sed '/LevelDBProtoAsyncWrite/s@^#@@' -i $FLAG_DIR/miscellaneous
-fi
-
 
 if [ $ATK -eq 0 ]; then
   op_enable="$op_enable disable/atk.patch"
