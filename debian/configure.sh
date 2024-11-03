@@ -1233,7 +1233,7 @@ fi
 ############################################################
 
 # Check whether DEPS.patch and DEPS-no-rust.patch have been applied
-if [ $TEST -eq 0 ]; then
+if [ -f $RT_DIR/DEPS ]; then
   case $(sed -n '/webvr_info/p' $RT_DIR/DEPS) in
     *src/chrome/test/data/xr/webvr_info*)
       DEPS_PATCH=0 ;;
