@@ -1,0 +1,22 @@
+From 3ea8d0a2ce7dde53c1574d8f032b803e584a6355 Mon Sep 17 00:00:00 2001
+From: Eugene Zemtsov <eugene@chromium.org>
+Date: Wed, 23 Oct 2024 18:29:41 -0700
+Subject: [PATCH] Fix crash when trying to get a fragment time for a non-existing fragment
+
+Bug: https://issues.chromium.org/issues/372994341
+Change-Id: I695d625717c078ed6f84f44e58c34da858af4d3b
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/third_party/ffmpeg/+/5958151
+Reviewed-by: Dale Curtis <dalecurtis@chromium.org>
+---
+
+--- a/third_party/ffmpeg/libavformat/mov.c
++++ b/third_party/ffmpeg/libavformat/mov.c
+@@ -1542,6 +1542,8 @@
+     // to fragments that referenced this stream in the sidx
+     if (sc->has_sidx) {
+         frag_stream_info = get_frag_stream_info(frag_index, index, sc->id);
++        if (!frag_stream_info)
++            return AV_NOPTS_VALUE;
+         if (frag_stream_info->sidx_pts != AV_NOPTS_VALUE)
+             return frag_stream_info->sidx_pts;
+         if (frag_stream_info->first_tfra_pts != AV_NOPTS_VALUE)
