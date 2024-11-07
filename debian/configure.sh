@@ -1434,7 +1434,7 @@ mv $UC_PATCH_DIRS $DEBIAN/patches/
 
 
 ## Submodule patching
-patch -p1 < $DEBIAN/misc_files/no-exit-if-pruned.patch >/dev/null
+patch -s -p1 < $DEBIAN/misc_files/no-exit-if-pruned.patch
 
 
 exit $?
