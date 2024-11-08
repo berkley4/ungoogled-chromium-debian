@@ -30,8 +30,6 @@ RELEASE_SET=0
 SYS_BROTLI_SET=0
 XZ_THREADED_SET=0
 
-LLVM_PGO_VER=20
-
 # ${example%/*} = $(dirname example)
 DEBIAN=$(OLDPWD=- CDPATH= cd -P -- ${0%/*} && pwd)
 RT_DIR=${DEBIAN%/*}
@@ -208,6 +206,18 @@ if [ $BLUEZ_SET -eq 1 ] && [ $BLUEZ -eq 1 ] && [ $DBUS -eq 0 ]; then
 fi
 
 
+## Enter test mode if $RT_DIR/third_party does not exist
+[ -d $RT_DIR/third_party ] && TEST=0 || TEST=1
+
+
+## Get clang_version from build/toolchain/toolchain.gni when TEST=0
+LLVM_PGO_VER=20
+if [ $TEST -eq 0 ]; then
+  tc_gni=build/toolchain/toolchain.gni
+  LLVM_PGO_VER=$(sed -n '/clang_version =/h; ${x;s@[ _="a-z]@@gp;}' $tc_gni)
+fi
+
+
 
 #########################
 ## Changelog variables ##
@@ -253,13 +263,9 @@ esac
 
 
 
-###########################################################
-## Test mode | LTO | Symbol levels | Package compression ##
-###########################################################
-
-## Enter test mode if $RT_DIR/third_party does not exist
-[ -d $RT_DIR/third_party ] && TEST=0 || TEST=1
-
+###############################################
+## LTO | Symbol levels | Package compression ##
+###############################################
 
 ## Set LTO cache directory and number of LTO jobs
 if [ -n "$LTO_DIR" ]; then
@@ -418,7 +424,13 @@ else
   RUL="$RUL -e \"/^#export.*_MAINT_SET/s@^#@@\""
 
   RUL="$RUL -e \"s@_LLVM_BASE_DIR@$LLVM_BASE_DIR@\""
-  RUL="$RUL -e \"s@_LLVM_VER@$LLVM_VER@\""
+
+  if [ $LLVM_VER -ne $LLVM_PGO_VER ]; then
+    gn_enable="$gn_enable clang_version="
+    RUL="$RUL -e \"s@_LLVM_VER@$LLVM_VER@\""
+
+    printf '%s\n' "INFO: Using clang $LLVM_VER"
+  fi
 
   if [ $SYS_CLANG -eq 1 ]; then
     op_enable="$op_enable system/clang/rust-clanglib.patch"

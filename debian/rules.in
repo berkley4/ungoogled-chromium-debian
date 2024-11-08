@@ -35,7 +35,8 @@ GN_FLAGS := $(shell sed -z -e 's@\x22@\x5c\x22@g' -e 's@\n@ @g' $(UC_DIR)/flags.
 #export CCACHE_BASEDIR=_CCACHE_BASEDIR
 
 # Clang toolchain
-#GN_FLAGS += clang_base_path=\"_LLVM_BASE_DIR\" clang_version=\"_LLVM_VER\"
+#GN_FLAGS += clang_version=\"_LLVM_VER\"
+#GN_FLAGS += clang_base_path=\"_LLVM_BASE_DIR\"
 #GN_FLAGS += custom_toolchain=\"//build/toolchain/linux/unbundle:default\"
 #GN_FLAGS += host_toolchain=\"//build/toolchain/linux/unbundle:default\"
 
