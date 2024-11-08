@@ -837,6 +837,7 @@ if [ $LENS -eq 0 ]; then
   ins_disable="$ins_disable google-lens"
 else
   DSB="$DSB -e \"/^components\/lens\/lens_features\.cc/d\""
+  INS="$INS -e \"/google-lens/s@^#@@\""
 
   if [ $LENS -ge 2 ]; then
     GOOGLE_API_KEYS=2
