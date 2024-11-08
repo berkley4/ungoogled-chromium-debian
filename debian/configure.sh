@@ -108,7 +108,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$SPEECH" ] || SPEECH=1
 [ -n "$SWIFTSHADER" ] || SWIFTSHADER=1
 [ -n "$SWIFTSHADER_VULKAN" ] || SWIFTSHADER_VULKAN=1
-[ -n "$SWIFTSHADER_WEBGPU" ] || SWIFTSHADER_WEBGPU=0
+[ -n "$SWIFTSHADER_WEBGPU" ] || SWIFTSHADER_WEBGPU=1
 [ -n "$SWITCH_BLOCKING" ] || SWITCH_BLOCKING=1
 [ -n "$SYS_NOTIFICATIONS" ] || SYS_NOTIFICATIONS=1
 [ -n "$TRANSLATE" ] || TRANSLATE=1
@@ -131,7 +131,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 ## Need to error out if MEDIA_REMOTING is explicitly enabled when CHROMECAST=0
 [ -n "$MEDIA_REMOTING" ] && MEDIA_REMOTING_SET=1 || MEDIA_REMOTING=0
 
-## OpenH254 support
+## OpenH264 support
 [ -n "$OPENH264" ] && [ $OPENH264 -eq 0 ] && SYS_OPENH264=0 || OPENH264=1
 [ -n "$SYS_OPENH264" ] || SYS_OPENH264=1
 
@@ -976,8 +976,6 @@ if [ $WEBGPU -ge 1 ]; then
   gn_disable="$gn_disable tint_build_glsl_validator=false"
   gn_disable="$gn_disable tint_build_glsl_writer=false"
 
-  SWIFTSHADER_WEBGPU=1
-
   if [ $WEBGPU -ge 2 ]; then
     sed -e '/enable-unsafe-webgpu/s@^#@@' -i $FLAG_DIR/gpu
   fi
@@ -994,12 +992,12 @@ if [ $SWIFTSHADER -eq 0 ]; then
   gn_enable="$gn_enable enable_swiftshader=false"
   ins_disable="$ins_disable swiftshader"
 else
-  if [ $SWIFTSHADER_VULKAN -eq 0 ]; then
+  if [ $VULKAN -eq 0 ] || ([ $VULKAN -eq 1 ] && [ $SWIFTSHADER_VULKAN -eq 0 ]); then
     gn_enable="$gn_enable enable_swiftshader_vulkan=false"
   fi
 
-  if [ $SWIFTSHADER_WEBGPU -eq 1 ]; then
-    gn_disable="$gn_disable dawn_use_swiftshader=false"
+  if [ $WEBGPU -eq 0 ] || ([ $WEBGPU -eq 1 ] && [ $SWIFTSHADER_WEBGPU -eq 0 ]); then
+    gn_enable="$gn_enable dawn_use_swiftshader=false"
   fi
 fi
 

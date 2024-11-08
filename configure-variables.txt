@@ -156,7 +156,7 @@ QT			1		0 - disable
 SPEECH			1		Speech service (voice recognition)
 SWIFTSHADER		1		Swiftshader
 SWIFTSHADER_VULKAN	1		Swiftshader for vulkan
-SWIFTSHADER_WEBGPU	0		Swiftshader for WebGPU
+SWIFTSHADER_WEBGPU	1		Swiftshader for WebGPU
 TRANSLATE		1		Google translate support
 					0 - disable
 					1 - enable (need to edit google-translate flag file and policies.json)
