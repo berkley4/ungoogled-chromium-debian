@@ -159,7 +159,7 @@ SWIFTSHADER_VULKAN	1		Swiftshader for vulkan
 SWIFTSHADER_WEBGPU	0		Swiftshader for WebGPU
 TRANSLATE		1		Google translate support
 					0 - disable
-					1 - enable (need to edit /etc/chromium.d/google-translate)
+					1 - enable (need to edit google-translate flag file and policies.json)
 					2 - enable fully
 
 VISUAL_QUERY		0		Visual query image search facility (a possible privacy concern)

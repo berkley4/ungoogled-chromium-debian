@@ -926,6 +926,7 @@ else
 
   if [ $TRANSLATE -ge 2 ]; then
     GOOGLE_API_KEYS=1
+    POL="$POL -e \"/TranslateEnabled/s@false@true@\""
     sed -e '/translate-script-url=/s@^#@@' -i $FLAG_DIR/google-translate
   fi
 fi
@@ -1138,7 +1139,7 @@ if [ $ZSTD -eq 1 ]; then
   sys_enable="$sys_enable zstd"
   deps_enable="$deps_enable libzstd"
 
-  POL="$POL  -e \"/ZstdContentEncodingEnabled/s@false@true@\""
+  POL="$POL -e \"/ZstdContentEncodingEnabled/s@false@true@\""
 fi
 
 

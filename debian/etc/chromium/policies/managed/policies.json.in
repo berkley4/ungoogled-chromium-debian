@@ -25,6 +25,7 @@
   "ScrollToTextFragmentEnabled": false,
   "SearchSuggestEnabled": false,
   "SyncDisabled": true,
+  "TranslateEnabled": false,
   "VideoCaptureAllowed": true,
   "WebRtcIPHandling": "disable_non_proxied_udp",
   "WPADQuickCheckEnabled": false,
