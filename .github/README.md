@@ -26,6 +26,8 @@ For example, to install the main and sandbox packages, run the following :-
 dpkg -i ungoogled-chromium_*.deb ungoogled-chromium_sandbox_*.deb
 ```
 
+**To use google services (eg gmail), one needs to uncomment the exports in /etc/chromium.d/google-api-keys.**
+
 - - - -
 
 

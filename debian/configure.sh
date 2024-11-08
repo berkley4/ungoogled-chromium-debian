@@ -84,7 +84,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$FF_FDK_AAC" ] || FF_FDK_AAC=0
 [ -n "$FF_HEVC" ] || FF_HEVC=1
 [ -n "$GL_DESKTOP_FRONTEND" ] || GL_DESKTOP_FRONTEND=0
-[ -n "$GOOGLE_API_KEYS" ] || GOOGLE_API_KEYS=0
+[ -n "$GOOGLE_API_KEYS" ] || GOOGLE_API_KEYS=1
 [ -n "$GOOGLE_UI_URLS" ] || GOOGLE_UI_URLS=1
 [ -n "$GRCACHE_PURGE" ] || GRCACHE_PURGE=0
 [ -n "$HEADLESS" ] || HEADLESS=1
@@ -839,7 +839,7 @@ else
   DSB="$DSB -e \"/^components\/lens\/lens_features\.cc/d\""
 
   if [ $LENS -ge 2 ]; then
-    GOOGLE_API_KEYS=1
+    GOOGLE_API_KEYS=2
 
     L="-e \"/enable-lens-standalone/s@^#@@\""
     [ $LENS_TRANSLATE -eq 1 ] || L="$L -e \"/enable-lens-image-translate/s@^@#@\""
@@ -937,7 +937,7 @@ else
   DSB="$DSB -e \"/\/translate_util\.cc/d\""
 
   if [ $TRANSLATE -ge 2 ]; then
-    GOOGLE_API_KEYS=1
+    GOOGLE_API_KEYS=2
     POL="$POL -e \"/TranslateEnabled/s@false@true@\""
     sed -e '/translate-script-url=/s@^#@@' -i $FLAG_DIR/google-translate
   fi
@@ -1064,7 +1064,9 @@ fi
 
 
 ## Enable Google API keys for google services
-if [ $GOOGLE_API_KEYS -eq 1 ]; then
+if [ $GOOGLE_API_KEYS -eq 0 ]; then
+  INS="$INS -e \"/google-api-keys/s@^#@@\""
+elif [ $GOOGLE_API_KEYS -ge 2 ]; then
   sed -e '/^#export GOOGLE_/s@^#@@' -i $FLAG_DIR/google-api-keys
 fi
 
