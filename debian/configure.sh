@@ -33,7 +33,7 @@ XZ_THREADED_SET=0
 LLVM_PGO_VER=20
 
 # ${example%/*} = $(dirname example)
-DEBIAN=${0%/*}
+DEBIAN=$(OLDPWD=- CDPATH= cd -P -- ${0%/*} && pwd)
 RT_DIR=${DEBIAN%/*}
 
 FLAG_DIR=$DEBIAN/etc/chromium.d
