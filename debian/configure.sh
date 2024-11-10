@@ -213,7 +213,7 @@ fi
 ## Get clang_version from build/toolchain/toolchain.gni when TEST=0
 LLVM_PGO_VER=20
 if [ $TEST -eq 0 ]; then
-  tc_gni=build/toolchain/toolchain.gni
+  tc_gni=$RT_DIR/build/toolchain/toolchain.gni
   LLVM_PGO_VER=$(sed -n '/clang_version =/h; ${x;s@[ _="a-z]@@gp;}' $tc_gni)
 fi
 
