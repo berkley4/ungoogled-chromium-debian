@@ -834,10 +834,9 @@ fi
 
 if [ $LENS -eq 0 ]; then
   gn_enable="$gn_enable enable_lens_desktop=false"
-  ins_disable="$ins_disable google-lens"
 else
+  ins_enable="$ins_enable google-lens"
   DSB="$DSB -e \"/^components\/lens\/lens_features\.cc/d\""
-  INS="$INS -e \"/google-lens/s@^#@@\""
 
   if [ $LENS -ge 2 ]; then
     GOOGLE_API_KEYS=2
@@ -1066,7 +1065,7 @@ fi
 
 ## Enable Google API keys for google services
 if [ $GOOGLE_API_KEYS -eq 0 ]; then
-  INS="$INS -e \"/google-api-keys/s@^#@@\""
+  ins_disable="$ins_disable google-api-keys"
 elif [ $GOOGLE_API_KEYS -ge 2 ]; then
   sed -e '/^#export GOOGLE_/s@^#@@' -i $FLAG_DIR/google-api-keys
 fi
