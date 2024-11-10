@@ -65,6 +65,8 @@ output_error() {
 
       $XMESSAGE "$@" ;;
   esac
+
+  exit 1
 }
 
 usage() {
@@ -85,8 +87,7 @@ usage() {
 # Do not allow root users to run this script
 case $USER in
   root)
-    output_error "Run this script as an unprivileged user"
-    exit 1 ;;
+    output_error "Run this script as an unprivileged user" ;;
 esac
 
 # Only proceed if the system has an SSE3 (or PNI) capable cpu
@@ -94,7 +95,6 @@ case $(uname -m) in
   i386|i586|i686|x86_64)
     if ! grep -q 'sse3\|pni' /proc/cpuinfo; then
       output_error "$nosse3"
-      exit 1
     fi ;;
 esac
 
