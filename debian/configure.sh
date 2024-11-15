@@ -1266,6 +1266,7 @@ if [ $DEPS_PATCH -ge 1 ]; then
   DSB="$DSB -e \"/^third_party\/depot_tools\//d\""
   DSB="$DSB -e \"/^third_party\/domato\//d\""
   DSB="$DSB -e \"/^third_party\/freetype-testing\//d\""
+  DSB="$DSB -e \"/^third_party\/fuzztest\//d\""
   DSB="$DSB -e \"/^third_party\/libFuzzer\//d\""
   DSB="$DSB -e \"/^third_party\/speedometer\//d\""
   DSB="$DSB -e \"/^third_party\/xdg-utils\//d\""
