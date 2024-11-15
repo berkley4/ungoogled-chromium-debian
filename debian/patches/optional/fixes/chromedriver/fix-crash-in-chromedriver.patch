@@ -1,0 +1,71 @@
+From 6ed50a8d12184503477b96effac3e5d5a6075905 Mon Sep 17 00:00:00 2001
+From: Tomasz Moniuszko <tmoniuszko@opera.com>
+Date: Thu, 24 Oct 2024 12:19:08 +0000
+Subject: [PATCH] Fix crash in chromedriver
+
+This fixes a chromedriver crash when a click command closes the
+browser.
+
+This fix is similar to
+https://chromium-review.googlesource.com/c/chromium/src/+/3891125
+
+kTargetDetached needs to be handled since
+https://chromium-review.googlesource.com/c/chromium/src/+/5565103
+
+Bug: 42323264
+Change-Id: I145d52b1f55cecfa044527fb87c65d4791b0ef2f
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5934524
+Auto-Submit: Tomasz Moniuszko <tmoniuszko@opera.com>
+Commit-Queue: Maksim Sadym <sadym@chromium.org>
+Reviewed-by: Vladimir Nechaev <nechaev@chromium.org>
+Reviewed-by: Maksim Sadym <sadym@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1373261}
+---
+
+--- a/chrome/test/chromedriver/commands.cc
++++ b/chrome/test/chromedriver/commands.cc
+@@ -327,10 +327,24 @@
+                   ", but failed to kill browser:" + quit_status.message();
+           }
+           status = Status(kUnknownError, message, status);
+-        } else if (status.code() == kDisconnected ||
+-                   status.code() == kTargetDetached) {
++        } else if (status.code() == kDisconnected) {
++          session->quit = true;
++          std::string message(
++              "session deleted as the browser has closed the connection");
++          if (!session->detach) {
++            // Even though the connection was lost that makes the graceful
++            // shutdown impossible the Quit procedure falls back on killing the
++            // process in case if it is still alive.
++            Status quit_status = session->chrome->Quit();
++            if (quit_status.IsError()) {
++              message +=
++                  ", but failed to kill browser:" + quit_status.message();
++            }
++          }
++          status = Status(kInvalidSessionId, message, status);
++        } else if (status.code() == kTargetDetached) {
+           // Some commands, like clicking a button or link which closes the
+-          // window, may result in a kDisconnected error code.
++          // window, may result in a kTargetDetached error code.
+           std::list<std::string> web_view_ids;
+           Status status_tmp = session->chrome->GetWebViewIds(
+               &web_view_ids, session->w3c_compliant);
+--- a/chrome/test/chromedriver/window_commands.cc
++++ b/chrome/test/chromedriver/window_commands.cc
+@@ -735,10 +735,11 @@
+       // When pageload strategy is None, new navigation can occur during
+       // execution of a command. Retry the command.
+       continue;
+-    } else if (status.code() == kDisconnected) {
++    } else if (status.code() == kDisconnected ||
++               status.code() == kTargetDetached) {
+       // Some commands, like clicking a button or link which closes the window,
+-      // may result in a kDisconnected error code. |web_view| may be invalid at
+-      // at this point.
++      // may result in a kDisconnected or kTargetDetached error code.
++      // |web_view| may be invalid at this point.
+       return status;
+     } else if (status.IsError()) {
+       // If the command failed while a new page or frame started loading, retry
