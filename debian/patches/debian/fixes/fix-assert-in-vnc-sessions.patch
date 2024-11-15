@@ -1,0 +1,13 @@
+--- a/ui/gl/init/gl_factory_ozone.cc
++++ b/ui/gl/init/gl_factory_ozone.cc
+@@ -59,8 +59,10 @@
+     case kGLImplementationDisabled:
+       break;
+     default:
++#if 0
+       NOTREACHED_IN_MIGRATION()
+           << "Expected Mock or Stub, actual:" << GetGLImplementation();
++#endif
+   }
+   return nullptr;
+ }

@@ -7,6 +7,7 @@
 
 debian/debianization/master-preferences.patch
 debian/fixes/atspi.patch
+debian/fixes/fix-assert-in-vnc-sessions.patch
 debian/fixes/gpu-crash.patch
 debian/fixes/memory-allocator-dcheck-assert-fix.patch
 debian/fixes/ps-print.patch
