@@ -165,7 +165,7 @@ profiles to have software HEVC decoding ability.
 
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.h
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.h
-@@ -680,7 +680,7 @@
+@@ -683,7 +683,7 @@
  #define CONFIG_AUDIO_FRAME_QUEUE 0
  #define CONFIG_AUDIODSP 0
  #define CONFIG_BLOCKDSP 0
@@ -174,7 +174,7 @@ profiles to have software HEVC decoding ability.
  #define CONFIG_CABAC 1
  #define CONFIG_CBS 0
  #define CONFIG_CBS_AV1 0
-@@ -714,8 +714,8 @@
+@@ -718,8 +718,8 @@
  #define CONFIG_H264PRED 1
  #define CONFIG_H264QPEL 1
  #define CONFIG_H264_SEI 1
@@ -187,7 +187,7 @@ profiles to have software HEVC decoding ability.
  #define CONFIG_HUFFYUVDSP 0
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
-@@ -138,7 +138,7 @@
+@@ -139,7 +139,7 @@
  #define CONFIG_H264_QSV_DECODER 0
  #define CONFIG_H264_RKMPP_DECODER 0
  #define CONFIG_HAP_DECODER 0
@@ -196,7 +196,7 @@ profiles to have software HEVC decoding ability.
  #define CONFIG_HEVC_QSV_DECODER 0
  #define CONFIG_HEVC_RKMPP_DECODER 0
  #define CONFIG_HEVC_V4L2M2M_DECODER 0
-@@ -982,7 +982,7 @@
+@@ -992,7 +992,7 @@
  #define CONFIG_H261_PARSER 0
  #define CONFIG_H263_PARSER 0
  #define CONFIG_H264_PARSER 1
@@ -223,7 +223,7 @@ profiles to have software HEVC decoding ability.
      NULL };
 --- a/third_party/ffmpeg/ffmpeg_generated.gni
 +++ b/third_party/ffmpeg/ffmpeg_generated.gni
-@@ -217,6 +217,27 @@
+@@ -217,6 +217,28 @@
      (is_apple && ffmpeg_branding == "Chrome") ||
      (is_win && ffmpeg_branding == "Chrome") ||
      (use_linux_config && ffmpeg_branding == "Chrome")) {
@@ -231,27 +231,28 @@ profiles to have software HEVC decoding ability.
 +  ffmpeg_c_sources += [
 +    "libavcodec/aom_film_grain.c",
 +    "libavcodec/autorename_libavcodec_bswapdsp.c",
++    "libavcodec/container_fifo.c",
 +    "libavcodec/dovi_rpu.c",
 +    "libavcodec/dovi_rpudec.c",
 +    "libavcodec/dynamic_hdr_vivid.c",
-+    "libavcodec/hevc_cabac.c",
-+    "libavcodec/hevc_data.c",
-+    "libavcodec/hevc_filter.c",
-+    "libavcodec/hevc_mvs.c",
-+    "libavcodec/hevc_parse.c",
-+    "libavcodec/hevc_parser.c",
-+    "libavcodec/hevc_ps.c",
-+    "libavcodec/hevc_refs.c",
-+    "libavcodec/hevc_sei.c",
-+    "libavcodec/hevcdec.c",
-+    "libavcodec/hevcdsp.c",
-+    "libavcodec/hevcpred.c"
++    "libavcodec/hevc/libavcodec-hevc-cabac.c",
++    "libavcodec/hevc/data.c",
++    "libavcodec/hevc/filter.c",
++    "libavcodec/hevc/mvs.c",
++    "libavcodec/hevc/libavcodec-hevc-parse.c",
++    "libavcodec/hevc/libavcodec-hevc-parser.c",
++    "libavcodec/hevc/ps.c",
++    "libavcodec/hevc/refs.c",
++    "libavcodec/hevc/sei.c",
++    "libavcodec/hevc/hevcdec.c",
++    "libavcodec/hevc/dsp.c",
++    "libavcodec/hevc/pred.c"
 +  ]
 +
    ffmpeg_c_sources += [
      "libavcodec/atsc_a53.c",
      "libavcodec/autorename_libavcodec_videodsp.c",
-@@ -415,6 +436,24 @@
+@@ -418,6 +440,24 @@
      (is_android && current_cpu == "x86" && ffmpeg_branding == "Chrome") ||
      (is_win && current_cpu == "x86" && ffmpeg_branding == "Chrome") ||
      (use_linux_config && current_cpu == "x86" && ffmpeg_branding == "Chrome")) {
@@ -282,3 +283,21 @@ profiles to have software HEVC decoding ability.
 +// File automatically generated. See crbug.com/495833.
 +#include "bswapdsp.c"
 \ No newline at end of file
+--- a/third_party/ffmpeg/BUILD.gn
++++ b/third_party/ffmpeg/BUILD.gn
+@@ -86,6 +86,7 @@
+   include_dirs = [
+     platform_config_root,
+     ".",
++    "./libavcodec",
+   ]
+ }
+ 
+@@ -210,6 +211,7 @@
+   include_dirs = [
+     platform_config_root,
+     ".",
++    "./libavcodec",
+   ]
+   defines = [
+     "HAVE_AV_CONFIG_H",

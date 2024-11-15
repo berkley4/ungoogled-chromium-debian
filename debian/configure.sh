@@ -793,6 +793,9 @@ fi
 if [ $FF_HEVC -eq 0 ]; then
   op_disable="$op_disable ffmpeg-extra-codecs/hevc/"
   gn_enable="$gn_enable enable_platform_hevc=false"
+
+  RUL="$RUL -e \"/^HEVC_/s@^@#@\""
+  RUL="$RUL -e \"/libavcodec-hevc-/s@\(for\)@#\1@\""
 fi
 
 
