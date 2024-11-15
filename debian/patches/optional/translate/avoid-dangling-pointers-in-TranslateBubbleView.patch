@@ -1,0 +1,123 @@
+From beef5586c064cf334195753ca27a368e4a8b4e3e Mon Sep 17 00:00:00 2001
+From: Jan Keitel <jkeitel@google.com>
+Date: Wed, 30 Oct 2024 06:46:29 +0000
+Subject: [PATCH] Avoid dangling pointers in TranslateBubbleView
+
+No functionality impact, pure code clean-up - null pointers to views
+before deleting those views.
+
+Change-Id: I5206eb779cda5708bac83254164c325ec41ecbfc
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5975675
+Reviewed-by: Trevor Perrier <perrier@chromium.org>
+Auto-Submit: Jan Keitel <jkeitel@google.com>
+Commit-Queue: Trevor Perrier <perrier@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1375698}
+---
+
+--- a/chrome/browser/ui/views/translate/translate_bubble_view.cc
++++ b/chrome/browser/ui/views/translate/translate_bubble_view.cc
+@@ -138,9 +138,22 @@
+ 
+ TranslateBubbleView::~TranslateBubbleView() {
+   // A child view could refer to a model which is owned by this class when
+-  // the child view is destructed. For example, |source_language_combobx_model_|
+-  // is referred by Combobox's destructor. Before destroying the models,
+-  // removing the child views is needed.
++  // the child view is destructed. For example, `source_language_combobox_` has
++  // a pointer to `model_`. Before destroying the models, removing the child
++  // views is needed.
++  translate_view_ = nullptr;
++  error_view_ = nullptr;
++  advanced_view_source_ = nullptr;
++  advanced_view_target_ = nullptr;
++  source_language_combobox_ = nullptr;
++  target_language_combobox_ = nullptr;
++  always_translate_checkbox_ = nullptr;
++  advanced_always_translate_checkbox_ = nullptr;
++  tabbed_pane_ = nullptr;
++  advanced_reset_button_source_ = nullptr;
++  advanced_reset_button_target_ = nullptr;
++  advanced_done_button_source_ = nullptr;
++  advanced_done_button_target_ = nullptr;
+   RemoveAllChildViews();
+   if (features::IsToolbarPinningEnabled() && translate_action_item_) {
+     translate_action_item_->SetIsShowingBubble(false);
+@@ -496,9 +509,7 @@
+ views::View* TranslateBubbleView::GetCurrentView() const {
+   switch (GetViewState()) {
+     case TranslateBubbleModel::VIEW_STATE_BEFORE_TRANSLATE:
+-      return translate_view_;
+     case TranslateBubbleModel::VIEW_STATE_TRANSLATING:
+-      return translate_view_;
+     case TranslateBubbleModel::VIEW_STATE_AFTER_TRANSLATE:
+       return translate_view_;
+     case TranslateBubbleModel::VIEW_STATE_ERROR:
+--- a/chrome/browser/ui/views/translate/translate_bubble_view.h
++++ b/chrome/browser/ui/views/translate/translate_bubble_view.h
+@@ -279,30 +279,22 @@
+   // Helper method to announce the passed-in text to the screenreader.
+   void AnnounceTextToScreenReader(const std::u16string& announcement_text);
+ 
+-  raw_ptr<views::View, DanglingUntriaged> translate_view_ = nullptr;
+-  raw_ptr<views::View, DanglingUntriaged> error_view_ = nullptr;
+-  raw_ptr<views::View, DanglingUntriaged> advanced_view_source_ = nullptr;
+-  raw_ptr<views::View, DanglingUntriaged> advanced_view_target_ = nullptr;
++  raw_ptr<views::View> translate_view_ = nullptr;
++  raw_ptr<views::View> error_view_ = nullptr;
++  raw_ptr<views::View> advanced_view_source_ = nullptr;
++  raw_ptr<views::View> advanced_view_target_ = nullptr;
+ 
+-  raw_ptr<views::Combobox, DanglingUntriaged> source_language_combobox_ =
+-      nullptr;
+-  raw_ptr<views::Combobox, DanglingUntriaged> target_language_combobox_ =
+-      nullptr;
++  raw_ptr<views::Combobox> source_language_combobox_ = nullptr;
++  raw_ptr<views::Combobox> target_language_combobox_ = nullptr;
+ 
+-  raw_ptr<views::Checkbox, DanglingUntriaged> always_translate_checkbox_ =
+-      nullptr;
+-  raw_ptr<views::Checkbox, DanglingUntriaged>
+-      advanced_always_translate_checkbox_ = nullptr;
+-  raw_ptr<views::TabbedPane, DanglingUntriaged> tabbed_pane_ = nullptr;
++  raw_ptr<views::Checkbox> always_translate_checkbox_ = nullptr;
++  raw_ptr<views::Checkbox> advanced_always_translate_checkbox_ = nullptr;
++  raw_ptr<views::TabbedPane> tabbed_pane_ = nullptr;
+ 
+-  raw_ptr<views::LabelButton, DanglingUntriaged> advanced_reset_button_source_ =
+-      nullptr;
+-  raw_ptr<views::LabelButton, DanglingUntriaged> advanced_reset_button_target_ =
+-      nullptr;
+-  raw_ptr<views::LabelButton, DanglingUntriaged> advanced_done_button_source_ =
+-      nullptr;
+-  raw_ptr<views::LabelButton, DanglingUntriaged> advanced_done_button_target_ =
+-      nullptr;
++  raw_ptr<views::LabelButton> advanced_reset_button_source_ = nullptr;
++  raw_ptr<views::LabelButton> advanced_reset_button_target_ = nullptr;
++  raw_ptr<views::LabelButton> advanced_done_button_source_ = nullptr;
++  raw_ptr<views::LabelButton> advanced_done_button_target_ = nullptr;
+ 
+   // Default source/target language without user interaction.
+   size_t previous_source_language_index_;
+--- a/chrome/browser/ui/views/translate/translate_bubble_view_unittest.cc
++++ b/chrome/browser/ui/views/translate/translate_bubble_view_unittest.cc
+@@ -216,7 +216,8 @@
+   }
+ 
+   void TearDown() override {
+-    bubble_->GetWidget()->CloseNow();
++    mock_model_ = nullptr;
++    bubble_.ExtractAsDangling()->GetWidget()->CloseNow();
+     anchor_widget_.reset();
+ 
+     ChromeViewsTestBase::TearDown();
+@@ -233,8 +234,8 @@
+   }
+ 
+   std::unique_ptr<views::Widget> anchor_widget_;
+-  raw_ptr<MockTranslateBubbleModel, DanglingUntriaged> mock_model_;
+-  raw_ptr<TranslateBubbleView, DanglingUntriaged> bubble_;
++  raw_ptr<MockTranslateBubbleModel> mock_model_ = nullptr;
++  raw_ptr<TranslateBubbleView> bubble_ = nullptr;
+   base::test::ScopedFeatureList scoped_feature_list_;
+ };
+ 
