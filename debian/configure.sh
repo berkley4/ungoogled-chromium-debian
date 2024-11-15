@@ -996,6 +996,7 @@ fi
 
 
 if [ $SWIFTSHADER -eq 0 ]; then
+  op_disable="$op_disable fixes/swiftshader-color-input-nullptr-crash.patch"
   gn_enable="$gn_enable enable_swiftshader=false"
   ins_disable="$ins_disable swiftshader"
 else

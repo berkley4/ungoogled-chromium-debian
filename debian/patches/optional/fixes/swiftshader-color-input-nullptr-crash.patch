@@ -1,0 +1,29 @@
+From f9fccaa8be031979e8769e7d9451b886847c8c96 Mon Sep 17 00:00:00 2001
+From: Shahbaz Youssefi <syoussefi@google.com>
+Date: Mon, 28 Oct 2024 11:23:36 -0400
+Subject: [PATCH] Fix crash when color input index mapping is nullptr
+
+In this case, the mapping is expected to implicitly be identity.
+
+Bug: angleproject:352364582
+Test: dEQP-VK.dynamic_rendering.primary_cmd_buff.local_read.*
+Change-Id: I5b687daf6571d11c751cadd7f22c3e6278ad9465
+Reviewed-on: https://swiftshader-review.googlesource.com/c/SwiftShader/+/74308
+Presubmit-Ready: Shahbaz Youssefi <syoussefi@google.com>
+Kokoro-Result: kokoro <noreply+kokoro@google.com>
+Commit-Queue: Shahbaz Youssefi <syoussefi@google.com>
+Reviewed-by: Chris Forbes <chrisforbes@google.com>
+Tested-by: Shahbaz Youssefi <syoussefi@google.com>
+---
+
+--- a/third_party/swiftshader/src/Pipeline/SpirvShader.cpp
++++ b/third_party/swiftshader/src/Pipeline/SpirvShader.cpp
+@@ -1862,7 +1862,7 @@
+ 	{
+ 		for(auto i = 0u; i < inputAttachmentMapping->colorAttachmentCount; i++)
+ 		{
+-			auto inputIndex = inputAttachmentMapping->pColorAttachmentInputIndices[i];
++			auto inputIndex = inputAttachmentMapping->pColorAttachmentInputIndices != nullptr ? inputAttachmentMapping->pColorAttachmentInputIndices[i] : i;
+ 			if(inputIndex != VK_ATTACHMENT_UNUSED)
+ 			{
+ 				inputIndexToColorIndex[inputIndex] = i;
