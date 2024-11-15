@@ -11,7 +11,7 @@ Reviewed-by: Dale Curtis <dalecurtis@chromium.org>
 
 --- a/third_party/ffmpeg/libavformat/mov.c
 +++ b/third_party/ffmpeg/libavformat/mov.c
-@@ -1542,6 +1542,8 @@
+@@ -1628,6 +1628,8 @@
      // to fragments that referenced this stream in the sidx
      if (sc->has_sidx) {
          frag_stream_info = get_frag_stream_info(frag_index, index, sc->id);

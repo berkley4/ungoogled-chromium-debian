@@ -1,0 +1,60 @@
+From a89e336612fb998e5e46263af873f28543683ead Mon Sep 17 00:00:00 2001
+From: Daniel Rubery <drubery@chromium.org>
+Date: Tue, 22 Oct 2024 17:06:44 +0000
+Subject: [PATCH] Remove dangling string_view from SurroundingTextTracker
+
+`SurroundingTextTracker::OnInsertText` creates a callback binding `text`
+as a `std::u16string_view`. These is later consumed in `Update`, which
+will attempt to re-use the view. But some callers of `OnInsertText` pass
+in temporaries or local variables that will be out of scope by the time
+`Update` is run. See failing tests in https://crrev.com/c/5906412.
+
+Instead, explicitly construct a `u16string` for storage in the callback,
+which will always have the correct lifetime.
+
+Change-Id: I5fd83fe27f3a4ed028ec95215770864ae3a52b81
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5947938
+Commit-Queue: Daniel Rubery <drubery@chromium.org>
+Reviewed-by: Yuichiro Hanada <yhanada@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1372127}
+---
+
+--- a/ui/base/ime/surrounding_text_tracker.cc
++++ b/ui/base/ime/surrounding_text_tracker.cc
+@@ -319,7 +319,10 @@
+   expected_updates_.emplace_back(
+       predicted_state_,
+       base::BindRepeating(&SurroundingTextTracker::OnInsertText,
+-                          base::Unretained(this), text, cursor_behavior));
++                          // Bind `text` as a `std::u16string` to avoid
++                          // a dangling string_view when callbacks are run.
++                          base::Unretained(this), std::u16string(text),
++                          cursor_behavior));
+ }
+ 
+ void SurroundingTextTracker::OnExtendSelectionAndDelete(size_t before,
+--- a/ui/base/ime/surrounding_text_tracker_unittest.cc
++++ b/ui/base/ime/surrounding_text_tracker_unittest.cc
+@@ -616,6 +616,22 @@
+   EXPECT_TRUE(tracker.predicted_state().composition.is_empty());
+   EXPECT_EQ(SurroundingTextTracker::UpdateResult::kUpdated,
+             tracker.Update(u"xyz", 13u, gfx::Range(16)));
++
++  // Regression test for https://crrev.com/c/5947938
++  tracker.Reset();
++  ASSERT_EQ(SurroundingTextTracker::UpdateResult::kReset,
++            tracker.Update(u"abcdefg", 5u, gfx::Range(13, 14)));
++
++  {
++    std::u16string s = u"xyz";
++    tracker.OnInsertText(
++        s, TextInputClient::InsertTextCursorBehavior::kMoveCursorAfterText);
++
++    tracker.OnInsertText(
++        s, TextInputClient::InsertTextCursorBehavior::kMoveCursorAfterText);
++  }
++  EXPECT_EQ(SurroundingTextTracker::UpdateResult::kUpdated,
++            tracker.Update(u"yz", 14u, gfx::Range(16)));
+ }
+ 
+ TEST(SurroundingTextTracker, InsertTextWithComposition) {

@@ -1,0 +1,79 @@
+From a1459c0f9cde8d4f7ab906844cc0f3e0d99e0524 Mon Sep 17 00:00:00 2001
+From: Evan Stade <estade@chromium.org>
+Date: Thu, 31 Oct 2024 02:38:28 +0000
+Subject: [PATCH] IDB: fix crash in Connection::UpdatePriority()
+
+Bug: 376461709
+Change-Id: I3dc6ae65020a96600eadf47c3b0daaa34394487a
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5980494
+Reviewed-by: Ayu Ishii <ayui@chromium.org>
+Commit-Queue: Evan Stade <estade@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1376058}
+---
+
+--- a/content/browser/indexed_db/indexed_db_unittest.cc
++++ b/content/browser/indexed_db/indexed_db_unittest.cc
+@@ -2201,6 +2201,49 @@
+   }
+ }
+ 
++// Regression test for crbug.com/376461709
++TEST_P(IndexedDBTest, UpdatePriorityAfterForceClose) {
++  const blink::StorageKey storage_key =
++      blink::StorageKey::CreateFromStringForTesting("http://localhost:81");
++  auto bucket_locator = BucketLocator();
++  bucket_locator.storage_key = storage_key;
++
++  // Bind the IDBFactory.
++  mojo::Remote<blink::mojom::IDBFactory> factory_remote;
++  mojo::PendingRemote<storage::mojom::IndexedDBClientStateChecker>
++      checker_remote;
++  BindFactory(std::move(checker_remote),
++              factory_remote.BindNewPipeAndPassReceiver(),
++              ToBucketInfo(bucket_locator));
++
++  // Bind a connection/database.
++  MockMojoFactoryClient client;
++  MockMojoDatabaseCallbacks database_callbacks;
++  base::RunLoop run_loop;
++  mojo::PendingAssociatedRemote<blink::mojom::IDBDatabase> pending_database;
++  EXPECT_CALL(client, MockedOpenSuccess)
++      .WillOnce(
++          testing::DoAll(MoveArgPointee<0>(&pending_database),
++                         ::base::test::RunClosure(run_loop.QuitClosure())));
++  mojo::AssociatedRemote<blink::mojom::IDBTransaction> transaction_remote;
++  factory_remote->Open(client.CreateInterfacePtrAndBind(),
++                       database_callbacks.CreateInterfacePtrAndBind(), u"db",
++                       /*version=*/0,
++                       transaction_remote.BindNewEndpointAndPassReceiver(),
++                       /*transaction_id=*/1, /*priority=*/0);
++  run_loop.Run();
++
++  mojo::AssociatedRemote<blink::mojom::IDBDatabase> connection(
++      std::move(pending_database));
++  // Simulate force closing the context while `UpdatePriority` is in flight.
++  context_->ForceClose(bucket_locator.id, {}, base::DoNothing());
++  // Call this second in the unit test context to simulate losing the race.
++  connection->UpdatePriority(1);
++  connection.FlushForTesting();
++
++  // Not crashing indicates success.
++}
++
+ TEST_P(IndexedDBTest, QuotaErrorOnDiskFull) {
+   leveldb_env::SetDBFactoryForTesting(base::BindRepeating(
+       [](const leveldb_env::Options& options, const std::string& name,
+--- a/content/browser/indexed_db/instance/connection.cc
++++ b/content/browser/indexed_db/instance/connection.cc
+@@ -749,7 +749,10 @@
+     transaction->OnSchedulingPriorityUpdated(new_priority);
+   }
+ 
+-  bucket_context()->OnConnectionPriorityUpdated();
++  // Null after `AbortTransactionsAndClose()`.
++  if (bucket_context()) {
++    bucket_context()->OnConnectionPriorityUpdated();
++  }
+ 
+   // TODO(crbug.com/359623664): consider reordering transactions already in the
+   // queue. For now the priority change will only impact where new transactions

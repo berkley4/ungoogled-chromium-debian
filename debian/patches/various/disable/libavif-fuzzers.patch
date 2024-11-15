@@ -8,7 +8,7 @@
  
  # Public configuration exported to users of the libavif target.
  config("avif_public_config") {
-@@ -62,105 +61,3 @@
+@@ -62,109 +61,3 @@
      deps += [ "//third_party/dav1d" ]
    }
  }
@@ -29,7 +29,11 @@
 -  public = [ "src/include/avif/avif.h" ]
 -  public_configs = [ ":avif_public_config" ]
 -
--  sources = libavif_decoder_sources + [ "src/src/write.c" ]
+-  sources = libavif_decoder_sources + [
+-              "src/src/colrconvert.c",
+-              "src/src/gainmap.c",
+-              "src/src/write.c",
+-            ]
 -  testonly = true
 -
 -  configs += [ ":avif_config" ]

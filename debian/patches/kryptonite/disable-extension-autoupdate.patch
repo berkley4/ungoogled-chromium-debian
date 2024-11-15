@@ -7,6 +7,6 @@
 -  bool autoupdate_enabled =
 -      !profile_->IsGuestSession() && !profile_->IsSystemProfile();
 +  bool autoupdate_enabled = false;
- #if BUILDFLAG(IS_CHROMEOS_ASH)
+ #if BUILDFLAG(IS_CHROMEOS)
    if (!extensions_enabled ||
        ash::ProfileHelper::IsLockScreenAppProfile(profile_)) {

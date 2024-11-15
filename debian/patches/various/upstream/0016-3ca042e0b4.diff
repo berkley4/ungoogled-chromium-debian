@@ -1,0 +1,31 @@
+From 3ca042e0b49b791bd3b6f9c272afd9c0b3f1f502 Mon Sep 17 00:00:00 2001
+From: Min Qin <qinmin@chromium.org>
+Date: Thu, 31 Oct 2024 16:52:20 +0000
+Subject: [PATCH] Fix a rare crash when navigating to PDP
+
+In some cases, OnAllCategoryDataRetrieved() can be called when the UUID
+has been removed from product map. The [] accesor will insert a nullptr
+into the map, and thus causing methods that looping over the map to hit
+the null pointer.
+
+Bug: 376321360
+Change-Id: I9e7ac1aecefb78d4e5672c7247b004cb0de732f9
+Low-Coverage-Reason: TRIVIAL_CHANGE
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5980288
+Reviewed-by: Yue Zhang <yuezhanggg@chromium.org>
+Commit-Queue: Min Qin <qinmin@chromium.org>
+Reviewed-by: Matthew Jones <mdjones@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1376389}
+---
+
+--- a/components/commerce/core/compare/cluster_manager.cc
++++ b/components/commerce/core/compare/cluster_manager.cc
+@@ -367,7 +367,7 @@
+     const base::Uuid& uuid,
+     const std::set<GURL>& urls,
+     const std::vector<CategoryData>& category_data) {
+-  if (!product_group_map_[uuid]) {
++  if (product_group_map_.find(uuid) == product_group_map_.end()) {
+     return;
+   }
+ 

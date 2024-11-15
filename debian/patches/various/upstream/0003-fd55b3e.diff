@@ -29,7 +29,7 @@ Cr-Commit-Position: refs/heads/main@{#1369664}
 
 --- a/third_party/blink/renderer/core/layout/inline/fragment_item.cc
 +++ b/third_party/blink/renderer/core/layout/inline/fragment_item.cc
-@@ -1260,8 +1260,11 @@
+@@ -1261,8 +1261,11 @@
      case StyleVariant::kFirstLine:
        ostream << "FirstLine";
        break;
@@ -137,7 +137,7 @@ Cr-Commit-Position: refs/heads/main@{#1369664}
  }  // namespace blink
 --- a/third_party/blink/renderer/core/layout/layout_object.cc
 +++ b/third_party/blink/renderer/core/layout/layout_object.cc
-@@ -2555,13 +2555,19 @@
+@@ -2566,13 +2566,19 @@
        if (IsInline() && IsAtomicInlineLevel())
          return StyleRef();
        return FirstLineStyleRef();
@@ -162,7 +162,7 @@ Cr-Commit-Position: refs/heads/main@{#1369664}
    NOTREACHED_IN_MIGRATION();
 --- a/third_party/blink/renderer/core/layout/physical_fragment.h
 +++ b/third_party/blink/renderer/core/layout/physical_fragment.h
-@@ -321,7 +321,7 @@
+@@ -320,7 +320,7 @@
      return static_cast<StyleVariant>(style_variant_);
    }
    bool UsesFirstLineStyle() const {

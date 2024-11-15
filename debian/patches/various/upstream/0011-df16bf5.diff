@@ -1,0 +1,37 @@
+From df16bf557aba0ea706b2d2eb2825c43733f1489e Mon Sep 17 00:00:00 2001
+From: Evan Stade <estade@chromium.org>
+Date: Fri, 25 Oct 2024 17:46:23 +0000
+Subject: [PATCH] DOM Storage: fix UAF in `CoalesceStorageAreaCommits` feature
+
+This fix is somewhat prospective at this point, but should be safe.
+
+Bug: 374871962
+Change-Id: If144efbfcd36094dd02722eec1519fe9990f5e29
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5966334
+Reviewed-by: Ayu Ishii <ayui@chromium.org>
+Commit-Queue: Evan Stade <estade@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1374021}
+---
+
+--- a/components/services/storage/dom_storage/storage_area_impl.cc
++++ b/components/services/storage/dom_storage/storage_area_impl.cc
+@@ -644,6 +644,9 @@
+   // class is functional for the lifetime of the object.
+   delegate_->OnMapLoaded(status);
+   if (!status.ok()) {
++    if (database_) {
++      database_->RemoveCommitter(this);
++    }
+     database_ = nullptr;
+     SetCacheMode(CacheMode::KEYS_AND_VALUES);
+   }
+@@ -917,6 +920,9 @@
+   }
+ 
+   if (!database_enabled) {
++    if (database_) {
++      database_->RemoveCommitter(this);
++    }
+     database_ = nullptr;
+     cache_mode_ = CacheMode::KEYS_AND_VALUES;
+   }

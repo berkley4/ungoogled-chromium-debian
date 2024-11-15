@@ -76,7 +76,7 @@ Cr-Commit-Position: refs/heads/main@{#1370398}
  int QuicSessionAttempt::DoCreateSessionComplete(int rv) {
 --- a/net/quic/quic_session_pool.cc
 +++ b/net/quic/quic_session_pool.cc
-@@ -1482,7 +1482,7 @@
+@@ -1504,7 +1504,7 @@
    return OK;
  }
  
@@ -85,7 +85,7 @@ Cr-Commit-Position: refs/heads/main@{#1370398}
      CreateSessionCallback callback,
      QuicSessionAliasKey key,
      quic::ParsedQuicVersion quic_version,
-@@ -1508,13 +1508,12 @@
+@@ -1530,13 +1530,12 @@
  
    // If migrate_sessions_on_network_change_v2 is on, passing in
    // handles::kInvalidNetworkHandle will bind the socket to the default network.
@@ -103,7 +103,7 @@ Cr-Commit-Position: refs/heads/main@{#1370398}
      CreateSessionCallback callback,
      QuicSessionAliasKey key,
      quic::ParsedQuicVersion quic_version,
-@@ -1576,10 +1575,9 @@
+@@ -1598,10 +1597,9 @@
        dns_resolution_time, dns_resolution_time, session_max_packet_length,
        net_log, network, std::move(socket));
  
@@ -117,7 +117,7 @@ Cr-Commit-Position: refs/heads/main@{#1370398}
  void QuicSessionPool::FinishCreateSession(
 --- a/net/quic/quic_session_pool.h
 +++ b/net/quic/quic_session_pool.h
-@@ -587,18 +587,18 @@
+@@ -591,18 +591,18 @@
    // the commit description of crrev.com/c/5858326.
    using CreateSessionCallback = base::OnceCallback<void(
        base::expected<QuicSessionAttempt::CreateSessionResult, int>)>;

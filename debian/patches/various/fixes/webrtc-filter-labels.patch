@@ -52,3 +52,16 @@
          deps = []
          deps = filtered_deps
          deps += [ "//third_party/abseil-cpp:absl" ]
+@@ -966,10 +966,10 @@
+     # executables, but not libraries to use absl flags.
+     if (build_with_chromium && defined(deps)) {
+       absl_dependencies =
+-          filter_labels_include(deps, [ "//third_party/abseil-cpp/*" ])
++          filter_include(deps, [ "//third_party/abseil-cpp/*" ])
+       if (absl_dependencies != []) {
+         filtered_deps =
+-            filter_labels_exclude(deps, [ "//third_party/abseil-cpp/*" ])
++            filter_exclude(deps, [ "//third_party/abseil-cpp/*" ])
+         deps = []
+         deps = filtered_deps
+         deps += [ "//third_party/abseil-cpp:absl_full" ]

@@ -1,6 +1,6 @@
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.h
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.h
-@@ -480,7 +480,7 @@
+@@ -481,7 +481,7 @@
  #define CONFIG_LIBXAVS2 0
  #define CONFIG_LIBXVID 0
  #define CONFIG_DECKLINK 0
@@ -11,7 +11,7 @@
  #define CONFIG_LIBARIBB24 0
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
-@@ -45,7 +45,7 @@
+@@ -46,7 +46,7 @@
  #define CONFIG_VP9_SUPERFRAME_SPLIT_BSF 0
  #define CONFIG_VVC_METADATA_BSF 0
  #define CONFIG_VVC_MP4TOANNEXB_BSF 0
@@ -20,7 +20,7 @@
  #define CONFIG_AAC_FIXED_DECODER 0
  #define CONFIG_AAC_LATM_DECODER 0
  #define CONFIG_AASC_DECODER 0
-@@ -580,7 +580,7 @@
+@@ -581,7 +581,7 @@
  #define CONFIG_LIBCODEC2_DECODER 0
  #define CONFIG_LIBDAV1D_DECODER 0
  #define CONFIG_LIBDAVS2_DECODER 0
@@ -48,13 +48,16 @@
  import("ffmpeg_options.gni")
  
  # Declare empty versions of each variable for easier +=ing later.
-@@ -310,19 +311,9 @@
+@@ -310,22 +311,9 @@
      (is_win && ffmpeg_branding == "Chrome") ||
      (use_linux_config && ffmpeg_branding == "Chrome")) {
    ffmpeg_c_sources += [
 -    "libavcodec/aac/aacdec.c",
+-    "libavcodec/aac/aacdec_ac.c",
 -    "libavcodec/aac/aacdec_float.c",
+-    "libavcodec/aac/aacdec_lpd.c",
 -    "libavcodec/aac/aacdec_tab.c",
+-    "libavcodec/aac/aacdec_usac.c",
      "libavcodec/aac_ac3_parser.c",
      "libavcodec/aac_parser.c",
 -    "libavcodec/aacps_common.c",
@@ -68,7 +71,7 @@
      "libavcodec/kbdwin.c",
      "libavcodec/sinewin.c",
      "libavformat/apetag.c",
-@@ -563,3 +554,113 @@
+@@ -566,3 +554,113 @@
      (is_android && current_cpu == "x86")) {
    ffmpeg_c_sources += [ "compat/strtod.c" ]
  }
@@ -184,7 +187,7 @@
 +}
 --- a/third_party/ffmpeg/BUILD.gn
 +++ b/third_party/ffmpeg/BUILD.gn
-@@ -203,6 +203,15 @@
+@@ -210,6 +210,15 @@
    include_dirs = [
      platform_config_root,
      ".",

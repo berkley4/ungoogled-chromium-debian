@@ -1,0 +1,524 @@
+From 9dc3639abf8510fd355e8e18858f8bce68e5f2e7 Mon Sep 17 00:00:00 2001
+From: Evan Stade <estade@chromium.org>
+Date: Tue, 29 Oct 2024 13:10:39 +0000
+Subject: [PATCH] IDB: boost priority of backend tasks when associated with fg client
+
+Use the maximum priority of the connected clients (i.e. renderers)
+to set the priority of each BucketContext's task runner.
+
+Controlled by flag so we can measure impact via Finch experiment.
+
+Bug: 329221141
+
+Change-Id: I868a1ec5a684b637e6d5a5fd0e3ae87a3bc2e189
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5926306
+Reviewed-by: Abhishek Shanthkumar <abhishek.shanthkumar@microsoft.com>
+Commit-Queue: Abhishek Shanthkumar <abhishek.shanthkumar@microsoft.com>
+Cr-Commit-Position: refs/heads/main@{#1375172}
+---
+
+--- a/content/browser/indexed_db/indexed_db_context_impl.cc
++++ b/content/browser/indexed_db/indexed_db_context_impl.cc
+@@ -78,16 +78,39 @@
+ using blink::StorageKey;
+ using storage::BucketLocator;
+ 
++// `IdbPrioritizeForegroundClients` affects relative ordering of transactions
++// for a single client. This feature affects which backends are run at a higher
++// task priority. See crbug.com/329221141
++BASE_FEATURE(kIdbExpediteBackendProcessingForForegroundClients,
++             "IdbExpediteBackendProcessingForForegroundClients",
++             base::FEATURE_DISABLED_BY_DEFAULT);
++
+ namespace {
+ 
+-// Creates a task runner suitable for use either as the main IDB thread or for a
+-// backing store. See https://crbug.com/329221141 for notes on task priority.
+-scoped_refptr<base::SequencedTaskRunner> CreateTaskRunner() {
+-  return base::ThreadPool::CreateSequencedTaskRunner(
+-      {base::MayBlock(), base::WithBaseSyncPrimitives(),
+-       base::FeatureList::IsEnabled(base::kUseUtilityThreadGroup)
+-           ? base::TaskPriority::USER_BLOCKING
+-           : base::TaskPriority::USER_VISIBLE,
++base::TaskPriority GetBaseTaskPriority() {
++  if (base::FeatureList::IsEnabled(
++          kIdbExpediteBackendProcessingForForegroundClients)) {
++    return base::TaskPriority::USER_BLOCKING;
++  }
++
++  return base::FeatureList::IsEnabled(base::kUseUtilityThreadGroup)
++             ? base::TaskPriority::USER_BLOCKING
++             : base::TaskPriority::USER_VISIBLE;
++}
++
++// Creates a task runner suitable for use by the main IDB task runner.
++scoped_refptr<base::UpdateableSequencedTaskRunner> CreateMainTaskRunner() {
++  return base::ThreadPool::CreateUpdateableSequencedTaskRunner(
++      {base::MayBlock(), GetBaseTaskPriority(), base::WithBaseSyncPrimitives(),
++       // BLOCK_SHUTDOWN to support clearing session-only storage.
++       base::TaskShutdownBehavior::BLOCK_SHUTDOWN});
++}
++
++// Creates a task runner suitable for use by a backing store. See
++// https://crbug.com/329221141 for notes on task priority.
++scoped_refptr<base::UpdateableSequencedTaskRunner> CreateBucketTaskRunner() {
++  return base::ThreadPool::CreateUpdateableSequencedTaskRunner(
++      {base::MayBlock(), GetBaseTaskPriority(), base::WithBaseSyncPrimitives(),
+        // BLOCK_SHUTDOWN to support clearing session-only storage.
+        base::TaskShutdownBehavior::BLOCK_SHUTDOWN});
+ }
+@@ -210,7 +233,7 @@
+         file_system_access_context,
+     scoped_refptr<base::SequencedTaskRunner> custom_task_runner)
+     : idb_task_runner_(custom_task_runner ? custom_task_runner
+-                                          : CreateTaskRunner()),
++                                          : CreateMainTaskRunner()),
+       base_data_path_(base_data_path.empty() ? base::FilePath()
+                                              : base_data_path),
+       quota_manager_proxy_(std::move(quota_manager_proxy)),
+@@ -1092,16 +1115,29 @@
+ 
+   // See docs above `TaskRunnerLimiter`.
+   scoped_refptr<base::SequencedTaskRunner> bucket_task_runner;
++  scoped_refptr<base::UpdateableSequencedTaskRunner>
++      updateable_bucket_task_runner;
+   TaskRunnerLimiter& task_runner_limiter =
+       task_runner_limiters_[bucket_locator.storage_key.top_level_site()];
+   static int kTaskRunnerCountLimit = base::SysInfo::NumberOfProcessors();
+   if (++task_runner_limiter.active_bucket_count > kTaskRunnerCountLimit) {
++    // The overflow task runner will never be set to the highest priority.
+     if (!task_runner_limiter.overflow_task_runner) {
+-      task_runner_limiter.overflow_task_runner = CreateTaskRunner();
++      scoped_refptr<base::UpdateableSequencedTaskRunner> overflow_task_runner =
++          CreateBucketTaskRunner();
++      overflow_task_runner->UpdatePriority(base::TaskPriority::USER_VISIBLE);
++      task_runner_limiter.overflow_task_runner =
++          std::move(overflow_task_runner);
+     }
+     bucket_task_runner = task_runner_limiter.overflow_task_runner;
+   } else {
+-    bucket_task_runner = CreateTaskRunner();
++    updateable_bucket_task_runner = CreateBucketTaskRunner();
++    bucket_task_runner = updateable_bucket_task_runner;
++  }
++
++  if (!base::FeatureList::IsEnabled(
++          kIdbExpediteBackendProcessingForForegroundClients)) {
++    updateable_bucket_task_runner.reset();
+   }
+ 
+   const auto& [iter, inserted] = bucket_contexts_.emplace(
+@@ -1110,8 +1146,8 @@
+           force_single_thread_ ? IDBTaskRunner()
+                                : std::move(bucket_task_runner),
+           bucket, data_directory, std::move(bucket_delegate),
+-          quota_manager_proxy_, std::move(cloned_blob_storage_context),
+-          std::move(fsa_context)));
++          updateable_bucket_task_runner, quota_manager_proxy_,
++          std::move(cloned_blob_storage_context), std::move(fsa_context)));
+   DCHECK(inserted);
+   if (pending_failure_injector_) {
+     iter->second.AsyncCall(&BucketContext::BindMockFailureSingletonForTesting)
+--- a/content/browser/indexed_db/indexed_db_unittest.cc
++++ b/content/browser/indexed_db/indexed_db_unittest.cc
+@@ -39,6 +39,7 @@
+ #include "base/strings/utf_string_conversions.h"
+ #include "base/task/sequenced_task_runner.h"
+ #include "base/task/single_thread_task_runner.h"
++#include "base/task/updateable_sequenced_task_runner.h"
+ #include "base/test/gmock_callback_support.h"
+ #include "base/test/mock_callback.h"
+ #include "base/test/scoped_feature_list.h"
+@@ -221,6 +222,35 @@
+   mojo::Receiver<storage::mojom::IndexedDBObserver> receiver_;
+ };
+ 
++class DummyTaskRunner : public base::UpdateableSequencedTaskRunner {
++ public:
++  DummyTaskRunner() = default;
++
++  DummyTaskRunner(const DummyTaskRunner&) = delete;
++  DummyTaskRunner& operator=(const DummyTaskRunner&) = delete;
++
++  void UpdatePriority(base::TaskPriority priority) override {
++    priority_ = priority;
++  }
++  bool PostDelayedTask(const base::Location& from_here,
++                       base::OnceClosure task,
++                       base::TimeDelta delay) override {
++    NOTREACHED_NORETURN();
++  }
++  bool PostNonNestableDelayedTask(const base::Location& from_here,
++                                  base::OnceClosure task,
++                                  base::TimeDelta delay) override {
++    NOTREACHED_NORETURN();
++  }
++
++  bool RunsTasksInCurrentSequence() const override { return true; }
++
++  std::optional<base::TaskPriority> priority_;
++
++ protected:
++  ~DummyTaskRunner() override = default;
++};
++
+ }  // namespace
+ 
+ class IndexedDBTest
+@@ -2341,4 +2371,77 @@
+   }
+ }
+ 
++TEST_P(IndexedDBTest, TaskRunnerPriority) {
++  const blink::StorageKey storage_key =
++      blink::StorageKey::CreateFromStringForTesting("http://localhost:81");
++  auto bucket_locator = BucketLocator();
++  bucket_locator.storage_key = storage_key;
++  const std::u16string db_name(u"test_db");
++
++  // Bind the IDBFactory.
++  mojo::Remote<blink::mojom::IDBFactory> factory_remote;
++  mojo::PendingRemote<storage::mojom::IndexedDBClientStateChecker>
++      checker_remote;
++  BindFactory(std::move(checker_remote),
++              factory_remote.BindNewPipeAndPassReceiver(),
++              ToBucketInfo(bucket_locator));
++
++  BucketContextHandle bucket_context = CreateBucketHandle(bucket_locator);
++  scoped_refptr<DummyTaskRunner> dummy_task_runner =
++      base::MakeRefCounted<DummyTaskRunner>();
++  bucket_context->updateable_task_runner_ = dummy_task_runner;
++
++  // Open a connection with priority 1; this should be propagated into
++  // `dummy_task_runner` as USER_VISIBLE.
++  MockMojoFactoryClient client;
++  MockMojoDatabaseCallbacks database_callbacks;
++  mojo::AssociatedRemote<blink::mojom::IDBTransaction> transaction_remote;
++  base::RunLoop run_loop;
++  mojo::PendingAssociatedRemote<blink::mojom::IDBDatabase> pending_database;
++  EXPECT_CALL(client, MockedUpgradeNeeded)
++      .WillOnce(
++          testing::DoAll(MoveArgPointee<0>(&pending_database),
++                         ::base::test::RunClosure(run_loop.QuitClosure())));
++  factory_remote->Open(client.CreateInterfacePtrAndBind(),
++                       database_callbacks.CreateInterfacePtrAndBind(), db_name,
++                       /*version=*/1,
++                       transaction_remote.BindNewEndpointAndPassReceiver(),
++                       /*transaction_id=*/1, /*priority=*/1);
++  factory_remote.FlushForTesting();
++  EXPECT_EQ(*dummy_task_runner->priority_, base::TaskPriority::USER_VISIBLE);
++  run_loop.Run();
++
++  // Finish hooking up the mojo connection, and issue an `UpdatePriority()`
++  // call, which is invoked when a tab changes between fg and bg. This updates
++  // the task runner.
++  mojo::AssociatedRemote<blink::mojom::IDBDatabase> database(
++      std::move(pending_database));
++  database->UpdatePriority(0);
++  database.FlushForTesting();
++  EXPECT_EQ(*dummy_task_runner->priority_, base::TaskPriority::USER_BLOCKING);
++
++  // Another connection is opened to a different database (although whether the
++  // database is the same or not is irrelevant), and the new connection has a
++  // lower priority (i.e. higher value). This does not change the priority since
++  // the highest priority wins.
++  {
++    MockMojoFactoryClient client2;
++    MockMojoDatabaseCallbacks database_callbacks2;
++    mojo::AssociatedRemote<blink::mojom::IDBTransaction> transaction_remote2;
++    factory_remote->Open(
++        client2.CreateInterfacePtrAndBind(),
++        database_callbacks2.CreateInterfacePtrAndBind(), u"other_dbame",
++        /*version=*/1, transaction_remote2.BindNewEndpointAndPassReceiver(),
++        /*transaction_id=*/2, /*priority=*/1);
++    factory_remote.FlushForTesting();
++    EXPECT_EQ(*dummy_task_runner->priority_, base::TaskPriority::USER_BLOCKING);
++
++    // After removing the foreground/high priority connection, the priority
++    // should be bumped back down to USER_VISIBLE.
++    database.reset();
++    factory_remote.FlushForTesting();
++    EXPECT_EQ(*dummy_task_runner->priority_, base::TaskPriority::USER_VISIBLE);
++  }
++}
++
+ }  // namespace content::indexed_db
+--- a/content/browser/indexed_db/instance/backing_store_unittest.cc
++++ b/content/browser/indexed_db/instance/backing_store_unittest.cc
+@@ -249,6 +249,7 @@
+ 
+     bucket_context_ = std::make_unique<BucketContext>(
+         bucket_info, temp_dir_.GetPath(), BucketContext::Delegate(),
++        scoped_refptr<base::UpdateableSequencedTaskRunner>(),
+         quota_manager_proxy_, std::move(blob_storage_context),
+         std::move(fsa_context));
+     std::tie(std::ignore, std::ignore, data_loss_info_) =
+--- a/content/browser/indexed_db/instance/bucket_context.cc
++++ b/content/browser/indexed_db/instance/bucket_context.cc
+@@ -10,6 +10,7 @@
+ #include <algorithm>
+ #include <atomic>
+ #include <compare>
++#include <limits>
+ #include <list>
+ #include <ostream>
+ #include <set>
+@@ -43,6 +44,7 @@
+ #include "base/task/task_runner.h"
+ #include "base/task/task_traits.h"
+ #include "base/task/thread_pool.h"
++#include "base/task/updateable_sequenced_task_runner.h"
+ #include "base/time/time.h"
+ #include "base/timer/elapsed_timer.h"
+ #include "base/trace_event/common/trace_event_common.h"
+@@ -305,12 +307,14 @@
+     storage::BucketInfo bucket_info,
+     const base::FilePath& data_path,
+     Delegate&& delegate,
++    scoped_refptr<base::UpdateableSequencedTaskRunner> updateable_task_runner,
+     scoped_refptr<storage::QuotaManagerProxy> quota_manager_proxy,
+     mojo::PendingRemote<storage::mojom::BlobStorageContext>
+         blob_storage_context,
+     mojo::PendingRemote<storage::mojom::FileSystemAccessContext>
+         file_system_access_context)
+     : bucket_info_(std::move(bucket_info)),
++      updateable_task_runner_(updateable_task_runner),
+       data_path_(data_path),
+       quota_manager_proxy_(std::move(quota_manager_proxy)),
+       blob_storage_context_(std::move(blob_storage_context)),
+@@ -426,6 +430,35 @@
+   MaybeStartClosing();
+ }
+ 
++void BucketContext::OnConnectionPriorityUpdated() {
++  if (!updateable_task_runner_) {
++    return;
++  }
++  int scheduling_priority = std::numeric_limits<int>::max();
++  // Established connections:
++  for (const auto& [name, database] : databases_) {
++    for (auto* connection : database->connections()) {
++      scheduling_priority =
++          std::min(scheduling_priority, connection->scheduling_priority());
++    }
++  }
++  // Pending connections:
++  for (auto iter = pending_connections_.begin();
++       iter != pending_connections_.end();) {
++    if (iter->WasInvalidated()) {
++      iter = pending_connections_.erase(iter);
++    } else {
++      scheduling_priority =
++          std::min(scheduling_priority, (*iter)->scheduling_priority);
++      ++iter;
++    }
++  }
++  base::TaskPriority priority = scheduling_priority == 0
++                                    ? base::TaskPriority::USER_BLOCKING
++                                    : base::TaskPriority::USER_VISIBLE;
++  updateable_task_runner_->UpdatePriority(priority);
++}
++
+ void BucketContext::CheckCanUseDiskSpace(
+     int64_t space_requested,
+     base::OnceCallback<void(bool)> bucket_space_check_callback) {
+@@ -715,7 +748,9 @@
+     database_ptr = it->second.get();
+   }
+ 
++  pending_connections_.push_back(connection->weak_factory.GetWeakPtr());
+   database_ptr->ScheduleOpenConnection(std::move(connection));
++  OnConnectionPriorityUpdated();
+ }
+ 
+ void BucketContext::DeleteDatabase(
+--- a/content/browser/indexed_db/instance/bucket_context.h
++++ b/content/browser/indexed_db/instance/bucket_context.h
+@@ -7,6 +7,7 @@
+ 
+ #include <stdint.h>
+ 
++#include <list>
+ #include <memory>
+ #include <queue>
+ #include <string>
+@@ -41,6 +42,10 @@
+ #include "mojo/public/cpp/bindings/receiver_set.h"
+ #include "third_party/blink/public/mojom/indexeddb/indexeddb.mojom.h"
+ 
++namespace base {
++class UpdateableSequencedTaskRunner;
++}
++
+ namespace storage {
+ class QuotaManagerProxy;
+ }
+@@ -52,6 +57,7 @@
+ class BucketContextHandle;
+ class Database;
+ class IndexedDBDataItemReader;
++struct PendingConnection;
+ 
+ // BucketContext manages the per-bucket IndexedDB state, and other important
+ // context like the backing store and lock manager.
+@@ -130,14 +136,16 @@
+     base::RepeatingCallback<void(bool /*did_sync*/)> on_files_written;
+   };
+ 
+-  BucketContext(storage::BucketInfo bucket_info,
+-                const base::FilePath& data_path,
+-                Delegate&& delegate,
+-                scoped_refptr<storage::QuotaManagerProxy> quota_manager_proxy,
+-                mojo::PendingRemote<storage::mojom::BlobStorageContext>
+-                    blob_storage_context,
+-                mojo::PendingRemote<storage::mojom::FileSystemAccessContext>
+-                    file_system_access_context);
++  BucketContext(
++      storage::BucketInfo bucket_info,
++      const base::FilePath& data_path,
++      Delegate&& delegate,
++      scoped_refptr<base::UpdateableSequencedTaskRunner> updateable_task_runner,
++      scoped_refptr<storage::QuotaManagerProxy> quota_manager_proxy,
++      mojo::PendingRemote<storage::mojom::BlobStorageContext>
++          blob_storage_context,
++      mojo::PendingRemote<storage::mojom::FileSystemAccessContext>
++          file_system_access_context);
+ 
+   BucketContext(const BucketContext&) = delete;
+   BucketContext& operator=(const BucketContext&) = delete;
+@@ -169,6 +177,10 @@
+ 
+   void ReportOutstandingBlobs(bool blobs_outstanding);
+ 
++  // Called whenever some active or new connection's scheduling priority has
++  // changed.
++  void OnConnectionPriorityUpdated();
++
+   // Called when `space_requested` bytes are about to be used by committing a
+   // transaction. Will invoke `disk_space_check_callback` if this usage is
+   // approved, or false if there's insufficient space as per the `QuotaManager`.
+@@ -299,6 +311,7 @@
+   FRIEND_TEST_ALL_PREFIXES(IndexedDBTest, CompactionKillSwitchWorks);
+   FRIEND_TEST_ALL_PREFIXES(IndexedDBTest, TooLongOrigin);
+   FRIEND_TEST_ALL_PREFIXES(IndexedDBTest, BasicFactoryCreationAndTearDown);
++  FRIEND_TEST_ALL_PREFIXES(IndexedDBTest, TaskRunnerPriority);
+   FRIEND_TEST_ALL_PREFIXES(BucketContextTest, BucketSpaceDecay);
+   FRIEND_TEST_ALL_PREFIXES(BucketContextTest, MetadataRecordingStateHistory);
+ 
+@@ -374,6 +387,10 @@
+ 
+   const storage::BucketInfo bucket_info_;
+ 
++  // The task runner `this` runs on, if `this` runs on a task runner that can be
++  // updated with different task traits (priority).
++  scoped_refptr<base::UpdateableSequencedTaskRunner> updateable_task_runner_;
++
+   // Base directory for blobs and backing store files.
+   const base::FilePath data_path_;
+ 
+@@ -400,6 +417,9 @@
+   // for this object, see CanClose.
+   int64_t open_handles_ = 0;
+ 
++  // Pending connections are also inputs to the calculated scheduling priority.
++  std::list<base::WeakPtr<PendingConnection>> pending_connections_;
++
+   // A queue of callbacks representing `CheckCanUseDiskSpace()` requests.
+   std::queue<std::tuple<int64_t /*space_requested*/,
+                         base::OnceCallback<void(bool /*allowed*/)>>>
+--- a/content/browser/indexed_db/instance/bucket_context_unittest.cc
++++ b/content/browser/indexed_db/instance/bucket_context_unittest.cc
+@@ -9,6 +9,7 @@
+ 
+ #include "base/files/scoped_temp_dir.h"
+ #include "base/run_loop.h"
++#include "base/task/updateable_sequenced_task_runner.h"
+ #include "base/test/metrics/histogram_tester.h"
+ #include "base/test/task_environment.h"
+ #include "base/test/test_future.h"
+@@ -53,6 +54,7 @@
+         blink::mojom::StorageType::kTemporary);
+     bucket_context_ = std::make_unique<BucketContext>(
+         bucket_info, base::FilePath(), BucketContext::Delegate(),
++        scoped_refptr<base::UpdateableSequencedTaskRunner>(),
+         quota_manager_proxy_,
+         /*blob_storage_context=*/mojo::NullRemote(),
+         /*file_system_access_context=*/mojo::NullRemote());
+--- a/content/browser/indexed_db/instance/connection.cc
++++ b/content/browser/indexed_db/instance/connection.cc
+@@ -749,6 +749,8 @@
+     transaction->OnSchedulingPriorityUpdated(new_priority);
+   }
+ 
++  bucket_context()->OnConnectionPriorityUpdated();
++
+   // TODO(crbug.com/359623664): consider reordering transactions already in the
+   // queue. For now the priority change will only impact where new transactions
+   // are placed (whether they skip past the existing ones).
+--- a/content/browser/indexed_db/instance/database.cc
++++ b/content/browser/indexed_db/instance/database.cc
+@@ -1550,6 +1550,7 @@
+       std::move(database_callbacks), std::move(client_state_checker),
+       client_token, scheduling_priority);
+   connections_.insert(connection.get());
++  bucket_context_->OnConnectionPriorityUpdated();
+   return connection;
+ }
+ 
+@@ -1609,6 +1610,7 @@
+     return;
+   }
+   connections_.erase(connection);
++  bucket_context_->OnConnectionPriorityUpdated();
+   connection_coordinator_.OnConnectionClosed(connection);
+   if (connections_.empty()) {
+     connection_coordinator_.OnNoConnections();
+--- a/content/browser/indexed_db/instance/database_unittest.cc
++++ b/content/browser/indexed_db/instance/database_unittest.cc
+@@ -18,6 +18,7 @@
+ #include "base/run_loop.h"
+ #include "base/task/sequenced_task_runner.h"
+ #include "base/task/single_thread_task_runner.h"
++#include "base/task/updateable_sequenced_task_runner.h"
+ #include "base/test/bind.h"
+ #include "base/test/gmock_callback_support.h"
+ #include "base/test/mock_callback.h"
+@@ -72,6 +73,7 @@
+ 
+     bucket_context_ = std::make_unique<BucketContext>(
+         storage::BucketInfo(), temp_dir_.GetPath(), std::move(delegate),
++        scoped_refptr<base::UpdateableSequencedTaskRunner>(),
+         quota_manager_proxy_,
+         /*blob_storage_context=*/mojo::NullRemote(),
+         /*file_system_access_context=*/mojo::NullRemote());
+--- a/content/browser/indexed_db/instance/pending_connection.h
++++ b/content/browser/indexed_db/instance/pending_connection.h
+@@ -47,6 +47,7 @@
+   mojo::Remote<storage::mojom::IndexedDBClientStateChecker>
+       client_state_checker;
+   base::UnguessableToken client_token;
++  base::WeakPtrFactory<PendingConnection> weak_factory{this};
+ };
+ 
+ }  // namespace content::indexed_db
+--- a/content/browser/indexed_db/instance/transaction_unittest.cc
++++ b/content/browser/indexed_db/instance/transaction_unittest.cc
+@@ -14,6 +14,7 @@
+ #include "base/memory/scoped_refptr.h"
+ #include "base/run_loop.h"
+ #include "base/task/single_thread_task_runner.h"
++#include "base/task/updateable_sequenced_task_runner.h"
+ #include "base/test/run_until.h"
+ #include "base/test/scoped_feature_list.h"
+ #include "base/test/task_environment.h"
+@@ -79,7 +80,9 @@
+     bucket_context_ = std::make_unique<BucketContext>(
+         GetOrCreateBucket(
+             storage::BucketInitParams::ForDefaultBucket(storage_key)),
+-        temp_dir_.GetPath(), std::move(delegate), quota_manager_->proxy(),
++        temp_dir_.GetPath(), std::move(delegate),
++        scoped_refptr<base::UpdateableSequencedTaskRunner>(),
++        quota_manager_->proxy(),
+         /*blob_storage_context=*/mojo::NullRemote(),
+         /*file_system_access_context=*/mojo::NullRemote());
+ 

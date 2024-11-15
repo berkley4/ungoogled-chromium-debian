@@ -10,7 +10,7 @@
  #endif
  
  #if BUILDFLAG(ENABLE_EXTENSIONS)
-@@ -1745,9 +1747,11 @@
+@@ -1654,9 +1656,11 @@
        base::android::InitJavaExceptionReporterForChildProcess();
      }
  #else
@@ -22,7 +22,7 @@
  #endif  // BUILDFLAG(IS_ANDROID)
    }
  #endif  // BUILDFLAG(IS_POSIX) && !BUILDFLAG(IS_MAC)
-@@ -1894,10 +1898,11 @@
+@@ -1796,10 +1800,11 @@
        base::CommandLine::ForCurrentProcess();
    std::string process_type =
        command_line->GetSwitchValueASCII(switches::kProcessType);
@@ -37,7 +37,7 @@
  }
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -612,7 +612,7 @@
+@@ -619,7 +619,7 @@
  #include "chrome/browser/browser_switcher/browser_switcher_navigation_throttle.h"
  #endif
  
@@ -46,7 +46,7 @@
  #include "components/crash/core/app/crash_switches.h"
  #include "components/crash/core/app/crashpad.h"
  #endif
-@@ -1046,7 +1046,7 @@
+@@ -1053,7 +1053,7 @@
  int GetCrashSignalFD(const base::CommandLine& command_line) {
    return crashpad::CrashHandlerHost::Get()->GetDeathSignalSocket();
  }
@@ -55,7 +55,7 @@
  int GetCrashSignalFD(const base::CommandLine& command_line) {
    int fd;
    return crash_reporter::GetHandlerSocket(&fd, nullptr) ? fd : -1;
-@@ -4957,7 +4957,7 @@
+@@ -4962,7 +4962,7 @@
    DCHECK(!app_data_path.empty());
  #endif  // BUILDFLAG(IS_ANDROID)
  
@@ -97,7 +97,7 @@
  int GetCrashSignalFD(const base::CommandLine& command_line,
                       const HeadlessBrowser::Options& options) {
    int fd;
-@@ -196,7 +198,7 @@
+@@ -201,7 +203,7 @@
    return content::GeneratedCodeCacheSettings(true, 0, context->GetPath());
  }
  
@@ -106,7 +106,7 @@
  void HeadlessContentBrowserClient::GetAdditionalMappedFilesForChildProcess(
      const base::CommandLine& command_line,
      int child_process_id,
-@@ -217,7 +219,7 @@
+@@ -222,7 +224,7 @@
      command_line->AppendSwitchASCII(::switches::kHeadless, "old");
    }
  

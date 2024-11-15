@@ -8,4 +8,4 @@
 +    'condition': 'llvm_force_head_revision',
      'objects': [
        {
-         'object_name': 'Linux_x64/clang-llvmorg-20-init-3847-g69c43468-28.tar.xz',
+         'object_name': 'Linux_x64/clang-llvmorg-20-init-6794-g3dbd929e-1.tar.xz',

@@ -17,7 +17,7 @@
  def devtools_root_path():
 --- a/third_party/node/node.py
 +++ b/third_party/node/node.py
-@@ -11,18 +11,7 @@
+@@ -12,18 +12,7 @@
  
  
  def GetBinaryPath():

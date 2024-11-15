@@ -88,7 +88,6 @@ ___Security/Privacy improvements___
         - Media remoting
         - Media router
         - Swiftshader
-        - Visual query
         - Vulkan
         - WebGPU
     - Some other features/components are always patched out

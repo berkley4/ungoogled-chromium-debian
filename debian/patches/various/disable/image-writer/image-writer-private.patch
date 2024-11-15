@@ -8,10 +8,10 @@
  import("//components/enterprise/buildflags/buildflags.gni")
  import("//components/nacl/features.gni")
  import("//extensions/buildflags/buildflags.gni")
-@@ -160,32 +161,6 @@
+@@ -158,32 +159,6 @@
+     "api/identity/web_auth_flow.h",
+     "api/identity/web_auth_flow_info_bar_delegate.cc",
      "api/identity/web_auth_flow_info_bar_delegate.h",
-     "api/idltest/idltest_api.cc",
-     "api/idltest/idltest_api.h",
 -    "api/image_writer_private/destroy_partitions_operation.cc",
 -    "api/image_writer_private/destroy_partitions_operation.h",
 -    "api/image_writer_private/error_constants.cc",
@@ -41,7 +41,7 @@
      "api/instance_id/instance_id_api.cc",
      "api/instance_id/instance_id_api.h",
      "api/language_settings_private/language_settings_private_api.cc",
-@@ -673,6 +648,37 @@
+@@ -645,6 +620,37 @@
      "window_controller_list_observer.h",
    ]
  
@@ -79,7 +79,7 @@
    # Chrome OS does not support Native Messaging policies.
    if (!is_chromeos) {
      sources += [
-@@ -822,6 +828,7 @@
+@@ -808,6 +814,7 @@
      "//chrome/browser/web_applications/extensions",
      "//chrome/common/extensions/api:extensions_features",
      "//chrome/common/safe_browsing:proto",
@@ -87,7 +87,7 @@
      "//chrome/services/file_util/public/mojom:mojom",
      "//chrome/services/removable_storage_writer/public/mojom",
      "//components/affiliations/core/browser:affiliations",
-@@ -1126,7 +1133,6 @@
+@@ -1100,7 +1107,6 @@
      sources += [
        "api/enterprise_reporting_private/chrome_desktop_report_request_helper.cc",
        "api/enterprise_reporting_private/chrome_desktop_report_request_helper.h",
@@ -95,7 +95,7 @@
        "api/messaging/launch_context.cc",
        "api/messaging/launch_context.h",
        "api/messaging/native_message_process_host.cc",
-@@ -1144,6 +1150,9 @@
+@@ -1118,6 +1124,9 @@
        "//components/enterprise/common/proto:connectors_proto",
        "//components/keep_alive_registry",
      ]
@@ -105,25 +105,25 @@
      if (is_posix) {
        sources += [ "api/messaging/launch_context_posix.cc" ]
      }
-@@ -1437,7 +1446,7 @@
+@@ -1377,7 +1386,7 @@
      ]
    }
  
--  if (is_linux || is_chromeos_lacros) {
-+  if (enable_extractors && (is_linux || is_chromeos_lacros)) {
+-  if (is_linux) {
++  if (enable_extractors && is_linux) {
      sources +=
          [ "api/image_writer_private/removable_storage_provider_linux.cc" ]
    }
 --- a/chrome/browser/extensions/chrome_browser_context_keyed_service_factories.cc
 +++ b/chrome/browser/extensions/chrome_browser_context_keyed_service_factories.cc
-@@ -7,7 +7,6 @@
- #include "build/build_config.h"
+@@ -8,7 +8,6 @@
+ #include "chrome/browser/extensions/account_extension_tracker.h"
  #include "chrome/browser/extensions/activity_log/activity_log.h"
  #include "chrome/browser/extensions/api/bookmarks/bookmarks_api_watcher.h"
 -#include "chrome/browser/extensions/api/image_writer_private/operation_manager.h"
  #include "chrome/browser/extensions/api/messaging/incognito_connectability.h"
  #include "chrome/browser/extensions/api/notifications/extension_notification_display_helper_factory.h"
- #include "chrome/browser/extensions/api/web_authentication_proxy/web_authentication_proxy_service.h"
+ #include "chrome/browser/extensions/chrome_app_icon_service_factory.h"
 @@ -26,8 +25,13 @@
  #include "chrome/browser/extensions/permissions/permissions_updater.h"
  #include "chrome/browser/extensions/plugin_manager.h"
@@ -138,7 +138,7 @@
  namespace chrome_extensions {
  
  void EnsureChromeBrowserContextKeyedServiceFactoriesBuilt() {
-@@ -43,7 +47,9 @@
+@@ -44,7 +48,9 @@
    extensions::ExtensionNotificationDisplayHelperFactory::GetInstance();
    extensions::ExtensionSystemFactory::GetInstance();
    extensions::ExtensionWebUIOverrideRegistrar::GetFactoryInstance();
@@ -187,7 +187,7 @@
  import("//chrome/services/speech/buildflags/buildflags.gni")
  import("//chrome/test/include_js_tests.gni")
  import("//chrome/version.gni")
-@@ -4006,9 +4007,6 @@
+@@ -3909,9 +3910,6 @@
          "../browser/extensions/api/identity/web_auth_flow_browsertest.cc",
          "../browser/extensions/api/idle/idle_apitest.cc",
          "../browser/extensions/api/idltest/idltest_apitest.cc",
@@ -197,7 +197,7 @@
          "../browser/extensions/api/instance_id/instance_id_apitest.cc",
          "../browser/extensions/api/management/management_api_browsertest.cc",
          "../browser/extensions/api/management/management_api_non_persistent_apitest.cc",
-@@ -4214,6 +4212,14 @@
+@@ -4117,6 +4115,14 @@
          "../browser/user_bypass/user_bypass_web_contents_observer_browsertest.cc",
        ]
  
@@ -212,39 +212,40 @@
        if (is_win) {
          data_deps += [
            "//chrome/browser/extensions/api:native_messaging_test_echo_&_host",
-@@ -4300,9 +4306,12 @@
-       if (!is_chromeos_lacros) {
-         sources += [
-           "../browser/extensions/api/automation/automation_apitest.cc",
--          "../browser/extensions/api/image_writer_private/image_writer_private_apitest.cc",
-           "../browser/extensions/api/proxy/proxy_apitest.cc",
-         ]
-+
-+        if (enable_extractors) {
-+          sources += [ "../browser/extensions/api/image_writer_private/image_writer_private_apitest.cc" ]
-+        }
-       }
+@@ -4202,10 +4208,13 @@
  
-       if (is_chromeos) {
-@@ -5217,11 +5226,16 @@
-     if (is_mac || is_win || is_linux || is_chromeos_lacros) {
        sources += [
-         # Tests for non mobile and non CrOS (includes Linux, Win, Mac).
--        "../browser/extensions/api/image_writer_private/image_writer_utility_client_browsertest.cc",
-         "../browser/profiles/profile_statistics_browsertest.cc",
-         "../browser/ui/webui/signin/turn_sync_on_helper_browsertest.cc",
+         "../browser/extensions/api/automation/automation_apitest.cc",
+-        "../browser/extensions/api/image_writer_private/image_writer_private_apitest.cc",
+         "../browser/extensions/api/proxy/proxy_apitest.cc",
        ]
  
 +      if (enable_extractors) {
-+        sources += [
-+          "../browser/extensions/api/image_writer_private/image_writer_utility_client_browsertest.cc",
-+        ]
++        sources += [ "../browser/extensions/api/image_writer_private/image_writer_private_apitest.cc" ]
 +      }
 +
-       if (!is_chromeos_lacros) {
+       if (is_chromeos) {
          sources += [
-           "../browser/browser_switcher/browser_switcher_browsertest.cc",
-@@ -9005,15 +9019,6 @@
+           "../browser/apps/platform_apps/api/arc_apps_private/arc_apps_private_apitest.cc",
+@@ -5114,11 +5123,16 @@
+         "../browser/browser_switcher/browser_switcher_browsertest.cc",
+         "../browser/browser_switcher/browser_switcher_service_browsertest.cc",
+         "../browser/enterprise/signin/enterprise_signin_service_browsertest.cc",
+-        "../browser/extensions/api/image_writer_private/image_writer_utility_client_browsertest.cc",
+         "../browser/profiles/profile_statistics_browsertest.cc",
+       ]
+       deps += [ "//chrome/browser/ui/webui/signin:browser_tests" ]
+     }
++    if (enable_extractors) {
++      sources += [
++        "../browser/extensions/api/image_writer_private/image_writer_utility_client_browsertest.cc",
++      ]
++    }
++
+     if (is_linux || is_mac) {
+       sources +=
+           [ "../browser/first_run/first_run_internal_posix_browsertest.cc" ]
+@@ -8484,15 +8498,6 @@
        "../browser/extensions/api/identity/identity_api_unittest.cc",
        "../browser/extensions/api/identity/identity_mint_queue_unittest.cc",
        "../browser/extensions/api/identity/identity_token_cache_unittest.cc",
@@ -260,7 +261,7 @@
        "../browser/extensions/api/language_settings_private/language_settings_private_api_unittest.cc",
        "../browser/extensions/api/language_settings_private/language_settings_private_delegate_unittest.cc",
        "../browser/extensions/api/management/management_api_unittest.cc",
-@@ -11597,6 +11602,20 @@
+@@ -11044,6 +11049,20 @@
          "//ui/display/win/test/virtual_display_util_win_interactive_uitest.cc",
        ]
  

@@ -1,0 +1,37 @@
+From 4b2f885bcd2cbec79adc8cd0810026c77cabc614 Mon Sep 17 00:00:00 2001
+From: Koji Ishii <kojii@chromium.org>
+Date: Tue, 29 Oct 2024 06:24:32 +0000
+Subject: [PATCH] Remove `NOTREACHED` in `PaintLineBoxes`
+
+This patch removes a `NOTREACHED` that hits when paint finds
+needs-layout objects.
+
+This `NOTREACHED` is causing a P1 stability issue as it is
+being turned to crashes. It shouldn't still happen, but
+`DCHECK`-enabled build should have hit checks earlier, that
+are closer to the actual causes, such as `AssertLaidOut()`.
+
+This redundant `NOTREACHED` helped to clarify the cause is
+likely in layout, but not as much important as to cause a P1
+stability issue.
+
+Fixed: 375000982
+Change-Id: I1bd23c60914923458a3af08b7fc44e15f4ae1e8c
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5973362
+Auto-Submit: Koji Ishii <kojii@chromium.org>
+Commit-Queue: Koji Ishii <kojii@chromium.org>
+Reviewed-by: Kent Tamura <tkent@chromium.org>
+Commit-Queue: Kent Tamura <tkent@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1375064}
+---
+
+--- a/third_party/blink/renderer/core/paint/box_fragment_painter.cc
++++ b/third_party/blink/renderer/core/paint/box_fragment_painter.cc
+@@ -742,7 +742,6 @@
+   // a fragment with inline children, without a paint fragment. See:
+   // http://crbug.com/1022545
+   if (!items_ || layout_object->NeedsLayout()) {
+-    DUMP_WILL_BE_NOTREACHED();
+     return;
+   }
+ 

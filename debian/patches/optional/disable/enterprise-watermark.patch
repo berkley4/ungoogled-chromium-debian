@@ -1,6 +1,6 @@
 --- a/chrome/browser/ui/views/frame/browser_view.h
 +++ b/chrome/browser/ui/views/frame/browser_view.h
-@@ -810,9 +810,11 @@
+@@ -819,9 +819,11 @@
      return web_app_frame_toolbar();
    }
  
@@ -12,7 +12,7 @@
  
    // This value is used in a common calculation in NonClientFrameView
    // subclasses. This must be added to the origin of the first painted pixel of
-@@ -1172,8 +1174,10 @@
+@@ -1196,8 +1198,10 @@
    // The view that contains devtools window for the selected WebContents.
    raw_ptr<views::WebView> devtools_web_view_ = nullptr;
  
@@ -38,7 +38,7 @@
  
    contents_container->SetLayoutManager(std::make_unique<ContentsLayoutManager>(
        devtools_web_view_, contents_web_view_, watermark_view_));
-@@ -1142,7 +1146,9 @@
+@@ -1141,7 +1145,9 @@
    infobar_container_ = nullptr;
    contents_web_view_ = nullptr;
    devtools_web_view_ = nullptr;
@@ -48,7 +48,7 @@
    contents_container_ = nullptr;
    unified_side_panel_ = nullptr;
    right_aligned_side_panel_separator_ = nullptr;
-@@ -5618,11 +5624,13 @@
+@@ -5668,11 +5674,13 @@
    }
  }
  

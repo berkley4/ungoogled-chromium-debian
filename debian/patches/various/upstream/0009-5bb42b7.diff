@@ -1,0 +1,164 @@
+From 5bb42b703b954a8df875e1dac9f015b7fe584e03 Mon Sep 17 00:00:00 2001
+From: Maks Orlovich <morlovich@chromium.org>
+Date: Tue, 22 Oct 2024 17:24:44 +0000
+Subject: [PATCH] disk_cache/blockfile: Fix DiskCacheBackendTest.BlockFileMaxSizeLimit
+
+- Avoid overflow in MaxStorageSizeForTable with huge
+  caches (not actually used in practice).
+- Make the test of oversize cache fail for right reason
+  (rather than because of above screw up) by actually
+  checking SetMaxSize return.
+- That in turn resulted in removing sync failure possibility from
+  CacheCreator::[TryCreateCleanupTrackerAndRun]Run ---
+  since it didn't work right if Run failed synchronously from async
+  TryCreateCleanupTrackerAndRun re-run... which didn't matter before
+  since only sync failure used to be trying to use blockfile on
+  Android
+
+
+Change-Id: Ia12df31a558b722edb2271d1c7a673a6856bfd7a
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5941998
+Commit-Queue: Maks Orlovich <morlovich@chromium.org>
+Reviewed-by: Adam Rice <ricea@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1372144}
+---
+
+--- a/net/disk_cache/blockfile/backend_impl.cc
++++ b/net/disk_cache/blockfile/backend_impl.cc
+@@ -78,7 +78,8 @@
+ }
+ 
+ int MaxStorageSizeForTable(int table_len) {
+-  return table_len * (k64kEntriesStore / kBaseTableLen);
++  return std::min(int64_t{std::numeric_limits<int32_t>::max()},
++                  int64_t{table_len} * (k64kEntriesStore / kBaseTableLen));
+ }
+ 
+ size_t GetIndexSize(int table_len) {
+--- a/net/disk_cache/disk_cache.cc
++++ b/net/disk_cache/disk_cache.cc
+@@ -56,14 +56,15 @@
+   CacheCreator& operator=(const CacheCreator&) = delete;
+ 
+   // Wait for any previous backends for given path to finish clean up and then
+-  // attempt to create a new one. This will never succeed synchronously, though
+-  // it may fail synchronously.
+-  net::Error TryCreateCleanupTrackerAndRun();
++  // attempt to create a new one. This is always asynchronous.
++  void TryCreateCleanupTrackerAndRun();
+ 
+   // Creates the backend, the cleanup context for it having been already
+-  // established... or purposefully left as null. This will never succeed
+-  // synchronously, though it may fail synchronously.
+-  net::Error Run();
++  // established... or purposefully left as null. This is always asynchronous.
++  void Run();
++
++  // Queues an asynchronous failure.
++  void FailAttempt();
+ 
+  private:
+   ~CacheCreator();
+@@ -121,7 +122,7 @@
+ 
+ CacheCreator::~CacheCreator() = default;
+ 
+-net::Error CacheCreator::Run() {
++void CacheCreator::Run() {
+ #if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_FUCHSIA)
+   static const bool kSimpleBackendIsDefault = true;
+ #else
+@@ -130,10 +131,8 @@
+   if (!retry_ && reset_handling_ == disk_cache::ResetHandling::kReset) {
+     // Pretend that we failed to create a cache, so that we can handle `kReset`
+     // and `kResetOnError` in a unified way, in CacheCreator::OnIOComplete.
+-    base::SequencedTaskRunner::GetCurrentDefault()->PostTask(
+-        FROM_HERE, base::BindOnce(&CacheCreator::OnIOComplete,
+-                                  base::Unretained(this), net::ERR_FAILED));
+-    return net::ERR_IO_PENDING;
++    FailAttempt();
++    return;
+   }
+   if (backend_type_ == net::CACHE_BACKEND_SIMPLE ||
+       (backend_type_ == net::CACHE_BACKEND_DEFAULT &&
+@@ -150,26 +149,34 @@
+ #endif
+     simple_cache->Init(
+         base::BindOnce(&CacheCreator::OnIOComplete, base::Unretained(this)));
+-    return net::ERR_IO_PENDING;
++    return;
+   }
+ 
+ // Avoid references to blockfile functions on Android to reduce binary size.
+ #if BUILDFLAG(IS_ANDROID)
+-  return net::ERR_FAILED;
++  FailAttempt();
+ #else
+   auto cache = std::make_unique<disk_cache::BackendImpl>(
+       path_, cleanup_tracker_.get(),
+       /*cache_thread = */ nullptr, type_, net_log_);
+   disk_cache::BackendImpl* new_cache = cache.get();
+   created_cache_ = std::move(cache);
+-  new_cache->SetMaxSize(max_bytes_);
++  if (!new_cache->SetMaxSize(max_bytes_)) {
++    FailAttempt();
++    return;
++  }
+   new_cache->Init(
+       base::BindOnce(&CacheCreator::OnIOComplete, base::Unretained(this)));
+-  return net::ERR_IO_PENDING;
+ #endif
+ }
+ 
+-net::Error CacheCreator::TryCreateCleanupTrackerAndRun() {
++void CacheCreator::FailAttempt() {
++  base::SequencedTaskRunner::GetCurrentDefault()->PostTask(
++      FROM_HERE, base::BindOnce(&CacheCreator::OnIOComplete,
++                                base::Unretained(this), net::ERR_FAILED));
++}
++
++void CacheCreator::TryCreateCleanupTrackerAndRun() {
+   // Before creating a cache Backend, a BackendCleanupTracker object is needed
+   // so there is a place to keep track of outstanding I/O even after the backend
+   // object itself is destroyed, so that further use of the directory
+@@ -192,11 +199,12 @@
+       path_, base::BindOnce(base::IgnoreResult(
+                                 &CacheCreator::TryCreateCleanupTrackerAndRun),
+                             base::Unretained(this)));
+-  if (!cleanup_tracker_)
+-    return net::ERR_IO_PENDING;
++  if (!cleanup_tracker_) {
++    return;
++  }
+   if (!post_cleanup_callback_.is_null())
+     cleanup_tracker_->AddPostCleanupCallback(std::move(post_cleanup_callback_));
+-  return Run();
++  Run();
+ }
+ 
+ void CacheCreator::DoCallback(int net_error) {
+@@ -253,8 +261,7 @@
+ 
+   // The worker thread may be deleting files, but the original folder
+   // is not there anymore... let's create a new set of files.
+-  int rv = Run();
+-  DCHECK_EQ(net::ERR_IO_PENDING, rv);
++  Run();
+ }
+ 
+ class TrivialFileEnumerator final : public FileEnumerator {
+@@ -350,10 +357,11 @@
+       net_log, std::move(post_cleanup_callback), std::move(callback));
+   if (type == net::DISK_CACHE) {
+     DCHECK(!had_post_cleanup_callback);
+-    return BackendResult::MakeError(creator->Run());
++    creator->Run();
++  } else {
++    creator->TryCreateCleanupTrackerAndRun();
+   }
+-
+-  return BackendResult::MakeError(creator->TryCreateCleanupTrackerAndRun());
++  return BackendResult::MakeError(net::ERR_IO_PENDING);
+ }
+ 
+ BackendResult CreateCacheBackend(

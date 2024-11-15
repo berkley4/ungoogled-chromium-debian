@@ -1,6 +1,6 @@
 --- a/components/segmentation_platform/public/features.cc
 +++ b/components/segmentation_platform/public/features.cc
-@@ -10,7 +10,7 @@
+@@ -12,7 +12,7 @@
  
  BASE_FEATURE(kSegmentationPlatformFeature,
               "SegmentationPlatform",

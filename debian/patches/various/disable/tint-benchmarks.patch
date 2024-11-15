@@ -8,12 +8,22 @@
  import("//third_party/protobuf/proto_library.gni")
  import("//third_party/webrtc/webrtc.gni")
  import("//third_party/widevine/cdm/widevine.gni")
-@@ -5906,7 +5907,7 @@
+@@ -5460,7 +5461,6 @@
+     data_deps += [
+       "//components:components_perftests",
+       "//testing:run_perf_test",
+-      "//third_party/dawn/src/tint/cmd/bench:bench_cmd",
+     ]
+ 
+     if (!is_android) {
+@@ -5476,6 +5476,10 @@
+     if (build_dawn_tests) {
        data_deps += [ "//third_party/dawn/src/dawn/tests:dawn_perf_tests" ]
      }
- 
--    if (!is_chromeos_lacros) {
-+    if (tint_build_benchmarks && !is_chromeos_lacros) {
-       data_deps += [ "//third_party/dawn/src/tint/cmd/bench:bench_cmd" ]
-     }
++
++    if (tint_build_benchmarks) {
++      data_deps += [ "//third_party/dawn/src/tint/cmd/bench:bench_cmd" ]
++    }
+   }
+ }
  

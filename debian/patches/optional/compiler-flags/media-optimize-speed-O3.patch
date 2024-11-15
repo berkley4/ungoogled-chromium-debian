@@ -27,7 +27,7 @@
  
 --- a/media/cdm/BUILD.gn
 +++ b/media/cdm/BUILD.gn
-@@ -15,7 +15,11 @@
+@@ -16,7 +16,11 @@
        ":*",
        "//media",
      ]
@@ -87,7 +87,7 @@
      deps += [ "//media/video" ]
 --- a/media/gpu/BUILD.gn
 +++ b/media/gpu/BUILD.gn
-@@ -410,6 +410,9 @@
+@@ -409,6 +409,9 @@
      ]
      public_deps += [ "//third_party/libgav1:libgav1_parser" ]
    }

@@ -1,6 +1,6 @@
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -6906,6 +6906,10 @@
+@@ -6990,6 +6990,10 @@
          "upgrade_detector/directory_monitor.h",
          "upgrade_detector/get_installed_version_linux.cc",
        ]

@@ -1,6 +1,6 @@
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
-@@ -484,6 +484,7 @@
+@@ -485,6 +485,7 @@
  #define CONFIG_SOL_DPCM_DECODER 0
  #define CONFIG_XAN_DPCM_DECODER 0
  #define CONFIG_WADY_DPCM_DECODER 0
@@ -8,7 +8,7 @@
  #define CONFIG_ADPCM_4XM_DECODER 0
  #define CONFIG_ADPCM_ADX_DECODER 0
  #define CONFIG_ADPCM_AFC_DECODER 0
-@@ -1661,7 +1662,7 @@
+@@ -1674,7 +1675,7 @@
  #define CONFIG_AVS_DEMUXER 0
  #define CONFIG_AVS2_DEMUXER 0
  #define CONFIG_AVS3_DEMUXER 0
@@ -37,7 +37,7 @@
      NULL };
 --- a/third_party/ffmpeg/ffmpeg_generated.gni
 +++ b/third_party/ffmpeg/ffmpeg_generated.gni
-@@ -280,6 +280,11 @@
+@@ -281,6 +281,11 @@
      "libavcodec/fmtconvert.c",
      "libavformat/ac3dec.c",
    ]

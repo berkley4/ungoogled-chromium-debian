@@ -1,6 +1,6 @@
 --- a/chrome/browser/extensions/BUILD.gn
 +++ b/chrome/browser/extensions/BUILD.gn
-@@ -830,7 +830,6 @@
+@@ -816,7 +816,6 @@
      "//chrome/common/safe_browsing:proto",
      "//chrome/services/file_util:buildflags",
      "//chrome/services/file_util/public/mojom:mojom",
@@ -8,7 +8,7 @@
      "//components/affiliations/core/browser:affiliations",
      "//components/app_constants",
      "//components/autofill/content/browser",
-@@ -993,6 +992,10 @@
+@@ -979,6 +978,10 @@
      "//url",
    ]
  
@@ -21,15 +21,15 @@
        "api/system_indicator/system_indicator_api.cc",
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -2015,7 +2015,6 @@
+@@ -1993,7 +1993,6 @@
+       "//chrome/common:version_header",
        "//chrome/common/privacy_budget:test_support",
        "//chrome/renderer",
-       "//chrome/renderer/companion/visual_query:browser_tests",
 -      "//chrome/services/removable_storage_writer:lib",
        "//chrome/test/data/webui:resources_grit",
        "//chrome/test/data/webui/mojo:mojo_bindings",
        "//chrome/test/media_router/access_code_cast:access_code_cast_integration_base",
-@@ -2369,6 +2368,10 @@
+@@ -2351,6 +2350,10 @@
        "//v8",
      ]
  
@@ -37,28 +37,9 @@
 +      deps += [ "//chrome/services/removable_storage_writer:lib" ]
 +    }
 +
-     allow_circular_includes_from = []
+     allow_circular_includes_from =
+         [ "//chrome/browser/optimization_guide:browser_tests" ]
  
-     if (is_chromeos) {
-@@ -9311,7 +9314,6 @@
-       "//chrome/common/extensions/api",
-       "//chrome/common/safe_browsing:proto",
-       "//chrome/renderer/extensions",
--      "//chrome/utility/image_writer:unit_tests",
-       "//components/enterprise:test_support",
-       "//components/password_manager/core/browser/features:password_features",
-       "//components/password_manager/core/browser/sharing",
-@@ -9343,6 +9345,10 @@
-       "//tools/json_schema_compiler/test:unit_tests",
-     ]
- 
-+    if (enable_extractors) {
-+      deps += [ "//chrome/utility/image_writer:unit_tests" ]
-+    }
-+
-     if (enable_service_discovery) {
-       sources += [ "../browser/extensions/api/mdns/mdns_api_unittest.cc" ]
-     }
 --- a/chrome/utility/BUILD.gn
 +++ b/chrome/utility/BUILD.gn
 @@ -6,6 +6,7 @@
