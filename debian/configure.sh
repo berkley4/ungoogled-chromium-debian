@@ -714,7 +714,6 @@ fi
 
 
 if [ $COMPOSE -eq 0 ]; then
-  op_enable="$op_enable disable/compose.patch"
   gn_enable="$gn_enable enable_compose=false"
 fi
 
