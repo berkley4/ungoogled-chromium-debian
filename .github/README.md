@@ -80,7 +80,6 @@ ___Security/Privacy improvements___
         - Bluez
         - Catapult
         - Click-to-call
-        - Compose (autofill)
         - D-Bus/Notifications
         - DNS config service
         - Enterprise watermark

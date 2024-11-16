@@ -104,7 +104,6 @@ CHROMECAST		0		Note that enabling (CHROMECAST=1) is untested
 					2 - enable fully
 
 CLICK_TO_CALL		1		Feature for using chromium to make a call via an android phone
-COMPOSE			1		An autofill-related feature which can be disabled by those who don't use autofill
 DBUS			1		Disabling this will disable dbus and the notifications system
 					Note that DBUS=0 is a effectively a superset of BLUEZ=0 (use_dbus=false makes use_bluez false)
 

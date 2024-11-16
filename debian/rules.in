@@ -137,9 +137,6 @@ GN_FLAGS += enable_platform_ac3_eac3_audio=true
 # Disable click-to-call
 #GN_FLAGS += enable_click_to_call=false
 
-# Disable compose
-#GN_FLAGS += enable_compose=false
-
 # Disable dBus
 #GN_FLAGS += use_dbus=false
 

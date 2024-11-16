@@ -74,7 +74,6 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$CATAPULT" ] || CATAPULT=0
 [ -n "$CHROMECAST" ] || CHROMECAST=0
 [ -n "$CLICK_TO_CALL" ] || CLICK_TO_CALL=1
-[ -n "$COMPOSE" ] || COMPOSE=1
 [ -n "$DRIVER" ] || DRIVER=1
 [ -n "$ENTERPRISE_WATERMARK" ] || ENTERPRISE_WATERMARK=0
 [ -n "$EXTENSIONS_ROOT_MENU" ] || EXTENSIONS_ROOT_MENU=0
@@ -710,11 +709,6 @@ fi
 if [ $CLICK_TO_CALL -eq 0 ]; then
   op_enable="$op_enable disable/click-to-call.patch"
   gn_enable="$gn_enable enable_click_to_call=false"
-fi
-
-
-if [ $COMPOSE -eq 0 ]; then
-  gn_enable="$gn_enable enable_compose=false"
 fi
 
 
