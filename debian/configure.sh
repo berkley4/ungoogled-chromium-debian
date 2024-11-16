@@ -1162,7 +1162,7 @@ if [ $STABLE -eq 1 ]; then
     exit 1
   fi
 
-  # Disabled by default if not force-enabled
+  # For STABLE=1 we disable brotli by default but allow force-enablement
   [ $SYS_BROTLI_SET -eq 1 ] && [ $SYS_BROTLI -eq 1 ] || SYS_BROTLI=0
 
   if [ $SYS_BROTLI -eq 1 ]; then
@@ -1181,6 +1181,7 @@ fi
 
 
 if [ $SYS_BROTLI -eq 0 ]; then
+  op_disable="$op_disable system/unstable/freetype.patch"
   op_enable="$op_enable fixes/skia-allow-bundled-freetype.patch"
 
   if [ $OPENTYPE_SVG -eq 1 ]; then
@@ -1198,8 +1199,6 @@ if [ $SYS_BROTLI -eq 0 ]; then
     sys_enable="$sys_enable libpng"
     deps_enable="$deps_enable libpng"
   fi
-else
-  op_enable="$op_enable system/unstable/freetype.patch"
 fi
 
 
