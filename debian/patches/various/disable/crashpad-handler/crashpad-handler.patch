@@ -43,7 +43,7 @@
  
          ldflags = []
  
-@@ -1707,7 +1709,6 @@
+@@ -1705,7 +1707,6 @@
        deps = [
          ":angle_egl_symbols",
          ":angle_gles_symbols",
@@ -51,7 +51,7 @@
          ":chrome_symbols",
        ]
        if (is_linux) {
-@@ -1732,17 +1733,19 @@
+@@ -1730,17 +1731,19 @@
  
        deps = [ ":chrome" ]
      }

@@ -1,6 +1,6 @@
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -1819,17 +1819,12 @@
+@@ -1817,17 +1817,12 @@
  
    # Copies some scripts and resources that are used for desktop integration.
    copy("xdg_mime") {

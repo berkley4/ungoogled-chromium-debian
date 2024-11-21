@@ -20,7 +20,7 @@
  import("//media/media_options.gni")
  import("//ppapi/buildflags/buildflags.gni")
  import("//third_party/blink/public/public_features.gni")
-@@ -1711,7 +1712,7 @@
+@@ -1709,7 +1710,7 @@
          ":angle_gles_symbols",
          ":chrome_symbols",
        ]
@@ -29,7 +29,7 @@
          deps += [ ":swiftshader_vk_symbols" ]
        }
        if (!is_chromeos) {
-@@ -1747,17 +1748,19 @@
+@@ -1745,17 +1746,19 @@
          deps = [ "//components/crash/core/app:chrome_crashpad_handler" ]
        }
      }
