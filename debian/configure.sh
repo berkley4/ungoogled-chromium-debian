@@ -88,6 +88,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$GRCACHE_PURGE" ] || GRCACHE_PURGE=0
 [ -n "$HEADLESS" ] || HEADLESS=1
 [ -n "$HLS_PLAYER" ] || HLS_PLAYER=1
+[ -n "$IDB_FG_CLIENT_BOOST" ] || IDB_FG_CLIENT_BOOST=1
 [ -n "$LABS_TOOLBAR_BUTTON" ] || LABS_TOOLBAR_BUTTON=0
 [ -n "$LENS" ] || LENS=0
 [ -n "$LENS_TRANSLATE" ] || LENS_TRANSLATE=1
@@ -820,6 +821,11 @@ elif [ $HLS_PLAYER -ge 2 ]; then
   sed -e '/enable-builtin-hls/s@^#@@' \
       -e '/enable-features=HlsPlayer/s@^#@@' \
       -i $FLAG_DIR/hls-player
+fi
+
+
+if [ $IDB_FG_CLIENT_BOOST -eq 0  ]; then
+  sed -e '/IdbExpediteBackend/s@^@#@' -i $FLAG_DIR/miscellaneous
 fi
 
 

@@ -16,6 +16,9 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=LayoutNGShapeCache"
 # Disable LevelDBProtoAsyncWrite
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=LevelDBProtoAsyncWrite"
 
+# Enable boosting priority of backend tasks associated with foreground clients for IDB
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=IdbExpediteBackendProcessingForForegroundClients"
+
 # Enable ServiceWorkerAvoidMainThreadForInitialization
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=ServiceWorkerAvoidMainThreadForInitialization"
 
