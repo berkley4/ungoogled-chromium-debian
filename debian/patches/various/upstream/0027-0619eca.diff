@@ -1,0 +1,34 @@
+From 0619ecab8fa3d83f43e5da8d472a56162e87232b Mon Sep 17 00:00:00 2001
+From: Ted Meyer <tmathmeyer@chromium.org>
+Date: Tue, 12 Nov 2024 02:30:42 +0000
+Subject: [PATCH] Fix fuzzer crash in WebM parser
+
+It seems that a carefully constructed webm payload can control both
+block_duration as well as timecode_multiplier_ and set them so that when
+multiplied and used as a Microseconds value, the outcome is
+kInfiniteDuration, which causes a check failure. We can test for that in
+a similar manner as testing for kNoTimestamp, and simply not set
+infinite timestamps on the buffers that the parser emits.
+
+Bug: 378102644
+Change-Id: Ibe0223850dd5fdcd56837776fd9c65850842b883
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6013525
+Auto-Submit: Ted (Chromium) Meyer <tmathmeyer@chromium.org>
+Commit-Queue: Eugene Zemtsov <eugene@chromium.org>
+Commit-Queue: Ted (Chromium) Meyer <tmathmeyer@chromium.org>
+Reviewed-by: Eugene Zemtsov <eugene@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1381562}
+---
+
+--- a/media/formats/webm/webm_cluster_parser.cc
++++ b/media/formats/webm/webm_cluster_parser.cc
+@@ -556,7 +556,8 @@
+             << encoded_duration.InMilliseconds() << "ms).";
+       }
+     }
+-  } else if (block_duration_time_delta != kNoTimestamp) {
++  } else if (block_duration_time_delta != kNoTimestamp &&
++             block_duration_time_delta != kInfiniteDuration) {
+     buffer->set_duration(block_duration_time_delta);
+   } else {
+     buffer->set_duration(track->default_duration());

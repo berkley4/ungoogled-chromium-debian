@@ -1,0 +1,67 @@
+From f8da0714ebfe8a2a2772958b05a484539d2ab742 Mon Sep 17 00:00:00 2001
+From: Ken Rockot <rockot@google.com>
+Date: Wed, 20 Nov 2024 23:18:37 +0000
+Subject: [PATCH] ipcz: Fix assertions in link state adoption
+
+Fragment resolution can fail even with an apparently valid descriptor,
+e.g. when the fragment would overflow the resolved buffer's bounds.
+There were some code paths that incorrectly assumed valid descriptor
+meant valid fragment, ultimately then passing a null fragment to places
+that would assert fragment validity in some form or another.
+
+This fixes that.
+
+Fixed: 378866775
+Change-Id: Ief3f2e25b55839b4a54427fe4a771dff03f67250
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6036433
+Commit-Queue: Ken Rockot <rockot@google.com>
+Reviewed-by: Alex Gough <ajgo@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1385942}
+---
+
+--- a/third_party/ipcz/src/ipcz/node_link.cc
++++ b/third_party/ipcz/src/ipcz/node_link.cc
+@@ -614,7 +614,8 @@
+       return true;
+     }
+ 
+-    if (!parcel->AdoptDataFragment(WrapRefCounted(&memory()), fragment)) {
++    if (fragment.is_null() ||
++        !parcel->AdoptDataFragment(WrapRefCounted(&memory()), fragment)) {
+       return false;
+     }
+   } else {
+--- a/third_party/ipcz/src/ipcz/node_link_memory.h
++++ b/third_party/ipcz/src/ipcz/node_link_memory.h
+@@ -118,7 +118,12 @@
+       return {};
+     }
+ 
+-    return AdoptFragmentRef<T>(GetFragment(descriptor));
++    const Fragment fragment = GetFragment(descriptor);
++    if (fragment.is_null()) {
++      return {};
++    }
++
++    return AdoptFragmentRef<T>(fragment);
+   }
+ 
+   // Adds a new buffer to the underlying BufferPool to use as additional
+--- a/third_party/ipcz/src/ipcz/remote_router_link.cc
++++ b/third_party/ipcz/src/ipcz/remote_router_link.cc
+@@ -63,9 +63,12 @@
+     memory->WaitForBufferAsync(
+         descriptor.buffer_id(),
+         [self = WrapRefCounted(this), memory, descriptor] {
+-          self->SetLinkState(memory->AdoptFragmentRef<RouterLinkState>(
+-              memory->GetFragment(descriptor)));
+-          self->FlushRouter();
++          auto state =
++              memory->AdoptFragmentRefIfValid<RouterLinkState>(descriptor);
++          if (state.is_addressable()) {
++            self->SetLinkState(std::move(state));
++            self->FlushRouter();
++          }
+         });
+     return;
+   }

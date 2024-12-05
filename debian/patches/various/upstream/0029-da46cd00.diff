@@ -1,0 +1,74 @@
+From da46cd0027b5ff5c87686ae990e9c628bf448752 Mon Sep 17 00:00:00 2001
+From: Ken Rockot <rockot@google.com>
+Date: Tue, 19 Nov 2024 23:49:01 +0000
+Subject: [PATCH] Fix deadlock in ipcz
+
+This fixes potential Router reentrancy and deadlock during Router
+deserialization. The root cause is RemoteRouterLink flushing its Router
+when setting its link state; but link state may sometimes be set while
+holding a lock on the same Router.
+
+The fix is to factor the flush further out along the only two code
+paths that can set a link's state object.
+
+Fixed: 379122768
+Change-Id: Ia4b1cc48ecef20cbcb255a5f75ee738d8c834dc4
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6032775
+Commit-Queue: Ken Rockot <rockot@google.com>
+Reviewed-by: Alex Gough <ajgo@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1385328}
+---
+
+--- a/third_party/ipcz/src/ipcz/remote_router_link.cc
++++ b/third_party/ipcz/src/ipcz/remote_router_link.cc
+@@ -65,6 +65,7 @@
+         [self = WrapRefCounted(this), memory, descriptor] {
+           self->SetLinkState(memory->AdoptFragmentRef<RouterLinkState>(
+               memory->GetFragment(descriptor)));
++          self->FlushRouter();
+         });
+     return;
+   }
+@@ -96,9 +97,6 @@
+   if (side_is_stable_.load(std::memory_order_acquire)) {
+     MarkSideStable();
+   }
+-  if (Ref<Router> router = node_link()->GetRouter(sublink_)) {
+-    router->Flush(Router::kForceProxyBypassAttempt);
+-  }
+ }
+ 
+ LinkType RemoteRouterLink::GetType() const {
+@@ -489,4 +487,10 @@
+   return ss.str();
+ }
+ 
++void RemoteRouterLink::FlushRouter() {
++  if (Ref<Router> router = node_link()->GetRouter(sublink_)) {
++    router->Flush(Router::kForceProxyBypassAttempt);
++  }
++}
++
+ }  // namespace ipcz
+--- a/third_party/ipcz/src/ipcz/remote_router_link.h
++++ b/third_party/ipcz/src/ipcz/remote_router_link.h
+@@ -95,6 +95,9 @@
+   // and this must be a central link.
+   void SetLinkState(FragmentRef<RouterLinkState> state);
+ 
++  // Flushes the link's local router.
++  void FlushRouter();
++
+   const Ref<NodeLink> node_link_;
+   const SublinkId sublink_;
+   const LinkType type_;
+--- a/third_party/ipcz/src/ipcz/router.cc
++++ b/third_party/ipcz/src/ipcz/router.cc
+@@ -822,6 +822,7 @@
+ 
+   if (local_peer && initiate_proxy_bypass &&
+       SerializeNewRouterWithLocalPeer(to_node_link, descriptor, local_peer)) {
++    local_peer->Flush(kForceProxyBypassAttempt);
+     return;
+   }
+ 

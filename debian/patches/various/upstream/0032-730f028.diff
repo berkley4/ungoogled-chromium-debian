@@ -1,0 +1,36 @@
+From 730f0289c826efb3aaff42473975f52fcdefbb88 Mon Sep 17 00:00:00 2001
+From: Ken Rockot <rockot@google.com>
+Date: Tue, 19 Nov 2024 21:32:28 -0800
+Subject: [PATCH] ipcz: Stronger validation for block buffers
+
+Buffers can no longer be registered which:
+
+- Use an invalid BufferId
+- Have a block size below the minimum allowed (64 bytes)
+- Have a block size which is not 8-byte aligned
+- Contain less than the minimum allowed block count (8)
+
+Fixed: 379418965
+Fixed: 377942358
+Change-Id: Ia49a27344bec97305c7fddf91677fbc1a6b6f9e0
+---
+
+--- a/third_party/ipcz/src/ipcz/node_link_memory.cc
++++ b/third_party/ipcz/src/ipcz/node_link_memory.cc
+@@ -293,6 +293,16 @@
+ bool NodeLinkMemory::AddBlockBuffer(BufferId id,
+                                     size_t block_size,
+                                     DriverMemoryMapping mapping) {
++  if (id == kInvalidBufferId) {
++    return false;
++  }
++  if (block_size < kMinFragmentSize || (block_size & 7) != 0) {
++    return false;
++  }
++  const size_t block_capacity = mapping.bytes().size() / block_size;
++  if (block_capacity < kMinBlockAllocatorCapacity) {
++    return false;
++  }
+   const BlockAllocator allocator(mapping.bytes(), block_size);
+   return buffer_pool_.AddBlockBuffer(id, std::move(mapping), {&allocator, 1});
+ }

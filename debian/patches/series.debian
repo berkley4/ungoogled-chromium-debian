@@ -121,6 +121,24 @@ various/upstream/0015-a1459c0f.diff
 various/upstream/0016-3ca042e0b4.diff
 various/upstream/0017-2248739.diff
 various/upstream/0018-46478fe.diff
+various/upstream/0019-3eab993.diff
+various/upstream/0020-6186fed7b.diff
+various/upstream/0021-8a7860b.diff
+various/upstream/0022-6dfa7c8.diff
+various/upstream/0023-4b9f00fe.diff
+various/upstream/0024-e8d70af.diff
+various/upstream/0025-9c334a4.diff
+various/upstream/0026-e8d7df42.diff
+various/upstream/0027-0619eca.diff
+various/upstream/0028-8ddc03d.diff
+various/upstream/0029-da46cd00.diff
+various/upstream/0030-b857e97.diff
+various/upstream/0031-19d90f7.diff
+various/upstream/0032-730f028.diff
+various/upstream/0033-f8da071.diff
+various/upstream/0034-f9d943a.diff
+various/upstream/0035-50d5004.diff
+
 various/upstream/features/leveldb-proto-enable-async-writes-by-default.patch
 various/warnings/clang-excessive-warnings.patch
 
@@ -210,3 +228,5 @@ optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
 optional/translate/avoid-dangling-pointers-in-TranslateBubbleView.patch
 optional/translate/revert-disable.patch
 optional/translate/stop-unsupported-switch-warning.patch
+
+addenda/0001-2dde87d.diff

@@ -1,0 +1,44 @@
+From b857e972de828077fe6a4595335d27530879191f Mon Sep 17 00:00:00 2001
+From: Syed AbuTalib <lowkey@google.com>
+Date: Wed, 20 Nov 2024 00:40:05 +0000
+Subject: [PATCH] Use temporary variable to prevent heap-use-after-free
+
+There is a UAF in stable as DecoderBuffer::side_data() returns a
+temporary object. Raw pointers into its owned members will be dangling
+(seen in next line)
+
+Also, this was fixed in
+https://chromium-review.googlesource.com/c/chromium/src/+/5893004 but
+that is in M132, not M131.
+
+Bug: 379715150
+Change-Id: I52e95503c4c5daaed58514a1d007335c1a3cab74
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6032156
+Reviewed-by: Thomas Guilbert <tguilbert@chromium.org>
+Commit-Queue: Syed AbuTalib <lowkey@google.com>
+Reviewed-by: Dale Curtis <dalecurtis@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1385358}
+---
+
+--- a/media/gpu/v4l2/v4l2_vp9_helpers.cc
++++ b/media/gpu/v4l2/v4l2_vp9_helpers.cc
+@@ -104,16 +104,14 @@
+ 
+ bool AppendVP9SuperFrameIndex(scoped_refptr<DecoderBuffer>& buffer) {
+   DCHECK(buffer->has_side_data());
+-  DCHECK(!buffer->side_data()->spatial_layers.empty());
++  std::vector<uint32_t> frame_sizes = buffer->side_data()->spatial_layers;
++  DCHECK(!frame_sizes.empty());
+ 
+-  const size_t num_of_layers = buffer->side_data()->spatial_layers.size();
+-  if (num_of_layers > 3u) {
++  if (frame_sizes.size() > 3u) {
+     LOG(ERROR) << "The maximum number of spatial layers in VP9 is three";
+     return false;
+   }
+ 
+-  const uint32_t* cue_data = buffer->side_data()->spatial_layers.data();
+-  std::vector<uint32_t> frame_sizes(cue_data, cue_data + num_of_layers);
+   std::vector<uint8_t> superframe_index = CreateSuperFrameIndex(frame_sizes);
+   const size_t vp9_superframe_size = buffer->size() + superframe_index.size();
+   auto vp9_superframe = base::HeapArray<uint8_t>::Uninit(vp9_superframe_size);

@@ -1,0 +1,39 @@
+From 8ddc03d354aa22d1a4bcb6afde31daeeea6317fb Mon Sep 17 00:00:00 2001
+From: Traian Captan <tcaptan@chromium.org>
+Date: Tue, 12 Nov 2024 23:05:38 +0000
+Subject: [PATCH] Fix `select.checkValidity()` crashes
+
+These crashes are caused by the staleness of the validity cache.
+To fix these crashes we must ensure the cache is marked dirty when
+option values are modified.
+
+Bug: 369241615
+Change-Id: I91b688024a6134e5b4bbe0df6ed6a2676f87bbb8
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6006204
+Commit-Queue: Traian Captan <tcaptan@chromium.org>
+Reviewed-by: Joey Arhar <jarhar@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1382018}
+---
+
+--- a/third_party/blink/renderer/core/html/forms/html_option_element.cc
++++ b/third_party/blink/renderer/core/html/forms/html_option_element.cc
+@@ -220,6 +220,9 @@
+     if (HTMLDataListElement* data_list = OwnerDataListElement()) {
+       data_list->OptionElementChildrenChanged();
+     }
++    if (HTMLSelectElement* select = OwnerSelectElement()) {
++      select->SetNeedsValidityCheck();
++    }
+   } else if (name == html_names::kDisabledAttr) {
+     if (params.old_value.IsNull() != params.new_value.IsNull()) {
+       PseudoStateChanged(CSSSelector::kPseudoDisabled);
+--- a/third_party/blink/web_tests/TestExpectations
++++ b/third_party/blink/web_tests/TestExpectations
+@@ -5625,7 +5625,6 @@
+ crbug.com/366394195 external/wpt/html/semantics/forms/the-select-element/select-rtl.tentative.html [ Failure ]
+ crbug.com/366394195 wpt_internal/html/semantics/forms/the-select-element/customizable-select/select-selected-value-behavior.tentative.html [ Failure ]
+ crbug.com/366394195 external/wpt/html/semantics/forms/the-select-element/select-value-selectedOption.tentative.html [ Failure ]
+-crbug.com/369241615 external/wpt/html/semantics/forms/the-select-element/select-validity.tentative.html [ Crash Failure ]
+ # Shape of the disclosure:
+ crbug.com/366394195 wpt_internal/html/semantics/forms/the-select-element/customizable-select/select-text-only.tentative.html [ Failure ]
+ 

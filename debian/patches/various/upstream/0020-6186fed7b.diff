@@ -1,0 +1,60 @@
+From 6186fed7bfad6dde188542d5e776ff82e847f55f Mon Sep 17 00:00:00 2001
+From: Joey Arhar <jarhar@chromium.org>
+Date: Tue, 05 Nov 2024 18:06:22 +0000
+Subject: [PATCH] DevTools: Don't call getAnimations on provisional frames
+
+In http://crrev.com/1329409 a call to getAnimations was added to
+InspectorAnimationAgent::enable, which caused a DumpWithoutCrashing to
+get frequently hit in ToV8ContextMaybeEmpty.
+
+This patch adds a provisional frame check to
+InspectorAnimationAgent::enable to avoid calling getAnimations in a way
+that will make this crash.
+
+This patch also adds DCHECKs to the DumpWithoutCrashing lines in
+v8_binding_for_core.cc in order to prevent issues like this from getting
+through the tests again - it would seem that hitting DumpWithoutCrashing
+during a web_test is currently not a test failure.
+
+Bug: 40670727
+Fixed: 376406320
+Change-Id: I12dd4e75d11748aee7d8af8e6c330e1097b112b4
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5980089
+Reviewed-by: Ergün Erdoğmuş <ergunsh@chromium.org>
+Commit-Queue: Joey Arhar <jarhar@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1378451}
+---
+
+--- a/third_party/blink/renderer/bindings/core/v8/v8_binding_for_core.cc
++++ b/third_party/blink/renderer/bindings/core/v8/v8_binding_for_core.cc
+@@ -736,6 +736,7 @@
+   // introduced due to crbug.com/1037985 .  Remove this temporary fix once
+   // the root cause is fixed.
+   if (!frame->IsDetached() && frame->IsProvisional()) {
++    DCHECK(false);
+     base::debug::DumpWithoutCrashing();
+     return v8::Local<v8::Context>();
+   }
+@@ -751,6 +752,7 @@
+   // introduced due to crbug.com/1037985 .  Remove this temporary fix once
+   // the root cause is fixed.
+   if (!frame->IsDetached() && frame->IsProvisional()) {
++    DCHECK(false);
+     base::debug::DumpWithoutCrashing();
+     return v8::Local<v8::Context>();
+   }
+--- a/third_party/blink/renderer/core/inspector/inspector_animation_agent.cc
++++ b/third_party/blink/renderer/core/inspector/inspector_animation_agent.cc
+@@ -144,6 +144,12 @@
+   enabled_.Set(true);
+   instrumenting_agents_->AddInspectorAnimationAgent(this);
+ 
++  if (inspected_frames_->Root()->IsProvisional()) {
++    // Running getAnimations on a document attached to a provisional frame can
++    // cause a crash: crbug.com/40670727
++    return protocol::Response::Success();
++  }
++
+   Document* document = inspected_frames_->Root()->GetDocument();
+   DocumentAnimations& document_animations = document->GetDocumentAnimations();
+   HeapVector<Member<Animation>> animations =

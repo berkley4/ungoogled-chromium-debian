@@ -1,0 +1,154 @@
+From 6dfa7c8fc14e62bea027c587dac791755affbfae Mon Sep 17 00:00:00 2001
+From: Joey Arhar <jarhar@chromium.org>
+Date: Wed, 06 Nov 2024 17:20:31 +0000
+Subject: [PATCH] Fix invalidation for base-select select:open
+
+This patch moves the invalidation for :open on select elements to the
+same place as :popover-open in order to prevent a crash. This is more
+correct because the selector checker for select:open looks at
+:popover-open when in base appearance mode.
+
+This patch also uncovers a new way to hit the CHECK in
+ManuallyAssignSlots which I was already planning on removing in
+http://crrev.com/c/5953628 so I am removing it in this patch instead.
+
+Fixed: 375004874, 364924715
+Change-Id: I36b8c1e9d467c8d40623eb83bc3a8d5154fc9218
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5979628
+Reviewed-by: Rune Lillesveen <futhark@chromium.org>
+Commit-Queue: Joey Arhar <jarhar@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1379073}
+---
+
+--- a/third_party/blink/renderer/core/html/forms/select_type.cc
++++ b/third_party/blink/renderer/core/html/forms/select_type.cc
+@@ -132,7 +132,6 @@
+       if (option_to_focus) {
+         option_to_focus->Focus(FocusParams(FocusTrigger::kScript));
+       }
+-      select->PseudoStateChanged(CSSSelector::kPseudoOpen);
+       if (AXObjectCache* cache =
+               select->GetDocument().ExistingAXObjectCache()) {
+         cache->DidShowMenuListPopup(select);
+@@ -159,7 +158,6 @@
+         element_to_focus->Focus(FocusParams(FocusTrigger::kScript));
+       }
+ 
+-      select->PseudoStateChanged(CSSSelector::kPseudoOpen);
+       if (AXObjectCache* cache =
+               select->GetDocument().ExistingAXObjectCache()) {
+         cache->DidHideMenuListPopup(select);
+@@ -606,7 +604,6 @@
+     // case which would require switching appearance values after the user has
+     // opened the select.
+     if (popover_->IsInTopLayer()) {
+-      CHECK(IsAppearanceBasePicker());
+       popover_options_slot_->Assign(all_children_except_first_button);
+       option_slot_->Assign(nullptr);
+     } else {
+--- a/third_party/blink/renderer/core/html/html_element.cc
++++ b/third_party/blink/renderer/core/html/html_element.cc
+@@ -92,6 +92,7 @@
+ #include "third_party/blink/renderer/core/html/forms/html_form_element.h"
+ #include "third_party/blink/renderer/core/html/forms/html_input_element.h"
+ #include "third_party/blink/renderer/core/html/forms/html_label_element.h"
++#include "third_party/blink/renderer/core/html/forms/html_select_element.h"
+ #include "third_party/blink/renderer/core/html/forms/labels_node_list.h"
+ #include "third_party/blink/renderer/core/html/forms/text_control_element.h"
+ #include "third_party/blink/renderer/core/html/html_bdi_element.h"
+@@ -1585,7 +1586,15 @@
+   if (RuntimeEnabledFeatures::PopoverAnchorRelationshipsEnabled()) {
+     SetImplicitAnchor(invoker);
+   }
++
+   PseudoStateChanged(CSSSelector::kPseudoPopoverOpen);
++  if (HTMLSelectElement::IsPopoverForAppearanceBase(this)) {
++    // If this element is the ::picker(select) popover, then we need to
++    // invalidate the select element's :open pseudo-class at the same time as
++    // :popover-open https://issues.chromium.org/issues/375004874
++    OwnerShadowHost()->PseudoStateChanged(CSSSelector::kPseudoOpen);
++  }
++
+   CHECK(!original_document.AllOpenPopovers().Contains(this));
+   original_document.AllOpenPopovers().insert(this);
+ 
+@@ -1897,7 +1906,15 @@
+ 
+   // Re-apply display:none, and stop matching `:popover-open`.
+   GetPopoverData()->setVisibilityState(PopoverVisibilityState::kHidden);
++
+   PseudoStateChanged(CSSSelector::kPseudoPopoverOpen);
++  if (HTMLSelectElement::IsPopoverForAppearanceBase(this)) {
++    // If this element is the ::picker(select) popover, then we need to
++    // invalidate the select element's :open pseudo-class at the same time as
++    // :popover-open https://issues.chromium.org/issues/375004874
++    OwnerShadowHost()->PseudoStateChanged(CSSSelector::kPseudoOpen);
++  }
++
+   document.AllOpenPopovers().erase(this);
+ 
+   Element* previously_focused_element =
+--- /dev/null
++++ b/third_party/blink/web_tests/external/wpt/html/semantics/forms/the-select-element/customizable-select/select-anchor-regression.html
+@@ -0,0 +1,45 @@
++<!DOCTYPE html>
++<link rel=author href="mailto:andruud@chromium.org">
++<link rel=author href="mailto:jarhar@chromium.org">
++<link rel=help href="https://issues.chromium.org/issues/375004874">
++<script src="/resources/testharness.js"></script>
++<script src="/resources/testharnessreport.js"></script>
++<script src="/resources/testdriver.js"></script>
++<script src="/resources/testdriver-vendor.js"></script>
++
++<style>
++  select,
++  ::picker(select) {
++    appearance: base-select;
++  }
++
++  .amount {
++    position: absolute;
++    position-anchor: --my-select;
++  }
++
++  select:open selectedoption {
++    .amount {
++      display: none;
++    }
++  }
++</style>
++
++<select>
++  <button>
++    <selectedoption></selectedoption>
++  </button>
++  <div>
++    <option>
++      <div class="title">Potion</div>
++      <div class="amount">10</div>
++    </option>
++  </div>
++</select>
++
++<script>
++promise_test(async () => {
++  await test_driver.click(document.querySelector('button'));
++  await new Promise(requestAnimationFrame);
++}, 'This test passes if it does not crash.');
++</script>
+--- /dev/null
++++ b/third_party/blink/web_tests/virtual/customizable-select-disabled/external/wpt/html/semantics/forms/the-select-element/customizable-select/select-anchor-regression-expected.txt
+@@ -0,0 +1,5 @@
++This is a testharness.js-based test.
++[FAIL] This test passes if it does not crash.
++  promise_test: Unhandled rejection with value: object "TypeError: Cannot read properties of null (reading 'ownerDocument')"
++Harness: the test ran to completion.
++
+--- /dev/null
++++ b/third_party/blink/web_tests/virtual/select-parser-relaxation/external/wpt/html/semantics/forms/the-select-element/customizable-select/select-anchor-regression-expected.txt
+@@ -0,0 +1,5 @@
++This is a testharness.js-based test.
++[FAIL] This test passes if it does not crash.
++  promise_test: Unhandled rejection with value: object "Error: element click intercepted error"
++Harness: the test ran to completion.
++

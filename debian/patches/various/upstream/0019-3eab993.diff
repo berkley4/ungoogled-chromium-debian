@@ -1,0 +1,180 @@
+From 3eab9938fa55d19e77875e4e687ba5b33e43717b Mon Sep 17 00:00:00 2001
+From: Joey Arhar <jarhar@chromium.org>
+Date: Thu, 31 Oct 2024 20:35:09 +0000
+Subject: [PATCH] Make <selectedoption> stop responding to mutations
+
+This patch makes <selectedoption> stop using the MutationObserver for
+<option>: https://github.com/openui/open-ui/issues/825
+
+This patch also uncovered a small bug with the
+selectedoptionelement attribute when assigning null to the IDL
+attribute, which I fixed by removing a null check.
+
+Bug: 336844298
+Change-Id: I3fed171bf687cabb9474d8ff8741071c28bbad0b
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/5941575
+Reviewed-by: Dominic Farolino <dom@chromium.org>
+Commit-Queue: Joey Arhar <jarhar@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1376573}
+---
+
+--- a/third_party/blink/renderer/core/html/forms/html_option_element.cc
++++ b/third_party/blink/renderer/core/html/forms/html_option_element.cc
+@@ -62,9 +62,6 @@
+     init->setCharacterData(true);
+     init->setChildList(true);
+     init->setSubtree(true);
+-    if (RuntimeEnabledFeatures::CustomizableSelectEnabled()) {
+-      init->setAttributes(true);
+-    }
+     observer_->observe(option_, init, ASSERT_NO_EXCEPTION);
+   }
+ 
+--- a/third_party/blink/renderer/core/html/forms/html_select_element.cc
++++ b/third_party/blink/renderer/core/html/forms/html_select_element.cc
+@@ -517,15 +517,6 @@
+             GetLayoutObject()->GetDocument().ExistingAXObjectCache())
+       cache->ChildrenChanged(this);
+   }
+-
+-  if (option.Selected()) {
+-    if (RuntimeEnabledFeatures::CustomizableSelectEnabled()) {
+-      for (HTMLSelectedOptionElement* selectedoption :
+-           TargetSelectedOptions()) {
+-        selectedoption->CloneContentsFromOptionElement(&option);
+-      }
+-    }
+-  }
+ }
+ 
+ void HTMLSelectElement::AccessKeyAction(
+@@ -1897,10 +1888,8 @@
+     HTMLSelectedOptionElement* new_selectedoption) {
+   CHECK(RuntimeEnabledFeatures::CustomizableSelectEnabled());
+   auto* old_selectedoption = selectedOptionElement();
+-  if (new_selectedoption) {
+-    SetElementAttribute(html_names::kSelectedoptionelementAttr,
+-                        new_selectedoption);
+-  }
++  SetElementAttribute(html_names::kSelectedoptionelementAttr,
++                      new_selectedoption);
+ 
+   if (old_selectedoption != new_selectedoption) {
+     if (old_selectedoption) {
+--- a/third_party/blink/renderer/core/html/forms/html_select_element.h
++++ b/third_party/blink/renderer/core/html/forms/html_select_element.h
+@@ -272,6 +272,10 @@
+   void DefaultEventHandler(Event&) override;
+   FocusableState SupportsFocus(UpdateBehavior update_behavior) const override;
+ 
++  // Returns descendant_selectedoptions_ and the <selectedoption> targeted by
++  // the selectedoptionelement attribute.
++  HeapHashSet<Member<HTMLSelectedOptionElement>> TargetSelectedOptions() const;
++
+  private:
+   mojom::blink::FormControlType FormControlType() const override;
+   const AtomicString& FormControlTypeAsString() const override;
+@@ -364,10 +368,6 @@
+   void ChangeRendering();
+   void UpdateUserAgentShadowTree(ShadowRoot& root);
+ 
+-  // Returns descendant_selectedoptions_ and the <selectedoption> targeted by
+-  // the selectedoptionelement attribute.
+-  HeapHashSet<Member<HTMLSelectedOptionElement>> TargetSelectedOptions() const;
+-
+   // list_items_ contains HTMLOptionElement, HTMLOptGroupElement, and
+   // HTMLHRElement objects.
+   mutable ListItems list_items_;
+--- a/third_party/blink/renderer/core/html/parser/html_tree_builder.cc
++++ b/third_party/blink/renderer/core/html/parser/html_tree_builder.cc
+@@ -42,6 +42,9 @@
+ #include "third_party/blink/renderer/core/frame/web_feature.h"
+ #include "third_party/blink/renderer/core/html/forms/html_form_control_element.h"
+ #include "third_party/blink/renderer/core/html/forms/html_form_element.h"
++#include "third_party/blink/renderer/core/html/forms/html_option_element.h"
++#include "third_party/blink/renderer/core/html/forms/html_select_element.h"
++#include "third_party/blink/renderer/core/html/forms/html_selected_option_element.h"
+ #include "third_party/blink/renderer/core/html/forms/html_text_area_element.h"
+ #include "third_party/blink/renderer/core/html/html_template_element.h"
+ #include "third_party/blink/renderer/core/html/parser/atomic_html_token.h"
+@@ -2095,6 +2098,23 @@
+         ParseError(token);
+       tree_.OpenElements()->PopUntilPopped(tag);
+       return;
++    case HTMLTag::kOption: {
++      auto* option =
++          DynamicTo<HTMLOptionElement>(tree_.OpenElements()->TopNode());
++      ProcessAnyOtherEndTagForInBody(token);
++      if (RuntimeEnabledFeatures::CustomizableSelectEnabled()) {
++        if (option && option->Selected()) {
++          auto* select = option->OwnerSelectElement();
++          if (select && select->UsesMenuList() && !select->IsMultiple()) {
++            CHECK_EQ(option, select->SelectedOption());
++            for (auto& selectedoption : select->TargetSelectedOptions()) {
++              selectedoption->CloneContentsFromOptionElement(option);
++            }
++          }
++        }
++      }
++    }
++      return;
+     case HTMLTag::kForm:
+       if (!IsParsingTemplateContents()) {
+         Element* node = tree_.TakeForm();
+--- a/third_party/blink/web_tests/external/wpt/html/semantics/forms/the-select-element/customizable-select/selectedoption.tentative.html
++++ b/third_party/blink/web_tests/external/wpt/html/semantics/forms/the-select-element/customizable-select/selectedoption.tentative.html
+@@ -44,20 +44,21 @@
+   assert_equals(selectedOption.innerHTML, optionTwo.innerHTML,
+     'The innerHTML of <selectedoption> should change after the selected option is changed.');
+ 
++  let oldInnerHTML = optionTwo.innerHTML;
+   spanTwo.textContent = 'new span';
+   await new Promise(queueMicrotask);
+-  assert_equals(selectedOption.innerHTML, optionTwo.innerHTML,
+-    '<selectedoption> should respond to text content changes.');
++  assert_equals(selectedOption.innerHTML, oldInnerHTML,
++    '<selectedoption> should not respond to <option> text content changes.');
+ 
+   spanTwo.appendChild(document.createElement('div'));
+   await new Promise(queueMicrotask);
+-  assert_equals(selectedOption.innerHTML, optionTwo.innerHTML,
+-    '<selectedoption> should respond to new elements being added to descendants.');
++  assert_equals(selectedOption.innerHTML, oldInnerHTML,
++    '<selectedoption> should not respond to new elements being added to descendants of <option>.');
+ 
+   spanTwo.setAttribute('data-foo', 'bar');
+   await new Promise(queueMicrotask);
+-  assert_equals(selectedOption.innerHTML, optionTwo.innerHTML,
+-    '<selectedoption> should respond to attributes being added to descendants.');
++  assert_equals(selectedOption.innerHTML, oldInnerHTML,
++    '<selectedoption> should not respond to attributes being added to descendants of <option>.');
+ 
+   form.reset();
+   await new Promise(queueMicrotask);
+@@ -90,5 +91,7 @@
+   optionOne.remove();
+   assert_equals(selectedOption.innerHTML, '',
+     'The content of <selectedoption> should be cleared if there is no selected <option>.');
++
++  // TODO(crbug.com/336844298): Add tests for mutation records during parsing
+ }, 'The <selectedoption> element should reflect the HTML contents of the selected <option>.');
+ </script>
+--- a/third_party/blink/web_tests/external/wpt/html/semantics/forms/the-select-element/customizable-select/selectedoptionelement-attr.tentative.html
++++ b/third_party/blink/web_tests/external/wpt/html/semantics/forms/the-select-element/customizable-select/selectedoptionelement-attr.tentative.html
+@@ -34,11 +34,14 @@
+     'Removing the selectedoptionelement attribute via IDL should synchronously clear the contents of the <selectedoption>.');
+ 
+   select.selectedOptionElement = selectedoption;
++  assert_equals(selectedoption.innerHTML, optionOne.innerHTML,
++    'Re-setting the selectedoptionelement attribute via IDL should synchronously assign the contents of <selectedoption>.');
+ 
++  let oldInnerHTML = optionOne.innerHTML;
+   optionOne.querySelector('span').remove();
+   await new Promise(queueMicrotask);
+-  assert_equals(selectedoption.innerHTML, optionOne.innerHTML,
+-    'Mutating the selected <option> should update the <selectedoption> contents after a microtask.');
++  assert_equals(selectedoption.innerHTML, oldInnerHTML,
++    'Mutating the selected <option> should not update the <selectedoption> contents.');
+ 
+   select.value = 'two';
+   assert_equals(selectedoption.innerHTML, optionTwo.innerHTML,

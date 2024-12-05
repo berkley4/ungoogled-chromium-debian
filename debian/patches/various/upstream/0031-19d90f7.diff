@@ -1,0 +1,22 @@
+From 19d90f73f574084b9c55168b96815f48317818db Mon Sep 17 00:00:00 2001
+From: Ken Rockot <rockot@google.com>
+Date: Tue, 19 Nov 2024 21:41:29 -0800
+Subject: [PATCH] ipcz: Remove invalid assertion
+
+When block buffer addition fails we assert that there are no callbacks
+awaiting a new buffer. This is neither correct nor useful to assert.
+
+Fixed: 379207977
+Change-Id: Ie3afd19fdac2f22314bb7531a2282dcaac9991df
+---
+
+--- a/third_party/ipcz/src/ipcz/buffer_pool.cc
++++ b/third_party/ipcz/src/ipcz/buffer_pool.cc
+@@ -70,7 +70,6 @@
+     absl::MutexLock lock(&mutex_);
+     auto [it, inserted] = mappings_.insert({id, std::move(mapping)});
+     if (!inserted) {
+-      ABSL_ASSERT(buffer_callbacks_.empty());
+       return false;
+     }
+ 
