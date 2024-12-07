@@ -197,6 +197,7 @@ optional/ffmpeg-extra-codecs/ac3/enable-ac3-ffmpeg-decoding.patch
 optional/fixes/enum-table-crash-hdis.patch
 optional/fixes/icudata-file-path.patch
 #optional/fixes/opentype-svg-on-bundled-freetype.patch
+optional/fixes/qt-ui.patch
 #optional/fixes/skia-allow-bundled-freetype.patch
 optional/fixes/skia-allow-bundled-harfbuzz.patch
 #optional/fixes/skia-gamma.patch

@@ -1,0 +1,11 @@
+--- a/ui/qt/qt_shim.cc
++++ b/ui/qt/qt_shim.cc
+@@ -265,7 +265,7 @@
+ FontDescription QtShim::GetFontDescription() const {
+   QFont font = app_.font();
+   return {
+-      .family = String(font.family().toStdString().c_str()),
++      .family = String(font.family().toUtf8().constData()),
+       .size_pixels = font.pixelSize(),
+       .size_points = font.pointSize(),
+       .is_italic = IsStyleItalic(font.style()),
