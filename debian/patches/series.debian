@@ -68,6 +68,7 @@ various/compiler-flags/stack-clash-protection.patch
 various/compiler-flags/unique-section-names.patch
 various/disable/angle-perftests.patch
 various/disable/CollectWebGPUSupportMetrics.patch
+various/disable/fontations.patch
 various/disable/labs-toolbar-button.patch
 various/disable/lens-features.patch
 various/disable/libavif-fuzzers.patch
