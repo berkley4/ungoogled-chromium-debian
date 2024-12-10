@@ -1,0 +1,47 @@
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -2509,6 +2509,7 @@
+ # [1]: https://pinpoint-dot-chromeperf.appspot.com/job/132bc772be0000
+ # [2]: https://crrev.com/c/5447532
+ config("optimize") {
++  ldflags = common_optimize_on_ldflags
+   if (is_win) {
+     # clang-cl's /O2 corresponds to clang's -O3, and really want -O2 for
+     # consistency with the other platforms.
+@@ -2548,12 +2549,15 @@
+   } else {
+     cflags = [ "-O2" ] + common_optimize_on_cflags
+ 
++    if (use_lld) {
++      ldflags += [ "-Wl,--lto-CGO2" ]
++    }
++
+     # The `-O3` for clang turns on extra optimizations compared to the standard
+     # `-O2`. But for rust, `-Copt-level=3` is the default and is thus reliable
+     # to use.
+     rustflags = [ "-Copt-level=3" ]
+   }
+-  ldflags = common_optimize_on_ldflags
+ }
+ 
+ # Turn off optimizations.
+@@ -2618,6 +2622,9 @@
+       cflags = [ "-O1" ] + common_optimize_on_cflags
+     } else {
+       cflags = [ "-O2" ] + common_optimize_on_cflags
++      if (use_lld) {
++        ldflags += [ "-Wl,--lto-CGO2" ]
++      }
+     }
+     rustflags = [ "-Copt-level=3" ]
+   }
+@@ -2654,6 +2661,9 @@
+       cflags = [ "-O1" ] + common_optimize_on_cflags
+     } else {
+       cflags = [ "-O3" ] + common_optimize_on_cflags
++      if (use_lld) {
++        ldflags += [ "-Wl,--lto-CGO3" ]
++      }
+     }
+     rustflags = [ "-Copt-level=3" ]
+   }

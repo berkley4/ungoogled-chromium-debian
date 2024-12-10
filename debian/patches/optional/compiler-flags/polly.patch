@@ -18,30 +18,30 @@
    if (is_android) {
      # TODO(jdduke) Re-enable on mips after resolving linking
      # issues with libc++ (crbug.com/456380).
-@@ -2559,7 +2570,7 @@
+@@ -2560,7 +2571,7 @@
      # vectorization while otherwise optimizing for size.
      rustflags = [ "-Copt-level=s" ]
    } else {
 -    cflags = [ "-O2" ] + common_optimize_on_cflags
 +    cflags = [ "-O2" ] + common_optimize_on_cflags + polly_cflags
  
-     # The `-O3` for clang turns on extra optimizations compared to the standard
-     # `-O2`. But for rust, `-Copt-level=3` is the default and is thus reliable
-@@ -2635,7 +2646,7 @@
+     if (use_lld) {
+       ldflags += [ "-Wl,--lto-CGO2" ]
+@@ -2634,7 +2645,7 @@
      } else if (optimize_for_fuzzing) {
        cflags = [ "-O1" ] + common_optimize_on_cflags
      } else {
 -      cflags = [ "-O2" ] + common_optimize_on_cflags
 +      cflags = [ "-O2" ] + common_optimize_on_cflags + polly_cflags
-     }
-     rustflags = [ "-Copt-level=3" ]
-   }
-@@ -2671,7 +2682,7 @@
+       if (use_lld) {
+         ldflags += [ "-Wl,--lto-CGO2" ]
+       }
+@@ -2673,7 +2684,7 @@
      } else if (optimize_for_fuzzing) {
        cflags = [ "-O1" ] + common_optimize_on_cflags
      } else {
 -      cflags = [ "-O3" ] + common_optimize_on_cflags
 +      cflags = [ "-O3" ] + common_optimize_on_cflags + polly_cflags
-     }
-     rustflags = [ "-Copt-level=3" ]
-   }
+       if (use_lld) {
+         ldflags += [ "-Wl,--lto-CGO3" ]
+       }
