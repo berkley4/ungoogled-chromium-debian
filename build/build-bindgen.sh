@@ -20,7 +20,7 @@ esac
 
 DL_CACHE=.download_cache
 
-bg_tag=upstream/v0.70.1
+bg_tag=upstream/v0.71.1
 nc_ver=Ws0ru48A4IYoYLVKbV5K5_mDYT4ml9LAQUKdkiczdlMC
 
 bg_repo=https://chromium.googlesource.com/external/github.com/rust-lang/rust-bindgen.git
@@ -154,7 +154,7 @@ if [ -d rust-bindgen ]; then
   cd rust-bindgen
   git clean -dfx
   git reset --hard HEAD
-  git fetch --depth 1 origin tag $bg_tag
+  git tag | grep -q $bg_tag || git fetch --depth 1 origin tag $bg_tag
   git checkout tags/$bg_tag
 else
   git clone --depth=1 -c advice.detachedHead=false -b $bg_tag $bg_repo
@@ -163,9 +163,6 @@ fi
 
 [ ! -d target ] || rm -rf target
 
-
-## Hack to silence missing edition warning
-sed '/^build =/a edition = "2018"' -i bindgen-integration/Cargo.toml
 
 
 printf '\n\n%s\n\n' "Building bindgen..."
@@ -186,9 +183,6 @@ cargo build --no-default-features --features=logging,runtime --release --bin bin
 $CLANG_PATH/bin/llvm-strip target/release/bindgen
 chmod 0755 target/release/bindgen
 
-
-## Undo the missing edition warning hack
-sed '/^edition = /d' -i bindgen-integration/Cargo.toml
 
 
 printf '\n%s\n\n' "Run the following as root :-"
