@@ -62,7 +62,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      cached_resource = loader->ResourceForURL(url);
 --- a/third_party/blink/renderer/core/loader/frame_fetch_context.cc
 +++ b/third_party/blink/renderer/core/loader/frame_fetch_context.cc
-@@ -850,6 +850,8 @@
+@@ -853,6 +853,8 @@
    if (document_loader_->ForceFetchCacheMode()) {
      request.SetCacheMode(*document_loader_->ForceFetchCacheMode());
    }

@@ -1,0 +1,26 @@
+From 96002d7ce2da6742ae13967e1a131827cb288b31 Mon Sep 17 00:00:00 2001
+From: V8 Autoroll <v8-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com>
+Date: Tue, 10 Dec 2024 10:35:00 -0800
+Subject: [PATCH] Version 13.1.201.17
+
+Version incremented at https://cr-buildbucket.appspot.com/build/8728914299283454721
+
+Change-Id: Ied24b3761d1e77331ed89bf887c22bedb40608ca
+Reviewed-on: https://chromium-review.googlesource.com/c/v8/v8/+/6085403
+Bot-Commit: v8-ci-autoroll-builder <v8-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com>
+Cr-Commit-Position: refs/branch-heads/13.1@{#33}
+Cr-Branched-From: 7998da66cb2883ef9734743857713b1194212d9a-refs/heads/13.1.201@{#1}
+Cr-Branched-From: 5e9af2a913539cf67091def99b62f49afece6f56-refs/heads/main@{#96554}
+---
+
+--- a/v8/include/v8-version.h
++++ b/v8/include/v8-version.h
+@@ -11,7 +11,7 @@
+ #define V8_MAJOR_VERSION 13
+ #define V8_MINOR_VERSION 1
+ #define V8_BUILD_NUMBER 201
+-#define V8_PATCH_LEVEL 16
++#define V8_PATCH_LEVEL 17
+ 
+ // Use 1 for candidates and 0 otherwise.
+ // (Boolean macro values are not supported by all preprocessors.)

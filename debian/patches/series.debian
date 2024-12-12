@@ -231,4 +231,5 @@ optional/translate/avoid-dangling-pointers-in-TranslateBubbleView.patch
 optional/translate/revert-disable.patch
 optional/translate/stop-unsupported-switch-warning.patch
 
-addenda/0001-2dde87d.diff
+addenda/0001-7615ae1.diff
+addenda/0002-96002d7.diff
