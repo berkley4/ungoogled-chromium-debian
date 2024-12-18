@@ -69,6 +69,16 @@ output_error() {
   exit 1
 }
 
+aggregate_features() {
+  sed -z -e 's@$@,@' -e 's@\n@@g' -e 's@--enable-features=@,@g' \
+      -e 's@--disable-features=@,@g' -e 's@^,@@' -e 's@,$@@'
+}
+
+strip_features() {
+  echo "$CHROMIUM_FLAGS" | \
+    sed -e 's@--enable-features=[^ ]*@@g' -e 's@--disable-features=[^ ]*@@g'
+}
+
 usage() {
   echo "$APP_NAME [-h|--help] [-g|--debug] [--temp-profile] [options] [URL]"
   echo
@@ -200,6 +210,32 @@ if [ -n "$BLOCKED_FLAGS" ]; then
     esac
   done
 fi
+
+
+# Aggregate all instances of --enabled-features and --disabled-features
+case $CHROMIUM_FLAGS in
+  *--enable-features=*|*--disable-features=*)
+    E="$(echo $CHROMIUM_FLAGS | grep -o '\-\-enable-features=[^ ]*' | aggregate_features)"
+    D="$(echo $CHROMIUM_FLAGS | grep -o '\-\-disable-features=[^ ]*' | aggregate_features)"
+
+    case $E in
+      "")
+        FEATURES= ;;
+
+      *)
+        FEATURES="--enable-features=$E" ;;
+    esac
+
+    case $D in
+      "")
+        FEATURES="$FEATURES" ;;
+
+      *)
+        FEATURES="$FEATURES --disable-features=$D" ;;
+    esac
+
+    CHROMIUM_FLAGS="$(echo "$CHROMIUM_FLAGS" | strip_features) $FEATURES"
+esac
 
 
 if [ $want_debug -eq 1 ] && [ ! -x $GDB ]; then
