@@ -47,8 +47,9 @@ ___Performance improvements___
     - -mavx - enables AVX instructions (AVX2 is available via an optional patch)
     - -fno-plt - (see [here](https://patchwork.ozlabs.org/project/gcc/patch/alpine.LNX.2.11.1505061730460.22867@monopod.intra.ispras.ru/))
     - -fsplit-machine-functions - (see [here](https://groups.google.com/g/llvm-dev/c/RUegaMg-iqc/m/wFAVxa6fCgAJ))
-    - -import-hot-multiplier=15
-        - a hot import limit of 450 (30x15) versus a default of 300 (30x10)
+    - -import-hot-multiplier=14
+        - a hot import limit of 420 (30x14) versus a default of 300 (30x10)
+	- analagous to an import limit of 42 (42x10 = 420)
         - allows more hot functions to be inlined
     - -Wl,-z,keep-text-section-prefix - enables text section splitting to further optimise the binary
     - -Wl,--lto-CGO3
