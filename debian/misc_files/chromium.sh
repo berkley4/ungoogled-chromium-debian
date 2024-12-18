@@ -6,16 +6,12 @@
 #  Fabien Tassin <fta@sofaraway.org>
 # License: GPLv2 or later
 
-# Control what gets blocked by the blocklist (/etc/chromium.d/blocked-flags)
+# Control what gets blocked by the switch blocklist (/etc/chromium.d/blocked-flags)
 # 0 = Block nothing
 # 1 = Block matching flags from flag files
 # 2 = Same as 1 plus block matching flags from the command line
 # 3 = Same as 2 plus all other command line flags
 SWITCH_BLOCKING=1
-
-# List of flag files to be ignored. Should be a space-separated list of flag
-# files (from /etc/chromium.d) of the form "file1 file2 ... fileN".
-BLOCKED_FILES=
 
 # Anyone with an Intel GEN8+ GPU (Broadwell onwards) who is using the
 # intel-media-va-driver (iHD) package and cannot get VAAPI to work
@@ -136,28 +132,14 @@ esac
 export LD_LIBRARY_PATH
 
 
-# Format BLOCKED_FILES for use in a case statement
-case $BLOCKED_FILES in
-  "")
-    BLOCKED_FILES='""' ;;
-
-  *)
-    BLOCKED_FILES="$(echo $BLOCKED_FILES | sed 's@ @|@g')" ;;
-esac
+read BLOCKED_FILES < /etc/chromium.d/blocked-files
 
 # Source CHROMIUM_FLAGS from flag files
 eval "
 for file in /etc/chromium.d/*; do
-  if [ -n \"\$BLOCKED_FILES\" ]; then
-    case \${file##*/} in
-      $BLOCKED_FILES)
-        continue ;;
-    esac
-  fi
-
   case \${file##*/} in
-    *.dpkg-*|README)
-      : ;;
+    $BLOCKED_FILES|*.dpkg-*)
+      continue ;;
 
     blocked-flags)
       [ \$SWITCH_BLOCKING -eq 0 ] || read BLOCKED_FLAGS < \$file ;;

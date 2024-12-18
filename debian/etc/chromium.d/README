@@ -1,5 +1,9 @@
-Any files placed in this directory will be sourced prior to executing chromium.
+Any flag files placed in this directory will be sourced prior to executing chromium.
 
-The blocked-flags file should be a single line list of space-separated switches
-without their double hyphen prefix. Switches containing a value eg of the form
-'something-foo=bar' are allowed.
+The blocked-flags file should contain a single line of space-separated switches
+without their double hyphen prefix, of the form "switch1 switch2 ... switchN".
+Switches containing a value  eg of the form 'something-foo=bar' are allowed.
+
+The blocked-files file should contain a single line of pipe-separated filenames
+of the form "file1|file2|...|fileN". By default the list contains READNE and
+blocked-files itself.
