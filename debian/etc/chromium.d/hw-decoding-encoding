@@ -16,9 +16,6 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiIgnoreDriverChecks
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoDecodeLinuxGL"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoDecodeLinuxZeroCopyGL"
 
-### VULKAN
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=Vulkan,DefaultANGLEVulkan,VulkanFromANGLE"
-
 
 # Experimental VA-API support for Nvidia GPUs
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiOnNvidiaGPUs"

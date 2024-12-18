@@ -15,6 +15,7 @@
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-angle=vulkan"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-vulkan"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-vulkan-surface"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=Vulkan,DefaultANGLEVulkan,VulkanFromANGLE"
 
 # GL
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-angle=gl"
