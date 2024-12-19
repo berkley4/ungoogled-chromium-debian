@@ -98,9 +98,7 @@ esac
 # Only proceed if the system has an SSE3 (or PNI) capable cpu
 case $(uname -m) in
   i386|i586|i686|x86_64)
-    if ! grep -q 'sse3\|pni' /proc/cpuinfo; then
-      output_error "$nosse3"
-    fi ;;
+    grep -q 'sse3\|pni' /proc/cpuinfo || output_error "$nosse3" ;;
 esac
 
 
