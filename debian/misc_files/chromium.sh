@@ -75,8 +75,7 @@ aggregate_features() {
 }
 
 strip_features() {
-  echo "$CHROMIUM_FLAGS" | \
-    sed -e 's@--enable-features=[^ ]*@@g' -e 's@--disable-features=[^ ]*@@g'
+  sed -e 's@--enable-features=[^ ]*@@g' -e 's@--disable-features=[^ ]*@@g'
 }
 
 usage() {
@@ -234,7 +233,7 @@ case $CHROMIUM_FLAGS in
         FEATURES="$FEATURES --disable-features=$D" ;;
     esac
 
-    CHROMIUM_FLAGS="$(echo "$CHROMIUM_FLAGS" | strip_features) $FEATURES"
+    CHROMIUM_FLAGS="$(echo $CHROMIUM_FLAGS | strip_features) $FEATURES"
 esac
 
 
