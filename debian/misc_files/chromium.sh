@@ -29,6 +29,11 @@ SWITCH_BLOCKING=1
 #export MESA_GLSL_CACHE_DISABLE=true
 #export MESA_SHADER_CACHE_DISABLE=true
 
+# Might be needed to enable vulkan on some setups
+# Make sure the json file is appropriate for your gpu
+#export VK_DRIVER_FILES=/usr/share/vulkan/icd.d/intel_icd.x86_64.json
+
+
 want_debug=0
 want_temp=0
 
