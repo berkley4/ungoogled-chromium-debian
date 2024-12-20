@@ -6,33 +6,7 @@
 #  Fabien Tassin <fta@sofaraway.org>
 # License: GPLv2 or later
 
-# Control what gets blocked by the switch blocklist (/etc/chromium.d/blocked-flags)
-# 0 = Block nothing
-# 1 = Block matching flags from flag files
-# 2 = Same as 1 plus block matching flags from the command line
-# 3 = Same as 2 plus all other command line flags
-SWITCH_BLOCKING=1
-
-# Anyone with an Intel GEN8+ GPU (Broadwell onwards) who is using the
-# intel-media-va-driver (iHD) package and cannot get VAAPI to work
-# might want to try installing the i965-va-driver package and
-# uncommenting the line below.
-#export LIBVA_DRIVER_NAME=i965
-
-# Might be useful to help enable hardware video decoding in some setups.
-#export LIBVA_DRI3_DISABLE=1
-
-# Uncomment one of the following to possibly avoid the below error message
-# InitializeSandbox() called with multiple threads in process gpu-process.
-# If using Mesa 21.1.0 or later, uncomment the MESA_SHADER_CACHE_DISABLE line
-# instead of the MESA_GLSL_CACHE_DISABLE one.
-#export MESA_GLSL_CACHE_DISABLE=true
-#export MESA_SHADER_CACHE_DISABLE=true
-
-# Might be needed to enable vulkan on some setups
-# Make sure the json file is appropriate for your gpu
-#export VK_DRIVER_FILES=/usr/share/vulkan/icd.d/intel_icd.x86_64.json
-
+. /etc/chromium/chromium-launcher.vars
 
 want_debug=0
 want_temp=0
