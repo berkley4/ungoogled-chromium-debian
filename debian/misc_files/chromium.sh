@@ -71,8 +71,8 @@ output_error() {
 }
 
 aggregate_features() {
-  sed -z -e 's@$@,@' -e 's@\n@@g' -e 's@--enable-features=@,@g' \
-      -e 's@--disable-features=@,@g' -e 's@^,@@' -e 's@,$@@'
+  sed -z -e 's@\n@@g' -e 's@--enable-features=@,@g' \
+         -e 's@--disable-features=@,@g' -e 's@^,@@'
 }
 
 strip_features() {
