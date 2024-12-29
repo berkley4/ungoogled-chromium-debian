@@ -1,0 +1,32 @@
+--- a/chrome/browser/BUILD.gn
++++ b/chrome/browser/BUILD.gn
+@@ -2450,6 +2450,7 @@ static_library("browser") {
+     "//third_party/blink/public/common",
+     "//third_party/blink/public/common:buildflags",
+     "//third_party/blink/public/common:headers",
++    "//third_party/hyphenation-patterns:bundle_hyphen_data",
+     "//third_party/icu",
+     "//third_party/leveldatabase",
+     "//third_party/libaddressinput",
+--- a/chrome/browser/chrome_content_browser_client.cc
++++ b/chrome/browser/chrome_content_browser_client.cc
+@@ -8091,17 +8091,14 @@ void ChromeContentBrowserClient::GetHyph
+   // automation frameworks), the hyphenation dictionaries directory is never
+   // initialized. To work around this, provide the well known hyphenation
+   // directory here bypassing the disabled component installer.
+-#if BUILDFLAG(CHROME_FOR_TESTING)
+-  if (base::CommandLine::ForCurrentProcess()->HasSwitch(
+-          switches::kDisableComponentUpdate)) {
+     base::FilePath dir;
+     if (base::PathService::Get(base::DIR_EXE, &dir)) {
+       dir = dir.AppendASCII("hyphen-data");
++      if (base::PathExists(dir)) {
+       std::move(callback).Run(dir);
+       return;
++      }
+     }
+-  }
+-#endif  // BUILDFLAG(CHROME_FOR_TESTING)
+ 
+   component_updater::HyphenationComponentInstallerPolicy::
+       GetHyphenationDictionary(std::move(callback));

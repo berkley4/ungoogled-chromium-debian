@@ -19,6 +19,9 @@ out/Release/vk_swiftshader_icd.json                                            u
 
 third_party/icu/common/icudtl.dat                                              usr/lib/chromium
 
+out/Release/hyphen-data/manifest.json                                          usr/lib/chromium/hyphen-data
+third_party/hyphenation-patterns/hyb/hyph-*.hyb                                usr/lib/chromium/hyphen-data
+
 debian/en-US.pak                                                               usr/lib/chromium/locales
 
 chrome/app/resources/manpage.1.in                                           => usr/share/man/man1/chromium.1

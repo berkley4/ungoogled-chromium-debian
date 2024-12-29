@@ -1277,6 +1277,7 @@ fi
 ## Pruning list
 PRU="$PRU -e \"/^chrome\/build\/pgo_profiles\//d\""
 PRU="$PRU -e \"/^third_party\/depot_tools\//d\""
+PRU="$PRU -e \"/^third_party\/hyphenation-patterns\//d\""
 PRU="$PRU -e \"/^third_party\/node\/node_modules\//d\""
 
 ## Pruning script
