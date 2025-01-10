@@ -230,7 +230,7 @@ case $CHROMIUM_FLAGS in
         FEATURES="$FEATURES --disable-features=$D" ;;
     esac
 
-    CHROMIUM_FLAGS="$(echo $CHROMIUM_FLAGS | strip_features) $FEATURES"
+    CHROMIUM_FLAGS="$(echo $CHROMIUM_FLAGS | strip_features) $FEATURES" ;;
 esac
 
 
