@@ -37,7 +37,7 @@
      "//components/heap_profiling/in_process",
      "//components/heap_profiling/in_process:mojom",
      "//components/heavy_ad_intervention",
-@@ -3700,8 +3698,6 @@
+@@ -3701,8 +3699,6 @@
        "first_run/first_run_internal.h",
        "font_family_cache.cc",
        "font_family_cache.h",
@@ -46,7 +46,7 @@
        "hid/chrome_hid_delegate.cc",
        "hid/chrome_hid_delegate.h",
        "hid/hid_chooser_context.cc",
-@@ -4299,8 +4295,6 @@
+@@ -4300,8 +4296,6 @@
        "//components/feedback",
        "//components/feedback/content:factory",
        "//components/feedback/redaction_tool",
@@ -55,7 +55,7 @@
        "//components/image_fetcher/core",
        "//components/keep_alive_registry",
        "//components/live_caption",
-@@ -7195,7 +7189,7 @@
+@@ -7196,7 +7190,7 @@
      ]
    }
  
@@ -64,7 +64,7 @@
      deps += [ "//chrome/browser/headless:metrics" ]
    }
  
-@@ -7267,7 +7261,6 @@
+@@ -7268,7 +7262,6 @@
      deps += [
        "//chrome/common/printing",
        "//components/printing/browser",
