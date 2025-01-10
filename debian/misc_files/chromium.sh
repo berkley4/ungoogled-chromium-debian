@@ -195,6 +195,19 @@ if [ -n "$BLOCKED_FLAGS" ]; then
 fi
 
 
+# Use a temporary profile for --disable-web-security if one isn't already specified
+case $CHROMIUM_FLAGS in
+  *--disable-web-security*)
+    case $CHROMIUM_FLAGS in
+      *--user-data-dir=*)
+        : ;;
+
+      *)
+        want_temp=1 ;;
+    esac ;;
+esac
+
+
 # Aggregate all instances of --enabled-features and --disabled-features
 case $CHROMIUM_FLAGS in
   *--enable-features=*|*--disable-features=*)
