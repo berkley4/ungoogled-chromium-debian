@@ -1,7 +1,10 @@
 #!/bin/sh -e
 
+SCRIPT=${0##*/}
+USAGE="Usage: $SCRIPT <clean|c|help|h>"
+
 LIBAVCODEC_DIR=src/third_party/ffmpeg/libavcodec
-USAGE="Usage: ${0##*/} <clean|c|help|h>"
+
 
 case $USER in
   root)
@@ -10,7 +13,7 @@ case $USER in
 esac
 
 case $0 in
-  ./fdk-aac-get.sh|fdk-aac-get.sh)
+  ./$SCRIPT|$SCRIPT)
     : ;;
 
   *)

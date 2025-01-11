@@ -1,6 +1,7 @@
 #!/bin/sh -e
 
-USAGE="[CLANG_VER=<version>] [SYS_CLANG=<0|1|2>] SYS_RUST=<0|1|2> ${0##*/} [h|help] [c|clean]"
+SCRIPT=${0##*/}
+USAGE="[CLANG_VER=<version>] [SYS_CLANG=<0|1|2>] SYS_RUST=<0|1|2> $SCRIPT [h|help] [c|clean]"
 
 case $USER in
   root)
@@ -9,7 +10,7 @@ case $USER in
 esac
 
 case $0 in
-  ./build-bindgen.sh|build-bindgen.sh)
+  ./$SCRIPT|$SCRIPT)
     : ;;
 
   *)
@@ -105,12 +106,6 @@ fi
 
 # Set both LIBCLANG_PATH and LIBCLANG_STATIC_PATH to this value at build time
 LIBCLANG_PATH=$CLANG_PATH/lib
-
-
-if [ ! -f build-bindgen.sh ]; then
-  printf '%s\n' "ERROR: please run the script from the directory containing it"
-  exit 1
-fi
 
 
 ## Check that cargo, curl, rustc and unzip are available
