@@ -37,7 +37,7 @@ case $1 in
 esac
 
 
-if [ -d $NODE_DIR/linux ]; then
+if [ -d $NODE_DIR/linux/node-linux-x64 ]; then
   printf '%s\n' "$NODE_DIR/linux/node-linux-x64 already exists"
   exit 1
 fi
