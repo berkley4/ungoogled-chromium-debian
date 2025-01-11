@@ -122,18 +122,6 @@ BUILD_DIST="@BUILD_DIST@"
 export CHROME_VERSION_EXTRA="built on $BUILD_DIST, running on $DIST"
 
 
-# Add LIBDIR to LD_LIBRARY_PATH to load libffmpeg.so (if built as a component)
-case "${LD_LIBRARY_PATH:+nonempty}" in
-  "")
-    LD_LIBRARY_PATH=$LIBDIR ;;
-
-  *)
-    LD_LIBRARY_PATH=$LIBDIR:$LD_LIBRARY_PATH ;;
-esac
-
-export LD_LIBRARY_PATH
-
-
 read BLOCKED_FILES < /etc/chromium.d/blocked-files
 
 # Source CHROMIUM_FLAGS from flag files
