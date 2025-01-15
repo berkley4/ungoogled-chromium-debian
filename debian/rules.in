@@ -249,6 +249,7 @@ GN_FLAGS += v8_enable_wasm_simd256_revec=true
 #
 # Too old for stable   : brotli, dav1d, icu
 #                        libavif/libwebp (libsharpyuv dependency)
+#                        libdrm (hint: check out debbian backports)
 #
 # Dependent on TOO OLD : fontconfig, freetype, harfbuzz-ng
 #                        libxml, libxslt
@@ -271,7 +272,6 @@ GN_FLAGS += v8_enable_wasm_simd256_revec=true
 SYS_LIBS :=			\
 	double-conversion	\
 	flac			\
-	libdrm			\
 	libevent		\
 	libsecret		\
 	libusb			\
@@ -285,6 +285,9 @@ SYS_LIBS :=			\
 
 # Enable dav1d (debian testing/unstable)
 SYS_LIBS += dav1d
+
+# Enable libdrm
+SYS_LIBS += libdrm
 
 # Enable libjpeg (debs won't be installable on both debian and ubuntu)
 SYS_LIBS += libjpeg

@@ -125,6 +125,9 @@ POLICIES=etc/chromium/policies/managed/policies.json
 ## Allow force-enabling brotli for stable users who have installed my deb packages
 [ -n "$SYS_BROTLI" ] && SYS_BROTLI_SET=1 || SYS_BROTLI=1
 
+## Allow force-enabling libdrm for stable users who have installed libdrm from backports
+[ -n "$SYS_DRM" ] && SYS_DRM_SET=1 || SYS_DRM=1
+
 ## Need to error out if MEDIA_REMOTING is explicitly enabled when CHROMECAST=0
 [ -n "$MEDIA_REMOTING" ] && MEDIA_REMOTING_SET=1 || MEDIA_REMOTING=0
 
@@ -1170,6 +1173,9 @@ if [ $STABLE -eq 1 ]; then
     op_enable="$op_enable system/freetype-COLRV1.patch"
   fi
 
+  # For STABLE=1 we disable libdrm by default but allow force-enablement
+  [ $SYS_DRM_SET -eq 1 ] && [ $SYS_DRM -eq 1 ] || SYS_DRM=0
+
   # Disable dav1d (too old)
   op_disable="$op_disable system/unstable/dav1d/"
   sys_disable="$sys_disable dav1d"
@@ -1199,6 +1205,13 @@ if [ $SYS_BROTLI -eq 0 ]; then
     sys_enable="$sys_enable libpng"
     deps_enable="$deps_enable libpng"
   fi
+fi
+
+
+if [ $SYS_DRM -eq 0 ]; then
+  op_disable="$op_disable system/libdrm.patch"
+  sys_disable="$sys_disable libdrm"
+  deps_disable="$deps_disable libdrm"
 fi
 
 
