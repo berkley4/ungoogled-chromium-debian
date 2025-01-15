@@ -8,7 +8,7 @@ DL_CACHE=.download_cache
 NODE_DIR=src/third_party/node
 NODE_VER=20.18.1
 NODE_URL=https://nodejs.org/dist/v$NODE_VER/node-v$NODE_VER-linux-x64.tar.xz
-NODE_FILE=${NODE_URL##.*/}
+NODE_FILE=${NODE_URL##*/}
 
 
 case $USER in
@@ -59,7 +59,7 @@ esac
 
 
 
-if [ ! -f $DL_CACHE/${NODE_URL##*/} ]; then
+if [ ! -f $DL_CACHE/$NODE_FILE ]; then
   $D_LOADER $dl_args $NODE_URL
 fi
 
