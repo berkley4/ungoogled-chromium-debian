@@ -171,6 +171,8 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$NON_FREE" ] || NON_FREE=1
 
 if [ $NON_FREE -eq 0 ]; then
+  sed -e '/EnforceNoopenerOnBlobURLNavigation/s@^#@@' -i $FLAG_DIR/isolation
+
   ins_disable="$ins_disable anti-audio-fingerprint"
   SER_DB="$SER_DB -e \"s@^\(cromite/\)@#\1@\" -e \"s@^\(vanadium/\)@#\1@\""
 
