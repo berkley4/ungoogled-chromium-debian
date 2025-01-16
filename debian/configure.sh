@@ -97,6 +97,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$OAUTH2" ] || OAUTH2=0
 [ -n "$OPENTYPE_SVG" ] || OPENTYPE_SVG=1
 [ -n "$OZONE_WAYLAND" ] || OZONE_WAYLAND=1
+[ -n "$PARTALLOC_MR" ] || PARTALLOC_MR=1
 [ -n "$PDF_JS" ] || PDF_JS=0
 [ -n "$PIPEWIRE" ] || PIPEWIRE=1
 [ -n "$PRINT_PREVIEW" ] || PRINT_PREVIEW=1
@@ -897,6 +898,11 @@ fi
 if [ $OZONE_WAYLAND -eq 0 ]; then
   op_disable="$op_disable fixes/wayland-gbm-pixmap.patch"
   gn_enable="$gn_enable ozone_platform_wayland=false"
+fi
+
+
+if [ $PARTALLOC_MR -eq 0 ]; then
+  sed -e '/PartitionAllocFewerMemoryRegions/s@^@#@' -i $FLAG_DIR/miscellaneous
 fi
 
 

@@ -140,6 +140,7 @@ various/upstream/0033-f8da071.diff
 various/upstream/0034-f9d943a.diff
 various/upstream/0035-50d5004.diff
 various/upstream/features/leveldb-proto-enable-async-writes-by-default.patch
+various/upstream/features/partitionalloc-add-feature-to-use-fewer-memory-regions.patch
 various/warnings/clang-excessive-warnings.patch
 
 #optional/enable-esbuild-for-official-builds.patch

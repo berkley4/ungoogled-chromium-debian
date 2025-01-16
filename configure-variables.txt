@@ -149,6 +149,7 @@ SYS_NOTIFICATIONS	1		System notifications (chrome will fall back to using native
 OAUTH2			0		Enable OAuth 2.0 client switches
 OPENTYPE_SVG		1		Opentype SVG support
 OZONE_WAYLAND		1		Wayland ozone platform (experimental; can be disabled by wayland users)
+PARTALLOC_MR		1		Make PartitionAlloc use fewer memory regions
 PDF_JS			0		PDF javascript support
 PIPEWIRE		1
 PRINT_PREVIEW		1		Can be disabled to replace the print dialogue with the system one
