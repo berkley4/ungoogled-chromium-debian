@@ -1,6 +1,6 @@
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5057,13 +5057,13 @@
+@@ -5120,13 +5120,13 @@
       kOsLinux | kOsAndroid | kOsCrOS | kOsLacros,
       FEATURE_VALUE_TYPE(features::kVulkanFromANGLE)},
  
@@ -32,7 +32,7 @@
  }
  
  policy::ChromeBrowserPolicyConnector*
-@@ -1432,9 +1436,11 @@
+@@ -1427,9 +1431,11 @@
  }
  
  void BrowserProcessImpl::CreateNotificationPlatformBridge() {
@@ -119,7 +119,7 @@
  
 --- a/chrome/common/chrome_features.cc
 +++ b/chrome/common/chrome_features.cc
-@@ -924,6 +924,7 @@
+@@ -880,6 +880,7 @@
  // Enables the use of system notification centers instead of using the Message
  // Center for displaying the toasts. The feature is hardcoded to enabled for
  // Chrome OS.
@@ -127,7 +127,7 @@
  BASE_FEATURE(kNativeNotifications,
               "NativeNotifications",
               base::FEATURE_ENABLED_BY_DEFAULT);
-@@ -931,6 +932,7 @@
+@@ -887,6 +888,7 @@
  BASE_FEATURE(kSystemNotifications,
               "SystemNotifications",
               base::FEATURE_ENABLED_BY_DEFAULT);
@@ -137,7 +137,7 @@
  // Enables the usage of Apple's new Notification API.
 --- a/chrome/common/chrome_features.h
 +++ b/chrome/common/chrome_features.h
-@@ -535,9 +535,11 @@
+@@ -525,9 +525,11 @@
  COMPONENT_EXPORT(CHROME_FEATURES)
  extern const base::FeatureParam<std::string> kMoveWebAppInstallStartUrl;
  

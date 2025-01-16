@@ -1,0 +1,61 @@
+From e728226e55ca5805980de942de16a1819239f0e7 Mon Sep 17 00:00:00 2001
+From: Ken Rockot <rockot@google.com>
+Date: Wed, 27 Nov 2024 00:36:31 +0000
+Subject: [PATCH] ipcz: Fix nullptr deref on Router deserialization
+
+In general when deserializing a router, if we can't bind the encoded
+outward link, that means the remote node is already disconnected and
+we can immediately signal disconnection to the new router.
+
+For some reason we were suppressing this behavior when the new router
+also knows that it's peer is already closed. There doesn't appear to be
+a good reason to do this, and in fact it can cause leaks.
+
+But more to the point here, in the branch where we have an invalid link
+AND know the peer is closed, we always attempt to dereference the
+invalid (null) RouterLink.
+
+This fixes the bug with a simplification: if we reach this point and the
+link is null, we always treat it as a disconnection.
+
+Fixed: 380938365
+Change-Id: I1a952691b6e37692ab471c8945507abebfede6c2
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6051175
+Reviewed-by: Alex Gough <ajgo@chromium.org>
+Auto-Submit: Ken Rockot <rockot@google.com>
+Commit-Queue: Alex Gough <ajgo@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1388558}
+---
+
+--- a/third_party/ipcz/src/ipcz/router.cc
++++ b/third_party/ipcz/src/ipcz/router.cc
+@@ -698,7 +698,6 @@
+ // static
+ Ref<Router> Router::Deserialize(const RouterDescriptor& descriptor,
+                                 NodeLink& from_node_link) {
+-  bool disconnected = false;
+   auto router = MakeRefCounted<Router>();
+   Ref<RemoteRouterLink> new_outward_link;
+   {
+@@ -781,17 +780,14 @@
+                  << from_node_link.remote_node_name().ToString() << " to "
+                  << from_node_link.local_node_name().ToString()
+                  << " via sublink " << descriptor.new_sublink;
+-      } else if (!descriptor.peer_closed) {
+-        // The new portal is DOA, either because the associated NodeLink is
+-        // dead, or the sublink ID was already in use. The latter implies a bug
+-        // or bad behavior, but it should be harmless to ignore beyond this
+-        // point.
+-        disconnected = true;
+       }
+     }
+   }
+ 
+-  if (disconnected) {
++  if (!new_outward_link) {
++    // The new portal is DOA, either because the associated NodeLink is dead, or
++    // or the sublink ID was already in use. The latter implies a bug or bad
++    // behavior, but it should be harmless to ignore beyond this point.
+     DVLOG(4) << "Disconnected new Router immediately after deserialization";
+     router->AcceptRouteDisconnectedFrom(LinkType::kPeripheralOutward);
+   } else if (descriptor.proxy_peer_node_name.is_valid()) {

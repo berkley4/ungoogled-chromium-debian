@@ -1,0 +1,55 @@
+From 0914ace289187fb4f251f7e0f52d8294f5e54909 Mon Sep 17 00:00:00 2001
+From: wuguobin <wuguobin.1229@bytedance.com>
+Date: Fri, 20 Dec 2024 02:50:45 -0800
+Subject: [PATCH] Ensure scaled_count is in the correct range
+
+We pass int64_t count to ScaledLinearHistogram::AddScaledCount, but Histogram uses int internally. Cap the scaled_count by INT_MAX to make sure it won't overflow.
+
+Bug: 384635670
+Change-Id: I61dc5e0d1bb8b4a6a0c7b640ee60db959b7b8d09
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6090741
+Auto-Submit: Guobin Wu <wuguobin.1229@bytedance.com>
+Reviewed-by: Alexander Timin <altimin@chromium.org>
+Commit-Queue: Mikhail Khokhlov <khokhlov@google.com>
+Reviewed-by: Mikhail Khokhlov <khokhlov@google.com>
+Cr-Commit-Position: refs/heads/main@{#1399080}
+---
+
+--- a/base/metrics/histogram.cc
++++ b/base/metrics/histogram.cc
+@@ -1076,8 +1076,10 @@
+   }
+ 
+   if (scaled_count > 0) {
+-    DCHECK(scaled_count <= std::numeric_limits<int>::max());
+-    histogram->AddCount(value, static_cast<int>(scaled_count));
++    int capped_scaled_count = scaled_count > std::numeric_limits<int>::max()
++                                  ? std::numeric_limits<int>::max()
++                                  : static_cast<int>(scaled_count);
++    histogram->AddCount(value, capped_scaled_count);
+   }
+ }
+ 
+--- a/base/metrics/histogram_unittest.cc
++++ b/base/metrics/histogram_unittest.cc
+@@ -892,6 +892,20 @@
+   }
+ }
+ 
++TEST_P(HistogramTest, ScaledLinearHistogramWithOverflowCount) {
++  ScaledLinearHistogram scaled("SLH", 1, 2, 3, 100, HistogramBase::kNoFlags);
++
++  scaled.AddScaledCount(0, 1);
++  scaled.AddScaledCount(1, 101);
++  scaled.AddScaledCount(2, std::numeric_limits<int64_t>::max());
++
++  std::unique_ptr<SampleVector> samples =
++      SnapshotAllSamples(static_cast<Histogram*>(scaled.histogram()));
++  EXPECT_EQ(0, samples->GetCountAtIndex(0));
++  EXPECT_EQ(1, samples->GetCountAtIndex(1));
++  EXPECT_EQ(std::numeric_limits<int>::max(), samples->GetCountAtIndex(2));
++}
++
+ // For Histogram, LinearHistogram and CustomHistogram, the minimum for a
+ // declared range is 1, while the maximum is (HistogramBase::kSampleType_MAX -
+ // 1). But we accept ranges exceeding those limits, and silently clamped to

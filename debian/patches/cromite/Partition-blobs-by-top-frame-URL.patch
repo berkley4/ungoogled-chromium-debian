@@ -8,11 +8,14 @@ or, if not defined, by the same agent cluster.
 Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- storage/browser/blob/blob_url_store_impl.cc   | 28 +++++++++++++++++++
- storage/browser/blob/blob_url_store_impl.h    |  9 ++++++
- .../public/mojom/blob/blob_url_store.mojom    |  8 ++++--
- .../core/fileapi/public_url_manager.cc        | 17 +++++++++++
- 4 files changed, 60 insertions(+), 2 deletions(-)
+ .../Partition-blobs-by-top-frame-URL.inc      |  1 +
+ storage/browser/blob/blob_url_store_impl.cc   | 36 ++++++++++++++++++-
+ storage/browser/blob/blob_url_store_impl.h    | 11 ++++++
+ storage/browser/blob/features.cc              |  1 +
+ .../public/mojom/blob/blob_url_store.mojom    | 12 +++++--
+ .../core/fileapi/public_url_manager.cc        | 18 ++++++++++
+ 6 files changed, 75 insertions(+), 4 deletions(-)
+ create mode 100644 cromite_flags/third_party/blink/common/features_cc/Partition-blobs-by-top-frame-URL.inc
 
 --- a/storage/browser/blob/blob_url_store_impl.cc
 +++ b/storage/browser/blob/blob_url_store_impl.cc
@@ -77,9 +80,36 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    mojo::PendingRemote<blink::mojom::Blob> blob = registry_->GetBlobFromUrl(url);
    if (!blob) {
      std::move(callback).Run(std::nullopt);
+@@ -162,11 +190,17 @@
+ void BlobURLStoreImpl::ResolveForWorkerScriptFetch(
+     const GURL& url,
+     mojo::PendingReceiver<blink::mojom::BlobURLToken> token,
++    const base::UnguessableToken& unsafe_agent_cluster_id,
++    const std::optional<net::SchemefulSite>& unsafe_top_level_site,
+     ResolveForNavigationCallback callback) {
+   if (!registry_) {
+     std::move(callback).Run(std::nullopt);
+     return;
+   }
++  if (!IsSamePartition(url, unsafe_agent_cluster_id, unsafe_top_level_site)) {
++    std::move(callback).Run(std::nullopt);
++    return;
++  }
+   if (base::FeatureList::IsEnabled(
+           features::kBlockCrossPartitionBlobUrlFetching) &&
+       !registry_->IsUrlMapped(BlobUrlUtils::ClearUrlFragment(url),
+@@ -175,7 +209,7 @@
+     return;
+   }
+ 
+-  ResolveForNavigation(url, std::move(token), std::move(callback));
++  ResolveForNavigation(url, std::move(token), unsafe_agent_cluster_id, unsafe_top_level_site, std::move(callback));
+ }
+ 
+ bool BlobURLStoreImpl::BlobUrlIsValid(const GURL& url,
 --- a/storage/browser/blob/blob_url_store_impl.h
 +++ b/storage/browser/blob/blob_url_store_impl.h
-@@ -48,10 +48,14 @@
+@@ -48,14 +48,20 @@
    void ResolveAsURLLoaderFactory(
        const GURL& url,
        mojo::PendingReceiver<network::mojom::URLLoaderFactory> receiver,
@@ -92,9 +122,15 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +      const base::UnguessableToken& unsafe_agent_cluster_id,
 +      const std::optional<net::SchemefulSite>& unsafe_top_level_site,
        ResolveForNavigationCallback callback) override;
+   void ResolveForWorkerScriptFetch(
+       const GURL& url,
+       mojo::PendingReceiver<blink::mojom::BlobURLToken> token,
++      const base::UnguessableToken& unsafe_agent_cluster_id,
++      const std::optional<net::SchemefulSite>& unsafe_top_level_site,
+       ResolveForNavigationCallback callback) override;
  
   private:
-@@ -61,6 +65,11 @@
+@@ -65,6 +71,11 @@
    // `Revoke()`.
    bool BlobUrlIsValid(const GURL& url, const char* method) const;
  
@@ -123,6 +159,17 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // refer to, even after the URL is revoked.
    // As long as the token is alive, the resolved blob will also be kept alive.
    ResolveForNavigation(url.mojom.Url url,
+-                       pending_receiver<BlobURLToken> token) => (
++                       pending_receiver<BlobURLToken> token,
++                       mojo_base.mojom.UnguessableToken unsafe_agent_cluster_id,
++                       network.mojom.SchemefulSite? unsafe_top_level_site) => (
+     // TODO(https://crbug.com/1224926): Remove this once experiment is over.
+     mojo_base.mojom.UnguessableToken? unsafe_agent_cluster_id);
+ 
+@@ -58,7 +62,9 @@
+   // currently intended for use when fetching a dedicated / shared worker
+   // script.
+   ResolveForWorkerScriptFetch(url.mojom.Url url,
 -                       pending_receiver<BlobURLToken> token) => (
 +                       pending_receiver<BlobURLToken> token,
 +                       mojo_base.mojom.UnguessableToken unsafe_agent_cluster_id,
@@ -165,6 +212,14 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 @@ -292,6 +308,7 @@
  
    GetBlobURLStore().ResolveForNavigation(
+       url, std::move(token_receiver),
++      GetExecutionContext()->GetAgentClusterID(), GetInsecureTopLevelSite(GetExecutionContext()),
+       WTF::BindOnce(metrics_callback, WrapPersistent(GetExecutionContext())));
+ }
+ 
+@@ -318,6 +335,7 @@
+ 
+   GetBlobURLStore().ResolveForWorkerScriptFetch(
        url, std::move(token_receiver),
 +      GetExecutionContext()->GetAgentClusterID(), GetInsecureTopLevelSite(GetExecutionContext()),
        WTF::BindOnce(metrics_callback, WrapPersistent(GetExecutionContext())));

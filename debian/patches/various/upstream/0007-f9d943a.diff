@@ -17,7 +17,7 @@ Cr-Commit-Position: refs/heads/main@{#1385945}
 
 --- a/third_party/ipcz/src/ipcz/node_link.cc
 +++ b/third_party/ipcz/src/ipcz/node_link.cc
-@@ -967,6 +967,10 @@
+@@ -968,6 +968,10 @@
      SubparcelTracker& tracker = it->second;
      if (inserted) {
        tracker.subparcels.resize(num_subparcels);

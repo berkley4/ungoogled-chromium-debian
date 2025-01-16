@@ -1,6 +1,6 @@
 --- a/third_party/webrtc/webrtc.gni
 +++ b/third_party/webrtc/webrtc.gni
-@@ -557,10 +557,10 @@
+@@ -549,10 +549,10 @@
      # Abseil dependencies need to be converted to //third_party/abseil-cpp:absl when build_with_chromium=true
      if (build_with_chromium && defined(deps)) {
        absl_dependencies =
@@ -13,7 +13,7 @@
          deps = []
          deps = filtered_deps
          deps += [ "//third_party/abseil-cpp:absl" ]
-@@ -674,10 +674,10 @@
+@@ -666,10 +666,10 @@
      # Abseil dependencies need to be converted to //third_party/abseil-cpp:absl when build_with_chromium=true
      if (build_with_chromium && defined(deps)) {
        absl_dependencies =
@@ -26,7 +26,7 @@
          deps = []
          deps = filtered_deps
          deps += [ "//third_party/abseil-cpp:absl" ]
-@@ -766,10 +766,10 @@
+@@ -758,10 +758,10 @@
      # Abseil dependencies need to be converted to //third_party/abseil-cpp:absl when build_with_chromium=true
      if (build_with_chromium && defined(deps)) {
        absl_dependencies =
@@ -39,7 +39,7 @@
          deps = []
          deps = filtered_deps
          deps += [ "//third_party/abseil-cpp:absl" ]
-@@ -908,10 +908,10 @@
+@@ -900,10 +900,10 @@
      # Abseil dependencies need to be converted to //third_party/abseil-cpp:absl when build_with_chromium=true
      if (build_with_chromium && defined(deps)) {
        absl_dependencies =
@@ -52,7 +52,7 @@
          deps = []
          deps = filtered_deps
          deps += [ "//third_party/abseil-cpp:absl" ]
-@@ -966,10 +966,10 @@
+@@ -958,10 +958,10 @@
      # executables, but not libraries to use absl flags.
      if (build_with_chromium && defined(deps)) {
        absl_dependencies =

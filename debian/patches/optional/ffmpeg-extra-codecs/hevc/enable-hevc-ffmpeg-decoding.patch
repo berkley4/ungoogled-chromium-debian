@@ -14,15 +14,16 @@ etc... as long as ffmpeg support it.
 
 --- a/media/base/supported_types.cc
 +++ b/media/base/supported_types.cc
-@@ -223,33 +223,7 @@
+@@ -230,35 +230,7 @@
  #endif  // !BUILDFLAG(USE_PROPRIETARY_CODECS)
  
- bool IsHevcProfileSupported(const VideoType& type) {
--  if (!IsColorSpaceSupported(type.color_space))
+ bool IsDecoderHevcProfileSupported(const VideoType& type) {
+-  if (!IsDecoderColorSpaceSupported(type.color_space)) {
 -    return false;
+-  }
 -
 -#if BUILDFLAG(ENABLE_PLATFORM_HEVC)
--#if BUILDFLAG(PLATFORM_HAS_OPTIONAL_HEVC_SUPPORT)
+-#if BUILDFLAG(PLATFORM_HAS_OPTIONAL_HEVC_DECODE_SUPPORT)
 -#if BUILDFLAG(IS_CHROMEOS_LACROS)
 -  // TODO(b/171813538): For Lacros, the supplemental profile cache will be
 -  // asking lacros-gpu, but we will be doing decoding in ash-gpu. Until the
@@ -30,7 +31,7 @@ etc... as long as ffmpeg support it.
 -  // for HEVC support.
 -  if (base::CommandLine::ForCurrentProcess()->HasSwitch(
 -          switches::kLacrosEnablePlatformHevc)) {
-     return true;
+-    return true;
 -  }
 -#endif  // BUILDFLAG(IS_CHROMEOS_LACROS)
 -#if BUILDFLAG(IS_CHROMEOS_ASH)
@@ -38,19 +39,20 @@ etc... as long as ffmpeg support it.
 -    return false;
 -  }
 -#endif  // BUILDFLAG(IS_CHROMEOS_ASH)
--  return GetSupplementalProfileCache()->IsProfileSupported(type.profile);
+-  return GetSupplementalDecoderVideoProfileCache()->IsProfileSupported(
+-      type.profile);
 -#else
--  return true;
--#endif  // BUIDFLAG(PLATFORM_HAS_OPTIONAL_HEVC_SUPPORT)
+   return true;
+-#endif  // BUIDFLAG(PLATFORM_HAS_OPTIONAL_HEVC_DECODE_SUPPORT)
 -#else
 -  return false;
 -#endif  // BUILDFLAG(ENABLE_PLATFORM_HEVC)
  }
  
- bool IsVp9ProfileSupported(const VideoType& type) {
-@@ -442,7 +416,9 @@
+ bool IsDecoderVp9ProfileSupported(const VideoType& type) {
+@@ -580,7 +552,9 @@
  
- bool IsBuiltInVideoCodec(VideoCodec codec) {
+ bool IsDecoderBuiltInVideoCodec(VideoCodec codec) {
  #if BUILDFLAG(ENABLE_FFMPEG_VIDEO_DECODERS) && BUILDFLAG(USE_PROPRIETARY_CODECS)
 -  if (codec == VideoCodec::kH264 &&
 +  // Android does bundle `FFMpegVideoDecoder` for `non-arm32` devices,
@@ -65,8 +67,8 @@ etc... as long as ffmpeg support it.
  const char* FFmpegGlue::GetAllowedVideoDecoders() {
    // This should match the configured lists in //third_party/ffmpeg.
  #if BUILDFLAG(USE_PROPRIETARY_CODECS) && BUILDFLAG(ENABLE_FFMPEG_VIDEO_DECODERS)
--  return IsBuiltInVideoCodec(VideoCodec::kH264) ? "h264" : "";
-+  return IsBuiltInVideoCodec(VideoCodec::kH264) ? "h264,hevc" : "";
+-  return IsDecoderBuiltInVideoCodec(VideoCodec::kH264) ? "h264" : "";
++  return IsDecoderBuiltInVideoCodec(VideoCodec::kH264) ? "h264,hevc" : "";
  #else
    return "";
  #endif
@@ -101,10 +103,10 @@ etc... as long as ffmpeg support it.
  // static
  bool FFmpegVideoDecoder::IsCodecSupported(VideoCodec codec) {
 -  // We only build support for H.264.
--  return codec == VideoCodec::kH264 && IsBuiltInVideoCodec(codec);
+-  return codec == VideoCodec::kH264 && IsDecoderBuiltInVideoCodec(codec);
 +  // We only build support for H.264 / H.264.
 +  return (codec == VideoCodec::kH264 || codec == VideoCodec::kHEVC) &&
-+         IsBuiltInVideoCodec(codec);
++         IsDecoderBuiltInVideoCodec(codec);
  }
  
  FFmpegVideoDecoder::FFmpegVideoDecoder(MediaLog* media_log)

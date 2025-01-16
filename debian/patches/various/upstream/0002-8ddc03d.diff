@@ -29,7 +29,7 @@ Cr-Commit-Position: refs/heads/main@{#1382018}
        PseudoStateChanged(CSSSelector::kPseudoDisabled);
 --- a/third_party/blink/web_tests/TestExpectations
 +++ b/third_party/blink/web_tests/TestExpectations
-@@ -5625,7 +5625,6 @@
+@@ -5865,7 +5865,6 @@
  crbug.com/366394195 external/wpt/html/semantics/forms/the-select-element/select-rtl.tentative.html [ Failure ]
  crbug.com/366394195 wpt_internal/html/semantics/forms/the-select-element/customizable-select/select-selected-value-behavior.tentative.html [ Failure ]
  crbug.com/366394195 external/wpt/html/semantics/forms/the-select-element/select-value-selectedOption.tentative.html [ Failure ]

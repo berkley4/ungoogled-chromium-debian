@@ -1,6 +1,6 @@
 --- a/media/audio/BUILD.gn
 +++ b/media/audio/BUILD.gn
-@@ -150,8 +150,10 @@
+@@ -151,8 +151,10 @@
    ]
    libs = []
    defines = []
@@ -13,7 +13,7 @@
  
 --- a/media/base/BUILD.gn
 +++ b/media/base/BUILD.gn
-@@ -414,9 +414,10 @@
+@@ -418,9 +418,10 @@
    ]
  
    libs = []

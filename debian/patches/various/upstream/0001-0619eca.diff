@@ -22,7 +22,7 @@ Cr-Commit-Position: refs/heads/main@{#1381562}
 
 --- a/media/formats/webm/webm_cluster_parser.cc
 +++ b/media/formats/webm/webm_cluster_parser.cc
-@@ -556,7 +556,8 @@
+@@ -558,7 +558,8 @@
              << encoded_duration.InMilliseconds() << "ms).";
        }
      }

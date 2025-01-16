@@ -28,7 +28,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/third_party/blink/renderer/core/html/parser/html_srcset_parser.cc
 +++ b/third_party/blink/renderer/core/html/parser/html_srcset_parser.cc
-@@ -420,7 +420,8 @@
+@@ -418,7 +418,8 @@
      auto* resource = MemoryCache::Get()->ResourceForURL(
          url,
          document->Fetcher()->GetCacheIdentifier(url,
@@ -40,7 +40,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      }
 --- a/third_party/blink/renderer/core/inspector/inspector_network_agent.cc
 +++ b/third_party/blink/renderer/core/inspector/inspector_network_agent.cc
-@@ -2441,7 +2441,7 @@
+@@ -2434,7 +2434,7 @@
    if (!cached_resource) {
      cached_resource = MemoryCache::Get()->ResourceForURL(
          url, document->Fetcher()->GetCacheIdentifier(
@@ -145,8 +145,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // page). removeFragmentIdentifierIfNeeded() should be called for the url
 --- a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc
 +++ b/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc
-@@ -993,7 +993,8 @@
-     return nullptr;
+@@ -1006,7 +1006,8 @@
+   }
  
    const String cache_identifier = GetCacheIdentifier(
 -      url, params.GetResourceRequest().GetSkipServiceWorker());
@@ -155,7 +155,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // Most off-main-thread resource fetches use Resource::kRaw and don't reach
    // this point, but off-main-thread module fetches might.
    if (IsMainThread()) {
-@@ -1412,7 +1413,8 @@
+@@ -1431,7 +1432,8 @@
            params.Url(),
            GetCacheIdentifier(
                params.Url(),
@@ -165,7 +165,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        if (resource) {
          policy = DetermineRevalidationPolicy(resource_type, params, *resource,
                                               is_static_data);
-@@ -1724,7 +1726,8 @@
+@@ -1754,7 +1756,8 @@
      const ResourceFactory& factory) {
    const String cache_identifier =
        GetCacheIdentifier(params.GetResourceRequest().Url(),
@@ -175,7 +175,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    DCHECK(!IsMainThread() || params.IsStaleRevalidation() ||
           !MemoryCache::Get()->ResourceForURL(params.GetResourceRequest().Url(),
                                               cache_identifier));
-@@ -2794,11 +2797,41 @@
+@@ -2862,11 +2865,41 @@
  }
  
  String ResourceFetcher::GetCacheIdentifier(const KURL& url,
@@ -222,9 +222,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    }
  
    // Requests that can be satisfied via `archive_` (i.e. MHTML) or
-@@ -2811,7 +2844,7 @@
-   if (bundle)
+@@ -2881,7 +2914,7 @@
      return bundle->GetCacheIdentifier();
+   }
  
 -  return MemoryCache::DefaultCacheIdentifier();
 +  return origin_url;

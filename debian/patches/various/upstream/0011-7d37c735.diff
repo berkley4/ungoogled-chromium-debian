@@ -1,0 +1,66 @@
+From 7d37c7356442a70db2e37ff1e883c9ea593ef83a Mon Sep 17 00:00:00 2001
+From: Adrian Taylor <adetaylor@chromium.org>
+Date: Wed, 27 Nov 2024 10:36:58 +0000
+Subject: [PATCH] Fix UaF in Linux accessibility code.
+
+Linux accessibility maintains a list of open menus; this list is used to
+compute the top level active frame by checking what frame owns any
+visible menu; it's also used for general checks about whether there's a
+menu open.
+
+It seems that in some circumstances requests arrive from the Linux
+accessibility APIs which confuse this list - the exact circumstances are
+not known, but it seems likely to be a race condition in when "menu
+open" and "menu close" messages arrive when there are UI interactions
+involving two menus. Unfortunately at the moment this may cause a
+use-after-free bug.
+
+This CL doesn't really attempt to resolve the underlying problem, but
+ensures we can't have a use-after-free bug in these circumstances, by
+ensuring we never keep a reference to a menu's ATK object. This may
+possibly confuse subsequent logic, but that seems preferable to a
+use-after-free bug, and in any case the list of menus seems like it
+should reflect the destruction of a menu.
+
+This problem has primarily been encountered during fuzzing, but has also
+been reported from unit testing and from users in the field.
+
+Bug: 359992017, 352530112, 40104941
+Change-Id: I244270548df73898149b86d06e1853236d8ce835
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6049756
+Reviewed-by: Greg Thompson <grt@chromium.org>
+Commit-Queue: Adrian Taylor <adetaylor@chromium.org>
+Auto-Submit: Adrian Taylor <adetaylor@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1388727}
+---
+
+--- a/ui/accessibility/platform/ax_platform_node_auralinux.cc
++++ b/ui/accessibility/platform/ax_platform_node_auralinux.cc
+@@ -2550,6 +2550,11 @@
+       SetWeakGPtrToAtkObject(&g_current_focused, nullptr);
+     atk_object::Detach(AX_PLATFORM_NODE_AURALINUX(atk_object_.get()));
+ 
++    // Under some circumstances, menu open and close requests can arrive
++    // in unexpected orders; let's ensure this object is no longer in
++    // the stack of open menus.
++    std::erase(GetActiveMenus(), atk_object_);
++
+     g_object_unref(atk_object_);
+     atk_object_ = nullptr;
+   }
+@@ -3467,10 +3472,12 @@
+   // kMenuPopupHide may be called multiple times for the same menu, so only
+   // remove it if our parent frame matches the most recently opened menu.
+   std::vector<AtkObject*>& active_menus = GetActiveMenus();
+-  DCHECK(!active_menus.empty())
+-      << "Asymmetrical menupopupend events -- too many";
+ 
+-  active_menus.pop_back();
++  // We don't trust menu show/hide events to arrive in
++  // any sensible order if multiple menus are involved, so ensure we delete
++  // this particular menu from the stack even if it's not topmost.
++  std::erase(active_menus, atk_object);
++
+   AtkObject* new_active_item = ComputeActiveTopLevelFrame();
+   if (new_active_item != parent_frame) {
+     // Newly activated menu has the different AtkWindow as the previous one.

@@ -1,6 +1,6 @@
 --- a/media/base/supported_types.cc
 +++ b/media/base/supported_types.cc
-@@ -305,6 +305,8 @@
+@@ -315,6 +315,8 @@
    return true;
  #endif  // BUILDFLAG(ENABLE_MOJO_AUDIO_DECODER) && (BUILDFLAG(IS_WIN) ||
          // BUILDFLAG(IS_MAC))

@@ -1,0 +1,53 @@
+From 64e716a342e48e7d3137226f16d9f7ae06e5f929 Mon Sep 17 00:00:00 2001
+From: Devon Loehr <dloehr@google.com>
+Date: Wed, 11 Dec 2024 06:58:19 -0800
+Subject: [PATCH] Remove ref in CustomFont
+
+The sole member of CustomFont is a gfx::FontList reference.
+Much of the code using it makes use of lifetime extension to bind this
+reference to temporaries, especially in ChromeOS. Unfortunately, this
+means we can't easily rewrite the ref to raw_ref to protect against
+dangling, since many of these temporaries have no natural place to go
+with an appropriate lifetime.
+
+The FontList docs claim that the class is cheap to copy. Since most
+code seems to assume that a CustomFont can be created on-the-spot
+without a preexisting FontList, it seems most natural to replace the
+reference member with an actual FontList, which certainly cannot
+dangle.
+
+Perf tests show no change in motionmark or speedometer3 scores:
+https://pinpoint-dot-chromeperf.appspot.com/job/177533bc210000
+https://pinpoint-dot-chromeperf.appspot.com/job/12b44a1a210000
+
+Bug: 346694604
+Change-Id: I3435e068a5a34f2e8e1b09dbb8c013304695c753
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6085558
+Reviewed-by: Peter Boström <pbos@chromium.org>
+Commit-Queue: Devon Loehr <dloehr@google.com>
+Cr-Commit-Position: refs/heads/main@{#1394821}
+---
+
+--- a/ui/views/controls/label.h
++++ b/ui/views/controls/label.h
+@@ -10,7 +10,6 @@
+ #include <vector>
+ 
+ #include "base/gtest_prod_util.h"
+-#include "base/memory/raw_ptr_exclusion.h"
+ #include "ui/base/metadata/metadata_header_macros.h"
+ #include "ui/base/mojom/menu_source_type.mojom-forward.h"
+ #include "ui/color/color_id.h"
+@@ -61,11 +60,7 @@
+     // TODO(tapted): Change this to a size delta and font weight since that's
+     // typically all the callers really care about, and would allow Label to
+     // guarantee caching of the FontList in ResourceBundle.
+-    //
+-    // Exclude from `raw_ref` rewriter because there are usages (e.g.
+-    // `indexed_suggestion_candidate_button.cc` that attempt to bind
+-    // temporaries (`T&&`) to `font_list`, which `raw_ref` forbids.
+-    RAW_PTR_EXCLUSION const gfx::FontList& font_list;
++    const gfx::FontList font_list;
+   };
+ 
+   // Create Labels with style::CONTEXT_CONTROL_LABEL and style::STYLE_PRIMARY.

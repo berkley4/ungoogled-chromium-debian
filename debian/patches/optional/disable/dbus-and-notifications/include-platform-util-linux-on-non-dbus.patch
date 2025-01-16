@@ -1,6 +1,6 @@
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -6979,6 +6979,7 @@
+@@ -6957,6 +6957,7 @@
        sources += [
          "download/download_status_updater_linux.cc",
          "icon_loader_auralinux.cc",
@@ -8,11 +8,11 @@
          "shell_integration_linux.cc",
          "shell_integration_linux.h",
          "upgrade_detector/directory_monitor.cc",
-@@ -7002,7 +7003,6 @@
+@@ -6980,7 +6981,6 @@
        sources += [
          "notifications/notification_platform_bridge_linux.cc",
          "notifications/notification_platform_bridge_linux.h",
 -        "platform_util_linux.cc",
        ]
-       deps += [ "//components/dbus/thread_linux" ]
-     }
+       deps += [
+         "//components/dbus/thread_linux",

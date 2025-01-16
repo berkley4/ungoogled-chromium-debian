@@ -1,0 +1,32 @@
+From ed25f4fb303d35ede2174ddb311bf9aef1bab120 Mon Sep 17 00:00:00 2001
+From: Joey Arhar <jarhar@chromium.org>
+Date: Mon, 30 Dec 2024 10:11:18 -0800
+Subject: [PATCH] Speculative fix for DateTimeChooserImpl crash
+
+Clusterfuzz found an unminimized way to make
+DateTimeChooserImpl::EndChooser's call to
+LocalFrameView::GetChromeClient crash, and my interpretation of the
+stack trace is that LocalFrameView is null. This patch addresses this by
+adding a null check for the LocalFrameView.
+
+Fixed: 385170394
+Change-Id: Ie5e9712e9d72ce88b28bfd4a55f96e483a37f0f6
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6125297
+Commit-Queue: Joey Arhar <jarhar@chromium.org>
+Reviewed-by: Di Zhang <dizhangg@chromium.org>
+Auto-Submit: Joey Arhar <jarhar@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1400949}
+---
+
+--- a/third_party/blink/renderer/core/html/forms/date_time_chooser_impl.cc
++++ b/third_party/blink/renderer/core/html/forms/date_time_chooser_impl.cc
+@@ -79,7 +79,8 @@
+ void DateTimeChooserImpl::EndChooser() {
+   if (!popup_)
+     return;
+-  frame_->View()->GetChromeClient()->ClosePagePopup(popup_);
++  if (auto* frame_view = frame_->View())
++    frame_view->GetChromeClient()->ClosePagePopup(popup_);
+ }
+ 
+ AXObject* DateTimeChooserImpl::RootAXObject(Element* popup_owner) {

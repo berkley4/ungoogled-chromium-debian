@@ -1,0 +1,66 @@
+From f7fa9b12edcd7ad8920a714ae0d06d002a8ca4c2 Mon Sep 17 00:00:00 2001
+From: Ken Rockot <rockot@google.com>
+Date: Sat, 23 Nov 2024 02:33:12 +0000
+Subject: [PATCH] ipcz: Fix data race / crash on ConnectNode failure
+
+When ConnectNode() fails today, it releases the provided driver
+transport to allow the caller to retain ownership.
+
+This behavior is incorrect though: no caller expects to retain ownership
+of the transport on failure, and ConnectNode() documentation in ipcz.h
+explicitly states that ownership is relinquished in all cases.
+
+Besides being incorrect, it's also unsafe: the driver may have already
+started manipulating the transport on another thread by this point. This
+can therefore cause data races and bad pointer dereferences.
+
+The right fix here is simply to remove the Release() call.
+
+Fixed: 337540328
+Change-Id: Ic1f0c2f7270e225072ab94db37d65c446d9b18e5
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6039467
+Reviewed-by: Alex Gough <ajgo@chromium.org>
+Commit-Queue: Alex Gough <ajgo@chromium.org>
+Auto-Submit: Ken Rockot <rockot@google.com>
+Cr-Commit-Position: refs/heads/main@{#1387202}
+---
+
+--- a/third_party/ipcz/src/ipcz/driver_transport.cc
++++ b/third_party/ipcz/src/ipcz/driver_transport.cc
+@@ -85,10 +85,6 @@
+   return {std::move(first), std::move(second)};
+ }
+ 
+-IpczDriverHandle DriverTransport::Release() {
+-  return transport_.release();
+-}
+-
+ IpczResult DriverTransport::Activate() {
+   // Acquire a self-reference, balanced in NotifyTransport() when the driver
+   // invokes its activity handler with IPCZ_TRANSPORT_ACTIVITY_DEACTIVATED.
+--- a/third_party/ipcz/src/ipcz/driver_transport.h
++++ b/third_party/ipcz/src/ipcz/driver_transport.h
+@@ -88,10 +88,6 @@
+     return std::move(transport_);
+   }
+ 
+-  // Releases the driver handle so that it's no longer controlled by this
+-  // DriverTranport.
+-  IpczDriverHandle Release();
+-
+   // Begins listening on the transport for incoming data and driver objects.
+   // Once this is called, the transport's Listener may be invoked by the driver
+   // at any time from arbitrary threads, as determined by the driver
+--- a/third_party/ipcz/src/ipcz/node.cc
++++ b/third_party/ipcz/src/ipcz/node.cc
+@@ -129,10 +129,6 @@
+   IpczResult result = NodeConnector::ConnectNode(WrapRefCounted(this),
+                                                  transport, flags, routers);
+   if (result != IPCZ_RESULT_OK) {
+-    // On failure the caller retains ownership of `driver_transport`. Release
+-    // it here so it doesn't get closed when `transport` is destroyed.
+-    transport->Release();
+-
+     // Wipe out the routers we created, since they are invalid and effectively
+     // not returned to the caller on failure.
+     for (Ref<Router>& router : routers) {

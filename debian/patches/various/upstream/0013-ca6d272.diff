@@ -1,0 +1,33 @@
+From ca6d27251d6c8f5324fabdc97f2af2db91cb2239 Mon Sep 17 00:00:00 2001
+From: Alison Maher <almaher@microsoft.com>
+Date: Tue, 10 Dec 2024 20:16:20 +0000
+Subject: [PATCH] Avoid null dereference in ComputeIsInMenuListSubtree()
+
+ParentObject() by definition can return nullptr. In
+AXObject::ComputeIsInMenuListSubtree(), we don't check that
+ParentObject() is valid before dereferencing it. This change updates
+AXObject::ComputeIsInMenuListSubtree() to check for this before
+using ParentObject().
+
+Bug: 383240466
+Change-Id: Iea0e832a01dd6afafc63730620b472ac01737ef2
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6086158
+Reviewed-by: Aaron Leventhal <aleventhal@chromium.org>
+Commit-Queue: Aaron Leventhal <aleventhal@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1394486}
+---
+
+--- a/third_party/blink/renderer/modules/accessibility/ax_object.cc
++++ b/third_party/blink/renderer/modules/accessibility/ax_object.cc
+@@ -5543,7 +5543,10 @@
+   if (IsRoot()) {
+     return false;
+   }
+-  return IsMenuList() || ParentObject()->IsInMenuListSubtree();
++  if (IsMenuList()) {
++    return true;
++  }
++  return ParentObject() && ParentObject()->IsInMenuListSubtree();
+ }
+ 
+ bool AXObject::IsMenuList() const {

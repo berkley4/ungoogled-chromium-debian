@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -514,7 +514,8 @@
+@@ -516,7 +516,8 @@
      }
  
      if ((is_win || is_mac || is_linux || is_chromeos || is_fuchsia) &&
@@ -20,7 +20,7 @@
  import("//media/media_options.gni")
  import("//ppapi/buildflags/buildflags.gni")
  import("//third_party/blink/public/public_features.gni")
-@@ -1709,7 +1710,7 @@
+@@ -1706,7 +1707,7 @@
          ":angle_gles_symbols",
          ":chrome_symbols",
        ]
@@ -29,7 +29,7 @@
          deps += [ ":swiftshader_vk_symbols" ]
        }
        if (!is_chromeos) {
-@@ -1745,17 +1746,19 @@
+@@ -1742,17 +1743,19 @@
          deps = [ "//components/crash/core/app:chrome_crashpad_handler" ]
        }
      }

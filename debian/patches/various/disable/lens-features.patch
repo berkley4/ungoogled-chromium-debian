@@ -1,6 +1,6 @@
 --- a/components/lens/lens_features.cc
 +++ b/components/lens/lens_features.cc
-@@ -13,7 +13,7 @@
+@@ -16,7 +16,7 @@
  
  BASE_FEATURE(kLensStandalone,
               "LensStandalone",
@@ -9,7 +9,7 @@
  
  BASE_FEATURE(kLensSearchOptimizations,
               "LensSearchOptimizations",
-@@ -21,7 +21,7 @@
+@@ -24,7 +24,7 @@
  
  BASE_FEATURE(kEnableLatencyLogging,
               "LensImageLatencyLogging",
@@ -18,7 +18,7 @@
  
  BASE_FEATURE(kEnableRegionSearchKeyboardShortcut,
               "LensEnableRegionSearchKeyboardShortcut",
-@@ -33,7 +33,7 @@
+@@ -36,7 +36,7 @@
  
  BASE_FEATURE(kEnableImageSearchSidePanelFor3PDse,
               "EnableImageSearchSidePanelFor3PDse",
@@ -27,7 +27,7 @@
  
  BASE_FEATURE(kLensRegionSearchStaticPage,
               "LensRegionSearchStaticPage",
-@@ -41,11 +41,11 @@
+@@ -44,11 +44,11 @@
  
  BASE_FEATURE(kEnableContextMenuInLensSidePanel,
               "EnableContextMenuInLensSidePanel",
@@ -41,7 +41,7 @@
               base::FEATURE_DISABLED_BY_DEFAULT
  #else
               base::FEATURE_ENABLED_BY_DEFAULT
-@@ -318,7 +318,7 @@
+@@ -406,7 +406,7 @@
          true};
  
  constexpr base::FeatureParam<bool> kShouldIssuePreconnectForLens{

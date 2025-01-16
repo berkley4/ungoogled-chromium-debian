@@ -57,7 +57,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
    });
 --- a/third_party/blink/renderer/platform/fonts/web_font_decoder.cc
 +++ b/third_party/blink/renderer/platform/fonts/web_font_decoder.cc
-@@ -105,6 +105,7 @@
+@@ -104,6 +104,7 @@
    const uint32_t kCff2Tag = OTS_TAG('C', 'F', 'F', '2');
    const uint32_t kSbixTag = OTS_TAG('s', 'b', 'i', 'x');
    const uint32_t kStatTag = OTS_TAG('S', 'T', 'A', 'T');
@@ -65,7 +65,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
  #if HB_VERSION_ATLEAST(1, 0, 0)
    const uint32_t kBaseTag = OTS_TAG('B', 'A', 'S', 'E');
    const uint32_t kGdefTag = OTS_TAG('G', 'D', 'E', 'F');
-@@ -133,6 +134,7 @@
+@@ -132,6 +133,7 @@
      case kCff2Tag:
      case kSbixTag:
      case kStatTag:
@@ -94,7 +94,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
  using namespace skia_private;
  
  namespace {
-@@ -1034,9 +1036,13 @@
+@@ -1058,9 +1060,13 @@
          // FT_LOAD_COLOR with scalable fonts means allow SVG.
          // It also implies attempt to render COLR if available, but this is not used.
  #if defined(FT_CONFIG_OPTION_SVG)

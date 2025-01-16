@@ -1,7 +1,7 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -371,7 +371,7 @@
-       } else if ((is_posix && !is_chromeos && !is_nacl) || is_fuchsia) {
+@@ -372,7 +372,7 @@
+       } else if ((is_posix && !is_nacl) || is_fuchsia) {
          if (current_os != "aix") {
            # Not available on aix.
 -          cflags += [ "-fstack-protector" ]

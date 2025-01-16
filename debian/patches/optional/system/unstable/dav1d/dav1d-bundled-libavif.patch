@@ -9,7 +9,7 @@
      defines += [ "AVIF_CODEC_DAV1D" ]
    }
  }
-@@ -58,6 +58,5 @@
+@@ -60,6 +60,5 @@
  
    if (enable_dav1d_decoder) {
      sources += [ "src/src/codec_dav1d.c" ]
