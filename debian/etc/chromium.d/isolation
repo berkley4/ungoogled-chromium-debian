@@ -21,7 +21,7 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-process-reuse"
 
 # Enable partitioning of third-party storage by top-level site.
 # Note: under active development and may result in unexpected behavior.
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --third-party-storage-partitioning"
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --third-party-storage-partitioning"
 
 # Cromite feature (non-free builds only): "Verifies that the blob was created
 # with the same top frame URL or, if not defined, by the same agent cluster."

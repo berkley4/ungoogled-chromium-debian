@@ -109,6 +109,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$SWIFTSHADER_WEBGPU" ] || SWIFTSHADER_WEBGPU=1
 [ -n "$SWITCH_BLOCKING" ] || SWITCH_BLOCKING=1
 [ -n "$SYS_NOTIFICATIONS" ] || SYS_NOTIFICATIONS=1
+[ -n "$TP_STORAGE_PART" ] || TP_STORAGE_PART=1
 [ -n "$TRANSLATE" ] || TRANSLATE=1
 [ -n "$VR" ] || VR=0
 [ -n "$VAAPI" ] || VAAPI=1
@@ -932,6 +933,11 @@ fi
 
 if [ $SYS_NOTIFICATIONS -eq 0 ]; then
   ins_disable="$ins_disable sys-notifications"
+fi
+
+
+if [ $TP_STORAGE_PART -eq 0 ]; then
+  sed -e '/third-party-storage-partitioning/s@^@#@' -i $FLAG_DIR/isolation
 fi
 
 
