@@ -28,6 +28,7 @@ MTUNE_SET=0
 POLLY_SET=0
 RELEASE_SET=0
 SYS_BROTLI_SET=0
+SYS_DRM_SET=0
 XZ_THREADED_SET=0
 
 # ${example%/*} = $(dirname example)
