@@ -99,7 +99,6 @@ GN_FLAGS +=					\
 	dawn_enable_null=false			\
 	dawn_tests_use_angle=false		\
 	enable_perfetto_unittests=false		\
-	enable_rust_gtest_interop=false		\
 	enable_trace_logging=false		\
 	optional_trace_events_enabled=false	\
 	rtc_build_examples=false		\
