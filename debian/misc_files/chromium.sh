@@ -78,6 +78,12 @@ strip_features() {
   sed -e 's@--enable-features=[^ ]*@@g' -e 's@--disable-features=[^ ]*@@g'
 }
 
+strip_flags() {
+  sed -e 's@--$flag@@' -e 's@--$flag=[^ ]*\$@@' \
+      -e "s@--$flag @@g" -e "s@--$flag=[^ ]* @@g" \
+      -e "s@ --$flag\$@@g" -e "s@ --$flag=[^ ]*\$@@g"
+}
+
 usage() {
   echo "$APP_NAME [-h|--help] [-g|--debug] [--temp-profile] [options] [URL]"
   echo
@@ -176,8 +182,8 @@ done
 if [ -n "$BLOCKED_FLAGS" ]; then
   for flag in $BLOCKED_FLAGS; do
     case $CHROMIUM_FLAGS in
-      --$flag|*--$flag\ *|*\ --$flag)
-        CHROMIUM_FLAGS="$(echo $CHROMIUM_FLAGS | sed -e "s@--$flag *@@g" -e "s@ --$flag\$@@g")" ;;
+      *--$flag\ *|*--$flag=*|*\ --$flag|*\ --$flag=*)
+        CHROMIUM_FLAGS="$(echo $CHROMIUM_FLAGS | strip_flags)" ;;
     esac
   done
 fi
