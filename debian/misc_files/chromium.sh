@@ -159,10 +159,10 @@ while [ $# -gt 0 ]; do
       want_temp=1
       shift ;;
     --[a-z]* )
-      new_flag=$1
+      new_flag=${1#--}
       if [ $SWITCH_BLOCKING -eq 2 ]; then
         case $BLOCKED_FLAGS in
-          $new_flag|*$new_flag\ *|*\ $new_flag)
+          $new_flag|$new_flag\ *|*\ $new_flag|\ $new_flag\ *)
             new_flag= ;;
         esac
       elif [ $SWITCH_BLOCKING -eq 3 ]; then
