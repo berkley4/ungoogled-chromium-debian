@@ -182,7 +182,7 @@ done
 if [ -n "$BLOCKED_FLAGS" ]; then
   for flag in $BLOCKED_FLAGS; do
     case $CHROMIUM_FLAGS in
-      --$flag|*--$flag\ *|*--$flag=*|*\ --$flag|*\ --$flag=*)
+      --$flag|--$flag=*|*\ --$flag\ *|*\ --$flag=*|*\ --$flag)
         CHROMIUM_FLAGS="$(echo $CHROMIUM_FLAGS | strip_flags)" ;;
     esac
   done
