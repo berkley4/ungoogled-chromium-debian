@@ -432,7 +432,7 @@ else
 
   RUL="$RUL -e \"s@_LLVM_BASE_DIR@$LLVM_BASE_DIR@\""
 
-  if [ $LLVM_VER -ne $LLVM_PGO_VER ]; then
+  if [ $PGO -eq 1 ] && [ $LLVM_VER -ne $LLVM_PGO_VER ]; then
     gn_enable="$gn_enable clang_version="
     RUL="$RUL -e \"s@_LLVM_VER@$LLVM_VER@\""
 
