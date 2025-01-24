@@ -67,7 +67,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$RTC_AVX2" ] || RTC_AVX2=1
 [ -n "$V8_AVX2" ] || V8_AVX2=1
 
-[ -n "$INTEL_CET" ] || INTEL_CET=0
+[ -n "$INTEL_CET" ] || INTEL_CET=1
 [ -n "$MEDIA_OPT_SPEED" ] || MEDIA_OPT_SPEED=1
 [ -n "$MF_SPLIT" ] || MF_SPLIT=1
 
@@ -537,8 +537,8 @@ fi
 ## CPU architecture/instructions and optimisations ##
 #####################################################
 
-if [ $INTEL_CET -eq 1 ]; then
-  op_enable="$op_enable compiler-flags/cpu/intel-cet/"
+if [ $INTEL_CET -eq 0 ]; then
+  gn_enable="$gn_enable enable_cet_shadow_stack=false"
 fi
 
 if [ $MEDIA_OPT_SPEED -eq 0 ]; then

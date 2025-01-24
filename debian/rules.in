@@ -218,13 +218,16 @@ GN_FLAGS += dawn_enable_vulkan=false
 GN_FLAGS += disable_zstd_filter=true
 
 
-### AVX2 intructions
+### CPU intructions
 
 # Disable RTC AVX2 instructions
 #GN_FLAGS += rtc_enable_avx2=false
 
 # Enable 256-bit re-vectorization pass in WASM compilation pipeline
 GN_FLAGS += v8_enable_wasm_simd256_revec=true
+
+# Disable Intel CET
+#GN_FLAGS += enable_cet_shadow_stack=false
 
 
 ### X11 Only

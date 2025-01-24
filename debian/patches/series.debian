@@ -142,8 +142,6 @@ optional/compiler-flags/cpu/march.patch
 optional/compiler-flags/cpu/mtune.patch
 optional/compiler-flags/cpu/avx.patch
 #optional/compiler-flags/cpu/avx2.patch
-#optional/compiler-flags/cpu/intel-cet/intel-control-flow-enforcement.patch
-#optional/compiler-flags/cpu/intel-cet/intel-cet-v8-drop-frames.patch
 #optional/disable/atk.patch
 #optional/disable/bluez.patch
 optional/disable/catapult.patch
