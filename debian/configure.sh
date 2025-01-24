@@ -1163,7 +1163,6 @@ fi
 
 
 if [ $ZSTD -eq 1 ]; then
-  op_enable="$op_enable system/zstd/"
   sys_enable="$sys_enable zstd"
   deps_enable="$deps_enable libzstd"
 

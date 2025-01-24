@@ -202,7 +202,5 @@ optional/system/openh264.patch
 optional/system/unstable/dav1d/dav1d.patch
 optional/system/unstable/dav1d/dav1d-bundled-libavif.patch
 optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
-#optional/system/zstd/zstd.patch
-#optional/system/zstd/zstd-feature-flag.patch
 optional/translate/revert-disable.patch
 optional/translate/stop-unsupported-switch-warning.patch
