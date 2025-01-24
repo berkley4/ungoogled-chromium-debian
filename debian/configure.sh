@@ -499,7 +499,6 @@ if [ $SYS_BINDGEN -gt 0 ]; then
     fi
 
     op_enable="$op_enable system/bindgen-crabbyav1f.patch"
-    op_enable="$op_enable system/clang/bindgen-clang-paths.patch"
 
     BINDGEN_PATH="/usr"
   fi

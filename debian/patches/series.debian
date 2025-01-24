@@ -196,7 +196,6 @@ optional/system/libdbus.patch
 optional/system/jpeg.patch
 #optional/system/node.patch
 optional/system/openh264.patch
-#optional/system/clang/bindgen-clang-paths.patch
 #optional/system/clang/clang-version-check.patch
 #optional/system/clang/rust-clanglib.patch
 #optional/system/unstable/icu.patch
