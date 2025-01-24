@@ -1,6 +1,6 @@
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.h
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.h
-@@ -481,7 +481,7 @@
+@@ -487,7 +487,7 @@
  #define CONFIG_LIBXAVS2 0
  #define CONFIG_LIBXVID 0
  #define CONFIG_DECKLINK 0
@@ -48,7 +48,7 @@
  import("ffmpeg_options.gni")
  
  # Declare empty versions of each variable for easier +=ing later.
-@@ -310,22 +311,9 @@
+@@ -313,22 +314,9 @@
      (is_win && ffmpeg_branding == "Chrome") ||
      (use_linux_config && ffmpeg_branding == "Chrome")) {
    ffmpeg_c_sources += [
@@ -71,7 +71,7 @@
      "libavcodec/kbdwin.c",
      "libavcodec/sinewin.c",
      "libavformat/apetag.c",
-@@ -566,3 +554,113 @@
+@@ -570,3 +558,113 @@
      (is_android && current_cpu == "x86")) {
    ffmpeg_c_sources += [ "compat/strtod.c" ]
  }
@@ -187,7 +187,7 @@
 +}
 --- a/third_party/ffmpeg/BUILD.gn
 +++ b/third_party/ffmpeg/BUILD.gn
-@@ -210,6 +210,15 @@
+@@ -211,6 +211,15 @@
    include_dirs = [
      platform_config_root,
      ".",
@@ -200,6 +200,6 @@
 +    "libavcodec/fdk-aac/libSACdec/include",
 +    "libavcodec/fdk-aac/libSBRdec/include",
 +    "libavcodec/fdk-aac/libSYS/include",
+     "./libavcodec",
    ]
    defines = [
-     "HAVE_AV_CONFIG_H",

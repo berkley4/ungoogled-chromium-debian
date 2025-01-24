@@ -1,6 +1,6 @@
 --- a/components/media_router/common/providers/cast/channel/enum_table.h
 +++ b/components/media_router/common/providers/cast/channel/enum_table.h
-@@ -15,6 +15,7 @@
+@@ -16,6 +16,7 @@
  #include <optional>
  #include <ostream>
  #include <string_view>
@@ -8,7 +8,7 @@
  
  #include "base/check_op.h"
  #include "base/notreached.h"
-@@ -192,7 +193,6 @@
+@@ -193,7 +194,6 @@
    inline constexpr GenericEnumTableEntry(int32_t value);
    inline constexpr GenericEnumTableEntry(int32_t value, std::string_view str);
  
@@ -16,7 +16,7 @@
    GenericEnumTableEntry& operator=(const GenericEnumTableEntry&) = delete;
  
   private:
-@@ -258,7 +258,6 @@
+@@ -259,7 +259,6 @@
      constexpr Entry(E value, std::string_view str)
          : GenericEnumTableEntry(static_cast<int32_t>(value), str) {}
  
@@ -24,7 +24,7 @@
      Entry& operator=(const Entry&) = delete;
    };
  
-@@ -317,15 +316,14 @@
+@@ -318,15 +317,14 @@
      if (is_sorted_) {
        const std::size_t index = static_cast<std::size_t>(value);
        if (ANALYZER_ASSUME_TRUE(index < data_.size())) {
@@ -42,7 +42,7 @@
    }
  
    // This overload of GetString is designed for cases where the argument is a
-@@ -354,8 +352,7 @@
+@@ -353,8 +351,7 @@
    // enum value directly.
    std::optional<E> GetEnum(std::string_view str) const {
      auto* entry = GenericEnumTableEntry::FindByString(
@@ -52,7 +52,7 @@
      return entry ? static_cast<E>(entry->value) : std::optional<E>();
    }
  
-@@ -370,7 +367,7 @@
+@@ -368,7 +365,7 @@
    // Align the data on a cache line boundary.
    alignas(64)
  #endif
@@ -61,7 +61,7 @@
    bool is_sorted_;
  
    constexpr EnumTable(std::initializer_list<Entry> data, bool is_sorted)
-@@ -382,8 +379,8 @@
+@@ -380,8 +377,8 @@
  
      for (std::size_t i = 0; i < data.size(); i++) {
        for (std::size_t j = i + 1; j < data.size(); j++) {

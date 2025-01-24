@@ -11,7 +11,7 @@ doing the same thing that upstream does w/ chromeos.
 
 --- a/build/config/clang/BUILD.gn
 +++ b/build/config/clang/BUILD.gn
-@@ -115,7 +115,21 @@
+@@ -165,7 +165,21 @@
          }
        } else if (is_apple) {
          _dir = "darwin"

@@ -1,14 +1,14 @@
 --- a/media/base/supported_types.cc
 +++ b/media/base/supported_types.cc
-@@ -313,13 +313,15 @@
+@@ -323,13 +323,15 @@
  }
  
- bool IsDolbyAc4Supported(const AudioType& type) {
+ bool IsDecoderDolbyAc4Supported(const AudioType& type) {
 -#if BUILDFLAG(ENABLE_PLATFORM_AC4_AUDIO) && \
 -    BUILDFLAG(ENABLE_MOJO_AUDIO_DECODER) && BUILDFLAG(IS_WIN)
 +#if BUILDFLAG(ENABLE_PLATFORM_AC4_AUDIO)
 +#if BUILDFLAG(ENABLE_MOJO_AUDIO_DECODER) && BUILDFLAG(IS_WIN)
-   return GetSupplementalAudioTypeCache()->IsProfileSupported(type);
+   return GetSupplementalDecoderAudioTypeCache()->IsProfileSupported(type);
 +#elif BUILDFLAG(IS_LINUX)
 +  return true;
  #else
@@ -19,7 +19,7 @@
 +#endif  // BUILDFLAG(ENABLE_PLATFORM_AC4_AUDIO)
  }
  
- }  // namespace
+ bool IsEncoderH264ProfileSupported(const VideoType& type) {
 --- a/media/ffmpeg/ffmpeg_common.cc
 +++ b/media/ffmpeg/ffmpeg_common.cc
 @@ -95,6 +95,10 @@

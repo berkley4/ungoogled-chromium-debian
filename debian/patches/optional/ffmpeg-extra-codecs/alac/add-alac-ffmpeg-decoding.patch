@@ -21,7 +21,7 @@
      &ff_pcm_s24le_decoder,
 --- a/third_party/ffmpeg/ffmpeg_generated.gni
 +++ b/third_party/ffmpeg/ffmpeg_generated.gni
-@@ -290,6 +290,20 @@
+@@ -292,6 +292,20 @@
  
  if ((current_cpu == "arm64" && ffmpeg_branding == "Chrome") ||
      (current_cpu == "x64" && ffmpeg_branding == "Chrome") ||
@@ -42,7 +42,7 @@
      (is_android && current_cpu == "arm" && arm_use_neon &&
       ffmpeg_branding == "Chrome") ||
      (is_android && current_cpu == "x86" && ffmpeg_branding == "Chrome") ||
-@@ -497,6 +511,14 @@
+@@ -500,6 +514,14 @@
    ]
  }
  

@@ -3,7 +3,7 @@
 @@ -128,6 +128,10 @@
       "Minimal Referrers",
       "Removes all cross-origin referrers and strips same-origin referrers down to the origin. Has lower precedence than remove-cross-origin-referrers. ungoogled-chromium flag.",
-      kOsAll, FEATURE_VALUE_TYPE(features::kMinimalReferrers)},
+      kOsAll, FEATURE_VALUE_TYPE(network::features::kMinimalReferrers)},
 +    {"enable-mdns",
 +     "Enable mDNS",
 +     "Enables mDNS and Service Discovery. ungoogled-chromium flag.",
@@ -78,7 +78,7 @@
        host.set_host(host_name_.substr(0, host_name_.size() - 1));
 --- a/services/network/public/cpp/features.cc
 +++ b/services/network/public/cpp/features.cc
-@@ -37,6 +37,10 @@
+@@ -44,6 +44,10 @@
    return block_accept_ch && blocked_site->IsSameOriginWith(origin);
  }
  
@@ -91,7 +91,7 @@
               base::FEATURE_ENABLED_BY_DEFAULT);
 --- a/services/network/public/cpp/features.h
 +++ b/services/network/public/cpp/features.h
-@@ -24,6 +24,7 @@
+@@ -29,6 +29,7 @@
  COMPONENT_EXPORT(NETWORK_CPP)
  bool ShouldBlockAcceptClientHintsFor(const url::Origin& origin);
  

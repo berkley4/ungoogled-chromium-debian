@@ -1,23 +1,23 @@
 --- a/media/base/supported_types.cc
 +++ b/media/base/supported_types.cc
-@@ -274,6 +274,9 @@
+@@ -283,6 +283,9 @@
  }
  
- bool IsAACSupported(const AudioType& type) {
+ bool IsDecoderAACSupported(const AudioType& type) {
 +#if BUILDFLAG(IS_LINUX) && BUILDFLAG(USE_PROPRIETARY_CODECS)
 +  return true;
 +#else
    if (type.profile != AudioCodecProfile::kXHE_AAC) {
      return true;
    }
-@@ -283,6 +286,7 @@
+@@ -292,6 +295,7 @@
  #else
    return false;
  #endif
 +#endif  //BUILDFLAG(IS_LINUX) && BUILDFLAG(USE_PROPRIETARY_CODECS)
  }
  
- bool IsDolbyVisionProfileSupported(const VideoType& type) {
+ bool IsDecoderDolbyVisionProfileSupported(const VideoType& type) {
 --- a/media/filters/ffmpeg_audio_decoder.cc
 +++ b/media/filters/ffmpeg_audio_decoder.cc
 @@ -96,15 +96,6 @@
