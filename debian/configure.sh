@@ -383,7 +383,7 @@ else
 
   ## Check for clang binary existence and PGO compatibility
 
-  LLVM_CTRL_VER=$(sed -n '/^#llvm-/s@[-#,a-z]@@gp' $DEBIAN/control.in)
+  LLVM_CTRL_VER=$(sed -n '/^#clang-/s@[-#,a-z]@@gp' $DEBIAN/control.in)
 
   case $CLANG_VER in
     "")
