@@ -6,7 +6,7 @@
 #  Fabien Tassin <fta@sofaraway.org>
 # License: GPLv2 or later
 
-. /etc/chromium/chromium-launcher.vars
+. /etc/chromium/launcher.vars
 
 want_debug=0
 want_temp=0
