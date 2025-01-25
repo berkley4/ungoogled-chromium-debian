@@ -37,6 +37,7 @@ chrome/app/theme/chromium/product_logo_256.png                              => u
 chrome/app/theme/default_100_percent/chromium/product_logo_16.png           => usr/share/icons/hicolor/16x16/apps/chromium.png
 chrome/app/theme/default_100_percent/chromium/product_logo_32.png           => usr/share/icons/hicolor/32x32/apps/chromium.png
 
+debian/etc/chromium/launcher.vars                                              etc/chromium
 debian/etc/chromium/README.txt                                                 etc/chromium
 debian/etc/chromium/policies/managed/policies.json                             etc/chromium/policies/managed
 
