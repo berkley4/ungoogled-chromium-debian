@@ -1,6 +1,6 @@
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5619,12 +5619,12 @@
+@@ -5615,12 +5615,12 @@
  #endif
  #endif  // BUILDFLAG(IS_ANDROID)
  #endif  // ENABLE_VR
@@ -18,7 +18,7 @@
       FEATURE_VALUE_TYPE(features::kSystemKeyboardLock)},
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -5723,7 +5723,7 @@
+@@ -5718,7 +5718,7 @@
  
  // ChromeOS -------------------------------------------------------------------
  
@@ -27,7 +27,7 @@
  
  const char kAcceleratedMjpegDecodeName[] =
      "Hardware-accelerated mjpeg decode for captured frame";
-@@ -5731,6 +5731,10 @@
+@@ -5726,6 +5726,10 @@
      "Enable hardware-accelerated mjpeg decode for captured frame where "
      "available.";
  
@@ -40,7 +40,7 @@
      "Enables settings to filter key presses in various ways, such as slow keys "
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -3295,11 +3295,15 @@
+@@ -3292,11 +3292,15 @@
  
  // ChromeOS -------------------------------------------------------------------
  
