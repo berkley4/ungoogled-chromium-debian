@@ -423,7 +423,7 @@ CATAPULT=0 DRIVER=0 MARCH=native MTUNE=native ./debian/configure.sh
 DRIVER=0 MARCH=native MTUNE=native TRANSLATE=1 STABLE=1 ./debian/configure.sh
 
 # Prune the binaries :-
-debian/rules prune
+./debian/rules prune
 ```
 
 ## Building the binary packages
@@ -436,8 +436,16 @@ while quilt push; do quilt refresh; done
 JOBS=4 dpkg-buildpackage --source-option=--no-preparation -b -uc -nc
 ```
 
-## Optional: clean out all built objects/configs (not routinely needed)
+## Optional cleaning
+
+# Clean stale build files from out/Release (do this post-build to avoid errors)
 
 ```sh
-debian/rules hardclean
+./debian/rules cleandead
+```
+
+# Clean out all built objects/configs (not routinely needed)
+
+```sh
+./debian/rules hardclean
 ```
