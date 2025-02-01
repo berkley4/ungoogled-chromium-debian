@@ -353,8 +353,7 @@ git clone --depth 1 -b $CHROMIUM_VER https://chromium.googlesource.com/chromium/
 
 ```sh
 # If build/src/debian/domsubcache.tar.gz exists, revert domain substitution
-./debian/submodules/ungoogled-chromium/utils/domain_substitution.py revert \
--c ./debian/domsubcache.tar.gz ./
+./debian/rules revert_domsub
 
 # Unapply patches
 quilt pop -a
@@ -449,3 +448,18 @@ JOBS=4 dpkg-buildpackage --source-option=--no-preparation -b -uc -nc
 ```sh
 ./debian/rules hardclean
 ```
+
+## Miscellaneous actions
+
+# Revert domain substitution
+
+```sh
+./debian/rules revert_domsub
+```
+
+# Revert unbundling (automatically invokes 'revert_domsub'  before reverting unbundling)
+
+```sh
+./debian/rules revert_unbundling
+```
+
