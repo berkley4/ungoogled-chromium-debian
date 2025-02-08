@@ -16,9 +16,6 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=LayoutNGShapeCache"
 # Enable PartitionAllocFewerMemoryRegions
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=PartitionAllocFewerMemoryRegions"
 
-# Disable LevelDBProtoAsyncWrite
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=LevelDBProtoAsyncWrite"
-
 # Enable boosting priority of backend tasks associated with foreground clients for IDB
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=IdbExpediteBackendProcessingForForegroundClients"
 

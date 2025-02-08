@@ -122,7 +122,6 @@ various/upstream/0017-ed25f4f.diff
 various/upstream/0018-b04c7d2.diff
 various/upstream/0019-3cff302b.diff
 various/upstream/0020-af537c5.diff
-various/upstream/features/leveldb-proto-enable-async-writes-by-default.patch
 various/upstream/features/partitionalloc-add-feature-to-use-fewer-memory-regions.patch
 various/warnings/clang-excessive-warnings.patch
 
