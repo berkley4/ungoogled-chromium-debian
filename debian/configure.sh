@@ -1144,7 +1144,6 @@ if [ $VAAPI -eq 0 ]; then
   gn_enable="$gn_enable use_vaapi=false"
   deps_disable="$deps_disable libva"
   ins_disable="$ins_disable hw-decoding-encoding"
-  ins_disable="$ins_disable 10-chromium.conf"
 fi
 
 
