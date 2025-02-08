@@ -273,7 +273,6 @@ GN_FLAGS += v8_enable_wasm_simd256_revec=true
 SYS_LIBS :=			\
 	double-conversion	\
 	flac			\
-	libevent		\
 	libsecret		\
 	libusb			\
 	libXNVCtrl		\
