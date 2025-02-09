@@ -17,8 +17,6 @@ sys_disable=; sys_enable=
 
 SER_DB=; SER_U=; SERIES_DB=; SERIES_UC=
 
-FF_AUDIO=0; FF_AC=
-
 BLUEZ_SET=0
 CLANG_VER_SET=0
 DBUS_SET=0
@@ -78,11 +76,6 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$DRIVER" ] || DRIVER=1
 [ -n "$ENTERPRISE_WATERMARK" ] || ENTERPRISE_WATERMARK=0
 [ -n "$EXTENSIONS_ROOT_MENU" ] || EXTENSIONS_ROOT_MENU=0
-[ -n "$FF_AC3" ] || FF_AC3=1
-[ -n "$FF_AC4" ] || FF_AC4=0
-[ -n "$FF_ALAC" ] || FF_ALAC=0
-[ -n "$FF_FDK_AAC" ] || FF_FDK_AAC=0
-[ -n "$FF_HEVC" ] || FF_HEVC=1
 [ -n "$GL_DESKTOP_FRONTEND" ] || GL_DESKTOP_FRONTEND=0
 [ -n "$GOOGLE_API_KEYS" ] || GOOGLE_API_KEYS=1
 [ -n "$GOOGLE_UI_URLS" ] || GOOGLE_UI_URLS=1
@@ -138,6 +131,16 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$OPENH264" ] && [ $OPENH264 -eq 0 ] && SYS_OPENH264=0 || OPENH264=1
 [ -n "$SYS_OPENH264" ] || SYS_OPENH264=1
 
+## FFmpeg codecs
+FF_AC="aac"
+
+FF_AAC=1
+[ -n "$FF_AC3" ] || FF_AC3=1
+[ -n "$FF_AC4" ] || FF_AC4=0
+[ -n "$FF_ALAC" ] || FF_ALAC=0
+[ -n "$FF_FDK" ] || FF_FDK=0
+[ -n "$FF_HEVC" ] || FF_HEVC=1
+
 ## MARCH and MTUNE defaults
 [ -n "$MARCH" ] && MARCH_SET=1 || MARCH=x86-64-v2
 [ -n "$MTUNE" ] && MTUNE_SET=1 || MTUNE=generic
@@ -179,8 +182,8 @@ if [ $NON_FREE -eq 0 ]; then
   ins_disable="$ins_disable anti-audio-fingerprint"
   SER_DB="$SER_DB -e \"s@^\(cromite/\)@#\1@\" -e \"s@^\(vanadium/\)@#\1@\""
 
-  if [ $FF_FDK_AAC -eq 1 ]; then
-    printf '%s\n' "ERROR: Cannot set FF_FDK_AAC=0 when NON_FREE=0"
+  if [ $FF_FDK -eq 1 ]; then
+    printf '%s\n' "ERROR: Cannot set FF_FDK=0 when NON_FREE=0"
     exit 1
   fi
 
@@ -757,37 +760,38 @@ if [ $EXTENSIONS_ROOT_MENU -eq 1 ]; then
 fi
 
 
+if [ $FF_FDK -eq 1 ]; then
+  op_enable="$op_enable ffmpeg-extra-codecs/fdk-aac/"
+
+  FF_AAC=0
+  FF_AC="libfdk_aac"
+
+  FDK_DIR=$RT_DIR/third_party/ffmpeg/libavcodec/fdk-aac
+  if [ $TEST -eq 0 ] && [ ! -d $FDK_DIR ]; then
+    printf '%s\n' "ERROR: Cannot find $FDK_DIR"
+    exit 1
+  fi
+fi
+
+
 if [ $FF_AC3 -eq 0 ]; then
   op_disable="$op_disable ffmpeg-extra-codecs/ac3/"
   gn_disable="$gn_disable enable_platform_ac3_eac3_audio=true"
 else
-  FF_AUDIO=1
+  FF_AC="$FF_AC,ac3,eac3"
 fi
 
 
 if [ $FF_AC4 -eq 1 ]; then
   op_enable="$op_enable ffmpeg-extra-codecs/ac4/"
   gn_enable="$gn_enable enable_platform_ac4_audio=true"
-  FF_AUDIO=$((FF_AUDIO+2))
+  FF_AC="$FF_AC,ac4"
 fi
 
 
 if [ $FF_ALAC -eq 1 ]; then
   op_enable="$op_enable ffmpeg-extra-codecs/alac/"
-  FF_AUDIO=$((FF_AUDIO+4))
-fi
-
-
-if [ $FF_FDK_AAC -eq 1 ]; then
-  op_enable="$op_enable ffmpeg-extra-codecs/fdk-aac/"
-  FDK_DIR=$RT_DIR/third_party/ffmpeg/libavcodec/fdk-aac
-
-  if [ $TEST -eq 0 ] && [ ! -d $FDK_DIR ]; then
-    printf '%s\n' "ERROR: Cannot find $FDK_DIR"
-    exit 1
-  fi
-
-  FF_AUDIO=$((FF_AUDIO+8))
+  FF_AC="$FF_AC,alac"
 fi
 
 
@@ -1037,42 +1041,11 @@ fi
 
 
 ## Handle audio codecs with a single patch to avoid patch conflict
-if [ $FF_AUDIO -eq 0 ]; then
+if [ $FF_AAC -eq 1 ] && [ $FF_AC3 -eq 0 ] && [ $FF_AC4 -eq 0 ] && \
+   [ $FF_ALAC -eq 0 ] && [ $FF_FDK -eq 0]; then
   op_disable="$op_disable ffmpeg-extra-codecs/audio-codecs.patch"
   op_disable="$op_disable ffmpeg-extra-codecs/context-fixup.patch"
 else
-  if [ $FF_AUDIO -eq 1 ]; then
-    FF_AC="aac,ac3,eac3"
-  elif [ $FF_AUDIO -eq 2 ]; then
-    FF_AC="aac,ac4"
-  elif [ $FF_AUDIO -eq 3 ]; then
-    FF_AC="aac,ac3,eac3,ac4"
-  elif [ $FF_AUDIO -eq 4 ]; then
-    FF_AC="aac,alac"
-  elif [ $FF_AUDIO -eq 5 ]; then
-    FF_AC="aac,ac3,eac3,alac"
-  elif [ $FF_AUDIO -eq 6 ]; then
-    FF_AC="aac,ac4,alac"
-  elif [ $FF_AUDIO -eq 7 ]; then
-    FF_AC="aac,ac3,eac3,ac4,alac"
-  elif [ $FF_AUDIO -eq 8 ]; then
-    FF_AC="libfdk_aac"
-  elif [ $FF_AUDIO -eq 9 ]; then
-    FF_AC="libfdk_aac,ac3,eac3"
-  elif [ $FF_AUDIO -eq 10 ]; then
-    FF_AC="libfdk_aac,ac4"
-  elif [ $FF_AUDIO -eq 11 ]; then
-    FF_AC="libfdk_aac,ac3,eac3,ac4"
-  elif [ $FF_AUDIO -eq 12 ]; then
-    FF_AC="libfdk_aac,alac"
-  elif [ $FF_AUDIO -eq 13 ]; then
-    FF_AC="libfdk_aac,ac3,eac3,alac"
-  elif [ $FF_AUDIO -eq 14 ]; then
-    FF_AC="libfdk_aac,ac4,alac"
-  elif [ $FF_AUDIO -eq 15 ]; then
-    FF_AC="libfdk_aac,ac3,eac3,ac4,alac"
-  fi
-
   sed "s@_ff_ac@$FF_AC@" -i $OP_DIR/ffmpeg-extra-codecs/audio-codecs.patch
 fi
 
