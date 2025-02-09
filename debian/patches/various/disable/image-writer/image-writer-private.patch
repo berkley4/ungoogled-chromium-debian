@@ -8,114 +8,114 @@
  import("//components/enterprise/buildflags/buildflags.gni")
  import("//components/nacl/features.gni")
  import("//extensions/buildflags/buildflags.gni")
-@@ -152,32 +153,6 @@
-     "api/identity/web_auth_flow.h",
-     "api/identity/web_auth_flow_info_bar_delegate.cc",
-     "api/identity/web_auth_flow_info_bar_delegate.h",
--    "api/image_writer_private/destroy_partitions_operation.cc",
--    "api/image_writer_private/destroy_partitions_operation.h",
--    "api/image_writer_private/error_constants.cc",
--    "api/image_writer_private/error_constants.h",
--    "api/image_writer_private/extraction_properties.cc",
--    "api/image_writer_private/extraction_properties.h",
--    "api/image_writer_private/image_writer_private_api.cc",
--    "api/image_writer_private/image_writer_private_api.h",
--    "api/image_writer_private/image_writer_utility_client.cc",
--    "api/image_writer_private/image_writer_utility_client.h",
--    "api/image_writer_private/operation.cc",
--    "api/image_writer_private/operation.h",
--    "api/image_writer_private/operation_manager.cc",
--    "api/image_writer_private/operation_manager.h",
--    "api/image_writer_private/removable_storage_provider.cc",
--    "api/image_writer_private/removable_storage_provider.h",
--    "api/image_writer_private/tar_extractor.cc",
--    "api/image_writer_private/tar_extractor.h",
--    "api/image_writer_private/write_from_file_operation.cc",
--    "api/image_writer_private/write_from_file_operation.h",
--    "api/image_writer_private/write_from_url_operation.cc",
--    "api/image_writer_private/write_from_url_operation.h",
--    "api/image_writer_private/xz_extractor.cc",
--    "api/image_writer_private/xz_extractor.h",
--    "api/image_writer_private/zip_extractor.cc",
--    "api/image_writer_private/zip_extractor.h",
-     "api/instance_id/instance_id_api.cc",
-     "api/instance_id/instance_id_api.h",
-     "api/language_settings_private/language_settings_private_api.cc",
-@@ -633,6 +608,37 @@
-     "window_controller_list_observer.h",
-   ]
- 
-+  if (enable_extractors) {
-+    sources += [
-+      "api/image_writer_private/destroy_partitions_operation.cc",
-+      "api/image_writer_private/destroy_partitions_operation.h",
-+      "api/image_writer_private/error_constants.cc",
-+      "api/image_writer_private/error_constants.h",
-+      "api/image_writer_private/extraction_properties.cc",
-+      "api/image_writer_private/extraction_properties.h",
-+      "api/image_writer_private/image_writer_private_api.cc",
-+      "api/image_writer_private/image_writer_private_api.h",
-+      "api/image_writer_private/image_writer_utility_client.cc",
-+      "api/image_writer_private/image_writer_utility_client.h",
-+      "api/image_writer_private/operation.cc",
-+      "api/image_writer_private/operation.h",
-+      "api/image_writer_private/operation_manager.cc",
-+      "api/image_writer_private/operation_manager.h",
-+      "api/image_writer_private/removable_storage_provider.cc",
-+      "api/image_writer_private/removable_storage_provider.h",
-+      "api/image_writer_private/tar_extractor.cc",
-+      "api/image_writer_private/tar_extractor.h",
-+      "api/image_writer_private/write_from_file_operation.cc",
-+      "api/image_writer_private/write_from_file_operation.h",
-+      "api/image_writer_private/write_from_url_operation.cc",
-+      "api/image_writer_private/write_from_url_operation.h",
-+      "api/image_writer_private/xz_extractor.cc",
-+      "api/image_writer_private/xz_extractor.h",
-+      "api/image_writer_private/zip_extractor.cc",
-+      "api/image_writer_private/zip_extractor.h",
-+    ]
-+  }
-+
-   # Chrome OS does not support Native Messaging policies.
-   if (!is_chromeos) {
-     sources += [
-@@ -801,6 +807,7 @@
-     "//chrome/browser/web_applications/extensions",
-     "//chrome/common/extensions/api:extensions_features",
-     "//chrome/common/safe_browsing:proto",
-+    "//chrome/services/file_util:buildflags",
-     "//chrome/services/file_util/public/mojom:mojom",
-     "//chrome/services/removable_storage_writer/public/mojom",
-     "//components/affiliations/core/browser:affiliations",
-@@ -1087,7 +1094,6 @@
-     sources += [
-       "api/enterprise_reporting_private/chrome_desktop_report_request_helper.cc",
-       "api/enterprise_reporting_private/chrome_desktop_report_request_helper.h",
--      "api/image_writer_private/operation_nonchromeos.cc",
-       "api/messaging/launch_context.cc",
-       "api/messaging/launch_context.h",
-       "api/messaging/native_message_process_host.cc",
-@@ -1105,6 +1111,9 @@
-       "//components/enterprise/common/proto:connectors_proto",
-       "//components/keep_alive_registry",
+@@ -191,32 +192,6 @@
+       "api/identity/web_auth_flow.h",
+       "api/identity/web_auth_flow_info_bar_delegate.cc",
+       "api/identity/web_auth_flow_info_bar_delegate.h",
+-      "api/image_writer_private/destroy_partitions_operation.cc",
+-      "api/image_writer_private/destroy_partitions_operation.h",
+-      "api/image_writer_private/error_constants.cc",
+-      "api/image_writer_private/error_constants.h",
+-      "api/image_writer_private/extraction_properties.cc",
+-      "api/image_writer_private/extraction_properties.h",
+-      "api/image_writer_private/image_writer_private_api.cc",
+-      "api/image_writer_private/image_writer_private_api.h",
+-      "api/image_writer_private/image_writer_utility_client.cc",
+-      "api/image_writer_private/image_writer_utility_client.h",
+-      "api/image_writer_private/operation.cc",
+-      "api/image_writer_private/operation.h",
+-      "api/image_writer_private/operation_manager.cc",
+-      "api/image_writer_private/operation_manager.h",
+-      "api/image_writer_private/removable_storage_provider.cc",
+-      "api/image_writer_private/removable_storage_provider.h",
+-      "api/image_writer_private/tar_extractor.cc",
+-      "api/image_writer_private/tar_extractor.h",
+-      "api/image_writer_private/write_from_file_operation.cc",
+-      "api/image_writer_private/write_from_file_operation.h",
+-      "api/image_writer_private/write_from_url_operation.cc",
+-      "api/image_writer_private/write_from_url_operation.h",
+-      "api/image_writer_private/xz_extractor.cc",
+-      "api/image_writer_private/xz_extractor.h",
+-      "api/image_writer_private/zip_extractor.cc",
+-      "api/image_writer_private/zip_extractor.h",
+       "api/instance_id/instance_id_api.cc",
+       "api/instance_id/instance_id_api.h",
+       "api/language_settings_private/language_settings_private_api.cc",
+@@ -649,6 +624,37 @@
+       "webstore_standalone_installer.h",
      ]
+ 
 +    if (enable_extractors) {
-+      sources += [ "api/image_writer_private/operation_nonchromeos.cc" ]
++      sources += [
++        "api/image_writer_private/destroy_partitions_operation.cc",
++        "api/image_writer_private/destroy_partitions_operation.h",
++        "api/image_writer_private/error_constants.cc",
++        "api/image_writer_private/error_constants.h",
++        "api/image_writer_private/extraction_properties.cc",
++        "api/image_writer_private/extraction_properties.h",
++        "api/image_writer_private/image_writer_private_api.cc",
++        "api/image_writer_private/image_writer_private_api.h",
++        "api/image_writer_private/image_writer_utility_client.cc",
++        "api/image_writer_private/image_writer_utility_client.h",
++        "api/image_writer_private/operation.cc",
++        "api/image_writer_private/operation.h",
++        "api/image_writer_private/operation_manager.cc",
++        "api/image_writer_private/operation_manager.h",
++        "api/image_writer_private/removable_storage_provider.cc",
++        "api/image_writer_private/removable_storage_provider.h",
++        "api/image_writer_private/tar_extractor.cc",
++        "api/image_writer_private/tar_extractor.h",
++        "api/image_writer_private/write_from_file_operation.cc",
++        "api/image_writer_private/write_from_file_operation.h",
++        "api/image_writer_private/write_from_url_operation.cc",
++        "api/image_writer_private/write_from_url_operation.h",
++        "api/image_writer_private/xz_extractor.cc",
++        "api/image_writer_private/xz_extractor.h",
++        "api/image_writer_private/zip_extractor.cc",
++        "api/image_writer_private/zip_extractor.h",
++      ]
 +    }
-     if (is_posix) {
-       sources += [ "api/messaging/launch_context_posix.cc" ]
++
+     # Chrome OS does not support Native Messaging policies.
+     if (!is_chromeos) {
+       sources += [
+@@ -810,6 +816,7 @@
+       "//chrome/browser/web_applications/extensions",
+       "//chrome/common/extensions/api:extensions_features",
+       "//chrome/common/safe_browsing:proto",
++      "//chrome/services/file_util:buildflags",
+       "//chrome/services/file_util/public/mojom:mojom",
+       "//chrome/services/removable_storage_writer/public/mojom",
+       "//components/affiliations/core/browser:affiliations",
+@@ -1090,7 +1097,6 @@
+       sources += [
+         "api/enterprise_reporting_private/chrome_desktop_report_request_helper.cc",
+         "api/enterprise_reporting_private/chrome_desktop_report_request_helper.h",
+-        "api/image_writer_private/operation_nonchromeos.cc",
+         "api/messaging/launch_context.cc",
+         "api/messaging/launch_context.h",
+         "api/messaging/native_message_process_host.cc",
+@@ -1108,6 +1114,9 @@
+         "//components/enterprise/common/proto:connectors_proto",
+         "//components/keep_alive_registry",
+       ]
++      if (enable_extractors) {
++        sources += [ "api/image_writer_private/operation_nonchromeos.cc" ]
++      }
+       if (is_posix) {
+         sources += [ "api/messaging/launch_context_posix.cc" ]
+       }
+@@ -1358,7 +1367,7 @@
+       ]
      }
-@@ -1364,7 +1373,7 @@
-     ]
-   }
  
--  if (is_linux) {
-+  if (enable_extractors && is_linux) {
-     sources +=
-         [ "api/image_writer_private/removable_storage_provider_linux.cc" ]
-   }
---- a/chrome/browser/extensions/chrome_browser_context_keyed_service_factories.cc
-+++ b/chrome/browser/extensions/chrome_browser_context_keyed_service_factories.cc
+-    if (is_linux) {
++    if (enable_extractors && is_linux) {
+       sources +=
+           [ "api/image_writer_private/removable_storage_provider_linux.cc" ]
+     }
+--- a/chrome/browser/extensions/keyed_services/chrome_browser_context_keyed_service_factories.cc
++++ b/chrome/browser/extensions/keyed_services/chrome_browser_context_keyed_service_factories.cc
 @@ -23,8 +23,13 @@
  #include "chrome/browser/extensions/permissions/permissions_updater.h"
  #include "chrome/browser/extensions/plugin_manager.h"
@@ -132,7 +132,7 @@
  void EnsureChromeBrowserContextKeyedServiceFactoriesBuilt() {
 --- a/chrome/browser/extensions/api/api_browser_context_keyed_service_factories.cc
 +++ b/chrome/browser/extensions/api/api_browser_context_keyed_service_factories.cc
-@@ -15,7 +15,6 @@
+@@ -23,7 +23,6 @@
  #include "chrome/browser/extensions/api/font_settings/font_settings_api.h"
  #include "chrome/browser/extensions/api/history/history_api.h"
  #include "chrome/browser/extensions/api/identity/identity_api.h"
@@ -140,15 +140,15 @@
  #include "chrome/browser/extensions/api/language_settings_private/language_settings_private_delegate_factory.h"
  #include "chrome/browser/extensions/api/messaging/incognito_connectability.h"
  #include "chrome/browser/extensions/api/networking_private/networking_private_ui_delegate_factory_impl.h"
-@@ -40,6 +39,7 @@
+@@ -46,6 +45,7 @@
+ #include "chrome/browser/extensions/api/web_navigation/web_navigation_api.h"
  #include "chrome/browser/extensions/api/webrtc_audio_private/webrtc_audio_private_api.h"
  #include "chrome/browser/extensions/commands/command_service.h"
- #include "chrome/common/buildflags.h"
 +#include "chrome/services/file_util/buildflags.h"
  #include "extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.h"
  #include "extensions/browser/api/networking_private/networking_private_delegate_factory.h"
  #include "pdf/buildflags.h"
-@@ -57,6 +57,10 @@
+@@ -63,6 +63,10 @@
  #include "chrome/browser/extensions/api/terminal/terminal_private_api.h"
  #endif
  
@@ -159,7 +159,7 @@
  #if BUILDFLAG(ENABLE_SERVICE_DISCOVERY)
  #include "chrome/browser/extensions/api/mdns/mdns_api.h"
  #endif
-@@ -89,7 +93,9 @@
+@@ -98,7 +102,9 @@
  #if BUILDFLAG(IS_CHROMEOS)
    extensions::InputImeAPI::GetFactoryInstance();
  #endif
@@ -179,15 +179,15 @@
  import("//pdf/features.gni")
  
  assert(enable_extensions_core)
-@@ -46,7 +47,6 @@
+@@ -61,7 +62,6 @@
      "gcm.json",
      "history.json",
      "identity.idl",
 -    "image_writer_private.idl",
      "instance_id.json",
      "language_settings_private.idl",
-     "notifications.idl",
-@@ -79,6 +79,10 @@
+     "omnibox.json",
+@@ -93,6 +93,10 @@
      "windows.json",
    ]
  
@@ -208,7 +208,7 @@
  import("//chrome/services/speech/buildflags/buildflags.gni")
  import("//chrome/test/include_js_tests.gni")
  import("//chrome/version.gni")
-@@ -3972,9 +3973,6 @@
+@@ -4034,9 +4035,6 @@
          "../browser/extensions/api/identity/web_auth_flow_browsertest.cc",
          "../browser/extensions/api/idle/idle_apitest.cc",
          "../browser/extensions/api/idltest/idltest_apitest.cc",
@@ -218,7 +218,7 @@
          "../browser/extensions/api/instance_id/instance_id_apitest.cc",
          "../browser/extensions/api/management/management_api_browsertest.cc",
          "../browser/extensions/api/management/management_api_non_persistent_apitest.cc",
-@@ -4183,6 +4181,14 @@
+@@ -4248,6 +4246,14 @@
          "../browser/user_bypass/user_bypass_web_contents_observer_browsertest.cc",
        ]
  
@@ -233,7 +233,7 @@
        data += [
          "//chrome/test/data/controlled_frame/resources/expected_properties.json",
          "//chrome/test/data/controlled_frame/resources/mangle.js",
-@@ -4273,10 +4279,13 @@
+@@ -4338,10 +4344,13 @@
  
        sources += [
          "../browser/extensions/api/automation/automation_apitest.cc",
@@ -248,7 +248,7 @@
        if (is_chromeos) {
          sources += [
            "../browser/apps/platform_apps/api/arc_apps_private/arc_apps_private_apitest.cc",
-@@ -5187,11 +5196,16 @@
+@@ -5246,11 +5255,16 @@
          "../browser/browser_switcher/browser_switcher_browsertest.cc",
          "../browser/browser_switcher/browser_switcher_service_browsertest.cc",
          "../browser/enterprise/signin/enterprise_signin_service_browsertest.cc",
@@ -266,10 +266,10 @@
      if (is_linux || is_mac) {
        sources +=
            [ "../browser/first_run/first_run_internal_posix_browsertest.cc" ]
-@@ -8547,15 +8561,6 @@
-       "../browser/extensions/api/identity/identity_api_unittest.cc",
+@@ -8680,15 +8694,6 @@
        "../browser/extensions/api/identity/identity_mint_queue_unittest.cc",
        "../browser/extensions/api/identity/identity_token_cache_unittest.cc",
+       "../browser/extensions/api/identity/web_auth_flow_info_bar_delegate_unittest.cc",
 -      "../browser/extensions/api/image_writer_private/destroy_partitions_operation_unittest.cc",
 -      "../browser/extensions/api/image_writer_private/extractor_unittest.cc",
 -      "../browser/extensions/api/image_writer_private/image_writer_private_api_unittest.cc",
@@ -282,7 +282,7 @@
        "../browser/extensions/api/language_settings_private/language_settings_private_api_unittest.cc",
        "../browser/extensions/api/language_settings_private/language_settings_private_delegate_unittest.cc",
        "../browser/extensions/api/management/management_api_unittest.cc",
-@@ -11124,6 +11129,20 @@
+@@ -11255,6 +11260,20 @@
          "//ui/display/win/test/virtual_display_util_win_interactive_uitest.cc",
        ]
  

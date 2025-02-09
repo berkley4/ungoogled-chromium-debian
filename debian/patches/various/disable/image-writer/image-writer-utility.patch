@@ -1,27 +1,27 @@
 --- a/chrome/browser/extensions/BUILD.gn
 +++ b/chrome/browser/extensions/BUILD.gn
-@@ -809,7 +809,6 @@
-     "//chrome/common/safe_browsing:proto",
-     "//chrome/services/file_util:buildflags",
-     "//chrome/services/file_util/public/mojom:mojom",
--    "//chrome/services/removable_storage_writer/public/mojom",
-     "//components/affiliations/core/browser:affiliations",
-     "//components/app_constants",
-     "//components/autofill/content/browser",
-@@ -974,6 +973,10 @@
-     "//url",
-   ]
+@@ -818,7 +818,6 @@
+       "//chrome/common/safe_browsing:proto",
+       "//chrome/services/file_util:buildflags",
+       "//chrome/services/file_util/public/mojom:mojom",
+-      "//chrome/services/removable_storage_writer/public/mojom",
+       "//components/affiliations/core/browser:affiliations",
+       "//components/app_constants",
+       "//components/autofill/content/browser",
+@@ -979,6 +978,10 @@
+       "//url",
+     ]
  
-+  if (enable_extractors) {
-+    deps += [ "//chrome/services/removable_storage_writer/public/mojom" ]
-+  }
++    if (enable_extractors) {
++      deps += [ "//chrome/services/removable_storage_writer/public/mojom" ]
++    }
 +
-   if (is_linux || is_mac || is_win) {
-     sources += [
-       "api/system_indicator/system_indicator_manager.cc",
+     if (is_linux || is_mac || is_win) {
+       sources += [
+         "api/system_indicator/system_indicator_manager.cc",
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -2045,7 +2045,6 @@
+@@ -2099,7 +2099,6 @@
        "//chrome/common:version_header",
        "//chrome/common/privacy_budget:test_support",
        "//chrome/renderer",
@@ -29,7 +29,7 @@
        "//chrome/test/data/webui:resources_grit",
        "//chrome/test/data/webui/mojo:mojo_bindings",
        "//chrome/test/media_router/access_code_cast:access_code_cast_integration_base",
-@@ -2403,6 +2402,10 @@
+@@ -2456,6 +2455,10 @@
        "//v8",
      ]
  
@@ -37,9 +37,9 @@
 +      deps += [ "//chrome/services/removable_storage_writer:lib" ]
 +    }
 +
-     allow_circular_includes_from =
-         [ "//chrome/browser/optimization_guide:browser_tests" ]
- 
+     if (enable_glic) {
+       deps += [
+         "//chrome/browser/glic:browser_tests",
 --- a/chrome/utility/BUILD.gn
 +++ b/chrome/utility/BUILD.gn
 @@ -6,6 +6,7 @@

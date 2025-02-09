@@ -8,7 +8,7 @@
  
  #if BUILDFLAG(IS_CHROMEOS_ASH)
  #include "chrome/browser/ash/accessibility/accessibility_manager.h"
-@@ -38,7 +39,9 @@
+@@ -37,7 +38,9 @@
    void HandleGetScreenReaderState(const base::Value::List& args);
    void HandleCheckAccessibilityImageLabels(const base::Value::List& args);
  

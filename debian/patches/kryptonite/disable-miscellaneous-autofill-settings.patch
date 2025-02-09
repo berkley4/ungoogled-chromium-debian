@@ -1,6 +1,6 @@
 --- a/components/autofill/core/common/autofill_features.cc
 +++ b/components/autofill/core/common/autofill_features.cc
-@@ -820,7 +820,7 @@
+@@ -939,7 +939,7 @@
  // i.e., https://other.autofill.server:port/tbproxy/af/
  BASE_FEATURE(kAutofillServerCommunication,
               "AutofillServerCommunication",
@@ -11,7 +11,7 @@
  // element in the DOM.
 --- a/components/autofill/core/common/autofill_prefs.cc
 +++ b/components/autofill/core/common/autofill_prefs.cc
-@@ -52,7 +52,7 @@
+@@ -33,7 +33,7 @@
        prefs::kAutofillCreditCardEnabled, false,
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
    registry->RegisterBooleanPref(
@@ -20,7 +20,7 @@
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
    registry->RegisterBooleanPref(
        kAutofillPaymentCardBenefits, true,
-@@ -96,7 +96,7 @@
+@@ -77,7 +77,7 @@
  #endif
  
    // Deprecated prefs registered for migration.

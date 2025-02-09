@@ -8,10 +8,10 @@ and disable observers
 Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- .../renderer/modules/netinfo/network_information.cc   |  6 +++++-
- .../platform/network/network_state_notifier.cc        | 11 +++++++++++
- .../platform/network/network_state_notifier.h         |  2 +-
- 3 files changed, 17 insertions(+), 2 deletions(-)
+ .../modules/netinfo/network_information.cc        |  6 +++++-
+ .../platform/network/network_state_notifier.cc    | 15 +++++++++++++++
+ .../platform/network/network_state_notifier.h     |  2 +-
+ 3 files changed, 21 insertions(+), 2 deletions(-)
 
 --- a/third_party/blink/renderer/modules/netinfo/network_information.cc
 +++ b/third_party/blink/renderer/modules/netinfo/network_information.cc
@@ -58,19 +58,23 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      connection_observer_handle_ = nullptr;
 --- a/third_party/blink/renderer/platform/network/network_state_notifier.cc
 +++ b/third_party/blink/renderer/platform/network/network_state_notifier.cc
-@@ -107,6 +107,17 @@
+@@ -106,6 +106,21 @@
    }
  }
  
 +NetworkStateNotifier::NetworkStateNotifier() : has_override_(false) {
 +  // set default data
 +  SetNetworkConnectionInfoOverride(
-+    /*on_line*/ true,
-+    /*type*/ WebConnectionType::kWebConnectionTypeWifi,
-+    /*effective_type*/ std::nullopt,
-+    /*http_rtt_msec*/ 0,
-+    /*max_bandwidth_mbps*/ std::numeric_limits<double>::max());
-+  SetNetworkQuality(/*effective_type*/ WebEffectiveConnectionType::kType4G, base::TimeDelta(), base::TimeDelta(), 10000);
++    /* on_line */ true,
++    /* type */ WebConnectionType::kWebConnectionTypeWifi,
++    /* effective_type */ std::nullopt,
++    /* http_rtt_msec */ 50,
++    /* max_bandwidth_mbps */ std::numeric_limits<double>::max());
++  SetNetworkQuality(
++    /* effective_type */ WebEffectiveConnectionType::kType4G,
++    /* http_rtt */ base::Milliseconds(50),
++    /* transport_rtt */ base::TimeDelta(),
++    /* downlink_throughput_kbps */ 10000);
 +}
 +
  NetworkStateNotifier::NetworkStateObserverHandle::NetworkStateObserverHandle(

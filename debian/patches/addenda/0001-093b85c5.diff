@@ -1,0 +1,47 @@
+From 093b85c5b8d231c46425cbf9ad34031f24948350 Mon Sep 17 00:00:00 2001
+From: Hirokazu Honda <hiroh@chromium.org>
+Date: Mon, 03 Feb 2025 14:18:53 -0800
+Subject: [PATCH] [M133] media/gpu/H264VaapiVED: Use uint64_t in computing bitrate target percentage
+
+The uint32_t value causes an integer overflow in computing bitrate
+target percentage and fails encoding. This fixes the issue by using
+uint64_t.
+
+Bug: 373555831
+Test: video_encode_accelerator_tests --bitrate_mode=vbr --bitrate=66355200
+
+(cherry picked from commit 5e9de2f3a751759c7277ba04f3c52f6598b627d4)
+
+Change-Id: If993756099496da734b2de53d8dc453bbaa22219
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6187687
+Auto-Submit: Hirokazu Honda <hiroh@chromium.org>
+Commit-Queue: Hirokazu Honda <hiroh@chromium.org>
+Reviewed-by: Nathan Hebert <nhebert@chromium.org>
+Commit-Queue: Nathan Hebert <nhebert@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1409223}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6226764
+Cr-Commit-Position: refs/branch-heads/6943@{#1404}
+Cr-Branched-From: 72dd0b377c099e1e0230cc7345d5a5125b46ae7d-refs/heads/main@{#1402768}
+---
+
+--- a/media/gpu/vaapi/h264_vaapi_video_encoder_delegate.cc
++++ b/media/gpu/vaapi/h264_vaapi_video_encoder_delegate.cc
+@@ -940,15 +940,15 @@
+     // we use the peak, because it exists for variable bitrates.
+     bitrate_bps = bitrate.peak_bps();
+     DCHECK_NE(bitrate.peak_bps(), 0u);
+-    base::CheckedNumeric<uint32_t> checked_percentage =
+-        base::CheckDiv(base::CheckMul<uint32_t>(bitrate.target_bps(), 100u),
++    base::CheckedNumeric<uint64_t> checked_percentage =
++        base::CheckDiv(base::CheckMul<uint64_t>(bitrate.target_bps(), 100u),
+                        bitrate.peak_bps());
+     if (!checked_percentage.AssignIfValid(&target_percentage)) {
+       DVLOGF(1)
+           << "Integer overflow while computing target percentage for bitrate.";
+       return false;
+     }
+-    target_percentage = checked_percentage.ValueOrDefault(100u);
++    DVLOGF(3) << "Target percentage: " << target_percentage;
+   }
+   VAEncSequenceParameterBufferH264 seq_param = {};
+ 

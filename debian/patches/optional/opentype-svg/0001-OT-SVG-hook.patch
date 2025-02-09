@@ -17,17 +17,17 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
 
 --- a/skia/BUILD.gn
 +++ b/skia/BUILD.gn
-@@ -382,9 +382,6 @@
+@@ -378,9 +378,6 @@
+     ]
+     deps += [ "//third_party/expat" ]
      defines += [ "SK_CODEC_DECODES_JPEG_GAINMAPS" ]
+-  } else {
+-    # Remove unused util sources.
+-    sources -= [ "//third_party/skia/src/utils/SkParsePath.cpp" ]
    }
  
--  # Remove unused util sources.
--  sources -= [ "//third_party/skia/src/utils/SkParsePath.cpp" ]
--
    if (is_win) {
-     libs = [ "fontsub.lib" ]
-   }
-@@ -583,6 +580,8 @@
+@@ -584,6 +581,8 @@
        "SKOTTIE_TRIVIAL_FONTRUN_ITER",
      ]
    }
@@ -85,7 +85,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
    }
 --- a/third_party/skia/src/ports/SkFontHost_FreeType.cpp
 +++ b/third_party/skia/src/ports/SkFontHost_FreeType.cpp
-@@ -63,6 +63,8 @@
+@@ -64,6 +64,8 @@
  #include <freetype/t1tables.h>
  #include <freetype/ftfntfmt.h>
  
@@ -94,7 +94,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
  using namespace skia_private;
  
  namespace {
-@@ -1058,9 +1060,13 @@
+@@ -1050,9 +1052,13 @@
          // FT_LOAD_COLOR with scalable fonts means allow SVG.
          // It also implies attempt to render COLR if available, but this is not used.
  #if defined(FT_CONFIG_OPTION_SVG)
@@ -110,7 +110,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
          fStrikeIndex = chooseBitmapStrike(fFaceRec->fFace.get(), scaleY);
 --- a/third_party/skia/src/ports/SkScalerContext_win_dw.cpp
 +++ b/third_party/skia/src/ports/SkScalerContext_win_dw.cpp
-@@ -46,6 +46,8 @@
+@@ -45,6 +45,8 @@
  #include "src/utils/win/SkHRESULT.h"
  #include "src/utils/win/SkTScopedComPtr.h"
  

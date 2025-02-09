@@ -13,7 +13,7 @@ Cr-Commit-Position: refs/heads/main@{#1405855}
 
 --- a/media/video/av1_video_encoder.cc
 +++ b/media/video/av1_video_encoder.cc
-@@ -529,7 +529,7 @@
+@@ -530,7 +530,7 @@
    }
  
    bool key_frame = encode_options.key_frame;
@@ -22,7 +22,7 @@ Cr-Commit-Position: refs/heads/main@{#1405855}
    last_frame_timestamp_ = frame->timestamp();
    if (last_frame_color_space_ != frame->ColorSpace()) {
      last_frame_color_space_ = frame->ColorSpace();
-@@ -594,14 +594,19 @@
+@@ -595,14 +595,19 @@
    auto error =
        aom_codec_encode(codec_.get(), image, artificial_timestamp_, duration_us,
                         key_frame ? AOM_EFLAG_FORCE_KF : 0);

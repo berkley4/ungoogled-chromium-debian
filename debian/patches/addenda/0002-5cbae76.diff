@@ -1,0 +1,52 @@
+From 5cbae76f114bcb84dbfdea361e608a1fe9f780dd Mon Sep 17 00:00:00 2001
+From: Alison Maher <almaher@microsoft.com>
+Date: Wed, 05 Feb 2025 14:14:02 -0800
+Subject: [PATCH] Update CHECK in AXObject::UpdateCachedAttributeValuesIfNeeded
+
+In AXObject::UpdateCachedAttributeValuesIfNeeded() we CHECK that
+the lifecycle state allows immediate tree updates. This CHECK is
+being hit by customers in 133 and 134.
+
+Demote to a non-fatal check while the root cause is further
+investigated and understood.
+
+Also add some extra logging of both the object and its parent
+chain to aid in further investigation.
+
+(cherry picked from commit b5a04980ee4783b0a99e6a317804a174c8dbb51e)
+
+Bug: 382104886
+Change-Id: I320670574168f00b91240cfe6a441ec10de5ab62
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6192914
+Reviewed-by: Aaron Leventhal <aleventhal@chromium.org>
+Commit-Queue: Alison Maher <almaher@microsoft.com>
+Cr-Original-Commit-Position: refs/heads/main@{#1411064}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6235349
+Auto-Submit: Alison Maher <almaher@microsoft.com>
+Commit-Queue: Rubber Stamper <rubber-stamper@appspot.gserviceaccount.com>
+Bot-Commit: Rubber Stamper <rubber-stamper@appspot.gserviceaccount.com>
+Cr-Commit-Position: refs/branch-heads/6943@{#1466}
+Cr-Branched-From: 72dd0b377c099e1e0230cc7345d5a5125b46ae7d-refs/heads/main@{#1402768}
+---
+
+--- a/third_party/blink/renderer/modules/accessibility/ax_object.cc
++++ b/third_party/blink/renderer/modules/accessibility/ax_object.cc
+@@ -3514,8 +3514,16 @@
+ 
+   cached_values_need_update_ = false;
+ 
+-  CHECK(AXObjectCache().lifecycle().StateAllowsImmediateTreeUpdates())
+-      << AXObjectCache();
++  // TODO(almaher): This should never happen and should be updated back to a
++  // CHECK once the root cause of the related crashes is better understood.
++  if (!AXObjectCache().lifecycle().StateAllowsImmediateTreeUpdates()) {
++    std::string parent_chain = "";
++#if AX_FAIL_FAST_BUILD()
++    parent_chain = "\n* Parent Chain:\n" + ParentChainToStringHelper(this);
++#endif
++    DUMP_WILL_BE_CHECK(false)
++        << AXObjectCache() << "\n* Object: " << this << parent_chain;
++  }
+ 
+ #if DCHECK_IS_ON()  // Required in order to get Lifecycle().ToString()
+   DCHECK(!is_computing_role_)

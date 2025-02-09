@@ -8,7 +8,7 @@
  import("//gpu/vulkan/features.gni")
  import("//skia/skia.gni")
  import("//testing/test.gni")
-@@ -48,28 +47,6 @@
+@@ -36,28 +35,6 @@
    ]
  }
  
@@ -23,9 +23,9 @@
 -  cxx_bindings = skia_fontations_bridge_sources
 -  deps = [
 -    ":path_bridge",
--    "//third_party/rust/font_types/v0_7:lib",
--    "//third_party/rust/read_fonts/v0_23:lib",
--    "//third_party/rust/skrifa/v0_24:lib",
+-    "//third_party/rust/font_types/v0_8:lib",
+-    "//third_party/rust/read_fonts/v0_25:lib",
+-    "//third_party/rust/skrifa/v0_26:lib",
 -  ]
 -  configs -= [ "//build/config/compiler:chromium_code" ]
 -  configs += [
@@ -37,7 +37,7 @@
  # External-facing config for dependent code.
  config("skia_config") {
    defines = [
-@@ -180,7 +157,6 @@
+@@ -168,7 +145,6 @@
    if (use_blink && enable_freetype) {
      defines += [
        "SK_TYPEFACE_FACTORY_FREETYPE",
@@ -45,10 +45,10 @@
        "SK_FONTMGR_FREETYPE_EMPTY_AVAILABLE",
      ]
    }
-@@ -428,13 +404,7 @@
-       sources += skia_ports_fontmgr_empty_sources
+@@ -427,13 +403,7 @@
        public += skia_ports_fontmgr_empty_public
      }
+     sources += skia_ports_typeface_proxy_sources
 -    sources += skia_ports_typeface_fontations_sources
  
 -    # Fontations Rust/C++ bridge interfaces.
@@ -59,7 +59,7 @@
    }
  
    if (is_win) {
-@@ -725,13 +695,7 @@
+@@ -728,13 +698,7 @@
      # skia_core_and_effects rather than the other way around.
      public_deps = [ "//third_party/dawn/include/dawn:cpp_headers" ]
    }

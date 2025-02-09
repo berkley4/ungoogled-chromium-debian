@@ -1,36 +1,9 @@
 --- a/components/lens/lens_features.cc
 +++ b/components/lens/lens_features.cc
-@@ -16,7 +16,7 @@
+@@ -16,11 +16,11 @@
  
  BASE_FEATURE(kLensStandalone,
               "LensStandalone",
--             base::FEATURE_ENABLED_BY_DEFAULT);
-+             base::FEATURE_DISABLED_BY_DEFAULT);
- 
- BASE_FEATURE(kLensSearchOptimizations,
-              "LensSearchOptimizations",
-@@ -24,7 +24,7 @@
- 
- BASE_FEATURE(kEnableLatencyLogging,
-              "LensImageLatencyLogging",
--             base::FEATURE_ENABLED_BY_DEFAULT);
-+             base::FEATURE_DISABLED_BY_DEFAULT);
- 
- BASE_FEATURE(kEnableRegionSearchKeyboardShortcut,
-              "LensEnableRegionSearchKeyboardShortcut",
-@@ -36,7 +36,7 @@
- 
- BASE_FEATURE(kEnableImageSearchSidePanelFor3PDse,
-              "EnableImageSearchSidePanelFor3PDse",
--             base::FEATURE_ENABLED_BY_DEFAULT);
-+             base::FEATURE_DISABLED_BY_DEFAULT);
- 
- BASE_FEATURE(kLensRegionSearchStaticPage,
-              "LensRegionSearchStaticPage",
-@@ -44,11 +44,11 @@
- 
- BASE_FEATURE(kEnableContextMenuInLensSidePanel,
-              "EnableContextMenuInLensSidePanel",
 -             base::FEATURE_ENABLED_BY_DEFAULT);
 +             base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -41,8 +14,8 @@
               base::FEATURE_DISABLED_BY_DEFAULT
  #else
               base::FEATURE_ENABLED_BY_DEFAULT
-@@ -406,7 +406,7 @@
-         true};
+@@ -359,7 +359,7 @@
+     &kLensStandalone, "lens-html-redirect-fix", false};
  
  constexpr base::FeatureParam<bool> kShouldIssuePreconnectForLens{
 -    &kLensStandalone, "lens-issue-preconnect", true};

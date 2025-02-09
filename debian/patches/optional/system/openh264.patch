@@ -8,7 +8,7 @@
  import("//build/config/linux/pkg_config.gni")
  import("//build/shim_headers.gni")
  
-@@ -47,3 +48,9 @@
+@@ -52,3 +53,9 @@
      ":encoder_cfi_flags",
    ]
  }

@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2490,11 +2490,6 @@
+@@ -2498,11 +2498,6 @@
        "-ffunction-sections",
        "-fdebug-types-section",
      ]

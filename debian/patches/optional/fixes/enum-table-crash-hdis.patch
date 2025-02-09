@@ -24,15 +24,16 @@
      Entry& operator=(const Entry&) = delete;
    };
  
-@@ -318,15 +317,14 @@
+@@ -318,7 +317,7 @@
      if (is_sorted_) {
        const std::size_t index = static_cast<std::size_t>(value);
        if (ANALYZER_ASSUME_TRUE(index < data_.size())) {
 -        const auto& entry = data_.begin()[index];
 +        const auto& entry = data_[index];
-         if (ANALYZER_ASSUME_TRUE(entry.has_str()))
+         if (ANALYZER_ASSUME_TRUE(entry.has_str())) {
            return entry.str();
-       }
+         }
+@@ -326,8 +325,7 @@
        return std::nullopt;
      }
      return GenericEnumTableEntry::FindByValue(
@@ -42,7 +43,7 @@
    }
  
    // This overload of GetString is designed for cases where the argument is a
-@@ -353,8 +351,7 @@
+@@ -355,8 +353,7 @@
    // enum value directly.
    std::optional<E> GetEnum(std::string_view str) const {
      auto* entry = GenericEnumTableEntry::FindByString(
@@ -52,7 +53,7 @@
      return entry ? static_cast<E>(entry->value) : std::optional<E>();
    }
  
-@@ -368,7 +365,7 @@
+@@ -370,7 +367,7 @@
  #ifdef ARCH_CPU_64_BITS
    alignas(std::hardware_destructive_interference_size)
  #endif
@@ -61,7 +62,7 @@
    bool is_sorted_;
  
    constexpr EnumTable(std::initializer_list<Entry> data, bool is_sorted)
-@@ -380,8 +377,8 @@
+@@ -382,8 +379,8 @@
  
      for (std::size_t i = 0; i < data.size(); i++) {
        for (std::size_t j = i + 1; j < data.size(); j++) {

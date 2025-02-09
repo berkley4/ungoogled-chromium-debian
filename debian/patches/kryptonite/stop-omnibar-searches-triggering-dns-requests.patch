@@ -1,6 +1,6 @@
 --- a/chrome/browser/ui/omnibox/chrome_omnibox_navigation_observer.cc
 +++ b/chrome/browser/ui/omnibox/chrome_omnibox_navigation_observer.cc
-@@ -250,13 +250,6 @@
+@@ -253,13 +253,6 @@
        profile_(profile),
        show_infobar_(std::move(show_infobar)) {
    NavigationUserData::CreateForNavigationHandle(navigation, this);

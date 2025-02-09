@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -750,7 +750,6 @@
+@@ -769,7 +769,6 @@
        # available disk space, 40GB and 100000 files.
        cache_policy =
            "cache_size=10%:cache_size_bytes=40g:cache_size_files=100000"
@@ -8,7 +8,7 @@
        if (is_win) {
          ldflags += [
            "/lldltocache:$cache_dir",
-@@ -760,7 +759,7 @@
+@@ -779,7 +778,7 @@
          if (is_apple) {
            ldflags += [ "-Wl,-cache_path_lto,$cache_dir" ]
          } else {

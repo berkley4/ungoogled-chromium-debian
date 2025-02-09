@@ -1,6 +1,6 @@
 --- a/components/translate/core/browser/translate_url_fetcher.cc
 +++ b/components/translate/core/browser/translate_url_fetcher.cc
-@@ -99,7 +99,6 @@
+@@ -98,7 +98,6 @@
    if (!extra_request_header_.empty())
      resource_request->headers.AddHeaderFromString(extra_request_header_);
  

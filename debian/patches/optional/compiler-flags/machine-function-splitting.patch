@@ -1,8 +1,8 @@
 --- a/build/config/compiler/pgo/BUILD.gn
 +++ b/build/config/compiler/pgo/BUILD.gn
-@@ -145,6 +145,13 @@
-       "-Wno-backend-plugin",
-     ]
+@@ -136,6 +136,13 @@
+       ]
+     }
  
 +    # Split machine functions using profile information. This groups all cold
 +    # blocks across functions together, aiming to decrease fragmentation and

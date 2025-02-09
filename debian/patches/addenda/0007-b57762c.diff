@@ -1,0 +1,29 @@
+From b57762c6c6ad261024f11fc724687593c03cce67 Mon Sep 17 00:00:00 2001
+From: JD Pierce <brkfstmnchr@gmail.com>
+Date: Fri, 07 Feb 2025 14:00:29 -0800
+Subject: [PATCH] M133: fix extraction of marked text
+
+- ensure temp text buff appends marked text
+
+Bug: 384770169
+Change-Id: I66bc81dc45017a8156b4a46529c9abf0f8630cec
+Reviewed-on: https://pdfium-review.googlesource.com/c/pdfium/+/127410
+Reviewed-by: Thomas Sepez <tsepez@google.com>
+Commit-Queue: Lei Zhang <thestig@chromium.org>
+Reviewed-by: Tom Sepez <tsepez@chromium.org>
+Reviewed-by: Lei Zhang <thestig@chromium.org>
+(cherry picked from commit c58db783d8dd299cdafd239472cf574f709fd1b5)
+Reviewed-on: https://pdfium-review.googlesource.com/c/pdfium/+/128610
+Bot-Commit: rubber-stamper@appspot.gserviceaccount.com <rubber-stamper@appspot.gserviceaccount.com>
+---
+
+--- a/third_party/pdfium/core/fpdftext/cpdf_textpage.cpp
++++ b/third_party/pdfium/core/fpdftext/cpdf_textpage.cpp
+@@ -981,6 +981,7 @@
+ 
+     CFX_FloatRect char_box(rect);
+     char_box.Translate(k * step, 0);
++    m_TempTextBuf.AppendChar(wChar);
+     m_TempCharList.push_back(
+         CharInfo(CharType::kPiece, font->CharCodeFromUnicode(wChar), wChar,
+                  pTextObj->GetPos(), char_box, matrix, pTextObj));

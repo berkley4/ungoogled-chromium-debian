@@ -1,6 +1,6 @@
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2445,6 +2445,7 @@
+@@ -2434,6 +2434,7 @@
      "//third_party/blink/public/common",
      "//third_party/blink/public/common:buildflags",
      "//third_party/blink/public/common:headers",
@@ -10,7 +10,7 @@
      "//third_party/libaddressinput",
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -8094,17 +8094,14 @@
+@@ -7910,17 +7910,14 @@
    // automation frameworks), the hyphenation dictionaries directory is never
    // initialized. To work around this, provide the well known hyphenation
    // directory here bypassing the disabled component installer.

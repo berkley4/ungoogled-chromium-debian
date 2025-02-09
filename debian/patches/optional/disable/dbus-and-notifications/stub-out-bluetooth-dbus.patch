@@ -1,6 +1,6 @@
 --- a/chrome/browser/chrome_browser_main_linux.cc
 +++ b/chrome/browser/chrome_browser_main_linux.cc
-@@ -69,11 +69,11 @@
+@@ -67,11 +67,11 @@
    }
    // Don't initialize DBus here. Ash and Lacros Bluetooth DBusManager
    // initialization depend on FeatureList, and is done elsewhere.
@@ -14,7 +14,7 @@
    // Set up crypt config. This needs to be done before anything starts the
    // network service, as the raw encryption key needs to be shared with the
    // network service for encrypted cookie storage.
-@@ -138,7 +138,7 @@
+@@ -136,7 +136,7 @@
  void ChromeBrowserMainPartsLinux::PostDestroyThreads() {
  #if BUILDFLAG(IS_CHROMEOS)
    // No-op; per PostBrowserStart() comment, this is done elsewhere.
@@ -178,7 +178,7 @@
  // registerService:
 --- a/services/device/wake_lock/power_save_blocker/BUILD.gn
 +++ b/services/device/wake_lock/power_save_blocker/BUILD.gn
-@@ -90,6 +90,9 @@
+@@ -80,6 +80,9 @@
      visibility = [ ":power_save_blocker" ]
      sources = java_sources_needing_jni
    }

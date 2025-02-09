@@ -3,7 +3,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
 
 --- a/chrome/browser/component_updater/registration.cc
 +++ b/chrome/browser/component_updater/registration.cc
-@@ -120,10 +120,6 @@
+@@ -126,10 +126,6 @@
    RegisterMediaFoundationWidevineCdmComponent(cus);
  #endif
  

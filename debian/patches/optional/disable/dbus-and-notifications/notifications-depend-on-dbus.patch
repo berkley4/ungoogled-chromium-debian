@@ -1,24 +1,24 @@
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5120,13 +5120,13 @@
-      kOsLinux | kOsAndroid | kOsCrOS | kOsLacros,
+@@ -5059,13 +5059,13 @@
+      kOsLinux | kOsAndroid | kOsCrOS,
       FEATURE_VALUE_TYPE(features::kVulkanFromANGLE)},
  
--#if !BUILDFLAG(IS_CHROMEOS_ASH)
-+#if defined(USE_DBUS) && !BUILDFLAG(IS_CHROMEOS_ASH)
+-#if !BUILDFLAG(IS_CHROMEOS)
++#if defined(USE_DBUS) && !BUILDFLAG(IS_CHROMEOS)
      {"enable-system-notifications",
       flag_descriptions::kNotificationsSystemFlagName,
       flag_descriptions::kNotificationsSystemFlagDescription,
       kOsMac | kOsLinux | kOsWin,
       FEATURE_VALUE_TYPE(features::kSystemNotifications)},
--#endif  // !BUILDFLAG(IS_CHROMEOS_ASH)
-+#endif  // defined(USE_DBUS) && !BUILDFLAG(IS_CHROMEOS_ASH)
- #if BUILDFLAG(IS_CHROMEOS_ASH)
+-#endif  // !BUILDFLAG(IS_CHROMEOS)
++#endif  // defined(USE_DBUS) && !BUILDFLAG(IS_CHROMEOS)
+ #if BUILDFLAG(IS_CHROMEOS)
      {"enable-ongoing-processes", flag_descriptions::kEnableOngoingProcessesName,
       flag_descriptions::kEnableOngoingProcessesDescription, kOsCrOS,
 --- a/chrome/browser/browser_process_impl.cc
 +++ b/chrome/browser/browser_process_impl.cc
-@@ -890,9 +890,13 @@
+@@ -889,9 +889,13 @@
  }
  
  NotificationPlatformBridge* BrowserProcessImpl::notification_platform_bridge() {
@@ -32,7 +32,7 @@
  }
  
  policy::ChromeBrowserPolicyConnector*
-@@ -1427,9 +1431,11 @@
+@@ -1423,9 +1427,11 @@
  }
  
  void BrowserProcessImpl::CreateNotificationPlatformBridge() {
@@ -69,19 +69,16 @@
  }
  
  int NotificationsTest::GetNotificationCount() {
-@@ -260,8 +262,15 @@
+@@ -260,7 +262,12 @@
  
  NotificationsTestWithPermissionsEmbargo ::
      NotificationsTestWithPermissionsEmbargo() {
 +#if defined(USE_DBUS)
    feature_list_.InitWithFeatures(
-       {permissions::features::kBlockPromptsIfDismissedOften,
-        permissions::features::kBlockPromptsIfIgnoredOften},
+       {},
        {features::kSystemNotifications});
 +#else
 +  feature_list_.InitWithFeatures(
-+      {permissions::features::kBlockPromptsIfDismissedOften,
-+       permissions::features::kBlockPromptsIfIgnoredOften},
 +      {});
 +#endif  //  defined(USE_DBUS)
  }
@@ -119,7 +116,7 @@
  
 --- a/chrome/common/chrome_features.cc
 +++ b/chrome/common/chrome_features.cc
-@@ -880,6 +880,7 @@
+@@ -818,6 +818,7 @@
  // Enables the use of system notification centers instead of using the Message
  // Center for displaying the toasts. The feature is hardcoded to enabled for
  // Chrome OS.
@@ -127,7 +124,7 @@
  BASE_FEATURE(kNativeNotifications,
               "NativeNotifications",
               base::FEATURE_ENABLED_BY_DEFAULT);
-@@ -887,6 +888,7 @@
+@@ -825,6 +826,7 @@
  BASE_FEATURE(kSystemNotifications,
               "SystemNotifications",
               base::FEATURE_ENABLED_BY_DEFAULT);
@@ -137,9 +134,9 @@
  // Enables the usage of Apple's new Notification API.
 --- a/chrome/common/chrome_features.h
 +++ b/chrome/common/chrome_features.h
-@@ -525,9 +525,11 @@
- COMPONENT_EXPORT(CHROME_FEATURES)
- extern const base::FeatureParam<std::string> kMoveWebAppInstallStartUrl;
+@@ -482,9 +482,11 @@
+ BASE_DECLARE_FEATURE(kShowHiddenNetworkToggle);
+ #endif
  
 +#if defined(USE_DBUS)
  COMPONENT_EXPORT(CHROME_FEATURES) BASE_DECLARE_FEATURE(kNativeNotifications);

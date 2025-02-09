@@ -165,7 +165,7 @@ profiles to have software HEVC decoding ability.
 
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.h
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.h
-@@ -689,7 +689,7 @@
+@@ -692,7 +692,7 @@
  #define CONFIG_AUDIO_FRAME_QUEUE 0
  #define CONFIG_AUDIODSP 0
  #define CONFIG_BLOCKDSP 0
@@ -174,7 +174,7 @@ profiles to have software HEVC decoding ability.
  #define CONFIG_CABAC 1
  #define CONFIG_CBS 0
  #define CONFIG_CBS_AV1 0
-@@ -724,8 +724,8 @@
+@@ -727,8 +727,8 @@
  #define CONFIG_H264PRED 1
  #define CONFIG_H264QPEL 1
  #define CONFIG_H264_SEI 1
@@ -196,7 +196,7 @@ profiles to have software HEVC decoding ability.
  #define CONFIG_HEVC_QSV_DECODER 0
  #define CONFIG_HEVC_RKMPP_DECODER 0
  #define CONFIG_HEVC_V4L2M2M_DECODER 0
-@@ -995,7 +995,7 @@
+@@ -998,7 +998,7 @@
  #define CONFIG_H261_PARSER 0
  #define CONFIG_H263_PARSER 0
  #define CONFIG_H264_PARSER 1

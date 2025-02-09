@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -516,7 +516,8 @@
+@@ -515,7 +515,8 @@
      }
  
      if ((is_win || is_mac || is_linux || is_chromeos || is_fuchsia) &&
@@ -20,7 +20,7 @@
  import("//media/media_options.gni")
  import("//ppapi/buildflags/buildflags.gni")
  import("//third_party/blink/public/public_features.gni")
-@@ -1706,7 +1707,7 @@
+@@ -1705,7 +1706,7 @@
          ":angle_gles_symbols",
          ":chrome_symbols",
        ]
@@ -29,7 +29,7 @@
          deps += [ ":swiftshader_vk_symbols" ]
        }
        if (!is_chromeos) {
-@@ -1742,17 +1743,19 @@
+@@ -1741,17 +1742,19 @@
          deps = [ "//components/crash/core/app:chrome_crashpad_handler" ]
        }
      }
@@ -85,7 +85,7 @@
  
  declare_args() {
    is_ggp = false
-@@ -235,7 +236,8 @@
+@@ -234,7 +235,8 @@
    # Currently SwiftShader's Vulkan front-end doesn't build on Android.
    # Disabled by default on MSVC because of compiler warnings/errors.
    angle_enable_swiftshader =

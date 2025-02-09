@@ -1,18 +1,18 @@
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -6957,6 +6957,7 @@
-       sources += [
-         "download/download_status_updater_linux.cc",
-         "icon_loader_auralinux.cc",
-+        "platform_util_linux.cc",
-         "shell_integration_linux.cc",
-         "shell_integration_linux.h",
-         "upgrade_detector/directory_monitor.cc",
-@@ -6980,7 +6981,6 @@
-       sources += [
+@@ -6906,6 +6906,7 @@
+       "metrics/pressure/pressure_metrics_reporter.cc",
+       "metrics/pressure/pressure_metrics_reporter.h",
+       "obsolete_system/obsolete_system_linux.cc",
++      "platform_util_linux.cc",
+       "shell_integration_linux.cc",
+       "shell_integration_linux.h",
+       "upgrade_detector/directory_monitor.cc",
+@@ -6928,7 +6929,6 @@
+         "dbus_memory_pressure_evaluator_linux.h",
          "notifications/notification_platform_bridge_linux.cc",
          "notifications/notification_platform_bridge_linux.h",
 -        "platform_util_linux.cc",
        ]
        deps += [
-         "//components/dbus/thread_linux",
+         "//chrome/common:chrome_features",

@@ -1,0 +1,90 @@
+From 4ea01682b5e38df09538bbd7d96aad57d85da2e0 Mon Sep 17 00:00:00 2001
+From: Alex N. Jose <alexnj@chromium.org>
+Date: Thu, 06 Feb 2025 12:34:46 -0800
+Subject: [PATCH] Filter out tab targets of v2 background_page from top level web views.
+
+This CL fixes a regression introduced by crrev.com/c/6093588.
+
+Tab targets for background_pages need to be excluded from top level
+targets if extension target support is not enabled.
+
+(cherry picked from commit d8b7e086ee0b1f5531ddf1974ad627bfa36b0d32)
+
+Bug: 385731198
+Fixed: 394175675
+Change-Id: I8572f58588becedde299a22be68f054a4828961b
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6160774
+Reviewed-by: Alex Rudenko <alexrudenko@chromium.org>
+Commit-Queue: Alex N. Jose <alexnj@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1404335}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6235965
+Cr-Commit-Position: refs/branch-heads/6943@{#1474}
+Cr-Branched-From: 72dd0b377c099e1e0230cc7345d5a5125b46ae7d-refs/heads/main@{#1402768}
+---
+
+--- a/chrome/test/chromedriver/chrome/web_view_info.cc
++++ b/chrome/test/chromedriver/chrome/web_view_info.cc
+@@ -34,7 +34,9 @@
+ }
+ 
+ bool WebViewInfo::IsExtensionTarget() const {
+-  return type == WebViewInfo::kBackgroundPage;
++  return (type == WebViewInfo::kBackgroundPage) ||
++         (type == WebViewInfo::kTab && url.starts_with("chrome-extension://") &&
++          url.ends_with("_generated_background_page.html"));
+ }
+ 
+ Status WebViewInfo::ParseType(const std::string& type_as_string,
+--- a/chrome/test/chromedriver/test/run_py_tests.py
++++ b/chrome/test/chromedriver/test/run_py_tests.py
+@@ -6418,6 +6418,26 @@
+     zip_1 = os.path.join(_TEST_DATA_DIR, 'ext_test_1.zip')
+     self.CreateDriver(chrome_extensions=[self._PackExtension(zip_1)])
+ 
++  def testCanInspectExtensionWindows(self):
++    crx_unpacked = os.path.join(_TEST_DATA_DIR, 'extv2_new_window')
++    # This test exercises inspection of extension created new window.
++    # Extension created regular windows/tabs, unlike background_page, is not
++    # considered an extension target.
++    driver = self.CreateDriver(
++        chrome_switches=[
++          'disable-features=ExtensionManifestV2Disabled',
++          'load-extension=' + crx_unpacked
++        ])
++    time.sleep(0.5)
++    handles = driver.GetWindowHandles()
++    self.assertEqual(len(handles), 2)
++
++    for handle in handles:
++      driver.SwitchToWindow(handle)
++      if driver.GetCurrentUrl() == 'chrome://new-tab-page/':
++        return
++    self.fail("couldn't find extension-created window")
++
+   def testCanInspectBackgroundPage(self):
+     crx = os.path.join(_TEST_DATA_DIR, 'ext_bg_page.crx')
+     # This test exercises inspection of an extension background page, which
+--- /dev/null
++++ b/chrome/test/data/chromedriver/extv2_new_window/background.js
+@@ -0,0 +1,5 @@
++// Copyright 2025 The Chromium Authors
++// Use of this source code is governed by a BSD-style license that can be
++// found in the LICENSE file.
++
++chrome.windows.create();
+\ No newline at end of file
+--- /dev/null
++++ b/chrome/test/data/chromedriver/extv2_new_window/manifest.json
+@@ -0,0 +1,11 @@
++{
++  "name": "ExtWindow",
++  "version": "1.0",
++  "description": "Chromedriver extension with a new window",
++  "manifest_version": 2,
++  "background": {
++    "scripts": [
++      "background.js"
++    ]
++  }
++}
+\ No newline at end of file

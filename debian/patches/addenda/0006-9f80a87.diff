@@ -1,0 +1,132 @@
+From 9f80a87e4af6157296f3baf24ce133227fdc4656 Mon Sep 17 00:00:00 2001
+From: Daniel Cheng <dcheng@chromium.org>
+Date: Fri, 07 Feb 2025 13:47:37 -0800
+Subject: [PATCH] Use __has_attribute to check for __counted_by__ support
+
+The initial clang patch to support __counted_by__ was landed and
+reverted several times. There are some clang toolchains (e.g. the
+Android toolchain) that report themselves as version 18 but do not
+support __counted_by__. While it is debatable if Android should be
+shipping a pre-release clang, using __has_attribute should be a bit
+simpler overall.
+
+Note that this doesn't migrate everything else to use __has_attribute:
+while clang has always supported __has_attribute, gcc didn't support
+it until a bit later.
+
+(cherry picked from commit 0011e70a76784545f9c07493659052f1f30ec648)
+
+Bug: 390685327
+Bug: 394876607
+Change-Id: I4a612f6373ec298c4bf9793a74e4c3a9e9a30591
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6237055
+Commit-Queue: Daniel Cheng <dcheng@chromium.org>
+Reviewed-by: Joey Arhar <jarhar@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1416877}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6244634
+Owners-Override: Tomasz Wiszkowski <ender@google.com>
+Auto-Submit: Daniel Cheng <dcheng@chromium.org>
+Reviewed-by: Tomasz Wiszkowski <ender@google.com>
+Cr-Commit-Position: refs/branch-heads/6943@{#1481}
+Cr-Branched-From: 72dd0b377c099e1e0230cc7345d5a5125b46ae7d-refs/heads/main@{#1402768}
+---
+
+--- a/third_party/libxml/README.chromium
++++ b/third_party/libxml/README.chromium
+@@ -18,6 +18,8 @@
+   in chromium's copy of maldoca. See https://github.com/google/maldoca/issues/87
+ - remove-getentropy.patch: Removes calls to getentropy() and BCrypt because they
+   aren't implemented or don't work on several platforms.
++- counted_by.patch: Work around __counted_by__ supported in a cronet toolchain
++  with a pre-release clang.
+ - Add helper classes in the chromium/ subdirectory.
+ - Delete various unused files, see chromium/roll.py
+ - Disable various unused libxml features:
+--- /dev/null
++++ b/third_party/libxml/chromium/counted_by.patch
+@@ -0,0 +1,50 @@
++From 32b70e255e10067bb9666129973d5c067eacd290 Mon Sep 17 00:00:00 2001
++From: Daniel Cheng <dcheng@chromium.org>
++Date: Wed, 5 Feb 2025 15:06:34 -0800
++Subject: [PATCH] Use __has_attribute to check for __counted_by__ support
++
++The initial clang patch to support __counted_by__ was landed and
++reverted several times. There are some clang toolchains (e.g. the
++Android toolchain) that report themselves as version 18 but do not
++support __counted_by__. While it is debatable if Android should be
++shipping a pre-release clang, using __has_attribute should be a bit
++simpler overall.
++
++Note that this doesn't migrate everything else to use __has_attribute:
++while clang has always supported __has_attribute, gcc didn't support
++it until a bit later.
++
++Change-Id: I4a612f6373ec298c4bf9793a74e4c3a9e9a30591
++---
++ third_party/libxml/src/libxml.h | 10 ++++++++--
++ 1 file changed, 8 insertions(+), 2 deletions(-)
++
++diff --git a/third_party/libxml/src/libxml.h b/third_party/libxml/src/libxml.h
++index 1fe3825f4d3f8..dde9a9c92f014 100644
++--- a/third_party/libxml/src/libxml.h
+++++ b/third_party/libxml/src/libxml.h
++@@ -29,6 +29,12 @@
++ #include "config.h"
++ #include <libxml/xmlversion.h>
++
+++#if defined(__has_attribute)
+++#define XML_HAS_ATTRIBUTE(x) __has_attribute(x)
+++#else
+++#define XML_HAS_ATTRIBUTE(x) 0
+++#endif
+++
++ #if !defined(_WIN32) && \
++     !defined(__CYGWIN__) && \
++     (defined(__clang__) || \
++@@ -48,8 +54,8 @@
++   #define ATTRIBUTE_DESTRUCTOR __attribute__((destructor))
++ #endif
++
++-#if (defined(__clang__) && __clang_major__ >= 18) || \
++-    (defined(__GNUC__) && __GNUC__ >= 15)
+++#if XML_HAS_ATTRIBUTE(__counted_by__)
++   #define ATTRIBUTE_COUNTED_BY(c) __attribute__((__counted_by__(c)))
++ #else
++   #define ATTRIBUTE_COUNTED_BY(c)
++--
++2.48.1.502.g6dc24dfdaf-goog
+--- a/third_party/libxml/chromium/roll.py
++++ b/third_party/libxml/chromium/roll.py
+@@ -74,6 +74,7 @@
+ PATCHES = [
+     'undo-sax-deprecation.patch',
+     'remove-getentropy.patch',
++    'counted_by.patch',
+ ]
+ 
+ 
+--- a/third_party/libxml/src/libxml.h
++++ b/third_party/libxml/src/libxml.h
+@@ -29,6 +29,12 @@
+ #include "config.h"
+ #include <libxml/xmlversion.h>
+ 
++#if defined(__has_attribute)
++#define XML_HAS_ATTRIBUTE(x) __has_attribute(x)
++#else
++#define XML_HAS_ATTRIBUTE(x) 0
++#endif
++
+ #if !defined(_WIN32) && \
+     !defined(__CYGWIN__) && \
+     (defined(__clang__) || \
+@@ -48,8 +54,7 @@
+   #define ATTRIBUTE_DESTRUCTOR __attribute__((destructor))
+ #endif
+ 
+-#if (defined(__clang__) && __clang_major__ >= 18) || \
+-    (defined(__GNUC__) && __GNUC__ >= 15)
++#if XML_HAS_ATTRIBUTE(__counted_by__)
+   #define ATTRIBUTE_COUNTED_BY(c) __attribute__((__counted_by__(c)))
+ #else
+   #define ATTRIBUTE_COUNTED_BY(c)

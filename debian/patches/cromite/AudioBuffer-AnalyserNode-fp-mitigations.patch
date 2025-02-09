@@ -24,7 +24,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -4381,6 +4381,10 @@
+@@ -4386,6 +4386,10 @@
      {"webrtc-hw-encoding", flag_descriptions::kWebrtcHwEncodingName,
       flag_descriptions::kWebrtcHwEncodingDescription, kOsAndroid | kOsCrOS,
       FEATURE_VALUE_TYPE(features::kWebRtcHWEncoding)},
@@ -37,7 +37,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       flag_descriptions::kWebRtcRemoteEventLogName,
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -4052,6 +4052,11 @@
+@@ -4102,6 +4102,11 @@
      "When enabled, removes the requirement that all certificates used for "
      "WebTransport over HTTP/3 are issued by a known certificate root.";
  
@@ -51,7 +51,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  const char kWebUsbDeviceDetectionDescription[] =
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -2324,6 +2324,9 @@
+@@ -2368,6 +2368,9 @@
  extern const char kWebrtcUseMinMaxVEADimensionsName[];
  extern const char kWebrtcUseMinMaxVEADimensionsDescription[];
  
@@ -63,7 +63,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -211,6 +211,10 @@
+@@ -200,6 +200,10 @@
               "BiddingAndScoringDebugReportingAPI",
               base::FEATURE_ENABLED_BY_DEFAULT);
  
@@ -76,7 +76,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  BASE_FEATURE(kBoostImagePriority,
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -106,6 +106,8 @@
+@@ -104,6 +104,8 @@
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(
      kAvoidForcedLayoutOnInitialEmptyDocumentInSubframe);
  
@@ -87,7 +87,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/third_party/blink/renderer/modules/webaudio/audio_buffer.cc
 +++ b/third_party/blink/renderer/modules/webaudio/audio_buffer.cc
-@@ -201,6 +201,20 @@
+@@ -197,6 +197,20 @@
    }
  }
  
@@ -121,7 +121,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        uint32_t length,
 --- a/third_party/blink/renderer/modules/webaudio/audio_context.cc
 +++ b/third_party/blink/renderer/modules/webaudio/audio_context.cc
-@@ -12,6 +12,7 @@
+@@ -13,6 +13,7 @@
  #include "third_party/blink/public/common/features.h"
  #include "third_party/blink/public/common/mediastream/media_devices.h"
  #include "third_party/blink/public/platform/browser_interface_broker_proxy.h"
@@ -129,7 +129,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "third_party/blink/public/platform/modules/webrtc/webrtc_logging.h"
  #include "third_party/blink/public/platform/web_audio_latency_hint.h"
  #include "third_party/blink/renderer/bindings/core/v8/script_promise_resolver.h"
-@@ -612,7 +613,9 @@
+@@ -637,7 +638,9 @@
    DCHECK_CALLED_ON_VALID_SEQUENCE(main_thread_sequence_checker_);
    DCHECK(destination());
  

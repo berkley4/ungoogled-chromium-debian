@@ -34,7 +34,7 @@ Cr-Commit-Position: refs/heads/main@{#1404938}
 
 --- a/third_party/blink/renderer/core/dom/document.cc
 +++ b/third_party/blink/renderer/core/dom/document.cc
-@@ -4587,9 +4587,9 @@
+@@ -4609,9 +4609,9 @@
        anchor.InvalidateCachedVisitedLinkHash();
    }
  

@@ -28,7 +28,6 @@ cromite/Remove-navigator.connection-info.patch
 kryptonite/CORS-preflight-max-age-600s.patch
 kryptonite/disable-async-dns.patch
 kryptonite/disable-component-updates.patch
-kryptonite/disable-conversion-measurement-api.patch
 kryptonite/disable-extension-autoupdate.patch
 kryptonite/disable-miscellaneous-autofill-settings.patch
 kryptonite/disable-segmentation-platform.patch
@@ -84,7 +83,6 @@ various/disable/image-writer/image-writer-private.patch
 various/disable/image-writer/image-writer-utility.patch
 various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
 various/fixes/enterprise-buildflags.patch
-various/fixes/GaiaAuthFetcher-kMaxMessageSize.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/shim-fix-for-official-builds.patch
 various/fixes/silence-some-error-log-messages.patch
@@ -101,26 +99,8 @@ various/system/minizip.patch
 various/system/perfetto-system-zlib.patch
 various/system/xdg-scripts.patch
 various/system/zlib.patch
-various/upstream/0001-0619eca.diff
-various/upstream/0002-8ddc03d.diff
-various/upstream/0003-da46cd00.diff
-various/upstream/0004-19d90f7.diff
-various/upstream/0005-730f028.diff
-various/upstream/0006-f8da071.diff
-various/upstream/0007-f9d943a.diff
-various/upstream/0008-50d5004.diff
-various/upstream/0009-f7fa9b12.diff
-various/upstream/0010-e728226.diff
-various/upstream/0011-7d37c735.diff
-various/upstream/0012-676d079.diff
-various/upstream/0013-ca6d272.diff
-various/upstream/0014-64e716a.diff
-various/upstream/0015-f5074d9.diff
-various/upstream/0016-0914ace.diff
-various/upstream/0017-ed25f4f.diff
-various/upstream/0018-b04c7d2.diff
-various/upstream/0019-3cff302b.diff
-various/upstream/0020-af537c5.diff
+various/upstream/0001-3cff302b.diff
+various/upstream/0002-af537c5.diff
 various/upstream/features/partitionalloc-add-feature-to-use-fewer-memory-regions.patch
 various/warnings/clang-excessive-warnings.patch
 
@@ -182,6 +162,7 @@ optional/fixes/skia-allow-bundled-harfbuzz.patch
 #optional/fixes/skia-gamma.patch
 optional/fixes/chromedriver/brandversion.patch
 optional/fixes/chromedriver/fix-paths.patch
+#optional/fixes/chromedriver/4ea01682.diff
 optional/fixes/widevine/widevine-enable-version-string.patch
 optional/fixes/widevine/widevine-locations.patch
 #optional/legacy-i386/angle-lockfree.patch
@@ -203,3 +184,13 @@ optional/system/unstable/dav1d/dav1d-bundled-libavif.patch
 optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
 optional/translate/revert-disable.patch
 optional/translate/stop-unsupported-switch-warning.patch
+
+addenda/0001-093b85c5.diff
+addenda/0002-5cbae76.diff
+addenda/0003-19ad509.diff
+addenda/0004-8fb0a13.diff
+addenda/0005-79c3c1a.diff
+addenda/0006-9f80a87.diff
+addenda/0007-b57762c.diff
+addenda/0008-f724c99d.diff
+
