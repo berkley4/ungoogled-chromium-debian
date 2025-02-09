@@ -1231,7 +1231,9 @@ if [ $SYS_ICU -eq 0 ]; then
   # Enable generation of a symlink to icudtl.dat in out/Release
   RUL="$RUL -e \"/icudtl.dat/s@#@@\""
 else
-  op_disable="$op_disable fixes/icudata-file-path fixes/skia-allow-bundled-harfbuzz"
+  op_disable="$op_disable fixes/icudata-file-path.patch"
+  op_disable="$op_disable fixes/skia-allow-bundled-harfbuzz.patch"
+  op_disable="$op_disable system/libxslt-undefined-isoc23-sscanf.patch"
   op_enable="$op_enable system/unstable/icu.patch"
 
   gn_disable="$gn_disable icu_copy_icudata_to_root_build_dir=false"
