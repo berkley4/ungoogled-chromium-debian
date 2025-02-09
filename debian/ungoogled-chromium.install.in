@@ -26,7 +26,7 @@ debian/en-US.pak                                                               u
 
 chrome/app/resources/manpage.1.in                                           => usr/share/man/man1/chromium.1
 chrome/installer/linux/common/desktop.template                              => usr/share/applications/chromium.desktop
-chrome/installer/linux/common/chromium-browser/chromium-browser.appdata.xml => usr/share/metainfo/chromium.appdata.xml
+chrome/installer/linux/common/appdata.xml.template                          => usr/share/metainfo/chromium.appdata.xml
 debian/usr/share/drirc.d/10-chromium.conf                                      usr/share/drirc.d
 
 chrome/app/theme/chromium/product_logo_24.png                               => usr/share/icons/hicolor/24x24/apps/chromium.png

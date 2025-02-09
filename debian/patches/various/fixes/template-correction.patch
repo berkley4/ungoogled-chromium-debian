@@ -37,7 +37,7 @@
  a given user data directory.
  
  .TP
-@@ -102,7 +102,7 @@
+@@ -102,17 +102,17 @@
  Show version information.
  
  .PP
@@ -46,8 +46,12 @@
  as
  .BR \-\-display .
  See the GTK documentation for more:
-@@ -112,7 +112,7 @@
- <http://library.gnome.org/devel/gtk/stable/gtk-x11.html>
+ .IP
+-<http://library.gnome.org/devel/gtk/stable/gtk-running.html>
++<https://docs.gtk.org/gtk3/running.html>
+ .IP
+-<http://library.gnome.org/devel/gtk/stable/gtk-x11.html>
++<https://docs.gtk.org/gtk3/x11.html>
  
  .SH ENVIRONMENT
 -@@MENUNAME@@ obeys the following environment variables:
@@ -55,7 +59,7 @@
  
  .TP
  .B all_proxy
-@@ -145,11 +145,11 @@
+@@ -145,18 +145,18 @@
  
  .SH FILES
  .TP
@@ -67,36 +71,56 @@
 -.I $HOME/.cache/@@PACKAGE@@
 +.I $HOME/.cache/chromium
  Default directory for cache data.  (Why?  See
- <http://standards.freedesktop.org/basedir-spec/latest/> .)
+-<http://standards.freedesktop.org/basedir-spec/latest/> .)
++<https://specifications.freedesktop.org/basedir-spec/latest/> .)
  
---- a/chrome/installer/linux/common/chromium-browser/chromium-browser.appdata.xml
-+++ b/chrome/installer/linux/common/chromium-browser/chromium-browser.appdata.xml
-@@ -1,8 +1,6 @@
--<!-- Copyright 2017 The Chromium Authors -->
+ .SH BUGS
+ Bug tracker:
+ .IP
+-http://code.google.com/p/chromium/issues/list
++https://issues.chromium.org/issues
+ .PP
+ Be sure to do your search within "All Issues" before reporting bugs,
+ and be sure to pick the "Defect on Linux" template when filing a new one.
+--- a/chrome/installer/linux/common/appdata.xml.template
++++ b/chrome/installer/linux/common/appdata.xml.template
+@@ -1,26 +1,20 @@
  <?xml version="1.0" encoding="UTF-8"?>
+ <!-- Copyright 2024 The Chromium Authors -->
  <component type="desktop">
--  <id>chromium-browser.desktop</id>
--  <update_contact>chromium-dev@chromium.org</update_contact>
+-  <id>@@PACKAGE@@.desktop</id>
+-  <update_contact>@@MAINTMAIL@@</update_contact>
 +  <id>chromium.desktop</id>
    <metadata_license>CC0-1.0</metadata_license>
-   <project_license>BSD-3-Clause and LGPL-2.1+ and Apache-2.0 and IJG and MIT and GPL-2.0+ and ISC and OpenSSL and (MPL-1.1 or GPL-2.0 or LGPL-2.0)</project_license>
-   <name>Chromium Web Browser</name>
-@@ -12,15 +10,6 @@
-     Chromium is an open-source browser project that aims to build a safer, faster,
-     and more stable way to experience the web.
+-  <project_license>@@PROJECT_LICENSE@@</project_license>
+-  <name>@@MENUNAME@@</name>
+-  <summary>@@SHORTDESC@@</summary>
++  <project_license>BSD-3-Clause and LGPL-2.1+ and Apache-2.0 and IJG and MIT and GPL-2.0+ and ISC and OpenSSL and (MPL-1.1 or GPL-2.0 or LGPL-2.0)</project_license>
++  <name>Chromium</name>
++  <summary>The web browser from Chromium project</summary>
+   <description>
+     <p>
+-    @@FULLDESC@@
++    Chromium is an open-source browser project that aims to build a safer, faster,
++    and more stable way to experience the web.
      </p>
--    <p>
--    We invite you to join our effort to build a powerful platform for developing a
--    new generation of web applications.
--    </p>
--    <p>
--    Chromium supports Vorbis, Theora, WebM and HTML5 audio and video standards, but
--    does not include the non-free AAC, H.264, MP3 or Adobe Flash code that is found
--    in Chrome.
--    </p>
    </description>
-   <url type="homepage">https://www.chromium.org/Home</url>
-   <screenshots>
+-  <url type="homepage">@@PRODUCTURL@@</url>
+-  <screenshots>
+-    <screenshot type="default">
+-      <image>https://www.gstatic.com/chrome/appstream/chrome-2.png</image>
+-      <caption/>
+-    </screenshot>
+-  </screenshots>
++  <url type="homepage">https://www.chromium.org/Home</url>
+   <translation/>
+-  <developer_name>@@DEVELOPER_NAME@@</developer_name>
+-  <url type="bugtracker">@@BUGTRACKERURL@@</url>
+-  <url type="help">@@HELPURL@@</url>
++  <developer_name>The Chromium Authors</developer_name>
++  <url type="bugtracker">https://www.chromium.org/for-testers/bug-reporting-guidelines</url>
++  <url type="help">https://chromium.googlesource.com/chromium/src/+/main/docs/linux/debugging.md</url>
+ </component>
 --- a/chrome/installer/linux/common/desktop.template
 +++ b/chrome/installer/linux/common/desktop.template
 @@ -1,6 +1,6 @@
