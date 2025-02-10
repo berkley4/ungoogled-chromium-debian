@@ -37,7 +37,6 @@ Build-Depends:
  libopus-dev,
  libflac-dev,
  libminizip-dev,
- libevent-dev,
  liblcms2-dev,
  libopenjp2-7-dev,
  libdouble-conversion-dev,
