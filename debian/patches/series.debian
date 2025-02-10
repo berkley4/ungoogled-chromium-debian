@@ -174,7 +174,6 @@ optional/opentype-svg/0002-use-FreeType-for-non-Linux-OT-SVG-support.patch
 #optional/system/freetype-COLRV1.patch
 optional/system/jpeg.patch
 optional/system/libdbus.patch
-optional/system/libxslt-undefined-isoc23-sscanf.patch
 #optional/system/node.patch
 optional/system/openh264.patch
 #optional/system/clang/clang-version-check.patch
