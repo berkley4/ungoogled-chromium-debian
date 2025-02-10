@@ -1,59 +1,47 @@
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5615,12 +5615,12 @@
+@@ -5557,12 +5557,12 @@
  #endif
  #endif  // BUILDFLAG(IS_ANDROID)
  #endif  // ENABLE_VR
--#if BUILDFLAG(IS_CHROMEOS_ASH)
-+#if BUILDFLAG(IS_CHROMEOS_ASH) || BUILDFLAG(IS_LINUX)
+-#if BUILDFLAG(IS_CHROMEOS)
++#if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX)
      {"disable-accelerated-mjpeg-decode",
       flag_descriptions::kAcceleratedMjpegDecodeName,
 -     flag_descriptions::kAcceleratedMjpegDecodeDescription, kOsCrOS,
 +     flag_descriptions::kAcceleratedMjpegDecodeDescription, kOsCrOS | kOsLinux,
       SINGLE_DISABLE_VALUE_TYPE(switches::kDisableAcceleratedMjpegDecode)},
--#endif  // BUILDFLAG(IS_CHROMEOS_ASH)
-+#endif  // BUILDFLAG(IS_CHROMEOS_ASH) || BUILDFLAG(IS_LINUX)
+-#endif  // BUILDFLAG(IS_CHROMEOS)
++#endif  // BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX)
      {"system-keyboard-lock", flag_descriptions::kSystemKeyboardLockName,
       flag_descriptions::kSystemKeyboardLockDescription, kOsDesktop,
       FEATURE_VALUE_TYPE(features::kSystemKeyboardLock)},
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -5718,7 +5718,7 @@
+@@ -5747,11 +5747,13 @@
  
- // ChromeOS -------------------------------------------------------------------
+ #if BUILDFLAG(IS_CHROMEOS)
  
--#if BUILDFLAG(IS_CHROMEOS_ASH)
-+#if BUILDFLAG(IS_CHROMEOS_ASH) || BUILDFLAG(IS_LINUX)
- 
++#if BUILDFLAG(IS_LINUX)
  const char kAcceleratedMjpegDecodeName[] =
      "Hardware-accelerated mjpeg decode for captured frame";
-@@ -5726,6 +5726,10 @@
-     "Enable hardware-accelerated mjpeg decode for captured frame where "
+ const char kAcceleratedMjpegDecodeDescription[] =
+     "Enable hardware-accelerated MJPEG decode for captured frame where "
      "available.";
++#endif  // BUILDFLAG(IS_LINUX)
  
-+#endif  // BUILDFLAG(IS_CHROMEOS_ASH) || BUILDFLAG(IS_LINUX)
-+
-+#if BUILDFLAG(IS_CHROMEOS_ASH)
-+
- const char kAccessibilityFilterKeysName[] = "Filter keys";
- const char kAccessibilityFilterKeysDescription[] =
-     "Enables settings to filter key presses in various ways, such as slow keys "
+ const char kAccessibilityBounceKeysName[] = "Bounce keys";
+ const char kAccessibilityBounceKeysDescription[] =
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -3292,11 +3292,15 @@
+@@ -3342,8 +3342,10 @@
  
- // ChromeOS -------------------------------------------------------------------
+ #if BUILDFLAG(IS_CHROMEOS)
  
--#if BUILDFLAG(IS_CHROMEOS_ASH)
-+#if BUILDFLAG(IS_CHROMEOS_ASH) || BUILDFLAG(IS_LINUX)
- 
++#if BUILDFLAG(IS_LINUX)
  extern const char kAcceleratedMjpegDecodeName[];
  extern const char kAcceleratedMjpegDecodeDescription[];
++#endif  // BUILDFLAG(IS_LINUX)
  
-+#endif  // BUILDFLAG(IS_CHROMEOS_ASH) || BUILDFLAG(IS_LINUX)
-+
-+#if BUILDFLAG(IS_CHROMEOS_ASH)
-+
- extern const char kAccessibilityFilterKeysName[];
- extern const char kAccessibilityFilterKeysDescription[];
- 
+ extern const char kAccessibilityBounceKeysName[];
+ extern const char kAccessibilityBounceKeysDescription[];
