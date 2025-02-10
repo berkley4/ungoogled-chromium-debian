@@ -219,6 +219,13 @@ fi
 ## Enter test mode if $RT_DIR/third_party does not exist
 [ -d $RT_DIR/third_party ] && TEST=0 || TEST=1
 
+if [ $TEST -eq 0 ]; then
+  DEPS_PATCH=0
+fi
+
+# Allow setting DEPS_PATCH when TEST=1
+[ -n "$DEPS_PATCH" ] || DEPS_PATCH=0
+
 
 ## Get clang_version from build/toolchain/toolchain.gni when TEST=0
 LLVM_PGO_VER=20
@@ -1234,10 +1241,10 @@ fi
 ############################################################
 
 # Check whether DEPS.patch and DEPS-no-rust.patch have been applied
-if [ -f $RT_DIR/DEPS ]; then
+if [ $TEST -eq 0 ] && [ -f $RT_DIR/DEPS ]; then
   case $(sed -n '/webvr_info/p' $RT_DIR/DEPS) in
     *src/chrome/test/data/xr/webvr_info*)
-      DEPS_PATCH=0 ;;
+      : ;;
 
     *)
       case $(sed -n '/Linux_x64\/rust-toolchain-/,/condition/{/==/p}' $RT_DIR/DEPS) in
