@@ -18,9 +18,12 @@
       FEATURE_VALUE_TYPE(features::kSystemKeyboardLock)},
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -5747,11 +5747,13 @@
+@@ -5745,13 +5745,15 @@
  
- #if BUILDFLAG(IS_CHROMEOS)
+ // ChromeOS -------------------------------------------------------------------
+ 
+-#if BUILDFLAG(IS_CHROMEOS)
++#if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX)
  
 +#if BUILDFLAG(IS_LINUX)
  const char kAcceleratedMjpegDecodeName[] =
@@ -34,9 +37,12 @@
  const char kAccessibilityBounceKeysDescription[] =
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -3342,8 +3342,10 @@
+@@ -3340,10 +3340,12 @@
  
- #if BUILDFLAG(IS_CHROMEOS)
+ // ChromeOS -------------------------------------------------------------------
+ 
+-#if BUILDFLAG(IS_CHROMEOS)
++#if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX)
  
 +#if BUILDFLAG(IS_LINUX)
  extern const char kAcceleratedMjpegDecodeName[];
