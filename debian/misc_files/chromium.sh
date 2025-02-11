@@ -142,7 +142,7 @@ while [ $# -gt 0 ]; do
       elif [ $SWITCH_BLOCKING -eq 3 ]; then
         new_flag=
       fi
-      [ -z "$new_flag" ] || CHROMIUM_FLAGS="$CHROMIUM_FLAGS $new_flag"
+      [ -z "$new_flag" ] || CHROMIUM_FLAGS="$CHROMIUM_FLAGS --$new_flag"
       shift ;;
     -- ) # Stop option prcessing
       shift
