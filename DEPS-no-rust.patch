@@ -1,11 +1,11 @@
 --- a/DEPS
 +++ b/DEPS
-@@ -916,7 +916,7 @@
-         'sha256sum': '0c4092f5769c5ececd096732b00f2c5c4e1741d4112881a2c83fe7e78271d792',
-         'size_bytes': 122758604,
-         'generation': 1729629177370195,
+@@ -936,7 +936,7 @@
+         'sha256sum': 'd95be7651ce879e92b18949e1228775e01352960600ed4ff389815ce8848676d',
+         'size_bytes': 124379804,
+         'generation': 1734710923416010,
 -        'condition': 'host_os == "linux" and non_git_source',
 +        'condition': 'host_os != "linux" and non_git_source',
        },
        {
-         'object_name': 'Mac/rust-toolchain-bca5fdebe0e539d123f33df5f2149d5976392e76-1-llvmorg-20-init-9764-gb81d8e90.tar.xz',
+         'object_name': 'Mac/rust-toolchain-8a1f8039a7ded79d3d4fe97b110016d89f2b11e2-1-llvmorg-20-init-16062-g091448e3.tar.xz',

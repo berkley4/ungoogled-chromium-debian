@@ -9,6 +9,7 @@ solutions = [
       "checkout_configuration": "small",
       "checkout_js_coverage_modules": False,
       "checkout_linux": True,
+      "checkout_mips": False,
       "checkout_mips64": False,
       "checkout_nacl": False,
       "checkout_pgo_profiles": True,
