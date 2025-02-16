@@ -19,6 +19,8 @@ CHROMIUM=$LIBDIR/$BIN_NAME
 
 GDB=/usr/bin/gdb
 
+CHROMIUM_FLAGS=""
+
 nosse3="\
 The hardware on this system lacks support for the sse3 instruction set.
 The upstream chromium project no longer supports this configuration.
@@ -121,7 +123,9 @@ done
 "
 
 # Positional parameter processing (including runtime flags)
-while [ $# -gt 0 ]; do
+extra_args=0
+
+while [ $# -gt 0 -a $# -ne $extra_args ]; do
   case "$1" in
     -h | --help | -help )
       usage
@@ -132,8 +136,11 @@ while [ $# -gt 0 ]; do
     --temp-profile )
       want_temp=1
       shift ;;
-    --[a-z]* )
-      new_flag=${1#--}
+    -- ) # Stop option processing
+      shift
+      break ;;
+    --* ) # Preserve (unknown to us) chromium flags
+      new_flag="${1#--}"
       if [ $SWITCH_BLOCKING -eq 2 ]; then
         case $BLOCKED_FLAGS in
           $new_flag|$new_flag\ *|*\ $new_flag|\ $new_flag\ *)
@@ -142,11 +149,11 @@ while [ $# -gt 0 ]; do
       elif [ $SWITCH_BLOCKING -eq 3 ]; then
         new_flag=
       fi
-      [ -z "$new_flag" ] || CHROMIUM_FLAGS="$CHROMIUM_FLAGS --$new_flag"
+      if [ -n "$new_flag" ]; then
+        set -- "$@" "--$new_flag"
+        extra_args=$((extra_args+1))
+      fi
       shift ;;
-    -- ) # Stop option prcessing
-      shift
-      break ;;
     * )
       break ;;
   esac
