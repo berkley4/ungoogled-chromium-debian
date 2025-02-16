@@ -18,36 +18,42 @@
       FEATURE_VALUE_TYPE(features::kSystemKeyboardLock)},
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -5745,13 +5745,15 @@
+@@ -5745,7 +5745,7 @@
  
  // ChromeOS -------------------------------------------------------------------
  
 -#if BUILDFLAG(IS_CHROMEOS)
 +#if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX)
  
-+#if BUILDFLAG(IS_LINUX)
  const char kAcceleratedMjpegDecodeName[] =
      "Hardware-accelerated mjpeg decode for captured frame";
- const char kAcceleratedMjpegDecodeDescription[] =
+@@ -5753,6 +5753,10 @@
      "Enable hardware-accelerated MJPEG decode for captured frame where "
      "available.";
-+#endif  // BUILDFLAG(IS_LINUX)
  
++#endif  // BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX)
++
++#if BUILDFLAG(IS_CHROMEOS)
++
  const char kAccessibilityBounceKeysName[] = "Bounce keys";
  const char kAccessibilityBounceKeysDescription[] =
+     "Enables accessibility settings for bounce keys, which ignores quickly "
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -3340,10 +3340,12 @@
+@@ -3340,11 +3340,15 @@
  
  // ChromeOS -------------------------------------------------------------------
  
 -#if BUILDFLAG(IS_CHROMEOS)
 +#if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX)
  
-+#if BUILDFLAG(IS_LINUX)
  extern const char kAcceleratedMjpegDecodeName[];
  extern const char kAcceleratedMjpegDecodeDescription[];
-+#endif  // BUILDFLAG(IS_LINUX)
  
++#endif  // BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX)
++
++#if BUILDFLAG(IS_CHROMEOS)
++
  extern const char kAccessibilityBounceKeysName[];
  extern const char kAccessibilityBounceKeysDescription[];
+ 

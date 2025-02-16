@@ -184,13 +184,3 @@ optional/system/unstable/dav1d/dav1d-bundled-libavif.patch
 optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
 optional/translate/revert-disable.patch
 optional/translate/stop-unsupported-switch-warning.patch
-
-addenda/0001-093b85c5.diff
-addenda/0002-5cbae76.diff
-addenda/0003-19ad509.diff
-addenda/0004-8fb0a13.diff
-addenda/0005-79c3c1a.diff
-addenda/0006-9f80a87.diff
-addenda/0007-b57762c.diff
-addenda/0008-f724c99d.diff
-
