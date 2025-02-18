@@ -9,16 +9,9 @@
 # Note: some of the GL and vulkan flags might not be mutually compatible
 #
 
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiIgnoreDriverChecks"
-
-
 ### GL
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoDecodeLinuxGL"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoDecodeLinuxZeroCopyGL"
-
-
-# Experimental VA-API support for Nvidia GPUs
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiOnNvidiaGPUs"
 
 
 # Disable VA-API hardware decoder
@@ -31,3 +24,11 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoDecodeLinuxGL
 # Disable WebRTC hardware decoding/encoding
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-webrtc-hw-decoding"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-webrtc-hw-encoding"
+
+
+# Experimental VA-API support for Nvidia GPUs
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiOnNvidiaGPUs"
+
+
+# Try enabling this if you have problems enabling VA-API 
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiIgnoreDriverChecks"
