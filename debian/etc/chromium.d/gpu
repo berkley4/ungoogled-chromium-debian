@@ -14,7 +14,6 @@
 # Vulkan
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-angle=vulkan"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-vulkan"
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-vulkan-surface"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=Vulkan,DefaultANGLEVulkan,VulkanFromANGLE"
 
 # GL
@@ -43,3 +42,6 @@
 
 # This might help with eg google streetview on very old GPUs
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-accelerated-2d-canvas"
+
+# This is for debugging or problematic setups (probably isn't needed by most people)
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-vulkan-surface"
