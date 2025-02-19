@@ -42,7 +42,6 @@ kryptonite/stop-omnibar-searches-triggering-dns-requests.patch
 vanadium/0053-stub-out-the-battery-status-API.patch
 
 vanadinite/0001-switch-to-fstack-protector-strong.patch
-vanadinite/0002-enable-fwrapv-in-Clang-for-non-UBSan-builds.patch
 vanadinite/0003-disable-showing-popular-sites-by-default.patch
 vanadinite/0004-disable-article-suggestions-feature-by-default.patch
 vanadinite/0005-disable-content-feed-suggestions-by-default.patch
