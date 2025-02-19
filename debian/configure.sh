@@ -76,7 +76,6 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$DRIVER" ] || DRIVER=1
 [ -n "$ENTERPRISE_WATERMARK" ] || ENTERPRISE_WATERMARK=0
 [ -n "$EXTENSIONS_ROOT_MENU" ] || EXTENSIONS_ROOT_MENU=0
-[ -n "$FAST_RESTART" ] || FAST_RESTART=0
 [ -n "$GL_DESKTOP_FRONTEND" ] || GL_DESKTOP_FRONTEND=0
 [ -n "$GOOGLE_API_KEYS" ] || GOOGLE_API_KEYS=1
 [ -n "$GOOGLE_UI_URLS" ] || GOOGLE_UI_URLS=1
@@ -765,11 +764,6 @@ fi
 
 if [ $EXTENSIONS_ROOT_MENU -eq 1 ]; then
   op_disable="$op_disable disable/extensions-in-root-menu.patch"
-fi
-
-
-if [ $FAST_RESTART -eq 1 ]; then
-  RUL="$RUL -e \"s@\(gn gen\)@test -f \x24\x28DS_CACHE\x29 || \1@\""
 fi
 
 

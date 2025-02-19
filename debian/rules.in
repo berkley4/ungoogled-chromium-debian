@@ -336,9 +336,6 @@ hardclean:
 cleandead:
 	test ! -d $(OUT_DIR) || ninja -C $(OUT_DIR) -t cleandead
 
-gn_gen:
-	gn gen $(OUT_DIR) --args="$(GN_FLAGS)" --fail-on-unused-args
-
 prune:
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list 2>/dev/null
 
