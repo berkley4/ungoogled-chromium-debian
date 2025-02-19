@@ -35,6 +35,7 @@ RT_DIR=${DEBIAN%/*}
 
 FLAG_DIR=$DEBIAN/etc/chromium.d
 OP_DIR=$DEBIAN/patches/optional
+OUT_DIR=$RT_DIR/out/Release
 
 UC_DIR=$DEBIAN/submodules/ungoogled-chromium
 UC_PATCH_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
@@ -76,6 +77,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$DRIVER" ] || DRIVER=1
 [ -n "$ENTERPRISE_WATERMARK" ] || ENTERPRISE_WATERMARK=0
 [ -n "$EXTENSIONS_ROOT_MENU" ] || EXTENSIONS_ROOT_MENU=0
+[ -n "$FAST_RESTART" ] || FAST_RESTART=0
 [ -n "$GL_DESKTOP_FRONTEND" ] || GL_DESKTOP_FRONTEND=0
 [ -n "$GOOGLE_API_KEYS" ] || GOOGLE_API_KEYS=1
 [ -n "$GOOGLE_UI_URLS" ] || GOOGLE_UI_URLS=1
@@ -764,6 +766,17 @@ fi
 
 if [ $EXTENSIONS_ROOT_MENU -eq 1 ]; then
   op_disable="$op_disable disable/extensions-in-root-menu.patch"
+fi
+
+
+if [ $FAST_RESTART -eq 1 ]; then
+  if [ ! -d $OUT_DIR ]; then
+    printf '%s\n' "WARN: $OUT_DIR directory is missing"
+  fi
+
+  [ ! -f $OUT_DIR/args.gn ] || rm $OUT_DIR/args.gn
+
+  RUL="$RUL -e \"/domain_regex/{n;s@^\(\t\)\(gn gen\)@\1test -f \x24\x28OUT_DIR\x29/args.gn || \2@}\""
 fi
 
 
