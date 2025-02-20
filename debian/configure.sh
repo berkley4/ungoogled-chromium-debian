@@ -1219,10 +1219,7 @@ if [ $SYS_DRM -eq 0 ]; then
 fi
 
 
-if [ $SYS_ICU -eq 0 ]; then
-  # Enable generation of a symlink to icudtl.dat in out/Release
-  RUL="$RUL -e \"/icudtl.dat/s@#@@\""
-else
+if [ $SYS_ICU -eq 1 ]; then
   op_disable="$op_disable fixes/icudata-file-path.patch"
   op_disable="$op_disable fixes/skia-allow-bundled-harfbuzz.patch"
   op_enable="$op_enable system/unstable/icu.patch"
@@ -1242,6 +1239,7 @@ else
 
   # icudtl.dat is not needed with system icu
   ins_disable="$ins_disable icudtl.dat"
+  RUL="$RUL -e \"/icudtl.dat/s@^\t@\t#@\""
 fi
 
 
