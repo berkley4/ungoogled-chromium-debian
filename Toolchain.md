@@ -129,13 +129,13 @@ Permissions of 0700 won't allow users to access directories, and cause runtime e
 Check to see if you have any :-
 
 ```sh
-find /usr/local/ -type d | while read l; do [ $(stat -c %a "$l") -eq 0755 ] || ls -ld "$l"; done
+find /usr/local/ -type d | while read l; do [ $(stat -c %a "$l") -eq 755 ] || ls -ld "$l"; done
 ```
 
 Correct them with :-
 
 ```sh
-find /usr/local/ -type d | while read l; do [ $(stat -c %a "$l") -eq 0755 ] || chmod 0755 "$l"; done
+find /usr/local/ -type d | while read l; do [ $(stat -c %a "$l") -eq 755 ] || chmod 0755 "$l"; done
 ```
 
 
