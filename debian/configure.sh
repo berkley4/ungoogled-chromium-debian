@@ -776,7 +776,7 @@ if [ $FAST_RESTART -eq 1 ]; then
 
   [ ! -f $OUT_DIR/args.gn ] || rm $OUT_DIR/args.gn
 
-  RUL="$RUL -e \"/domain_regex/{n;s@^\(\t\)\(gn gen\)@\1test -f \x24\x28OUT_DIR\x29/args.gn || \2@}\""
+  RUL="$RUL -e \"/system-libraries/{n;s@^\t@\ttest -f \x24\x28OUT_DIR\x29/args.gn || @}\""
 fi
 
 

@@ -351,8 +351,8 @@ revert_unbundling: revert_domsub
 override_dh_auto_configure:
 	test -f $(DS_CACHE) || for f in $(UB_LIST); do test ! -f $$f || mv $$f $${f%.bundled}; done
 	test -f $(DS_CACHE) || test -z "$(SYS_LIBS)" || $(UB_REP_SCRIPT) --system-libraries $(SYS_LIBS)
-	test -f $(DS_CACHE) || $(UL_DIR)/domain_substitution.py apply -r $(UC_DIR)/domain_regex.list -f $(UC_DIR)/domain_substitution.list -c $(DS_CACHE) $(RT_DIR)
 	gn gen $(OUT_DIR) --args="$(GN_FLAGS)" --fail-on-unused-args
+	test -f $(DS_CACHE) || $(UL_DIR)/domain_substitution.py apply -r $(UC_DIR)/domain_regex.list -f $(UC_DIR)/domain_substitution.list -c $(DS_CACHE) $(RT_DIR)
 	test ! -f $(DEBIAN)/en-US.pak || mv $(DEBIAN)/en-US.pak $(OUT_DIR)/locales/
 	test -h $(OUT_DIR)/icudtl.dat || ln -sf ../../third_party/icu/common/icudtl.dat -t $(OUT_DIR)
 	for h in $(HEVC_LIST); do test -h $$h || ln -sf $(HEVC_DIR)/$$h $(HEVC_DIR)/libavcodec-hevc-$$h; done
