@@ -846,7 +846,7 @@ fi
 
 
 if [ $HLS_PLAYER -eq 0 ]; then
-  gn_disable="$gn_disable enable_hls_demuxer=true"
+  gn_enable="$gn_enable enable_hls_demuxer=false"
   ins_disable="$ins_disable hls-player"
 elif [ $HLS_PLAYER -ge 2 ]; then
   sed -e '/enable-builtin-hls/s@^#@@' \

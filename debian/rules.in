@@ -152,7 +152,7 @@ GN_FLAGS += enterprise_watermark=false
 #GN_FLAGS += enable_platform_hevc=false
 
 # Enable HLS manifest parser and demuxer
-GN_FLAGS += enable_hls_demuxer=true
+#GN_FLAGS += enable_hls_demuxer=false
 
 # Google lens
 #GN_FLAGS += enable_lens_desktop=false
