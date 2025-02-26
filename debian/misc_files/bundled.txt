@@ -9,7 +9,6 @@ third_party/fontconfig/BUILD.gn.bundled
 third_party/harfbuzz-ng/harfbuzz.gni.bundled
 third_party/icu/BUILD.gn.bundled
 third_party/libdrm/BUILD.gn.bundled
-third_party/libevent/BUILD.gn.bundled
 third_party/libjpeg.gni.bundled
 third_party/libpng/BUILD.gn.bundled
 third_party/libsecret/BUILD.gn.bundled
