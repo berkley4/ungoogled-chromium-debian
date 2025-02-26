@@ -451,6 +451,12 @@ JOBS=4 dpkg-buildpackage --source-option=--no-preparation -b -uc -nc
 
 ## Miscellaneous actions
 
+# Re-generate ninja build files (eg after changing GN_FLAGS in d/rules)
+
+```sh
+./debian/rules gn_gen
+```
+
 # Revert domain substitution
 
 ```sh
