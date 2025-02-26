@@ -54,7 +54,6 @@ vanadinite/0011-disable-component-updater-pings-by-default.patch
 vanadinite/0012-enable-strict-origin-isolation-by-default.patch
 vanadinite/0014-enable-partitioning-third-party-storage.patch
 
-various/bundle-hyphen-data.patch
 various/compiler-flags/do-not-link-with-libatomic.patch
 various/compiler-flags/ffmpeg-optimize-speed-O3.patch
 various/compiler-flags/function-import-limits.patch
@@ -103,6 +102,7 @@ various/upstream/0002-af537c5.diff
 various/upstream/features/partitionalloc-add-feature-to-use-fewer-memory-regions.patch
 various/warnings/clang-excessive-warnings.patch
 
+optional/bundle-hyphen-data.patch
 #optional/enable-esbuild-for-official-builds.patch
 optional/mutex-priority-inheritance.patch
 #optional/use-oauth2-client-switches-as-default.patch

@@ -399,12 +399,14 @@ patch -p1 < DEPS-no-node.patch
 
 
 # Update the chromium build tree submodules
-cd ../build/src
 gclient sync -D --force --nohooks --no-history --shallow --jobs=$JOBS
 export DEPOT_TOOLS_UPDATE=0
 
 # Download various build components
 gclient runhooks --jobs=$JOBS
+
+# Generate the hyphenation data files (run build/hyphen-data-get-sh from build/src)
+../hyphen-data-get-sh
 
 # Copy over the debian directory into your source tree
 cp -a ../../debian .

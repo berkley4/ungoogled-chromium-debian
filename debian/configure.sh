@@ -84,6 +84,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$GRCACHE_PURGE" ] || GRCACHE_PURGE=0
 [ -n "$HEADLESS" ] || HEADLESS=1
 [ -n "$HLS_PLAYER" ] || HLS_PLAYER=1
+[ -n "$HYPHENATION" ] || HYPHENATION=1
 [ -n "$IDB_FG_CLIENT_BOOST" ] || IDB_FG_CLIENT_BOOST=1
 [ -n "$LABS_TOOLBAR_BUTTON" ] || LABS_TOOLBAR_BUTTON=0
 [ -n "$LENS" ] || LENS=0
@@ -214,6 +215,13 @@ fi
 ## Only error out if BLUEZ is explicitly enabled when DBUS=0
 if [ $BLUEZ_SET -eq 1 ] && [ $BLUEZ -eq 1 ] && [ $DBUS -eq 0 ]; then
   printf '%s\n' "ERROR: Cannot set BLUEZ=1 when DBUS=0 (BLUEZ depends on DBUS)"
+  exit 1
+fi
+
+
+# Check that hyphenation files are present if HYPHENATION=1
+if [ $TEST -eq 0 ] && [ ! -f $hyphen_dir/hyb/hyph-en-us.hyb ]; then
+  printf '%s\n' "Please run build/hyphen-data-get-sh to generate the data files"
   exit 1
 fi
 
@@ -855,6 +863,11 @@ elif [ $HLS_PLAYER -ge 2 ]; then
 fi
 
 
+if [ $HYPHENATION -eq 0 ]; then
+  op_disable="$op_disable bundle-hyphen-data.patch"
+fi
+
+
 if [ $IDB_FG_CLIENT_BOOST -eq 0  ]; then
   sed -e '/IdbExpediteBackend/s@^@#@' -i $FLAG_DIR/miscellaneous
 fi
@@ -1272,6 +1285,12 @@ DSB="$DSB -e \"/^chrome\/installer\/linux\/common\/appdata\.xml\.template/d\""
 DSB="$DSB -e \"/^content\/browser\/resources\/gpu\/info_view\.ts/d\""
 DSB="$DSB -e \"/^tools\/clang\//d\""
 
+# Exclude hyphenation-related files
+if [ $HYPHENATION -eq 1 ]; then
+  DSB="$DSB -e \"/^third_party\/blink\/renderer\/platform\/text\/hyphenation\/hyphenation_minikin.cc/d\""
+  DSB="$DSB -e \"/^third_party\/hyphenation-patterns\//d\""
+fi
+
 # Exclude bundled library files
 DSB="$DSB -e \"/^base\/third_party\/double_conversion\/BUILD.gn/d\""
 DSB="$DSB -e \"/^build\/config\/freetype\/freetype.gni/d\""
@@ -1327,8 +1346,11 @@ fi
 ## Pruning list
 PRU="$PRU -e \"/^chrome\/build\/pgo_profiles\//d\""
 PRU="$PRU -e \"/^third_party\/depot_tools\//d\""
-PRU="$PRU -e \"/^third_party\/hyphenation-patterns\//d\""
 PRU="$PRU -e \"/^third_party\/node\/node_modules\//d\""
+
+if [ $HYPHENATION -eq 1 ]; then
+  PRU="$PRU -e \"/^third_party\/hyphenation-patterns\//d\""
+fi
 
 ## Pruning script
 if [ $SYS_NODE -eq 0 ]; then

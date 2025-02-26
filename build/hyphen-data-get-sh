@@ -1,0 +1,43 @@
+#!/bin/sh -e
+
+SCRIPT_DIR=${0%%/*}
+USAGE="Usage: $SCRIPT <clean|c|help|h>"
+
+HYPHEN_DIR=src/third_party/hyphenation-patterns
+
+current_dir=${PWD}
+hyphen_dir=$current_dir/src/third_party/hyphenation-patterns
+
+case $USER in
+  root)
+    printf '%s\n' "Run this script as an unprivileged user"
+    exit 1 ;;
+esac
+
+case ${current_dir##*/} in
+  build)
+    : ;;
+
+  *)
+    printf '%s\n' "Please run this script from the build directory"
+    exit 1 ;;
+esac
+
+
+## Generate hyphen-data files (if they are not present)
+if [ ! -f $hyphen_dir/hyb/hyph-en-us.hyb ]; then
+  # Basic sanity check for previous patching
+  if [ ! -f $hyphen_dir/mk_hyb_file.py ]; then
+    patch -s -p1 < source_patches/hyphenation-data.patch
+  fi
+
+  cd $current_dir/src/third_party/hyphenation-patterns
+  ./build-hyb.sh
+  cd - >/dev/null
+
+  # Clean up
+  [ ! -f $hyphen_dir/build-hyb.sh.rej ] || rm -f $hyphen_dir/build-hyb.sh.rej
+  patch -R -s -p1 < source_patches/hyphenation-data.patch
+fi
+
+exit $?
