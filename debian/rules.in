@@ -345,12 +345,12 @@ prune:
 revert_domsub:
 	test ! -f $(DS_CACHE) || $(UL_DIR)/domain_substitution.py revert -c $(DS_CACHE) $(RT_DIR)
 
-revert_unbundling: revert_domsub
+revert_unbundling:
 	for f in $(UB_LIST); do test ! -f $$f || mv $$f $${f%.bundled}; done
 
 override_dh_auto_configure:
-	test -f $(DS_CACHE) || for f in $(UB_LIST); do test ! -f $$f || mv $$f $${f%.bundled}; done
-	test -f $(DS_CACHE) || test -z "$(SYS_LIBS)" || $(UB_REP_SCRIPT) --system-libraries $(SYS_LIBS)
+	for f in $(UB_LIST); do test ! -f $$f || mv $$f $${f%.bundled}; done
+	test -z "$(SYS_LIBS)" || $(UB_REP_SCRIPT) --system-libraries $(SYS_LIBS)
 	gn gen $(OUT_DIR) --args="$(GN_FLAGS)" --fail-on-unused-args
 	test -f $(DS_CACHE) || $(UL_DIR)/domain_substitution.py apply -r $(UC_DIR)/domain_regex.list -f $(UC_DIR)/domain_substitution.list -c $(DS_CACHE) $(RT_DIR)
 	test ! -f $(DEBIAN)/en-US.pak || mv $(DEBIAN)/en-US.pak $(OUT_DIR)/locales/

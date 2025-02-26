@@ -457,7 +457,7 @@ JOBS=4 dpkg-buildpackage --source-option=--no-preparation -b -uc -nc
 ./debian/rules revert_domsub
 ```
 
-# Revert unbundling (automatically invokes 'revert_domsub'  before reverting unbundling)
+# Revert unbundling
 
 ```sh
 ./debian/rules revert_unbundling
