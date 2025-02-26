@@ -1266,12 +1266,36 @@ if [ $TEST -eq 0 ] && [ -f $RT_DIR/DEPS ]; then
   esac
 fi
 
-## Domain substitution
+## Domain substitution exclusions
 DSB="$DSB -e \"/^chrome\/browser\/flag_descriptions\.cc/d\""
 DSB="$DSB -e \"/^chrome\/installer\/linux\/common\/appdata\.xml\.template/d\""
 DSB="$DSB -e \"/^content\/browser\/resources\/gpu\/info_view\.ts/d\""
 DSB="$DSB -e \"/^tools\/clang\//d\""
 
+# Exclude bundled library files
+DSB="$DSB -e \"/^base\/third_party\/double_conversion\/BUILD.gn/d\""
+DSB="$DSB -e \"/^build\/config\/freetype\/freetype.gni/d\""
+DSB="$DSB -e \"/^third_party\/angle\/src\/third_party\/libXNVCtrl\/BUILD.gn/d\""
+DSB="$DSB -e \"/^third_party\/brotli\/BUILD.gn/d\""
+DSB="$DSB -e \"/^third_party\/dav1d\/BUILD.gn/d\""
+DSB="$DSB -e \"/^third_party\/ffmpeg\/BUILD.gn/d\""
+DSB="$DSB -e \"/^third_party\/flac\/BUILD.gn/d\""
+DSB="$DSB -e \"/^third_party\/fontconfig\/BUILD.gn/d\""
+DSB="$DSB -e \"/^third_party\/harfbuzz-ng\/harfbuzz.gni/d\""
+DSB="$DSB -e \"/^third_party\/icu\/BUILD.gn/d\""
+DSB="$DSB -e \"/^third_party\/libdrm\/BUILD.gn/d\""
+DSB="$DSB -e \"/^third_party\/libjpeg.gni/d\""
+DSB="$DSB -e \"/^third_party\/libpng\/BUILD.gn/d\""
+DSB="$DSB -e \"/^third_party\/libsecret\/BUILD.gn/d\""
+DSB="$DSB -e \"/^third_party\/libusb\/BUILD.gn/d\""
+DSB="$DSB -e \"/^third_party\/libxml\/BUILD.gn/d\""
+DSB="$DSB -e \"/^third_party\/libxslt\/BUILD.gn/d\""
+DSB="$DSB -e \"/^third_party\/openh264\/BUILD.gn/d\""
+DSB="$DSB -e \"/^third_party\/opus\/BUILD.gn/d\""
+DSB="$DSB -e \"/^third_party\/zlib\/BUILD.gn/d\""
+DSB="$DSB -e \"/^third_party\/zstd\/BUILD.gn/d\""
+
+# Exclude files that don't exist after patching DEPS
 if [ $DEPS_PATCH -ge 1 ]; then
   DSB="$DSB -e \"/^build\/linux\/debian_bullseye_i386-sysroot\//d\""
   DSB="$DSB -e \"/^build\/linux\/debian_bullseye_amd64-sysroot\//d\""
