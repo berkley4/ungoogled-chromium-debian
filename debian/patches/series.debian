@@ -84,6 +84,7 @@ various/fixes/enterprise-buildflags.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/shim-fix-for-official-builds.patch
 various/fixes/silence-some-error-log-messages.patch
+various/fixes/spoof-webgl-renderer-info.patch
 various/fixes/swiftshader-build.patch
 various/fixes/template-correction.patch
 various/fixes/unbundle-script-dh-clean-interoperabilty.patch
