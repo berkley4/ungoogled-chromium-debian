@@ -165,8 +165,6 @@ optional/fixes/chromedriver/fix-paths.patch
 #optional/fixes/chromedriver/4ea01682.diff
 optional/fixes/widevine/widevine-enable-version-string.patch
 optional/fixes/widevine/widevine-locations.patch
-#optional/legacy-i386/angle-lockfree.patch
-#optional/legacy-i386/support-i386.patch
 optional/opentype-svg/0001-OT-SVG-hook.patch
 optional/opentype-svg/0002-use-FreeType-for-non-Linux-OT-SVG-support.patch
 #optional/system/bindgen-crabbyav1f.patch
