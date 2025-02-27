@@ -29,6 +29,8 @@ SYS_BROTLI_SET=0
 SYS_DRM_SET=0
 XZ_THREADED_SET=0
 
+LLVM_PGO_VER=20
+
 # ${example%/*} = $(dirname example)
 DEBIAN=$(OLDPWD=- CDPATH= cd -P -- ${0%/*} && pwd)
 RT_DIR=${DEBIAN%/*}
@@ -219,13 +221,6 @@ if [ $BLUEZ_SET -eq 1 ] && [ $BLUEZ -eq 1 ] && [ $DBUS -eq 0 ]; then
 fi
 
 
-# Check that hyphenation files are present if HYPHENATION=1
-if [ $TEST -eq 0 ] && [ ! -f $hyphen_dir/hyb/hyph-en-us.hyb ]; then
-  printf '%s\n' "Please run build/hyphen-data-get-sh to generate the data files"
-  exit 1
-fi
-
-
 ## Enter test mode if $RT_DIR/third_party does not exist
 [ -d $RT_DIR/third_party ] && TEST=0 || TEST=1
 
@@ -237,11 +232,16 @@ fi
 [ -n "$DEPS_PATCH" ] || DEPS_PATCH=0
 
 
-## Get clang_version from build/toolchain/toolchain.gni when TEST=0
-LLVM_PGO_VER=20
 if [ $TEST -eq 0 ]; then
+  ## Get clang_version from build/toolchain/toolchain.gni when TEST=0
   tc_gni=$RT_DIR/build/toolchain/toolchain.gni
   LLVM_PGO_VER=$(sed -n '/clang_version =/h; ${x;s@[ _="a-z]@@gp;}' $tc_gni)
+
+  # Check that hyphenation files are present when HYPHENATION=1
+  if [ $HYPHENATION -eq 1 ] && [ ! -f $hyphen_dir/hyb/hyph-en-us.hyb ]; then
+    printf '%s\n' "Please run build/hyphen-data-get-sh to generate the data files"
+    exit 1
+  fi
 fi
 
 
