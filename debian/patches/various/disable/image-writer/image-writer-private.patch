@@ -116,7 +116,7 @@
      }
 --- a/chrome/browser/extensions/keyed_services/chrome_browser_context_keyed_service_factories.cc
 +++ b/chrome/browser/extensions/keyed_services/chrome_browser_context_keyed_service_factories.cc
-@@ -23,8 +23,13 @@
+@@ -24,8 +24,13 @@
  #include "chrome/browser/extensions/permissions/permissions_updater.h"
  #include "chrome/browser/extensions/plugin_manager.h"
  #include "chrome/browser/extensions/warning_badge_service_factory.h"

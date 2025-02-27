@@ -1,6 +1,6 @@
 --- a/v8/BUILD.gn
 +++ b/v8/BUILD.gn
-@@ -2477,11 +2477,10 @@
+@@ -2504,11 +2504,10 @@
      sources = []
  
      if (v8_depend_on_icu_data_file) {
