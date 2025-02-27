@@ -238,6 +238,7 @@ if [ $TEST -eq 0 ]; then
   LLVM_PGO_VER=$(sed -n '/clang_version =/h; ${x;s@[ _="a-z]@@gp;}' $tc_gni)
 
   # Check that hyphenation files are present when HYPHENATION=1
+  hyphen_dir=$RT_DIR/third_party/hyphenation-patterns
   if [ $HYPHENATION -eq 1 ] && [ ! -f $hyphen_dir/hyb/hyph-en-us.hyb ]; then
     printf '%s\n' "Please run build/hyphen-data-get-sh to generate the data files"
     exit 1
