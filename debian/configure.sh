@@ -1206,6 +1206,7 @@ fi
 
 if [ $SYS_BROTLI -eq 0 ]; then
   op_disable="$op_disable system/unstable/freetype.patch"
+  op_enable="$op_enable fixes/fix-missing-brotli-headers.patch"
   op_enable="$op_enable fixes/skia-allow-bundled-freetype.patch"
 
   if [ $OPENTYPE_SVG -eq 1 ]; then
