@@ -1229,6 +1229,7 @@ fi
 
 if [ $SYS_DRM -eq 0 ]; then
   op_disable="$op_disable system/libdrm.patch"
+  op_enable="$op_enable fixes/fix-missing-drm-header.patch"
   sys_disable="$sys_disable libdrm"
   deps_disable="$deps_disable libdrm"
 fi

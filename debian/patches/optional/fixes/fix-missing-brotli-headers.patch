@@ -8,3 +8,13 @@
    } else {
      sources += [ "filter/brotli_source_stream_disabled.cc" ]
    }
+--- a/ui/base/BUILD.gn
++++ b/ui/base/BUILD.gn
+@@ -225,6 +225,7 @@
+   ]
+ 
+   libs = []
++  include_dirs = [ "//third_party/brotli/include" ]
+ 
+   if (is_android) {
+     sources += [

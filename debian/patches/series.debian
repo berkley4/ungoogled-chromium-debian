@@ -154,7 +154,8 @@ optional/ffmpeg-extra-codecs/ac3/enable-ac3-ffmpeg-decoding.patch
 #optional/ffmpeg-extra-codecs/fdk-aac/enable-fdk-aac-ffmpeg-decoding.patch
 #optional/fixes/enum-table-crash.patch
 optional/fixes/enum-table-crash-hdis.patch
-#fix-missing-brotli-headers.patch
+#optional/fixes/fix-missing-brotli-headers.patch
+#optional/fixes/fix-missing-drm-header.patch
 optional/fixes/icudata-file-path.patch
 #optional/fixes/opentype-svg-on-bundled-freetype.patch
 optional/fixes/qt-ui.patch
