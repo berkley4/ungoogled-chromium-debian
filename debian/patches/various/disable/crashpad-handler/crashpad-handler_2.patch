@@ -22,7 +22,7 @@
  #endif  // BUILDFLAG(IS_ANDROID)
    }
  #endif  // BUILDFLAG(IS_POSIX) && !BUILDFLAG(IS_MAC)
-@@ -1723,10 +1727,11 @@
+@@ -1723,9 +1727,11 @@
        base::CommandLine::ForCurrentProcess();
    std::string process_type =
        command_line->GetSwitchValueASCII(switches::kProcessType);
@@ -30,11 +30,10 @@
    crash_reporter::InitializeCrashpad(false, process_type);
    crash_reporter::SetFirstChanceExceptionHandler(
        v8::TryHandleWebAssemblyTrapPosix);
--
 +#endif  // !BUILDFLAG(IS_LINUX)
+ 
    // Reset the command line for the newly spawned process.
    crash_keys::SetCrashKeysFromCommandLine(*command_line);
- }
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
 @@ -619,7 +619,7 @@
