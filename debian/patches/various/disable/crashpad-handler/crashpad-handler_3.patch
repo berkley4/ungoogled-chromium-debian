@@ -1,117 +1,40 @@
---- a/chrome/app/chrome_main_delegate.cc
-+++ b/chrome/app/chrome_main_delegate.cc
-@@ -201,7 +201,9 @@
- #if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_ANDROID) || \
-     BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
- #include "chrome/browser/policy/policy_path_parser.h"
-+#if !BUILDFLAG(IS_LINUX)
- #include "components/crash/core/app/crashpad.h"
-+#endif  // !BUILDFLAG(IS_LINUX)
- #endif
- 
- #if BUILDFLAG(ENABLE_EXTENSIONS)
-@@ -1583,9 +1585,11 @@
-       base::android::InitJavaExceptionReporterForChildProcess();
-     }
- #else
-+#if !BUILDFLAG(IS_LINUX)
-     crash_reporter::InitializeCrashpad(process_type.empty(), process_type);
-     crash_reporter::SetFirstChanceExceptionHandler(
-         v8::TryHandleWebAssemblyTrapPosix);
-+#endif  // !BUILDFLAG(IS_LINUX)
- #endif  // BUILDFLAG(IS_ANDROID)
-   }
- #endif  // BUILDFLAG(IS_POSIX) && !BUILDFLAG(IS_MAC)
-@@ -1723,10 +1727,11 @@
-       base::CommandLine::ForCurrentProcess();
-   std::string process_type =
-       command_line->GetSwitchValueASCII(switches::kProcessType);
-+#if !BUILDFLAG(IS_LINUX)
-   crash_reporter::InitializeCrashpad(false, process_type);
-   crash_reporter::SetFirstChanceExceptionHandler(
-       v8::TryHandleWebAssemblyTrapPosix);
--
-+#endif  // !BUILDFLAG(IS_LINUX)
-   // Reset the command line for the newly spawned process.
-   crash_keys::SetCrashKeysFromCommandLine(*command_line);
- }
---- a/chrome/browser/chrome_content_browser_client.cc
-+++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -619,7 +619,7 @@
- #include "chrome/browser/browser_switcher/browser_switcher_navigation_throttle.h"
- #endif
- 
--#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
-+#if BUILDFLAG(IS_CHROMEOS)
- #include "components/crash/core/app/crash_switches.h"
- #include "components/crash/core/app/crashpad.h"
- #endif
-@@ -1051,7 +1051,7 @@
- int GetCrashSignalFD(const base::CommandLine& command_line) {
-   return crashpad::CrashHandlerHost::Get()->GetDeathSignalSocket();
- }
--#elif BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
-+#elif BUILDFLAG(IS_CHROMEOS)
- int GetCrashSignalFD(const base::CommandLine& command_line) {
-   int fd;
-   return crash_reporter::GetHandlerSocket(&fd, nullptr) ? fd : -1;
-@@ -4913,7 +4913,7 @@
-   DCHECK(!app_data_path.empty());
- #endif  // BUILDFLAG(IS_ANDROID)
- 
--#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
-+#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_CHROMEOS)
-   int crash_signal_fd = GetCrashSignalFD(command_line);
-   if (crash_signal_fd >= 0) {
-     mappings->Share(kCrashDumpSignal, crash_signal_fd);
---- a/headless/lib/browser/headless_content_browser_client.h
-+++ b/headless/lib/browser/headless_content_browser_client.h
-@@ -45,7 +45,7 @@
-   CreateDevToolsManagerDelegate() override;
-   content::GeneratedCodeCacheSettings GetGeneratedCodeCacheSettings(
-       content::BrowserContext* context) override;
--#if BUILDFLAG(IS_POSIX) && !BUILDFLAG(IS_MAC)
-+#if BUILDFLAG(IS_POSIX) && !BUILDFLAG(IS_LINUX) && !BUILDFLAG(IS_MAC)
-   void GetAdditionalMappedFilesForChildProcess(
-       const base::CommandLine& command_line,
-       int child_process_id,
---- a/headless/lib/browser/headless_content_browser_client.cc
-+++ b/headless/lib/browser/headless_content_browser_client.cc
-@@ -51,8 +51,10 @@
- #include "ui/gfx/switches.h"
- 
- #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
-+#if BUILDFLAG(IS_CHROMEOS)
- #include "components/crash/core/app/crash_switches.h"  // nogncheck
- #include "components/crash/core/app/crashpad.h"        // nogncheck
-+#endif  // BUILDFLAG(IS_CHROMEOS)
- #include "content/public/common/content_descriptors.h"
- #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
- 
-@@ -75,7 +77,7 @@
- 
- namespace {
- 
--#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
-+#if BUILDFLAG(IS_CHROMEOS)
- int GetCrashSignalFD(const base::CommandLine& command_line,
-                      const HeadlessBrowser::Options& options) {
-   int fd;
-@@ -211,7 +213,7 @@
-   return content::GeneratedCodeCacheSettings(true, 0, context->GetPath());
- }
- 
--#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
-+#if BUILDFLAG(IS_CHROMEOS)
- void HeadlessContentBrowserClient::GetAdditionalMappedFilesForChildProcess(
-     const base::CommandLine& command_line,
-     int child_process_id,
-@@ -232,7 +234,7 @@
-     command_line->AppendSwitchASCII(::switches::kHeadless, "old");
+--- a/chrome/browser/BUILD.gn
++++ b/chrome/browser/BUILD.gn
+@@ -7051,7 +7051,7 @@
+     ]
    }
  
--#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
-+#if BUILDFLAG(IS_CHROMEOS)
-   int fd;
-   pid_t pid;
-   if (crash_reporter::GetHandlerSocket(&fd, &pid)) {
+-  if (is_win || is_android || is_linux) {
++  if (is_win || is_android) {
+     sources += [
+       "metrics/chrome_metrics_service_crash_reporter.cc",
+       "metrics/chrome_metrics_service_crash_reporter.h",
+--- a/chrome/browser/metrics/chrome_metrics_service_client.cc
++++ b/chrome/browser/metrics/chrome_metrics_service_client.cc
+@@ -201,7 +201,7 @@
+ #include "components/metrics/motherboard_metrics_provider.h"
+ #endif
+ 
+-#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_LINUX)
++#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_ANDROID)
+ #include "chrome/browser/metrics/chrome_metrics_service_crash_reporter.h"
+ #endif
+ 
+@@ -234,7 +234,7 @@
+ // Needs to be kept in sync with the writer in
+ // third_party/crashpad/crashpad/handler/handler_main.cc.
+ const char kCrashpadHistogramAllocatorName[] = "CrashpadMetrics";
+-#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_LINUX)
++#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_ANDROID)
+ base::LazyInstance<ChromeMetricsServiceCrashReporter>::Leaky g_crash_reporter =
+     LAZY_INSTANCE_INITIALIZER;
+ #endif  // BUILDFLAG(IS_WIN) || BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_LINUX)
+@@ -620,7 +620,7 @@
+ void ChromeMetricsServiceClient::OnEnvironmentUpdate(std::string* environment) {
+   // TODO(https://bugs.chromium.org/p/crashpad/issues/detail?id=135): call this
+   // on Mac when the Crashpad API supports it.
+-#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_LINUX)
++#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_ANDROID)
+   // Register the environment with the crash reporter. Note that there is a
+   // window from startup to this point during which crash reports will not have
+   // an environment set.

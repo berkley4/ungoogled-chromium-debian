@@ -1,69 +1,117 @@
---- a/third_party/crashpad/crashpad/client/crash_report_database.h
-+++ b/third_party/crashpad/crashpad/client/crash_report_database.h
-@@ -24,12 +24,12 @@
- #include <vector>
+--- a/chrome/app/chrome_main_delegate.cc
++++ b/chrome/app/chrome_main_delegate.cc
+@@ -201,7 +201,9 @@
+ #if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_ANDROID) || \
+     BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
+ #include "chrome/browser/policy/policy_path_parser.h"
++#if !BUILDFLAG(IS_LINUX)
+ #include "components/crash/core/app/crashpad.h"
++#endif  // !BUILDFLAG(IS_LINUX)
+ #endif
  
- #include "base/files/file_path.h"
--#include "util/file/file_io.h"
--#include "util/file/file_reader.h"
--#include "util/file/file_writer.h"
--#include "util/file/scoped_remove_file.h"
--#include "util/misc/metrics.h"
--#include "util/misc/uuid.h"
-+#include "third_party/crashpad/crashpad/util/file/file_io.h"
-+#include "third_party/crashpad/crashpad/util/file/file_reader.h"
-+#include "third_party/crashpad/crashpad/util/file/file_writer.h"
-+#include "third_party/crashpad/crashpad/util/file/scoped_remove_file.h"
-+#include "third_party/crashpad/crashpad/util/misc/metrics.h"
-+#include "third_party/crashpad/crashpad/util/misc/uuid.h"
+ #if BUILDFLAG(ENABLE_EXTENSIONS)
+@@ -1583,9 +1585,11 @@
+       base::android::InitJavaExceptionReporterForChildProcess();
+     }
+ #else
++#if !BUILDFLAG(IS_LINUX)
+     crash_reporter::InitializeCrashpad(process_type.empty(), process_type);
+     crash_reporter::SetFirstChanceExceptionHandler(
+         v8::TryHandleWebAssemblyTrapPosix);
++#endif  // !BUILDFLAG(IS_LINUX)
+ #endif  // BUILDFLAG(IS_ANDROID)
+   }
+ #endif  // BUILDFLAG(IS_POSIX) && !BUILDFLAG(IS_MAC)
+@@ -1723,10 +1727,11 @@
+       base::CommandLine::ForCurrentProcess();
+   std::string process_type =
+       command_line->GetSwitchValueASCII(switches::kProcessType);
++#if !BUILDFLAG(IS_LINUX)
+   crash_reporter::InitializeCrashpad(false, process_type);
+   crash_reporter::SetFirstChanceExceptionHandler(
+       v8::TryHandleWebAssemblyTrapPosix);
+-
++#endif  // !BUILDFLAG(IS_LINUX)
+   // Reset the command line for the newly spawned process.
+   crash_keys::SetCrashKeysFromCommandLine(*command_line);
+ }
+--- a/chrome/browser/chrome_content_browser_client.cc
++++ b/chrome/browser/chrome_content_browser_client.cc
+@@ -619,7 +619,7 @@
+ #include "chrome/browser/browser_switcher/browser_switcher_navigation_throttle.h"
+ #endif
  
- namespace crashpad {
+-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
++#if BUILDFLAG(IS_CHROMEOS)
+ #include "components/crash/core/app/crash_switches.h"
+ #include "components/crash/core/app/crashpad.h"
+ #endif
+@@ -1051,7 +1051,7 @@
+ int GetCrashSignalFD(const base::CommandLine& command_line) {
+   return crashpad::CrashHandlerHost::Get()->GetDeathSignalSocket();
+ }
+-#elif BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
++#elif BUILDFLAG(IS_CHROMEOS)
+ int GetCrashSignalFD(const base::CommandLine& command_line) {
+   int fd;
+   return crash_reporter::GetHandlerSocket(&fd, nullptr) ? fd : -1;
+@@ -4913,7 +4913,7 @@
+   DCHECK(!app_data_path.empty());
+ #endif  // BUILDFLAG(IS_ANDROID)
  
---- a/third_party/crashpad/crashpad/util/file/file_reader.h
-+++ b/third_party/crashpad/crashpad/util/file/file_reader.h
-@@ -18,8 +18,8 @@
- #include <sys/types.h>
+-#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
++#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_CHROMEOS)
+   int crash_signal_fd = GetCrashSignalFD(command_line);
+   if (crash_signal_fd >= 0) {
+     mappings->Share(kCrashDumpSignal, crash_signal_fd);
+--- a/headless/lib/browser/headless_content_browser_client.h
++++ b/headless/lib/browser/headless_content_browser_client.h
+@@ -45,7 +45,7 @@
+   CreateDevToolsManagerDelegate() override;
+   content::GeneratedCodeCacheSettings GetGeneratedCodeCacheSettings(
+       content::BrowserContext* context) override;
+-#if BUILDFLAG(IS_POSIX) && !BUILDFLAG(IS_MAC)
++#if BUILDFLAG(IS_POSIX) && !BUILDFLAG(IS_LINUX) && !BUILDFLAG(IS_MAC)
+   void GetAdditionalMappedFilesForChildProcess(
+       const base::CommandLine& command_line,
+       int child_process_id,
+--- a/headless/lib/browser/headless_content_browser_client.cc
++++ b/headless/lib/browser/headless_content_browser_client.cc
+@@ -51,8 +51,10 @@
+ #include "ui/gfx/switches.h"
  
- #include "base/files/file_path.h"
--#include "util/file/file_io.h"
--#include "util/file/file_seeker.h"
-+#include "third_party/crashpad/crashpad/util/file/file_io.h"
-+#include "third_party/crashpad/crashpad/util/file/file_seeker.h"
+ #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
++#if BUILDFLAG(IS_CHROMEOS)
+ #include "components/crash/core/app/crash_switches.h"  // nogncheck
+ #include "components/crash/core/app/crashpad.h"        // nogncheck
++#endif  // BUILDFLAG(IS_CHROMEOS)
+ #include "content/public/common/content_descriptors.h"
+ #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
  
- namespace crashpad {
+@@ -75,7 +77,7 @@
  
---- a/third_party/crashpad/crashpad/util/file/file_seeker.h
-+++ b/third_party/crashpad/crashpad/util/file/file_seeker.h
-@@ -15,7 +15,7 @@
- #ifndef CRASHPAD_UTIL_FILE_FILE_SEEKER_H_
- #define CRASHPAD_UTIL_FILE_FILE_SEEKER_H_
+ namespace {
  
--#include "util/file/file_io.h"
-+#include "third_party/crashpad/crashpad/util/file/file_io.h"
+-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
++#if BUILDFLAG(IS_CHROMEOS)
+ int GetCrashSignalFD(const base::CommandLine& command_line,
+                      const HeadlessBrowser::Options& options) {
+   int fd;
+@@ -211,7 +213,7 @@
+   return content::GeneratedCodeCacheSettings(true, 0, context->GetPath());
+ }
  
- namespace crashpad {
+-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
++#if BUILDFLAG(IS_CHROMEOS)
+ void HeadlessContentBrowserClient::GetAdditionalMappedFilesForChildProcess(
+     const base::CommandLine& command_line,
+     int child_process_id,
+@@ -232,7 +234,7 @@
+     command_line->AppendSwitchASCII(::switches::kHeadless, "old");
+   }
  
---- a/third_party/crashpad/crashpad/util/file/file_writer.h
-+++ b/third_party/crashpad/crashpad/util/file/file_writer.h
-@@ -21,8 +21,8 @@
- 
- #include "base/files/file_path.h"
- #include "build/build_config.h"
--#include "util/file/file_io.h"
--#include "util/file/file_seeker.h"
-+#include "third_party/crashpad/crashpad/util/file/file_io.h"
-+#include "third_party/crashpad/crashpad/util/file/file_seeker.h"
- 
- namespace crashpad {
- 
---- a/third_party/crashpad/crashpad/util/misc/metrics.h
-+++ b/third_party/crashpad/crashpad/util/misc/metrics.h
-@@ -18,7 +18,7 @@
- #include <inttypes.h>
- 
- #include "build/build_config.h"
--#include "util/file/file_io.h"
-+#include "third_party/crashpad/crashpad/util/file/file_io.h"
- 
- #if BUILDFLAG(IS_IOS)
- #include "util/ios/ios_intermediate_dump_format.h"
+-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
++#if BUILDFLAG(IS_CHROMEOS)
+   int fd;
+   pid_t pid;
+   if (crash_reporter::GetHandlerSocket(&fd, &pid)) {
