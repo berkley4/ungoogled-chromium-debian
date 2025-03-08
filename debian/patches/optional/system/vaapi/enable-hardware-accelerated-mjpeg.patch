@@ -1,6 +1,6 @@
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5557,12 +5557,12 @@
+@@ -5601,12 +5601,12 @@
  #endif
  #endif  // BUILDFLAG(IS_ANDROID)
  #endif  // ENABLE_VR
@@ -18,7 +18,7 @@
       FEATURE_VALUE_TYPE(features::kSystemKeyboardLock)},
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -5745,7 +5745,7 @@
+@@ -5715,7 +5715,7 @@
  
  // ChromeOS -------------------------------------------------------------------
  
@@ -27,7 +27,7 @@
  
  const char kAcceleratedMjpegDecodeName[] =
      "Hardware-accelerated mjpeg decode for captured frame";
-@@ -5753,6 +5753,10 @@
+@@ -5723,6 +5723,10 @@
      "Enable hardware-accelerated MJPEG decode for captured frame where "
      "available.";
  
@@ -40,7 +40,7 @@
      "Enables accessibility settings for bounce keys, which ignores quickly "
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -3340,11 +3340,15 @@
+@@ -3343,11 +3343,15 @@
  
  // ChromeOS -------------------------------------------------------------------
  

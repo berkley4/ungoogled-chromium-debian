@@ -7,8 +7,8 @@
 -import("//build/rust/rust_static_library.gni")
  import("//gpu/vulkan/features.gni")
  import("//skia/skia.gni")
- import("//testing/test.gni")
-@@ -36,28 +35,6 @@
+ import("//testing/libfuzzer/fuzzer_test.gni")
+@@ -37,28 +36,6 @@
    ]
  }
  
@@ -37,7 +37,7 @@
  # External-facing config for dependent code.
  config("skia_config") {
    defines = [
-@@ -168,7 +145,6 @@
+@@ -182,7 +159,6 @@
    if (use_blink && enable_freetype) {
      defines += [
        "SK_TYPEFACE_FACTORY_FREETYPE",
@@ -45,11 +45,12 @@
        "SK_FONTMGR_FREETYPE_EMPTY_AVAILABLE",
      ]
    }
-@@ -427,13 +403,7 @@
+@@ -417,14 +393,7 @@
        public += skia_ports_fontmgr_empty_public
      }
      sources += skia_ports_typeface_proxy_sources
 -    sources += skia_ports_typeface_fontations_sources
+-    sources += skia_ports_fontmgr_fontations_sources
  
 -    # Fontations Rust/C++ bridge interfaces.
 -    deps += [
@@ -59,7 +60,7 @@
    }
  
    if (is_win) {
-@@ -728,13 +698,7 @@
+@@ -719,13 +688,7 @@
      # skia_core_and_effects rather than the other way around.
      public_deps = [ "//third_party/dawn/include/dawn:cpp_headers" ]
    }

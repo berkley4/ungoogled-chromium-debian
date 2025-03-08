@@ -18,7 +18,7 @@
  #include "chrome/browser/sharing/click_to_call/click_to_call_ui_controller.h"
  #include "chrome/browser/sharing/click_to_call/click_to_call_utils.h"
  #endif
-@@ -236,7 +238,8 @@
+@@ -244,7 +246,8 @@
    bool chrome_is_default_handler = state == shell_integration::IS_DEFAULT;
  
    // On ChromeOS, Click to Call is integrated into the external protocol dialog.
@@ -30,7 +30,7 @@
      // Handle tel links by opening the Click to Call dialog. This will call back
 --- a/chrome/browser/renderer_context_menu/render_view_context_menu.cc
 +++ b/chrome/browser/renderer_context_menu/render_view_context_menu.cc
-@@ -162,6 +162,7 @@
+@@ -166,6 +166,7 @@
  #include "components/search_engines/template_url_service.h"
  #include "components/send_tab_to_self/metrics_util.h"
  #include "components/services/app_service/public/cpp/app_launch_util.h"
@@ -38,7 +38,7 @@
  #include "components/sharing_message/features.h"
  #include "components/spellcheck/browser/pref_names.h"
  #include "components/spellcheck/browser/spellcheck_host_metrics.h"
-@@ -1904,9 +1905,9 @@
+@@ -1863,9 +1864,9 @@
        AppendQRCodeGeneratorItem(/*for_image=*/true, /*draw_icon=*/true,
                                  /*add_separator*/ false);
      }
@@ -50,7 +50,7 @@
      menu_model_.AddSeparator(ui::NORMAL_SEPARATOR);
      menu_model_.AddItemWithStringId(IDC_CONTENT_CONTEXT_SAVELINKAS,
                                      IDS_CONTENT_CONTEXT_SAVELINKAS);
-@@ -2678,9 +2679,9 @@
+@@ -2640,9 +2641,9 @@
    // Check if the starting separator got added.
    size_t items_before_sharing = menu_model_.GetItemCount();
    bool starting_separator_added = items_before_sharing > items_initial;
@@ -62,7 +62,7 @@
    // Add an ending separator if there are sharing items, otherwise remove the
    // starting separator iff we added one above.
    size_t sharing_items = menu_model_.GetItemCount() - items_before_sharing;
-@@ -2691,6 +2692,7 @@
+@@ -2653,6 +2654,7 @@
    }
  }
  
@@ -70,11 +70,11 @@
  void RenderViewContextMenu::AppendClickToCallItem() {
    SharingClickToCallEntryPoint entry_point;
    std::optional<std::string> phone_number;
-@@ -2718,6 +2720,7 @@
+@@ -2680,6 +2682,7 @@
    click_to_call_context_menu_observer_->BuildMenu(*phone_number, selection_text,
                                                    entry_point);
  }
 +#endif  // BUILDFLAG(ENABLE_CLICK_TO_CALL)
  
  void RenderViewContextMenu::AppendRegionSearchItem() {
-   if (GetBrowser()
+   auto* entry_point_controller =

@@ -1,7 +1,7 @@
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -6941,6 +6941,10 @@
-         "//components/dbus",
+@@ -6727,6 +6727,10 @@
+         "//components/os_crypt/async/browser:freedesktop_secret_key_provider",
          "//components/os_crypt/async/browser:secret_portal_key_provider",
        ]
 +      include_dirs = [

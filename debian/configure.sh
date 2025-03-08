@@ -486,6 +486,8 @@ fi
 
 
 if [ $SYS_RUST -ge 1 ]; then
+  op_enable="$op_enable optional/system/rust.patch"
+
   # GN_FLAGS += rust_sysroot_absolute=\"$(RUST_PATH)\" rustc_version=\"$(RUST_VER)\"
   gn_enable="$gn_enable rust_sysroot_absolute="
 

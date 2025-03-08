@@ -1,6 +1,6 @@
 --- a/storage/browser/quota/quota_settings.cc
 +++ b/storage/browser/quota/quota_settings.cc
-@@ -60,11 +60,6 @@
+@@ -55,11 +55,6 @@
    base::ScopedBlockingCall scoped_blocking_call(FROM_HERE,
                                                  base::BlockingType::MAY_BLOCK);
  

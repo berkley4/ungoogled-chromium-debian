@@ -1,14 +1,14 @@
 --- a/chrome/browser/ui/webui/settings/accessibility_main_handler.h
 +++ b/chrome/browser/ui/webui/settings/accessibility_main_handler.h
-@@ -10,6 +10,7 @@
- #include "build/chromeos_buildflags.h"
+@@ -9,6 +9,7 @@
+ #include "build/build_config.h"
  #include "chrome/browser/screen_ai/screen_ai_install_state.h"
  #include "chrome/browser/ui/webui/settings/settings_page_ui_handler.h"
 +#include "services/screen_ai/buildflags/buildflags.h"
  
- #if BUILDFLAG(IS_CHROMEOS_ASH)
+ #if BUILDFLAG(IS_CHROMEOS)
  #include "chrome/browser/ash/accessibility/accessibility_manager.h"
-@@ -37,7 +38,9 @@
+@@ -36,7 +37,9 @@
    void HandleGetScreenReaderState(const base::Value::List& args);
    void HandleCheckAccessibilityImageLabels(const base::Value::List& args);
  

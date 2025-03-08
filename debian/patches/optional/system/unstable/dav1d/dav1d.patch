@@ -20,14 +20,3 @@
  }
  
  namespace media {
---- a/third_party/libavif/src/src/codec_dav1d.c
-+++ b/third_party/libavif/src/src/codec_dav1d.c
-@@ -10,7 +10,7 @@
- #pragma clang diagnostic push
- #pragma clang diagnostic ignored "-Wc11-extensions" // C11 extension used: nameless struct/union
- #endif
--#include "dav1d/dav1d.h"
-+#include <dav1d/dav1d.h>
- #if defined(__clang__)
- #pragma clang diagnostic pop
- #endif

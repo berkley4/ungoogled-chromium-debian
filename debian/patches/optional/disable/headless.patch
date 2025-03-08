@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -804,7 +804,7 @@
+@@ -805,7 +805,7 @@
        deps += [ "//native_client_sdk/src:nacl_core_sdk" ]
      }
  
@@ -11,7 +11,7 @@
          "//headless:headless_tests",
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -1153,7 +1153,6 @@
+@@ -1139,7 +1139,6 @@
        "//components/memory_system",
        "//components/policy:generated",
        "//content/public/app",
@@ -21,7 +21,7 @@
  
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -1778,7 +1778,6 @@
+@@ -1811,7 +1811,6 @@
      # should be added to browser_generated_files.
      ":browser_public_dependencies",
      "//chrome/browser/google",
@@ -29,7 +29,7 @@
      "//chrome/browser/profiles",
      "//chrome/browser/resource_coordinator:tab_lifecycle_observer",
      "//chrome/browser/ui/tabs:tab_enums",
-@@ -2066,7 +2065,6 @@
+@@ -2101,7 +2100,6 @@
      "//components/gcm_driver",
      "//components/guest_view/buildflags",
      "//components/handoff",
@@ -37,7 +37,7 @@
      "//components/heap_profiling/in_process",
      "//components/heap_profiling/in_process:mojom",
      "//components/heavy_ad_intervention",
-@@ -3640,8 +3638,6 @@
+@@ -3677,8 +3675,6 @@
        "first_run/first_run_internal.h",
        "font_family_cache.cc",
        "font_family_cache.h",
@@ -46,7 +46,7 @@
        "hid/chrome_hid_delegate.cc",
        "hid/chrome_hid_delegate.h",
        "hid/hid_chooser_context.cc",
-@@ -4258,8 +4254,6 @@
+@@ -4303,8 +4299,6 @@
        "//components/feedback",
        "//components/feedback/content:factory",
        "//components/feedback/redaction_tool",
@@ -55,8 +55,8 @@
        "//components/image_fetcher/core",
        "//components/keep_alive_registry",
        "//components/live_caption",
-@@ -7114,7 +7108,7 @@
-     ]
+@@ -6894,7 +6888,7 @@
+     deps += [ "//components/power_metrics" ]
    }
  
 -  if (is_win || is_mac || is_linux) {
@@ -64,7 +64,7 @@
      deps += [ "//chrome/browser/headless:metrics" ]
    }
  
-@@ -7186,7 +7180,6 @@
+@@ -6966,7 +6960,6 @@
      deps += [
        "//chrome/common/printing",
        "//components/printing/browser",
@@ -74,7 +74,7 @@
        "//components/services/print_compositor/public/mojom",
 --- a/chrome/browser/ui/BUILD.gn
 +++ b/chrome/browser/ui/BUILD.gn
-@@ -310,7 +310,6 @@
+@@ -308,7 +308,6 @@
      "//chrome/browser:browser_public_dependencies",
      "//chrome/browser:primitives",
      "//chrome/browser/feedback",
@@ -82,7 +82,7 @@
      "//chrome/browser/media/webrtc",
      "//chrome/browser/search",
      "//chrome/browser/task_manager",
-@@ -1664,7 +1663,6 @@
+@@ -1688,7 +1687,6 @@
        "//chrome/browser/download",
        "//chrome/browser/enterprise/watermark:watermark_view_lib",
        "//chrome/browser/feedback:feedback_enum",
@@ -90,7 +90,7 @@
        "//chrome/browser/hid",
        "//chrome/browser/image_editor",
        "//chrome/browser/image_editor:image_editor_component_util",
-@@ -1767,7 +1765,6 @@
+@@ -1791,7 +1789,6 @@
        "//components/endpoint_fetcher:endpoint_fetcher",
        "//components/enterprise/common:files_scan_data",
        "//components/feedback/proto",
@@ -100,7 +100,7 @@
        "//components/manta",
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -1969,7 +1969,6 @@
+@@ -2028,7 +2028,6 @@
        "//chrome/browser/file_system_access",
        "//chrome/browser/file_system_access:browser_tests",
        "//chrome/browser/first_party_sets",
@@ -108,7 +108,7 @@
        "//chrome/browser/icon_transcoder:browser_tests",
        "//chrome/browser/image_decoder:browser_tests",
        "//chrome/browser/image_fetcher",
-@@ -3580,7 +3579,6 @@
+@@ -3660,7 +3659,6 @@
              "../browser/devtools/protocol/devtools_printtopdf_browsertest.cc",
            ]
            deps += [
@@ -169,7 +169,7 @@
  #include "chrome/browser/lifetime/browser_shutdown.h"
  #include "chrome/browser/mac/code_sign_clone_manager.h"
  #include "chrome/browser/metrics/chrome_feature_list_creator.h"
-@@ -1628,7 +1627,7 @@
+@@ -1498,7 +1497,7 @@
    // before field trial initialization, so the values of
    // `kPersistentHistogramsFeature` and `kPersistentHistogramsStorage` will
    // not be used. Persist histograms to a memory-mapped file.
@@ -221,7 +221,7 @@
      return false;
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -83,7 +83,6 @@
+@@ -85,7 +85,6 @@
  #include "chrome/browser/first_party_sets/first_party_sets_navigation_throttle.h"
  #include "chrome/browser/font_family_cache.h"
  #include "chrome/browser/gpu/chrome_browser_main_extra_parts_gpu.h"
@@ -229,7 +229,7 @@
  #include "chrome/browser/hid/chrome_hid_delegate.h"
  #include "chrome/browser/history/history_service_factory.h"
  #include "chrome/browser/interstitials/enterprise_util.h"
-@@ -580,7 +579,6 @@
+@@ -584,7 +583,6 @@
  #include "chrome/browser/devtools/chrome_devtools_manager_delegate.h"
  #include "chrome/browser/devtools/devtools_window.h"
  #include "chrome/browser/direct_sockets/chrome_direct_sockets_delegate.h"
@@ -237,7 +237,7 @@
  #include "chrome/browser/media/unified_autoplay_config.h"
  #include "chrome/browser/metrics/usage_scenario/chrome_responsiveness_calculator_delegate.h"
  #include "chrome/browser/new_tab_page/new_tab_page_util.h"
-@@ -1826,7 +1824,7 @@
+@@ -1819,7 +1817,7 @@
            enterprise_util::ChromeBrowserMainExtraPartsEnterprise>());
  #endif
  
@@ -246,7 +246,7 @@
    main_parts->AddParts(
        std::make_unique<headless::ChromeBrowserMainExtraPartsHeadless>());
  #endif
-@@ -2067,7 +2065,7 @@
+@@ -2060,7 +2058,7 @@
    static bool is_devtools_user = true;
  #else
    static bool is_devtools_user =
@@ -262,9 +262,9 @@
  #include "chrome/browser/chrome_content_browser_client_parts.h"
  #include "chrome/browser/content_settings/content_settings_manager_delegate.h"
 -#include "chrome/browser/headless/headless_mode_util.h"
- #include "chrome/browser/metrics/chrome_metrics_service_accessor.h"
  #include "chrome/browser/net/net_error_tab_helper.h"
  #include "chrome/browser/net_benchmarking.h"
+ #include "chrome/browser/password_manager/chrome_password_manager_client.h"
 @@ -112,7 +111,6 @@
  
  #if BUILDFLAG(ENABLE_PRINTING)
@@ -273,7 +273,7 @@
  #if BUILDFLAG(ENABLE_PRINT_PREVIEW)
  #include "chrome/browser/printing/print_view_manager.h"
  #endif  // BUILDFLAG(ENABLE_PRINT_PREVIEW)
-@@ -560,10 +558,6 @@
+@@ -564,10 +562,6 @@
            [](content::RenderFrameHost* render_frame_host,
               mojo::PendingAssociatedReceiver<printing::mojom::PrintManagerHost>
                   receiver) {
@@ -284,7 +284,7 @@
  #if BUILDFLAG(IS_CHROMEOS)
                if (base::FeatureList::IsEnabled(
                        ::features::kPrintPreviewCrosPrimary)) {
-@@ -585,7 +579,6 @@
+@@ -589,7 +583,6 @@
                printing::PrintViewManagerBasic::BindPrintManagerHost(
                    std::move(receiver), render_frame_host);
  #endif  // BUILDFLAG(ENABLE_PRINT_PREVIEW)
@@ -333,7 +333,7 @@
  #include "components/lens/lens_overlay_permission_utils.h"
  #include "components/media_router/common/pref_names.h"
  #endif  // BUILDFLAG(IS_ANDROID)
-@@ -2460,7 +2459,6 @@
+@@ -2512,7 +2511,6 @@
                                              prefs::kPromotionsEnabled,
                                              base::Value::Type::BOOLEAN)));
  
@@ -343,7 +343,7 @@
        std::make_unique<DownloadAutoOpenPolicyHandler>(chrome_schema));
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -304,7 +304,6 @@
+@@ -308,7 +308,6 @@
  #include "chrome/browser/ui/webui/side_panel/read_anything/read_anything_prefs.h"
  #include "chrome/browser/ui/webui/tab_search/tab_search_prefs.h"
  #include "chrome/browser/upgrade_detector/upgrade_detector.h"
@@ -351,7 +351,7 @@
  #include "components/lens/lens_overlay_permission_utils.h"
  #include "components/live_caption/live_caption_controller.h"
  #include "components/live_caption/live_translate_controller.h"
-@@ -1797,7 +1796,6 @@
+@@ -1727,7 +1726,6 @@
  #else   // BUILDFLAG(IS_ANDROID)
    enterprise_connectors::RegisterLocalStatePrefs(registry);
    gcm::RegisterPrefs(registry);

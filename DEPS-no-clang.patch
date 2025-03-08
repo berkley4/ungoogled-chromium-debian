@@ -1,6 +1,6 @@
 --- a/DEPS
 +++ b/DEPS
-@@ -781,7 +781,7 @@
+@@ -790,7 +790,7 @@
    'src/third_party/llvm-build/Release+Asserts': {
      'dep_type': 'gcs',
      'bucket': 'chromium-browser-clang',

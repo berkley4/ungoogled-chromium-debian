@@ -19,7 +19,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
        ]
        if (!is_android) {
          if (!is_castos && !is_fuchsia) {
-@@ -1234,7 +1233,6 @@
+@@ -1245,7 +1244,6 @@
        "//third_party/blink/public:blink_devtools_inspector_resources",
        "//third_party/blink/public/mojom:mojom_platform_js_data_deps",
        "//third_party/blink/renderer/core:gen_files_for_web_tests",
@@ -27,7 +27,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
        "//third_party/hyphenation-patterns:test_data",
        "//tools/imagediff",
        "//ui/base:goldctl",
-@@ -1688,10 +1686,6 @@
+@@ -1700,10 +1698,6 @@
        "//third_party/blink/web_tests/VirtualTestSuites",
        "//third_party/blink/web_tests/W3CImportExpectations",
        "//third_party/blink/web_tests/paint/invalidation/repaint-overlay/",
@@ -37,7 +37,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
 -      "//third_party/catapult/third_party/typ/",
        "//third_party/depot_tools/pylint-2.7",
        "//third_party/depot_tools/pylint_main.py",
-       "//third_party/depot_tools/pylintrc",
+       "//third_party/depot_tools/pylintrc-2.7",
 --- a/tools/binary_size/BUILD.gn
 +++ b/tools/binary_size/BUILD.gn
 @@ -22,7 +22,6 @@
@@ -50,7 +50,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
  
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -12010,8 +12010,6 @@
+@@ -12110,8 +12110,6 @@
        "//chrome/test/data/password/captured_sites/",
        "//chrome/test/data/web_page_replay_go_helper_scripts/automation_helper.js",
        "//components/test/data/autofill/web_page_replay_support_files/",
@@ -59,7 +59,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
      ]
  
      if (is_linux || is_chromeos || is_win) {
-@@ -12111,7 +12109,6 @@
+@@ -12211,7 +12209,6 @@
      deps = [ "//tools/perf/chrome_telemetry_build:telemetry_chrome_test" ]
  
      data = [
@@ -89,7 +89,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
      "//tools/json_comment_eater/json_comment_eater.py",
 --- a/tools/perf/chrome_telemetry_build/BUILD.gn
 +++ b/tools/perf/chrome_telemetry_build/BUILD.gn
-@@ -187,7 +187,6 @@
+@@ -207,7 +207,6 @@
    ]
    data_deps = [
      "//testing:test_scripts_shared",
@@ -97,7 +97,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
      "//tools/metrics:metrics_python_tests",
    ]
  
-@@ -239,7 +238,5 @@
+@@ -259,7 +258,5 @@
        "//build/android:devil_chromium_py",
        "//build/android:stack_tools",
      ]
@@ -117,7 +117,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
  }
 --- a/tools/gritsettings/resource_ids.spec
 +++ b/tools/gritsettings/resource_ids.spec
-@@ -1200,10 +1200,6 @@
+@@ -1248,10 +1248,6 @@
      "META": {"sizes": {"includes": [20]}},
      "includes": [8280],
    },
@@ -130,7 +130,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
      "includes": [8320],
 --- a/chrome/chrome_paks.gni
 +++ b/chrome/chrome_paks.gni
-@@ -206,8 +206,6 @@
+@@ -214,8 +214,6 @@
          "$root_gen_dir/chrome/webui_gallery_resources.pak",
          "$root_gen_dir/chrome/whats_new_resources.pak",
          "$root_gen_dir/content/browser/devtools/devtools_resources.pak",
@@ -139,7 +139,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
        ]
        deps += [
          "//chrome/browser/resources:component_extension_resources",
-@@ -218,7 +216,6 @@
+@@ -226,7 +224,6 @@
          "//chrome/browser/resources/lens/shared:resources",
          "//chrome/browser/resources/search_engine_choice:resources",
          "//content/browser/devtools:devtools_resources",
@@ -149,7 +149,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
          sources += [
 --- a/content/shell/BUILD.gn
 +++ b/content/shell/BUILD.gn
-@@ -568,13 +568,6 @@
+@@ -569,13 +569,6 @@
      sources += [ "$root_gen_dir/content/webxr_internals_resources.pak" ]
    }
  
@@ -207,7 +207,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
 -}
 --- a/content/browser/tracing/tracing_ui.cc
 +++ b/content/browser/tracing/tracing_ui.cc
-@@ -26,7 +26,6 @@
+@@ -31,7 +31,6 @@
  #include "base/strings/string_util.h"
  #include "base/trace_event/trace_event.h"
  #include "base/values.h"
@@ -215,7 +215,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
  #include "content/browser/tracing/tracing_controller_impl.h"
  #include "content/public/browser/browser_context.h"
  #include "content/public/browser/browser_thread.h"
-@@ -238,8 +237,6 @@
+@@ -243,8 +242,6 @@
        web_ui->GetWebContents()->GetBrowserContext(), kChromeUITracingHost);
    source->DisableTrustedTypesCSP();
    source->UseStringsJs();
@@ -286,7 +286,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
    if (!is_ios) {
 --- a/content/browser/BUILD.gn
 +++ b/content/browser/BUILD.gn
-@@ -3458,7 +3458,6 @@
+@@ -3469,7 +3469,6 @@
        "//components/speech:speech",
        "//components/vector_icons",
        "//components/webauthn/json",
