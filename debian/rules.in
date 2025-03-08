@@ -244,7 +244,7 @@ GN_FLAGS += v8_enable_wasm_simd256_revec=true
 # libstdc++ system library. We need to build with use_custom_libcxx=true
 # in order to enable CFI.
 #
-# Problematic          : ffmpeg, libaom, libvpx, libwebp
+# Problematic          : ffmpeg, libaom, libvpx
 #
 # libstdc++ issue      : crc32c, flatbuffers, highway, libyuv
 #                        jsoncpp, re2, snappy, woff2
@@ -287,6 +287,9 @@ SYS_LIBS += libdrm
 
 # Enable libjpeg (debs won't be installable on both debian and ubuntu)
 SYS_LIBS += libjpeg
+
+# Enable libwebp
+SYS_LIBS += libwebp
 
 # Enable openh264
 SYS_LIBS += openh264

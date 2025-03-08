@@ -27,6 +27,7 @@ POLLY_SET=0
 RELEASE_SET=0
 SYS_BROTLI_SET=0
 SYS_DRM_SET=0
+SYS_WEBP_SET=0
 XZ_THREADED_SET=0
 
 LLVM_PGO_VER=20
@@ -128,6 +129,9 @@ POLICIES=etc/chromium/policies/managed/policies.json
 
 ## Allow force-enabling libdrm for stable users who have installed libdrm from backports
 [ -n "$SYS_DRM" ] && SYS_DRM_SET=1 || SYS_DRM=1
+
+## Allow force-enabling libwebp for stable users who have installed libsharpyuv from backports
+[ -n "$SYS_WEBP" ] && SYS_WEBP_SET=1 || SYS_WEBP=1
 
 ## Need to error out if MEDIA_REMOTING is explicitly enabled when CHROMECAST=0
 [ -n "$MEDIA_REMOTING" ] && MEDIA_REMOTING_SET=1 || MEDIA_REMOTING=0
@@ -1196,6 +1200,9 @@ if [ $STABLE -eq 1 ]; then
   # For STABLE=1 we disable libdrm by default but allow force-enablement
   [ $SYS_DRM_SET -eq 1 ] && [ $SYS_DRM -eq 1 ] || SYS_DRM=0
 
+  # For STABLE=1 we disable libwebp by default but allow force-enablement
+  [ $SYS_WEBP_SET -eq 1 ] && [ $SYS_WEBP -eq 1 ] || SYS_WEBP=0
+
   # Disable dav1d (too old)
   op_disable="$op_disable system/unstable/dav1d/"
   sys_disable="$sys_disable dav1d"
@@ -1257,6 +1264,13 @@ if [ $SYS_ICU -eq 1 ]; then
   ins_disable="$ins_disable icudtl.dat"
   RUL="$RUL -e \"/icudtl.dat/s@^\t@\t#@\""
 fi
+
+
+if [ $SYS_WEBP -eq 0 ]; then
+  sys_disable="$sys_disable libwebp"
+  deps_disable="$deps_disable libwebp"
+fi
+
 
 
 
