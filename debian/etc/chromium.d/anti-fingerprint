@@ -1,0 +1,4 @@
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=SpoofWebGLInfo"
+
+# Mitigate against audio context fingerprinting (non-free builds only)
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --fingerprinting-audio-context-data-noise"

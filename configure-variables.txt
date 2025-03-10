@@ -164,6 +164,7 @@ QT			1		0 - disable
 					2 - enable fully (runtime autodetected ie Gnome desktops will ignore it)
 
 SPEECH			1		Speech service (voice recognition)
+SPOOF_WEBGL_INFO	1		Spoof webgl info (via flag in /etc/chromium.d/anti-fingerprint)
 SWIFTSHADER		1		Swiftshader
 SWIFTSHADER_VULKAN	1		Swiftshader for vulkan
 SWIFTSHADER_WEBGPU	1		Swiftshader for WebGPU

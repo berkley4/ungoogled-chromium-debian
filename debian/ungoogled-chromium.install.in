@@ -41,7 +41,7 @@ debian/etc/chromium/launcher.vars                                              e
 debian/etc/chromium/README.txt                                                 etc/chromium
 debian/etc/chromium/policies/managed/policies.json                             etc/chromium/policies/managed
 
-debian/etc/chromium.d/anti-audio-fingerprint                                   etc/chromium.d
+debian/etc/chromium.d/anti-fingerprint                                         etc/chromium.d
 debian/etc/chromium.d/anti-phish-track                                         etc/chromium.d
 debian/etc/chromium.d/blocked-files                                            etc/chromium.d
 debian/etc/chromium.d/blocked-flags                                            etc/chromium.d

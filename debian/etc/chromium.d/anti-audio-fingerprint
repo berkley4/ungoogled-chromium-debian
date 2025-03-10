@@ -1,2 +1,0 @@
-# Mitigate against audio context fingerprinting (from cromite)
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --fingerprinting-audio-context-data-noise"

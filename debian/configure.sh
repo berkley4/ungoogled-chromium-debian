@@ -105,6 +105,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$QT" ] || QT=1
 [ -n "$SKIA_GAMMA" ] || SKIA_GAMMA=0
 [ -n "$SPEECH" ] || SPEECH=1
+[ -n "$SPOOF_WEBGL_INFO" ] || SPOOF_WEBGL_INFO=1
 [ -n "$SWIFTSHADER" ] || SWIFTSHADER=1
 [ -n "$SWIFTSHADER_VULKAN" ] || SWIFTSHADER_VULKAN=1
 [ -n "$SWIFTSHADER_WEBGPU" ] || SWIFTSHADER_WEBGPU=1
@@ -188,7 +189,6 @@ FF_AAC=1
 if [ $NON_FREE -eq 0 ]; then
   sed -e '/EnforceNoopenerOnBlobURLNavigation/s@^#@@' -i $FLAG_DIR/isolation
 
-  ins_disable="$ins_disable anti-audio-fingerprint"
   SER_DB="$SER_DB -e \"s@^\(cromite/\)@#\1@\" -e \"s@^\(vanadium/\)@#\1@\""
 
   if [ $FF_FDK -eq 1 ]; then
@@ -972,6 +972,11 @@ fi
 if [ $SPEECH -eq 0 ]; then
   op_enable="$op_enable disable/speech.patch"
   gn_enable="$gn_enable enable_speech_service=false"
+fi
+
+
+if [ $SPOOF_WEBGL_INFO -eq 0 ]; then
+  sed -e '/SpoofWebGLInfo/s@^@#@' -i $FLAG_DIR/anti-fingerprint
 fi
 
 
