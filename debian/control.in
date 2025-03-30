@@ -52,7 +52,7 @@ Build-Depends:
  libdav1d-dev,
  libfontconfig-dev,
 #libharfbuzz-dev,
-#libicu-dev (>= 73),
+#libicu-dev (<= 74.2-1),
 #libpng-dev,
 #libtiff-dev,
 #libxslt1-dev,
