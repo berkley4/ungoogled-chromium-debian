@@ -225,6 +225,21 @@ if [ $BLUEZ_SET -eq 1 ] && [ $BLUEZ -eq 1 ] && [ $DBUS -eq 0 ]; then
 fi
 
 
+if [ $QT -ge 1 ]; then
+  [ $QT -ne 6 ] || QT_6=1
+
+  # Default to using Qt 5
+  [ -n "$QT_6" ] || QT_6=0
+
+  # Bail out if QT_6=1 and STABLE=1
+  if [ $QT_6 -eq 1 ] && [ $STABLE -eq 1 ]; then
+    printf '%s\n' "ERROR: Cannot set QT_6=1 when STABLE=1"
+    exit 1
+  fi
+fi
+
+
+
 ## Enter test mode if $RT_DIR/third_party does not exist
 [ -d $RT_DIR/third_party ] && TEST=0 || TEST=1
 
@@ -1129,11 +1144,14 @@ esac
 
 if [ $QT -eq 0 ]; then
   op_disable="$op_disable fixes/qt-ui.patch"
-  gn_enable="$gn_enable use_qt=false"
-  deps_disable="$deps_disable qtbase5"
+  deps_disable="$deps_disable qtbase"
   ins_disable="$ins_disable qt"
-elif [ $QT -ge 2 ]; then
-  sed '/disable-features=AllowQt/s@^@#@' -i $FLAG_DIR/qt
+  gn_disable="$gn_disable use_qt"
+else
+  if [ $QT_6 -eq 1 ]; then
+    CON="$CON -e \"/qtbase/s@5@6@\""
+    RUL="$RUL -e \"/use_qt/s@5@6@\""
+  fi
 fi
 
 

@@ -185,8 +185,8 @@ GN_FLAGS += rtc_use_pipewire=true
 # Enable linking to pulseaudio (has no effect if use_pulseaudio=false)
 GN_FLAGS += link_pulseaudio=true
 
-# Disable Qt
-#GN_FLAGS += use_qt=false
+# Enable Qt (version 5)
+GN_FLAGS += use_qt5=true
 
 # Disable speech service
 #GN_FLAGS += enable_speech_service=false

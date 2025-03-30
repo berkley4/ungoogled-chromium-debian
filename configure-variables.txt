@@ -159,9 +159,13 @@ PDF_JS			0		PDF javascript support
 PIPEWIRE		1
 PRINT_PREVIEW		1		Can be disabled to replace the print dialogue with the system one
 PULSE			1		Pulseaudio
+
 QT			1		0 - disable
-					1 - enable (need to edit /etc/chromium.d/qt to fully enable)
-					2 - enable fully (runtime autodetected ie Gnome desktops will ignore it)
+					1 - enable
+					6 - alias for QT_6=1
+QT_6			0		0 - disable Qt version 6
+					1 - enable Qt version 6 (unstable only)
+
 
 SPEECH			1		Speech service (voice recognition)
 SPOOF_WEBGL_INFO	1		Spoof webgl info (via flag in /etc/chromium.d/anti-fingerprint)
