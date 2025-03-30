@@ -1,6 +1,6 @@
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5601,12 +5601,12 @@
+@@ -5603,12 +5603,12 @@
  #endif
  #endif  // BUILDFLAG(IS_ANDROID)
  #endif  // ENABLE_VR
@@ -40,7 +40,7 @@
      "Enables accessibility settings for bounce keys, which ignores quickly "
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -3343,11 +3343,15 @@
+@@ -3344,11 +3344,15 @@
  
  // ChromeOS -------------------------------------------------------------------
  
