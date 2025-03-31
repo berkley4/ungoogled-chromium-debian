@@ -1,0 +1,63 @@
+--- a/build/toolchain/rbe.gni
++++ b/build/toolchain/rbe.gni
+@@ -28,10 +28,7 @@
+ }
+ 
+ use_reclient_default = false
+-if (path_exists(rebase_path(".reproxy_tmp", ".", root_build_dir))) {
+-  # Use reclient if build dir used reclient before (.reproxy_tmp exists).
+-  use_reclient_default = true
+-} else if (use_remoteexec) {
++if (use_remoteexec) {
+   if (use_siso) {
+     use_reclient_default = use_reclient_on_siso
+   } else {
+--- a/build/config/sysroot.gni
++++ b/build/config/sysroot.gni
+@@ -61,7 +61,9 @@
+         _script_arch = "amd64"
+       }
+       assert(
+-          path_exists(sysroot),
++          exec_script("//build/dir_exists.py",
++                      [ rebase_path(sysroot) ],
++                      "string") == "True",
+           "Missing sysroot ($sysroot). To fix, run: build/linux/sysroot_scripts/install-sysroot.py --arch=$_script_arch")
+     }
+   } else if (is_mac) {
++++ /dev/null
+--- b/build/dir_exists.py
+@@ -0,0 +1,23 @@
++#!/usr/bin/env python3
++# Copyright 2011 The Chromium Authors
++# Use of this source code is governed by a BSD-style license that can be
++# found in the LICENSE file.
++"""Writes True if the argument is a directory."""
++
++import os.path
++import sys
++
++def main():
++  sys.stdout.write(_is_dir(sys.argv[1]))
++  return 0
++
++def _is_dir(dir_name):
++  return str(os.path.isdir(dir_name))
++
++def DoMain(args):
++  """Hook to be called from gyp without starting a separate python
++  interpreter."""
++  return _is_dir(args[0])
++
++if __name__ == '__main__':
++  sys.exit(main())
+--- a/build/dotfile_settings.gni
++++ b/build/dotfile_settings.gni
+@@ -25,6 +25,7 @@
+     "//build/config/mac/rules.gni",
+     "//build/config/posix/BUILD.gn",
+     "//build/config/rust.gni",
++    "//build/config/sysroot.gni",
+     "//build/config/win/BUILD.gn",
+     "//build/config/win/visual_studio_version.gni",
+     "//build/rust/analyze.gni",
