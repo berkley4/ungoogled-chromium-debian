@@ -354,7 +354,7 @@ override_dh_auto_configure:
 	test -f $(DS_CACHE) || $(UL_DIR)/domain_substitution.py apply -r $(UC_DIR)/domain_regex.list -f $(UC_DIR)/domain_substitution.list -c $(DS_CACHE) $(RT_DIR)
 	test ! -f $(DEBIAN)/en-US.pak || mv $(DEBIAN)/en-US.pak $(OUT_DIR)/locales/
 	test -h $(OUT_DIR)/icudtl.dat || ln -sf ../../third_party/icu/common/icudtl.dat -t $(OUT_DIR)
-	test -z "$(HEVC_LIST)" || for h in $(HEVC_LIST); do test -h $$h || ln -sf $(HEVC_DIR)/$$h $(HEVC_DIR)/libavcodec-hevc-$$h; done
+	test -z "$(HEVC_LIST)" || for h in $(HEVC_LIST); do test -h $$h || ln -sf $(HEVC_DIR)/$$h $(HEVC_DIR)/autorename_libavcodec_hevc_$$h; done
 
 override_dh_auto_build:
 	ninja -j $(JOBS) -C $(OUT_DIR) chrome chrome_sandbox chromedriver
