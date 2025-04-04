@@ -1,6 +1,6 @@
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5114,13 +5114,13 @@
+@@ -5142,13 +5142,13 @@
       kOsLinux | kOsAndroid | kOsCrOS,
       FEATURE_VALUE_TYPE(features::kVulkanFromANGLE)},
  
@@ -18,7 +18,7 @@
       flag_descriptions::kEnableOngoingProcessesDescription, kOsCrOS,
 --- a/chrome/browser/browser_process_impl.cc
 +++ b/chrome/browser/browser_process_impl.cc
-@@ -906,9 +906,13 @@
+@@ -904,9 +904,13 @@
  }
  
  NotificationPlatformBridge* BrowserProcessImpl::notification_platform_bridge() {
@@ -46,7 +46,7 @@
  void BrowserProcessImpl::CreateNotificationUIManager() {
 --- a/chrome/browser/browser_process_impl.h
 +++ b/chrome/browser/browser_process_impl.h
-@@ -358,7 +358,9 @@
+@@ -355,7 +355,9 @@
  
    std::unique_ptr<StatusTray> status_tray_;
  
@@ -84,7 +84,7 @@
  }
 --- a/chrome/browser/notifications/notification_platform_bridge_delegator.cc
 +++ b/chrome/browser/notifications/notification_platform_bridge_delegator.cc
-@@ -51,6 +51,7 @@
+@@ -50,6 +50,7 @@
  // Please try to keep this comment up to date when changing behaviour on one of
  // the platforms supported by the browser.
  bool SystemNotificationsEnabled(Profile* profile) {
@@ -92,7 +92,7 @@
  #if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_ANDROID)
    return true;
  #elif BUILDFLAG(IS_WIN)
-@@ -68,6 +69,9 @@
+@@ -67,6 +68,9 @@
    return base::FeatureList::IsEnabled(features::kNativeNotifications) &&
           base::FeatureList::IsEnabled(features::kSystemNotifications);
  #endif  // BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_ANDROID)
@@ -102,7 +102,7 @@
  }
  
  NotificationPlatformBridge* GetSystemNotificationPlatformBridge(
-@@ -164,9 +168,11 @@
+@@ -163,9 +167,11 @@
  NotificationPlatformBridge*
  NotificationPlatformBridgeDelegator::GetBridgeForType(
      NotificationHandler::Type type) {
@@ -116,7 +116,7 @@
  
 --- a/chrome/common/chrome_features.cc
 +++ b/chrome/common/chrome_features.cc
-@@ -847,6 +847,7 @@
+@@ -872,6 +872,7 @@
  // Enables the use of system notification centers instead of using the Message
  // Center for displaying the toasts. The feature is hardcoded to enabled for
  // Chrome OS.
@@ -124,7 +124,7 @@
  BASE_FEATURE(kNativeNotifications,
               "NativeNotifications",
               base::FEATURE_ENABLED_BY_DEFAULT);
-@@ -854,6 +855,7 @@
+@@ -879,6 +880,7 @@
  BASE_FEATURE(kSystemNotifications,
               "SystemNotifications",
               base::FEATURE_ENABLED_BY_DEFAULT);
@@ -134,7 +134,7 @@
  // Enables the usage of Apple's new Notification API.
 --- a/chrome/common/chrome_features.h
 +++ b/chrome/common/chrome_features.h
-@@ -517,9 +517,11 @@
+@@ -515,9 +515,11 @@
  BASE_DECLARE_FEATURE(kShowHiddenNetworkToggle);
  #endif
  

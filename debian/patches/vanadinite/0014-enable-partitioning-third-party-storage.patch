@@ -1,17 +1,17 @@
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -730,7 +730,7 @@
+@@ -709,7 +709,7 @@
  
  BASE_FEATURE(kDisableThirdPartyStoragePartitioning3DeprecationTrial,
               "DisableThirdPartyStoragePartitioning3DeprecationTrial",
 -             base::FEATURE_ENABLED_BY_DEFAULT);
 +             base::FEATURE_DISABLED_BY_DEFAULT);
  
- // Drop input events before user sees first paint https://crbug.com/1255485
- BASE_FEATURE(kDropInputEventsBeforeFirstPaint,
+ // Drop input events at the browser process until the process receives the first
+ // signal that the renderer has sent a frame to cc (https://crbug.com/40057499).
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -1543,7 +1543,7 @@
+@@ -1623,7 +1623,7 @@
        origin_trial_type: "deprecation",
        origin_trial_allows_insecure: true,
        origin_trial_allows_third_party: true,

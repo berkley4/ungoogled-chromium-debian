@@ -24,7 +24,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -4450,6 +4450,10 @@
+@@ -4495,6 +4495,10 @@
      {"ui-disable-partial-swap", flag_descriptions::kUiPartialSwapName,
       flag_descriptions::kUiPartialSwapDescription, kOsAll,
       SINGLE_DISABLE_VALUE_TYPE(switches::kUIDisablePartialSwap)},
@@ -37,7 +37,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       FEATURE_VALUE_TYPE(features::kWebRtcHWDecoding)},
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -4038,6 +4038,11 @@
+@@ -4013,6 +4013,11 @@
      "When enabled, removes the requirement that all certificates used for "
      "WebTransport over HTTP/3 are issued by a known certificate root.";
  
@@ -51,7 +51,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  const char kWebUsbDeviceDetectionDescription[] =
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -2350,6 +2350,9 @@
+@@ -2346,6 +2346,9 @@
  extern const char kWebrtcUseMinMaxVEADimensionsName[];
  extern const char kWebrtcUseMinMaxVEADimensionsDescription[];
  
@@ -63,9 +63,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -211,6 +211,10 @@
-              "BiddingAndScoringDebugReportingAPI",
-              base::FEATURE_ENABLED_BY_DEFAULT);
+@@ -196,6 +196,10 @@
+                    "allow_list",
+                    "");
  
 +BASE_FEATURE(kAudioContextShuffleEnabled,
 +             "AudioContextShuffleEnabled",
@@ -76,7 +76,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  BASE_FEATURE(kBoostImagePriority,
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -112,6 +112,8 @@
+@@ -107,6 +107,8 @@
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(
      kAvoidForcedLayoutOnInitialEmptyDocumentInSubframe);
  
@@ -96,7 +96,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +    if (NotShared<DOMFloat32Array> array = getChannelData(i)) {
 +      size_t len = array->length();
 +      if (len > 0) {
-+        float* destination = array->Data();
++        base::span<float> destination = array->AsSpan();
 +        for (unsigned j = 0; j < len; ++j) {
 +          destination[j] = BaseAudioContext::ShuffleAudioData(destination[j], j);
 +        }
@@ -233,3 +233,17 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      }
    }
  }
+--- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
++++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
+@@ -469,9 +469,8 @@
+     {
+       // AudioContext.playoutStats interface.
+       // https://chromestatus.com/feature/5172818344148992
+-      name: "AudioContextPlayoutStats",
+-      origin_trial_feature_name: "AudioContextPlayoutStats",
+-      status: "experimental",
++      name: "AudioContextPlayoutStats",   // keep AudioContextPlayoutStats
++      status: "experimental",             // experimental
+     },
+     {
+       name: "AudioContextSetSinkId",

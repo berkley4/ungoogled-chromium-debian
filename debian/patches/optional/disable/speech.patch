@@ -1,6 +1,6 @@
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -8114,7 +8114,6 @@
+@@ -8128,7 +8128,6 @@
        "//chrome/browser/webauthn:test_support",
        "//chrome/browser/webauthn/proto",
        "//chrome/common/read_anything:mojo_bindings",

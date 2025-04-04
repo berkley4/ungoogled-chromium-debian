@@ -1,6 +1,6 @@
 --- a/chrome/browser/ui/views/frame/browser_view.h
 +++ b/chrome/browser/ui/views/frame/browser_view.h
-@@ -878,9 +878,11 @@
+@@ -879,9 +879,11 @@
      return web_app_frame_toolbar();
    }
  
@@ -10,9 +10,9 @@
    }
 +#endif
  
-   // This value is used in a common calculation in NonClientFrameView
-   // subclasses. This must be added to the origin of the first painted pixel of
-@@ -1264,8 +1266,10 @@
+   MultiContentsView* multi_contents_view_for_testing() {
+     return multi_contents_view_;
+@@ -1254,8 +1256,10 @@
    // The view that contains devtools window for the selected WebContents.
    raw_ptr<views::WebView> devtools_web_view_ = nullptr;
  
@@ -25,7 +25,7 @@
    // Handled by ContentsLayoutManager.
 --- a/chrome/browser/ui/views/frame/browser_view.cc
 +++ b/chrome/browser/ui/views/frame/browser_view.cc
-@@ -1059,8 +1059,12 @@
+@@ -1053,8 +1053,12 @@
              .Build());
    }
  #endif
@@ -38,7 +38,7 @@
  
  #if BUILDFLAG(ENABLE_GLIC)
    contents_container->SetLayoutManager(std::make_unique<ContentsLayoutManager>(
-@@ -1197,7 +1201,9 @@
+@@ -1198,7 +1202,9 @@
    devtools_web_view_ = nullptr;
    contents_scrim_view_ = nullptr;
    window_scrim_view_ = nullptr;
@@ -48,7 +48,7 @@
    glic_border_ = nullptr;
    contents_container_ = nullptr;
    unified_side_panel_ = nullptr;
-@@ -5936,11 +5942,13 @@
+@@ -5988,11 +5994,13 @@
    }
  }
  

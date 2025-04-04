@@ -1,6 +1,6 @@
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -124,23 +124,23 @@
+@@ -124,19 +124,19 @@
  
  BASE_FEATURE(kSplitCacheByIncludeCredentials,
               "SplitCacheByIncludeCredentials",
@@ -16,20 +16,6 @@
               "SplitCacheByCrossSiteMainFrameNavigationBoolean",
 -             base::FEATURE_DISABLED_BY_DEFAULT);
 +             base::FEATURE_ENABLED_BY_DEFAULT);
- 
- BASE_FEATURE(kSplitCacheByMainFrameNavigationInitiator,
-              "SplitCacheByMainFrameNavigationInitiator",
--             base::FEATURE_DISABLED_BY_DEFAULT);
-+             base::FEATURE_ENABLED_BY_DEFAULT);
- 
- BASE_FEATURE(kSplitCacheByNavigationInitiator,
-              "SplitCacheByNavigationInitiator",
--             base::FEATURE_DISABLED_BY_DEFAULT);
-+             base::FEATURE_ENABLED_BY_DEFAULT);
- 
- BASE_FEATURE(kHttpCacheKeyingExperimentControlGroup2024,
-              "HttpCacheKeyingExperimentControlGroup2024",
-@@ -148,7 +148,7 @@
  
  BASE_FEATURE(kSplitCodeCacheByNetworkIsolationKey,
               "SplitCodeCacheByNetworkIsolationKey",

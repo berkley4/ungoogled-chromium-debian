@@ -19,7 +19,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/storage/browser/blob/blob_url_store_impl.cc
 +++ b/storage/browser/blob/blob_url_store_impl.cc
-@@ -89,6 +89,20 @@
+@@ -91,6 +91,30 @@
    }
  }
  
@@ -27,20 +27,45 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +    const GURL& blob_url,
 +    const base::UnguessableToken& unsafe_agent_cluster_id,
 +    const std::optional<net::SchemefulSite>& unsafe_top_level_site) {
++  bool is_same_partition = false;
 +  const std::optional<net::SchemefulSite>& top_level_site =
 +    registry_->GetUnsafeTopLevelSite(blob_url);
-+  if (top_level_site.has_value())
-+    return top_level_site == unsafe_top_level_site;
-+
-+  std::optional<base::UnguessableToken> agent_cluster_id =
++  const std::optional<base::UnguessableToken> agent_cluster_id =
 +    registry_->GetUnsafeAgentClusterID(blob_url);
-+  return agent_cluster_id == unsafe_agent_cluster_id;
++  if (top_level_site.has_value()) {
++    is_same_partition = (top_level_site == unsafe_top_level_site);
++  } else {
++    is_same_partition = (agent_cluster_id == unsafe_agent_cluster_id);
++  }
++  // LOG(INFO) << "---BlobURLStoreImpl "
++  //           << " is_same_partition=" << is_same_partition
++  //           << " blob_url=" << blob_url
++  //           << " top_level_site=" << (top_level_site.has_value() ? top_level_site->GetDebugString() : "<none>")
++  //           << " unsafe_top_level_site=" << (unsafe_top_level_site.has_value() ? unsafe_top_level_site->GetDebugString() : "<none>")
++  //           << " agent_cluster_id=" << (agent_cluster_id.has_value() ? agent_cluster_id->ToString() : "<none>")
++  //           << " unsafe_agent_cluster_id=" << unsafe_agent_cluster_id.ToString();
++  return is_same_partition;
 +}
 +
  void BlobURLStoreImpl::Register(
      mojo::PendingRemote<blink::mojom::Blob> blob,
      const GURL& url,
-@@ -123,12 +137,18 @@
+@@ -105,6 +129,14 @@
+     return;
+   }
+ 
++  // LOG(INFO) << "---BlobURLStoreImpl Register"
++  //           << " url=" << url
++  //           << " storage_key_origin=" << storage_key_.GetDebugString()
++  //           << " renderer_origin_=" << renderer_origin_
++  //           << " render_process_host_id_=" << render_process_host_id_
++  //           << " unsafe_top_level_site=" << (unsafe_top_level_site.has_value() ? unsafe_top_level_site->GetDebugString() : "<none>")
++  //           << " unsafe_agent_cluster_id=" << unsafe_agent_cluster_id.ToString();
++
+   if (registry_)
+     registry_->AddUrlMapping(url, std::move(blob), storage_key_,
+                              renderer_origin_, render_process_host_id_,
+@@ -125,6 +157,8 @@
  void BlobURLStoreImpl::ResolveAsURLLoaderFactory(
      const GURL& url,
      mojo::PendingReceiver<network::mojom::URLLoaderFactory> receiver,
@@ -49,18 +74,16 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      ResolveAsURLLoaderFactoryCallback callback) {
    if (!registry_) {
      BlobURLLoaderFactory::Create(mojo::NullRemote(), url, std::move(receiver));
-     std::move(callback).Run(std::nullopt, std::nullopt);
-     return;
-   }
-+  if (!IsSamePartition(url, unsafe_agent_cluster_id, unsafe_top_level_site)) {
-+    std::move(callback).Run(std::nullopt, std::nullopt);
-+    return;
-+  }
-   if (!registry_->IsUrlMapped(BlobUrlUtils::ClearUrlFragment(url),
-                               storage_key_)) {
-     partitioned_fetch_failure_closure_.Run();
-@@ -142,6 +162,12 @@
-     }
+@@ -140,6 +174,7 @@
+             features::kBlockCrossPartitionBlobUrlFetching) &&
+         !partitioning_disabled_by_policy_;
+     if (feature_and_policy_check) {
++      // LOG(INFO) << "---ResolveAsURLLoaderFactory blocked" << url;
+       partitioning_blob_url_closure_.Run(url,
+                                          blink::mojom::PartitioningBlobURLInfo::
+                                              kBlockedCrossPartitionFetching);
+@@ -152,6 +187,13 @@
+     partitioning_blob_url_closure_.Run(url, std::nullopt);
    }
  
 +  if (!IsSamePartition(url, unsafe_agent_cluster_id, unsafe_top_level_site)) {
@@ -69,10 +92,11 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +    return;
 +  }
 +
++  // LOG(INFO) << "---ResolveAsURLLoaderFactory allowed " << url;
    BlobURLLoaderFactory::Create(registry_->GetBlobFromUrl(url), url,
                                 std::move(receiver));
    // When a fragment URL is present, registry_->GetUnsafeAgentClusterID(url) and
-@@ -156,12 +182,18 @@
+@@ -166,12 +208,18 @@
      const GURL& url,
      mojo::PendingReceiver<blink::mojom::BlobURLToken> token,
      bool is_top_level_navigation,
@@ -89,9 +113,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +    return;
 +  }
    if (!is_top_level_navigation &&
-       !registry_->IsUrlMapped(BlobUrlUtils::ClearUrlFragment(url),
-                               storage_key_)) {
-@@ -187,12 +219,15 @@
+       (registry_->IsUrlMapped(BlobUrlUtils::ClearUrlFragment(url),
+                               storage_key_) ==
+@@ -203,12 +251,15 @@
  void BlobURLStoreImpl::ResolveForWorkerScriptFetch(
      const GURL& url,
      mojo::PendingReceiver<blink::mojom::BlobURLToken> token,
@@ -109,7 +133,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/storage/browser/blob/blob_url_store_impl.h
 +++ b/storage/browser/blob/blob_url_store_impl.h
-@@ -54,15 +54,21 @@
+@@ -57,15 +57,21 @@
    void ResolveAsURLLoaderFactory(
        const GURL& url,
        mojo::PendingReceiver<network::mojom::URLLoaderFactory> receiver,
@@ -131,7 +155,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        ResolveForNavigationCallback callback) override;
  
   private:
-@@ -72,6 +78,11 @@
+@@ -75,6 +81,11 @@
    // `Revoke()`.
    bool BlobUrlIsValid(const GURL& url, const char* method) const;
  

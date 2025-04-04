@@ -24,7 +24,7 @@
    }
 --- a/services/on_device_model/BUILD.gn
 +++ b/services/on_device_model/BUILD.gn
-@@ -40,12 +40,14 @@
+@@ -41,12 +41,14 @@
    }
  
    if (is_linux || is_chromeos) {
@@ -55,7 +55,7 @@
  
  source_set("api") {
    public = [
-@@ -63,9 +64,13 @@
+@@ -65,9 +66,13 @@
        "//components/optimization_guide/core:features",
        "//components/translate/core/language_detection",
        "//third_party/angle:includes",

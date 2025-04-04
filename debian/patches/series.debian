@@ -31,7 +31,6 @@ kryptonite/disable-component-updates.patch
 kryptonite/disable-extension-autoupdate.patch
 kryptonite/disable-miscellaneous-autofill-settings.patch
 kryptonite/disable-segmentation-platform.patch
-kryptonite/disable-topics-api.patch
 kryptonite/do-not-build-API-keys-infobar.patch
 kryptonite/harden-against-incognito-mode-detection.patch
 kryptonite/profile-resetter-disable-send-settings.patch
@@ -81,10 +80,13 @@ various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
 various/fixes/enterprise-buildflags.patch
 various/fixes/gn-allowlist.patch
 various/fixes/InkDropHost-crash.patch
+various/fixes/pipewire-cfi-suppressions.patch
 various/fixes/shim-fix-for-official-builds.patch
 various/fixes/silence-some-error-log-messages.patch
+various/fixes/skia-only-call-format_message-when-needed.patch
 various/fixes/swiftshader-build.patch
 various/fixes/template-correction.patch
+various/fixes/test-dependencies.patch
 various/fixes/unbundle-script-dh-clean-interoperabilty.patch
 various/fixes/unshrink-ui-font.patch
 various/fixes/webrtc-filter-labels.patch

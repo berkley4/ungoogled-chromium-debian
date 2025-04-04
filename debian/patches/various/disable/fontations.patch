@@ -24,8 +24,8 @@
 -  deps = [
 -    ":path_bridge",
 -    "//third_party/rust/font_types/v0_8:lib",
--    "//third_party/rust/read_fonts/v0_25:lib",
--    "//third_party/rust/skrifa/v0_26:lib",
+-    "//third_party/rust/read_fonts/v0_27:lib",
+-    "//third_party/rust/skrifa/v0_28:lib",
 -  ]
 -  configs -= [ "//build/config/compiler:chromium_code" ]
 -  configs += [
@@ -37,7 +37,7 @@
  # External-facing config for dependent code.
  config("skia_config") {
    defines = [
-@@ -182,7 +159,6 @@
+@@ -174,7 +151,6 @@
    if (use_blink && enable_freetype) {
      defines += [
        "SK_TYPEFACE_FACTORY_FREETYPE",
@@ -45,7 +45,7 @@
        "SK_FONTMGR_FREETYPE_EMPTY_AVAILABLE",
      ]
    }
-@@ -417,14 +393,7 @@
+@@ -411,14 +387,7 @@
        public += skia_ports_fontmgr_empty_public
      }
      sources += skia_ports_typeface_proxy_sources
@@ -60,7 +60,7 @@
    }
  
    if (is_win) {
-@@ -719,13 +688,7 @@
+@@ -713,13 +682,7 @@
      # skia_core_and_effects rather than the other way around.
      public_deps = [ "//third_party/dawn/include/dawn:cpp_headers" ]
    }
@@ -75,6 +75,52 @@
    visibility = [ ":skia" ]
  }
  
+--- a/skia/ext/font_utils.cc
++++ b/skia/ext/font_utils.cc
+@@ -64,13 +64,7 @@
+   return SkFontMgr_New_CoreText(nullptr);
+ #elif BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX)
+   sk_sp<SkFontConfigInterface> fci(SkFontConfigInterface::RefGlobal());
+-  if (base::FeatureList::IsEnabled(skia::kFontationsLinuxSystemFonts)) {
+-    return fci ? SkFontMgr_New_FCI(std::move(fci),
+-                                   SkFontScanner_Make_Fontations())
+-               : nullptr;
+-  } else {
+-    return fci ? SkFontMgr_New_FCI(std::move(fci)) : nullptr;
+-  }
++  return fci ? SkFontMgr_New_FCI(std::move(fci)) : nullptr;
+ #elif BUILDFLAG(IS_FUCHSIA)
+   fuchsia::fonts::ProviderSyncPtr provider;
+   base::ComponentContextForProcess()->svc()->Connect(provider.NewRequest());
+--- a/third_party/blink/renderer/platform/fonts/skia/sktypeface_factory.cc
++++ b/third_party/blink/renderer/platform/fonts/skia/sktypeface_factory.cc
+@@ -29,11 +29,7 @@
+   font_identity.fID = config_id;
+   font_identity.fTTCIndex = ttc_index;
+ 
+-  if (base::FeatureList::IsEnabled(skia::kFontationsLinuxSystemFonts)) {
+-    return fci->makeTypeface(font_identity, SkFontMgr_New_Fontations_Empty());
+-  } else {
+-    return fci->makeTypeface(font_identity, skia::DefaultFontMgr());
+-  }
++  return fci->makeTypeface(font_identity, skia::DefaultFontMgr());
+ #else
+   NOTREACHED();
+ #endif
+@@ -46,12 +42,7 @@
+ #if !BUILDFLAG(IS_WIN) && !BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_FUCHSIA) && \
+     !BUILDFLAG(IS_APPLE)
+ 
+-  if (base::FeatureList::IsEnabled(skia::kFontationsLinuxSystemFonts)) {
+-    return SkFontMgr_New_Fontations_Empty()->makeFromFile(filename.c_str(),
+-                                                          ttc_index);
+-  } else {
+-    return skia::DefaultFontMgr()->makeFromFile(filename.c_str(), ttc_index);
+-  }
++  return skia::DefaultFontMgr()->makeFromFile(filename.c_str(), ttc_index);
+ #else
+   NOTREACHED();
+ #endif
 --- a/third_party/blink/renderer/platform/fonts/web_font_typeface_factory.cc
 +++ b/third_party/blink/renderer/platform/fonts/web_font_typeface_factory.cc
 @@ -13,7 +13,6 @@

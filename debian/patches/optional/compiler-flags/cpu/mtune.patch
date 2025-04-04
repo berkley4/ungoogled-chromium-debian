@@ -6,5 +6,5 @@
          "-march=x86-64-v2",
 +        "-mtune=generic",
        ]
- 
-       # Minimum SIMD support for devices running lacros.
+       ldflags += [ "-m64" ]
+     } else if (current_cpu == "x86") {

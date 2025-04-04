@@ -8,10 +8,10 @@
  import("//components/enterprise/buildflags/buildflags.gni")
  import("//components/nacl/features.gni")
  import("//extensions/buildflags/buildflags.gni")
-@@ -199,32 +200,6 @@
+@@ -412,32 +413,6 @@
+       "api/identity/identity_remove_cached_auth_token_function.h",
+       "api/identity/web_auth_flow.cc",
        "api/identity/web_auth_flow.h",
-       "api/identity/web_auth_flow_info_bar_delegate.cc",
-       "api/identity/web_auth_flow_info_bar_delegate.h",
 -      "api/image_writer_private/destroy_partitions_operation.cc",
 -      "api/image_writer_private/destroy_partitions_operation.h",
 -      "api/image_writer_private/error_constants.cc",
@@ -41,7 +41,7 @@
        "api/instance_id/instance_id_api.cc",
        "api/instance_id/instance_id_api.h",
        "api/language_settings_private/language_settings_private_api.cc",
-@@ -645,6 +620,37 @@
+@@ -715,6 +690,37 @@
        "webstore_standalone_installer.h",
      ]
  
@@ -76,18 +76,10 @@
 +      ]
 +    }
 +
-     # Chrome OS does not support Native Messaging policies.
-     if (!is_chromeos) {
+     if (safe_browsing_mode != 0) {
        sources += [
-@@ -807,6 +813,7 @@
-       "//chrome/browser/web_applications/extensions",
-       "//chrome/common/extensions/api:extensions_features",
-       "//chrome/common/safe_browsing:proto",
-+      "//chrome/services/file_util:buildflags",
-       "//chrome/services/file_util/public/mojom:mojom",
-       "//chrome/services/removable_storage_writer/public/mojom",
-       "//components/affiliations/core/browser:affiliations",
-@@ -1080,7 +1087,6 @@
+         "api/safe_browsing_private/safe_browsing_private_event_router.cc",
+@@ -1121,7 +1127,6 @@
        sources += [
          "api/enterprise_reporting_private/chrome_desktop_report_request_helper.cc",
          "api/enterprise_reporting_private/chrome_desktop_report_request_helper.h",
@@ -95,7 +87,7 @@
          "api/messaging/launch_context.cc",
          "api/messaging/launch_context.h",
          "api/messaging/native_message_process_host.cc",
-@@ -1098,6 +1104,9 @@
+@@ -1139,6 +1144,9 @@
          "//components/enterprise/common/proto:connectors_proto",
          "//components/keep_alive_registry",
        ]
@@ -105,7 +97,7 @@
        if (is_posix) {
          sources += [ "api/messaging/launch_context_posix.cc" ]
        }
-@@ -1338,7 +1347,7 @@
+@@ -1380,7 +1388,7 @@
        ]
      }
  
@@ -114,9 +106,17 @@
        sources +=
            [ "api/image_writer_private/removable_storage_provider_linux.cc" ]
      }
+@@ -1549,6 +1557,7 @@
+       "//chrome/browser/ui",
+       "//chrome/browser/ui/tabs:tab_strip",
+       "//chrome/common/safe_browsing:proto",
++      "//chrome/services/file_util:buildflags",
+       "//components/crx_file",
+       "//components/safe_browsing/core/browser/db:database_manager",
+       "//components/safe_browsing/core/browser/db:v4_test_util",
 --- a/chrome/browser/extensions/keyed_services/chrome_browser_context_keyed_service_factories.cc
 +++ b/chrome/browser/extensions/keyed_services/chrome_browser_context_keyed_service_factories.cc
-@@ -28,9 +28,14 @@
+@@ -30,9 +30,14 @@
  #include "chrome/browser/extensions/permissions/permissions_updater.h"
  #include "chrome/browser/extensions/plugin_manager.h"
  #include "chrome/browser/extensions/warning_badge_service_factory.h"
@@ -139,17 +139,17 @@
  #include "chrome/browser/extensions/api/identity/identity_api.h"
 -#include "chrome/browser/extensions/api/image_writer_private/operation_manager.h"
  #include "chrome/browser/extensions/api/language_settings_private/language_settings_private_delegate_factory.h"
- #include "chrome/browser/extensions/api/messaging/incognito_connectability.h"
+ #include "chrome/browser/extensions/api/messaging/incognito_connectability.h"  // nogncheck
  #include "chrome/browser/extensions/api/networking_private/networking_private_ui_delegate_factory_impl.h"
 @@ -46,6 +45,7 @@
  #include "chrome/browser/extensions/api/web_navigation/web_navigation_api.h"
  #include "chrome/browser/extensions/api/webrtc_audio_private/webrtc_audio_private_api.h"
  #include "chrome/browser/extensions/commands/command_service.h"
 +#include "chrome/services/file_util/buildflags.h"
+ #include "components/safe_browsing/buildflags.h"
  #include "extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.h"
  #include "extensions/browser/api/networking_private/networking_private_delegate_factory.h"
- #include "pdf/buildflags.h"
-@@ -59,6 +59,10 @@
+@@ -65,6 +65,10 @@
  #include "chrome/browser/extensions/api/terminal/terminal_private_api.h"
  #endif
  
@@ -160,7 +160,7 @@
  #if BUILDFLAG(ENABLE_SERVICE_DISCOVERY)
  #include "chrome/browser/extensions/api/mdns/mdns_api.h"
  #endif
-@@ -94,7 +98,9 @@
+@@ -100,7 +104,9 @@
  #if BUILDFLAG(IS_CHROMEOS)
    extensions::InputImeAPI::GetFactoryInstance();
  #endif
@@ -172,15 +172,15 @@
    extensions::MDnsAPI::GetFactoryInstance();
 --- a/chrome/common/extensions/api/api_sources.gni
 +++ b/chrome/common/extensions/api/api_sources.gni
-@@ -5,6 +5,7 @@
- import("//build/config/chromeos/ui_mode.gni")
+@@ -4,6 +4,7 @@
+ 
  import("//build/config/features.gni")
  import("//chrome/common/features.gni")
 +import("//chrome/services/file_util/public/features.gni")
  import("//pdf/features.gni")
  
  assert(enable_extensions_core)
-@@ -61,7 +62,6 @@
+@@ -60,7 +61,6 @@
      "gcm.json",
      "history.json",
      "identity.idl",
@@ -188,7 +188,7 @@
      "instance_id.json",
      "language_settings_private.idl",
      "omnibox.json",
-@@ -93,6 +93,10 @@
+@@ -92,6 +92,10 @@
      "windows.json",
    ]
  
@@ -209,9 +209,9 @@
  import("//chrome/services/speech/buildflags/buildflags.gni")
  import("//chrome/test/include_js_tests.gni")
  import("//chrome/version.gni")
-@@ -4109,9 +4110,6 @@
+@@ -4165,9 +4166,6 @@
+         "../browser/extensions/api/identity/identity_apitest.cc",
          "../browser/extensions/api/identity/web_auth_flow_browsertest.cc",
-         "../browser/extensions/api/idle/idle_apitest.cc",
          "../browser/extensions/api/idltest/idltest_apitest.cc",
 -        "../browser/extensions/api/image_writer_private/extractor_browsertest.cc",
 -        "../browser/extensions/api/image_writer_private/test_utils.cc",
@@ -219,7 +219,7 @@
          "../browser/extensions/api/instance_id/instance_id_apitest.cc",
          "../browser/extensions/api/management/management_api_browsertest.cc",
          "../browser/extensions/api/management/management_api_non_persistent_apitest.cc",
-@@ -4324,6 +4322,14 @@
+@@ -4347,6 +4345,14 @@
          "../browser/user_bypass/user_bypass_web_contents_observer_browsertest.cc",
        ]
  
@@ -234,7 +234,7 @@
        public_deps += [ "//chrome/test/supervised_user:live_tests" ]
  
        data += [
-@@ -4415,10 +4421,13 @@
+@@ -4434,10 +4440,13 @@
  
        sources += [
          "../browser/extensions/api/automation/automation_apitest.cc",
@@ -249,7 +249,7 @@
        if (is_chromeos) {
          sources += [
            "../browser/apps/platform_apps/api/arc_apps_private/arc_apps_private_apitest.cc",
-@@ -5322,11 +5331,16 @@
+@@ -5339,11 +5348,16 @@
          "../browser/browser_switcher/browser_switcher_browsertest.cc",
          "../browser/browser_switcher/browser_switcher_service_browsertest.cc",
          "../browser/enterprise/signin/enterprise_signin_service_browsertest.cc",
@@ -267,7 +267,7 @@
      if (is_linux || is_mac) {
        sources +=
            [ "../browser/first_run/first_run_internal_posix_browsertest.cc" ]
-@@ -8779,15 +8793,6 @@
+@@ -8804,15 +8818,6 @@
        "../browser/extensions/api/identity/identity_mint_queue_unittest.cc",
        "../browser/extensions/api/identity/identity_token_cache_unittest.cc",
        "../browser/extensions/api/identity/web_auth_flow_info_bar_delegate_unittest.cc",
@@ -283,7 +283,7 @@
        "../browser/extensions/api/language_settings_private/language_settings_private_api_unittest.cc",
        "../browser/extensions/api/language_settings_private/language_settings_private_delegate_unittest.cc",
        "../browser/extensions/api/management/management_api_unittest.cc",
-@@ -11350,6 +11355,20 @@
+@@ -11393,6 +11398,20 @@
          "//ui/display/win/test/virtual_display_util_win_interactive_uitest.cc",
        ]
  

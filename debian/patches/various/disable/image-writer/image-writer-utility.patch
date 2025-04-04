@@ -1,14 +1,14 @@
 --- a/chrome/browser/extensions/BUILD.gn
 +++ b/chrome/browser/extensions/BUILD.gn
-@@ -815,7 +815,6 @@
-       "//chrome/common/safe_browsing:proto",
-       "//chrome/services/file_util:buildflags",
+@@ -881,7 +881,6 @@
+       "//chrome/browser/web_applications/extensions",
+       "//chrome/common/extensions/api:extensions_features",
        "//chrome/services/file_util/public/mojom:mojom",
 -      "//chrome/services/removable_storage_writer/public/mojom",
        "//components/affiliations/core/browser:affiliations",
        "//components/app_constants",
        "//components/autofill/content/browser",
-@@ -975,6 +974,10 @@
+@@ -1015,6 +1014,10 @@
        "//url",
      ]
  
@@ -21,15 +21,15 @@
          "api/certificate_provider/certificate_provider_api.cc",
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -2162,7 +2162,6 @@
+@@ -2220,7 +2220,6 @@
        "//chrome/common:version_header",
        "//chrome/common/privacy_budget:test_support",
        "//chrome/renderer",
 -      "//chrome/services/removable_storage_writer:lib",
-       "//chrome/test/data/webui:resources_grit",
+       "//chrome/test/data/webui:resources",
        "//chrome/test/data/webui/mojo:mojo_bindings",
        "//chrome/test/media_router/access_code_cast:access_code_cast_integration_base",
-@@ -2521,6 +2520,10 @@
+@@ -2580,6 +2579,10 @@
        "//v8",
      ]
  
@@ -88,7 +88,7 @@
  #include "chrome/services/speech/buildflags/buildflags.h"
  #include "components/paint_preview/buildflags/buildflags.h"
  #include "components/password_manager/core/common/password_manager_features.h"
-@@ -71,7 +72,7 @@
+@@ -73,7 +74,7 @@
  #include "chrome/services/file_util/file_util_service.h"  // nogncheck
  #endif
  
@@ -97,7 +97,7 @@
  #include "chrome/services/removable_storage_writer/public/mojom/removable_storage_writer.mojom.h"
  #include "chrome/services/removable_storage_writer/removable_storage_writer.h"
  #endif
-@@ -273,7 +274,7 @@
+@@ -277,7 +278,7 @@
  }
  #endif
  
@@ -106,7 +106,7 @@
  auto RunRemovableStorageWriter(
      mojo::PendingReceiver<chrome::mojom::RemovableStorageWriter> receiver) {
    return std::make_unique<RemovableStorageWriter>(std::move(receiver));
-@@ -488,7 +489,7 @@
+@@ -494,7 +495,7 @@
    services.Add(RunFileUtil);
  #endif
  

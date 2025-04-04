@@ -1,4 +1,4 @@
-Description: Disables collection of motherboard metrics, which would 
+Description: Disables collection of motherboard metrics, which would
  trigger Apparmor denials.
 From: Nathan Pratta Teodosio <nathan.teodosio@canonical.com>
 Ubuntu-bug: https://launchpad.net/bugs/1993562

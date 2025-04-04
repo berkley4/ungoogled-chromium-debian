@@ -17,7 +17,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
 
 --- a/skia/BUILD.gn
 +++ b/skia/BUILD.gn
-@@ -368,9 +368,6 @@
+@@ -362,9 +362,6 @@
      ]
      deps += [ "//third_party/expat" ]
      defines += [ "SK_CODEC_DECODES_JPEG_GAINMAPS" ]
@@ -27,7 +27,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
    }
  
    if (is_win) {
-@@ -574,6 +571,8 @@
+@@ -568,6 +565,8 @@
        "SKOTTIE_TRIVIAL_FONTRUN_ITER",
      ]
    }
@@ -38,7 +38,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
      deps += [ ":rust_png_ffi" ]
 --- a/skia/ext/font_utils.cc
 +++ b/skia/ext/font_utils.cc
-@@ -10,6 +10,8 @@
+@@ -11,6 +11,8 @@
  #include "third_party/skia/include/core/SkFontMgr.h"
  #include "third_party/skia/include/core/SkRefCnt.h"
  #include "third_party/skia/include/core/SkTypeface.h"
@@ -47,7 +47,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
  
  #if BUILDFLAG(IS_ANDROID)
  #include "third_party/skia/include/ports/SkFontMgr_android.h"
-@@ -80,6 +82,7 @@
+@@ -82,6 +84,7 @@
    static std::once_flag flag;
    static sk_sp<SkFontMgr> mgr;
    std::call_once(flag, [] {
@@ -94,7 +94,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
  using namespace skia_private;
  
  namespace {
-@@ -1049,9 +1051,13 @@
+@@ -1048,9 +1050,13 @@
          // FT_LOAD_COLOR with scalable fonts means allow SVG.
          // It also implies attempt to render COLR if available, but this is not used.
  #if defined(FT_CONFIG_OPTION_SVG)

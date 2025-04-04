@@ -1,9 +1,9 @@
 --- a/chrome/browser/chrome_browser_main_linux.cc
 +++ b/chrome/browser/chrome_browser_main_linux.cc
-@@ -67,11 +67,11 @@
+@@ -62,11 +62,11 @@
    }
-   // Don't initialize DBus here. Ash and Lacros Bluetooth DBusManager
-   // initialization depend on FeatureList, and is done elsewhere.
+   // Don't initialize DBus here. Bluetooth DBusManager initialization depends on
+   // FeatureList, and is done elsewhere.
 +#elif defined(USE_DBUS)
 +  bluez::BluezDBusManager::Initialize(nullptr /* system_bus */);
  #endif  // BUILDFLAG(IS_CHROMEOS)
@@ -14,7 +14,7 @@
    // Set up crypt config. This needs to be done before anything starts the
    // network service, as the raw encryption key needs to be shared with the
    // network service for encrypted cookie storage.
-@@ -136,7 +136,7 @@
+@@ -131,7 +131,7 @@
  void ChromeBrowserMainPartsLinux::PostDestroyThreads() {
  #if BUILDFLAG(IS_CHROMEOS)
    // No-op; per PostBrowserStart() comment, this is done elsewhere.
@@ -142,8 +142,8 @@
      # Conceptually, this should be visible only to //services/device:java.
 --- a/chrome/browser/platform_util_linux.cc
 +++ b/chrome/browser/platform_util_linux.cc
-@@ -32,15 +32,18 @@
- #include "base/threading/scoped_blocking_call.h"
+@@ -31,15 +31,18 @@
+ #include "base/task/thread_pool.h"
  #include "base/types/expected.h"
  #include "chrome/browser/platform_util_internal.h"
 +#include "content/public/browser/browser_thread.h"
@@ -163,7 +163,7 @@
  
  using content::BrowserThread;
  
-@@ -48,6 +51,7 @@
+@@ -47,6 +50,7 @@
  
  namespace {
  
@@ -171,7 +171,7 @@
  const char kFreedesktopFileManagerName[] = "org.freedesktop.FileManager1";
  const char kFreedesktopFileManagerPath[] = "/org/freedesktop/FileManager1";
  const char kMethodShowItems[] = "ShowItems";
-@@ -294,6 +298,7 @@
+@@ -293,6 +297,7 @@
    // Requests that are queued until the API availability is determined.
    std::queue<base::FilePath> pending_requests_;
  };
@@ -179,7 +179,7 @@
  
  void OnLaunchOptionsCreated(const std::string& command,
                              const base::FilePath& working_directory,
-@@ -368,8 +373,10 @@
+@@ -371,8 +376,10 @@
  }  // namespace internal
  
  void ShowItemInFolder(Profile*, const base::FilePath& full_path) {
