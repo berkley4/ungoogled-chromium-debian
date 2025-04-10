@@ -1,14 +1,5 @@
 --- a/DEPS
 +++ b/DEPS
-@@ -718,7 +718,7 @@
-   # See also //third_party/node/node.gni
-   'src/third_party/node/linux': {
-       'dep_type': 'gcs',
--      'condition': 'non_git_source',
-+      'condition': 'checkout_src_internal and non_git_source',
-       'bucket': 'chromium-nodejs',
-       'objects': [
-           {
 @@ -949,7 +949,7 @@
          'sha256sum': '4bf96a6d0d9bdff23475e556d925bb6846036859ea3868c2c74caa8e5fab42df',
          'size_bytes': 116749200,

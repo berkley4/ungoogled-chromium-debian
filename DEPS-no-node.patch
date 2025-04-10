@@ -1,11 +1,12 @@
 --- a/DEPS
 +++ b/DEPS
-@@ -949,7 +949,7 @@
-         'sha256sum': '4bf96a6d0d9bdff23475e556d925bb6846036859ea3868c2c74caa8e5fab42df',
-         'size_bytes': 116749200,
-         'generation': 1739484481010800,
--        'condition': 'host_os != "linux" and non_git_source',
-+        'condition': 'host_os == "linux" and non_git_source',
-       },
-       {
-         'object_name': 'Mac/rust-toolchain-9fcc9cf4a202aadfe1f44722b39c83536eba3dba-2-llvmorg-21-init-1655-g7b473dfe.tar.xz',
+@@ -718,7 +718,7 @@
+   # See also //third_party/node/node.gni
+   'src/third_party/node/linux': {
+       'dep_type': 'gcs',
+-      'condition': 'non_git_source',
++      'condition': 'checkout_src_internal and non_git_source',
+       'bucket': 'chromium-nodejs',
+       'objects': [
+           {
+
