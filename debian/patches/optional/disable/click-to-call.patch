@@ -38,31 +38,27 @@
  #include "components/sharing_message/features.h"
  #include "components/spellcheck/browser/pref_names.h"
  #include "components/spellcheck/browser/spellcheck_host_metrics.h"
-@@ -1876,9 +1877,9 @@
-       AppendQRCodeGeneratorItem(/*for_image=*/true, /*draw_icon=*/true,
+@@ -1877,7 +1878,9 @@
                                  /*add_separator*/ false);
      }
--
+ 
 +#if BUILDFLAG(ENABLE_CLICK_TO_CALL)
      AppendClickToCallItem();
--
 +#endif  // BUILDFLAG(ENABLE_CLICK_TO_CALL)
+ 
      menu_model_.AddSeparator(ui::NORMAL_SEPARATOR);
      menu_model_.AddItemWithStringId(IDC_CONTENT_CONTEXT_SAVELINKAS,
-                                     IDS_CONTENT_CONTEXT_SAVELINKAS);
-@@ -2656,9 +2657,9 @@
-   // Check if the starting separator got added.
+@@ -2657,7 +2660,9 @@
    size_t items_before_sharing = menu_model_.GetItemCount();
    bool starting_separator_added = items_before_sharing > items_initial;
--
+ 
 +#if BUILDFLAG(ENABLE_CLICK_TO_CALL)
    AppendClickToCallItem();
--
 +#endif  // BUILDFLAG(ENABLE_CLICK_TO_CALL)
+ 
    // Add an ending separator if there are sharing items, otherwise remove the
    // starting separator iff we added one above.
-   size_t sharing_items = menu_model_.GetItemCount() - items_before_sharing;
-@@ -2669,6 +2670,7 @@
+@@ -2669,6 +2674,7 @@
    }
  }
  
@@ -70,7 +66,7 @@
  void RenderViewContextMenu::AppendClickToCallItem() {
    SharingClickToCallEntryPoint entry_point;
    std::optional<std::string> phone_number;
-@@ -2696,6 +2698,7 @@
+@@ -2696,6 +2702,7 @@
    click_to_call_context_menu_observer_->BuildMenu(*phone_number, selection_text,
                                                    entry_point);
  }

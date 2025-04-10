@@ -23,12 +23,11 @@
    if (source.IsTabMirroringSource()) {
      // Ensure the CastRemotingConnector is created before mirroring starts.
      CastRemotingConnector* const connector =
-@@ -179,7 +180,7 @@
+@@ -179,6 +180,7 @@
  
      MediaRouterMojoMetrics::RecordTabMirroringMetrics(web_contents);
    }
--
 +#endif
+ 
    if (IsSiteInitiatedMirroringSource(source_id)) {
      MediaRouterMojoMetrics::RecordSiteInitiatedMirroringStarted(web_contents,
-                                                                 source);
