@@ -171,6 +171,7 @@ optional/opentype-svg/0002-use-FreeType-for-non-Linux-OT-SVG-support.patch
 optional/system/jpeg.patch
 optional/system/libdbus.patch
 #optional/system/node.patch
+#optional/system/node-version-ck.patch
 optional/system/openh264.patch
 #optional/system/rust.patch
 #optional/system/clang/clang-version-check.patch

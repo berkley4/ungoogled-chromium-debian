@@ -1,0 +1,17 @@
+author: Andres Salomon <dilinger@debian.org>
+description: disable the node version check
+
+https://chromium-review.googlesource.com/c/chromium/src/+/6334038 added
+a node version check, but we don't want that as we're using debian's
+packaged node.
+
+--- a/third_party/node/node.gni
++++ b/third_party/node/node.gni
+@@ -44,7 +44,6 @@ template("node") {
+       if (!defined(deps)) {
+         deps = []
+       }
+-      deps += [ "//third_party/node:check_version" ]
+     }
+   }
+ }

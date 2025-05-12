@@ -558,9 +558,13 @@ if [ $SYS_BINDGEN -gt 0 ]; then
 fi
 
 
-if [ $SYS_NODE -eq 1 ]; then
-  op_enable="$op_enable system/node.patch"
-  deps_enable="$deps_enable nodejs"
+if [ $SYS_NODE -ge 1 ]; then
+  op_enable="$op_enable system/node-version-ck.patch"
+
+  if [ $SYS_NODE -eq 1 ]; then
+    op_enable="$op_enable system/node.patch"
+    deps_enable="$deps_enable nodejs"
+  fi
 fi
 
 
