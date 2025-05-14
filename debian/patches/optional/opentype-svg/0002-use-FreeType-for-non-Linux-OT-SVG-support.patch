@@ -45,11 +45,11 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
  
 --- a/third_party/blink/renderer/platform/fonts/web_font_typeface_factory.cc
 +++ b/third_party/blink/renderer/platform/fonts/web_font_typeface_factory.cc
-@@ -232,6 +232,8 @@
+@@ -171,6 +171,8 @@
         InstantiationResult::kSuccessColrV1Font, std::nullopt},
        {&FontFormatCheck::IsSbixColorFont, &MakeSbixTypeface,
         InstantiationResult::kSuccessSbixFont, std::nullopt},
-+      {&FontFormatCheck::IsSvgColorFont, &MakeUseFallbackIfNeeded,
++      {&FontFormatCheck::IsSvgColorFont, &MakeFontationsFallbackPreferred,
 +       InstantiationResult::kSuccessSvgFont, std::nullopt},
        {&FontFormatCheck::IsCff2OutlineFont, &MakeFontationsFallbackPreferred,
         InstantiationResult::kSuccessCff2Font, std::nullopt},

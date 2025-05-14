@@ -95,7 +95,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$LOCALES_EXTRA" ] || LOCALES_EXTRA=1
 [ -n "$MUTEX_PI" ] || MUTEX_PI=1
 [ -n "$OAUTH2" ] || OAUTH2=0
-[ -n "$OPENTYPE_SVG" ] || OPENTYPE_SVG=1
+[ -n "$OPENTYPE_SVG" ] || OPENTYPE_SVG=0
 [ -n "$OZONE_WAYLAND" ] || OZONE_WAYLAND=1
 [ -n "$PARTALLOC_MR" ] || PARTALLOC_MR=1
 [ -n "$PDF_JS" ] || PDF_JS=0
@@ -953,8 +953,8 @@ if [ $OAUTH2 -eq 1 ]; then
 fi
 
 
-if [ $OPENTYPE_SVG -eq 0 ]; then
-  op_disable="$op_disable opentype-svg/"
+if [ $OPENTYPE_SVG -eq 1 ]; then
+  op_enable="$op_enable opentype-svg/"
 fi
 
 
