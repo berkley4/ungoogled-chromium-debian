@@ -455,6 +455,13 @@ JOBS=4 dpkg-buildpackage --source-option=--no-preparation -b -uc -nc
 ./debian/rules hardclean
 ```
 
+# In case of 'stubborn/unsolvable' build errors (not guaranteed to work)
+
+```sh
+rm -rf out/Release
+```
+
+
 ## Miscellaneous actions
 
 # Re-generate ninja build files (eg after changing GN_FLAGS in d/rules)
