@@ -22,7 +22,8 @@ BFT_DIR := $(OUT_DIR)/gen/third_party/blink/renderer
 BFT_1 := $(BFT_DIR)/core/css_value_keywords.cc
 BFT_2 := $(BFT_DIR)/core/css/css_property_names.cc
 BFT_3 := $(BFT_DIR)/core/css/parser/at_rule_descriptors.cc
-BFT := $(BFT_1) $(BFT_2) $(BFT_3)
+BFT_4 := $(BFT_DIR)/platform/color_data.cc
+BFT := $(BFT_1) $(BFT_2) $(BFT_3) $(BFT_4)
 
 # Start with the upstream Ungoogled Chromium flags
 GN_FLAGS := $(shell sed -z -e 's@\x22@\x5c\x22@g' -e 's@\n@ @g' $(UC_DIR)/flags.gn)
