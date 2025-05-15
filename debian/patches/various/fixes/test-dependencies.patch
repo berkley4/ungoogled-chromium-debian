@@ -1,6 +1,6 @@
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -5769,7 +5769,7 @@
+@@ -5823,7 +5823,7 @@
    }
  }
  
@@ -9,28 +9,3 @@
    script_test("crossbench_smoketests") {
      script = "//testing/scripts/run_performance_tests.py"
  
---- a/testing/libfuzzer/fuzzers/BUILD.gn
-+++ b/testing/libfuzzer/fuzzers/BUILD.gn
-@@ -478,22 +478,3 @@
-     "//ui/gfx:gfx",
-   ]
- }
--
--test("chrome_tint_wgsl_fuzzer") {
--  sources = [
--    "tint_wgsl_fuzzer.cc",
--    "tint_wgsl_fuzzer_grammar.h",
--  ]
--  fuzztests = [
--    "ChromiumTintWgslTest.CanParseProgramWithoutCrashing",
--    "ChromiumTintWgslTest.CanConvertWgslToIRWithoutCrashing",
--  ]
--  fuzztest_stack_limit_kb = 512
--
--  deps = [
--    "//base",
--    "//third_party/dawn/src/tint/cmd/fuzz/wgsl:fuzz",
--    "//third_party/dawn/src/tint/lang/wgsl/reader:reader",
--    "//third_party/fuzztest:fuzztest_gtest_main",
--  ]
--}

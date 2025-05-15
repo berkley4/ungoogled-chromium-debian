@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -518,7 +518,8 @@
+@@ -516,7 +516,8 @@
      }
  
      if ((is_win || is_mac || is_linux || is_chromeos || is_fuchsia) &&
@@ -19,8 +19,8 @@
 +import("//gpu/vulkan/features.gni")
  import("//media/media_options.gni")
  import("//ppapi/buildflags/buildflags.gni")
- import("//third_party/blink/public/public_features.gni")
-@@ -1685,7 +1686,7 @@
+ import("//third_party/angle/gni/angle.gni")
+@@ -1689,7 +1690,7 @@
          ":angle_gles_symbols",
          ":chrome_symbols",
        ]
@@ -28,8 +28,8 @@
 +      if (is_linux && enable_swiftshader_vulkan) {
          deps += [ ":swiftshader_vk_symbols" ]
        }
-       if (!is_chromeos) {
-@@ -1721,17 +1722,19 @@
+       if (!is_chromeos && angle_shared_libvulkan) {
+@@ -1725,17 +1726,19 @@
          deps = [ "//components/crash/core/app:chrome_crashpad_handler" ]
        }
      }
@@ -84,14 +84,14 @@
 +import("//ui/gl/features.gni")
  
  declare_args() {
-   is_ggp = false
-@@ -247,7 +248,8 @@
+   # Extract native libs in ANGLE apk. Useful for flamegraph generation.
+@@ -243,7 +244,8 @@
+ declare_args() {
    # Currently SwiftShader's Vulkan front-end doesn't build on Android.
    # Disabled by default on MSVC because of compiler warnings/errors.
-   angle_enable_swiftshader =
--      angle_enable_vulkan && !is_android && !is_ggp && is_clang
-+      angle_enable_vulkan && enable_swiftshader &&
-+      !is_android && !is_ggp && is_clang
+-  angle_enable_swiftshader = angle_enable_vulkan && !is_android && is_clang
++  angle_enable_swiftshader =
++    angle_enable_vulkan && enable_swiftshader && !is_android && is_clang
  
    # Translator backend support:
    angle_enable_hlsl = angle_enable_d3d9 || angle_enable_d3d11

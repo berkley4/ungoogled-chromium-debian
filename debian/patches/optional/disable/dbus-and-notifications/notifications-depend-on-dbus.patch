@@ -1,6 +1,6 @@
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5142,13 +5142,13 @@
+@@ -5129,13 +5129,13 @@
       kOsLinux | kOsAndroid | kOsCrOS,
       FEATURE_VALUE_TYPE(features::kVulkanFromANGLE)},
  
@@ -32,7 +32,7 @@
  }
  
  policy::ChromeBrowserPolicyConnector*
-@@ -1467,9 +1471,11 @@
+@@ -1479,9 +1483,11 @@
  }
  
  void BrowserProcessImpl::CreateNotificationPlatformBridge() {
@@ -116,7 +116,7 @@
  
 --- a/chrome/common/chrome_features.cc
 +++ b/chrome/common/chrome_features.cc
-@@ -872,6 +872,7 @@
+@@ -937,6 +937,7 @@
  // Enables the use of system notification centers instead of using the Message
  // Center for displaying the toasts. The feature is hardcoded to enabled for
  // Chrome OS.
@@ -124,7 +124,7 @@
  BASE_FEATURE(kNativeNotifications,
               "NativeNotifications",
               base::FEATURE_ENABLED_BY_DEFAULT);
-@@ -879,6 +880,7 @@
+@@ -944,6 +945,7 @@
  BASE_FEATURE(kSystemNotifications,
               "SystemNotifications",
               base::FEATURE_ENABLED_BY_DEFAULT);
@@ -134,7 +134,7 @@
  // Enables the usage of Apple's new Notification API.
 --- a/chrome/common/chrome_features.h
 +++ b/chrome/common/chrome_features.h
-@@ -515,9 +515,11 @@
+@@ -542,9 +542,11 @@
  BASE_DECLARE_FEATURE(kShowHiddenNetworkToggle);
  #endif
  
@@ -144,5 +144,5 @@
  COMPONENT_EXPORT(CHROME_FEATURES) BASE_DECLARE_FEATURE(kSystemNotifications);
 +#endif
  
- #if BUILDFLAG(IS_MAC)
- COMPONENT_EXPORT(CHROME_FEATURES) BASE_DECLARE_FEATURE(kNewMacNotificationAPI);
+ #if BUILDFLAG(IS_ANDROID)
+ BASE_DECLARE_FEATURE(kNavigationCaptureRefactorAndroid);

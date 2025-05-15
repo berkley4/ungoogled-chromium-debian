@@ -17,7 +17,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
 
 --- a/skia/BUILD.gn
 +++ b/skia/BUILD.gn
-@@ -362,9 +362,6 @@
+@@ -364,9 +364,6 @@
      ]
      deps += [ "//third_party/expat" ]
      defines += [ "SK_CODEC_DECODES_JPEG_GAINMAPS" ]
@@ -27,7 +27,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
    }
  
    if (is_win) {
-@@ -568,6 +565,8 @@
+@@ -569,6 +566,8 @@
        "SKOTTIE_TRIVIAL_FONTRUN_ITER",
      ]
    }
@@ -47,7 +47,7 @@ Signed-off-by: Hin-Tak Leung <htl10@users.sourceforge.net>
  
  #if BUILDFLAG(IS_ANDROID)
  #include "third_party/skia/include/ports/SkFontMgr_android.h"
-@@ -82,6 +84,7 @@
+@@ -87,6 +89,7 @@
    static std::once_flag flag;
    static sk_sp<SkFontMgr> mgr;
    std::call_once(flag, [] {

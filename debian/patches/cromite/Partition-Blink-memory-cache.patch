@@ -17,14 +17,12 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../core/html/parser/html_srcset_parser.cc    |  3 +-
  .../core/inspector/inspector_network_agent.cc |  2 +-
  .../core/inspector/inspector_page_agent.cc    |  2 +-
- .../core/loader/frame_fetch_context.cc        |  2 +
  .../renderer/core/loader/image_loader.cc      |  3 +-
- .../core/loader/worker_fetch_context.cc       |  3 +
  .../platform/loader/fetch/memory_cache.cc     |  8 +--
  .../platform/loader/fetch/memory_cache.h      |  5 +-
  .../platform/loader/fetch/resource_fetcher.cc | 57 ++++++++++++++++---
  .../platform/loader/fetch/resource_fetcher.h  |  7 ++-
- 10 files changed, 69 insertions(+), 23 deletions(-)
+ 8 files changed, 64 insertions(+), 23 deletions(-)
 
 --- a/third_party/blink/renderer/core/html/parser/html_srcset_parser.cc
 +++ b/third_party/blink/renderer/core/html/parser/html_srcset_parser.cc
@@ -40,7 +38,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
                          WebFeature::kSrcSetUsedHigherDensityImageFromCache);
 --- a/third_party/blink/renderer/core/inspector/inspector_network_agent.cc
 +++ b/third_party/blink/renderer/core/inspector/inspector_network_agent.cc
-@@ -2436,7 +2436,7 @@
+@@ -2522,7 +2522,7 @@
    if (!cached_resource) {
      cached_resource = MemoryCache::Get()->ResourceForURL(
          url, document->Fetcher()->GetCacheIdentifier(
@@ -60,17 +58,6 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    }
    if (!cached_resource) {
      cached_resource = loader->ResourceForURL(url);
---- a/third_party/blink/renderer/core/loader/frame_fetch_context.cc
-+++ b/third_party/blink/renderer/core/loader/frame_fetch_context.cc
-@@ -852,6 +852,8 @@
-   if (document_loader_->ForceFetchCacheMode()) {
-     request.SetCacheMode(*document_loader_->ForceFetchCacheMode());
-   }
-+  if (!request.TopFrameOrigin())
-+    request.SetTopFrameOrigin(GetTopFrameOrigin());
-   // ResourceFetcher::DidLoadResourceFromMemoryCache() may call out in such a
-   // way that the AttributionSupport is needed.
-   if (const AttributionSrcLoader* attribution_src_loader =
 --- a/third_party/blink/renderer/core/loader/image_loader.cc
 +++ b/third_party/blink/renderer/core/loader/image_loader.cc
 @@ -717,7 +717,8 @@
@@ -83,18 +70,6 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
      if (resource && !resource->ErrorOccurred() &&
          CanReuseFromListOfAvailableImages(
---- a/third_party/blink/renderer/core/loader/worker_fetch_context.cc
-+++ b/third_party/blink/renderer/core/loader/worker_fetch_context.cc
-@@ -239,6 +239,9 @@
- 
- void WorkerFetchContext::ModifyRequestForMixedContentUpgrade(
-     ResourceRequest& request) {
-+  if (!request.TopFrameOrigin())
-+    request.SetTopFrameOrigin(GetTopFrameOrigin());
-+
-   MixedContentChecker::UpgradeInsecureRequest(
-       request, &GetResourceFetcherProperties().GetFetchClientSettingsObject(),
-       global_scope_, mojom::blink::RequestContextFrameType::kNone,
 --- a/third_party/blink/renderer/platform/loader/fetch/memory_cache.cc
 +++ b/third_party/blink/renderer/platform/loader/fetch/memory_cache.cc
 @@ -196,7 +196,7 @@
@@ -145,7 +120,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // page). removeFragmentIdentifierIfNeeded() should be called for the url
 --- a/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc
 +++ b/third_party/blink/renderer/platform/loader/fetch/resource_fetcher.cc
-@@ -1026,7 +1026,8 @@
+@@ -1027,7 +1027,8 @@
    }
  
    const String cache_identifier = GetCacheIdentifier(
@@ -155,7 +130,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // Most off-main-thread resource fetches use Resource::kRaw and don't reach
    // this point, but off-main-thread module fetches might.
    if (IsMainThread()) {
-@@ -1482,7 +1483,8 @@
+@@ -1483,7 +1484,8 @@
            params.Url(),
            GetCacheIdentifier(
                params.Url(),
@@ -165,7 +140,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        if (resource) {
          policy = DetermineRevalidationPolicy(resource_type, params, *resource,
                                               is_static_data);
-@@ -1814,7 +1816,8 @@
+@@ -1815,7 +1817,8 @@
      const ResourceFactory& factory) {
    const String cache_identifier =
        GetCacheIdentifier(params.GetResourceRequest().Url(),
@@ -175,7 +150,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    DCHECK(!IsMainThread() || params.IsStaleRevalidation() ||
           !MemoryCache::Get()->ResourceForURL(params.GetResourceRequest().Url(),
                                               cache_identifier));
-@@ -2927,11 +2930,47 @@
+@@ -2938,11 +2941,47 @@
  }
  
  String ResourceFetcher::GetCacheIdentifier(const KURL& url,
@@ -228,7 +203,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    }
  
    // Requests that can be satisfied via `archive_` (i.e. MHTML) or
-@@ -2946,7 +2985,7 @@
+@@ -2957,7 +2996,7 @@
      return bundle->GetCacheIdentifier();
    }
  

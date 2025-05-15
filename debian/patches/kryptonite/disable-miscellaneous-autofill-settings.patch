@@ -1,6 +1,6 @@
 --- a/components/autofill/core/common/autofill_features.cc
 +++ b/components/autofill/core/common/autofill_features.cc
-@@ -887,7 +887,7 @@
+@@ -937,7 +937,7 @@
  // i.e., https://other.autofill.server:port/tbproxy/af/
  BASE_FEATURE(kAutofillServerCommunication,
               "AutofillServerCommunication",
@@ -11,21 +11,21 @@
  // element in the DOM.
 --- a/components/autofill/core/common/autofill_prefs.cc
 +++ b/components/autofill/core/common/autofill_prefs.cc
-@@ -33,7 +33,7 @@
-       prefs::kAutofillCreditCardEnabled, false,
+@@ -41,7 +41,7 @@
+       kAutofillCreditCardEnabled, false,
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
    registry->RegisterBooleanPref(
--      prefs::kAutofillPaymentCvcStorage, true,
-+      prefs::kAutofillPaymentCvcStorage, false,
+-      kAutofillPaymentCvcStorage, true,
++      kAutofillPaymentCvcStorage, false,
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
    registry->RegisterBooleanPref(
        kAutofillPaymentCardBenefits, true,
-@@ -77,7 +77,7 @@
+@@ -80,7 +80,7 @@
  #endif
  
    // Deprecated prefs registered for migration.
--  registry->RegisterBooleanPref(prefs::kAutofillEnabledDeprecated, true);
-+  registry->RegisterBooleanPref(prefs::kAutofillEnabledDeprecated, false);
-   registry->RegisterBooleanPref(prefs::kAutofillOrphanRowsRemoved, false);
-   registry->RegisterBooleanPref(prefs::kAutofillIbanEnabled, true);
-   registry->RegisterIntegerPref(
+-  registry->RegisterBooleanPref(kAutofillEnabledDeprecated, true);
++  registry->RegisterBooleanPref(kAutofillEnabledDeprecated, false);
+   registry->RegisterStringPref(kAutofillAblationSeedPref, "");
+   registry->RegisterBooleanPref(kAutofillRanQuasiDuplicateExtraDeduplication,
+                                 false);

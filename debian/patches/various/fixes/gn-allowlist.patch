@@ -5,7 +5,7 @@ it.
 
 --- a/.gn
 +++ b/.gn
-@@ -145,8 +145,8 @@
+@@ -146,8 +146,8 @@
  #      this situation much easier to create. if the build always lists the
  #      files and passes them to a script, it will always be correct.
  

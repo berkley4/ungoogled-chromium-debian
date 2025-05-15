@@ -1,6 +1,6 @@
 --- a/chrome/browser/extensions/BUILD.gn
 +++ b/chrome/browser/extensions/BUILD.gn
-@@ -881,7 +881,6 @@
+@@ -907,7 +907,6 @@
        "//chrome/browser/web_applications/extensions",
        "//chrome/common/extensions/api:extensions_features",
        "//chrome/services/file_util/public/mojom:mojom",
@@ -8,7 +8,7 @@
        "//components/affiliations/core/browser:affiliations",
        "//components/app_constants",
        "//components/autofill/content/browser",
-@@ -1015,6 +1014,10 @@
+@@ -1041,6 +1040,10 @@
        "//url",
      ]
  
@@ -21,7 +21,7 @@
          "api/certificate_provider/certificate_provider_api.cc",
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -2220,7 +2220,6 @@
+@@ -2271,7 +2271,6 @@
        "//chrome/common:version_header",
        "//chrome/common/privacy_budget:test_support",
        "//chrome/renderer",
@@ -29,7 +29,7 @@
        "//chrome/test/data/webui:resources",
        "//chrome/test/data/webui/mojo:mojo_bindings",
        "//chrome/test/media_router/access_code_cast:access_code_cast_integration_base",
-@@ -2580,6 +2579,10 @@
+@@ -2631,6 +2630,10 @@
        "//v8",
      ]
  
@@ -37,12 +37,12 @@
 +      deps += [ "//chrome/services/removable_storage_writer:lib" ]
 +    }
 +
-     allow_circular_includes_from =
-         [ "//chrome/browser/optimization_guide:browser_tests" ]
+     allow_circular_includes_from = []
  
+     if (is_chromeos) {
 --- a/chrome/utility/BUILD.gn
 +++ b/chrome/utility/BUILD.gn
-@@ -6,6 +6,7 @@
+@@ -5,6 +5,7 @@
  import("//build/config/features.gni")
  import("//build/config/sysroot.gni")
  import("//chrome/common/features.gni")
@@ -50,7 +50,7 @@
  import("//chrome/services/speech/buildflags/buildflags.gni")
  import("//chromeos/ash/components/assistant/assistant.gni")
  import("//components/services/on_device_translation/buildflags/features.gni")
-@@ -151,16 +152,24 @@
+@@ -150,16 +151,24 @@
    if (enable_extensions) {
      deps += [
        "//chrome/common/extensions/api",
@@ -80,15 +80,15 @@
        ldflags = [ "/DELAYLOAD:wininet.dll" ]
 --- a/chrome/utility/services.cc
 +++ b/chrome/utility/services.cc
-@@ -9,6 +9,7 @@
+@@ -8,6 +8,7 @@
+ #include <utility>
  
  #include "build/build_config.h"
- #include "build/chromeos_buildflags.h"
 +#include "chrome/services/file_util/buildflags.h"
  #include "chrome/services/speech/buildflags/buildflags.h"
  #include "components/paint_preview/buildflags/buildflags.h"
  #include "components/password_manager/core/common/password_manager_features.h"
-@@ -73,7 +74,7 @@
+@@ -72,7 +73,7 @@
  #include "chrome/services/file_util/file_util_service.h"  // nogncheck
  #endif
  
@@ -97,7 +97,7 @@
  #include "chrome/services/removable_storage_writer/public/mojom/removable_storage_writer.mojom.h"
  #include "chrome/services/removable_storage_writer/removable_storage_writer.h"
  #endif
-@@ -277,7 +278,7 @@
+@@ -273,7 +274,7 @@
  }
  #endif
  
@@ -106,7 +106,7 @@
  auto RunRemovableStorageWriter(
      mojo::PendingReceiver<chrome::mojom::RemovableStorageWriter> receiver) {
    return std::make_unique<RemovableStorageWriter>(std::move(receiver));
-@@ -494,7 +495,7 @@
+@@ -488,7 +489,7 @@
    services.Add(RunFileUtil);
  #endif
  

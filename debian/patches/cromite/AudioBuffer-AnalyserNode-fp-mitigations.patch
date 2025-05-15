@@ -24,7 +24,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -4495,6 +4495,10 @@
+@@ -4486,6 +4486,10 @@
      {"ui-disable-partial-swap", flag_descriptions::kUiPartialSwapName,
       flag_descriptions::kUiPartialSwapDescription, kOsAll,
       SINGLE_DISABLE_VALUE_TYPE(switches::kUIDisablePartialSwap)},
@@ -37,7 +37,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       FEATURE_VALUE_TYPE(features::kWebRtcHWDecoding)},
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -4013,6 +4013,11 @@
+@@ -4150,6 +4150,11 @@
      "When enabled, removes the requirement that all certificates used for "
      "WebTransport over HTTP/3 are issued by a known certificate root.";
  
@@ -51,7 +51,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  const char kWebUsbDeviceDetectionDescription[] =
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -2346,6 +2346,9 @@
+@@ -2420,6 +2420,9 @@
  extern const char kWebrtcUseMinMaxVEADimensionsName[];
  extern const char kWebrtcUseMinMaxVEADimensionsDescription[];
  
@@ -63,7 +63,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -196,6 +196,10 @@
+@@ -202,6 +202,10 @@
                     "allow_list",
                     "");
  
@@ -76,7 +76,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  BASE_FEATURE(kBoostImagePriority,
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -107,6 +107,8 @@
+@@ -112,6 +112,8 @@
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(
      kAvoidForcedLayoutOnInitialEmptyDocumentInSubframe);
  
@@ -87,7 +87,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/third_party/blink/renderer/modules/webaudio/audio_buffer.cc
 +++ b/third_party/blink/renderer/modules/webaudio/audio_buffer.cc
-@@ -202,6 +202,20 @@
+@@ -203,6 +203,20 @@
    }
  }
  
@@ -110,7 +110,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      ExceptionState& exception_state) {
 --- a/third_party/blink/renderer/modules/webaudio/audio_buffer.h
 +++ b/third_party/blink/renderer/modules/webaudio/audio_buffer.h
-@@ -115,6 +115,8 @@
+@@ -116,6 +116,8 @@
  
    std::unique_ptr<SharedAudioBuffer> CreateSharedAudioBuffer();
  
@@ -150,7 +150,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "third_party/blink/public/mojom/devtools/console_message.mojom-blink.h"
  #include "third_party/blink/public/mojom/frame/lifecycle.mojom-shared.h"
  #include "third_party/blink/public/platform/platform.h"
-@@ -709,6 +710,17 @@
+@@ -715,6 +716,17 @@
    return To<LocalDOMWindow>(GetExecutionContext());
  }
  
@@ -177,7 +177,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +  static float ShuffleAudioData(float data, unsigned index);
 +
   protected:
-   enum ContextType { kRealtimeContext, kOfflineContext };
+   enum class ContextType { kRealtimeContext, kOfflineContext };
  
 --- a/third_party/blink/renderer/modules/webaudio/offline_audio_context.cc
 +++ b/third_party/blink/renderer/modules/webaudio/offline_audio_context.cc
@@ -235,7 +235,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  }
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -469,9 +469,8 @@
+@@ -485,9 +485,8 @@
      {
        // AudioContext.playoutStats interface.
        // https://chromestatus.com/feature/5172818344148992

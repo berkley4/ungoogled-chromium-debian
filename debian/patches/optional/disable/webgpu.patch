@@ -24,7 +24,7 @@
    }
 --- a/services/on_device_model/BUILD.gn
 +++ b/services/on_device_model/BUILD.gn
-@@ -41,12 +41,14 @@
+@@ -42,12 +42,14 @@
    }
  
    if (is_linux || is_chromeos) {
@@ -55,9 +55,9 @@
  
  source_set("api") {
    public = [
-@@ -65,9 +66,13 @@
-       "//components/optimization_guide/core:features",
+@@ -66,9 +67,13 @@
        "//components/translate/core/language_detection",
+       "//third_party/abseil-cpp:absl",
        "//third_party/angle:includes",
 -      "//third_party/dawn/src/dawn:proc",
 -      "//third_party/dawn/src/dawn/native",

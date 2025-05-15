@@ -1,6 +1,6 @@
 --- a/base/nix/xdg_util.cc
 +++ b/base/nix/xdg_util.cc
-@@ -47,6 +47,8 @@
+@@ -48,6 +48,8 @@
  const char kXdgSessionTypeEnvVar[] = "XDG_SESSION_TYPE";
  const char kXdgActivationTokenEnvVar[] = "XDG_ACTIVATION_TOKEN";
  const char kXdgActivationTokenSwitch[] = "xdg-activation-token";
