@@ -1,6 +1,6 @@
 --- a/DEPS
 +++ b/DEPS
-@@ -718,7 +718,7 @@
+@@ -745,7 +745,7 @@
    # See also //third_party/node/node.gni
    'src/third_party/node/linux': {
        'dep_type': 'gcs',
@@ -9,4 +9,3 @@
        'bucket': 'chromium-nodejs',
        'objects': [
            {
-
