@@ -563,7 +563,7 @@ if [ $SYS_GN -eq 0 ]; then
   deps_disable="$deps_disable generate-ninja"
 else
   # The patches are only needed on stable
-  if [ $STABLE -eq 1 ]; them
+  if [ $STABLE -eq 1 ]; then
     op_enable="$op_enable system/gn/"
   fi
 fi
