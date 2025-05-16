@@ -61,6 +61,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$SYS_CLANG" ] || SYS_CLANG=0
 [ -n "$SYS_RUST" ] || SYS_RUST=0
 [ -n "$SYS_BINDGEN" ] || SYS_BINDGEN=2
+[ -n "$SYS_GN" ] || SYS_GN=1
 [ -n "$SYS_NODE" ] || SYS_NODE=0
 
 [ -n "$AES_PCLMUL" ] || AES_PCLMUL=1
@@ -365,9 +366,9 @@ fi
 
 
 
-################################################################
-## Clang/ESbuild/Machine Function Splitter/Rust configuration ##
-################################################################
+###################################################################
+## Clang/ESbuild/gn/Machine Function Splitter/Rust configuration ##
+###################################################################
 
 ## Enable the use of ccache
 if [ $CCACHE -eq 1 ]; then
@@ -555,6 +556,16 @@ if [ $SYS_BINDGEN -gt 0 ]; then
 
   # Set BINDGEN_PATH in d/rules (for passing to rust_bindgen_root build flag)
   RUL="$RUL -e \"s@_BINDGEN_PATH@$BINDGEN_PATH@\""
+fi
+
+
+if [ $SYS_GN -eq 0 ]; then
+  deps_disable="$deps_disable generate-ninja"
+else
+  # The patches are only needed on stable
+  if [ $STABLE -eq 1 ]; them
+    op_enable="$op_enable system/gn/"
+  fi
 fi
 
 

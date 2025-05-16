@@ -1,3 +1,9 @@
+This is a mix of commit fd011815c455976b15e31966f826628b4f9f61d4
+("don't keep use_reclient=true with .reproxy_tmp") pulled from upstream
+plus a revert of upstream's 49b23faa16ad14e96601aea8772c7279fcbd6b44
+("sysroot.gni: Use path_exists() rather than exec_script("dir_exists.py")
+in order to work on older gn that lacks path_exists().
+
 --- a/build/config/sysroot.gni
 +++ b/build/config/sysroot.gni
 @@ -61,7 +61,9 @@
@@ -47,3 +53,25 @@
      "//build/config/win/BUILD.gn",
      "//build/config/win/visual_studio_version.gni",
      "//build/rust/analyze.gni",
+--- a/build/toolchain/siso.gni
++++ b/build/toolchain/siso.gni
+@@ -7,19 +7,7 @@
+ use_siso_default = false
+ 
+ _is_google_corp_machine = false
+-if (path_exists("/usr/bin/gcert") ||  # linux
+-    path_exists("/usr/local/bin/gcert") ||  # mac
+-    path_exists("/c:/gnubby/bin/gcert.exe")) {
+-  _is_google_corp_machine = true
+-}
+ 
+-_is_ninja_used = path_exists(rebase_path(".ninja_deps", root_build_dir))
+-
+-if (path_exists("//build/config/siso/.sisoenv") &&
+-    defined(build_with_chromium) && build_with_chromium &&
+-    _is_google_corp_machine && !_is_ninja_used) {
+-  use_siso_default = true
+-}
+ 
+ declare_args() {
+   # Placeholder to allow having use_siso in args.gn file.
