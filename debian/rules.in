@@ -356,7 +356,7 @@ revert_domsub:
 	test ! -f $(DS_CACHE) || $(UL_DIR)/domain_substitution.py revert -c $(DS_CACHE) $(RT_DIR)
 
 revert_unbundling:
-	for f in $(UB_LIST); do test ! -f $$f || mv $$f $${f%.bundled}; done
+	test -z "$(UB_LIST)" || for f in $(UB_LIST); do test ! -f $$f || mv $$f $${f%.bundled}; done
 
 override_dh_auto_configure:
 	test -z "$(UB_LIST)" || for f in $(UB_LIST); do test ! -f $$f || mv $$f $${f%.bundled}; done
