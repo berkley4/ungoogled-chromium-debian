@@ -106,14 +106,6 @@
        sources +=
            [ "api/image_writer_private/removable_storage_provider_linux.cc" ]
      }
-@@ -1581,6 +1589,7 @@
-       "//chrome/browser/ui",
-       "//chrome/browser/ui/tabs:tab_strip",
-       "//chrome/common/safe_browsing:proto",
-+      "//chrome/services/file_util:buildflags",
-       "//components/crx_file",
-       "//components/safe_browsing/core/browser/db:database_manager",
-       "//components/safe_browsing/core/browser/db:v4_test_util",
 --- a/chrome/browser/extensions/keyed_services/chrome_browser_context_keyed_service_factories.cc
 +++ b/chrome/browser/extensions/keyed_services/chrome_browser_context_keyed_service_factories.cc
 @@ -39,9 +39,14 @@

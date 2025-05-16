@@ -1,6 +1,14 @@
 --- a/chrome/browser/extensions/BUILD.gn
 +++ b/chrome/browser/extensions/BUILD.gn
-@@ -907,7 +907,6 @@
+@@ -324,6 +324,7 @@
+     "//chrome/browser/ui/safety_hub",
+     "//chrome/common",
+     "//chrome/common/safe_browsing:proto",
++    "//chrome/services/file_util:buildflags",
+     "//components/bookmarks/browser",
+     "//components/bookmarks/managed",
+     "//components/content_settings/core/browser",
+@@ -907,7 +908,6 @@
        "//chrome/browser/web_applications/extensions",
        "//chrome/common/extensions/api:extensions_features",
        "//chrome/services/file_util/public/mojom:mojom",
@@ -8,7 +16,7 @@
        "//components/affiliations/core/browser:affiliations",
        "//components/app_constants",
        "//components/autofill/content/browser",
-@@ -1041,6 +1040,10 @@
+@@ -1041,6 +1041,10 @@
        "//url",
      ]
  
