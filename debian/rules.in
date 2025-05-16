@@ -356,7 +356,7 @@ revert_domsub:
 	test ! -f $(DS_CACHE) || $(UL_DIR)/domain_substitution.py revert -c $(DS_CACHE) $(RT_DIR)
 
 reset_unbundling: revert_unbundling
-	test -z "$(UB_LIST)" || for f in $(UB_LIST); do test ! -f $$f || git checkout HEAD -- $${f%.bundled}; done
+	test -z "$(UB_LIST)" || for f in $(UB_LIST); do test -f $${f%.bundled} || continue; bf=$${f##*/}; cd $${f%/*} >/dev/null && git checkout HEAD -- $${bf%.bundled} && cd - >/dev/null; done
 
 revert_unbundling:
 	test -z "$(UB_LIST)" || for f in $(UB_LIST); do test ! -f $$f || mv $$f $${f%.bundled}; done
