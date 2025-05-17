@@ -455,10 +455,10 @@ JOBS=4 dpkg-buildpackage --source-option=--no-preparation -b -uc -nc
 ./debian/rules hardclean
 ```
 
-# In case of 'stubborn/unsolvable' build errors (not guaranteed to work)
+# Delete out/Release folder in case of 'stubborn/unsolvable' build errors (no guarantees)
 
 ```sh
-rm -rf out/Release
+./debian/rules rm_out_release
 ```
 
 
