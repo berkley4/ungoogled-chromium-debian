@@ -1,0 +1,40 @@
+From f8f21fb4aa01f75acbb12abf5ea8c263c6817141 Mon Sep 17 00:00:00 2001
+From: Daniel Richard G <iskunk@gmail.com>
+Date: Tue, 15 Apr 2025 01:13:20 -0700
+Subject: [PATCH] Don't apply /*FALLTHROUGH*/ edit to gperf 3.2 output
+
+The gperf issue at https://savannah.gnu.org/bugs/index.php?53029
+has been resolved as of the 3.2 release, and not only is the
+/*FALLTHROUGH*/ comment replacement no longer needed, it now
+breaks the build with "error: fallthrough annotation does not
+directly precede switch label". Only do the edit for 3.1.
+
+Bug: 40209959
+Change-Id: I1f12a2a685b62d0dedb4298bc171ab4c94ec6b47
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6445471
+Reviewed-by: Yuki Shiino <yukishiino@chromium.org>
+Commit-Queue: Roland Bock <rbock@google.com>
+Reviewed-by: Roland Bock <rbock@google.com>
+Auto-Submit: Daniel Richard G. <iskunk@gmail.com>
+Cr-Commit-Position: refs/heads/main@{#1446962}
+
+--- a/third_party/blink/renderer/build/scripts/gperf.py
++++ b/third_party/blink/renderer/build/scripts/gperf.py
+@@ -35,10 +35,13 @@
+         # https://savannah.gnu.org/bugs/index.php?53028
+         gperf_output = re.sub(r'\bregister ', '', gperf_output)
+         # -Wimplicit-fallthrough needs an explicit fallthrough statement,
+-        # so replace gperf's /*FALLTHROUGH*/ comment with the statement.
+-        # https://savannah.gnu.org/bugs/index.php?53029
+-        gperf_output = gperf_output.replace('/*FALLTHROUGH*/',
+-                                            '  [[fallthrough]];')
++        # so replace gperf 3.1's /*FALLTHROUGH*/ comment with the statement.
++        # https://savannah.gnu.org/bugs/index.php?53029 (fixed in 3.2)
++        if re.search(
++                r'/\* C\+\+ code produced by gperf version 3\.[01](\.\d+)? \*/',
++                gperf_output):
++            gperf_output = gperf_output.replace('/*FALLTHROUGH*/',
++                                                '  [[fallthrough]];')
+         # -Wpointer-to-int-cast warns about casting pointers to smaller ints
+         # Replace {(int)(long)&(foo), bar} with
+         # {static_cast<int>(reinterpret_cast<uintptr_t>(&(foo)), bar}

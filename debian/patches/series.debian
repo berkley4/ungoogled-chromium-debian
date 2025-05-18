@@ -79,6 +79,7 @@ various/disable/image-writer/image-writer-utility.patch
 various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
 various/fixes/enterprise-buildflags.patch
 various/fixes/ffmpeg-codec-list.patch
+various/fixes/gperf-fallthrough.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/pipewire-cfi-suppressions.patch
 various/fixes/shim-fix-for-official-builds.patch

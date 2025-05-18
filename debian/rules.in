@@ -17,14 +17,6 @@ UB_LIST := $(shell sed -z 's@\n@ @g' $(DEBIAN)/misc_files/bundled.txt)
 HEVC_DIR := $(RT_DIR)/third_party/ffmpeg/libavcodec/hevc
 HEVC_LIST := $(shell sed -z 's@\n@ @g' $(DEBIAN)/misc_files/hevc-symlinks.txt)
 
-# TODO: remove this section when the upstream blink fallthrough build issue is fixed
-BFT_DIR := $(OUT_DIR)/gen/third_party/blink/renderer
-BFT_1 := $(BFT_DIR)/core/css_value_keywords.cc
-BFT_2 := $(BFT_DIR)/core/css/css_property_names.cc
-BFT_3 := $(BFT_DIR)/core/css/parser/at_rule_descriptors.cc
-BFT_4 := $(BFT_DIR)/platform/color_data.cc
-BFT := $(BFT_1) $(BFT_2) $(BFT_3) $(BFT_4)
-
 # Start with the upstream Ungoogled Chromium flags
 GN_FLAGS := $(shell sed -z -e 's@\x22@\x5c\x22@g' -e 's@\n@ @g' $(UC_DIR)/flags.gn)
 
@@ -368,8 +360,6 @@ override_dh_auto_configure: revert_unbundling
 	test ! -f $(DEBIAN)/en-US.pak || mv $(DEBIAN)/en-US.pak $(OUT_DIR)/locales/
 	test -h $(OUT_DIR)/icudtl.dat || ln -sf ../../third_party/icu/common/icudtl.dat -t $(OUT_DIR)
 	test -z "$(HEVC_LIST)" || for h in $(HEVC_LIST); do test -h $$h || ln -sf $(HEVC_DIR)/$$h $(HEVC_DIR)/autorename_libavcodec_hevc_$$h; done
-	# Hack to fix blink fallthrough build issue (need to re-run build after it errors out)
-	for i in $(BFT); do test -f $$i && grep -q '^        \[\[fallthrough\]\];' $$i && sed '/^        \[\[fallthrough\]\];/d' -i $$i || true; done
 
 override_dh_auto_build:
 	ninja -j $(JOBS) -C $(OUT_DIR) chrome chrome_sandbox chromedriver
