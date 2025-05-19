@@ -651,8 +651,11 @@ if [ -n "$arch_patches" ]; then
 fi
 
 
+# Initial rust cpu instructions
+RUST_INST="+aes,+pclmulqdq"
+
 if [ $AVX2 -eq 1 ]; then
-  AVX=1
+  AVX=1; RUST_INST="$RUST_INST,+avx2"
   op_enable="$op_enable compiler-flags/cpu/avx2.patch"
 fi
 
@@ -660,15 +663,29 @@ if [ $AVX -eq 0 ]; then
   POLLY_VEC=0
   op_disable="$op_disable compiler-flags/cpu/avx.patch"
 else
-  AES_PCLMUL=1
+  AES_PCLMUL=1; RUST_INST="$RUST_INST,+avx"
 
   # Let users be able to turn this off
   [ -n "$POLLY_VEC" ] || POLLY_VEC=1
 fi
 
 if [ $AES_PCLMUL -eq 0 ]; then
+  RUST_INST=${RUST_INST#+aes,+pclmulqdq}
   op_disable="$op_disable compiler-flags/cpu/aes-pclmul.patch"
 fi
+
+case $RUST_INST in
+  "")
+    op_disable="$op_disable compiler-flags/cpu/rust-instructions.patch" ;;
+
+  *)
+    # Remove potential leading comma from RUST_INST string
+    RUST_INST=${RUST_INST#,}
+
+    sed -e "s@_RUST_INST@$RUST_INST@" \
+        -i $OP_DIR/compiler-flags/cpu/rust-instructions.patch ;;
+esac
+
 
 if [ $RTC_AVX2 -eq 0 ]; then
   gn_enable="$gn_enable rtc_enable_avx2=false"
