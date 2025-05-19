@@ -52,7 +52,6 @@ POLICIES=etc/chromium/policies/managed/policies.json
 ####################
 
 [ -n "$CCACHE" ] || CCACHE=0
-[ -n "$ELF_CREL" ] || ELF_CREL=0
 [ -n "$ESBUILD" ] || ESBUILD=0
 [ -n "$PGO" ] || PGO=1
 [ -n "$STABLE" ] || STABLE=0
@@ -387,11 +386,6 @@ if [ $CCACHE -eq 1 ]; then
     /*|1)
       RUL="$RUL -e \"/^#export CCACHE_BASEDIR=/s@^#@@\"" ;;
   esac
-fi
-
-
-if [ $ELF_CREL -eq 1 ]; then
-  op_enable="$op_enable compiler-flags/elf-crel.patch"
 fi
 
 
