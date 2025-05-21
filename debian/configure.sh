@@ -82,6 +82,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$EXTENSIONS_ROOT_MENU" ] || EXTENSIONS_ROOT_MENU=0
 [ -n "$FAST_RESTART" ] || FAST_RESTART=0
 [ -n "$FONTATIONS" ] || FONTATIONS=1
+[ -n "$FONTATIONS_PDF" ] || FONTATIONS_PDF=0
 [ -n "$GL_DESKTOP_FRONTEND" ] || GL_DESKTOP_FRONTEND=0
 [ -n "$GOOGLE_API_KEYS" ] || GOOGLE_API_KEYS=1
 [ -n "$GOOGLE_UI_URLS" ] || GOOGLE_UI_URLS=1
@@ -884,8 +885,14 @@ fi
 
 if [ $FONTATIONS -eq 0 ]; then
   op_enable="$op_enable disable/fontations.patch"
-elif [ $FONTATIONS -eq 2 ]; then
-  sed -e '/enable-fontations-backend/s@^#@@' -i $FLAG_DIR/miscellaneous
+else
+  if [ $FONTATIONS -eq 2 ]; then
+    sed -e '/enable-fontations-backend/s@^#@@' -i $FLAG_DIR/miscellaneous
+  fi
+
+  if [ $FONTATIONS_PDF -eq 1 ]; then
+    gn_enable="$gn_enable pdf_enable_fontations=true"
+  fi
 fi
 
 

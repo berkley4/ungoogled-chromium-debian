@@ -121,6 +121,7 @@ FONTATIONS		1		0 - Disable (ie hard disable with a patch)
 					1 - Enable (need to uncomment the enable-fontations-backend flag /etc/chromium.d/miscellaneous)
 					2 - Fully enable
 
+FONTATIONS_PDF		0		Extend fontations support to the pdf viewer (requires FONTATIONS to be enabled)
 GL_DESKTOP_FRONTEND	0		Angle GL desktop frontend (GLX integration)
 
 GOOGLE_API_KEYS		1		0 - disable

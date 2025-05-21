@@ -170,6 +170,9 @@ GN_FLAGS += enable_mutex_priority_inheritance=true
 # Disable pdfium javascript/XFA forms support
 GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
 
+# Enable fontations support for pdfium
+#GN_FLAGS += pdf_enable_fontations=true
+
 # Enable when enabling pdfium javascript/XFA forms support
 #GN_FLAGS += use_system_libtiff=true
 
