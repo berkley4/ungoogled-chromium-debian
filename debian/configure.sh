@@ -103,6 +103,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$PRINT_PREVIEW" ] || PRINT_PREVIEW=1
 [ -n "$PULSE" ] || PULSE=1
 [ -n "$QT" ] || QT=1
+[ -n "$RUSTY_PNG" ] || RUSTY_PNG=0
 [ -n "$SKIA_GAMMA" ] || SKIA_GAMMA=0
 [ -n "$SPEECH" ] || SPEECH=1
 [ -n "$SPOOF_WEBGL_INFO" ] || SPOOF_WEBGL_INFO=1
@@ -1197,6 +1198,11 @@ if [ $PULSE -eq 0 ]; then
   gn_disable="$gn_disable link_pulseaudio=true"
   gn_enable="$gn_enable use_pulseaudio=false"
   deps_disable="$deps_disable libpulse"
+fi
+
+
+if [ $RUSTY_PNG -eq 1 ]; then
+  sed -e '/rusty-png/s@^#@@' -i $FLAG_DIR/miscellaneous
 fi
 
 

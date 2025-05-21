@@ -164,7 +164,7 @@ QT			1		0 - disable
 QT_6			0		0 - disable Qt version 6
 					1 - enable Qt version 6 (unstable only)
 
-
+RUSTY_PNG		0		Rust-based png library (alternative to libpng)
 SPEECH			1		Speech service (voice recognition)
 SPOOF_WEBGL_INFO	1		Spoof webgl info (via flag in /etc/chromium.d/anti-fingerprint)
 SWIFTSHADER		1		Swiftshader
