@@ -269,15 +269,7 @@ GN_FLAGS += v8_enable_wasm_simd256_revec=true
 #     freetype depends on brotli and libpng
 #
 
-SYS_LIBS :=			\
-	double-conversion	\
-	flac			\
-	libsecret		\
-	libusb			\
-	libXNVCtrl		\
-	opus			\
-	zlib
-
+SYS_LIBS := double-conversion flac libsecret libusb libXNVCtrl opus zlib
 
 # The below is best configured via debian/configure.sh, which is better
 # suited to automatically deal with any of the dependency issues
@@ -321,12 +313,9 @@ GN_FLAGS += icu_copy_icudata_to_root_build_dir=false
 
 
 # Add extra flags for system libs
-GN_FLAGS +=				\
-        perfetto_use_system_zlib=true	\
-        use_system_lcms2=true		\
-        use_system_libopenjpeg2=true	\
-        use_system_libpng=true		\
-        use_system_zlib=true
+GN_FLAGS += perfetto_use_system_zlib=true use_system_lcms2=true
+GN_FLAGS += use_system_libopenjpeg2=true use_system_libpng=true
+GN_FLAGS += use_system_zlib=true
 
 %:
 	dh $@
