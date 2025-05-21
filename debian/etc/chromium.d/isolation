@@ -23,6 +23,10 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-process-reuse"
 # Note: under active development and may result in unexpected behavior.
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --third-party-storage-partitioning"
 
+# Out-of-Process iframes (OOPIFs) for the PDF Viewer
+# See - https://www.chromium.org/developers/design-documents/oop-iframes/
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --pdf-oopif"
+
 
 ## Cromite features (non-free builds only)
 
