@@ -81,6 +81,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$ENTERPRISE_WATERMARK" ] || ENTERPRISE_WATERMARK=0
 [ -n "$EXTENSIONS_ROOT_MENU" ] || EXTENSIONS_ROOT_MENU=0
 [ -n "$FAST_RESTART" ] || FAST_RESTART=0
+[ -n "$FONTATIONS" ] || FONTATIONS=1
 [ -n "$GL_DESKTOP_FRONTEND" ] || GL_DESKTOP_FRONTEND=0
 [ -n "$GOOGLE_API_KEYS" ] || GOOGLE_API_KEYS=1
 [ -n "$GOOGLE_UI_URLS" ] || GOOGLE_UI_URLS=1
@@ -878,6 +879,13 @@ if [ $FF_HEVC -eq 0 ]; then
 
   RUL="$RUL -e \"/^HEVC_/s@^@#@\""
   RUL="$RUL -e \"/libavcodec-hevc-/s@\(for\)@#\1@\""
+fi
+
+
+if [ $FONTATIONS -eq 0 ]; then
+  op_enable="$op_enable disable/fontations.patch"
+elif [ $FONTATIONS -eq 2 ]; then
+  sed -e '/enable-fontations-backend/s@^#@@' -i $FLAG_DIR/miscellaneous
 fi
 
 

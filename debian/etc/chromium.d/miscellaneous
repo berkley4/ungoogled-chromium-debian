@@ -22,6 +22,9 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=IdbExpediteBackendProce
 # Enable ServiceWorkerAvoidMainThreadForInitialization
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=ServiceWorkerAvoidMainThreadForInitialization"
 
+# Rust-based freetype replacement
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-fontations-backend"
+
 # Rust-based PNG decoder
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --rusty-png"
 

@@ -116,6 +116,11 @@ FF_ALAC			0		ALAC (Apple Lossless Audio Codec) playback support
 FF_FDK_AAC		0		Enable AAC playback via the fraunhofer FDK AAC decoder (supports xHE-AAC decoding)
 					Requires FF_EXTRA_CODECS=1 and NON_FREE=1
 FF_HEVC			1		HEVC (H.265) playback support
+
+FONTATIONS		1		0 - Disable (ie hard disable with a patch)
+					1 - Enable (need to uncomment the enable-fontations-backend flag /etc/chromium.d/miscellaneous)
+					2 - Fully enable
+
 GL_DESKTOP_FRONTEND	0		Angle GL desktop frontend (GLX integration)
 
 GOOGLE_API_KEYS		1		0 - disable
