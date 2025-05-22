@@ -96,6 +96,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$LENS_TRANSLATE" ] || LENS_TRANSLATE=1
 [ -n "$LOCALES_EXTRA" ] || LOCALES_EXTRA=1
 [ -n "$MUTEX_PI" ] || MUTEX_PI=1
+[ -n "$NO_SYS_LIBS" ] || NO_SYS_LIBS=0
 [ -n "$OAUTH2" ] || OAUTH2=0
 [ -n "$OPENTYPE_SVG" ] || OPENTYPE_SVG=0
 [ -n "$OZONE_WAYLAND" ] || OZONE_WAYLAND=1
@@ -123,6 +124,23 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$WEBFEED" ] || WEBFEED=1
 [ -n "$WEBGPU" ] || WEBGPU=0
 [ -n "$WIDEVINE" ] || WIDEVINE=1
+
+
+if [ $NO_SYS_LIBS -eq 1 ]; then
+  # Zero all SYS_* library variables before any are declared later on
+  for i in SYS_BROTLI SYS_DRM SYS_ICU SYS_JPEG SYS_OPENH264 SYS_WEBP SYS_ZSTD VAAPI; do
+    eval $i=0
+  done
+
+  # Disable dependencies for system libraries without configuration variables
+  for i in double-conversion libflac libopus libpng libsecret libusb libXNVCtrl; do
+    deps_disable="$deps_disable $i"
+  done
+
+  # Disable the unbundle toolchain, sys library GN_FLAGS and non-configurable SYS_LIBS
+  RUL="$RUL -e \"/_toolchain=/s@^@#@\" -e \"/^[^#].*use_system/s@^@#@\""
+  RUL="$RUL -e \"/^SYS_LIBS.*double-conversion/s@^@#@\""
+fi
 
 [ -n "$SYS_ICU" ] || SYS_ICU=0
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1

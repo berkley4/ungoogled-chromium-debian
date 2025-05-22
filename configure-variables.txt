@@ -198,6 +198,8 @@ WIDEVINE		1		Needs various extra components to enable
 
 ## Libraries
 
+NO_SYS_LIBS		0		Disable all unbundling and compile with no system libraries
+
 OPENH264		1		Used for software h264 media encoding and webrtc h264 encoding/decoding
 					Enable building with OpenH264 support
 
