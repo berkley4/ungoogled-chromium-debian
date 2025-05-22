@@ -1,17 +1,19 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1953,6 +1953,18 @@
+@@ -1953,6 +1953,20 @@
                                  # (crbug.com/40285259)
      ]
  
 +    if (is_linux && is_clang) {
 +      cflags += [
-+        # Clang 18 excessive warnings
++        # Clang excessive warnings
++        "-Wno-deprecated-builtins",
 +        "-Wno-deprecated-copy",
 +        "-Wno-include-angled-in-module-purview",
 +        "-Wno-invalid-offsetof",
 +        "-Wno-nontrivial-memcall",
 +        "-Wno-thread-safety-reference-return",
++        "-Wno-unnecessary-virtual-specifier",
 +        "-Wno-vla-cxx-extension",
 +      ]
 +    }
