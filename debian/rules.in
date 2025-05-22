@@ -116,6 +116,12 @@ GN_FLAGS +=					\
 # (this needs to be run anyway when self-compiling).
 
 
+### Code/Compiler build options
+
+# Enable mutex priority inheritance
+GN_FLAGS += enable_mutex_priority_inheritance=true
+
+
 ### General components
 
 # Enable AC3/EAC3 decoding
@@ -160,9 +166,6 @@ GN_FLAGS += enterprise_watermark=false
 
 # Disable media remoting
 GN_FLAGS += enable_media_remoting=false
-
-# Enable mutex priority inheritance
-GN_FLAGS += enable_mutex_priority_inheritance=true
 
 # Disable openh264
 #GN_FLAGS += media_use_openh264=false rtc_use_h264=false
