@@ -194,7 +194,6 @@ WEBGPU			0		WebGPU (likely beta quality at the time of writing)
 
 WEBFEED			1		Webfeed - toggles the --enable-features=WebFeedKillSwitch runtime flag (0 = disable webfeed)
 WIDEVINE		1		Needs various extra components to enable
-ZSTD			0		Used for the bleeding edge zstd content encoding (web server compression)
 
 
 ## Libraries
@@ -210,6 +209,7 @@ SYS_ICU			0
 SYS_JPEG		1		Set to zero if building for both debian and ubuntu (unsupported)
 SYS_OPENH264		1		The bundled OpenH264 library (SYS_OPENH264=0) cannot be redistributed
 SYS_WEBGL		1		Disabled by default when STABLE=1
+SYS_ZSTD		0		Used for the bleeding edge zstd content encoding (web server compression)
 
 
 ## CPU threading options

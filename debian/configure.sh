@@ -123,10 +123,10 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$WEBFEED" ] || WEBFEED=1
 [ -n "$WEBGPU" ] || WEBGPU=0
 [ -n "$WIDEVINE" ] || WIDEVINE=1
-[ -n "$ZSTD" ] || ZSTD=0
 
 [ -n "$SYS_ICU" ] || SYS_ICU=0
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
+[ -n "$SYS_ZSTD" ] || SYS_ZSTD=0
 
 ## Allow force-enabling brotli for stable users who have installed my deb packages
 [ -n "$SYS_BROTLI" ] && SYS_BROTLI_SET=1 || SYS_BROTLI=1
@@ -1014,7 +1014,7 @@ if [ $PDF_JS -eq 1 ]; then
   gn_disable="$gn_disable pdf_enable_v8=false"
 
   # Prevent libzstd being enabled twice
-  if [ $ZSTD -eq 0 ]; then
+  if [ $SYS_ZSTD -eq 0 ]; then
     deps_enable="$deps_enable libzstd"
   fi
 fi
@@ -1243,7 +1243,7 @@ if [ $SYS_OPENH264 -eq 0 ]; then
 fi
 
 
-if [ $ZSTD -eq 1 ]; then
+if [ $SYS_ZSTD -eq 1 ]; then
   sys_enable="$sys_enable zstd"
   deps_enable="$deps_enable libzstd"
 
