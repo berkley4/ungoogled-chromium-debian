@@ -55,7 +55,6 @@ Build-Depends:
  libfontconfig-dev,
 #libharfbuzz-dev,
 #libicu-dev (<= 74.2-1),
-#libtiff-dev,
 #libxslt1-dev,
 #libzstd-dev
 

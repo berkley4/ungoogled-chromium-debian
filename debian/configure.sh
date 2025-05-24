@@ -1025,16 +1025,8 @@ fi
 
 
 if [ $PDF_JS -eq 1 ]; then
-  gn_enable="$gn_enable use_system_libtiff=true"
-  deps_enable="$deps_enable libtiff"
-
   # GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
   gn_disable="$gn_disable pdf_enable_v8=false"
-
-  # Prevent libzstd being enabled twice
-  if [ $SYS_ZSTD -eq 0 ]; then
-    deps_enable="$deps_enable libzstd"
-  fi
 fi
 
 
