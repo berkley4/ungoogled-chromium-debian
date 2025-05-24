@@ -44,6 +44,7 @@ Build-Depends:
  libxnvctrl-dev,
  libopenh264-dev,
  libpipewire-0.3-dev,
+ libpng-dev,
  libpulse-dev,
  libsecret-1-dev,
  libusb-1.0-0-dev,
@@ -54,7 +55,6 @@ Build-Depends:
  libfontconfig-dev,
 #libharfbuzz-dev,
 #libicu-dev (<= 74.2-1),
-#libpng-dev,
 #libtiff-dev,
 #libxslt1-dev,
 #libzstd-dev

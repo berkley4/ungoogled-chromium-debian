@@ -1318,7 +1318,6 @@ if [ $SYS_BROTLI -eq 0 ]; then
 
   if [ $SYS_ICU -eq 0 ]; then
     sys_enable="$sys_enable libpng"
-    deps_enable="$deps_enable libpng"
   fi
 fi
 
