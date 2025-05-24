@@ -80,6 +80,7 @@ various/fixes/enterprise-buildflags.patch
 various/fixes/ffmpeg-codec-list.patch
 various/fixes/gperf-fallthrough.patch
 various/fixes/InkDropHost-crash.patch
+various/fixes/pdfium-png-decoder.patch
 various/fixes/pipewire-cfi-suppressions.patch
 various/fixes/shim-fix-for-official-builds.patch
 various/fixes/silence-some-error-log-messages.patch
