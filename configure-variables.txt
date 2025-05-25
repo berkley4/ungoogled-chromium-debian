@@ -151,6 +151,7 @@ MEDIA_REMOTING		0		Render and play back media on remote devices when a tab is ca
 					Depends on CHROMECAST=1 (which is not the default)
 
 MUTEX_PI		1		Mutex priority inheritance
+PART_LOCK_PI		1		Partition lock priority inheritance
 
 NOTIFICATIONS		1		An alias for DBUS
 SYS_NOTIFICATIONS	1		System notifications (chrome will fall back to using native notifications if disabled)

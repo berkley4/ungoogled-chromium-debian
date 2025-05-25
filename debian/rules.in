@@ -118,6 +118,9 @@ GN_FLAGS +=					\
 
 ### Code/Compiler build options
 
+# Enable partition lock priority inheritance
+GN_FLAGS += enable_partition_lock_priority_inheritance=true
+
 # Enable mutex priority inheritance
 GN_FLAGS += enable_mutex_priority_inheritance=true
 

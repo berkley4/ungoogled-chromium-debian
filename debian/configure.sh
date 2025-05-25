@@ -100,6 +100,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$OAUTH2" ] || OAUTH2=0
 [ -n "$OPENTYPE_SVG" ] || OPENTYPE_SVG=0
 [ -n "$OZONE_WAYLAND" ] || OZONE_WAYLAND=1
+[ -n "$PART_LOCK_PI" ] || PART_LOCK_PI=1
 [ -n "$PARTALLOC_MR" ] || PARTALLOC_MR=1
 [ -n "$PDF_JS" ] || PDF_JS=0
 [ -n "$PIPEWIRE" ] || PIPEWIRE=1
@@ -257,6 +258,12 @@ if [ $QT -ge 1 ]; then
     printf '%s\n' "ERROR: Cannot set QT_6=1 when STABLE=1"
     exit 1
   fi
+fi
+
+
+if [ $MUTEX_PI -eq 0 ] && [ $PART_LOCK_PI -eq 1 ]; then
+  printf '%s\n' "ERROR: Cannot set PART_LOCK_PI=1 when MUTEX_PI=0"
+  exit 1
 fi
 
 
@@ -1001,6 +1008,11 @@ fi
 if [ $MUTEX_PI -eq 0 ]; then
   op_disable="$op_disable mutex-priority-inheritance.patch"
   gn_disable="$gn_disable enable_mutex_priority_inheritance=true"
+else
+  # The build flag is disabled separately a few lines below
+  if [ $PART_LOCK_PI -eq 0 ]; then
+    op_enable="$op_enable fixes/partition-lock-priority-inheritance.patch"
+  fi
 fi
 
 
@@ -1021,6 +1033,11 @@ fi
 
 if [ $PARTALLOC_MR -eq 0 ]; then
   sed -e '/PartitionAllocFewerMemoryRegions/s@^@#@' -i $FLAG_DIR/miscellaneous
+fi
+
+
+if [ $PART_LOCK_PI -eq 0 ]; then
+  gn_disable="$gn_disable enable_partition_lock_priority_inheritance=true"
 fi
 
 
