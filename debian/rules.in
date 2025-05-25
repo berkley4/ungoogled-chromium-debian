@@ -174,7 +174,7 @@ GN_FLAGS += enable_media_remoting=false
 GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
 
 # Enable fontations support for pdfium
-#GN_FLAGS += pdf_enable_fontations=true
+GN_FLAGS += pdf_enable_fontations=true
 
 # Enable pipewire
 GN_FLAGS += rtc_use_pipewire=true
