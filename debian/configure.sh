@@ -261,6 +261,12 @@ if [ $QT -ge 1 ]; then
 fi
 
 
+if [ $FONTATIONS -eq 0 ] && [ $FONTATIONS_PDF -eq 1 ]; then
+  printf '%s\n' "ERROR: Cannot set FONTATIONS_PDF=1 when FONTATIONS=0"
+  exit 1
+fi
+
+
 if [ $MUTEX_PI -eq 0 ] && [ $PART_LOCK_PI -eq 1 ]; then
   printf '%s\n' "ERROR: Cannot set PART_LOCK_PI=1 when MUTEX_PI=0"
   exit 1
