@@ -6,5 +6,8 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=SpoofWebGLInfo"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --reduce-accept-language"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --reduce-accept-language-http"
 
+# Reduce the amount of system info obatainable through headers and javascript
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --reduced-system-info"
+
 # Mitigate against audio context fingerprinting (non-free builds only)
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --fingerprinting-audio-context-data-noise"
