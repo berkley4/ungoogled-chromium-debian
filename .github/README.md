@@ -39,12 +39,14 @@ ___Performance improvements___
 - Profile Guided Optimisation (PGO) - a smaller, faster chrome binary
 - PartitionAlloc pointer compression - should help reduce memory usage and help boost performance
 - Mutex Priority Inheritance - greater smoothness and responsiveness (see [here](https://lwn.net/Articles/177111/))
+- Partition Lock Priority Inheritance - equivalent to the above but for futexes instead of mutexes
 - The ffmpeg and core media components have been patched to use the -O3 optimisation level
 - Various compiler flags aimed at improving speed
     - -march=[x86-64-v2](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels)
     - -maes - enables AES instructions
     - -mpclmul - enables CLMUL instructions
     - -mavx - enables AVX instructions (AVX2 is available via an optional patch)
+    - -Ctarget-cpu/-Ctarget-feature are available to set the equivalent march/instruction rust flags
     - -fno-plt - (see [here](https://patchwork.ozlabs.org/project/gcc/patch/alpine.LNX.2.11.1505061730460.22867@monopod.intra.ispras.ru/))
     - -fsplit-machine-functions - (see [here](https://groups.google.com/g/llvm-dev/c/RUegaMg-iqc/m/wFAVxa6fCgAJ))
     - -import-hot-multiplier=14
@@ -71,7 +73,6 @@ ___Security/Privacy improvements___
 - Text fragments are disabled by default via the poilcy file (see [here](https://xsleaks.dev/docs/attacks/experiments/scroll-to-text-fragment/) for more info)
 - Some security/privacy themed flag files are installed to /etc/chromium.d
 - Potentially privacy/security -unfriendly Google features are guarded behind runtime flags
-    - Chromecast
     - Google Lens
     - Google Translate
     - WebGPU
@@ -103,6 +104,7 @@ ___Other features___
 - Extra build flags to prevent the building of unneeded testing/debug/development features
 - Patches to force skia to use bundled freetype and harfbuzz libraries (where appropriate)
 - System libraries are enabled only when they don't clash with built-in libraries
+- Fontations support for pdfium pdf reader
 - Experimental Opentype SVG support (via third party patches)
 - HEVC (h265) playback support (via third party patches)
 - AC3/EAC3 playback support
@@ -124,6 +126,7 @@ ___Build system___
     - it takes out much of the complexity that might otherwise be present in debian/rules
     - it handles dependencies, patches, enabling/disabling system libraries and components
     - it allows users to easily customise the build via the setting of variables
+- Building without any system libraries (no unbundling) is supported
 - A script is provided to automate the building of a Widevine CDM deb package
 
 - - - -
