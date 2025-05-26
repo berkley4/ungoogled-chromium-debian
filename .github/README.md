@@ -177,6 +177,24 @@ Builders can do the same at compile time by configuring with DNS_BUILTIN=1.
 
 - - - -
 
+# Spoofing the user agent header
+
+Edit /etc/chromium.d/user-agent.sample with your preferred user agent
+string (it needs to be enclosed in double-quotes). Then run the following
+command :-
+
+
+```
+mv /etc/chromium.d/user-agent.sample /etc/chromium.d/user-agent
+```
+
+To stop spoofing the user agent, just rename the file to a name which contains
+'user-agent', eg 'user-agent.bak'. The shell launcher will not treat such files
+as flag files and will thus not try to source them.
+
+
+- - - -
+
 # WebRTC IP Leak protection
 
 The WebRtcIPHandling key in /etc/chromium/policies/managed/policies.json

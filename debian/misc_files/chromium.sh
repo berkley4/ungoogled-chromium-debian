@@ -110,7 +110,7 @@ read BLOCKED_FILES < /etc/chromium.d/blocked-files
 eval "
 for file in /etc/chromium.d/*; do
   case \${file##*/} in
-    $BLOCKED_FILES|*.dpkg-*)
+    $BLOCKED_FILES|*.dpkg-*|*user-agent*)
       continue ;;
 
     blocked-flags)
@@ -158,6 +158,14 @@ while [ $# -gt 0 -a $# -ne $extra_args ]; do
       break ;;
   esac
 done
+
+
+# Handle /etc/chromium.d/user-agent (if the file exists)
+if [ -f /etc/chromium.d/user-agent ]; then
+  read USER_AGENT < /etc/chromium.d/user-agent
+  set -- "$@" "--user-agent=$USER_AGENT"
+fi
+
 
 # Remove blocked flags if any exist within CHROMIUM_FLAGS
 if [ -n "$BLOCKED_FLAGS" ]; then
