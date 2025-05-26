@@ -1,4 +1,10 @@
+# Return generic values for WebGLDebugRendererInfo
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=SpoofWebGLInfo"
+
+# Reduce the amount of language info revealed in Accept-Language request header
+# See - https://github.com/explainers-by-googlers/reduce-accept-language
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --reduce-accept-language"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --reduce-accept-language-http"
 
 # Mitigate against audio context fingerprinting (non-free builds only)
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --fingerprinting-audio-context-data-noise"
