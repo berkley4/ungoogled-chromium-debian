@@ -3,7 +3,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
 
 --- a/chrome/test/chromedriver/chrome/chrome_finder.cc
 +++ b/chrome/test/chromedriver/chrome/chrome_finder.cc
-@@ -68,9 +68,6 @@
+@@ -69,9 +69,6 @@
    locations->emplace_back("/usr/bin");
    locations->emplace_back("/sbin");
    locations->emplace_back("/bin");
@@ -13,7 +13,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
  }
  #elif BUILDFLAG(IS_ANDROID)
  void GetApplicationDirs(std::vector<base::FilePath>* locations) {
-@@ -128,7 +125,6 @@
+@@ -129,7 +126,6 @@
  #elif BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
      base::FilePath(chrome::kBrowserProcessExecutablePath),
          base::FilePath("chrome"),  // Chrome for Testing or Google Chrome

@@ -1,6 +1,6 @@
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.asm
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.asm
-@@ -714,8 +714,8 @@
+@@ -718,8 +718,8 @@
  %define CONFIG_H264PRED 1
  %define CONFIG_H264QPEL 1
  %define CONFIG_H264_SEI 1

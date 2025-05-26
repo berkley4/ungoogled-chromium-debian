@@ -1,6 +1,6 @@
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -721,7 +721,7 @@
+@@ -723,7 +723,7 @@
  
  BASE_FEATURE(kDisableThirdPartyStoragePartitioning3DeprecationTrial,
               "DisableThirdPartyStoragePartitioning3DeprecationTrial",
@@ -11,7 +11,7 @@
  // signal that the renderer has sent a frame to cc (https://crbug.com/40057499).
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -1638,7 +1638,7 @@
+@@ -1717,7 +1717,7 @@
        origin_trial_type: "deprecation",
        origin_trial_allows_insecure: true,
        origin_trial_allows_third_party: true,

@@ -5,14 +5,36 @@ it.
 
 --- a/.gn
 +++ b/.gn
-@@ -146,8 +146,8 @@
+@@ -146,9 +146,9 @@
  #      this situation much easier to create. if the build always lists the
  #      files and passes them to a script, it will always be correct.
  
 -exec_script_allowlist =
 -    build_dotfile_settings.exec_script_allowlist +
+-    angle_dotfile_settings.exec_script_allowlist +
 +exec_script_whitelist =
 +    build_dotfile_settings.exec_script_whitelist +
-     angle_dotfile_settings.exec_script_whitelist +
++    angle_dotfile_settings.exec_script_whitelist +
      [
        # Allowlist entries for //build should go into
+       # //build/dotfile_settings.gni instead, so that they can be shared
+--- a/build/dotfile_settings.gni
++++ b/build/dotfile_settings.gni
+@@ -6,7 +6,7 @@
+ # to make it easier to roll new versions of //build in.
+ 
+ build_dotfile_settings = {
+-  exec_script_allowlist = [
++  exec_script_whitelist = [
+     "//build/config/android/rules.gni",
+     "//build/config/apple/mobile_config.gni",
+     "//build/config/chromeos/rules.gni",
+--- a/third_party/angle/dotfile_settings.gni
++++ b/third_party/angle/dotfile_settings.gni
+@@ -6,5 +6,5 @@
+ # to make it easier to roll new versions of ANGLE in.
+ 
+ angle_dotfile_settings = {
+-  exec_script_allowlist = [ get_path_info("BUILD.gn", "abspath") ]
++  exec_script_whitelist = [ get_path_info("BUILD.gn", "abspath") ]
+ }

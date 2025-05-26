@@ -1,10 +1,10 @@
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -8219,7 +8219,6 @@
+@@ -8310,7 +8310,6 @@
        "//chrome/browser/webauthn:test_support",
        "//chrome/browser/webauthn/proto",
        "//chrome/common/read_anything:mojo_bindings",
 -      "//chrome/services/speech:unit_tests",
        "//components/app_constants",
+       "//components/application_locale_storage",
        "//components/color",
-       "//components/commerce/core:account_checker_test_support",

@@ -13,7 +13,7 @@
  
 --- a/media/base/BUILD.gn
 +++ b/media/base/BUILD.gn
-@@ -419,9 +419,10 @@
+@@ -415,9 +415,10 @@
    ]
  
    libs = []

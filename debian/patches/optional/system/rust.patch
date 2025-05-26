@@ -5,7 +5,7 @@ cp: cannot stat 'default_for_rust_host_build_tools/obj/build/rust/std/libadler2.
 
 --- a/build/rust/std/BUILD.gn
 +++ b/build/rust/std/BUILD.gn
-@@ -89,7 +89,7 @@
+@@ -50,7 +50,7 @@
      # These are no longer present in the Windows toolchain.
      stdlib_files += [
        "addr2line",

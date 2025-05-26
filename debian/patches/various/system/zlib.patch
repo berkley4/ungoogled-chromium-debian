@@ -66,7 +66,7 @@
  
 --- a/content/browser/tracing/tracing_controller_impl_data_endpoint.cc
 +++ b/content/browser/tracing/tracing_controller_impl_data_endpoint.cc
-@@ -24,7 +24,7 @@
+@@ -20,7 +20,7 @@
  #include "content/public/browser/browser_task_traits.h"
  #include "content/public/browser/browser_thread.h"
  #include "content/public/browser/tracing_controller.h"
@@ -154,15 +154,15 @@
  
 --- a/third_party/blink/renderer/modules/compression/deflate_transformer.cc
 +++ b/third_party/blink/renderer/modules/compression/deflate_transformer.cc
-@@ -13,6 +13,8 @@
+@@ -8,6 +8,8 @@
  #include <cstring>
  #include <limits>
  
 +#include <zlib.h>
 +
+ #include "base/compiler_specific.h"
  #include "base/trace_event/typed_macros.h"
  #include "third_party/blink/renderer/bindings/core/v8/script_promise.h"
- #include "third_party/blink/renderer/bindings/core/v8/to_v8_traits.h"
 --- a/third_party/blink/renderer/modules/compression/deflate_transformer.h
 +++ b/third_party/blink/renderer/modules/compression/deflate_transformer.h
 @@ -9,7 +9,7 @@
@@ -176,15 +176,15 @@
  
 --- a/third_party/blink/renderer/modules/compression/inflate_transformer.cc
 +++ b/third_party/blink/renderer/modules/compression/inflate_transformer.cc
-@@ -13,6 +13,8 @@
+@@ -8,6 +8,8 @@
  #include <cstring>
  #include <limits>
  
 +#include <zlib.h>
 +
+ #include "base/compiler_specific.h"
  #include "base/trace_event/typed_macros.h"
  #include "third_party/blink/renderer/bindings/core/v8/script_promise.h"
- #include "third_party/blink/renderer/bindings/core/v8/to_v8_traits.h"
 --- a/third_party/blink/renderer/modules/compression/inflate_transformer.h
 +++ b/third_party/blink/renderer/modules/compression/inflate_transformer.h
 @@ -10,7 +10,7 @@

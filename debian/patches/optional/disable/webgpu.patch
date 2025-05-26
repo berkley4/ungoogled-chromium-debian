@@ -68,9 +68,9 @@
 +        "//third_party/dawn/src/dawn/native",
 +      ]
 +    }
-     if (use_blink) {
-       deps += [ "//gpu/config" ]
-     }
+     if (enable_constraints) {
+       defines += [ "ENABLE_ON_DEVICE_CONSTRAINTS" ]
+       deps += [
 --- a/services/on_device_model/pre_sandbox_init.cc
 +++ b/services/on_device_model/pre_sandbox_init.cc
 @@ -16,9 +16,11 @@

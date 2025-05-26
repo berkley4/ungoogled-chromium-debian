@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2575,6 +2575,7 @@
+@@ -2636,6 +2636,7 @@
  # [1]: https://pinpoint-dot-chromeperf.appspot.com/job/132bc772be0000
  # [2]: https://crrev.com/c/5447532
  config("optimize") {
@@ -8,7 +8,7 @@
    if (is_win) {
      # clang-cl's /O2 corresponds to clang's -O3, and really want -O2 for
      # consistency with the other platforms.
-@@ -2614,12 +2615,15 @@
+@@ -2675,12 +2676,15 @@
    } else {
      cflags = [ "-O2" ] + common_optimize_on_cflags
  
@@ -25,7 +25,7 @@
  }
  
  # Turn off optimizations.
-@@ -2679,6 +2683,9 @@
+@@ -2740,6 +2744,9 @@
        cflags = [ "-O1" ] + common_optimize_on_cflags
      } else {
        cflags = [ "-O2" ] + common_optimize_on_cflags
@@ -35,7 +35,7 @@
      }
      rustflags = [ "-Copt-level=3" ]
    }
-@@ -2715,6 +2722,9 @@
+@@ -2776,6 +2783,9 @@
        cflags = [ "-O1" ] + common_optimize_on_cflags
      } else {
        cflags = [ "-O3" ] + common_optimize_on_cflags

@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1953,6 +1953,20 @@
+@@ -2021,6 +2021,20 @@
                                  # (crbug.com/40285259)
      ]
  

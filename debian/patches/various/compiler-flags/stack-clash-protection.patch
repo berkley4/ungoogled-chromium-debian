@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -3199,6 +3199,16 @@
+@@ -3260,6 +3260,16 @@
    }
  }
  

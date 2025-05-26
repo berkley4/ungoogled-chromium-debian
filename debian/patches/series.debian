@@ -52,6 +52,8 @@ vanadinite/0010-enable-partitioning-connections-by-default.patch
 vanadinite/0011-disable-component-updater-pings-by-default.patch
 vanadinite/0012-enable-strict-origin-isolation-by-default.patch
 vanadinite/0014-enable-partitioning-third-party-storage.patch
+vanadinite/0015-enable-partitioning-content-settings-by-default.patch
+vanadinite/0016-enable-partitioning-visited-links-by-default.patch
 
 various/compiler-flags/do-not-link-with-libatomic.patch
 various/compiler-flags/ffmpeg-optimize-speed-O3.patch
@@ -78,10 +80,8 @@ various/disable/image-writer/image-writer-utility.patch
 various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
 various/fixes/enterprise-buildflags.patch
 various/fixes/ffmpeg-codec-list.patch
-various/fixes/gperf-fallthrough.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/pdfium-png-decoder.patch
-various/fixes/pipewire-cfi-suppressions.patch
 various/fixes/shim-fix-for-official-builds.patch
 various/fixes/silence-some-error-log-messages.patch
 various/fixes/swiftshader-build.patch
@@ -90,7 +90,6 @@ various/fixes/test-dependencies.patch
 various/fixes/unbundle-script-dh-clean-interoperabilty.patch
 various/fixes/unshrink-ui-font.patch
 various/fixes/webrtc-filter-labels.patch
-various/fixes/xdg-basedir.patch
 various/system/libdrm.patch
 various/system/libusb-api.patch
 various/system/libxml2.patch
@@ -123,7 +122,6 @@ optional/disable/catapult.patch
 #optional/disable/click-to-call.patch
 optional/disable/dns_config_service.patch
 optional/disable/enterprise-watermark.patch
-optional/disable/extensions-in-root-menu.patch
 #optional/disable/fontations.patch
 #optional/disable/headless.patch
 optional/disable/media-router.patch

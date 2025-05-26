@@ -1,6 +1,6 @@
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -29,7 +29,7 @@
+@@ -30,7 +30,7 @@
               "AsyncDns",
  #if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_ANDROID) || \
      BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX)

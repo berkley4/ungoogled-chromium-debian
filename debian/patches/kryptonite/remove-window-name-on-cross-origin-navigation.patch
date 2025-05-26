@@ -1,6 +1,6 @@
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
-@@ -194,7 +194,7 @@
+@@ -193,7 +193,7 @@
  // swap BrowsingContextGroups(BrowsingInstances).
  BASE_FEATURE(kClearCrossSiteCrossBrowsingContextGroupWindowName,
               "ClearCrossSiteCrossBrowsingContextGroupWindowName",

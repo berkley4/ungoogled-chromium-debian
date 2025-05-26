@@ -20,7 +20,7 @@
  import("//media/media_options.gni")
  import("//ppapi/buildflags/buildflags.gni")
  import("//third_party/angle/gni/angle.gni")
-@@ -1689,7 +1690,7 @@
+@@ -1693,7 +1694,7 @@
          ":angle_gles_symbols",
          ":chrome_symbols",
        ]
@@ -29,7 +29,7 @@
          deps += [ ":swiftshader_vk_symbols" ]
        }
        if (!is_chromeos && angle_shared_libvulkan) {
-@@ -1725,17 +1726,19 @@
+@@ -1729,17 +1730,19 @@
          deps = [ "//components/crash/core/app:chrome_crashpad_handler" ]
        }
      }
