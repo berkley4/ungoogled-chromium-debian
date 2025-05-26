@@ -222,7 +222,7 @@ GN_FLAGS += tint_build_glsl_writer=false tint_build_hlsl_writer=false tint_build
 GN_FLAGS += dawn_enable_vulkan=false
 
 # Disable zstd
-GN_FLAGS += disable_zstd_filter=true
+#GN_FLAGS += disable_zstd_filter=true
 
 
 ### CPU intructions
@@ -293,7 +293,7 @@ SYS_LIBS += libwebp
 SYS_LIBS += openh264
 
 # Enable zstd
-#SYS_LIBS += zstd
+SYS_LIBS += zstd
 
 # Stable users can insert backported libraries below
 #SYS_LIBS +=

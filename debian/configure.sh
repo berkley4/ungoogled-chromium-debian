@@ -145,7 +145,7 @@ fi
 
 [ -n "$SYS_ICU" ] || SYS_ICU=0
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
-[ -n "$SYS_ZSTD" ] || SYS_ZSTD=0
+[ -n "$SYS_ZSTD" ] || SYS_ZSTD=1
 
 ## Allow force-enabling brotli for stable users who have installed my deb packages
 [ -n "$SYS_BROTLI" ] && SYS_BROTLI_SET=1 || SYS_BROTLI=1
@@ -1276,11 +1276,11 @@ if [ $SYS_OPENH264 -eq 0 ]; then
 fi
 
 
-if [ $SYS_ZSTD -eq 1 ]; then
-  sys_enable="$sys_enable zstd"
-  deps_enable="$deps_enable libzstd"
+if [ $SYS_ZSTD -eq 0 ]; then
+  sys_disable="$sys_disable zstd"
+  deps_disable="$deps_disable libzstd"
 
-  POL="$POL -e \"/ZstdContentEncodingEnabled/s@false@true@\""
+  POL="$POL -e \"/ZstdContentEncodingEnabled/s@true@false@\""
 fi
 
 

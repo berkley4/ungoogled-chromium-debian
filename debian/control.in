@@ -50,13 +50,13 @@ Build-Depends:
  libusb-1.0-0-dev,
  libva-dev,
  libwebp-dev,
+ libzstd-dev,
  qtbase5-dev,
  libdav1d-dev,
  libfontconfig-dev,
 #libharfbuzz-dev,
 #libicu-dev (<= 74.2-1),
-#libxslt1-dev,
-#libzstd-dev
+#libxslt1-dev
 
 Package: ungoogled-chromium
 Architecture: i386 amd64 arm64 armhf
