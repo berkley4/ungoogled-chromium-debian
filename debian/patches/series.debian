@@ -41,19 +41,19 @@ kryptonite/stop-omnibar-searches-triggering-dns-requests.patch
 vanadium/0053-stub-out-the-battery-status-API.patch
 
 vanadinite/0001-switch-to-fstack-protector-strong.patch
-vanadinite/0003-disable-showing-popular-sites-by-default.patch
-vanadinite/0004-disable-article-suggestions-feature-by-default.patch
-vanadinite/0005-disable-content-feed-suggestions-by-default.patch
-vanadinite/0006-disable-sensors-access-by-default.patch
-vanadinite/0007-disable-background-sync-by-default.patch
-vanadinite/0008-disable-media-DRM-preprovisioning-by-default.patch
-vanadinite/0009-enable-split-cache-by-default.patch
-vanadinite/0010-enable-partitioning-connections-by-default.patch
-vanadinite/0011-disable-component-updater-pings-by-default.patch
-vanadinite/0012-enable-strict-origin-isolation-by-default.patch
-vanadinite/0014-enable-partitioning-third-party-storage.patch
-vanadinite/0015-enable-partitioning-content-settings-by-default.patch
-vanadinite/0016-enable-partitioning-visited-links-by-default.patch
+vanadinite/0002-disable-showing-popular-sites-by-default.patch
+vanadinite/0003-disable-article-suggestions-feature-by-default.patch
+vanadinite/0004-disable-content-feed-suggestions-by-default.patch
+vanadinite/0005-disable-sensors-access-by-default.patch
+vanadinite/0006-disable-background-sync-by-default.patch
+vanadinite/0007-disable-media-DRM-preprovisioning-by-default.patch
+vanadinite/0008-enable-split-cache-by-default.patch
+vanadinite/0009-enable-partitioning-connections-by-default.patch
+vanadinite/0010-disable-component-updater-pings-by-default.patch
+vanadinite/0011-enable-strict-origin-isolation-by-default.patch
+vanadinite/0012-enable-partitioning-third-party-storage.patch
+vanadinite/0013-enable-partitioning-content-settings-by-default.patch
+vanadinite/0014-enable-partitioning-visited-links-by-default.patch
 
 various/compiler-flags/do-not-link-with-libatomic.patch
 various/compiler-flags/ffmpeg-optimize-speed-O3.patch
