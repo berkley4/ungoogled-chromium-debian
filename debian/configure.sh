@@ -28,7 +28,6 @@ RELEASE_SET=0
 SYS_BROTLI_SET=0
 SYS_DRM_SET=0
 SYS_WEBP_SET=0
-XZ_THREADED_SET=0
 
 LLVM_PGO_VER=20
 
@@ -125,6 +124,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$WEBFEED" ] || WEBFEED=1
 [ -n "$WEBGPU" ] || WEBGPU=0
 [ -n "$WIDEVINE" ] || WIDEVINE=1
+[ -n "$XZ_EXTREME" ] || XZ_EXTREME=0
 
 
 if [ $NO_SYS_LIBS -eq 1 ]; then
@@ -199,10 +199,6 @@ FF_AAC=1
 
 ## DNS config service
 [ -n "$DNS_CONFIG" ] || DNS_CONFIG=0
-
-## Package conpression: XZ_THREADED is disabled If XZ_EXTREME=0 or XZ_THREADED=0 (or both)
-[ -n "$XZ_EXTREME" ] || XZ_EXTREME=0
-[ -n "$XZ_THREADED" ] && XZ_THREADED_SET=1 || XZ_THREADED=0
 
 
 ## Disable non-free stuff if NON_FREE=0
@@ -389,11 +385,6 @@ esac
 
 if [ $XZ_EXTREME -eq 1 ]; then
   RUL="$RUL -e \"/dh_builddeb /s@\(.*\)@\1 -S extreme@\""
-  [ $XZ_THREADED_SET -eq 1 ] && [ $XZ_THREADED -eq 0 ] || XZ_THREADED=1
-fi
-
-if [ $XZ_THREADED -eq 1 ]; then
-  RUL="$RUL -e \"/dh_builddeb /s@\(.*\)@\1 --threads-max=\x24(JOBS)@\""
 fi
 
 
