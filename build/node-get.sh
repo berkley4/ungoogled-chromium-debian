@@ -6,9 +6,8 @@ USAGE="Usage: $SCRIPT <clean|c|help|h>"
 DL_CACHE=.download_cache
 
 NODE_DIR=src/third_party/node
-NODE_VER=20.18.1
-NODE_URL=https://nodejs.org/dist/v$NODE_VER/node-v$NODE_VER-linux-x64.tar.xz
-NODE_FILE=${NODE_URL##*/}
+NODE_BASE_URL=http://storage.googleapis.com/chromium-nodejs
+NODE_FILE=node-linux-x64.tar.gz
 
 
 case $USER in
@@ -42,7 +41,19 @@ if [ -d $NODE_DIR/linux/node-linux-x64 ]; then
   exit 1
 fi
 
-mkdir $NODE_DIR/linux
+if [ ! -f src/DEPS ]; then
+  printf '%s\n' "Cannot find src/DEPS"
+  exit 1
+fi
+
+
+[ -d $DL_CACHE ] || mkdir $DL_CACHE
+[ -d $NODE_DIR/linux ] || mkdir $NODE_DIR/linux
+
+
+O=$(sed -n '/\/node\/linux/,/object_/s@.*_name\x27: \x27\([a-f0-9]*\).*@\1@p' src/DEPS)
+
+NODE_URL=$NODE_BASE_URL/$O
 
 
 ## Prefer aria2c/fall back to wget
@@ -55,19 +66,12 @@ case $D_LOADER in
     dl_args="--continue -O $NODE_FILE -P $DL_CACHE" ;;
 esac
 
-[ -d $DL_CACHE ] || mkdir $DL_CACHE
-
-
-
-if [ ! -f $DL_CACHE/$NODE_FILE ]; then
-  $D_LOADER $dl_args $NODE_URL
-fi
+[ -f $DL_CACHE/$NODE_FILE ] || $D_LOADER $dl_args $NODE_URL
 
 
 printf '\n%s\n\n\n' "Extracting $NODE_FILE..."
 
-tar -C $NODE_DIR/linux --transform="s/-v$NODE_VER//" -xf $DL_CACHE/$NODE_FILE
-
+tar -C $NODE_DIR/linux -xf $DL_CACHE/$NODE_FILE
 
 
 exit $?
