@@ -1,6 +1,6 @@
 --- a/DEPS
 +++ b/DEPS
-@@ -582,22 +582,9 @@
+@@ -585,22 +585,9 @@
  ]
  
  deps = {
@@ -24,7 +24,7 @@
      'dep_type': 'gcs',
      'objects': [
        {
-@@ -610,7 +597,7 @@
+@@ -613,7 +600,7 @@
    },
    'src/build/linux/debian_bullseye_arm64-sysroot': {
      'bucket': 'chrome-linux-sysroot',
@@ -33,7 +33,7 @@
      'dep_type': 'gcs',
      'objects': [
        {
-@@ -623,7 +610,7 @@
+@@ -626,7 +613,7 @@
    },
    'src/build/linux/debian_bullseye_armhf-sysroot': {
      'bucket': 'chrome-linux-sysroot',
@@ -42,7 +42,7 @@
      'dep_type': 'gcs',
      'objects': [
        {
-@@ -636,7 +623,7 @@
+@@ -639,7 +626,7 @@
    },
    'src/build/linux/debian_bullseye_i386-sysroot': {
      'bucket': 'chrome-linux-sysroot',
@@ -51,7 +51,7 @@
      'dep_type': 'gcs',
      'objects': [
        {
-@@ -649,7 +636,7 @@
+@@ -652,7 +639,7 @@
    },
    'src/build/linux/debian_bullseye_mips64el-sysroot': {
      'bucket': 'chrome-linux-sysroot',
@@ -60,7 +60,7 @@
      'dep_type': 'gcs',
      'objects': [
        {
-@@ -662,7 +649,7 @@
+@@ -665,7 +652,7 @@
    },
    'src/build/linux/debian_bullseye_mipsel-sysroot': {
      'bucket': 'chrome-linux-sysroot',
@@ -69,7 +69,7 @@
      'dep_type': 'gcs',
      'objects': [
        {
-@@ -730,7 +717,7 @@
+@@ -733,7 +720,7 @@
    },
    'src/buildtools/linux64-format': {
      'bucket': 'chromium-clang-format',
@@ -78,7 +78,7 @@
      'dep_type': 'gcs',
      'objects': [
        {
-@@ -1014,10 +1001,6 @@
+@@ -1017,10 +1004,6 @@
        },
      ],
    },
@@ -89,7 +89,7 @@
    'src/buildtools/linux64': {
      'packages': [
        {
-@@ -1026,7 +1009,7 @@
+@@ -1029,7 +1012,7 @@
        }
      ],
      'dep_type': 'cipd',
@@ -98,7 +98,7 @@
    },
    'src/buildtools/mac': {
      'packages': [
-@@ -1055,7 +1038,7 @@
+@@ -1058,7 +1041,7 @@
          'version': Var('reclient_version'),
        }
      ],
@@ -107,7 +107,7 @@
      'dep_type': 'cipd',
    },
  
-@@ -1091,7 +1074,7 @@
+@@ -1094,7 +1077,7 @@
        },
      ],
      'dep_type': 'cipd',
@@ -116,7 +116,7 @@
    },
  
    'src/third_party/apache-windows-arm64': {
-@@ -1460,12 +1443,6 @@
+@@ -1463,12 +1446,6 @@
      'condition': 'checkout_chromium_password_manager_test_dependencies',
    },
  
@@ -129,7 +129,7 @@
    'src/chrome/test/data/safe_browsing/dmg': {
      'packages': [
        {
-@@ -1477,29 +1454,12 @@
+@@ -1480,29 +1457,12 @@
      'dep_type': 'cipd',
    },
  
@@ -137,7 +137,7 @@
 -    'packages': [
 -      {
 -        'package': 'chromium/chrome/test/data/variations/cipd',
--        'version': 'm_8OnrL7OWVAYgJJe0VG1lwOldpc_EID1Dix-cplniEC',
+-        'version': 'nr-vDkyS76OsLfoTQ-B8JX7NBOveLZpCQZy6U9eble4C',
 -      },
 -    ],
 -    'dep_type': 'cipd',
@@ -148,18 +148,18 @@
 -
    'src/clank': {
      'url': Var('chrome_git') + '/clank/internal/apps.git' + '@' +
-     '4c2534a677da37a653381be2eea7e7e12cd47df4',
+     'f22abee8bc4b496cc03b4de56f32ddeb7d8b80b0',
      'condition': 'checkout_android and checkout_src_internal',
    },
  
 -  'src/docs/website': {
--    'url': Var('chromium_git') + '/website.git' + '@' + '929dd3e6d02aac1f46653d03b2a644e2873a3bbb',
+-    'url': Var('chromium_git') + '/website.git' + '@' + 'e157e12d99cfc729a970b474344673c44e2d2c9c',
 -  },
 -
    'src/ios/third_party/earl_grey2/src': {
-       'url': Var('chromium_git') + '/external/github.com/google/EarlGrey.git' + '@' + '49236df34a0898a221d1f11d4cc8ea6b925f13a8',
+       'url': Var('chromium_git') + '/external/github.com/google/EarlGrey.git' + '@' + 'e79d4348b3734a9e85c95a417cbbadf9214f88cd',
        'condition': 'checkout_ios',
-@@ -1587,9 +1547,6 @@
+@@ -1590,9 +1550,6 @@
    'src/net/third_party/quiche/src':
      Var('quiche_git') + '/quiche.git' + '@' +  Var('quiche_revision'),
  
@@ -169,7 +169,7 @@
    'src/tools/copybara': {
        'packages' : [
            {
-@@ -1621,10 +1578,6 @@
+@@ -1624,10 +1581,6 @@
        'dep_type': 'cipd',
    },
  
@@ -180,7 +180,7 @@
    'src/third_party/android_build_tools/protoc/cipd': {
        'packages': [
            {
-@@ -1808,7 +1761,7 @@
+@@ -1811,7 +1764,7 @@
  
      'src/third_party/blink/renderer/core/css/perftest_data': {
        'dep_type': 'gcs',
@@ -189,7 +189,7 @@
        'bucket': 'chromium-style-perftest',
        'objects': [
            {
-@@ -1905,7 +1858,7 @@
+@@ -1908,7 +1861,7 @@
    # Download test data for Maps telemetry_gpu_integration_test.
    'src/tools/perf/page_sets/maps_perf_test/dataset': {
        'dep_type': 'gcs',
@@ -198,7 +198,7 @@
        'bucket': 'chromium-telemetry',
        'objects': [
            {
-@@ -1941,7 +1894,7 @@
+@@ -1944,7 +1897,7 @@
            },
        ],
        # Needed on Linux for use on chromium_presubmit.
@@ -207,7 +207,7 @@
        'dep_type': 'cipd',
    },
  
-@@ -1961,9 +1914,6 @@
+@@ -1964,9 +1917,6 @@
    'src/third_party/cld_3/src':
      Var('chromium_git') + '/external/github.com/google/cld_3.git' + '@' + 'b48dc46512566f5a2d41118c8c1116c4f96dc661',
  
@@ -217,7 +217,7 @@
    'src/third_party/cpu_features/src':
      Var('chromium_git') + '/external/github.com/google/cpu_features.git' + '@' + '936b9ab5515dead115606559502e3864958f7f6e',
  
-@@ -1979,8 +1929,6 @@
+@@ -1982,8 +1932,6 @@
        'condition': 'checkout_linux or checkout_chromeos',
    },
  
@@ -226,7 +226,7 @@
  
  
    'src/third_party/depot_tools':
-@@ -2051,9 +1999,6 @@
+@@ -2057,9 +2005,6 @@
    'src/third_party/freetype/src':
      Var('chromium_git') + '/chromium/src/third_party/freetype2.git' + '@' + Var('freetype_revision'),
  
@@ -236,7 +236,7 @@
    'src/third_party/fxdiv/src':
      Var('chromium_git') + '/external/github.com/Maratyszcza/FXdiv.git' + '@' + '63058eff77e11aa15bf531df5dd34395ec3017c8',
  
-@@ -2146,7 +2091,7 @@
+@@ -2152,7 +2097,7 @@
            },
        ],
        # Needed on Linux for use on chromium_presubmit.
@@ -245,7 +245,7 @@
        'dep_type': 'cipd',
    },
  
-@@ -2202,7 +2147,7 @@
+@@ -2208,7 +2153,7 @@
            },
        ],
        # Needed on Linux for use on chromium_presubmit (for checkstyle).
@@ -254,7 +254,7 @@
        'dep_type': 'cipd',
    },
  
-@@ -2253,15 +2198,6 @@
+@@ -2259,15 +2204,6 @@
    'src/third_party/leveldatabase/src':
      Var('chromium_git') + '/external/leveldb.git' + '@' + '4ee78d7ea98330f7d7599c42576ca99e3c6ff9c5',
  
@@ -270,15 +270,12 @@
    'src/third_party/libaddressinput/src':
      Var('chromium_git') + '/external/libaddressinput.git' + '@' + '2610f7b1043d6784ada41392fc9392d1ea09ea07',
  
-@@ -2271,15 +2207,6 @@
+@@ -2277,12 +2213,6 @@
    'src/third_party/crabbyavif/src':
      Var('chromium_git') + '/external/github.com/webmproject/CrabbyAvif.git' + '@' + Var('crabbyavif_revision'),
  
 -  'src/third_party/nearby/src':
 -    Var('chromium_git') + '/external/github.com/google/nearby-connections.git' + '@' + Var('nearby_revision'),
--
--  'src/third_party/beto-core/src':
--    Var('betocore_git') + '/beto-core.git' + '@' + Var('betocore_revision'),
 -
 -  'src/third_party/securemessage/src':
 -    Var('chromium_git') + '/external/github.com/google/securemessage.git' + '@' + Var('securemessage_revision'),
@@ -286,7 +283,7 @@
    'src/third_party/jetstream/main': {
      'url': Var('chromium_git') + '/external/github.com/WebKit/JetStream.git' + '@' + Var('jetstream_main_revision'),
      'condition': 'checkout_press_benchmarks',
-@@ -2315,12 +2242,6 @@
+@@ -2318,12 +2248,6 @@
      'condition': 'checkout_press_benchmarks',
    },
  
@@ -299,7 +296,7 @@
    'src/third_party/libdisplay-info/src': {
        'url': Var('chromium_git') + '/external/gitlab.freedesktop.org/emersion/libdisplay-info.git' + '@' + '66b802d05b374cd8f388dc6ad1e7ae4f08cb3300',
        'condition': 'checkout_linux and checkout_mutter',
-@@ -2348,7 +2269,7 @@
+@@ -2351,7 +2275,7 @@
    # The library for IPP protocol (Chrome OS).
    'src/third_party/libipp/libipp': {
        'url': Var('chromium_git') + '/chromiumos/platform2/libipp.git' + '@' + '2209bb84a8e122dab7c02fe66cc61a7b42873d7f',
@@ -308,7 +305,7 @@
    },
  
    'src/third_party/libjpeg_turbo':
-@@ -2356,7 +2277,7 @@
+@@ -2359,7 +2283,7 @@
  
    'src/third_party/liblouis/src': {
        'url': Var('chromium_git') + '/external/liblouis-github.git' + '@' + '9700847afb92cb35969bdfcbbfbbb74b9c7b3376',
@@ -317,7 +314,7 @@
    },
  
    'src/third_party/libphonenumber/dist':
-@@ -2379,9 +2300,6 @@
+@@ -2382,9 +2306,6 @@
        'condition': 'checkout_android',
    },
  
@@ -325,9 +322,9 @@
 -    Var('chromium_git') + '/chromiumos/platform/libva-fake-driver.git' + '@' + 'a9bcab9cd6b15d4e3634ca44d5e5f7652c612194',
 -
    'src/third_party/libvpx/source/libvpx':
-     Var('chromium_git') + '/webm/libvpx.git' + '@' +  '027bbee30a0103b99d86327b48d29567fed11688',
+     Var('chromium_git') + '/webm/libvpx.git' + '@' +  '40ec928b3fadcf8edd836445bb5842a11aeb7a2d',
  
-@@ -2488,7 +2406,7 @@
+@@ -2491,7 +2412,7 @@
          'version': Var('ninja_version'),
        }
      ],
@@ -336,7 +333,7 @@
      'dep_type': 'cipd',
    },
    'src/third_party/siso/cipd': {
-@@ -2498,7 +2416,7 @@
+@@ -2501,7 +2422,7 @@
          'version': Var('siso_version'),
        }
      ],
@@ -345,7 +342,7 @@
      'dep_type': 'cipd',
    },
  
-@@ -2515,7 +2433,7 @@
+@@ -2518,7 +2439,7 @@
  
    'src/third_party/opus/tests/resources': {
        'dep_type': 'gcs',
@@ -354,7 +351,7 @@
        'bucket': 'chromium-webrtc-resources',
        'objects': [
            {
-@@ -2536,6 +2454,7 @@
+@@ -2539,6 +2460,7 @@
  
    'src/base/tracing/test/data': {
      'bucket': 'perfetto',
@@ -362,7 +359,7 @@
      'objects': [
        {
          'object_name': 'test_data/chrome_fcp_lcp_navigations.pftrace-ae01d849fbd75a98be1b7ddd5a8873217c377b393a1d5bbd788ed3364f7fefc3',
-@@ -2684,12 +2603,6 @@
+@@ -2687,12 +2609,6 @@
        'condition': 'checkout_linux',
    },
  
@@ -375,7 +372,7 @@
    'src/third_party/qemu-linux-arm64': {
        'packages': [
            {
-@@ -2777,7 +2690,7 @@
+@@ -2780,7 +2696,7 @@
  
    'src/third_party/subresource-filter-ruleset/data': {
        'dep_type': 'gcs',
@@ -384,7 +381,7 @@
        'bucket': 'chromium-ads-detection',
        'objects': [
            {
-@@ -2817,7 +2730,7 @@
+@@ -2820,7 +2736,7 @@
  
    'src/third_party/test_fonts/test_fonts': {
        'dep_type': 'gcs',
@@ -393,7 +390,7 @@
        'bucket': 'chromium-fonts',
        'objects': [
            {
-@@ -2829,9 +2742,6 @@
+@@ -2832,9 +2748,6 @@
        ],
    },
  
@@ -401,9 +398,9 @@
 -    Var('chromium_git') + '/external/github.com/GoogleChromeLabs/text-fragments-polyfill.git' + '@' + 'c036420683f672d685e27415de0a5f5e85bdc23f',
 -
    'src/third_party/tflite/src':
-     Var('chromium_git') + '/external/github.com/tensorflow/tensorflow.git' + '@' + 'c8ed430d092acd485f00e7a9d7a888a0857d0430',
+     Var('chromium_git') + '/external/github.com/tensorflow/tensorflow.git' + '@' + '42d6877b1aa1cf324eb03ccf9b13511400341deb',
  
-@@ -2920,7 +2830,7 @@
+@@ -2923,7 +2836,7 @@
  
    'src/third_party/xdg-utils': {
        'url': Var('chromium_git') + '/chromium/deps/xdg-utils.git' + '@' + 'cb54d9db2e535ee4ef13cc91b65a1e2741a94a44',
@@ -412,7 +409,7 @@
    },
  
    'src/third_party/xnnpack/src':
-@@ -2935,7 +2845,7 @@
+@@ -2938,7 +2851,7 @@
        },
      ],
  
@@ -421,7 +418,7 @@
      'dep_type': 'cipd',
    },
  
-@@ -4362,7 +4272,7 @@
+@@ -4368,7 +4281,7 @@
            'version': Var('resultdb_version'),
          },
        ],
@@ -430,7 +427,7 @@
        'dep_type': 'cipd',
    },
  
-@@ -4797,7 +4707,7 @@
+@@ -4797,7 +4710,7 @@
                'version': Var('screen_ai_linux'),
            },
        ],
