@@ -1,0 +1,41 @@
+From b47b5ddc9dd42285afbb669d228f6de3eb4b0f3c Mon Sep 17 00:00:00 2001
+From: Kramer Ge <fangzhoug@chromium.org>
+Date: Mon, 26 May 2025 10:25:30 -0700
+Subject: [PATCH] TaskGraph::Sequence::Destroy() should run Task dtor outside of lock
+
+Destroying Sequence grabs the TaskGraph::lock_, and also destroys all
+tasks associated with it.
+Some Task may have bound args whose destructor triggers another
+schedule task which would attempt to grab the TaskGraph::lock_. This
+results in a deadlock.
+
+To avoid this deadlock. Ensure that the destructors of tasks run outside
+of the lock.
+
+(cherry picked from commit b1a1a45118f11453b795b5a63fffd074dbab4e68)
+
+Bug: 416559237, 419809516
+Change-Id: I76cb28366fc752910d6963ae95c82ea84192e565
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6580155
+Commit-Queue: Kramer Ge <fangzhoug@chromium.org>
+Reviewed-by: Vasiliy Telezhnikov <vasilyt@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1464287}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6583137
+Cr-Commit-Position: refs/branch-heads/7151@{#1765}
+Cr-Branched-From: 8e0d32ed6e49a2415b16e5ed402957cac2349ce2-refs/heads/main@{#1453031}
+---
+
+--- a/gpu/command_buffer/service/task_graph.cc
++++ b/gpu/command_buffer/service/task_graph.cc
+@@ -314,9 +314,11 @@
+ 
+ void TaskGraph::Sequence::Destroy() {
+   std::vector<scoped_refptr<SyncPointClientState>> sync_point_states;
++  base::circular_deque<Task> tasks;
+   {
+     base::AutoLock auto_lock(task_graph_->lock());
+     sync_point_states_.swap(sync_point_states);
++    tasks_.swap(tasks);
+   }
+ 
+   if (validation_timer_) {
