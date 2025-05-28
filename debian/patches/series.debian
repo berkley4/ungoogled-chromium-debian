@@ -168,8 +168,8 @@ optional/fixes/widevine/widevine-locations.patch
 #optional/system/freetype-COLRV1.patch
 optional/system/jpeg.patch
 optional/system/libdbus.patch
-#optional/system/node.patch
-#optional/system/node-version-ck.patch
+#optional/system/node/node.patch
+#optional/system/node/node-version-ck.patch
 optional/system/openh264.patch
 #optional/system/rust.patch
 #optional/system/clang/clang-version-check.patch
