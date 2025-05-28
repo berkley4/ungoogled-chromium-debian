@@ -13,14 +13,8 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --show-component-extension-options"
 # Enable NGShapeCache
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=LayoutNGShapeCache"
 
-# Enable PartitionAllocFewerMemoryRegions
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=PartitionAllocFewerMemoryRegions"
-
 # Enable boosting priority of backend tasks associated with foreground clients for IDB
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=IdbExpediteBackendProcessingForForegroundClients"
-
-# Enable ServiceWorkerAvoidMainThreadForInitialization
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=ServiceWorkerAvoidMainThreadForInitialization"
 
 # Rust-based freetype replacement
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-fontations-backend"

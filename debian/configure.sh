@@ -100,7 +100,6 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$OPENTYPE_SVG" ] || OPENTYPE_SVG=0
 [ -n "$OZONE_WAYLAND" ] || OZONE_WAYLAND=1
 [ -n "$PART_LOCK_PI" ] || PART_LOCK_PI=1
-[ -n "$PARTALLOC_MR" ] || PARTALLOC_MR=1
 [ -n "$PDF_JS" ] || PDF_JS=0
 [ -n "$PIPEWIRE" ] || PIPEWIRE=1
 [ -n "$PRINT_PREVIEW" ] || PRINT_PREVIEW=1
@@ -1025,11 +1024,6 @@ fi
 
 if [ $OZONE_WAYLAND -eq 0 ]; then
   gn_enable="$gn_enable ozone_platform_wayland=false"
-fi
-
-
-if [ $PARTALLOC_MR -eq 0 ]; then
-  sed -e '/PartitionAllocFewerMemoryRegions/s@^@#@' -i $FLAG_DIR/miscellaneous
 fi
 
 
