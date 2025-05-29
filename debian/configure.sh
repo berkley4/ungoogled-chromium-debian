@@ -588,7 +588,7 @@ fi
 
 
 if [ $SYS_NODE -eq 1 ]; then
-  op_enable="$op_enable system/node/node-version-ck.patch"
+  op_enable="$op_enable system/node/"
   deps_enable="$deps_enable nodejs"
 fi
 
