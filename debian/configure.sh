@@ -636,8 +636,8 @@ if [ $MARCH_SET -eq 1 ] || [ $MTUNE_SET -eq 1 ]; then
       MTUNE=generic ;;
 
     0)
-      SER_DB=$SER_DB -e \"/\/cpu\/march\.patch/s@^@#@\""
-      SER_DB=$SER_DB -e \"/\/cpu\/mtune\.patch/s@^@#@\""
+      op_disable="$op_disable compiler-flags/cpu/march.patch"
+      op_disable="$op_disable compiler-flags/cpu/mtune.patch"
 
       AES_PCLMUL=0; AVX=0; RTC_AVX2=0; V8_AVX2=0 ;;
   esac
