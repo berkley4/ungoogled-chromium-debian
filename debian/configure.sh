@@ -510,8 +510,8 @@ fi
 
 if [ $LLVM_VER -ge 19 ]; then
   # Do not apply hardware destructive interference patch for clang versions >= 19
-  P=upstream-fixes/hardware_destructive_interference_size.patch
-  SER_UC="$SER_UC -e \"s@^\($P\)@#\1@\""
+  P=hardware_destructive_interference_size.patch
+  SER_UC="$SER_UC -e \"/^upstream-fixes\/$P/s@^@#@\""
 else
   # Enable the non-hdis version of the enum table patch for older clang versions
   op_disable="$op_disable fixes/enum-table-crash-hdis.patch"
@@ -784,8 +784,8 @@ else
   op_disable="$op_disable disable/media-router.patch"
   op_enable="$op_enable chromecast/"
 
-  P=fix-building-without-mdns-and-service-discovery
-  SER_UC="$SER_UC -e \"s@^\(extra/ungoogled-chromium/$P\)@#\1@\""
+  P=fix-building-without-mdns-and-service-discovery.patch
+  SER_UC="$SER_UC -e \"/^extra\/ungoogled-chromium\/$P/s@^@#@\""
 
   SMF="$SMF -e \"/^enable_mdns=false/d\""
   SMF="$SMF -e \"/^enable_remoting=false/d\""
@@ -982,8 +982,8 @@ if [ $LOCALES_EXTRA -eq 0 ]; then
   CON="$CON -e \"/pa, pl, pt-BR, pt-PT, ro, ru,/d\""
   CON="$CON -e \"/th, tr, uk, ur, uz, vi, zh-CN,/d\""
 
-  P=extra/ungoogled-chromium/enable-extra-locales.patch
-  SER_UC="$SER_UC -e \"s@^\($P\)@#\1@\""
+  P=enable-extra-locales.patch
+  SER_UC="$SER_UC -e \"/^extra\/ungoogled-chromium\/$P/s@^@#@\""
 fi
 
 
