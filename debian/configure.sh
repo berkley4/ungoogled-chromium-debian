@@ -270,11 +270,7 @@ fi
 
 
 ## Enter test mode if $RT_DIR/third_party does not exist
-[ -d $RT_DIR/third_party ] && TEST=0 || TEST=1
-
-if [ $TEST -eq 0 ]; then
-  DEPS_PATCH=0
-fi
+[ -d $RT_DIR/third_party ] && TEST=0 && DEPS_PATCH=0 || TEST=1
 
 # Allow setting DEPS_PATCH when TEST=1
 [ -n "$DEPS_PATCH" ] || DEPS_PATCH=0
