@@ -85,6 +85,7 @@ GN_FLAGS +=					\
 	angle_has_histograms=false		\
 	angle_has_rapidjson=false		\
 	enable_extractors=false			\
+	enable_glic=false			\
 	libyuv_disable_rvv=true			\
 	safe_browsing_use_unrar=false		\
 	tint_build_benchmarks=false		\
