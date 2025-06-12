@@ -1,0 +1,11 @@
+--- a/third_party/blink/renderer/core/exported/web_view_impl.cc
++++ b/third_party/blink/renderer/core/exported/web_view_impl.cc
+@@ -1863,7 +1863,7 @@
+       prefs.default_maximum_page_scale_factor);
+ #endif
+ 
+-#if BUILDFLAG(IS_WIN)
++#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_WIN)
+   RuntimeEnabledFeatures::SetMiddleClickAutoscrollEnabled(true);
+ #endif
+ 

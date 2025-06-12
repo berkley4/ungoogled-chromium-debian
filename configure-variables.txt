@@ -150,6 +150,8 @@ LOCALES_EXTRA		1		Extra locales (via upstream ungoogled chromium patch)
 MEDIA_REMOTING		0		Render and play back media on remote devices when a tab is casted
 					Depends on CHROMECAST=1 (which is not the default)
 
+MCLICK_AUTOSCROLL	1		Enable middle click autoscroll
+
 MUTEX_PI		1		Mutex priority inheritance
 PART_LOCK_PI		1		Partition lock priority inheritance
 

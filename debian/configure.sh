@@ -94,6 +94,7 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$LENS" ] || LENS=0
 [ -n "$LENS_TRANSLATE" ] || LENS_TRANSLATE=1
 [ -n "$LOCALES_EXTRA" ] || LOCALES_EXTRA=1
+[ -n "$MCLICK_AUTOSCROLL" ] || MCLICK_AUTOSCROLL=1
 [ -n "$MUTEX_PI" ] || MUTEX_PI=1
 [ -n "$NO_SYS_LIBS" ] || NO_SYS_LIBS=0
 [ -n "$OAUTH2" ] || OAUTH2=0
@@ -984,6 +985,11 @@ if [ $LOCALES_EXTRA -eq 0 ]; then
 
   P=enable-extra-locales.patch
   SER_UC="$SER_UC -e \"/^extra\/ungoogled-chromium\/$P/s@^@#@\""
+fi
+
+
+if [ $MCLICK_AUTOSCROLL -eq 0 ]; then
+  op_disable="$op_disable enable-middle-click-autoscroll.patch"
 fi
 
 
