@@ -209,7 +209,7 @@ VAAPI			1		Used for hardware encoding/decoding
 
 SYS_BROTLI		1		Disabled by default when STABLE=1
 SYS_DRM			1		Disabled by default when STABLE=1
-SYS_ICU			0
+SYS_ICU			1		Disabled by default when STABLE=1
 SYS_JPEG		1		Set to zero if building for both debian and ubuntu (unsupported)
 SYS_OPENH264		1		The bundled OpenH264 library (SYS_OPENH264=0) cannot be redistributed
 SYS_WEBP		1		Disabled by default when STABLE=1

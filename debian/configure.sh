@@ -27,6 +27,7 @@ POLLY_SET=0
 RELEASE_SET=0
 SYS_BROTLI_SET=0
 SYS_DRM_SET=0
+SYS_ICU_SET=0
 SYS_WEBP_SET=0
 
 LLVM_PGO_VER=20
@@ -143,7 +144,6 @@ if [ $NO_SYS_LIBS -eq 1 ]; then
   RUL="$RUL -e \"/^SYS_LIBS.*double-conversion/s@^@#@\""
 fi
 
-[ -n "$SYS_ICU" ] || SYS_ICU=0
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
 [ -n "$SYS_ZSTD" ] || SYS_ZSTD=1
 
@@ -152,6 +152,9 @@ fi
 
 ## Allow force-enabling libdrm for stable users who have installed libdrm from backports
 [ -n "$SYS_DRM" ] && SYS_DRM_SET=1 || SYS_DRM=1
+
+## Allow stable users to force enable icu (eg if they have self-compiled an icu package)
+[ -n "$SYS_ICU" ] && SYS_ICU_SET=1 || SYS_ICU=1
 
 ## Allow force-enabling libwebp for stable users who have installed libsharpyuv from backports
 [ -n "$SYS_WEBP" ] && SYS_WEBP_SET=1 || SYS_WEBP=1
@@ -1270,11 +1273,6 @@ fi
 ## Items which are (or are likely to become) unstable-only
 
 if [ $STABLE -eq 1 ]; then
-  if [ $SYS_ICU -eq 1 ]; then
-    printf '%s\n' "ERROR: SYS_ICU=1 cannot be used with STABLE=1"
-    exit 1
-  fi
-
   # For STABLE=1 we disable brotli by default but allow force-enablement
   [ $SYS_BROTLI_SET -eq 1 ] && [ $SYS_BROTLI -eq 1 ] || SYS_BROTLI=0
 
@@ -1285,6 +1283,9 @@ if [ $STABLE -eq 1 ]; then
 
   # For STABLE=1 we disable libdrm by default but allow force-enablement
   [ $SYS_DRM_SET -eq 1 ] && [ $SYS_DRM -eq 1 ] || SYS_DRM=0
+
+  # Allow stable users (eg with a self-compiled icu package) to enable SYS_ICU
+  [ $SYS_ICU_SET -eq 1 ] && [ $SYS_ICU -eq 1 ] || SYS_ICU=0
 
   # For STABLE=1 we disable libwebp by default but allow force-enablement
   [ $SYS_WEBP_SET -eq 1 ] && [ $SYS_WEBP -eq 1 ] || SYS_WEBP=0
