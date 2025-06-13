@@ -1,6 +1,6 @@
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -6899,6 +6899,10 @@
+@@ -6901,6 +6901,10 @@
          "//components/os_crypt/async/browser:freedesktop_secret_key_provider",
          "//components/os_crypt/async/browser:secret_portal_key_provider",
        ]

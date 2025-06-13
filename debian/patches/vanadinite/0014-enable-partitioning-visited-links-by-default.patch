@@ -1,6 +1,6 @@
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -2048,7 +2048,7 @@
+@@ -2044,7 +2044,7 @@
  // <link url, top-level site, frame origin>
  BASE_FEATURE(kPartitionVisitedLinkDatabase,
               "PartitionVisitedLinkDatabase",

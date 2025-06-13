@@ -48,7 +48,7 @@
    glic_border_ = nullptr;
    contents_container_ = nullptr;
    unified_side_panel_ = nullptr;
-@@ -6412,11 +6418,13 @@
+@@ -6415,11 +6421,13 @@
    return is_web_app;
  }
  

@@ -1,6 +1,6 @@
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -2524,6 +2524,7 @@
+@@ -2526,6 +2526,7 @@
      "//third_party/blink/public/common",
      "//third_party/blink/public/common:buildflags",
      "//third_party/blink/public/common:headers",
