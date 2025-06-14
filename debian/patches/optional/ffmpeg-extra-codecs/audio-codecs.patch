@@ -5,7 +5,7 @@
          "mp3float,mp3,pcm_s16be,pcm_s24be,pcm_mulaw,pcm_alaw");
  #if BUILDFLAG(USE_PROPRIETARY_CODECS)
 -    allowed_decoders += ",aac";
-+    allowed_decoders += ",aac,ac3,eac3";
++    allowed_decoders += ",_ff_ac";
  #endif
      return allowed_decoders;
    }());
