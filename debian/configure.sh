@@ -37,6 +37,7 @@ DEBIAN=$(OLDPWD=- CDPATH= cd -P -- ${0%/*} && pwd)
 RT_DIR=${DEBIAN%/*}
 
 FLAG_DIR=$DEBIAN/etc/chromium.d
+M_DIR=$DEBIAN/misc_files
 OP_DIR=$DEBIAN/patches/optional
 OUT_DIR=$RT_DIR/out/Release
 
@@ -1608,10 +1609,7 @@ fi
 
 
 ## Shell launcher
-if [ $TEST -eq 0 ]; then
-  $DEBIAN/devutils/update_launcher.sh \
-    < $DEBIAN/misc_files/chromium.sh > $DEBIAN/misc_files/chromium
-fi
+[ $TEST -eq 1 ] || $M_DIR/update_launcher.sh < $M_DIR/chromium.sh > $M_DIR/chromium
 
 
 ## Move upstream UC patches into debian/patches
@@ -1625,7 +1623,7 @@ mv $UC_PATCH_DIRS $DEBIAN/patches/
 
 
 ## Submodule patching
-patch -s -p1 < $DEBIAN/misc_files/no-exit-if-pruned.patch
+patch -s -p1 < $M_DIR/no-exit-if-pruned.patch
 
 
 exit $?
