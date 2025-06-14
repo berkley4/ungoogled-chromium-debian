@@ -42,7 +42,7 @@ OP_DIR=$DEBIAN/patches/optional
 OUT_DIR=$RT_DIR/out/Release
 
 UC_DIR=$DEBIAN/submodules/ungoogled-chromium
-UC_PATCH_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
+UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 
 INSTALL=ungoogled-chromium.install
 POLICIES=etc/chromium/policies/managed/policies.json
@@ -736,24 +736,13 @@ fi
 [ $CAP_AUD -eq 1 ] || POL="$POL -e \"/AudioCaptureAllowed/s@true@false@\""
 [ $CAP_SCR -eq 1 ] || POL="$POL -e \"/ScreenCaptureAllowed/s@true@false@\""
 [ $CAP_VID -eq 1 ] || POL="$POL -e \"/VideoCaptureAllowed/s@true@false@\""
-
 [ $DL_RESTRICT -eq 0 ] || POL="$POL -e \"/DownloadRestrictions/s@0@3@\""
-
-
-if [ -n "$DNS_HOST" ]; then
-  POL="$POL -e \"/doh.opendns.com/s@doh.opendns.com@$DNS_HOST@\""
-fi
-
-if [ $DNS_BUILTIN -eq 1 ]; then
-  POL="$POL -e \"/BuiltInDnsClientEnabled/s@false@true@\""
-fi
-
-if [ $DNS_INTERCEPT -eq 0 ]; then
-  POL="$POL -e \"/DNSInterceptionChecksEnabled/s@true@false@\""
-fi
+[ $DNS_BUILTIN -eq 0 ] || POL="$POL -e \"/BuiltInDnsClientEnabled/s@false@true@\""
+[ -z "$DNS_HOST" ] || POL="$POL -e \"/doh.opendns.com/s@doh.opendns.com@$DNS_HOST@\""
+[ $DNS_INTERCEPT -eq 1 ] || POL="$POL -e \"/DNSInterceptionChecksEnabled/s@true@false@\""
 
 # Not part of managed policy but set this here with the other dns variables
-if [ $DNS_CONFIG -eq 1 ]; then
+if [ $DNS_CONFIG -eq 0 ]; then
   op_disable="$op_disable disable/dns_config_service.patch"
 fi
 
@@ -1561,10 +1550,8 @@ fi
 ##  Modify debian directory files  ##
 #####################################
 
-sed -e "s;@@VERSION@@;$VERSION;" \
-    -e "s;@@RELEASE@@;$RELEASE;" \
-    -e "s;@@AUTHOR@@;$AUTHOR;" \
-    -e "s;@@DATETIME@@;$(date -R);" \
+sed -e "s;@@VERSION@@;$VERSION;" -e "s;@@RELEASE@@;$RELEASE;" \
+    -e "s;@@AUTHOR@@;$AUTHOR;" -e "s;@@DATETIME@@;$(date -R);" \
   < $DEBIAN/changelog.in > $DEBIAN/changelog
 
 
@@ -1603,27 +1590,23 @@ chmod 0700 $DEBIAN/rules $DEBIAN/$INSTALL
 ###################################
 
 ## Chromedriver file removal
-if [ $DRIVER -eq 0 ]; then
-  rm $DEBIAN/ungoogled-chromium-driver.*
-fi
+[ $DRIVER -eq 1 ] || rm $DEBIAN/ungoogled-chromium-driver.*
 
 
 ## Shell launcher
 [ $TEST -eq 1 ] || $M_DIR/update_launcher.sh < $M_DIR/chromium.sh > $M_DIR/chromium
 
 
-## Move upstream UC patches into debian/patches
-for dir in upstream upstream-fixes; do
-  if [ -d $UC_DIR/patches/$dir ]; then
-    UC_PATCH_DIRS="$UC_PATCH_DIRS $UC_DIR/patches/$dir"
-  fi
-done
-
-mv $UC_PATCH_DIRS $DEBIAN/patches/
-
-
 ## Submodule patching
 patch -s -p1 < $M_DIR/no-exit-if-pruned.patch
+
+
+## Ungoogled chromium patch integration
+for dir in upstream upstream-fixes; do
+  [ ! -d $UC_DIR/patches/$dir ] || UC_P_DIRS="$UC_P_DIRS $UC_DIR/patches/$dir"
+done
+
+mv $UC_P_DIRS $DEBIAN/patches/
 
 
 exit $?
