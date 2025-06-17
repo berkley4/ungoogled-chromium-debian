@@ -37,18 +37,24 @@
      NULL };
 --- a/third_party/ffmpeg/ffmpeg_generated.gni
 +++ b/third_party/ffmpeg/ffmpeg_generated.gni
-@@ -287,6 +287,11 @@
-     "libavcodec/fmtconvert.c",
-     "libavformat/ac3dec.c",
+@@ -533,6 +533,17 @@
    ]
-+
+ }
+ 
++if (((current_cpu == "arm64" || current_cpu == "arm64e") &&
++     ffmpeg_branding == "Chrome") ||
++    (current_cpu == "x64" && ffmpeg_branding == "Chrome") ||
++    (use_linux_config && ffmpeg_branding == "Chrome")) {
++  # AC-4 sources
 +  ffmpeg_c_sources += [
 +    "libavcodec/ac4_decoder.c",
 +    "libavformat/ac4dec.c",
 +  ]
- }
- 
- if (((current_cpu == "arm64" || current_cpu == "arm64e") &&
++}
++
+ if ((is_android && current_cpu == "arm" && arm_use_neon &&
+      ffmpeg_branding == "Chrome") ||
+     (use_linux_config && current_cpu == "arm" && arm_use_neon &&
 --- /dev/null
 +++ b/third_party/ffmpeg/libavcodec/ac4_decoder.c
 @@ -0,0 +1,6131 @@
