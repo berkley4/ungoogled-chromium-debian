@@ -42,7 +42,7 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --show-avatar-button=never"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --hide-fullscreen-exit-ui"
 
 # Disables the QR generator for sharing page links
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=DisableQRGenerator"
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=DisableQRGenerator"
 
 # Disables the sharing hub button
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-sharing-hub"
