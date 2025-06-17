@@ -160,7 +160,6 @@ optional/fixes/skia-allow-bundled-harfbuzz.patch
 #optional/fixes/skia-gamma.patch
 optional/fixes/chromedriver/brandversion.patch
 optional/fixes/chromedriver/fix-paths.patch
-#optional/fixes/chromedriver/4ea01682.diff
 optional/fixes/widevine/widevine-locations.patch
 #optional/opentype-svg/0001-OT-SVG-hook.patch
 #optional/opentype-svg/0002-use-FreeType-for-non-Linux-OT-SVG-support.patch
