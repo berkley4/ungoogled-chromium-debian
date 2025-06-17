@@ -1343,13 +1343,15 @@ fi
 ##  Domain substitution, submodule flags and pruning list ##
 ############################################################
 
-# Check whether DEPS.patch and DEPS-no-rust.patch have been applied
+# Check whether DEPS.patch, DEPS-no-rust.patch or DEPS-no-node.patch have been applied
 if [ $TEST -eq 0 ] && [ -f $RT_DIR/DEPS ]; then
+  # Check for DEPS.patch application
   case $(sed -n '/webvr_info/p' $RT_DIR/DEPS) in
     *src/chrome/test/data/xr/webvr_info*)
       : ;;
 
     *)
+      # Check for DEPS-no-rust.patch application
       case $(sed -n '/Linux_x64\/rust-toolchain-/,/condition/{/==/p}' $RT_DIR/DEPS) in
         *condition*==*)
           DEPS_PATCH=1 ;;
@@ -1358,6 +1360,14 @@ if [ $TEST -eq 0 ] && [ -f $RT_DIR/DEPS ]; then
           DEPS_PATCH=2 ;;
       esac ;;
   esac
+
+  if [ $DEPS_PATCH -gt 0 ]; then
+    # Check for DEPS-no-node.patch application
+    case $(sed -n '\/node\/linux/,/condition/{/checkout_src_internal/p}' $RT_DIR/DEPS) in
+      *checkout_src_internal*)
+        DEPS_PATCH=3 ;;
+    esac
+  fi
 fi
 
 ## Domain substitution exclusions
@@ -1434,7 +1444,7 @@ if [ $HYPHENATION -eq 1 ]; then
 fi
 
 ## Pruning script
-if [ $SYS_NODE -eq 0 ]; then
+if [ $DEPS_PATCH -lt 3 ]; then
   PRU_PY="$PRU_PY -e \"/third_party\/node\/linux\//d\""
 fi
 
