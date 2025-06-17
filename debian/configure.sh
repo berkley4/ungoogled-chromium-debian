@@ -91,7 +91,6 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$HLS_PLAYER" ] || HLS_PLAYER=1
 [ -n "$HYPHENATION" ] || HYPHENATION=1
 [ -n "$IDB_FG_CLIENT_BOOST" ] || IDB_FG_CLIENT_BOOST=1
-[ -n "$LABS_TOOLBAR_BUTTON" ] || LABS_TOOLBAR_BUTTON=0
 [ -n "$LENS" ] || LENS=0
 [ -n "$LENS_TRANSLATE" ] || LENS_TRANSLATE=1
 [ -n "$LOCALES_EXTRA" ] || LOCALES_EXTRA=1
@@ -935,11 +934,6 @@ fi
 
 if [ $IDB_FG_CLIENT_BOOST -eq 0  ]; then
   sed -e '/IdbExpediteBackend/s@^@#@' -i $FLAG_DIR/miscellaneous
-fi
-
-
-if [ $LABS_TOOLBAR_BUTTON -eq 1 ]; then
-  sed -e '/chrome-labs/s@^#@@' -i $FLAG_DIR/ui
 fi
 
 
