@@ -110,7 +110,7 @@ ___Other features___
 - AC3/EAC3 playback support
 - AC4 playback support (experimental, build support only)
 - ALAC (Apple Lossless Audio Codec) playblack support (build support only)
-- xHE-AAC playback support via the FDK AAC decoder (build support only)
+- xHE-AAC adaptive bitrate playback support (sample files [here](https://www2.iis.fraunhofer.de/AAC/xhe-aac-abr.html)) via the FDK AAC decoder (build support only)
 - The shell launcher has the ability to block switches (aka flags)
 
 

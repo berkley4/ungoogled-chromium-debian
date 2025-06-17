@@ -1,6 +1,6 @@
 --- a/media/base/supported_types.cc
 +++ b/media/base/supported_types.cc
-@@ -283,6 +283,9 @@
+@@ -287,6 +287,9 @@
  }
  
  bool IsDecoderAACSupported(const AudioType& type) {
@@ -10,7 +10,7 @@
    if (type.profile != AudioCodecProfile::kXHE_AAC) {
      return true;
    }
-@@ -292,6 +295,7 @@
+@@ -296,6 +299,7 @@
  #else
    return false;
  #endif
