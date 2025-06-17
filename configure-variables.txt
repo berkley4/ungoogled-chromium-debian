@@ -106,7 +106,6 @@ DBUS			1		Disabling this will disable dbus and the notifications system
 					Note that DBUS=0 is a effectively a superset of BLUEZ=0 (use_dbus=false makes use_bluez false)
 
 ENTERPRISE_WATERMARK	0		Watermarking security/privacy feature (for Chrome Enterprise Premium users)
-EXTENSIONS_ROOT_MENU	0		Whether to put the extensions menu in the root menu (0 = put in 'More tools' menu)
 FAST_RESTART		0		Remove out/Release/arg.gn (if it exists) and only run the 'gn gen' command in debian/rules
 					if no args.gn file exists in out/Release (ie only first runs invokes 'gn gen')
 					Note: any changes to build flags between a stop and restart require running './debian/rules gn_gen'
