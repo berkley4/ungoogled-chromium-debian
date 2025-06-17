@@ -1,34 +1,26 @@
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -27,6 +27,7 @@
- import("//gpu/vulkan/features.gni")
- import("//media/media_options.gni")
- import("//ppapi/buildflags/buildflags.gni")
-+import("//third_party/angle/gni/angle.gni")
- import("//third_party/blink/public/public_features.gni")
- import("//third_party/widevine/cdm/widevine.gni")
- import("//tools/resources/generate_resource_allowlist.gni")
-@@ -1710,7 +1711,7 @@
+@@ -1697,7 +1697,7 @@
        if (is_linux && enable_swiftshader_vulkan) {
          deps += [ ":swiftshader_vk_symbols" ]
        }
--      if (!is_chromeos) {
-+      if (!is_chromeos && angle_enable_vulkan) {
+-      if (!is_chromeos && angle_shared_libvulkan) {
++      if (!is_chromeos && angle_shared_libvulkan &&angle_enable_vulkan) {
          deps += [ ":angle_libvulkan_symbols" ]
        }
        if (build_with_internal_optimization_guide) {
-@@ -1781,7 +1782,7 @@
+@@ -1768,7 +1768,7 @@
  
        deps = [ "//third_party/angle:libGLESv2" ]
      }
--    if (!is_chromeos) {
-+    if (!is_chromeos && angle_enable_vulkan) {
+-    if (!is_chromeos && angle_shared_libvulkan) {
++    if (!is_chromeos && angle_shared_libvulkan && angle_enable_vulkan) {
        extract_symbols("angle_libvulkan_symbols") {
          binary = "$root_out_dir/libvulkan.so.1"
  
 --- a/components/exo/wayland/BUILD.gn
 +++ b/components/exo/wayland/BUILD.gn
-@@ -398,12 +398,17 @@
+@@ -397,12 +397,17 @@
  
    deps = [
      "//base",
@@ -50,24 +42,24 @@
      "//components/exo/wayland/protocol:aura_shell_protocol",
 --- a/ui/gl/gl_switches.cc
 +++ b/ui/gl/gl_switches.cc
-@@ -13,6 +13,7 @@
+@@ -15,6 +15,7 @@
  
- #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
+ #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_ANDROID)
  #include <vulkan/vulkan_core.h>
 +#include "gpu/vulkan/buildflags.h"
  #include "third_party/angle/src/gpu_info_util/SystemInfo.h"  // nogncheck
  #endif
  
-@@ -279,6 +280,7 @@
-              base::FEATURE_DISABLED_BY_DEFAULT);
+@@ -294,6 +295,7 @@
+ #endif
  
  bool IsDefaultANGLEVulkan() {
 +#if BUILDFLAG(ENABLE_VULKAN)
- #if defined(MEMORY_SANITIZER)
-   return false;
- #else  // !defined(MEMORY_SANITIZER)
-@@ -320,6 +322,9 @@
- #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
+   // Force on if DefaultANGLEVulkan feature is enabled from command line.
+   base::FeatureList* feature_list = base::FeatureList::GetInstance();
+   if (feature_list && feature_list->IsFeatureOverriddenFromCommandLine(
+@@ -404,6 +406,9 @@
+         // BUILDFLAG(IS_ANDROID)
    return base::FeatureList::IsEnabled(kDefaultANGLEVulkan);
  #endif  // !defined(MEMORY_SANITIZER)
 +#else   // !BUILDFLAG(ENABLE_VULKAN)

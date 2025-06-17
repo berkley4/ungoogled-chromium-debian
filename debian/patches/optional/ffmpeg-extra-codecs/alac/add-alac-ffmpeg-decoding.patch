@@ -1,6 +1,6 @@
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
-@@ -355,7 +355,7 @@
+@@ -356,7 +356,7 @@
  #define CONFIG_ATRAC3P_DECODER 0
  #define CONFIG_ATRAC3PAL_DECODER 0
  #define CONFIG_ATRAC9_DECODER 0
@@ -21,39 +21,21 @@
      &ff_pcm_s24le_decoder,
 --- a/third_party/ffmpeg/ffmpeg_generated.gni
 +++ b/third_party/ffmpeg/ffmpeg_generated.gni
-@@ -292,6 +292,20 @@
- 
- if ((current_cpu == "arm64" && ffmpeg_branding == "Chrome") ||
-     (current_cpu == "x64" && ffmpeg_branding == "Chrome") ||
-+    (is_android && current_cpu == "x86" && ffmpeg_branding == "Chrome") ||
-+    (is_apple && ffmpeg_branding == "Chrome") ||
-+    (is_win && ffmpeg_branding == "Chrome") ||
+@@ -560,3 +560,17 @@
+     (is_android && current_cpu == "x86")) {
+   ffmpeg_c_sources += [ "compat/strtod.c" ]
+ }
++
++if (((current_cpu == "arm64" || current_cpu == "arm64e") &&
++     ffmpeg_branding == "Chrome") ||
++    (current_cpu == "x64" && ffmpeg_branding == "Chrome") ||
 +    (use_linux_config && ffmpeg_branding == "Chrome")) {
 +  ffmpeg_c_sources += [
 +    "libavcodec/alac.c",
 +    "libavcodec/alac_data.c",
 +    "libavcodec/alacdsp.c",
 +    "libavcodec/alacenc.c",
++    "libavcodec/x86/alacdsp_init.c",
 +  ]
-+}
-+
-+if ((current_cpu == "arm64" && ffmpeg_branding == "Chrome") ||
-+    (current_cpu == "x64" && ffmpeg_branding == "Chrome") ||
-     (is_android && current_cpu == "arm" && arm_use_neon &&
-      ffmpeg_branding == "Chrome") ||
-     (is_android && current_cpu == "x86" && ffmpeg_branding == "Chrome") ||
-@@ -500,6 +514,14 @@
-   ]
- }
- 
-+if ((current_cpu == "x64" && ffmpeg_branding == "Chrome") ||
-+    (is_android && current_cpu == "x86" && ffmpeg_branding == "Chrome") ||
-+    (is_win && current_cpu == "x86" && ffmpeg_branding == "Chrome") ||
-+    (use_linux_config && current_cpu == "x86" && ffmpeg_branding == "Chrome")) {
-+  ffmpeg_c_sources += [ "libavcodec/x86/alacdsp_init.c" ]
 +  ffmpeg_asm_sources += [ "libavcodec/x86/alacdsp.asm" ]
 +}
-+
- if (use_linux_config && current_cpu == "arm" && arm_use_neon &&
-     ffmpeg_branding == "Chrome") {
-   ffmpeg_gas_sources += [

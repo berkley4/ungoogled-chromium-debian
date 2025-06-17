@@ -1,27 +1,26 @@
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -28,6 +28,7 @@
- import("//components/os_crypt/sync/features.gni")
+@@ -29,6 +29,7 @@
  import("//components/spellcheck/spellcheck_build_features.gni")
+ import("//content/public/common/features.gni")
  import("//crypto/features.gni")
 +import("//device/bluetooth/cast_bluetooth.gni")
  import("//device/vr/buildflags/buildflags.gni")
  import("//extensions/buildflags/buildflags.gni")
  import("//media/gpu/args.gni")
-@@ -6778,6 +6779,10 @@
-       defines += [ "USE_DBUS" ]
+@@ -6854,6 +6855,9 @@
+     deps += [ "//third_party/fontconfig" ]
+     if (use_dbus) {
+       deps += [ "//dbus" ]
++      if (!use_bluez) {
++        defines += [ "LINUX_WITHOUT_DBUS" ]
++      }
      }
+   }
  
-+    if (!use_bluez) {
-+      defines += [ "LINUX_WITHOUT_DBUS" ]
-+    }
-+
-     # device_info_fetcher uses a "defined(USE_GIO)" macro, so if it's refactored
-     # away from this file make sure gio_config is still added to configs.
-     if (use_gio) {
 --- a/chrome/browser/chrome_browser_main_linux.cc
 +++ b/chrome/browser/chrome_browser_main_linux.cc
-@@ -84,7 +84,9 @@
+@@ -65,7 +65,9 @@
  #endif  // BUILDFLAG(IS_CHROMEOS)
  
  #if !BUILDFLAG(IS_CHROMEOS)
@@ -31,7 +30,7 @@
  
    // Set up crypt config. This needs to be done before anything starts the
    // network service, as the raw encryption key needs to be shared with the
-@@ -172,8 +174,10 @@
+@@ -132,8 +134,10 @@
  #if BUILDFLAG(IS_CHROMEOS)
    // No-op; per PostBrowserStart() comment, this is done elsewhere.
  #else

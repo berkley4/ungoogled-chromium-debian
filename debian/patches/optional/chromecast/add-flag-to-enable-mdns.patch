@@ -13,15 +13,15 @@
       "Reduces the amount of system information obatainable through headers and javascript, also causes hardwareConcurrency to respond with two cores. ungoogled-chromium flag.",
 --- a/net/dns/host_resolver_manager.cc
 +++ b/net/dns/host_resolver_manager.cc
-@@ -117,6 +117,7 @@
+@@ -119,6 +119,7 @@
  #include "net/log/net_log_with_source.h"
  #include "net/socket/client_socket_factory.h"
  #include "net/url_request/url_request_context.h"
 +#include "services/network/public/cpp/features.h"
- #include "third_party/abseil-cpp/absl/types/variant.h"
  #include "url/scheme_host_port.h"
  #include "url/url_constants.h"
-@@ -154,6 +155,8 @@
+ 
+@@ -155,6 +156,8 @@
  
  // True if |hostname| ends with either ".local" or ".local.".
  bool ResemblesMulticastDNSName(std::string_view hostname) {
@@ -32,7 +32,7 @@
  
 --- a/net/dns/mdns_client_impl.cc
 +++ b/net/dns/mdns_client_impl.cc
-@@ -31,6 +31,7 @@
+@@ -30,6 +30,7 @@
  #include "net/dns/public/util.h"
  #include "net/dns/record_rdata.h"
  #include "net/socket/datagram_socket.h"
@@ -40,7 +40,7 @@
  
  // TODO(gene): Remove this temporary method of disabling NSEC support once it
  // becomes clear whether this feature should be
-@@ -492,6 +493,8 @@
+@@ -491,6 +492,8 @@
  }
  
  int MDnsClientImpl::StartListening(MDnsSocketFactory* socket_factory) {
@@ -78,7 +78,7 @@
        host.set_host(host_name_.substr(0, host_name_.size() - 1));
 --- a/services/network/public/cpp/features.cc
 +++ b/services/network/public/cpp/features.cc
-@@ -44,6 +44,10 @@
+@@ -43,6 +43,10 @@
    return block_accept_ch && blocked_site->IsSameOriginWith(origin);
  }
  
@@ -91,11 +91,12 @@
               base::FEATURE_ENABLED_BY_DEFAULT);
 --- a/services/network/public/cpp/features.h
 +++ b/services/network/public/cpp/features.h
-@@ -29,6 +29,7 @@
- COMPONENT_EXPORT(NETWORK_CPP)
+@@ -32,6 +32,8 @@
  bool ShouldBlockAcceptClientHintsFor(const url::Origin& origin);
  
-+COMPONENT_EXPORT(NETWORK_CPP) BASE_DECLARE_FEATURE(kMdns);
- COMPONENT_EXPORT(NETWORK_CPP) BASE_DECLARE_FEATURE(kNetworkErrorLogging);
- COMPONENT_EXPORT(NETWORK_CPP) BASE_DECLARE_FEATURE(kReporting);
- COMPONENT_EXPORT(NETWORK_CPP) BASE_DECLARE_FEATURE(kThrottleDelayable);
+ COMPONENT_EXPORT(NETWORK_CPP_FLAGS_AND_SWITCHES)
++BASE_DECLARE_FEATURE(kMdns);
++COMPONENT_EXPORT(NETWORK_CPP_FLAGS_AND_SWITCHES)
+ BASE_DECLARE_FEATURE(kNetworkErrorLogging);
+ COMPONENT_EXPORT(NETWORK_CPP_FLAGS_AND_SWITCHES)
+ BASE_DECLARE_FEATURE(kReporting);
