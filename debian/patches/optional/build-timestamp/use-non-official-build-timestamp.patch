@@ -1,0 +1,11 @@
+--- a/build/timestamp.gni
++++ b/build/timestamp.gni
+@@ -18,7 +18,7 @@
+ }
+ 
+ if (is_official_build) {
+-  official_name = "official"
++  official_name = "default"
+ } else {
+   official_name = "default"
+ }

@@ -1,0 +1,9 @@
+--- a/build/compute_build_timestamp.py
++++ b/build/compute_build_timestamp.py
+@@ -130,7 +130,7 @@
+         offset = int(patch_line[6:])
+   else:
+     build_date = GetUnofficialBuildDate(build_date)
+-  print(offset + int(calendar.timegm(build_date.utctimetuple())))
++  print("1750109210")
+   return 0

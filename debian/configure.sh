@@ -18,6 +18,7 @@ sys_disable=; sys_enable=
 SER_DB=; SER_U=; SERIES_DB=; SERIES_UC=
 
 BLUEZ_SET=0
+BUILD_TS_SET=0
 CLANG_VER_SET=0
 DBUS_SET=0
 MARCH_SET=0
@@ -126,6 +127,8 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$WIDEVINE" ] || WIDEVINE=1
 [ -n "$XZ_EXTREME" ] || XZ_EXTREME=0
 
+
+[ "$BUILD_TS" ] && BUILD_TS_SET=1 || BUILD_TS=0
 
 if [ $NO_SYS_LIBS -eq 1 ]; then
   # Zero all SYS_* library variables before any are declared later on
@@ -409,6 +412,27 @@ if [ $CCACHE -eq 1 ]; then
     /*|1)
       RUL="$RUL -e \"/^#export CCACHE_BASEDIR=/s@^#@@\"" ;;
   esac
+
+  [ $BUILD_TS_SET -eq 1 ] || BUILD_TS=1
+fi
+
+
+if [ $BUILD_TS -eq 1 ]; then
+  op_enable="$op_enable build-timestamp/use-non-official-build-timestamp.patch"
+elif [ $BUILD_TS -eq 2 ]; then
+  case $TIMESTAMP in
+    [1-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])
+      sed "/print/s@[0-9][0-9]*@$TIMESTAMP@" \
+        -i $OP_DIR/build-timestamp/compute-fixed-build-timestamp.patch ;;
+
+    "")
+      : ;;
+
+    *)
+      printf '%s\n' "ERROR: Invalid value for TIMESTAMP: $TIMESTAMP"
+      exit 1 ;;
+  esac
+  op_enable="$op_enable build-timestamp/compute-fixed-build-timestamp.patch"
 fi
 
 

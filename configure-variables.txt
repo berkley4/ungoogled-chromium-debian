@@ -44,6 +44,14 @@ SYS_GN			1		Use system generate-ninja package
 SYS_NODE		0		Use in-tree node
 			1		Use system node package (safest on unstable)
 
+BUILD_TS		0		0 = build system default (do nothing)
+					1 = patch build/timestamp.gni to use a 'non-official build' timestamp (auto-updates monthly)
+					2 = patch build/compute_build_timestamp.py to use a fixed timestamp (1750109210)
+					The timestamp is build into the code and values of 1 and 2 might help the ccache hit rate
+					as a newer timestamp could trigger re-compilation. A value of 1 is the default when CCACHE=1.
+
+TIMESTAMP		<epoch>		Use a custom ten digit unix epoch for BUILD_TS=2 (needs to start with a non-zero digit)
+
 CCACHE			0		Enable the use of the the ccache compilation cache utility
 
 CCACHE_BASEDIR		<dir>		Set CCACHE_BASEDIR to <dir> (must be an absolute path)
