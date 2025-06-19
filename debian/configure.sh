@@ -128,8 +128,6 @@ POLICIES=etc/chromium/policies/managed/policies.json
 [ -n "$XZ_EXTREME" ] || XZ_EXTREME=0
 
 
-[ "$BUILD_TS" ] && BUILD_TS_SET=1 || BUILD_TS=0
-
 if [ $NO_SYS_LIBS -eq 1 ]; then
   # Zero all SYS_* library variables before any are declared later on
   for i in SYS_BROTLI SYS_DRM SYS_ICU SYS_JPEG SYS_OPENH264 SYS_WEBP SYS_ZSTD VAAPI; do
@@ -272,6 +270,29 @@ if [ $MUTEX_PI -eq 0 ] && [ $PART_LOCK_PI -eq 1 ]; then
   printf '%s\n' "ERROR: Cannot set PART_LOCK_PI=1 when MUTEX_PI=0"
   exit 1
 fi
+
+
+if [ -n "$TIMESTAMP" ] && [ -n "$BUILD_TS" ] && [ $BUILD_TS -lt 2 ]; then
+  printf '%s\n' "ERROR: Cannot set TIMESTAMP when BUILD_TS=$BUILD_TS"
+  exit 1
+fi
+
+case $TIMESTAMP in
+  [1-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])
+    BUILD_TS=2 ;;
+
+  "")
+    # This is inert as we test for TIMESTAMP > 0 in the main BUILD_TS section
+    TIMESTAMP=0 ;;
+
+  *)
+    printf '%s\n' "ERROR: Invalid value for TIMESTAMP: $TIMESTAMP"
+    exit 1 ;;
+esac
+
+
+[ -n "$BUILD_TS" ] && BUILD_TS_SET=1 || BUILD_TS=0
+
 
 
 
@@ -420,18 +441,10 @@ fi
 if [ $BUILD_TS -eq 1 ]; then
   op_enable="$op_enable build-timestamp/use-non-official-build-timestamp.patch"
 elif [ $BUILD_TS -eq 2 ]; then
-  case $TIMESTAMP in
-    [1-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])
-      sed "/print/s@[0-9][0-9]*@$TIMESTAMP@" \
-        -i $OP_DIR/build-timestamp/compute-fixed-build-timestamp.patch ;;
-
-    "")
-      : ;;
-
-    *)
-      printf '%s\n' "ERROR: Invalid value for TIMESTAMP: $TIMESTAMP"
-      exit 1 ;;
-  esac
+  if [ $TIMESTAMP -gt 0 ]; then
+    sed "/print/s@[0-9][0-9]*@$TIMESTAMP@" \
+      -i $OP_DIR/build-timestamp/compute-fixed-build-timestamp.patch
+  fi
   op_enable="$op_enable build-timestamp/compute-fixed-build-timestamp.patch"
 fi
 
