@@ -1368,6 +1368,7 @@ fi
 ############################################################
 
 # Check whether DEPS.patch, DEPS-no-rust.patch or DEPS-no-node.patch have been applied
+# Sum combinations of 1, 2 and 4 to determine which patches have been used
 if [ $TEST -eq 0 ] && [ -f $RT_DIR/DEPS ]; then
   # Check for DEPS.patch application
   case $(sed -n '/webvr_info/p' $RT_DIR/DEPS) in
@@ -1375,23 +1376,20 @@ if [ $TEST -eq 0 ] && [ -f $RT_DIR/DEPS ]; then
       : ;;
 
     *)
-      # Check for DEPS-no-rust.patch application
-      case $(sed -n '/Linux_x64\/rust-toolchain-/,/condition/{/==/p}' $RT_DIR/DEPS) in
-        *condition*==*)
-          DEPS_PATCH=1 ;;
-
-        *)
-          DEPS_PATCH=2 ;;
-      esac ;;
+      DEPS_PATCH=$((DEPS_PATCH+1)) ;;
   esac
 
-  if [ $DEPS_PATCH -gt 0 ]; then
-    # Check for DEPS-no-node.patch application
-    case $(sed -n '\/node\/linux/,/condition/{/checkout_src_internal/p}' $RT_DIR/DEPS) in
-      *checkout_src_internal*)
-        DEPS_PATCH=3 ;;
-    esac
-  fi
+  # Check for DEPS-no-rust.patch application
+  case $(sed -n '/Linux_x64\/rust-toolchain-/,/condition/{/==/p}' $RT_DIR/DEPS) in
+    *condition*!=*)
+      DEPS_PATCH=$((DEPS_PATCH+2)) ;;
+  esac
+
+  # Check for DEPS-no-node.patch application
+  case $(sed -n '\/node\/linux/,/condition/{/checkout_src_internal/p}' $RT_DIR/DEPS) in
+    *checkout_src_internal*)
+      DEPS_PATCH=$((DEPS_PATCH+4)) ;;
+  esac
 fi
 
 ## Domain substitution exclusions
@@ -1429,31 +1427,34 @@ DSB="$DSB -e \"/^third_party\/opus\/BUILD\.gn/d\""
 DSB="$DSB -e \"/^third_party\/zlib\/BUILD\.gn/d\""
 DSB="$DSB -e \"/^third_party\/zstd\/BUILD\.gn/d\""
 
-# Exclude files that don't exist after patching DEPS
-if [ $DEPS_PATCH -ge 1 ]; then
-  DSB="$DSB -e \"/^build\/linux\/debian_bullseye_i386-sysroot\//d\""
-  DSB="$DSB -e \"/^build\/linux\/debian_bullseye_amd64-sysroot\//d\""
-  DSB="$DSB -e \"/^docs\/website\//d\""
-  DSB="$DSB -e \"/^third_party\/beto-core\//d\""
-  DSB="$DSB -e \"/^third_party\/blink\/renderer\/core\/css\/perftest_data\//d\""
-  DSB="$DSB -e \"/^third_party\/colorama\//d\""
-  DSB="$DSB -e \"/^third_party\/cros-components\//d\""
-  DSB="$DSB -e \"/^third_party\/crossbench\//d\""
-  DSB="$DSB -e \"/^third_party\/depot_tools\//d\""
-  DSB="$DSB -e \"/^third_party\/domato\//d\""
-  DSB="$DSB -e \"/^third_party\/freetype-testing\//d\""
-  DSB="$DSB -e \"/^third_party\/fuzztest\//d\""
-  DSB="$DSB -e \"/^third_party\/libFuzzer\//d\""
-  DSB="$DSB -e \"/^third_party\/liblouis\//d\""
-  DSB="$DSB -e \"/^third_party\/libva-fake-driver\//d\""
-  DSB="$DSB -e \"/^third_party\/nearby\//d\""
-  DSB="$DSB -e \"/^third_party\/pywebsocket3\//d\""
-  DSB="$DSB -e \"/^third_party\/speedometer\//d\""
-  DSB="$DSB -e \"/^third_party\/text-fragments-polyfill\//d\""
-  DSB="$DSB -e \"/^third_party\/webpagereplay\//d\""
-  DSB="$DSB -e \"/^third_party\/xdg-utils\//d\""
+if [ $DEPS_PATCH -gt 0 ] && [ $DEPS_PATCH -ne 4 ]; then
+  # Exclude files that don't exist after patching with DEPS.patch
+  if [ $DEPS_PATCH -ne 2 ] && [ $DEPS_PATCH -ne 6 ]; then
+    DSB="$DSB -e \"/^build\/linux\/debian_bullseye_i386-sysroot\//d\""
+    DSB="$DSB -e \"/^build\/linux\/debian_bullseye_amd64-sysroot\//d\""
+    DSB="$DSB -e \"/^docs\/website\//d\""
+    DSB="$DSB -e \"/^third_party\/beto-core\//d\""
+    DSB="$DSB -e \"/^third_party\/blink\/renderer\/core\/css\/perftest_data\//d\""
+    DSB="$DSB -e \"/^third_party\/colorama\//d\""
+    DSB="$DSB -e \"/^third_party\/cros-components\//d\""
+    DSB="$DSB -e \"/^third_party\/crossbench\//d\""
+    DSB="$DSB -e \"/^third_party\/depot_tools\//d\""
+    DSB="$DSB -e \"/^third_party\/domato\//d\""
+    DSB="$DSB -e \"/^third_party\/freetype-testing\//d\""
+    DSB="$DSB -e \"/^third_party\/fuzztest\//d\""
+    DSB="$DSB -e \"/^third_party\/libFuzzer\//d\""
+    DSB="$DSB -e \"/^third_party\/liblouis\//d\""
+    DSB="$DSB -e \"/^third_party\/libva-fake-driver\//d\""
+    DSB="$DSB -e \"/^third_party\/nearby\//d\""
+    DSB="$DSB -e \"/^third_party\/pywebsocket3\//d\""
+    DSB="$DSB -e \"/^third_party\/speedometer\//d\""
+    DSB="$DSB -e \"/^third_party\/text-fragments-polyfill\//d\""
+    DSB="$DSB -e \"/^third_party\/webpagereplay\//d\""
+    DSB="$DSB -e \"/^third_party\/xdg-utils\//d\""
+  fi
 
-  if [ $DEPS_PATCH -eq 2 ]; then
+  # Exclude rust toolchain after patching with DEPS-no-rust.patch
+  if [ $DEPS_PATCH -ne 1 ] && [ $DEPS_PATCH -ne 5 ]; then
     DSB="$DSB -e \"/^third_party\/rust-toolchain\//d\""
   fi
 fi
@@ -1467,8 +1468,8 @@ if [ $HYPHENATION -eq 1 ]; then
   PRU="$PRU -e \"/^third_party\/hyphenation-patterns\//d\""
 fi
 
-## Pruning script
-if [ $DEPS_PATCH -lt 3 ]; then
+## Exempt node from pruning only if DEPS-no-node.patch has NOT been applied
+if [ $DEPS_PATCH -lt 4 ]; then
   PRU_PY="$PRU_PY -e \"/third_party\/node\/linux\//d\""
 fi
 
