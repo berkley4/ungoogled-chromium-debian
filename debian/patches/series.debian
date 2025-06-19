@@ -11,6 +11,7 @@ debian/fixes/fix-assert-in-vnc-sessions.patch
 debian/fixes/memory-allocator-dcheck-assert-fix.patch
 debian/fixes/ps-print.patch
 debian/fixes/predictor-denial-of-service.patch
+debian/fixes/stdatomic.patch
 debian/disable/android.patch
 debian/disable/font-tests.patch
 debian/disable/tests-swiftshader.patch
