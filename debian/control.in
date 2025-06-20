@@ -55,7 +55,7 @@ Build-Depends:
  libdav1d-dev,
  libfontconfig-dev,
 #libharfbuzz-dev,
-#libicu-dev (<= 74.2-1),
+#libicu-dev (>= 74),
 #libxslt1-dev
 
 Package: ungoogled-chromium
