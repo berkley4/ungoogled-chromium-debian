@@ -59,6 +59,7 @@ vanadinite/0014-enable-partitioning-visited-links-by-default.patch
 various/compiler-flags/add-warning-suppression-flags.patch
 various/compiler-flags/do-not-link-with-libatomic.patch
 various/compiler-flags/ffmpeg-optimize-speed-O3.patch
+various/compiler-flags/fortify-level-three.patch
 various/compiler-flags/function-import-limits.patch
 various/compiler-flags/init-stack-vars-zero.patch
 various/compiler-flags/no-plt.patch

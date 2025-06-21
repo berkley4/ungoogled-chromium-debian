@@ -65,6 +65,7 @@ ___Security/Privacy improvements___
 - Stack clash protection (-fstack-clash-protection) - see [here](https://blog.llvm.org/posts/2021-01-05-stack-clash-protection/)
 - Intel control flow enforcement technology (-fcf-protection) - cpu-based [control flow integrity](https://wiki.ubuntu.com/ToolChain/CompilerFlags#A-fcf-protection)
 - Bad Cast Checking (use_cfi_cast=true) - see [here](https://clang.llvm.org/docs/ControlFlowIntegrity.html#bad-cast-checking)
+- Higher fortification level (-D_FORTIFY_SOURCE=3) - see [here](https://developers.redhat.com/articles/2022/09/17/gccs-new-fortification-level) and [here](https://developers.redhat.com/articles/2023/02/06/how-improve-application-security-using-fortifysource3)
 - Enhanced stack protection (-fstack-protector-strong; chromium's default is the less-strict -fstack-protector)
 - Overflow prevention (-fwrapv) - see [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1031653) and [here](https://gitlab.e.foundation/e/apps/browser/-/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch)
 - Extra cromite and vanadium patches (and generic copies of patches derived from these projects)
