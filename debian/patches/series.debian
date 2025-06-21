@@ -56,6 +56,7 @@ vanadinite/0012-enable-partitioning-third-party-storage.patch
 vanadinite/0013-enable-partitioning-content-settings-by-default.patch
 vanadinite/0014-enable-partitioning-visited-links-by-default.patch
 
+various/compiler-flags/add-warning-suppression-flags.patch
 various/compiler-flags/do-not-link-with-libatomic.patch
 various/compiler-flags/ffmpeg-optimize-speed-O3.patch
 various/compiler-flags/function-import-limits.patch
@@ -99,7 +100,6 @@ various/system/perfetto-system-zlib.patch
 various/system/xdg-scripts.patch
 various/system/zlib.patch
 various/upstream/add-a-fast-reject-filter-for-the-subject-of-selectors.patch
-various/warnings/clang-excessive-warnings.patch
 
 optional/bundle-hyphen-data.patch
 #optional/enable-esbuild-for-official-builds.patch
