@@ -75,7 +75,6 @@ GN_FLAGS +=					\
 GN_FLAGS +=					\
 	cppgc_enable_pointer_compression=true	\
 	enable_pointer_compression_support=true	\
-	enable_vectorized_html_scanning=true	\
 	proprietary_codecs=true			\
 	use_cfi_cast=true			\
 	use_text_section_splitting=true
