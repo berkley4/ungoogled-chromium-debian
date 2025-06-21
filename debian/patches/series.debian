@@ -98,6 +98,7 @@ various/system/minizip.patch
 various/system/perfetto-system-zlib.patch
 various/system/xdg-scripts.patch
 various/system/zlib.patch
+various/upstream/add-a-fast-reject-filter-for-the-subject-of-selectors.patch
 various/warnings/clang-excessive-warnings.patch
 
 optional/bundle-hyphen-data.patch
