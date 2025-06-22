@@ -207,9 +207,9 @@ configs, need to change the header manually to fix this.
  #include "hevcdec.h"
 -#include "progressframe.h"
 +#include "libavcodec/progressframe.h"
+ #include "thread.h"
  #include "libavutil/refstruct.h"
  
- void ff_hevc_unref_frame(HEVCFrame *frame, int flags)
 --- a/third_party/ffmpeg/libavcodec/hevc/sei.c
 +++ b/third_party/ffmpeg/libavcodec/hevc/sei.c
 @@ -22,8 +22,8 @@

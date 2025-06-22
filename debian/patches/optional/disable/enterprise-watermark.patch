@@ -1,6 +1,6 @@
 --- a/chrome/browser/ui/views/frame/browser_view.h
 +++ b/chrome/browser/ui/views/frame/browser_view.h
-@@ -912,9 +912,11 @@
+@@ -917,9 +917,11 @@
      return web_app_frame_toolbar();
    }
  
@@ -12,7 +12,7 @@
  
    MultiContentsView* multi_contents_view_for_testing() {
      return multi_contents_view_;
-@@ -1307,8 +1309,10 @@
+@@ -1312,8 +1314,10 @@
    // contents_web_view_.
    raw_ptr<views::View> lens_overlay_view_ = nullptr;
  
@@ -25,7 +25,7 @@
    // Handled by ContentsLayoutManager.
 --- a/chrome/browser/ui/views/frame/browser_view.cc
 +++ b/chrome/browser/ui/views/frame/browser_view.cc
-@@ -1078,8 +1078,12 @@
+@@ -1103,8 +1103,12 @@
              .Build());
    }
  #endif
@@ -38,7 +38,7 @@
  
  #if BUILDFLAG(ENABLE_GLIC)
    contents_container->SetLayoutManager(std::make_unique<ContentsLayoutManager>(
-@@ -1222,7 +1226,9 @@
+@@ -1253,7 +1257,9 @@
    devtools_scrim_view_ = nullptr;
    contents_scrim_view_ = nullptr;
    window_scrim_view_ = nullptr;
@@ -46,9 +46,9 @@
    watermark_view_ = nullptr;
 +#endif
    glic_border_ = nullptr;
+   new_tab_footer_web_view_ = nullptr;
    contents_container_ = nullptr;
-   unified_side_panel_ = nullptr;
-@@ -6415,11 +6421,13 @@
+@@ -6504,11 +6510,13 @@
    return is_web_app;
  }
  

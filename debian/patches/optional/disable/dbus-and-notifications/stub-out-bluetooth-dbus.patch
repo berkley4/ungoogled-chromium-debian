@@ -43,7 +43,7 @@
  }  // namespace metrics
 --- a/device/bluetooth/adapter.cc
 +++ b/device/bluetooth/adapter.cc
-@@ -112,7 +112,7 @@
+@@ -111,7 +111,7 @@
    mojom::AdapterInfoPtr adapter_info = mojom::AdapterInfo::New();
    adapter_info->address = adapter_->GetAddress();
    adapter_info->name = adapter_->GetName();

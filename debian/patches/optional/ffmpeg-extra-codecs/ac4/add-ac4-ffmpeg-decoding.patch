@@ -1,6 +1,6 @@
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
-@@ -486,6 +486,7 @@
+@@ -488,6 +488,7 @@
  #define CONFIG_SOL_DPCM_DECODER 0
  #define CONFIG_XAN_DPCM_DECODER 0
  #define CONFIG_WADY_DPCM_DECODER 0
@@ -37,7 +37,7 @@
      NULL };
 --- a/third_party/ffmpeg/ffmpeg_generated.gni
 +++ b/third_party/ffmpeg/ffmpeg_generated.gni
-@@ -533,6 +533,17 @@
+@@ -534,6 +534,17 @@
    ]
  }
  
@@ -7859,7 +7859,7 @@
 +#endif /* AVCODEC_AC4DEC_DATA_H */
 --- a/third_party/ffmpeg/libavcodec/allcodecs.c
 +++ b/third_party/ffmpeg/libavcodec/allcodecs.c
-@@ -431,6 +431,7 @@
+@@ -432,6 +432,7 @@
  extern const FFCodec ff_ac3_decoder;
  extern const FFCodec ff_ac3_fixed_encoder;
  extern const FFCodec ff_ac3_fixed_decoder;

@@ -221,7 +221,7 @@ Cr-Commit-Position: refs/heads/main@{#1472268}
               (case_insensitive &&
 --- a/third_party/blink/renderer/core/css/selector_checker.cc
 +++ b/third_party/blink/renderer/core/css/selector_checker.cc
-@@ -899,7 +899,7 @@
+@@ -906,7 +906,7 @@
      DCHECK(element.CouldHaveAttribute(selector_attr))
          << element << " should have contained attribute " << selector_attr
          << ", Bloom bits on element are "
@@ -230,7 +230,7 @@ Cr-Commit-Position: refs/heads/main@{#1472268}
  #endif
  
      if (AttributeValueMatches(attribute_item, match, selector_value,
-@@ -959,7 +959,7 @@
+@@ -966,7 +966,7 @@
                 !element.ClassNames().Contains(selector.Value()))
              << element << " should have matched class " << selector.Value()
              << ", Bloom bits on element are "
@@ -436,7 +436,7 @@ Cr-Commit-Position: refs/heads/main@{#1472268}
        if (AttributeValueMatchesExact(attribute_item, selector_value,
 --- a/third_party/blink/renderer/core/dom/element.h
 +++ b/third_party/blink/renderer/core/dom/element.h
-@@ -778,11 +778,11 @@
+@@ -781,11 +781,11 @@
    bool CouldHaveClassWithPrecomputedFilter(TinyBloomFilter filter) const {
      return (attribute_or_class_bloom_ & filter) == filter;
    }

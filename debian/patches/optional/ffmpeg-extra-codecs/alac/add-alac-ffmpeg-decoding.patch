@@ -1,6 +1,6 @@
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
-@@ -356,7 +356,7 @@
+@@ -358,7 +358,7 @@
  #define CONFIG_ATRAC3P_DECODER 0
  #define CONFIG_ATRAC3PAL_DECODER 0
  #define CONFIG_ATRAC9_DECODER 0
@@ -21,7 +21,7 @@
      &ff_pcm_s24le_decoder,
 --- a/third_party/ffmpeg/ffmpeg_generated.gni
 +++ b/third_party/ffmpeg/ffmpeg_generated.gni
-@@ -560,3 +560,17 @@
+@@ -561,3 +561,17 @@
      (is_android && current_cpu == "x86")) {
    ffmpeg_c_sources += [ "compat/strtod.c" ]
  }

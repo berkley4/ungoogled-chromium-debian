@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1208,6 +1208,7 @@
+@@ -1228,6 +1228,7 @@
  config("compiler_cpu_abi") {
    cflags = []
    ldflags = []
@@ -8,14 +8,14 @@
    defines = []
  
    configs = []
-@@ -1223,8 +1224,10 @@
-         "-m64",
-         "-maes",
-         "-mpclmul",
-+        "-march=x86-64-v2",
-       ]
-       ldflags += [ "-m64" ]
-+      rustflags += [ "-Ctarget-cpu=x86-64-v2" ]
-     } else if (current_cpu == "x86") {
-       cflags += [ "-m32" ]
-       ldflags += [ "-m32" ]
+@@ -1244,6 +1245,10 @@
+         cflags += [
+           "-maes",
+           "-mpclmul",
++          "-march=x86-64-v2",
++        ]
++        rustflags += [
++          "-Ctarget-cpu=x86-64-v2",
+         ]
+       } else {
+         cflags += [ "-m64" ]

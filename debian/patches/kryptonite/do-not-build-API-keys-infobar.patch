@@ -1,6 +1,6 @@
 --- a/chrome/browser/ui/BUILD.gn
 +++ b/chrome/browser/ui/BUILD.gn
-@@ -1206,8 +1206,6 @@
+@@ -1145,8 +1145,6 @@
        "startup/default_browser_prompt/default_browser_prompt_manager.h",
        "startup/default_browser_prompt/default_browser_prompt_prefs.cc",
        "startup/default_browser_prompt/default_browser_prompt_prefs.h",

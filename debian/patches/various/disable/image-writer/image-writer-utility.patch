@@ -1,6 +1,6 @@
 --- a/chrome/browser/extensions/BUILD.gn
 +++ b/chrome/browser/extensions/BUILD.gn
-@@ -432,6 +432,7 @@
+@@ -461,6 +461,7 @@
      "//chrome/browser/ui/safety_hub",
      "//chrome/common",
      "//chrome/common/safe_browsing:proto",
@@ -8,7 +8,7 @@
      "//components/bookmarks/browser",
      "//components/bookmarks/managed",
      "//components/content_settings/core/browser",
-@@ -908,7 +909,6 @@
+@@ -921,7 +922,6 @@
        "//chrome/browser/web_applications/extensions",
        "//chrome/common/extensions/api:extensions_features",
        "//chrome/services/file_util/public/mojom:mojom",
@@ -16,7 +16,7 @@
        "//components/affiliations/core/browser:affiliations",
        "//components/app_constants",
        "//components/autofill/content/browser",
-@@ -1042,6 +1042,10 @@
+@@ -1053,6 +1053,10 @@
        "//url",
      ]
  
@@ -29,7 +29,7 @@
          "api/certificate_provider/certificate_provider_api.cc",
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -2342,7 +2342,6 @@
+@@ -2379,7 +2379,6 @@
        "//chrome/common:version_header",
        "//chrome/common/privacy_budget:test_support",
        "//chrome/renderer",
@@ -37,7 +37,7 @@
        "//chrome/test/data/webui:resources",
        "//chrome/test/data/webui/mojo:mojo_bindings",
        "//chrome/test/media_router/access_code_cast:access_code_cast_integration_base",
-@@ -2703,6 +2702,10 @@
+@@ -2738,6 +2737,10 @@
        "//v8",
      ]
  
@@ -45,9 +45,9 @@
 +      deps += [ "//chrome/services/removable_storage_writer:lib" ]
 +    }
 +
-     allow_circular_includes_from = []
- 
-     if (is_chromeos) {
+     allow_circular_includes_from = [
+       # `alternate_nav_infobar_delegate_browsertest.cc` includes test_infobar.h, which is
+       # built as part of //chrome/test:browser_tests, hence the circular dep.
 --- a/chrome/utility/BUILD.gn
 +++ b/chrome/utility/BUILD.gn
 @@ -5,6 +5,7 @@
@@ -58,7 +58,7 @@
  import("//chrome/services/speech/buildflags/buildflags.gni")
  import("//chromeos/ash/components/assistant/assistant.gni")
  import("//components/services/on_device_translation/buildflags/features.gni")
-@@ -150,16 +151,24 @@
+@@ -151,16 +152,24 @@
    if (enable_extensions) {
      deps += [
        "//chrome/common/extensions/api",

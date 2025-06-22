@@ -165,7 +165,7 @@ profiles to have software HEVC decoding ability.
 
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.h
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.h
-@@ -697,7 +697,7 @@
+@@ -689,7 +689,7 @@
  #define CONFIG_AUDIO_FRAME_QUEUE 0
  #define CONFIG_AUDIODSP 0
  #define CONFIG_BLOCKDSP 0
@@ -173,8 +173,8 @@ profiles to have software HEVC decoding ability.
 +#define CONFIG_BSWAPDSP 1
  #define CONFIG_CABAC 1
  #define CONFIG_CBS 0
- #define CONFIG_CBS_AV1 0
-@@ -732,8 +732,8 @@
+ #define CONFIG_CBS_APV 0
+@@ -725,8 +725,8 @@
  #define CONFIG_H264PRED 1
  #define CONFIG_H264QPEL 1
  #define CONFIG_H264_SEI 1
@@ -187,7 +187,7 @@ profiles to have software HEVC decoding ability.
  #define CONFIG_HUFFYUVDSP 0
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
-@@ -139,7 +139,7 @@
+@@ -141,7 +141,7 @@
  #define CONFIG_H264_QSV_DECODER 0
  #define CONFIG_H264_RKMPP_DECODER 0
  #define CONFIG_HAP_DECODER 0
@@ -196,7 +196,7 @@ profiles to have software HEVC decoding ability.
  #define CONFIG_HEVC_QSV_DECODER 0
  #define CONFIG_HEVC_RKMPP_DECODER 0
  #define CONFIG_HEVC_V4L2M2M_DECODER 0
-@@ -1006,7 +1006,7 @@
+@@ -1008,7 +1008,7 @@
  #define CONFIG_H261_PARSER 0
  #define CONFIG_H263_PARSER 0
  #define CONFIG_H264_PARSER 1
@@ -223,7 +223,7 @@ profiles to have software HEVC decoding ability.
      NULL };
 --- a/third_party/ffmpeg/ffmpeg_generated.gni
 +++ b/third_party/ffmpeg/ffmpeg_generated.gni
-@@ -224,6 +224,27 @@
+@@ -223,6 +223,27 @@
      (is_apple && ffmpeg_branding == "Chrome") ||
      (is_win && ffmpeg_branding == "Chrome") ||
      (use_linux_config && ffmpeg_branding == "Chrome")) {
@@ -251,7 +251,7 @@ profiles to have software HEVC decoding ability.
    ffmpeg_c_sources += [
      "libavcodec/atsc_a53.c",
      "libavcodec/autorename_libavcodec_videodsp.c",
-@@ -428,6 +449,24 @@
+@@ -429,6 +450,24 @@
      (is_android && current_cpu == "x86" && ffmpeg_branding == "Chrome") ||
      (is_win && current_cpu == "x86" && ffmpeg_branding == "Chrome") ||
      (use_linux_config && current_cpu == "x86" && ffmpeg_branding == "Chrome")) {

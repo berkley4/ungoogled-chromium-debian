@@ -1,50 +1,22 @@
---- a/components/viz/common/BUILD.gn
-+++ b/components/viz/common/BUILD.gn
-@@ -9,6 +9,7 @@
- import("//skia/features.gni")
- import("//testing/libfuzzer/fuzzer_test.gni")
- import("//testing/test.gni")
-+import("//ui/gl/features.gni")
- 
- import("//third_party/inspector_protocol/inspector_protocol.gni")
- 
-@@ -35,10 +36,12 @@
-     "//gpu/vulkan:buildflags",
-     "//skia",
-     "//third_party/angle:includes",
--    "//third_party/dawn/include/dawn:cpp_headers",
-     "//ui/gfx:buffer_types",
-     "//ui/gfx/geometry",
-   ]
-+  if (use_dawn) {
-+    deps += [ "//third_party/dawn/include/dawn:cpp_headers" ]
-+  }
-   if (enable_vulkan) {
-     deps += [ "//third_party/vulkan-headers/src:vulkan_headers" ]
-   }
 --- a/services/on_device_model/BUILD.gn
 +++ b/services/on_device_model/BUILD.gn
-@@ -42,12 +42,14 @@
-   }
+@@ -5,6 +5,7 @@
+ import("//build/buildflag_header.gni")
+ import("//services/on_device_model/on_device_model.gni")
+ import("//third_party/dawn/scripts/dawn_features.gni")
++import("//ui/gl/features.gni")
  
+ component("on_device_model_service") {
+   sources = [
+@@ -44,7 +45,7 @@
    if (is_linux || is_chromeos) {
--    deps += [
--      "//gpu/config",
--      "//third_party/dawn/include/dawn:cpp_headers",
--      "//third_party/dawn/src/dawn:proc",
--      "//third_party/dawn/src/dawn/native",
--    ]
-+    deps += [ "//gpu/config" ]
-+    if (use_dawn) {
-+      deps += [
-+        "//third_party/dawn/include/dawn:cpp_headers",
-+        "//third_party/dawn/src/dawn:proc",
-+        "//third_party/dawn/src/dawn/native",
-+      ]
-+    }
+     deps += [ "//gpu/config" ]
    }
- }
- 
+-  if (!is_fuchsia) {
++  if (!is_fuchsia && use_dawn) {
+     deps += [
+       "//third_party/dawn/include/dawn:cpp_headers",
+       "//third_party/dawn/src/dawn:proc",
 --- a/services/on_device_model/ml/BUILD.gn
 +++ b/services/on_device_model/ml/BUILD.gn
 @@ -4,6 +4,7 @@
@@ -70,27 +42,24 @@
 +    }
      if (enable_constraints) {
        defines += [ "ENABLE_ON_DEVICE_CONSTRAINTS" ]
-       deps += [
+       deps += [ "//third_party/rust/llguidance/v0_7:lib" ]
 --- a/services/on_device_model/pre_sandbox_init.cc
 +++ b/services/on_device_model/pre_sandbox_init.cc
-@@ -16,9 +16,11 @@
- 
- #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
+@@ -18,7 +18,7 @@
  #include "gpu/config/gpu_info_collector.h"                    // nogncheck
-+#if BUILDFLAG(USE_DAWN)
+ #endif
+ 
+-#if !BUILDFLAG(IS_FUCHSIA)
++#if !BUILDFLAG(IS_FUCHSIA) && BUILDFLAG(USE_DAWN)
  #include "third_party/dawn/include/dawn/dawn_proc.h"          // nogncheck
  #include "third_party/dawn/include/dawn/native/DawnNative.h"  // nogncheck
  #include "third_party/dawn/include/dawn/webgpu_cpp.h"         // nogncheck
-+#endif  // BUILDFLAG(USE_DAWN)
- #endif
- 
- namespace on_device_model {
-@@ -74,7 +76,7 @@
+@@ -91,7 +91,7 @@
    }
  #endif
  
--#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
-+#if (BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)) && BUILDFLAG(USE_DAWN)
-   // Warm any relevant drivers before attempting to bring up the sandbox. For
-   // good measure we initialize a device instance for any adapter with an
-   // appropriate backend on top of any integrated or discrete GPU.
+-#if !BUILDFLAG(IS_FUCHSIA)
++#if !BUILDFLAG(IS_FUCHSIA) && BUILDFLAG(USE_DAWN)
+   if (base::FeatureList::IsEnabled(kOnDeviceModelWarmDrivers)) {
+     // Warm any relevant drivers before attempting to bring up the sandbox. For
+     // good measure we initialize a device instance for any adapter with an

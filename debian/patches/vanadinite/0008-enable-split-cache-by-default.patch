@@ -1,6 +1,6 @@
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -121,11 +121,11 @@
+@@ -125,11 +125,11 @@
  
  BASE_FEATURE(kSplitCacheByIncludeCredentials,
               "SplitCacheByIncludeCredentials",
@@ -14,7 +14,7 @@
  
  // Note: Use of this feature is gated on the HTTP cache itself being
  // partitioned, which is controlled by the kSplitCacheByNetworkIsolationKey
-@@ -136,7 +136,7 @@
+@@ -140,7 +140,7 @@
  
  BASE_FEATURE(kSplitCodeCacheByNetworkIsolationKey,
               "SplitCodeCacheByNetworkIsolationKey",

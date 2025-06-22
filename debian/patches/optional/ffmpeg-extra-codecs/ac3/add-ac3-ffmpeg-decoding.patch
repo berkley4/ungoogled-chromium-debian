@@ -1,6 +1,6 @@
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.asm
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.asm
-@@ -677,7 +677,7 @@
+@@ -669,7 +669,7 @@
  %define CONFIG_MUXERS 0
  %define CONFIG_PROTOCOLS 0
  %define CONFIG_AANDCTTABLES 0
@@ -11,7 +11,7 @@
  %define CONFIG_AUDIO_FRAME_QUEUE 0
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
-@@ -11,7 +11,7 @@
+@@ -12,7 +12,7 @@
  #define CONFIG_DOVI_RPU_BSF 0
  #define CONFIG_DTS2PTS_BSF 0
  #define CONFIG_DV_ERROR_MARKER_BSF 0
@@ -20,7 +20,7 @@
  #define CONFIG_EVC_FRAME_MERGE_BSF 0
  #define CONFIG_EXTRACT_EXTRADATA_BSF 0
  #define CONFIG_FILTER_UNITS_BSF 0
-@@ -340,7 +340,7 @@
+@@ -342,7 +342,7 @@
  #define CONFIG_ZEROCODEC_DECODER 0
  #define CONFIG_ZLIB_DECODER 0
  #define CONFIG_ZMBV_DECODER 0
@@ -29,7 +29,7 @@
  #define CONFIG_AC3_FIXED_DECODER 0
  #define CONFIG_ACELP_KELVIN_DECODER 0
  #define CONFIG_ALS_DECODER 0
-@@ -372,7 +372,7 @@
+@@ -374,7 +374,7 @@
  #define CONFIG_DSICINAUDIO_DECODER 0
  #define CONFIG_DSS_SP_DECODER 0
  #define CONFIG_DST_DECODER 0
@@ -38,7 +38,7 @@
  #define CONFIG_EVRC_DECODER 0
  #define CONFIG_FASTAUDIO_DECODER 0
  #define CONFIG_FFWAVESYNTH_DECODER 0
-@@ -975,7 +975,7 @@
+@@ -977,7 +977,7 @@
  #define CONFIG_WMV3_VDPAU_HWACCEL 0
  #define CONFIG_AAC_PARSER 1
  #define CONFIG_AAC_LATM_PARSER 0
@@ -47,7 +47,7 @@
  #define CONFIG_ADX_PARSER 0
  #define CONFIG_AMR_PARSER 0
  #define CONFIG_AV1_PARSER 0
-@@ -1651,7 +1651,7 @@
+@@ -1650,7 +1650,7 @@
  #define CONFIG_AA_DEMUXER 0
  #define CONFIG_AAC_DEMUXER 1
  #define CONFIG_AAX_DEMUXER 0
@@ -67,7 +67,7 @@
  #define CONFIG_FFMETADATA_DEMUXER 0
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.h
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.h
-@@ -691,7 +691,7 @@
+@@ -683,7 +683,7 @@
  #define CONFIG_MUXERS 0
  #define CONFIG_PROTOCOLS 0
  #define CONFIG_AANDCTTABLES 0
@@ -108,7 +108,7 @@
      &ff_mov_demuxer,
 --- a/third_party/ffmpeg/ffmpeg_generated.gni
 +++ b/third_party/ffmpeg/ffmpeg_generated.gni
-@@ -275,6 +275,18 @@
+@@ -274,6 +274,18 @@
      "libavcodec/h274.c",
      "libavcodec/startcode.c",
    ]
@@ -127,7 +127,7 @@
  }
  
  if (((current_cpu == "arm64" || current_cpu == "arm64e") &&
-@@ -476,6 +488,17 @@
+@@ -477,6 +489,17 @@
      "libavcodec/x86/sbrdsp_init.c",
      "libavcodec/x86/videodsp_init.c",
    ]

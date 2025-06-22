@@ -8,7 +8,7 @@
  import("//third_party/protobuf/proto_library.gni")
  import("//third_party/webrtc/webrtc.gni")
  import("//third_party/widevine/cdm/widevine.gni")
-@@ -5829,7 +5830,6 @@
+@@ -5884,7 +5885,6 @@
      data_deps += [
        "//components:components_perftests",
        "//testing:run_perf_test",
@@ -16,7 +16,7 @@
      ]
  
      if (!is_android) {
-@@ -5845,6 +5845,10 @@
+@@ -5900,6 +5900,10 @@
      if (build_dawn_tests) {
        data_deps += [ "//third_party/dawn/src/dawn/tests:dawn_perf_tests" ]
      }

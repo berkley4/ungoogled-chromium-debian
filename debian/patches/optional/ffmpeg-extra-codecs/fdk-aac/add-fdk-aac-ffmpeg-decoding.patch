@@ -1,6 +1,6 @@
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.h
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.h
-@@ -494,7 +494,7 @@
+@@ -486,7 +486,7 @@
  #define CONFIG_LIBXAVS2 0
  #define CONFIG_LIBXVID 0
  #define CONFIG_DECKLINK 0
@@ -11,7 +11,7 @@
  #define CONFIG_LIBARIBB24 0
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
-@@ -46,7 +46,7 @@
+@@ -47,7 +47,7 @@
  #define CONFIG_VP9_SUPERFRAME_SPLIT_BSF 0
  #define CONFIG_VVC_METADATA_BSF 0
  #define CONFIG_VVC_MP4TOANNEXB_BSF 0
@@ -20,7 +20,7 @@
  #define CONFIG_AAC_FIXED_DECODER 0
  #define CONFIG_AAC_LATM_DECODER 0
  #define CONFIG_AASC_DECODER 0
-@@ -583,7 +583,7 @@
+@@ -585,7 +585,7 @@
  #define CONFIG_LIBCODEC2_DECODER 0
  #define CONFIG_LIBDAV1D_DECODER 0
  #define CONFIG_LIBDAVS2_DECODER 0
@@ -40,7 +40,7 @@
      &ff_mp3_decoder,
 --- a/third_party/ffmpeg/ffmpeg_generated.gni
 +++ b/third_party/ffmpeg/ffmpeg_generated.gni
-@@ -299,28 +299,120 @@
+@@ -298,28 +298,120 @@
      (is_win && ffmpeg_branding == "Chrome") ||
      (use_linux_config && ffmpeg_branding == "Chrome")) {
    ffmpeg_c_sources += [

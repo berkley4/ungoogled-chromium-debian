@@ -1,6 +1,6 @@
 --- a/media/ffmpeg/ffmpeg_common.cc
 +++ b/media/ffmpeg/ffmpeg_common.cc
-@@ -1025,8 +1025,8 @@
+@@ -1022,8 +1022,8 @@
    static const base::NoDestructor<std::string> kAllowedAudioCodecs([]() {
      // This should match the configured lists in //third_party/ffmpeg.
      std::string allowed_decoders(

@@ -1,6 +1,6 @@
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
-@@ -46,6 +46,9 @@
+@@ -47,6 +47,9 @@
  #define CONFIG_VP9_SUPERFRAME_SPLIT_BSF 0
  #define CONFIG_VVC_METADATA_BSF 0
  #define CONFIG_VVC_MP4TOANNEXB_BSF 0
@@ -10,7 +10,7 @@
  #define CONFIG_AASC_DECODER 0
  #define CONFIG_AIC_DECODER 0
  #define CONFIG_ALIAS_PIX_DECODER 0
-@@ -337,13 +340,9 @@
+@@ -339,13 +342,9 @@
  #define CONFIG_ZEROCODEC_DECODER 0
  #define CONFIG_ZLIB_DECODER 0
  #define CONFIG_ZMBV_DECODER 0
@@ -24,7 +24,7 @@
  #define CONFIG_ALS_DECODER 0
  #define CONFIG_AMRNB_DECODER 0
  #define CONFIG_AMRWB_DECODER 0
-@@ -357,6 +356,7 @@
+@@ -359,6 +358,7 @@
  #define CONFIG_ATRAC3P_DECODER 0
  #define CONFIG_ATRAC3PAL_DECODER 0
  #define CONFIG_ATRAC9_DECODER 0
@@ -32,7 +32,7 @@
  #define CONFIG_BINKAUDIO_DCT_DECODER 0
  #define CONFIG_BINKAUDIO_RDFT_DECODER 0
  #define CONFIG_BMV_AUDIO_DECODER 0
-@@ -1652,7 +1652,6 @@
+@@ -1651,7 +1651,6 @@
  #define CONFIG_AAC_DEMUXER 1
  #define CONFIG_AAX_DEMUXER 0
  #define CONFIG_AC3_DEMUXER 0
