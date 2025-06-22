@@ -866,10 +866,6 @@ fi
 
 
 if [ $FAST_RESTART -eq 1 ]; then
-  if [ ! -d $OUT_DIR ]; then
-    printf '%s\n' "WARN: $OUT_DIR directory is missing"
-  fi
-
   [ ! -f $OUT_DIR/args.gn ] || rm $OUT_DIR/args.gn
 
   RUL="$RUL -e \"/gn gen/s@^\t@\ttest -f \x24\x28ARGS_GN\x29 || @\""
