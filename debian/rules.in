@@ -330,7 +330,7 @@ hardclean:
 cleandead:
 	test ! -d $(OUT_DIR) || ninja -C $(OUT_DIR) -t cleandead
 
-rm_out_release:
+rm_release:
 	test ! -d $(OUT_DIR) || rm -rf $(OUT_DIR)
 
 gn_gen:
@@ -342,13 +342,13 @@ prune:
 revert_domsub:
 	test ! -f $(DS_CACHE) || $(UL_DIR)/domain_substitution.py revert -c $(DS_CACHE) $(RT_DIR)
 
-reset_unbundling: revert_unbundling
+reset_unbundle: revert_unbundle
 	for f in $(UB_LIST); do bf=$${f%.bundled}; test -f $$bf || continue; cd $${bf%/*} >/dev/null && git checkout HEAD -- $${bf##*/} && cd - >/dev/null; done
 
-revert_unbundling:
+revert_unbundle:
 	for f in $(UB_LIST); do test ! -f $$f || mv $$f $${f%.bundled}; done
 
-override_dh_auto_configure: revert_unbundling
+override_dh_auto_configure: revert_unbundle
 	test -z "$(SYS_LIBS)" || $(UB_REP_SCRIPT) --system-libraries $(SYS_LIBS)
 	gn gen $(OUT_DIR) --args="$(GN_FLAGS)" --fail-on-unused-args
 	test -f $(DS_CACHE) || $(UL_DIR)/domain_substitution.py apply -r $(UC_DIR)/domain_regex.list -f $(UC_DIR)/domain_substitution.list -c $(DS_CACHE) $(RT_DIR)
@@ -359,7 +359,7 @@ override_dh_auto_configure: revert_unbundling
 override_dh_auto_build:
 	ninja -j $(JOBS) -C $(OUT_DIR) chrome chrome_sandbox chromedriver
 
-override_dh_prep: revert_unbundling
+override_dh_prep: revert_unbundle
 	test ! -f $(DS_CACHE) || $(UL_DIR)/domain_substitution.py revert -c $(DS_CACHE) $(RT_DIR)
 	dh_prep
 

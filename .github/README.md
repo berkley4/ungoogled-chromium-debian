@@ -480,7 +480,7 @@ JOBS=4 dpkg-buildpackage --source-option=--no-preparation -b -uc -nc
 # Delete out/Release folder in case of 'stubborn/unsolvable' build errors (no guarantees)
 
 ```sh
-./debian/rules rm_out_release
+./debian/rules rm_release
 ```
 
 
@@ -501,6 +501,6 @@ JOBS=4 dpkg-buildpackage --source-option=--no-preparation -b -uc -nc
 # Revert unbundling
 
 ```sh
-./debian/rules revert_unbundling
+./debian/rules revert_unbundle
 ```
 
