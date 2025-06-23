@@ -100,6 +100,10 @@ various/system/perfetto-system-zlib.patch
 various/system/xdg-scripts.patch
 various/system/zlib.patch
 various/upstream/add-a-fast-reject-filter-for-the-subject-of-selectors.patch
+various/upstream/crash-fixes/0001-e60ae71.diff
+various/upstream/crash-fixes/0002-4a67109.diff
+various/upstream/crash-fixes/0003-6aaa1886b.diff
+various/upstream/crash-fixes/0004-2a92e74.diff
 
 optional/bundle-hyphen-data.patch
 #optional/enable-esbuild-for-official-builds.patch
