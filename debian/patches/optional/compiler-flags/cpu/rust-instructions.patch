@@ -4,7 +4,7 @@
          ]
          rustflags += [
            "-Ctarget-cpu=x86-64-v2",
-+          "-Ctarget-feature=_RUST_INST",
++          "-Ctarget-feature=+aes,+pclmulqdq,+avx",
          ]
        } else {
          cflags += [ "-m64" ]

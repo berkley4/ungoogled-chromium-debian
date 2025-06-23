@@ -731,6 +731,9 @@ if [ $AES_PCLMUL -eq 0 ]; then
 fi
 
 case $RUST_INST in
+  +aes,+pclmulqdq,+avx)
+    : ;;
+
   "")
     op_disable="$op_disable compiler-flags/cpu/rust-instructions.patch" ;;
 
@@ -738,7 +741,7 @@ case $RUST_INST in
     # Remove potential leading comma from RUST_INST string
     RUST_INST=${RUST_INST#,}
 
-    sed -e "s@_RUST_INST@$RUST_INST@" \
+    sed -e "s@+aes,+pclmulqdq,+avx@$RUST_INST@" \
         -i $OP_DIR/compiler-flags/cpu/rust-instructions.patch ;;
 esac
 
