@@ -1301,6 +1301,14 @@ if [ $STABLE -eq 1 ]; then
   # Allow stable users (eg with a self-compiled icu package) to enable SYS_ICU
   [ $SYS_ICU_SET -eq 1 ] && [ $SYS_ICU -eq 1 ] || SYS_ICU=0
 
+  # On stable there is an interdependency between libxslt, libxml and icu
+  if [ $SYS_ICU -eq 0 ]; then
+    deps_disable="$deps_disable libxslt1"
+
+    # SYS_LIBS += libxslt libxml
+    sys_disable="$sys_disable libxslt"
+  fi
+
   # For STABLE=1 we disable libwebp by default but allow force-enablement
   [ $SYS_WEBP_SET -eq 1 ] && [ $SYS_WEBP -eq 1 ] || SYS_WEBP=0
 
@@ -1352,13 +1360,11 @@ if [ $SYS_ICU -eq 1 ]; then
   # GN_FLAGS += icu_use_data_file=false use_system_harfbuzz=true
   gn_enable="$gn_enable icu_use_data_file=false"
 
-  # SYS_LIBS += harfbuzz-ng libxslt libxml icu
+  # SYS_LIBS += harfbuzz-ng icu
   sys_enable="$sys_enable harfbuzz-ng"
 
-  # harfbuzz-ng pulls in libicu
-  # libxslt1 pulls in libicu via dependency on libxml2
-  # include libicu in so we can control its version
-  deps_enable="$deps_enable libharfbuzz libicu libxslt1"
+  # harfbuzz pulls in libicu
+  deps_enable="$deps_enable libharfbuzz libicu"
 
   # icudtl.dat is not needed with system icu
   ins_disable="$ins_disable icudtl.dat"

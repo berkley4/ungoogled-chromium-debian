@@ -266,10 +266,13 @@ GN_FLAGS += v8_enable_wasm_simd256_revec=true
 #
 # Interdependent POSSIBLE :-
 #
-#     libxslt depends on libxml; libxml depends on icu
+#     libxslt depends on libxml
 #     harfbuzz-ng depends on freetype and icu
 #     fontconfig depend on freetype
 #     freetype depends on brotli and libpng
+#
+#     On stable :-
+#       libxml depends on icu
 #
 
 SYS_LIBS := double-conversion flac libsecret libusb libXNVCtrl opus zlib
@@ -305,11 +308,14 @@ SYS_LIBS += zstd
 SYS_LIBS += fontconfig freetype brotli libpng
 
 # Enable to unbundle icu
-#SYS_LIBS += harfbuzz-ng libxslt libxml icu
+#SYS_LIBS += harfbuzz-ng icu
 #GN_FLAGS += icu_use_data_file=false use_system_harfbuzz=true
 
 # Disable if unbundling icu
 GN_FLAGS += icu_copy_icudata_to_root_build_dir=false
+
+# Disable on stable builds due to icu, libxslt and libxml interdependency
+SYS_LIBS += libxslt libxml
 
 # Enable if NOT unbundling either icu OR brotli
 #SYS_LIBS += libpng
