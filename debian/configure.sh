@@ -154,7 +154,7 @@ fi
 [ -n "$SYS_DRM" ] && SYS_DRM_SET=1 || SYS_DRM=1
 
 ## Allow stable users to force enable icu (eg if they have self-compiled an icu package)
-[ -n "$SYS_ICU" ] && SYS_ICU_SET=1 || SYS_ICU=1
+[ -n "$SYS_ICU" ] && SYS_ICU_SET=1 || SYS_ICU=0
 
 ## Allow force-enabling libwebp for stable users who have installed libsharpyuv from backports
 [ -n "$SYS_WEBP" ] && SYS_WEBP_SET=1 || SYS_WEBP=1
