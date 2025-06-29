@@ -297,10 +297,10 @@ esac
 
 
 ## Enter test mode if $RT_DIR/third_party does not exist
-[ -d $RT_DIR/third_party ] && TEST=0 && DEPS_PATCH=0 || TEST=1
+[ -d $RT_DIR/third_party ] && TEST=0 || TEST=1
 
 # Allow setting DEPS_PATCH when TEST=1
-[ -n "$DEPS_PATCH" ] || DEPS_PATCH=0
+[ $TEST -eq 1 ] && [ -n "$DEPS_PATCH" ] || DEPS_PATCH=
 
 
 if [ $TEST -eq 0 ]; then
@@ -1391,23 +1391,27 @@ if [ $TEST -eq 0 ] && [ -f $RT_DIR/DEPS ]; then
   # Check for DEPS.patch application
   case $(sed -n '/webvr_info/p' $RT_DIR/DEPS) in
     *src/chrome/test/data/xr/webvr_info*)
+      # DEPS_PATCH=
       : ;;
 
     *)
-      DEPS_PATCH=$((DEPS_PATCH+1)) ;;
+      DEPS_PATCH="dp" ;;
   esac
 
   # Check for DEPS-no-rust.patch application
   case $(sed -n '/Linux_x64\/rust-toolchain-/,/condition/{/==/p}' $RT_DIR/DEPS) in
     *condition*!=*)
-      DEPS_PATCH=$((DEPS_PATCH+2)) ;;
+      DEPS_PATCH="$DEPS_PATCH,dr" ;;
   esac
 
   # Check for DEPS-no-node.patch application
   case $(sed -n '\/node\/linux/,/condition/{/checkout_src_internal/p}' $RT_DIR/DEPS) in
     *checkout_src_internal*)
-      DEPS_PATCH=$((DEPS_PATCH+4)) ;;
+      DEPS_PATCH="$DEPS_PATCH,dn" ;;
   esac
+
+  # Remove potential leading comma from DEPS_PATCH string
+  DEPS_PATCH=${DEPS_PATCH#,}
 fi
 
 ## Domain substitution exclusions
@@ -1445,9 +1449,9 @@ DSB="$DSB -e \"/^third_party\/opus\/BUILD\.gn/d\""
 DSB="$DSB -e \"/^third_party\/zlib\/BUILD\.gn/d\""
 DSB="$DSB -e \"/^third_party\/zstd\/BUILD\.gn/d\""
 
-if [ $DEPS_PATCH -gt 0 ] && [ $DEPS_PATCH -ne 4 ]; then
-  # Exclude files that don't exist after patching with DEPS.patch
-  if [ $DEPS_PATCH -ne 2 ] && [ $DEPS_PATCH -ne 6 ]; then
+# Exclude files that don't exist after patching with DEPS.patch
+case $DEPS_PATCH in
+  *dp*)
     DSB="$DSB -e \"/^build\/linux\/debian_bullseye_i386-sysroot\//d\""
     DSB="$DSB -e \"/^build\/linux\/debian_bullseye_amd64-sysroot\//d\""
     DSB="$DSB -e \"/^docs\/website\//d\""
@@ -1469,13 +1473,16 @@ if [ $DEPS_PATCH -gt 0 ] && [ $DEPS_PATCH -ne 4 ]; then
     DSB="$DSB -e \"/^third_party\/text-fragments-polyfill\//d\""
     DSB="$DSB -e \"/^third_party\/webpagereplay\//d\""
     DSB="$DSB -e \"/^third_party\/xdg-utils\//d\""
-  fi
+    ;;
+esac
 
-  # Exclude rust toolchain after patching with DEPS-no-rust.patch
-  if [ $DEPS_PATCH -ne 1 ] && [ $DEPS_PATCH -ne 5 ]; then
+# Exclude rust toolchain after patching with DEPS-no-rust.patch
+case $DEPS_PATCH in
+  *dr*)
     DSB="$DSB -e \"/^third_party\/rust-toolchain\//d\""
-  fi
-fi
+    ;;
+esac
+
 
 ## Pruning list
 PRU="$PRU -e \"/^chrome\/build\/pgo_profiles\//d\""
@@ -1487,9 +1494,14 @@ if [ $HYPHENATION -eq 1 ]; then
 fi
 
 ## Exempt node from pruning only if DEPS-no-node.patch has NOT been applied
-if [ $DEPS_PATCH -lt 4 ]; then
-  PRU_PY="$PRU_PY -e \"/third_party\/node\/linux\//d\""
-fi
+case $DEPS_PATCH in
+  *dn*)
+    : ;;
+
+  *)
+    PRU_PY="$PRU_PY -e \"/third_party\/node\/linux\//d\"" ;;
+esac
+
 
 ## Submodule flags
 SMF="$SMF -e \"/^enable_hangout_services_extension/d\""
