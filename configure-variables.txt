@@ -1,5 +1,16 @@
 <OPTION>	<DEFAULT/VALUES>	<DESCRIPTION>
 
+## Testing options
+
+TEST			0		Set automatically when there is no third_party directory in the level above
+					the debian directory. Doesn't normally need to be set.
+
+DEPS_PATCHES		<null>		Can be set only when TEST=0.
+					Use a comma separated list containing the following elements to correspond to the applied DEPS patches
+					dp = DEPS.patch
+					dr = DEPS-no-rust.patch
+					dn = DEPS-no-node.patch
+
 ## General options
 
 AUTHOR			"ungoogled-chromium Maintainers <github@null.invalid>"
