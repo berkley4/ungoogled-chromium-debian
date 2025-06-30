@@ -208,8 +208,7 @@ FF_AAC=1
 [ -n "$NON_FREE" ] || NON_FREE=1
 
 if [ $NON_FREE -eq 0 ]; then
-  sed -e '/EnforceNoopenerOnBlobURLNavigation/s@^#@@' -i $FLAG_DIR/isolation
-
+  FLAG_ISOL="$FLAG_ISOL -e \"/EnforceNoopenerOnBlobURLNavigation/s@^#@@\""
   SER_DB="$SER_DB -e \"s@^\(cromite/\)@#\1@\" -e \"s@^\(vanadium/\)@#\1@\""
 
   if [ $FF_FDK -eq 1 ]; then
@@ -923,7 +922,7 @@ if [ $FONTATIONS -eq 0 ]; then
   op_enable="$op_enable disable/fontations.patch"
 else
   if [ $FONTATIONS -eq 2 ]; then
-    sed -e '/enable-fontations-backend/s@^#@@' -i $FLAG_DIR/miscellaneous
+    FLAG_MISC="$FLAG_MISC -e \"/enable-fontations-backend/s@^#@@\""
   fi
 
   if [ $FONTATIONS_PDF -eq 0 ]; then
@@ -943,7 +942,7 @@ fi
 
 
 if [ $GRCACHE_PURGE -eq 1 ]; then
-  sed -e '/ClearGrShaderDiskCacheOnInvalidPrefix/s@^#@@' -i $FLAG_DIR/gpu
+  FLAG_GPU="$FLAG_GPU -e \"/ClearGrShaderDiskCacheOnInvalidPrefix/s@^#@@\""
 fi
 
 
@@ -969,7 +968,7 @@ fi
 
 
 if [ $IDB_FG_CLIENT_BOOST -eq 0  ]; then
-  sed -e '/IdbExpediteBackend/s@^@#@' -i $FLAG_DIR/miscellaneous
+  FLAG_MISC="$FLAG_MISC -e \"/IdbExpediteBackend/s@^@#@\""
 fi
 
 
@@ -1081,7 +1080,7 @@ fi
 
 
 if [ $TP_STORAGE_PART -eq 0 ]; then
-  sed -e '/third-party-storage-partitioning/s@^@#@' -i $FLAG_DIR/isolation
+  FLAG_ISOL="$FLAG_ISOL -e \"/third-party-storage-partitioning/s@^@#@\""
 fi
 
 
@@ -1127,7 +1126,7 @@ fi
 
 
 if [ $WEBFEED -eq 0 ]; then
-  sed -e '/WebFeedKillSwitch/s@^#@@' -i $FLAG_DIR/miscellaneous
+  FLAG_MISC="$FLAG_MISC -e \"/WebFeedKillSwitch/s@^#@@\""
 fi
 
 
@@ -1141,7 +1140,7 @@ if [ $WEBGPU -ge 1 ]; then
   gn_disable="$gn_disable tint_build_glsl_writer=false"
 
   if [ $WEBGPU -ge 2 ]; then
-    sed -e '/enable-unsafe-webgpu/s@^#@@' -i $FLAG_DIR/gpu
+    FLAG_GPU="$FLAG_GPU -e \"/enable-unsafe-webgpu/s@^#@@\""
   fi
 fi
 
@@ -1250,7 +1249,7 @@ fi
 
 
 if [ $RUSTY_PNG -eq 0 ]; then
-  sed -e '/rusty-png/s@^@#@' -i $FLAG_DIR/miscellaneous
+  FLAG_MISC="$FLAG_MISC -e \"/rusty-png/s@^@#@\""
 fi
 
 
@@ -1619,6 +1618,9 @@ echo "$SERIES_UC" "$SERIES_DB" > $DEBIAN/patches/series
 
 [ -z "$INS" ] || eval sed $INS < $DEBIAN/$INSTALL.in > $DEBIAN/$INSTALL
 [ -z "$POL" ] || eval sed $POL < $DEBIAN/$POLICIES.in > $DEBIAN/$POLICIES
+[ -z "$FLAG_GPU" ] || eval sed $FLAG_GPU -i $FLAG_DIR/gpu
+[ -z "$FLAG_ISOL" ] || eval sed $FLAG_ISOL -i $FLAG_DIR/isolation
+[ -z "$FLAG_MISC" ] || eval sed $FLAG_MISC -i $FLAG_DIR/miscellaneous
 [ -z "$PRU_PY" ] || eval sed $PRU_PY -i $UC_DIR/utils/prune_binaries.py
 
 eval sed $CON < $DEBIAN/control.in > $DEBIAN/control
