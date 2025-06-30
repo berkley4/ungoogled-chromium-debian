@@ -45,9 +45,6 @@ OUT_DIR=$RT_DIR/out/Release
 UC_DIR=$DEBIAN/submodules/ungoogled-chromium
 UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 
-INSTALL=ungoogled-chromium.install
-POLICIES=etc/chromium/policies/managed/policies.json
-
 
 ####################
 ## Default values ##
@@ -1616,11 +1613,11 @@ SERIES_UC="$(eval sed $SER_UC $UC_DIR/patches/series)"
 echo "$SERIES_UC" "$SERIES_DB" > $DEBIAN/patches/series
 
 
-[ -z "$INS" ] || eval sed $INS < $DEBIAN/$INSTALL.in > $DEBIAN/$INSTALL
-[ -z "$POL" ] || eval sed $POL < $DEBIAN/$POLICIES.in > $DEBIAN/$POLICIES
 [ -z "$FLAG_GPU" ] || eval sed $FLAG_GPU -i $FLAG_DIR/gpu
 [ -z "$FLAG_ISOL" ] || eval sed $FLAG_ISOL -i $FLAG_DIR/isolation
 [ -z "$FLAG_MISC" ] || eval sed $FLAG_MISC -i $FLAG_DIR/miscellaneous
+[ -z "$INS" ] || eval sed $INS -i $DEBIAN/ungoogled-chromium.install
+[ -z "$POL" ] || eval sed $POL -i $DEBIAN/etc/chromium/policies/managed/policies.json
 [ -z "$PRU_PY" ] || eval sed $PRU_PY -i $UC_DIR/utils/prune_binaries.py
 
 eval sed $CON < $DEBIAN/control.in > $DEBIAN/control
@@ -1630,13 +1627,8 @@ eval sed $SMF -i $UC_DIR/flags.gn
 eval sed $PRU -i $UC_DIR/pruning.list
 
 
-## Ensure ungoogled-chromium.install and policies.json exist
-for file in $INSTALL $POLICIES; do
-  [ -f $DEBIAN/$file ] || mv $DEBIAN/$file.in $DEBIAN/$file
-done
-
 ## Make d/rules and d/ungoogled-chromium.install executable
-chmod 0700 $DEBIAN/rules $DEBIAN/$INSTALL
+chmod 0700 $DEBIAN/rules $DEBIAN/ungoogled-chromium.install
 
 
 
