@@ -187,8 +187,9 @@ PULSE			1		Pulseaudio
 QT			1		0 - disable
 					1 - enable
 					6 - alias for QT_6=1
+
 QT_6			0		0 - disable Qt version 6
-					1 - enable Qt version 6 (unstable only)
+					1 - enable Qt version 6 (implies QT=6; unstable only)
 
 RUSTY_PNG		1		Rust-based png library (alternative to libpng)
 SPEECH			1		Speech service (voice recognition)

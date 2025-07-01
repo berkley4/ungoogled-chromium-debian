@@ -98,6 +98,7 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$PRINT_PREVIEW" ] || PRINT_PREVIEW=1
 [ -n "$PULSE" ] || PULSE=1
 [ -n "$QT" ] || QT=1
+[ -n "$QT_6" ] || QT_6=0
 [ -n "$RUSTY_PNG" ] || RUSTY_PNG=1
 [ -n "$SKIA_GAMMA" ] || SKIA_GAMMA=0
 [ -n "$SPEECH" ] || SPEECH=1
@@ -236,13 +237,23 @@ if [ $BLUEZ_SET -eq 1 ] && [ $BLUEZ -eq 1 ] && [ $DBUS -eq 0 ]; then
 fi
 
 
-if [ $QT -ge 1 ]; then
+# Imply QT=6 when QT_6=1
+[ $QT_6 -eq 0 ] || QT=6
+
+if [ $QT -eq 0 ]; then
+  if [ $QT_6 -eq 1 ]; then
+    printf '%s\n' "ERROR: Cannot set QT_6=1 and QT=0"
+    exit 1
+  fi
+else
+  # Imply QT_6=1 when QT=6
   [ $QT -ne 6 ] || QT_6=1
 
-  # Default to using Qt 5
-  [ -n "$QT_6" ] || QT_6=0
+  if [ $QT -eq 6 ] && [ $QT_6 -eq 0 ]; then
+    printf '%s\n' "ERROR: Cannot set QT=6 when QT_6=0"
+    exit 1
+  fi
 
-  # Bail out if QT_6=1 and STABLE=1
   if [ $QT_6 -eq 1 ] && [ $STABLE -eq 1 ]; then
     printf '%s\n' "ERROR: Cannot set QT_6=1 when STABLE=1"
     exit 1
@@ -1215,6 +1226,7 @@ if [ $QT -eq 0 ]; then
 else
   if [ $QT_6 -eq 1 ]; then
     CON="$CON -e \"/qtbase/s@5@6@\""
+    INS="$INS -e \"/libqt5_shim/s@5@6@\""
     RUL="$RUL -e \"/use_qt/s@5@6@\""
   fi
 fi
