@@ -105,7 +105,7 @@ ___Other features___
 - A managed policy file is installed by default (/etc/chromium/policies/managed/policies.json)
 - Extra build flags to prevent the building of unneeded testing/debug/development features
 - Patches to force skia to use bundled freetype and harfbuzz libraries (where appropriate)
-- System libraries are enabled only when they don't clash with built-in libraries
+- A system library is enabled only if no other version of it (system or in-tree) gets loaded
 - Fontations support for pdfium pdf reader
 - Experimental Opentype SVG support (via third party patches)
 - HEVC (h265) playback support (via third party patches)
