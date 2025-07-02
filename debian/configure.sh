@@ -242,6 +242,11 @@ fi
 [ $QT_6 -eq 0 ] || QT=6
 
 if [ $QT -eq 0 ]; then
+  if [ $GTK -eq 0 ]; then
+    printf '%s\n' "ERROR: Cannot set QT=0 and GTK=0 (enable at least one)"
+    exit 1
+  fi
+
   if [ $QT_6 -eq 1 ]; then
     printf '%s\n' "ERROR: Cannot set QT_6=1 and QT=0"
     exit 1
@@ -950,11 +955,7 @@ fi
 
 
 if [ $GTK -eq 0 ]; then
-  # Handle both GTK and QT being disabled in the QT section
-  if [ $QT -ge 1 ]; then
-    op_enable="$op_enable disable/theme-buttons/no-gtk-button.patch"
-  fi
-
+  op_enable="$op_enable disable/theme-buttons/no-gtk-button.patch"
   deps_disable="$deps_disable libgtk-3 libgtk-3-0t64 "
   gn_enable="$gn_enable use_gtk=false"
 fi
@@ -1232,12 +1233,7 @@ esac
 
 if [ $QT -eq 0 ]; then
   op_disable="$op_disable fixes/qt-ui.patch"
-  if [ $GTK -eq 0 ]; then
-    op_enable="$op_enable disable/theme-buttons/no-buttons.patch"
-  else
-    op_enable="$op_enable disable/theme-buttons/no-qt-button.patch"
-  fi
-
+  op_enable="$op_enable disable/theme-buttons/no-qt-button.patch"
   deps_disable="$deps_disable qtbase"
   ins_disable="$ins_disable qt"
   gn_disable="$gn_disable use_qt"

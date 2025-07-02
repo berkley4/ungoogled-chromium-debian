@@ -150,6 +150,8 @@ GOOGLE_API_KEYS		1		0 - disable
 GOOGLE_UI_URLS		1		Google support urls (accessible via the UI) will not be mangled by domain substitution
 GRCACHE_PURGE		0		Enable purging stale entries in the GrShader disk cache on program start
 GTK			1		GTK user interface
+					At least one of GTK or QT must be enabled to avoid crashes
+
 HEADLESS		1		Headless browsing mode
 HLS_PLAYER		1		Enables the HLS manifest parser/demuxer/player (experimental)
 					0 - disable
@@ -188,6 +190,7 @@ PULSE			1		Pulseaudio
 QT			1		0 - disable
 					1 - enable
 					6 - alias for QT_6=1
+					At least one of GTK or QT must be enabled to avoid crashes
 
 QT_6			0		0 - disable Qt version 6
 					1 - enable Qt version 6 (implies QT=6; unstable only)

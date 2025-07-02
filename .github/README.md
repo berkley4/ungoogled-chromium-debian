@@ -100,7 +100,7 @@ ___Security/Privacy improvements___
 
 ___Other features___
 
-- Build without the GTK and/or QT interfaces
+- Build without the GTK or QT interfaces
 - Extra runtime flags (via files in /etc/chromium.d)
 - A managed policy file is installed by default (/etc/chromium/policies/managed/policies.json)
 - Extra build flags to prevent the building of unneeded testing/debug/development features
