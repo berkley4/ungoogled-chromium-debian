@@ -950,6 +950,11 @@ fi
 
 
 if [ $GTK -eq 0 ]; then
+  # Handle both GTK and QT being disabled in the QT section
+  if [ $QT -ge 1 ]; then
+    op_enable="$op_enable disable/theme-buttons/no-gtk-button.patch"
+  fi
+
   deps_disable="$deps_disable libgtk-3 libgtk-3-0t64 "
   gn_enable="$gn_enable use_gtk=false"
 fi
@@ -1227,6 +1232,12 @@ esac
 
 if [ $QT -eq 0 ]; then
   op_disable="$op_disable fixes/qt-ui.patch"
+  if [ $GTK -eq 0 ]; then
+    op_enable="$op_enable disable/theme-buttons/no-buttons.patch"
+  else
+    op_enable="$op_enable disable/theme-buttons/no-qt-button.patch"
+  fi
+
   deps_disable="$deps_disable qtbase"
   ins_disable="$ins_disable qt"
   gn_disable="$gn_disable use_qt"

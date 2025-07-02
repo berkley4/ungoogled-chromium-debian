@@ -143,6 +143,9 @@ optional/disable/webgpu.patch
 #optional/disable/dbus-and-notifications/stub-out-bluetooth-dbus.patch
 optional/disable/media-remoting/media-remoting.patch
 optional/disable/media-remoting/registry-pref.patch
+#optional/disable/theme-buttons/no-buttons.patch
+#optional/disable/theme-buttons/no-gtk-button.patch
+#optional/disable/theme-buttons/no-qt-button.patch
 optional/ffmpeg-extra-codecs/audio-codecs.patch
 optional/ffmpeg-extra-codecs/context-fixup.patch
 optional/ffmpeg-extra-codecs/hevc/add-hevc-ffmpeg-decoder-parser-for-linux.patch

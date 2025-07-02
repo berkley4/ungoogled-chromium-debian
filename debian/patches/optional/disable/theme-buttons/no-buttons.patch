@@ -1,0 +1,13 @@
+--- a/chrome/browser/resources/settings/appearance_page/appearance_page.ts
++++ b/chrome/browser/resources/settings/appearance_page/appearance_page.ts
+@@ -421,8 +421,8 @@
+    * @return Whether to show the secondary area where "USE CLASSIC",
+    *     "USE GTK", and "USE QT" buttons live.
+    */
+-  private showThemesSecondary_(themeId: string): boolean {
+-    return !!themeId || !this.appearanceBrowserProxy_.isChildAccount();
++  private showThemesSecondary_(): boolean {
++    return false;
+   }
+ 
+   private onUseGtkClick_() {
