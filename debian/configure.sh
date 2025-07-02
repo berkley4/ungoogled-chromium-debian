@@ -79,6 +79,7 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$GOOGLE_API_KEYS" ] || GOOGLE_API_KEYS=1
 [ -n "$GOOGLE_UI_URLS" ] || GOOGLE_UI_URLS=1
 [ -n "$GRCACHE_PURGE" ] || GRCACHE_PURGE=0
+[ -n "$GTK" ] || GTK=1
 [ -n "$HEADLESS" ] || HEADLESS=1
 [ -n "$HLS_PLAYER" ] || HLS_PLAYER=1
 [ -n "$HYPHENATION" ] || HYPHENATION=1
@@ -948,6 +949,12 @@ if [ $GRCACHE_PURGE -eq 1 ]; then
 fi
 
 
+if [ $GTK -eq 0 ]; then
+  deps_disable="$deps_disable libgtk-3 libgtk-3-0t64 "
+  gn_enable="$gn_enable use_gtk=false"
+fi
+
+
 if [ $HEADLESS -eq 0 ]; then
   op_enable="$op_enable disable/headless.patch"
   gn_enable="$gn_enable headless_enable_commands=false headless_use_policy=false"
@@ -1319,8 +1326,10 @@ if [ $STABLE -eq 1 ]; then
   sys_disable="$sys_disable dav1d"
   deps_disable="$deps_disable libdav1d"
 
-  # Reverse time_t transition dependencies for stable
-  CON="$CON -e \"/libgtk-3-0t64/s@t64@@\""
+  if [ $GTK -eq 1 ]; then
+    # Reverse time_t transition dependencies for stable
+    CON="$CON -e \"/libgtk-3-0t64/s@t64@@\""
+  fi
 fi
 
 
