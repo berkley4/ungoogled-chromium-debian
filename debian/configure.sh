@@ -46,6 +46,7 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 
 [ -n "$CCACHE" ] || CCACHE=0
 [ -n "$ESBUILD" ] || ESBUILD=0
+[ -n "$NO_SYS_LIBS" ] || NO_SYS_LIBS=0
 [ -n "$PGO" ] || PGO=1
 [ -n "$STABLE" ] || STABLE=0
 [ -n "$SYMBOLS" ] || SYMBOLS=0
@@ -89,7 +90,6 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$LOCALES_EXTRA" ] || LOCALES_EXTRA=1
 [ -n "$MCLICK_AUTOSCROLL" ] || MCLICK_AUTOSCROLL=1
 [ -n "$MUTEX_PI" ] || MUTEX_PI=1
-[ -n "$NO_SYS_LIBS" ] || NO_SYS_LIBS=0
 [ -n "$OAUTH2" ] || OAUTH2=0
 [ -n "$OPENTYPE_SVG" ] || OPENTYPE_SVG=0
 [ -n "$OZONE_WAYLAND" ] || OZONE_WAYLAND=1
