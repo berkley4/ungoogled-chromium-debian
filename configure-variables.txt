@@ -208,15 +208,11 @@ TRANSLATE		1		Google translate support
 
 VR			0		Virtual reality hardware support
 VULKAN			1		Vulkan (disabling will also disable WebGPU)
-WEBASSEMBLY		0		0 - the '--js-flags=--noexpose_wasm' runtime flag is active
-					1 - the flag is commented out in /etc/chromium.d/webassembly
-
 WEBGPU			0		WebGPU (likely beta quality at the time of writing)
 					0 - disable
 					1 - enable (need to edit /etc/chromium.d/gpu)
 					2 - enable fully
 
-WEBFEED			1		Webfeed - toggles the --enable-features=WebFeedKillSwitch runtime flag (0 = disable webfeed)
 WIDEVINE		1		Needs various extra components to enable
 
 

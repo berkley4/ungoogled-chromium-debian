@@ -113,8 +113,6 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$VR" ] || VR=0
 [ -n "$VAAPI" ] || VAAPI=1
 [ -n "$VULKAN" ] || VULKAN=1
-[ -n "$WEBASSEMBLY" ] || WEBASSEMBLY=0
-[ -n "$WEBFEED" ] || WEBFEED=1
 [ -n "$WEBGPU" ] || WEBGPU=0
 [ -n "$WIDEVINE" ] || WIDEVINE=1
 [ -n "$XZ_EXTREME" ] || XZ_EXTREME=0
@@ -1127,16 +1125,6 @@ if [ $VULKAN -eq 0 ]; then
 
   SWIFTSHADER=0
   WEBGPU=0
-fi
-
-
-if [ $WEBASSEMBLY -eq 1 ]; then
-  sed '/noexpose_wasm/s@^@#@' -i $FLAG_DIR/webassembly
-fi
-
-
-if [ $WEBFEED -eq 0 ]; then
-  FLAG_MISC="$FLAG_MISC -e \"/WebFeedKillSwitch/s@^#@@\""
 fi
 
 
