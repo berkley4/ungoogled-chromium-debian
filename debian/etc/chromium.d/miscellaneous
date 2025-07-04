@@ -13,6 +13,10 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --show-component-extension-options"
 # Enable boosting priority of backend tasks associated with foreground clients for IDB
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=IdbExpediteBackendProcessingForForegroundClients"
 
+# Enable lazy image loading for invisible pages
+# Possible values: "prerender_page" or "all_invisible_page"
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-lazy-load-image-for-invisible-pages=prerender_page"
+
 # Rust-based freetype replacement
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-fontations-backend"
 
