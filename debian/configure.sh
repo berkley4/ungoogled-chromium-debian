@@ -390,8 +390,8 @@ case $LTO_JOBS in
 
     case $LTO_JOBS in
       [2-9]|[1-9][0-9])
-        sed "s@\(thinlto-jobs=\)1@\1$LTO_JOBS@" \
-          -i $OP_DIR/compiler-flags/thinlto-jobs.patch ;;
+        sed -e "s@\(thinlto-jobs=\)1@\1$LTO_JOBS@" \
+            -i $OP_DIR/compiler-flags/thinlto-jobs.patch ;;
     esac ;;
 esac
 
@@ -447,8 +447,8 @@ if [ $BUILD_TS -eq 1 ]; then
   op_enable="$op_enable build-timestamp/use-non-official-build-timestamp.patch"
 elif [ $BUILD_TS -eq 2 ]; then
   if [ $TIMESTAMP -gt 0 ]; then
-    sed "/print/s@[0-9][0-9]*@$TIMESTAMP@" \
-      -i $OP_DIR/build-timestamp/compute-fixed-build-timestamp.patch
+    sed -e "/print/s@[0-9][0-9]*@$TIMESTAMP@" \
+        -i $OP_DIR/build-timestamp/compute-fixed-build-timestamp.patch
   fi
   op_enable="$op_enable build-timestamp/compute-fixed-build-timestamp.patch"
 fi
@@ -1083,7 +1083,8 @@ fi
 
 
 if [ $SWITCH_BLOCKING -ne 1 ]; then
-  sed "/^SWITCH_BLOCKING/s@=1@=$SWITCH_BLOCKING@" -i $DEBIAN/etc/chromium/launcher.vars
+  sed -e "/^SWITCH_BLOCKING/s@=1@=$SWITCH_BLOCKING@" \
+      -i $DEBIAN/etc/chromium/launcher.vars
 fi
 
 
@@ -1177,7 +1178,7 @@ if [ $FF_AAC -eq 1 ] && [ $FF_AC3 -eq 0 ] && [ $FF_AC4 -eq 0 ] && \
   op_disable="$op_disable ffmpeg-extra-codecs/audio-codecs.patch"
   op_disable="$op_disable ffmpeg-extra-codecs/context-fixup.patch"
 else
-  sed "s@_ff_ac@$FF_AC@" -i $OP_DIR/ffmpeg-extra-codecs/audio-codecs.patch
+  sed -e "s@_ff_ac@$FF_AC@" -i $OP_DIR/ffmpeg-extra-codecs/audio-codecs.patch
 fi
 
 
@@ -1202,7 +1203,7 @@ case $SKIA_GAMMA in
   1|[12].[0-9]|3.0)
     case $SKIA_GAMMA in
       [12].[0-9]|3.0)
-        sed "s@2\.2@$SKIA_GAMMA@" -i $OP_DIR/fixes/skia-gamma.patch ;;
+        sed -e "s@2\.2@$SKIA_GAMMA@" -i $OP_DIR/fixes/skia-gamma.patch ;;
     esac
 
     op_enable="$op_enable skia-gamma.patch" ;;
@@ -1603,7 +1604,7 @@ fi
 
 sed -e "s;@@VERSION@@;$VERSION;" -e "s;@@RELEASE@@;$RELEASE;" \
     -e "s;@@AUTHOR@@;$AUTHOR;" -e "s;@@DATETIME@@;$(date -R);" \
-  < $DEBIAN/changelog.in > $DEBIAN/changelog
+      < $DEBIAN/changelog.in > $DEBIAN/changelog
 
 
 [ -n "$SER_DB" ] || SER_DB="-n p"
