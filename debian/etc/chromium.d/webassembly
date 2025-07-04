@@ -1,15 +1,5 @@
 # Note: webassembly (wasm) could be a potential security risk. It is used by 
 #       the ublock extention, but is not essential for it to run.
 
-# Dynamic Tiering
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-webassembly-tiering"
-
-# Lazy Compilation
-# See - https://v8.dev/docs/wasm-compilation-pipeline
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-webassembly-lazy-compilation"
-
 # Disable websssembly
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --js-flags=--noexpose_wasm"
-
-# Webassembly relaxed SIMD (produces a warning about disabling --expose_wasm)
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-webassembly-relaxed-simd"
