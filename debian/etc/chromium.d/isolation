@@ -6,6 +6,9 @@
 # Intended for diagnosing bugs that may be due to out-of-process iframes.
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --site-isolation-trial-opt-out"
 
+# Disable partitioning of third-party storage by top-level site.
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=DisableThirdPartyStoragePartitioning3DeprecationTrial"
+
 # Note: this breaks the document.domain feature of websites which itself 
 #       is in the process of being obsoleted due to security concerns.
 #       Ref - https://developer.chrome.com/blog/immutable-document-domain/
@@ -18,10 +21,6 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-isolated-web-apps"
 # Prevent out-of-process iframes from reusing compatible processes from
 # unrelated tabs. This will result in more processes being created.
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-process-reuse"
-
-# Enable partitioning of third-party storage by top-level site.
-# Note: under active development and may result in unexpected behavior.
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --third-party-storage-partitioning"
 
 # Out-of-Process iframes (OOPIFs) for the PDF Viewer
 # See - https://www.chromium.org/developers/design-documents/oop-iframes/

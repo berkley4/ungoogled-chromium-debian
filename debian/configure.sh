@@ -15,9 +15,9 @@ ins_disable=; ins_enable=
 op_disable=; op_enable=
 sys_disable=; sys_enable=
 
-CON=; DSB=; FLAG_GPU=; FLAG_ISOL=; FLAG_MISC=
-INS=; POL=; PRU=; PRU_PY=; RUL=; RUST_INST=
-SER_DB=; SER_U=; SERIES_DB=; SERIES_UC=; SMF=
+CON=; DSB=; FLAG_GPU=; FLAG_MISC=; INS=; POL=
+PRU=; PRU_PY=; RUL=; RUST_INST=; SER_DB=
+SER_U=; SERIES_DB=; SERIES_UC=; SMF=
 
 BLUEZ_SET=0; BUILD_TS_SET=0; CLANG_VER_SET=0
 DBUS_SET=0; MARCH_SET=0; MEDIA_REMOTING_SET=0
@@ -109,7 +109,6 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$SWIFTSHADER_WEBGPU" ] || SWIFTSHADER_WEBGPU=1
 [ -n "$SWITCH_BLOCKING" ] || SWITCH_BLOCKING=1
 [ -n "$SYS_NOTIFICATIONS" ] || SYS_NOTIFICATIONS=1
-[ -n "$TP_STORAGE_PART" ] || TP_STORAGE_PART=1
 [ -n "$TRANSLATE" ] || TRANSLATE=1
 [ -n "$VR" ] || VR=0
 [ -n "$VAAPI" ] || VAAPI=1
@@ -201,7 +200,8 @@ FF_AAC=1
 [ -n "$NON_FREE" ] || NON_FREE=1
 
 if [ $NON_FREE -eq 0 ]; then
-  FLAG_ISOL="$FLAG_ISOL -e \"/EnforceNoopenerOnBlobURLNavigation/s@^#@@\""
+  sed -e "/EnforceNoopenerOnBlobURLNavigation/s@^#@@" -i $FLAG_DIR/isolation
+
   SER_DB="$SER_DB -e \"s@^\(cromite/\)@#\1@\" -e \"s@^\(vanadium/\)@#\1@\""
 
   if [ $FF_FDK -eq 1 ]; then
@@ -1094,11 +1094,6 @@ if [ $SYS_NOTIFICATIONS -eq 0 ]; then
 fi
 
 
-if [ $TP_STORAGE_PART -eq 0 ]; then
-  FLAG_ISOL="$FLAG_ISOL -e \"/third-party-storage-partitioning/s@^@#@\""
-fi
-
-
 if [ $TRANSLATE -eq 0 ]; then
   op_disable="$op_disable translate/"
   ins_disable="$ins_disable google-translate"
@@ -1636,7 +1631,6 @@ echo "$SERIES_UC" "$SERIES_DB" > $DEBIAN/patches/series
 
 
 [ -z "$FLAG_GPU" ] || eval sed $FLAG_GPU -i $FLAG_DIR/gpu
-[ -z "$FLAG_ISOL" ] || eval sed $FLAG_ISOL -i $FLAG_DIR/isolation
 [ -z "$FLAG_MISC" ] || eval sed $FLAG_MISC -i $FLAG_DIR/miscellaneous
 [ -z "$INS" ] || eval sed $INS -i $DEBIAN/ungoogled-chromium.install
 [ -z "$POL" ] || eval sed $POL -i $DEBIAN/etc/chromium/policies/managed/policies.json

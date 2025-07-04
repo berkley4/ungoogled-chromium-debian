@@ -201,7 +201,6 @@ SPOOF_WEBGL_INFO	1		Spoof webgl info (via flag in /etc/chromium.d/anti-fingerpri
 SWIFTSHADER		1		Swiftshader
 SWIFTSHADER_VULKAN	1		Swiftshader for vulkan
 SWIFTSHADER_WEBGPU	1		Swiftshader for WebGPU
-TP_STORAGE_PART		1		Enable third party storage partitioning (via flag in /etc/chromium.d/isolation)
 TRANSLATE		1		Google translate support
 					0 - disable
 					1 - enable (need to edit google-translate flag file and policies.json)
