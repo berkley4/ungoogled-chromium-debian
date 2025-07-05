@@ -977,6 +977,10 @@ fi
 
 if [ $HYPHENATION -eq 0 ]; then
   op_disable="$op_disable bundle-hyphen-data.patch"
+else
+  DSB="$DSB -e \"/^third_party\/blink\/renderer\/platform\/text\/hyphenation\/hyphenation_minikin\.cc/d\""
+  DSB="$DSB -e \"/^third_party\/hyphenation-patterns\//d\""
+  PRU="$PRU -e \"/^third_party\/hyphenation-patterns\//d\""
 fi
 
 
@@ -1449,11 +1453,6 @@ DSB="$DSB -e \"/^third_party\/opus\/BUILD\.gn/d\""
 DSB="$DSB -e \"/^third_party\/zlib\/BUILD\.gn/d\""
 DSB="$DSB -e \"/^third_party\/zstd\/BUILD\.gn/d\""
 
-if [ $HYPHENATION -eq 1 ]; then
-  DSB="$DSB -e \"/^third_party\/blink\/renderer\/platform\/text\/hyphenation\/hyphenation_minikin\.cc/d\""
-  DSB="$DSB -e \"/^third_party\/hyphenation-patterns\//d\""
-fi
-
 # Exempt files that don't exist after patching with DEPS.patch
 case $DEPS_PATCH in
   *dp*)
@@ -1496,10 +1495,6 @@ esac
 PRU="$PRU -e \"/^chrome\/build\/pgo_profiles\//d\""
 PRU="$PRU -e \"/^third_party\/depot_tools\//d\""
 PRU="$PRU -e \"/^third_party\/node\/node_modules\//d\""
-
-if [ $HYPHENATION -eq 1 ]; then
-  PRU="$PRU -e \"/^third_party\/hyphenation-patterns\//d\""
-fi
 
 ## Exempt node from pruning only if DEPS-no-node.patch has NOT been applied
 case $DEPS_PATCH in
