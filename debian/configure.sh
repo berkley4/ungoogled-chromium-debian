@@ -1388,7 +1388,7 @@ fi
 ############################################################
 
 # Check whether DEPS.patch, DEPS-no-rust.patch or DEPS-no-node.patch have been applied
-# Sum combinations of 1, 2 and 4 to determine which patches have been used
+# (the non-existemt files cause excessive warnings from the domain substitution script)
 if [ $TEST -eq 0 ] && [ -f $RT_DIR/DEPS ]; then
   # Check for DEPS.patch application
   case $(sed -n '/webvr_info/p' $RT_DIR/DEPS) in
@@ -1416,19 +1416,17 @@ if [ $TEST -eq 0 ] && [ -f $RT_DIR/DEPS ]; then
   DEPS_PATCH=${DEPS_PATCH#,}
 fi
 
-## Domain substitution exclusions
+
+#####################################
+## Exempt from domain substitution ##
+#####################################
+
 DSB="$DSB -e \"/^chrome\/browser\/flag_descriptions\.cc/d\""
 DSB="$DSB -e \"/^chrome\/installer\/linux\/common\/appdata\.xml\.template/d\""
 DSB="$DSB -e \"/^content\/browser\/resources\/gpu\/info_view\.ts/d\""
 DSB="$DSB -e \"/^tools\/clang\//d\""
 
-# Exclude hyphenation-related files
-if [ $HYPHENATION -eq 1 ]; then
-  DSB="$DSB -e \"/^third_party\/blink\/renderer\/platform\/text\/hyphenation\/hyphenation_minikin\.cc/d\""
-  DSB="$DSB -e \"/^third_party\/hyphenation-patterns\//d\""
-fi
-
-# Exclude bundled library files
+# Exempt all bundled library files
 DSB="$DSB -e \"/^base\/third_party\/double_conversion\/BUILD\.gn/d\""
 DSB="$DSB -e \"/^build\/config\/freetype\/freetype\.gni/d\""
 DSB="$DSB -e \"/^third_party\/angle\/src\/third_party\/libXNVCtrl\/BUILD\.gn/d\""
@@ -1451,7 +1449,12 @@ DSB="$DSB -e \"/^third_party\/opus\/BUILD\.gn/d\""
 DSB="$DSB -e \"/^third_party\/zlib\/BUILD\.gn/d\""
 DSB="$DSB -e \"/^third_party\/zstd\/BUILD\.gn/d\""
 
-# Exclude files that don't exist after patching with DEPS.patch
+if [ $HYPHENATION -eq 1 ]; then
+  DSB="$DSB -e \"/^third_party\/blink\/renderer\/platform\/text\/hyphenation\/hyphenation_minikin\.cc/d\""
+  DSB="$DSB -e \"/^third_party\/hyphenation-patterns\//d\""
+fi
+
+# Exempt files that don't exist after patching with DEPS.patch
 case $DEPS_PATCH in
   *dp*)
     DSB="$DSB -e \"/^build\/linux\/debian_bullseye_i386-sysroot\//d\""
@@ -1478,7 +1481,7 @@ case $DEPS_PATCH in
     ;;
 esac
 
-# Exclude rust toolchain after patching with DEPS-no-rust.patch
+# Exempt rust toolchain after patching with DEPS-no-rust.patch
 case $DEPS_PATCH in
   *dr*)
     DSB="$DSB -e \"/^third_party\/rust-toolchain\//d\""
@@ -1486,7 +1489,10 @@ case $DEPS_PATCH in
 esac
 
 
-## Pruning list
+#########################
+## Exempt from pruning ##
+#########################
+
 PRU="$PRU -e \"/^chrome\/build\/pgo_profiles\//d\""
 PRU="$PRU -e \"/^third_party\/depot_tools\//d\""
 PRU="$PRU -e \"/^third_party\/node\/node_modules\//d\""
@@ -1505,7 +1511,10 @@ case $DEPS_PATCH in
 esac
 
 
-## Submodule flags
+#############################################
+## Remove (upstream) submodule build flags ##
+#############################################
+
 SMF="$SMF -e \"/^enable_hangout_services_extension/d\""
 SMF="$SMF -e \"/^enable_nacl/d\""
 SMF="$SMF -e \"/^enable_service_discovery/d\""
