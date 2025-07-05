@@ -1509,9 +1509,6 @@ SMF="$SMF -e \"/^enable_hangout_services_extension/d\""
 SMF="$SMF -e \"/^enable_nacl/d\""
 SMF="$SMF -e \"/^enable_service_discovery/d\""
 SMF="$SMF -e \"/^exclude_unwind_tables/d\""
-SMF="$SMF -e \"/^google_api_key/d\""
-SMF="$SMF -e \"/^google_default_client_id/d\""
-SMF="$SMF -e \"/^google_default_client_secret/d\""
 
 if [ $PGO -eq 1 ]; then
   SMF="$SMF -e \"/^chrome_pgo_phase/d\""
