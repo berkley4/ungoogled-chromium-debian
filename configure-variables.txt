@@ -62,6 +62,7 @@ BUILD_TS		0		0 = build system default (do nothing)
 					as a newer timestamp could trigger re-compilation. A value of 1 is the default when CCACHE=1.
 
 TIMESTAMP		<epoch>		Use a custom ten digit unix epoch for BUILD_TS=2 (needs to start with a non-zero digit)
+					Run the following command to return the current epoch: date +%s
 
 CCACHE			0		Enable the use of the the ccache compilation cache utility
 
