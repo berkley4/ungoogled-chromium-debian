@@ -81,7 +81,7 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$GOOGLE_UI_URLS" ] || GOOGLE_UI_URLS=1
 [ -n "$GRCACHE_PURGE" ] || GRCACHE_PURGE=0
 [ -n "$GTK" ] || GTK=1
-[ -n "$HEADLESS" ] || HEADLESS=1
+[ -n "$HEADLESS" ] || HEADLESS=0
 [ -n "$HLS_PLAYER" ] || HLS_PLAYER=1
 [ -n "$HYPHENATION" ] || HYPHENATION=1
 [ -n "$IDB_FG_CLIENT_BOOST" ] || IDB_FG_CLIENT_BOOST=1
@@ -959,9 +959,9 @@ if [ $GTK -eq 0 ]; then
 fi
 
 
-if [ $HEADLESS -eq 0 ]; then
-  op_enable="$op_enable disable/headless.patch"
-  gn_enable="$gn_enable headless_enable_commands=false headless_use_policy=false"
+if [ $HEADLESS -eq 1 ]; then
+  op_disable="$op_disable disable/headless.patch"
+  gn_disable="$gn_disable headless_enable_commands=false headless_use_policy=false"
 fi
 
 

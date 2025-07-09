@@ -152,7 +152,7 @@ GRCACHE_PURGE		0		Enable purging stale entries in the GrShader disk cache on pro
 GTK			1		GTK user interface
 					At least one of GTK or QT must be enabled to avoid crashes
 
-HEADLESS		1		Headless browsing mode
+HEADLESS		0		Headless browsing mode
 HLS_PLAYER		1		Enables the HLS manifest parser/demuxer/player (experimental)
 					0 - disable
 					1 - enable (need to edit /etc/chromium.d/hls-player to fully enable)
