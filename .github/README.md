@@ -122,18 +122,22 @@ ___Other features___
 
 ___Build system___
 
-- Uses git to obtain and update source (release tarballs are not currently supported)
+- Uses git and depot tools to obtain and update source (release tarballs are not supported)
+    - patches are provided to prevent gclient from downloading unnecessary dependencies
 - Self-built BOLT/LTO/PGO optimised and polly-enabled clang/llvm is preferred for building
-    - requiring a recent version of clang often means fewer build headaches
-- Support for building with system rust (the rustc package on unstable and rustc-web on stable)
+    - a recent version of clang often means fewer build headaches
+    - a script is provided to build bindgen against this copy of clang/llvm
+- Support for building with system (rustc/rustc-web) or third party rust
 - Support for building with system node (the nodejs package on both stable and unstable)
 - A script is provided to build bindgen (build/build-bindgen.sh)
 - A configuration shell script is provided to enable easy customisation of the build
-    - it takes out much of the complexity that might otherwise be present in debian/rules
-    - it handles dependencies, patches, enabling/disabling system libraries and components
+    - it takes out much of the complexity of having to manually edit build configuration files
+    - it handles the enablement of dependencies, patches, system libraries, features and components
     - it allows users to easily customise the build via the setting of variables
 - Building without any system libraries (no unbundling) is supported
 - A script is provided to automate the building of a Widevine CDM deb package
+- Integration with ccache is supported
+    - raising the cache hit rate is possible via manually setting the build timestamp
 
 - - - -
 
