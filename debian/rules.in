@@ -64,6 +64,7 @@ endif
 # Find the distribution codename for this release
 CODENAME := $(patsubst %:,,$(shell lsb_release -c))
 
+
 # General downstream build flags
 GN_FLAGS +=					\
 	is_official_build=true			\
@@ -262,8 +263,8 @@ GN_FLAGS += v8_enable_wasm_simd256_revec=true
 #                        libwebp (libsharpyuv dependency)
 #                        libdrm (hint: check out debian backports)
 #
-# Dependent on TOO OLD : fontconfig, freetype, harfbuzz-ng
-#                        libxml, libxslt
+# Dependent on too old : fontconfig, freetype, harfbuzz-ng
+# for stable             libxml, libxslt
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
@@ -301,9 +302,6 @@ SYS_LIBS += openh264
 # Enable zstd
 SYS_LIBS += zstd
 
-# Stable users can insert backported libraries below
-#SYS_LIBS +=
-
 
 ### Dependency chains around icu and brotli (unstable/experimental only)
 
@@ -328,6 +326,7 @@ SYS_LIBS += libxslt libxml
 GN_FLAGS += perfetto_use_system_zlib=true use_system_lcms2=true
 GN_FLAGS += use_system_libopenjpeg2=true use_system_libpng=true
 GN_FLAGS += use_system_zlib=true
+
 
 %:
 	dh $@
