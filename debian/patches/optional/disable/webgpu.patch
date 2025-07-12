@@ -1,3 +1,46 @@
+--- a/gpu/BUILD.gn
++++ b/gpu/BUILD.gn
+@@ -123,7 +123,6 @@
+     "//gpu/command_buffer/client:webgpu_interface",
+     "//gpu/ipc:gpu_thread_holder",
+     "//third_party/dawn/include/dawn:cpp_headers",
+-    "//third_party/dawn/src/dawn:proc",
+   ]
+   deps = [
+     "//base/test:test_support",
+@@ -148,6 +147,10 @@
+     ]
+   }
+   deps += [ "//third_party/angle:translator" ]
++
++  if (use_dawn) {
++    public_deps += [ "//third_party/dawn/src/dawn:proc" ]
++  }
+ }
+ 
+ if (!is_android && !is_fuchsia && !is_chromeos && !is_ios) {
+--- a/gpu/command_buffer/service/BUILD.gn
++++ b/gpu/command_buffer/service/BUILD.gn
+@@ -330,7 +330,10 @@
+   }
+ 
+   if (use_dawn) {
+-    deps += [ "//gpu/webgpu:common" ]
++    deps += [
++      "//gpu/webgpu:common",
++      "//third_party/dawn/src/dawn:proc",
++    ]
+     sources += [
+       "dawn_caching_interface.cc",
+       "dawn_caching_interface.h",
+@@ -387,7 +390,6 @@
+     "//third_party/angle:angle_image_util",
+     "//third_party/angle:angle_version_info",
+     "//third_party/dawn/include/dawn:cpp_headers",
+-    "//third_party/dawn/src/dawn:proc",
+     "//third_party/libyuv",
+     "//third_party/protobuf:protobuf_lite",
+     "//third_party/re2",
 --- a/services/on_device_model/BUILD.gn
 +++ b/services/on_device_model/BUILD.gn
 @@ -5,6 +5,7 @@
