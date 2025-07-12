@@ -57,9 +57,10 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$SYS_GN" ] || SYS_GN=1
 [ -n "$SYS_NODE" ] || SYS_NODE=0
 
+[ -n "$ABM" ] || ABM=0
 [ -n "$AES_PCLMUL" ] || AES_PCLMUL=1
 [ -n "$AVX" ] || AVX=1
-[ -n "$AVX2" ] || AVX2=0
+[ -n "$BMI" ] || BMI=0
 [ -n "$RTC_AVX2" ] || RTC_AVX2=1
 [ -n "$V8_AVX2" ] || V8_AVX2=1
 
@@ -684,7 +685,7 @@ if [ $MARCH_SET -eq 1 ] || [ $MTUNE_SET -eq 1 ]; then
       op_disable="$op_disable compiler-flags/cpu/march.patch"
       op_disable="$op_disable compiler-flags/cpu/mtune.patch"
 
-      AES_PCLMUL=0; AVX=0; RTC_AVX2=0; V8_AVX2=0 ;;
+      AES_PCLMUL=0; ABM=0; AVX=0; BMI=0; RTC_AVX2=0; V8_AVX2=0 ;;
   esac
 
   if [ "$OLD_MARCH" != "$MARCH" ] || [ "$OLD_MTUNE" != "$MTUNE" ]; then
@@ -700,8 +701,9 @@ if [ "$MARCH" != "0" ]; then
   [ "$MTUNE" = "generic" ] || arch_patches="$arch_patches mtune"
 fi
 
+[ $ABM -eq 0 ] || arch_patches="$arch_patches abm"
+[ $BMI -eq 0 ] || arch_patches="$arch_patches bmi"
 [ $AVX -eq 0 ] || arch_patches="$arch_patches avx"
-[ $AVX2 -eq 0 ] || arch_patches="$arch_patches avx2"
 
 
 if [ -n "$arch_patches" ]; then
@@ -715,9 +717,15 @@ fi
 # Initial rust cpu instructions
 RUST_INST="+aes,+pclmulqdq"
 
-if [ $AVX2 -eq 1 ]; then
-  AVX=1; RUST_INST="$RUST_INST,+avx2"
-  op_enable="$op_enable compiler-flags/cpu/avx2.patch"
+if [ $BMI -eq 1 ]; then
+  ABM=1; AES_PCLMUL=1; AVX=1; RUST_INST="$RUST_INST,+bmi1"
+  op_enable="$op_enable compiler-flags/cpu/bmi.patch"
+fi
+
+if [ $ABM -eq 1 ]; then
+  # abm = lzcnt + popcnt (but popcnt is included in x86-64-v2)
+  RUST_INST="$RUST_INST,+lzcnt"
+  op_enable="$op_enable compiler-flags/cpu/abm.patch"
 fi
 
 if [ $AVX -eq 0 ]; then

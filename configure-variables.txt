@@ -252,17 +252,19 @@ MF_SPLIT		1		Machine function splitting (requires PGO=1)
 MARCH			x86-64-v2	Matches MTUNE if MTUNE is set and MARCH is not specified
 					Will not match MTUNE if MTUNE is set to generic
 					Setting MARCH to generic will reset MARCH and MTUNE to their defaults
-					Setting MARCH=0 will disable the march and mtune patches (for people with ancient pre-2011 cpus)
+					Setting MARCH=0 will disable the march and mtune patches (for people with ancient pre-2011 CPUs)
+					Set to x86-64-v3 if using Intel Haswell/AMD Excavator or newer CPUs (includes AVX, AVX2, ABM and BMI1)
 
-MTUNE			generic		Matches MARCH if MARCH is set and MTUNE is not specified
-					Will be set to generic if MARCH is an x86-64 microarchitecture level
+MTUNE			generic		Matches MARCH if MARCH is set and MTUNE is not specified, unless MARCH is
+					an x86-64 microarchitecture level (in that case MTUNE is set to generic)
 					Will have no effect when setting MARCH=0
 
-AES_PCLMUL		1		Intel Westmere/AMD Jaguar (might be missing on some earlier/lower end)
-AVX			1		Intel Sandybridge/AMD Bulldozer era (circa 2011) onwards
-AVX2			1		Intel Haswell/AMD Excavator or newer
-RTC_AVX2		1		AVX2 for RTC (builds and runs on non-AVX2 capable hosts)
-V8_AVX2			1		AVX2 for v8 javascript (builds and runs on non-AVX2 capable hosts)
+AES_PCLMUL		1		Intel Westmere/AMD Jaguar (might be missing on some earlier/lower end CPUs)
+AVX			1		Intel Sandybridge/AMD Bulldozer or newer (Haswell/Excavator or newer use x86-64-v3 instead)
+ABM			0		For AMD Bulldozer plus those listed under BMI below (not for Bulldozer or pre-Haswell Intel)
+BMI			0		For AMD Jaguar, Puma, Piledriver and Steamroller CPUs (not for Bulldozer or pre-Haswell Intel)
+RTC_AVX2		1		AVX2 for RTC. Nuilds and runs on non-AVX2 capable hosts (but can be disabled on non-AVX2).
+V8_AVX2			1		AVX2 for v8 (javascript). Builds and runs on non-AVX2 capable hosts (but can be disabled on non-AVX2).
 
 POLLY			0		Clang/LLVM Polly optimisations
 					Unless explicitly disabled, POLLY will be auto-enabled if SYS_CLANG > 0

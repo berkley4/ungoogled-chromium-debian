@@ -2,9 +2,10 @@
 
 This is my fork of the unified branch of [ungoogle-chromium-debian](https://github.com/ungoogled-software/ungoogled-chromium-debian).
 
-There are debs in the release section which are built with -march=x86-64-v2 --mtune=generic -mavx (refer [here](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels) for more info about x86-64-v2).
+There are debs in the release section which are built with -march=x86-64-v2 --mtune=generic -mavx -maes -mpclmul (refer [here](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels) for info about x86-64-v2).
 These should run on CPUs which support AVX instructions, which should encompass the Intel Sandybridge/AMD Bulldozer era (circa 2011) onwards.
-There's also a patch which can be used by builders to enable AVX2 support (cat /proc/cpuinfo is your friend here).
+Builders with Intel Haswell/AMD Excavator or newer should configure with MARCH=x86-64-v3 (which includes AVX, AVX2, ABM and BMI1).
+A patch to enable ABM and BMI1 support is for those with AMD Jaguar, Puma, Piledriver or Steamroller CPUs (all pre x86-64-v3).
 
 There are currently two release branches, stable and unstable, which correspond to debian unstable and debian stable.
 Older releases of debian-derived distros are advised to build the stable release. Anything sufficiently new, eg newer
@@ -45,7 +46,7 @@ ___Performance improvements___
     - -march=[x86-64-v2](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels)
     - -maes - enables AES instructions
     - -mpclmul - enables CLMUL instructions
-    - -mavx - enables AVX instructions (AVX2 is available via an optional patch)
+    - -mavx - enables AVX instructions (-mabm and -mbmi are available via an optional patch)
     - -Ctarget-cpu/-Ctarget-feature are available to set the equivalent march/instruction rust flags
     - -fno-plt - (see [here](https://patchwork.ozlabs.org/project/gcc/patch/alpine.LNX.2.11.1505061730460.22867@monopod.intra.ispras.ru/))
     - -fsplit-machine-functions - (see [here](https://groups.google.com/g/llvm-dev/c/RUegaMg-iqc/m/wFAVxa6fCgAJ))

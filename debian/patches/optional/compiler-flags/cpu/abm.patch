@@ -4,7 +4,7 @@
            "-march=x86-64-v2",
            "-mtune=generic",
            "-mavx",
-+          "-mavx2",
++          "-mabm",
          ]
        } else {
          cflags += [ "-m64" ]

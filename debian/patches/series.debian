@@ -123,7 +123,8 @@ optional/compiler-flags/cpu/aes-pclmul.patch
 optional/compiler-flags/cpu/march.patch
 optional/compiler-flags/cpu/mtune.patch
 optional/compiler-flags/cpu/avx.patch
-#optional/compiler-flags/cpu/avx2.patch
+#optional/compiler-flags/cpu/abm.patch
+#optional/compiler-flags/cpu/bmi.patch
 optional/compiler-flags/cpu/rust-instructions.patch
 #optional/disable/atk.patch
 #optional/disable/bluez.patch
