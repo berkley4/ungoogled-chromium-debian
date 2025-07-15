@@ -10,6 +10,7 @@ esac
 arch_patches=
 
 deps_disable=; deps_enable=
+fl_block=; fl_unblock=
 gn_disable=; gn_enable=
 ins_disable=; ins_enable=
 op_disable=; op_enable=
@@ -968,12 +969,14 @@ fi
 
 
 if [ $HEADLESS -eq 1 ]; then
+  fl_unblock="$fl_unblock headless"
   op_disable="$op_disable disable/headless.patch"
   gn_disable="$gn_disable headless_enable_commands=false headless_use_policy=false"
 fi
 
 
 if [ $HLS_PLAYER -eq 0 ]; then
+  fl_block="$fl_block disable-builtin-hls enable-builtin-hls"
   gn_enable="$gn_enable enable_hls_demuxer=false"
   ins_disable="$ins_disable hls-player"
 elif [ $HLS_PLAYER -ge 2 ]; then
@@ -1000,6 +1003,7 @@ fi
 if [ $LENS -eq 0 ]; then
   gn_enable="$gn_enable enable_lens_desktop=false"
 else
+  fl_unblock="$fl_unblock disable-lens-standalone enable-lens-standalone"
   ins_enable="$ins_enable google-lens"
   DSB="$DSB -e \"/^components\/lens\/lens_features\.cc/d\""
 
@@ -1546,6 +1550,19 @@ if [ -n "$deps_enable" ]; then
 fi
 
 
+if [ -n "$fl_block" ]; then
+  for i in $fl_block; do
+    BFL="$BFL -e \"s@\(.*\)@\1 $i@\""
+  done
+fi
+
+if [ -n "$fl_unblock" ]; then
+  for i in $fl_unblock; do
+    BFL="$BFL -e \"s@ $i@@\""
+  done
+fi
+
+
 if [ -n "$ins_disable" ]; then
   for i in $ins_disable; do
     INS="$INS -e \"/$i/s@^@#@\""
@@ -1627,6 +1644,7 @@ SERIES_UC="$(eval sed $SER_UC $UC_DIR/patches/series)"
 echo "$SERIES_UC" "$SERIES_DB" > $DEBIAN/patches/series
 
 
+[ -z "$BFL" ] || eval sed $BFL -i $FLAG_DIR/blocked-flags
 [ -z "$FLAG_GPU" ] || eval sed $FLAG_GPU -i $FLAG_DIR/gpu
 [ -z "$FLAG_MISC" ] || eval sed $FLAG_MISC -i $FLAG_DIR/miscellaneous
 [ -z "$INS" ] || eval sed $INS -i $DEBIAN/ungoogled-chromium.install
