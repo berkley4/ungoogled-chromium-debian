@@ -1084,7 +1084,6 @@ fi
 
 
 if [ $SPEECH -eq 0 ]; then
-  op_enable="$op_enable disable/speech.patch"
   gn_enable="$gn_enable enable_speech_service=false"
 fi
 

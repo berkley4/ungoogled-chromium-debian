@@ -82,6 +82,7 @@ various/disable/image-writer/image-writer-utility.patch
 various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
 various/fixes/enterprise-buildflags.patch
 various/fixes/ffmpeg-codec-list.patch
+various/fixes/disabled-speech-build-error.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/shim-fix-for-official-builds.patch
 various/fixes/silence-some-error-log-messages.patch
@@ -135,7 +136,6 @@ optional/disable/enterprise-watermark.patch
 #optional/disable/fontations.patch
 optional/disable/headless.patch
 optional/disable/media-router.patch
-#optional/disable/speech.patch
 #optional/disable/vulkan.patch
 optional/disable/webgpu.patch
 #optional/disable/dbus-and-notifications/dbus-secret-portal-depends-on-dbus.patch
