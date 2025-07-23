@@ -78,7 +78,6 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$FAST_RESTART" ] || FAST_RESTART=0
 [ -n "$FONTATIONS" ] || FONTATIONS=1
 [ -n "$FONTATIONS_PDF" ] || FONTATIONS_PDF=1
-[ -n "$GL_DESKTOP_FRONTEND" ] || GL_DESKTOP_FRONTEND=0
 [ -n "$GOOGLE_API_KEYS" ] || GOOGLE_API_KEYS=1
 [ -n "$GOOGLE_UI_URLS" ] || GOOGLE_UI_URLS=1
 [ -n "$GRCACHE_PURGE" ] || GRCACHE_PURGE=0
@@ -943,11 +942,6 @@ else
   if [ $FONTATIONS_PDF -eq 0 ]; then
     gn_disable="$gn_disable pdf_enable_fontations=true"
   fi
-fi
-
-
-if [ $GL_DESKTOP_FRONTEND -eq 1 ]; then
-  gn_enable="$gn_enable angle_enable_gl_desktop_frontend=true"
 fi
 
 
