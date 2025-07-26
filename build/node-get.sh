@@ -1,7 +1,6 @@
 #!/bin/sh -e
 
-SCRIPT=${0##*/}
-USAGE="Usage: $SCRIPT <clean|c|help|h>"
+USAGE="Usage: ${0##*/} <clean|c|help|h>"
 
 DL_CACHE=.download_cache
 
@@ -16,12 +15,12 @@ case $USER in
     exit 1 ;;
 esac
 
-case $0 in
-  ./$SCRIPT|$SCRIPT)
+case ${PWD##*/} in
+  build)
     : ;;
 
   *)
-    printf '%s\n' "Please run this script from the directory containing it"
+    printf '%s\n' "Please run this script from the build directory"
     exit 1 ;;
 esac
 

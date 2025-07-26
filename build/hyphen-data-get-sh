@@ -1,12 +1,6 @@
 #!/bin/sh -e
 
-SCRIPT_DIR=${0%%/*}
-USAGE="Usage: $SCRIPT <clean|c|help|h>"
-
 HYPHEN_DIR=src/third_party/hyphenation-patterns
-
-current_dir=${PWD}
-hyphen_dir=$current_dir/src/third_party/hyphenation-patterns
 
 case $USER in
   root)
@@ -14,7 +8,11 @@ case $USER in
     exit 1 ;;
 esac
 
-case ${current_dir##*/} in
+
+CUR_DIR=${PWD}
+hyphen_dir=$CUR_DIR/src/third_party/hyphenation-patterns
+
+case ${CUR_DIR##*/} in
   build)
     : ;;
 
@@ -31,7 +29,7 @@ if [ ! -f $hyphen_dir/hyb/hyph-en-us.hyb ]; then
     patch -s -p1 < source_patches/hyphenation-data.patch
   fi
 
-  cd $current_dir/src/third_party/hyphenation-patterns
+  cd $CUR_DIR/src/third_party/hyphenation-patterns
   ./build-hyb.sh
   cd - >/dev/null
 

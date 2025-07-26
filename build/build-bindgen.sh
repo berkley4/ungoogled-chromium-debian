@@ -1,7 +1,6 @@
 #!/bin/sh -e
 
-SCRIPT=${0##*/}
-USAGE="[CLANG_VER=<version>] [SYS_CLANG=<0|1|2>] SYS_RUST=<0|1|2> $SCRIPT [h|help] [c|clean]"
+USAGE="[CLANG_VER=<version>] [SYS_CLANG=<0|1|2>] SYS_RUST=<0|1|2> ${0##*/} [h|help] [c|clean]"
 
 case $USER in
   root)
@@ -9,12 +8,12 @@ case $USER in
     exit 1 ;;
 esac
 
-case $0 in
-  ./$SCRIPT|$SCRIPT)
+case ${PWD##*/} in
+  build)
     : ;;
 
   *)
-    printf '%s\n' "Please run this script from the directory containing it"
+    printf '%s\n' "Please run this script from the build directory"
     exit 1 ;;
 esac
 
