@@ -40,7 +40,7 @@
 +fi
 +
 +# Ensure that mk_hyb_file.py is executable
-+[ $(stat -c %a $mk_hyb) -eq 700 ] || chmod 0700 $mk_hyb
++[ -x $mk_hyb ] || chmod 0700 $mk_hyb
 +
 +
  # Rebuild the data file in `$hyb`.
