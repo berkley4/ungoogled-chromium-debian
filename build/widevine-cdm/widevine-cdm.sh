@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+url=https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+
 case $USER in
   root)
     printf '%s\n' "Run this script as an unprivileged user"
@@ -7,14 +9,17 @@ case $USER in
 esac
 
 
-url=https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+# Enforce running from widevine-cdm directory
 
-# Directory containing this script (relative to where it's executed from).
-# Also force CUR_DIR to be '.' (current directory) if it evaluates to null.
-CUR_DIR=${0%/*}
-case $CUR_DIR in
-  "")
-    CUR_DIR='.' ;;
+CUR_DIR=${PWD}
+
+case ${CUR_DIR##*/} in
+  widevine-cdm)
+    : ;;
+
+  *)
+    printf '%s\n' "Please run this script from the widevine-cdm directory"
+    exit 1 ;;
 esac
 
 
