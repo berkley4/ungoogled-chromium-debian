@@ -47,12 +47,11 @@ done
 
 command -v aria2c >/dev/null 2>&1 && D_LOADER=aria2c || D_LOADER=wget
 
+dl_args="--continue -P $DL_CACHE"
+
 case $D_LOADER in
   aria2c)
-    dl_args="-x4 -s4 -c -d $DL_CACHE" ;;
-
-  *)
-    dl_args="--continue -P $DL_CACHE" ;;
+    dl_args="-x2 -s2 -c -R -d $DL_CACHE" ;;
 esac
 
 $D_LOADER $dl_args $url
