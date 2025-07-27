@@ -686,7 +686,10 @@ if [ $MARCH_SET -eq 1 ] || [ $MTUNE_SET -eq 1 ]; then
       op_disable="$op_disable compiler-flags/cpu/march.patch"
       op_disable="$op_disable compiler-flags/cpu/mtune.patch"
 
-      AES_PCLMUL=0; ABM=0; AVX=0; BMI=0; RTC_AVX2=0; V8_AVX2=0 ;;
+      AES_PCLMUL=0; ABM=0; AVX=0; BMI=0; RTC_AVX2=0; V8_AVX2=0
+
+      # Has no effect but avoids the MARCH/MTUNE warning below
+      MTUNE=generic ;;
   esac
 
   if [ "$OLD_MARCH" != "$MARCH" ] || [ "$OLD_MTUNE" != "$MTUNE" ]; then
