@@ -21,10 +21,10 @@ PRU=; PRU_PY=; RUL=; RUST_INST=; SER_DB=
 SER_U=; SERIES_DB=; SERIES_UC=; SMF=
 
 BLUEZ_SET=0; BUILD_TS_SET=0; CLANG_VER_SET=0
-DBUS_SET=0; MARCH_SET=0; MEDIA_REMOTING_SET=0
-MTUNE_SET=0; POLLY_SET=0; RELEASE_SET=0
-SYS_BROTLI_SET=0; SYS_DRM_SET=0; SYS_ICU_SET=0
-SYS_WEBP_SET=0
+CPU_SET=0; DBUS_SET=0; MARCH_SET=0
+MEDIA_REMOTING_SET=0; MTUNE_SET=0; POLLY_SET=0
+RELEASE_SET=0; SYS_BROTLI_SET=0; SYS_DRM_SET=0
+SYS_ICU_SET=0; SYS_WEBP_SET=0
 
 LLVM_PGO_VER=20
 
@@ -167,7 +167,8 @@ FF_AAC=1
 [ -n "$FF_FDK" ] || FF_FDK=0
 [ -n "$FF_HEVC" ] || FF_HEVC=1
 
-## MARCH and MTUNE defaults
+## CPU. MARCH and MTUNE defaults
+[ -n "$CPU" ] && CPU_SET=1 || CPU=avx
 [ -n "$MARCH" ] && MARCH_SET=1 || MARCH=x86-64-v2
 [ -n "$MTUNE" ] && MTUNE_SET=1 || MTUNE=generic
 
@@ -703,7 +704,18 @@ fi
 
 [ $ABM -eq 0 ] || arch_patches="$arch_patches abm"
 [ $BMI -eq 0 ] || arch_patches="$arch_patches bmi"
-[ $AVX -eq 0 ] || arch_patches="$arch_patches avx"
+[ $AVX -eq 0 ] && CPU_SET=0 && CPU='sse3\x5C\x7Cpni' || arch_patches="$arch_patches avx"
+
+
+# Set the CPU instruction requirement (for the shell launcher)
+CPU_MSG=$CPU
+
+case $CPU in
+  sse3*)
+    CPU_MSG='sse3 (or pni)' ;;
+esac
+
+export CPU=$CPU CPU_MSG=$CPU_MSG
 
 
 if [ -n "$arch_patches" ]; then

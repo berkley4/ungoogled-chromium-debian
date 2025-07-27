@@ -21,10 +21,7 @@ GDB=/usr/bin/gdb
 
 CHROMIUM_FLAGS=""
 
-nosse3="\
-The hardware on this system lacks support for the sse3 instruction set.
-The upstream chromium project no longer supports this configuration.
-For more information, please go to https://crbug.com/1123353."
+no_inst="Your CPU lacks support for the @CPU_MSG@ instruction set."
 
 output_error() {
   case "$DISPLAY" in
@@ -84,7 +81,7 @@ esac
 # Only proceed if the system has an SSE3 (or PNI) capable cpu
 case $(uname -m) in
   x86_64)
-    grep -q 'sse3\|pni' /proc/cpuinfo || output_error "$nosse3" ;;
+    grep -q '@CPU@' /proc/cpuinfo || output_error "$no_inst" ;;
 esac
 
 

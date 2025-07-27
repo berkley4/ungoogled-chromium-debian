@@ -258,6 +258,8 @@ MTUNE			generic		Matches MARCH if MARCH is set and MTUNE is not specified, unles
 					an x86-64 microarchitecture level (in that case MTUNE is set to generic)
 					Will have no effect when setting MARCH=0
 
+CPU			avx		All CPUs must have this instruction (this gets written into the shell launcher)
+
 AES_PCLMUL		1		Intel Westmere/AMD Jaguar (might be missing on some earlier/lower end CPUs)
 AVX			1		Intel Sandybridge/AMD Bulldozer or newer (Haswell/Excavator or newer use x86-64-v3 instead)
 ABM			0		For AMD Bulldozer plus those listed under BMI below (not for Bulldozer or pre-Haswell Intel)
