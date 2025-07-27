@@ -1678,7 +1678,7 @@ chmod 0700 $DEBIAN/rules $DEBIAN/ungoogled-chromium.install
 
 
 ## Shell launcher
-[ $TEST -eq 1 ] || $M_DIR/update_launcher.sh < $M_DIR/chromium.sh > $M_DIR/chromium
+$M_DIR/update_launcher.sh < $M_DIR/chromium.sh > $M_DIR/chromium
 
 
 ## Submodule patching
