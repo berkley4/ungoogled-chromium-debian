@@ -707,7 +707,7 @@ fi
 
 [ $ABM -eq 0 ] || arch_patches="$arch_patches abm"
 [ $BMI -eq 0 ] || arch_patches="$arch_patches bmi"
-[ $AVX -eq 0 ] && CPU_SET=0 && CPU='sse3\x5C\x7Cpni' || arch_patches="$arch_patches avx"
+[ $AVX -eq 0 ] && [ $CPU_SET -eq 0 ] && CPU='sse3\x5C\x7Cpni' || arch_patches="$arch_patches avx"
 
 
 # Set the CPU instruction requirement (for the shell launcher)
