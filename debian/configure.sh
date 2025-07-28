@@ -734,7 +734,7 @@ fi
 RUST_INST="+pclmulqdq"
 
 if [ $BMI -eq 1 ]; then
-  ABM=1; AVX=1; RUST_INST="$RUST_INST,+bmi1"
+  ABM=1; RUST_INST="$RUST_INST,+bmi1"
   op_enable="$op_enable compiler-flags/cpu/bmi.patch"
 fi
 
