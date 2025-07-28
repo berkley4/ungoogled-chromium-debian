@@ -708,18 +708,6 @@ fi
 
 [ $ABM -eq 0 ] || arch_patches="$arch_patches abm"
 [ $BMI -eq 0 ] || arch_patches="$arch_patches bmi"
-[ $AVX -eq 0 ] && [ $CPU_SET -eq 0 ] && CPU='sse3\x5C\x7Cpni' || arch_patches="$arch_patches avx"
-
-
-# Set the CPU instruction requirement (for the shell launcher)
-CPU_MSG=$CPU
-
-case $CPU in
-  sse3*)
-    CPU_MSG='sse3 (or pni)' ;;
-esac
-
-export CPU=$CPU CPU_MSG=$CPU_MSG
 
 
 if [ -n "$arch_patches" ]; then
@@ -753,6 +741,9 @@ fi
 if [ $AVX -eq 0 ]; then
   POLLY_VEC=0
   op_disable="$op_disable compiler-flags/cpu/avx.patch"
+
+  # Default to sse3/pni instruction requirement when AVX=0
+  [ $CPU_SET -eq 1 ] || CPU='sse3\x5C\x7Cpni'
 else
   RUST_INST="$RUST_INST,+avx"
 
@@ -789,6 +780,16 @@ if [ $V8_AVX2 -eq 0 ]; then
   gn_disable="$gn_disable v8_enable_wasm_simd256_revec=true"
 fi
 
+
+# Set the CPU instruction requirement (for the shell launcher)
+CPU_MSG=$CPU
+
+case $CPU in
+  sse3*)
+    CPU_MSG='sse3 (or pni)' ;;
+esac
+
+export CPU=$CPU CPU_MSG=$CPU_MSG
 
 
 # Our Polly implementation currently depends on AVX
