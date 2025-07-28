@@ -59,9 +59,10 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$SYS_NODE" ] || SYS_NODE=0
 
 [ -n "$ABM" ] || ABM=0
-[ -n "$AES_PCLMUL" ] || AES_PCLMUL=1
+[ -n "$AES" ] || AES=1
 [ -n "$AVX" ] || AVX=1
 [ -n "$BMI" ] || BMI=0
+[ -n "$PCLMUL" ] || PCLMUL=1
 [ -n "$RTC_AVX2" ] || RTC_AVX2=1
 [ -n "$V8_AVX2" ] || V8_AVX2=1
 
@@ -686,7 +687,7 @@ if [ $MARCH_SET -eq 1 ] || [ $MTUNE_SET -eq 1 ]; then
       op_disable="$op_disable compiler-flags/cpu/march.patch"
       op_disable="$op_disable compiler-flags/cpu/mtune.patch"
 
-      AES_PCLMUL=0; ABM=0; AVX=0; BMI=0; RTC_AVX2=0; V8_AVX2=0
+      AES=0; ABM=0; AVX=0; BMI=0; PCLMUL=0; RTC_AVX2=0; V8_AVX2=0
 
       # Has no effect but avoids the MARCH/MTUNE warning below
       MTUNE=generic ;;
@@ -730,10 +731,10 @@ fi
 
 
 # Initial rust cpu instructions
-RUST_INST="+aes,+pclmulqdq"
+RUST_INST="+pclmulqdq"
 
 if [ $BMI -eq 1 ]; then
-  ABM=1; AES_PCLMUL=1; AVX=1; RUST_INST="$RUST_INST,+bmi1"
+  ABM=1; AVX=1; RUST_INST="$RUST_INST,+bmi1"
   op_enable="$op_enable compiler-flags/cpu/bmi.patch"
 fi
 
@@ -743,19 +744,25 @@ if [ $ABM -eq 1 ]; then
   op_enable="$op_enable compiler-flags/cpu/abm.patch"
 fi
 
+if [ $AES -eq 0 ]; then
+  op_disable="$op_disable compiler-flags/cpu/aes.patch"
+else
+  RUST_INST="$RUST_INST,+aes"
+fi
+
 if [ $AVX -eq 0 ]; then
   POLLY_VEC=0
   op_disable="$op_disable compiler-flags/cpu/avx.patch"
 else
-  AES_PCLMUL=1; RUST_INST="$RUST_INST,+avx"
+  RUST_INST="$RUST_INST,+avx"
 
   # Let users be able to turn this off
   [ -n "$POLLY_VEC" ] || POLLY_VEC=1
 fi
 
-if [ $AES_PCLMUL -eq 0 ]; then
-  RUST_INST=${RUST_INST#+aes,+pclmulqdq}
-  op_disable="$op_disable compiler-flags/cpu/aes-pclmul.patch"
+if [ $PCLMUL -eq 0 ]; then
+  RUST_INST=${RUST_INST#+pclmulqdq}
+  op_disable="$op_disable compiler-flags/cpu/pclmul.patch"
 fi
 
 case $RUST_INST in
@@ -769,7 +776,7 @@ case $RUST_INST in
     # Remove potential leading comma from RUST_INST string
     RUST_INST=${RUST_INST#,}
 
-    sed -e "s@+aes,+pclmulqdq,+avx@$RUST_INST@" \
+    sed -e "s@+pclmulqdq,+avx@$RUST_INST@" \
         -i $OP_DIR/compiler-flags/cpu/rust-instructions.patch ;;
 esac
 

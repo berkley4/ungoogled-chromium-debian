@@ -120,9 +120,10 @@ optional/compiler-flags/media-optimize-speed-O3.patch
 #optional/compiler-flags/polly-vectorizer.patch
 #optional/compiler-flags/thinlto-cache-location.patch
 #optional/compiler-flags/thinlto-jobs.patch
-optional/compiler-flags/cpu/aes-pclmul.patch
+optional/compiler-flags/cpu/pclmul.patch
 optional/compiler-flags/cpu/march.patch
 optional/compiler-flags/cpu/mtune.patch
+optional/compiler-flags/cpu/aes.patch
 optional/compiler-flags/cpu/avx.patch
 #optional/compiler-flags/cpu/abm.patch
 #optional/compiler-flags/cpu/bmi.patch

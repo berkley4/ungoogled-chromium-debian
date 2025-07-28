@@ -260,10 +260,12 @@ MTUNE			generic		Matches MARCH if MARCH is set and MTUNE is not specified, unles
 
 CPU			avx		All CPUs must have this instruction (this gets written into the shell launcher)
 
-AES_PCLMUL		1		Intel Westmere/AMD Jaguar (might be missing on some earlier/lower end CPUs)
+PCLMUL			1		For AMD Jaguar, Puma, Bulldozer, Piledriver, Steamroller and Westmere Intel onwards
+AES			1		Same as for PCLMUL but might be missing on some lower end CPUs (eg Pentium, Celeron, Core i3)
 AVX			1		Intel Sandybridge/AMD Bulldozer or newer (Haswell/Excavator or newer use x86-64-v3 instead)
 ABM			0		For AMD Bulldozer plus those listed under BMI below (not for Bulldozer or pre-Haswell Intel)
 BMI			0		For AMD Jaguar, Puma, Piledriver and Steamroller CPUs (not for Bulldozer or pre-Haswell Intel)
+
 RTC_AVX2		1		AVX2 for RTC. Nuilds and runs on non-AVX2 capable hosts (but can be disabled on non-AVX2).
 V8_AVX2			1		AVX2 for v8 (javascript). Builds and runs on non-AVX2 capable hosts (but can be disabled on non-AVX2).
 

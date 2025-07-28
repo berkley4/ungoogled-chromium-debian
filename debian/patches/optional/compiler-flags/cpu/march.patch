@@ -8,9 +8,9 @@
    defines = []
  
    configs = []
-@@ -1244,12 +1245,15 @@
+@@ -1243,12 +1244,15 @@
+           !is_chromeos_device) {
          cflags += [
-           "-maes",
            "-mpclmul",
 +          "-march=x86-64-v2",
 +        ]
