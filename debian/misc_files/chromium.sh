@@ -78,7 +78,7 @@ case $USER in
     output_error "Run this script as an unprivileged user" ;;
 esac
 
-# Only proceed if the system has an SSE3 (or PNI) capable cpu
+# Only proceed if the CPU has support for the @CPU_MSG@ instruction set
 case $(uname -m) in
   x86_64)
     grep -q '@CPU@' /proc/cpuinfo || output_error "$no_inst" ;;

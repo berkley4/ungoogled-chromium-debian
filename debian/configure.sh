@@ -742,7 +742,7 @@ if [ $AVX -eq 0 ]; then
   POLLY_VEC=0
   op_disable="$op_disable compiler-flags/cpu/avx.patch"
 
-  # Default to sse3/pni instruction requirement when AVX=0
+  # Default to sse3/pni instruction requirement when AVX=0 (and PCLMUL=0)
   [ $CPU_SET -eq 1 ] || CPU='sse3\x5C\x7Cpni'
 else
   RUST_INST="$RUST_INST,+avx"
@@ -754,6 +754,11 @@ fi
 if [ $PCLMUL -eq 0 ]; then
   RUST_INST=${RUST_INST#+pclmulqdq}
   op_disable="$op_disable compiler-flags/cpu/pclmul.patch"
+else
+  # Default to pclmulqdq instruction requirement when AVX=0 and PCLMUL=1
+  if [ $AVX -eq 0 ]; then
+    [ $CPU_SET -eq 1 ] || CPU='pclmulqdq'
+  fi
 fi
 
 case $RUST_INST in
@@ -785,6 +790,9 @@ fi
 CPU_MSG=$CPU
 
 case $CPU in
+  pclmulqdq)
+    CPU_MSG='pclmulqdq (pclmul)' ;;
+
   sse3*)
     CPU_MSG='sse3 (or pni)' ;;
 esac
