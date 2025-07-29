@@ -757,7 +757,7 @@ if [ $PCLMUL -eq 0 ]; then
 else
   # Default to pclmulqdq instruction requirement when AVX=0 and PCLMUL=1
   if [ $AVX -eq 0 ]; then
-    [ $CPU_SET -eq 1 ] || CPU='pclmulqdq'
+    [ $CPU_SET -eq 1 ] || CPU=pclmulqdq
   fi
 fi
 
