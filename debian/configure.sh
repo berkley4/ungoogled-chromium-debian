@@ -762,7 +762,7 @@ else
 fi
 
 case $RUST_INST in
-  +aes,+pclmulqdq,+avx)
+  +pclmulqdq,+aes,+avx)
     : ;;
 
   "")
@@ -772,7 +772,7 @@ case $RUST_INST in
     # Remove potential leading comma from RUST_INST string
     RUST_INST=${RUST_INST#,}
 
-    sed -e "s@+pclmulqdq,+avx@$RUST_INST@" \
+    sed -e "s@+pclmulqdq,+aes,+avx@$RUST_INST@" \
         -i $OP_DIR/compiler-flags/cpu/rust-instructions.patch ;;
 esac
 
