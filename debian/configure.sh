@@ -26,7 +26,8 @@ MEDIA_REMOTING_SET=0; MTUNE_SET=0; POLLY_SET=0
 RELEASE_SET=0; SYS_BROTLI_SET=0; SYS_DRM_SET=0
 SYS_ICU_SET=0; SYS_WEBP_SET=0
 
-LLVM_PGO_VER=20
+# Current bundled llvm/clang version (only effective when TEST=1)
+LLVM_PGO_VER=21
 
 # ${example%/*} = $(dirname example)
 DEBIAN=$(OLDPWD=- CDPATH= cd -P -- ${0%/*} && pwd)
