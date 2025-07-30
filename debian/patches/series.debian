@@ -127,6 +127,7 @@ optional/compiler-flags/cpu/aes.patch
 optional/compiler-flags/cpu/avx.patch
 #optional/compiler-flags/cpu/abm.patch
 #optional/compiler-flags/cpu/bmi.patch
+#optional/compiler-flags/cpu/tbm.patch
 optional/compiler-flags/cpu/rust-instructions.patch
 #optional/disable/atk.patch
 #optional/disable/bluez.patch

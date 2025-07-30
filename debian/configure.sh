@@ -63,6 +63,8 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$AVX" ] || AVX=1
 [ -n "$BMI" ] || BMI=0
 [ -n "$PCLMUL" ] || PCLMUL=1
+[ -n "$TBM" ] || TBM=0
+
 [ -n "$RTC_AVX2" ] || RTC_AVX2=1
 [ -n "$V8_AVX2" ] || V8_AVX2=1
 
@@ -687,7 +689,7 @@ if [ $MARCH_SET -eq 1 ] || [ $MTUNE_SET -eq 1 ]; then
       op_disable="$op_disable compiler-flags/cpu/march.patch"
       op_disable="$op_disable compiler-flags/cpu/mtune.patch"
 
-      AES=0; ABM=0; AVX=0; BMI=0; PCLMUL=0; RTC_AVX2=0; V8_AVX2=0
+      AES=0; ABM=0; AVX=0; BMI=0; PCLMUL=0; TBM=0; RTC_AVX2=0; V8_AVX2=0
 
       # Has no effect but avoids the MARCH/MTUNE warning below
       MTUNE=generic ;;
@@ -708,6 +710,7 @@ fi
 
 [ $ABM -eq 0 ] || arch_patches="$arch_patches abm"
 [ $BMI -eq 0 ] || arch_patches="$arch_patches bmi"
+[ $TBM -eq 0 ] || arch_patches="$arch_patches tbm"
 
 
 if [ -n "$arch_patches" ]; then
@@ -720,6 +723,11 @@ fi
 
 # Initial rust cpu instructions
 RUST_INST="+pclmulqdq"
+
+if [ $TBM -eq 1 ]; then
+  BMI=1; RUST_INST="$RUST_INST,+tbm"
+  op_enable="$op_enable compiler-flags/cpu/tbm.patch"
+fi
 
 if [ $BMI -eq 1 ]; then
   ABM=1; RUST_INST="$RUST_INST,+bmi1"

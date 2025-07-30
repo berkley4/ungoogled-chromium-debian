@@ -5,7 +5,8 @@ This is my fork of the unified branch of [ungoogle-chromium-debian](https://gith
 There are debs in the release section which are built with -march=x86-64-v2 --mtune=generic -mavx -maes -mpclmul (refer [here](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels) for info about x86-64-v2).
 These should run on CPUs which support AVX instructions, which should encompass the Intel Sandybridge/AMD Bulldozer era (circa 2011) onwards.
 Builders with Intel Haswell/AMD Excavator or newer should configure with MARCH=x86-64-v3 (which includes AVX, AVX2, ABM and BMI1).
-A patch to enable ABM and BMI1 support is for those with AMD Jaguar, Puma, Piledriver or Steamroller CPUs (all pre x86-64-v3).
+Patches to enable ABM and BMI1 support is for those with AMD Jaguar, Puma, Piledriver or Steamroller CPUs (all pre x86-64-v3).
+A patch to enable TBM support is exclusively for those with AMD Piledriver, Steamroller or Excavator CPUs.
 
 There are currently two release branches, stable and unstable, which correspond to debian unstable and debian stable.
 Older releases of debian-derived distros are advised to build the stable release. Anything sufficiently new, eg newer
