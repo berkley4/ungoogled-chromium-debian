@@ -796,7 +796,7 @@ fi
 
 
 # Set the CPU instruction requirement (for the shell launcher)
-CPU_MSG=$CPU
+[ -n "CPU_MSG" ] || CPU_MSG=$CPU
 
 case $CPU in
   pclmulqdq)
@@ -806,7 +806,7 @@ case $CPU in
     CPU_MSG='sse3 (or pni)' ;;
 esac
 
-export CPU=$CPU CPU_MSG=$CPU_MSG
+export CPU=$CPU CPU_MSG="$CPU_MSG"
 
 
 # Our Polly implementation currently depends on AVX
