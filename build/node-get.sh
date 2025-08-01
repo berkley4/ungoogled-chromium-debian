@@ -58,14 +58,14 @@ NODE_URL=$NODE_BASE_URL/$O
 ## Prefer aria2c/fall back to wget
 command -v aria2c >/dev/null 2>&1 && D_LOADER=aria2c || D_LOADER=wget
 
-dl_args="-x1 -s1 -c -o $NODE_FILE -d $DL_CACHE"
+dl_args="-x1 -s1 -c -R --conditional-get=true --allow-overwrite=true -o $NODE_FILE -d $DL_CACHE"
 
 case $D_LOADER in
   wget)
     dl_args="--continue -O $NODE_FILE -P $DL_CACHE" ;;
 esac
 
-[ -f $DL_CACHE/$NODE_FILE ] || $D_LOADER $dl_args $NODE_URL
+$D_LOADER $dl_args $NODE_URL
 
 
 printf '\n%s\n\n\n' "Extracting $NODE_FILE..."

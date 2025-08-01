@@ -122,16 +122,14 @@ if [ ! -d ncursesw ]; then
 
   [ -d $DL_CACHE ] || mkdir $DL_CACHE
 
-  dl_args="-x1 -s1 -c -o $nc_file -d $DL_CACHE"
+  dl_args="-x1 -s1 -c -R --conditional-get=true --allow-overwrite=true -o $nc_file -d $DL_CACHE"
 
   case $D_LOADER in
     wget)
       dl_args="--continue -O $nc_file -P $DL_CACHE" ;;
   esac
 
-  if [ ! -f $DL_CACHE/$nc_file ]; then
-    $D_LOADER $dl_args "$(curl -s $nc_page_url | get_nc_url)"
-  fi
+  $D_LOADER $dl_args "$(curl -s $nc_page_url | get_nc_url)"
 
   mkdir ncursesw
 
