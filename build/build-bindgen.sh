@@ -122,11 +122,10 @@ if [ ! -d ncursesw ]; then
 
   [ -d $DL_CACHE ] || mkdir $DL_CACHE
 
-  case $D_LOADER in
-    aria2c)
-      dl_args="-x1 -s1 -c -o $nc_file -d $DL_CACHE" ;;
+  dl_args="-x1 -s1 -c -o $nc_file -d $DL_CACHE"
 
-    *)
+  case $D_LOADER in
+    wget)
       dl_args="--continue -O $nc_file -P $DL_CACHE" ;;
   esac
 
