@@ -1221,7 +1221,16 @@ fi
 
 
 
-## Handle audio codecs with a single patch to avoid patch conflict
+case $FF_AC in
+  aac)
+    op_disable="$op_disable ffmpeg-extra-codecs/audio-codecs.patch"
+    op_disable="$op_disable ffmpeg-extra-codecs/context-fixup.patch" ;;
+
+  *)
+    sed -e "s@_ff_ac@$FF_AC@" \
+        -i $OP_DIR/ffmpeg-extra-codecs/audio-codecs.patch ;;
+esac
+
 if [ $FF_AAC -eq 1 ] && [ $FF_AC3 -eq 0 ] && [ $FF_AC4 -eq 0 ] && \
    [ $FF_ALAC -eq 0 ] && [ $FF_FDK -eq 0]; then
   op_disable="$op_disable ffmpeg-extra-codecs/audio-codecs.patch"
