@@ -6,7 +6,7 @@ in order to work on older gn that lacks path_exists().
 
 --- a/build/config/sysroot.gni
 +++ b/build/config/sysroot.gni
-@@ -61,7 +61,9 @@
+@@ -63,7 +63,9 @@ if (sysroot == "") {
          _script_arch = "amd64"
        }
        assert(
@@ -45,7 +45,7 @@ in order to work on older gn that lacks path_exists().
 +  sys.exit(main())
 --- a/build/dotfile_settings.gni
 +++ b/build/dotfile_settings.gni
-@@ -24,6 +24,7 @@
+@@ -24,6 +24,7 @@ build_dotfile_settings = {
      "//build/config/mac/mac_sdk.gni",
      "//build/config/mac/rules.gni",
      "//build/config/posix/BUILD.gn",
@@ -55,27 +55,14 @@ in order to work on older gn that lacks path_exists().
      "//build/rust/analyze.gni",
 --- a/build/toolchain/siso.gni
 +++ b/build/toolchain/siso.gni
-@@ -7,11 +7,6 @@
+@@ -6,12 +6,6 @@ import("//build/config/gclient_args.gni"
+ # need to match with autoninja's logic.
  use_siso_default = false
- 
- _is_google_corp_machine = false
--if (path_exists("/usr/bin/gcert") ||  # linux
--    path_exists("/usr/local/bin/gcert") ||  # mac
--    path_exists("/c:/gnubby/bin/gcert.exe")) {
--  _is_google_corp_machine = true
--}
- 
- _is_bot = false
- if (getenv("SWARMING_HEADLESS") != "" || getenv("SWARMING_BOT_ID") != "" ||
-@@ -19,13 +14,6 @@
-   _is_bot = true
- }
  
 -_is_ninja_used = path_exists(rebase_path(".ninja_deps", root_build_dir))
 -
 -if (path_exists("//build/config/siso/.sisoenv") &&
--    defined(build_with_chromium) && build_with_chromium &&
--    (_is_google_corp_machine || _is_bot) && !_is_ninja_used) {
+-    defined(build_with_chromium) && build_with_chromium && !_is_ninja_used) {
 -  use_siso_default = true
 -}
  

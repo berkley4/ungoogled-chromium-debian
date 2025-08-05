@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1241,6 +1241,9 @@
+@@ -1262,6 +1262,9 @@
      if (current_cpu == "x64") {
        if (is_clang && !is_android && !is_nacl && !is_fuchsia &&
            !is_chromeos_device) {

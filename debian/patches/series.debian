@@ -11,7 +11,6 @@ debian/fixes/fix-assert-in-vnc-sessions.patch
 debian/fixes/memory-allocator-dcheck-assert-fix.patch
 debian/fixes/ps-print.patch
 debian/fixes/predictor-denial-of-service.patch
-debian/fixes/stdatomic.patch
 debian/disable/android.patch
 debian/disable/font-tests.patch
 debian/disable/tests-swiftshader.patch
@@ -21,7 +20,6 @@ debian/system/openjpeg.patch
 cromite/Disable-csp-reports.patch
 cromite/AudioBuffer-AnalyserNode-fp-mitigations.patch
 cromite/Partition-Blink-memory-cache.patch
-cromite/Partition-blobs-by-top-frame-URL.patch
 cromite/Partition-HSTS-cache-by-NAK.patch
 cromite/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
 cromite/Remove-navigator.connection-info.patch
@@ -51,9 +49,7 @@ vanadinite/0008-enable-split-cache-by-default.patch
 vanadinite/0009-enable-partitioning-connections-by-default.patch
 vanadinite/0010-disable-component-updater-pings-by-default.patch
 vanadinite/0011-enable-strict-origin-isolation-by-default.patch
-vanadinite/0012-enable-partitioning-third-party-storage.patch
 vanadinite/0013-enable-partitioning-content-settings-by-default.patch
-vanadinite/0014-enable-partitioning-visited-links-by-default.patch
 
 various/compiler-flags/add-warning-suppression-flags.patch
 various/compiler-flags/do-not-link-with-libatomic.patch
@@ -99,11 +95,6 @@ various/system/minizip.patch
 various/system/perfetto-system-zlib.patch
 various/system/xdg-scripts.patch
 various/system/zlib.patch
-various/upstream/add-a-fast-reject-filter-for-the-subject-of-selectors.patch
-various/upstream/crash-fixes/0001-e60ae71.diff
-various/upstream/crash-fixes/0002-4a67109.diff
-various/upstream/crash-fixes/0003-6aaa1886b.diff
-various/upstream/crash-fixes/0004-2a92e74.diff
 
 optional/bundle-hyphen-data.patch
 #optional/enable-esbuild-for-official-builds.patch

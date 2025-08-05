@@ -1,14 +1,14 @@
 --- a/chrome/browser/extensions/BUILD.gn
 +++ b/chrome/browser/extensions/BUILD.gn
-@@ -461,6 +461,7 @@
-     "//chrome/browser/ui/safety_hub",
+@@ -520,6 +520,7 @@
+     "//chrome/browser/ui/toolbar",
      "//chrome/common",
      "//chrome/common/safe_browsing:proto",
 +    "//chrome/services/file_util:buildflags",
      "//components/bookmarks/browser",
      "//components/bookmarks/managed",
      "//components/content_settings/core/browser",
-@@ -921,7 +922,6 @@
+@@ -950,7 +951,6 @@
        "//chrome/browser/web_applications/extensions",
        "//chrome/common/extensions/api:extensions_features",
        "//chrome/services/file_util/public/mojom:mojom",
@@ -16,7 +16,7 @@
        "//components/affiliations/core/browser:affiliations",
        "//components/app_constants",
        "//components/autofill/content/browser",
-@@ -1053,6 +1053,10 @@
+@@ -1080,6 +1080,10 @@
        "//url",
      ]
  
@@ -29,7 +29,7 @@
          "api/certificate_provider/certificate_provider_api.cc",
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -2379,7 +2379,6 @@
+@@ -2435,7 +2435,6 @@
        "//chrome/common:version_header",
        "//chrome/common/privacy_budget:test_support",
        "//chrome/renderer",
@@ -37,7 +37,7 @@
        "//chrome/test/data/webui:resources",
        "//chrome/test/data/webui/mojo:mojo_bindings",
        "//chrome/test/media_router/access_code_cast:access_code_cast_integration_base",
-@@ -2738,6 +2737,10 @@
+@@ -2795,6 +2794,10 @@
        "//v8",
      ]
  
@@ -45,9 +45,9 @@
 +      deps += [ "//chrome/services/removable_storage_writer:lib" ]
 +    }
 +
-     allow_circular_includes_from = [
-       # `alternate_nav_infobar_delegate_browsertest.cc` includes test_infobar.h, which is
-       # built as part of //chrome/test:browser_tests, hence the circular dep.
+     # TODO(413315837): Remove this dependency when
+     # c/b/ui/views/privacy_sandbox/privacy_sandbox_dialog_view_browsertest.cc gets modularized.
+     deps += [ "//chrome/browser/privacy_sandbox/notice:factory" ]
 --- a/chrome/utility/BUILD.gn
 +++ b/chrome/utility/BUILD.gn
 @@ -5,6 +5,7 @@

@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1245,6 +1245,7 @@
+@@ -1266,6 +1266,7 @@
          cflags += [
            "-mpclmul",
            "-march=x86-64-v2",

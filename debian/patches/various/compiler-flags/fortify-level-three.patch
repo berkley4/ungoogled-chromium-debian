@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2162,6 +2162,7 @@
+@@ -2179,6 +2179,7 @@
          "-Wno-deprecated-builtins",
          "-Wno-deprecated-copy",
          "-Wno-include-angled-in-module-purview",
@@ -8,7 +8,7 @@
          "-Wno-unnecessary-virtual-specifier",
          "-Wno-vla-cxx-extension",
        ]
-@@ -2293,7 +2294,7 @@
+@@ -2310,7 +2311,7 @@
        # Non-chromium code is not guaranteed to compile cleanly with
        # _FORTIFY_SOURCE. Also, fortified build may fail when optimizations are
        # disabled, so only do that for Release build.

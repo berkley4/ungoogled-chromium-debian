@@ -38,7 +38,7 @@
  #include "components/sharing_message/features.h"
  #include "components/spellcheck/browser/pref_names.h"
  #include "components/spellcheck/browser/spellcheck_host_metrics.h"
-@@ -1928,7 +1929,9 @@
+@@ -1801,7 +1802,9 @@
                                  /*add_separator*/ false);
      }
  
@@ -48,7 +48,7 @@
  
      menu_model_.AddSeparator(ui::NORMAL_SEPARATOR);
      menu_model_.AddItemWithStringId(IDC_CONTENT_CONTEXT_SAVELINKAS,
-@@ -2713,7 +2716,9 @@
+@@ -2587,7 +2590,9 @@
    size_t items_before_sharing = menu_model_.GetItemCount();
    bool starting_separator_added = items_before_sharing > items_initial;
  
@@ -58,7 +58,7 @@
  
    // Add an ending separator if there are sharing items, otherwise remove the
    // starting separator iff we added one above.
-@@ -2725,6 +2730,7 @@
+@@ -2599,6 +2604,7 @@
    }
  }
  
@@ -66,7 +66,7 @@
  void RenderViewContextMenu::AppendClickToCallItem() {
    SharingClickToCallEntryPoint entry_point;
    std::optional<std::string> phone_number;
-@@ -2752,6 +2758,7 @@
+@@ -2626,6 +2632,7 @@
    click_to_call_context_menu_observer_->BuildMenu(*phone_number, selection_text,
                                                    entry_point);
  }

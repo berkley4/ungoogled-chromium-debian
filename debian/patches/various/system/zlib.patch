@@ -1,14 +1,14 @@
 --- a/base/metrics/crc32.cc
 +++ b/base/metrics/crc32.cc
-@@ -5,7 +5,7 @@
- #include "base/metrics/crc32.h"
+@@ -3,7 +3,7 @@
+ // found in the LICENSE file.
  
- #if !BUILDFLAG(IS_NACL)
+ #include "base/metrics/crc32.h"
 -#include "third_party/zlib/zlib.h"
 +#include <zlib.h>
- #endif  // !BUILDFLAG(IS_NACL)
  
  namespace base {
+ 
 --- a/chrome/browser/media/webrtc/webrtc_event_log_manager_common.cc
 +++ b/chrome/browser/media/webrtc/webrtc_event_log_manager_common.cc
 @@ -31,7 +31,7 @@
@@ -99,7 +99,7 @@
  namespace {
 --- a/net/disk_cache/simple/simple_synchronous_entry.cc
 +++ b/net/disk_cache/simple/simple_synchronous_entry.cc
-@@ -34,7 +34,7 @@
+@@ -35,7 +35,7 @@
  #include "net/disk_cache/simple/simple_histogram_macros.h"
  #include "net/disk_cache/simple/simple_util.h"
  #include "third_party/abseil-cpp/absl/container/inlined_vector.h"
@@ -132,7 +132,7 @@
  
 --- a/net/websockets/websocket_deflater.cc
 +++ b/net/websockets/websocket_deflater.cc
-@@ -18,7 +18,7 @@
+@@ -13,7 +13,7 @@
  #include "base/check_op.h"
  #include "base/containers/circular_deque.h"
  #include "net/base/io_buffer.h"
@@ -143,8 +143,8 @@
  
 --- a/net/websockets/websocket_inflater.cc
 +++ b/net/websockets/websocket_inflater.cc
-@@ -18,7 +18,7 @@
- #include "base/check_op.h"
+@@ -14,7 +14,7 @@
+ #include "base/containers/span.h"
  #include "base/numerics/checked_math.h"
  #include "net/base/io_buffer.h"
 -#include "third_party/zlib/zlib.h"

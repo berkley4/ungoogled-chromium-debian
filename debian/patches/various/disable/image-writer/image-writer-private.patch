@@ -8,7 +8,7 @@
  import("//components/enterprise/buildflags/buildflags.gni")
  import("//components/nacl/features.gni")
  import("//extensions/buildflags/buildflags.gni")
-@@ -583,32 +584,6 @@
+@@ -659,32 +660,6 @@
        "api/identity/identity_remove_cached_auth_token_function.h",
        "api/identity/web_auth_flow.cc",
        "api/identity/web_auth_flow.h",
@@ -38,10 +38,10 @@
 -      "api/image_writer_private/xz_extractor.h",
 -      "api/image_writer_private/zip_extractor.cc",
 -      "api/image_writer_private/zip_extractor.h",
-       "api/instance_id/instance_id_api.cc",
-       "api/instance_id/instance_id_api.h",
        "api/language_settings_private/language_settings_private_api.cc",
-@@ -765,6 +740,37 @@
+       "api/language_settings_private/language_settings_private_api.h",
+       "api/language_settings_private/language_settings_private_delegate.cc",
+@@ -792,6 +767,37 @@
        "webstore_install_with_prompt.h",
      ]
  
@@ -79,25 +79,25 @@
      if (safe_browsing_mode != 0) {
        sources += [
          "api/safe_browsing_private/safe_browsing_private_event_router.cc",
-@@ -1164,7 +1170,6 @@
+@@ -1189,7 +1195,6 @@
        sources += [
          "api/enterprise_reporting_private/chrome_desktop_report_request_helper.cc",
          "api/enterprise_reporting_private/chrome_desktop_report_request_helper.h",
 -        "api/image_writer_private/operation_nonchromeos.cc",
-         "api/messaging/launch_context.cc",
-         "api/messaging/launch_context.h",
-         "api/messaging/native_message_process_host.cc",
-@@ -1182,6 +1187,9 @@
+         "chrome_kiosk_delegate.cc",
+         "preinstalled_apps.cc",
+         "preinstalled_apps.h",
+@@ -1199,6 +1204,9 @@
          "//components/enterprise/common/proto:connectors_proto",
          "//components/keep_alive_registry",
        ]
 +      if (enable_extractors) {
 +        sources += [ "api/image_writer_private/operation_nonchromeos.cc" ]
 +      }
-       if (is_posix) {
-         sources += [ "api/messaging/launch_context_posix.cc" ]
+       if (use_gio) {
+         configs += [ "//build/linux:gio_config" ]
        }
-@@ -1423,7 +1431,7 @@
+@@ -1437,7 +1445,7 @@
        ]
      }
  
@@ -125,9 +125,9 @@
  #include "chrome/browser/extensions/forced_extensions/assessment_assistant_tracker.h"
 --- a/chrome/browser/extensions/api/api_browser_context_keyed_service_factories.cc
 +++ b/chrome/browser/extensions/api/api_browser_context_keyed_service_factories.cc
-@@ -25,7 +25,6 @@
+@@ -29,7 +29,6 @@
+ #include "chrome/browser/extensions/api/braille_display_private/braille_display_private_api.h"
  #include "chrome/browser/extensions/api/enterprise_reporting_private/enterprise_reporting_private_event_router.h"
- #include "chrome/browser/extensions/api/font_settings/font_settings_api.h"
  #include "chrome/browser/extensions/api/identity/identity_api.h"
 -#include "chrome/browser/extensions/api/image_writer_private/operation_manager.h"
  #include "chrome/browser/extensions/api/language_settings_private/language_settings_private_delegate_factory.h"
@@ -152,7 +152,7 @@
  #if BUILDFLAG(ENABLE_SERVICE_DISCOVERY)
  #include "chrome/browser/extensions/api/mdns/mdns_api.h"
  #endif
-@@ -102,7 +106,9 @@
+@@ -105,7 +109,9 @@
  #if BUILDFLAG(IS_CHROMEOS)
    extensions::InputImeAPI::GetFactoryInstance();
  #endif
@@ -172,25 +172,25 @@
  import("//pdf/features.gni")
  
  assert(enable_extensions_core)
-@@ -64,7 +65,6 @@
+@@ -68,7 +69,6 @@
+     "downloads.idl",
+     "downloads_internal.idl",
      "enterprise_reporting_private.idl",
-     "font_settings.json",
-     "gcm.json",
 -    "image_writer_private.idl",
-     "instance_id.json",
      "language_settings_private.idl",
      "omnibox.json",
-@@ -94,6 +94,10 @@
-     "windows.json",
+     "page_capture.json",
+@@ -91,6 +91,10 @@
+     "webrtc_desktop_capture_private.idl",
    ]
  
 +  if (enable_extractors) {
 +    schema_sources_ += [ "image_writer_private.idl" ]
 +  }
 +
-   if (!is_android) {
-     schema_sources_ += [ "processes.idl" ]
-   }
+   if (is_chromeos) {
+     schema_sources_ += [
+       "accessibility_private.json",
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
 @@ -17,6 +17,7 @@
@@ -201,17 +201,17 @@
  import("//chrome/services/speech/buildflags/buildflags.gni")
  import("//chrome/test/include_js_tests.gni")
  import("//components/allocation_recorder/testing/testing.gni")
-@@ -4337,9 +4338,6 @@
+@@ -4473,9 +4474,6 @@
          "../browser/extensions/api/identity/identity_apitest.cc",
          "../browser/extensions/api/identity/web_auth_flow_browsertest.cc",
          "../browser/extensions/api/idltest/idltest_apitest.cc",
 -        "../browser/extensions/api/image_writer_private/extractor_browsertest.cc",
 -        "../browser/extensions/api/image_writer_private/test_utils.cc",
 -        "../browser/extensions/api/image_writer_private/test_utils.h",
-         "../browser/extensions/api/instance_id/instance_id_apitest.cc",
          "../browser/extensions/api/management/management_api_browsertest.cc",
          "../browser/extensions/api/management/management_api_non_persistent_apitest.cc",
-@@ -4505,6 +4503,14 @@
+         "../browser/extensions/api/management/management_apitest.cc",
+@@ -4631,6 +4629,14 @@
          "../browser/user_bypass/user_bypass_web_contents_observer_browsertest.cc",
        ]
  
@@ -226,7 +226,7 @@
        public_deps += [
          "//chrome/browser/ui/extensions:extension_enable_flow_delegate",
          "//chrome/test/supervised_user:live_tests",
-@@ -4596,10 +4602,13 @@
+@@ -4734,10 +4740,13 @@
  
        sources += [
          "../browser/extensions/api/automation/automation_apitest.cc",
@@ -241,7 +241,7 @@
        if (is_chromeos) {
          sources += [
            "../browser/apps/platform_apps/api/arc_apps_private/arc_apps_private_apitest.cc",
-@@ -5522,11 +5531,16 @@
+@@ -5668,11 +5677,16 @@
          "../browser/browser_switcher/browser_switcher_browsertest.cc",
          "../browser/browser_switcher/browser_switcher_service_browsertest.cc",
          "../browser/enterprise/signin/enterprise_signin_service_browsertest.cc",
@@ -259,7 +259,7 @@
      if (is_linux || is_mac) {
        sources +=
            [ "../browser/first_run/first_run_internal_posix_browsertest.cc" ]
-@@ -9102,14 +9116,6 @@
+@@ -9256,14 +9270,6 @@
        "../browser/extensions/api/identity/identity_mint_queue_unittest.cc",
        "../browser/extensions/api/identity/identity_token_cache_unittest.cc",
        "../browser/extensions/api/identity/web_auth_flow_info_bar_delegate_unittest.cc",
@@ -274,7 +274,7 @@
        "../browser/extensions/api/language_settings_private/language_settings_private_api_unittest.cc",
        "../browser/extensions/api/language_settings_private/language_settings_private_delegate_unittest.cc",
        "../browser/extensions/api/management/management_api_unittest.cc",
-@@ -11680,6 +11686,20 @@
+@@ -11846,6 +11852,20 @@
          "//ui/display/win/test/virtual_display_util_win_interactive_uitest.cc",
        ]
  

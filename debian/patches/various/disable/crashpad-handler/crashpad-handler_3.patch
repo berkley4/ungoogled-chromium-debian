@@ -1,6 +1,6 @@
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -7106,7 +7106,7 @@
+@@ -7154,7 +7154,7 @@
      ]
    }
  
@@ -29,7 +29,7 @@
  base::LazyInstance<ChromeMetricsServiceCrashReporter>::Leaky g_crash_reporter =
      LAZY_INSTANCE_INITIALIZER;
  #endif  // BUILDFLAG(IS_WIN) || BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_LINUX)
-@@ -624,7 +624,7 @@
+@@ -628,7 +628,7 @@
  void ChromeMetricsServiceClient::OnEnvironmentUpdate(std::string* environment) {
    // TODO(https://bugs.chromium.org/p/crashpad/issues/detail?id=135): call this
    // on Mac when the Crashpad API supports it.

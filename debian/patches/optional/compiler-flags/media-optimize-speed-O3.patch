@@ -87,7 +87,7 @@
      deps += [ "//media/video" ]
 --- a/media/gpu/BUILD.gn
 +++ b/media/gpu/BUILD.gn
-@@ -82,7 +82,9 @@
+@@ -84,7 +84,9 @@
      "gpu_video_encode_accelerator_factory.h",
    ]
  
@@ -97,7 +97,7 @@
      "//build/config/compiler:wexit_time_destructors",
      "//build/config/compiler:wglobal_constructors",
    ]
-@@ -384,7 +386,9 @@
+@@ -385,7 +387,9 @@
      ]
    }
  
@@ -107,7 +107,7 @@
      "//build/config/compiler:wexit_time_destructors",
      "//build/config/compiler:wglobal_constructors",
    ]
-@@ -469,7 +473,9 @@
+@@ -470,7 +474,9 @@
      "command_buffer_helper.h",
    ]
  
@@ -117,7 +117,7 @@
      "//build/config/compiler:wexit_time_destructors",
      "//build/config/compiler:wglobal_constructors",
    ]
-@@ -515,7 +521,9 @@
+@@ -516,7 +522,9 @@
        "video_frame_mapper_factory.h",
      ]
  
@@ -129,7 +129,7 @@
      ]
 --- a/media/muxers/BUILD.gn
 +++ b/media/muxers/BUILD.gn
-@@ -58,7 +58,11 @@
+@@ -56,7 +56,11 @@
    assert(use_libgav1_parser)
    deps += [ "//third_party/libgav1:libgav1_parser" ]
  

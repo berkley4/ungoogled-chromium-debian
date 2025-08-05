@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1228,6 +1228,7 @@
+@@ -1249,6 +1249,7 @@
  config("compiler_cpu_abi") {
    cflags = []
    ldflags = []
@@ -8,7 +8,7 @@
    defines = []
  
    configs = []
-@@ -1243,12 +1244,15 @@
+@@ -1264,12 +1265,15 @@
            !is_chromeos_device) {
          cflags += [
            "-mpclmul",

@@ -1,6 +1,6 @@
 --- a/media/ffmpeg/ffmpeg_common.cc
 +++ b/media/ffmpeg/ffmpeg_common.cc
-@@ -201,6 +201,12 @@
+@@ -239,6 +239,12 @@
        return AV_CODEC_ID_PCM_MULAW;
      case AudioCodec::kOpus:
        return AV_CODEC_ID_OPUS;

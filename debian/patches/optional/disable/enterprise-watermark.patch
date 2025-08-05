@@ -1,6 +1,6 @@
 --- a/chrome/browser/ui/views/frame/browser_view.h
 +++ b/chrome/browser/ui/views/frame/browser_view.h
-@@ -917,9 +917,11 @@
+@@ -888,9 +888,11 @@
      return web_app_frame_toolbar();
    }
  
@@ -10,9 +10,9 @@
    }
 +#endif
  
-   MultiContentsView* multi_contents_view_for_testing() {
-     return multi_contents_view_;
-@@ -1312,8 +1314,10 @@
+   // This value is used in a common calculation in NonClientFrameView
+   // subclasses. This must be added to the origin of the first painted pixel of
+@@ -1303,8 +1305,10 @@
    // contents_web_view_.
    raw_ptr<views::View> lens_overlay_view_ = nullptr;
  
@@ -25,7 +25,7 @@
    // Handled by ContentsLayoutManager.
 --- a/chrome/browser/ui/views/frame/browser_view.cc
 +++ b/chrome/browser/ui/views/frame/browser_view.cc
-@@ -1103,8 +1103,12 @@
+@@ -1093,8 +1093,12 @@
              .Build());
    }
  #endif
@@ -38,7 +38,7 @@
  
  #if BUILDFLAG(ENABLE_GLIC)
    contents_container->SetLayoutManager(std::make_unique<ContentsLayoutManager>(
-@@ -1253,7 +1257,9 @@
+@@ -1243,7 +1247,9 @@
    devtools_scrim_view_ = nullptr;
    contents_scrim_view_ = nullptr;
    window_scrim_view_ = nullptr;
@@ -47,15 +47,17 @@
 +#endif
    glic_border_ = nullptr;
    new_tab_footer_web_view_ = nullptr;
-   contents_container_ = nullptr;
-@@ -6504,11 +6510,13 @@
+   new_tab_footer_web_view_separator_ = nullptr;
+@@ -6487,6 +6493,7 @@
    return is_web_app;
  }
  
 +#if BUILDFLAG(ENTERPRISE_WATERMARK)
  void BrowserView::ApplyWatermarkSettings(const std::string& watermark_text) {
    if (watermark_view_) {
-     watermark_view_->SetString(watermark_text);
+     PrefService* prefs = browser_->profile()->GetPrefs();
+@@ -6495,6 +6502,7 @@
+                                enterprise_watermark::GetOutlineColor(prefs));
    }
  }
 +#endif  // BUILDFLAG(ENTERPRISE_WATERMARK)
@@ -64,7 +66,7 @@
  void BrowserView::ApplyScreenshotSettings(bool allow) {
 --- a/chrome/browser/enterprise/data_protection/data_protection_navigation_controller.cc
 +++ b/chrome/browser/enterprise/data_protection/data_protection_navigation_controller.cc
-@@ -10,11 +10,14 @@
+@@ -11,11 +11,14 @@
  #include "chrome/browser/profiles/profile.h"
  #include "chrome/browser/ui/browser_finder.h"
  #include "chrome/browser/ui/views/frame/browser_view.h"
@@ -81,7 +83,7 @@
  namespace {
  
  // The preferred way to fetch the browser pointer is using `FindBrowserWithTab`.
-@@ -135,6 +138,7 @@
+@@ -143,6 +146,7 @@
    }
  #endif  // BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
  
@@ -89,15 +91,15 @@
    // Regardless of whether watermark text is empty, attach it as web contents
    // user data so that other browser process code can draw watermarks outside
    // of the context of a navigation (ex. when printing).
-@@ -157,6 +161,7 @@
-     // finishes loading.
-     clear_watermark_text_on_page_load_ = true;
+@@ -169,6 +173,7 @@
+   if (!clear_watermark_text_on_page_load_) {
+     browser_view->ApplyWatermarkSettings(settings.watermark_text);
    }
 +#endif  // BUILDFLAG(ENTERPRISE_WATERMARK)
  
    if (!on_delay_apply_data_protection_settings_if_empty_called_for_testing_
             .is_null()) {
-@@ -188,7 +193,9 @@
+@@ -200,7 +205,9 @@
      return;
    }
  
@@ -107,7 +109,7 @@
  
  #if BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
    browser_view->ApplyScreenshotSettings(settings.allow_screenshots);
-@@ -234,10 +241,12 @@
+@@ -246,10 +253,12 @@
    if (!browser_view) {
      return;
    }

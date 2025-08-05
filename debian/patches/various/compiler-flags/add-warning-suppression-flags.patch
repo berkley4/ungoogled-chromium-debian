@@ -1,7 +1,7 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2156,6 +2156,17 @@
-       ]
+@@ -2173,6 +2173,17 @@
+       cflags_cc += [ "-Wunique-object-duplication" ]
      }
  
 +    if (is_linux) {
