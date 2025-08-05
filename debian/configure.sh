@@ -546,6 +546,7 @@ else
   fi
 
   if [ $SYS_CLANG -eq 1 ]; then
+    op_enable="$op_enable system/clang/clang-version.patch"
     op_enable="$op_enable system/clang/rust-clanglib.patch"
     deps_enable="$deps_enable lld clang libclang-rt"
 
@@ -554,6 +555,9 @@ else
       CON="$CON -e \"/^#lld-/s@$LLVM_CTRL_VER@$LLVM_VER@\""
       CON="$CON -e \"/^#clang-/s@$LLVM_CTRL_VER@$LLVM_VER@\""
       CON="$CON -e \"/^#libclang-rt-/s@$LLVM_CTRL_VER@$LLVM_VER@\""
+
+      sed -e "/^+.*fuse-ld/s@$LLVM_CTRL_VER@$LLVM_VER@" \
+          -i $OP_DIR/system/clang/clang-version.patch
     fi
   fi
 fi

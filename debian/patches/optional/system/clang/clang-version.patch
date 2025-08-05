@@ -1,0 +1,17 @@
+author: Andres Salomon <dilinger@debian.org>
+description: hardcode lld for whatever version of clang we're using
+
+Upstream doesn't allow overridding the linker name (other than toggling
+lld vs gold).
+
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -411,7 +411,7 @@ config("compiler") {
+     }
+ 
+     if (use_lld) {
+-      ldflags += [ "-fuse-ld=lld" ]
++      ldflags += [ "-fuse-ld=lld-19" ]
+       if (lld_path != "") {
+         ldflags += [ "-B" + rebase_path(lld_path, root_build_dir) ]
+       }
