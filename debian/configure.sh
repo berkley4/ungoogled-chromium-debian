@@ -26,7 +26,8 @@ MEDIA_REMOTING_SET=0; MTUNE_SET=0; POLLY_SET=0
 RELEASE_SET=0; SYS_BROTLI_SET=0; SYS_DRM_SET=0
 SYS_ICU_SET=0; SYS_WEBP_SET=0
 
-# Current bundled llvm/clang version (only effective when TEST=1)
+# LLVM_PGO_VER (current bundled version) is only effective when TEST=1
+LLVM_CTRL_VER=19
 LLVM_PGO_VER=21
 
 # ${example%/*} = $(dirname example)
@@ -488,9 +489,6 @@ else
   [ $POLLY_SET -eq 1 ] && [ $POLLY -eq 0 ] || POLLY=1
 
   ## Check for clang binary existence and PGO compatibility
-
-  LLVM_CTRL_VER=$(sed -n '/^#clang-/s@[-#,a-z]@@gp' $DEBIAN/control.in)
-
   case $CLANG_VER in
     "")
       CLANG_VER=$LLVM_CTRL_VER ;;
@@ -552,9 +550,7 @@ else
 
     # Change version in d/control and d/rules if LLVM_CTRL_VER & LLVM_VER differ
     if [ $LLVM_CTRL_VER -ne $LLVM_VER ]; then
-      CON="$CON -e \"/^#lld-/s@$LLVM_CTRL_VER@$LLVM_VER@\""
-      CON="$CON -e \"/^#clang-/s@$LLVM_CTRL_VER@$LLVM_VER@\""
-      CON="$CON -e \"/^#libclang-rt-/s@$LLVM_CTRL_VER@$LLVM_VER@\""
+      CON="$CON -e \"s/@@LLVM_CTRL_VER@@/$LLVM_CTRL_VER/\""
 
       sed -e "/^+.*fuse-ld/s@$LLVM_CTRL_VER@$LLVM_VER@" \
           -i $OP_DIR/system/clang/clang-version.patch
