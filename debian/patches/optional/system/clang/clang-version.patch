@@ -11,7 +11,7 @@ lld vs gold).
  
      if (use_lld) {
 -      ldflags += [ "-fuse-ld=lld" ]
-+      ldflags += [ "-fuse-ld=lld-19" ]
++      ldflags += [ "-fuse-ld=lld-@@LLVM_CTRL_VER@@" ]
        if (lld_path != "") {
          ldflags += [ "-B" + rebase_path(lld_path, root_build_dir) ]
        }

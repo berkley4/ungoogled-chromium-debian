@@ -548,13 +548,10 @@ else
     op_enable="$op_enable system/clang/rust-clanglib.patch"
     deps_enable="$deps_enable lld clang libclang-rt"
 
-    # Change version in d/control and d/rules if LLVM_CTRL_VER & LLVM_VER differ
-    if [ $LLVM_CTRL_VER -ne $LLVM_VER ]; then
-      CON="$CON -e \"s/@@LLVM_CTRL_VER@@/$LLVM_CTRL_VER/\""
+    CON="$CON -e \"s/@@LLVM_CTRL_VER@@/$LLVM_VER/\""
 
-      sed -e "/^+.*fuse-ld/s@$LLVM_CTRL_VER@$LLVM_VER@" \
-          -i $OP_DIR/system/clang/clang-version.patch
-    fi
+    sed -e "s/@@LLVM_CTRL_VER@@/$LLVM_VER/" \
+        -i $OP_DIR/system/clang/clang-version.patch
   fi
 fi
 
