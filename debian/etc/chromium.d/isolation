@@ -25,11 +25,3 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-process-reuse"
 # Out-of-Process iframes (OOPIFs) for the PDF Viewer
 # See - https://www.chromium.org/developers/design-documents/oop-iframes/
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --pdf-oopif"
-
-
-## Cromite features (non-free builds only)
-
-# "Verifies that the blob was created with the same top frame URL or, if not
-# defined, by the same agent cluster."
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=BlockCrossPartitionBlobUrlFetching"
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=EnforceNoopenerOnBlobURLNavigation"
