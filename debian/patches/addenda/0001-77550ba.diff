@@ -1,0 +1,31 @@
+From 77550bab4f679649e3a04544e3eedc2531d58ec8 Mon Sep 17 00:00:00 2001
+From: Justin Cohen <justincohen@chromium.org>
+Date: Mon, 04 Aug 2025 12:34:57 -0700
+Subject: [PATCH] Enable CheckHeapIntegrity kill switch by default.
+
+Users are instacrashing here, this needs to be forced enabled on
+the client.
+
+Bug: 435448631
+Change-Id: I741be399b4834eea550eff45823d4b249c3963fb
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6819837
+Commit-Queue: Harry Souders <harrysouders@google.com>
+Reviewed-by: Justin Cohen <justincohen@chromium.org>
+Owners-Override: Harry Souders <harrysouders@google.com>
+Cr-Commit-Position: refs/branch-heads/7258@{#2472}
+Cr-Branched-From: f600d0656fd5b5fe4a82981f533d31ed6939e2e4-refs/heads/main@{#1477651}
+---
+
+--- a/components/password_manager/core/browser/ui/passwords_grouper.cc
++++ b/components/password_manager/core/browser/ui/passwords_grouper.cc
+@@ -28,8 +28,8 @@
+ // out-of-bounds writes. Behind a flag in case it finds too many issues and is
+ // a stability risk, or there's an unexpected performance impact.
+ BASE_FEATURE(kPasswordsGrouperHeapIntegrityKillSwitch,
+-             "PasswordsGrouperHeapIntegrityKillSwitch",
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             "PasswordsGrouperHeapIntegrityKillSwitchv2",
++             base::FEATURE_ENABLED_BY_DEFAULT);
+ 
+ using affiliations::FacetBrandingInfo;
+ using affiliations::FacetURI;
