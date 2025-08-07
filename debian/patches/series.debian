@@ -36,6 +36,7 @@ kryptonite/profile-resetter-disable-send-settings.patch
 kryptonite/remove-window-name-on-cross-origin-navigation.patch
 kryptonite/replace-dns-probe-hostname-with-example-com.patch
 kryptonite/stop-omnibar-searches-triggering-dns-requests.patch
+kryptonite/use-boringssl-for-randbytes.patch
 
 vanadium/0053-stub-out-the-battery-status-API.patch
 
