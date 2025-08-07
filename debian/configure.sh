@@ -852,7 +852,7 @@ if [ $ATK -eq 0 ]; then
 fi
 
 
-if [ $BACKGROUND_AUDIO -eq 0 ]; then
+if [ $BACKGROUND_AUDIO -eq 0 ] && [ $NON_FREE -eq 1 ]; then
   SER_DB="$SER_DB \"/Allow-playing-audio-in-background/s@^@#@\""
 fi
 
