@@ -678,17 +678,32 @@ if [ $MARCH_SET -eq 1 ] || [ $MTUNE_SET -eq 1 ]; then
 
   # Catch any quirks
   case $MARCH in
+    x86-64-v2)
+      # The default so do nothing except force MTUNE=generic
+      MTUNE=generic ;;
+
     x86-64*)
-      MTUNE=generic
+      # Need to modify march and mtune patches for x86-64, x86-64-v3 and x86-64-v4
+      arch_patches="$arch_patches march mtune"
 
       case $MARCH in
+        x86-64)
+          MTUNE=generic ;;
+
         x86-64-v3|x86-64-v4)
-          AVX=0 ;;
+          AVX=0
+          MTUNE=generic ;;
+
+        *)
+          # Invalid MARCH (eg x86-64-v6) so error out
+          printf '%s\n' "MARCH=$MARCH is invalid"
+          exit 1 ;;
       esac ;;
 
     generic)
-      MARCH=x86-64-v2
-      MTUNE=generic ;;
+      # Invalid MARCH so error out
+      printf '%s\n' "MARCH=$MARCH is invalid"
+      exit 1 ;;
 
     0)
       op_disable="$op_disable compiler-flags/cpu/march.patch"
@@ -698,31 +713,42 @@ if [ $MARCH_SET -eq 1 ] || [ $MTUNE_SET -eq 1 ]; then
 
       # Has no effect but avoids the MARCH/MTUNE warning below
       MTUNE=generic ;;
+
+    *)
+      # Specific CPUs (eg Skylake) so alter march and mtune patches
+      arch_patches="$arch_patches march mtune" ;;
   esac
 
+#  case $MTUNE in
+#    generic)
+#      : ;;
+
+#    *)
+#      case $arch_patches in
+#        *mtune*)
+#          # No need to modify twice
+#          : ;;
+
+#        *)
+#          arch_patches="$arch_patches mtune" ;;
+#      esac ;;
+#  esac
+
   if [ "$OLD_MARCH" != "$MARCH" ] || [ "$OLD_MTUNE" != "$MTUNE" ]; then
-    printf '%s\n' "WARN: Using MARCH=$MARCH MTUNE=$MTUNE"
+    printf '%s\n' "INFO: Using MARCH=$MARCH MTUNE=$MTUNE"
   fi
-fi
 
+  # Non-null $arch_patches means we need to edit any patches containing -march/-mtune
+  if [ -n "$arch_patches" ]; then
+    [ $AES -eq 0 ] || arch_patches="$arch_patches aes"
+    [ $AVX -eq 0 ] || arch_patches="$arch_patches avx"
+    [ $SSE4A -eq 0 ] || arch_patches="$arch_patches sse4a"
 
-## Check if we have any patches to alter due to non-default cpu options
-
-if [ "$MARCH" != "0" ]; then
-  [ "$MARCH" = "x86-64-v2" ] || arch_patches="march"
-  [ "$MTUNE" = "generic" ] || arch_patches="$arch_patches mtune"
-fi
-
-[ $ABM -eq 0 ] || arch_patches="$arch_patches abm"
-[ $BMI -eq 0 ] || arch_patches="$arch_patches bmi"
-[ $TBM -eq 0 ] || arch_patches="$arch_patches tbm"
-
-
-if [ -n "$arch_patches" ]; then
-  for i in $arch_patches; do
-    sed -e "s@x86-64-v2@$MARCH@" -e "s@generic@$MTUNE@" \
-        -i $OP_DIR/compiler-flags/cpu/$i.patch
-  done
+    for i in $arch_patches; do
+      sed -e "s@x86-64-v2@$MARCH@" -e "s@generic@$MTUNE@" \
+          -i $OP_DIR/compiler-flags/cpu/$i.patch
+    done
+  fi
 fi
 
 
@@ -780,18 +806,22 @@ else
 fi
 
 case $RUST_INST in
-  +pclmulqdq,+aes,+avx)
-    : ;;
-
   "")
     op_disable="$op_disable compiler-flags/cpu/rust-instructions.patch" ;;
 
-  *)
-    # Remove potential leading comma from RUST_INST string
-    RUST_INST=${RUST_INST#,}
+  +pclmulqdq,+aes,+avx|*)
+    case $RUST_INST in
+      +pclmulqdq,+aes,+avx)
+        : ;;
 
-    sed -e "s@+pclmulqdq,+aes,+avx@$RUST_INST@" \
-        -i $OP_DIR/compiler-flags/cpu/rust-instructions.patch ;;
+      *)
+        # Remove potential leading comma from RUST_INST string
+        RUST_INST=${RUST_INST#,}
+        R="-e \"s@+pclmulqdq,+aes,+avx@$RUST_INST@\"" ;;
+    esac
+
+    [ -z "$arch_patches" ] || R="$R -e \"s@x86-64-v2@$MARCH@\" -e \"s@generic@$MTUNE@\""
+    [ -z "$R" ] || eval sed $R -i $OP_DIR/compiler-flags/cpu/rust-instructions.patch ;;
 esac
 
 
