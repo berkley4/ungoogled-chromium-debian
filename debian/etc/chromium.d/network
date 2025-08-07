@@ -1,5 +1,5 @@
 # Valid values are 6 and 15
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --max-connections-per-host=15"
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --max-connections-per-host=15"
 
 # Disable probing for ipv6
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=SetIpv6ProbeFalse"
