@@ -112,6 +112,7 @@ DNS_HOST		<hostname>	To set https://dns.example.net/dns-query{?dns} as DNS-over-
 DRIVER			1		Chromedriver package
 
 ATK			1		Accessibility toolkit
+BACKGROUND_AUDIO	1		Allows disabling cromite/Allow-playing-audio-in-background.patch
 BLUEZ			1		Support for the linux bluetooth protocol stack
 					Note that BLUEZ=0 is only effective when DBUS=1 since the former is effectively a subset of DBUS=0 
 

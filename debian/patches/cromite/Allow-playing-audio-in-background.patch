@@ -1,0 +1,49 @@
+From: AlexeyBarabash <alexey@brave.com>
+Date: Thu, 2 Nov 2017 18:21:16 +0200
+Subject: Allow playing audio in background
+
+License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
+---
+ .../renderer/platform/media/web_media_player_impl.cc  | 11 ++++++++++-
+ .../renderer/platform/media/web_media_player_impl.h   |  3 +++
+ 2 files changed, 13 insertions(+), 1 deletion(-)
+
+--- a/third_party/blink/renderer/platform/media/web_media_player_impl.cc
++++ b/third_party/blink/renderer/platform/media/web_media_player_impl.cc
+@@ -1335,6 +1335,12 @@
+   return pipeline_metadata_.has_audio;
+ }
+ 
++bool WebMediaPlayerImpl::HasVideoNonEmptySize() const {
++  DCHECK(main_task_runner_->BelongsToCurrentThread());
++
++  return pipeline_metadata_.has_video && pipeline_metadata_.natural_size.width() != 0 && pipeline_metadata_.natural_size.height() != 0;
++}
++
+ void WebMediaPlayerImpl::EnabledAudioTracksChanged(
+     std::optional<WebMediaPlayer::TrackId> enabled_track_id) {
+   DCHECK(main_task_runner_->BelongsToCurrentThread());
+@@ -3703,7 +3709,10 @@
+           : HasAudio();
+ 
+   // Audio only stream is allowed to play when in background.
+-  if (!HasVideo() && preserve_audio)
++  //pipeline_metadata_.has_video is true for MediaPlayerRenderer,
++  //see media/base/pipeline_metadata.h. This is a workaround to allow audio
++  //streams be played in background.
++  if (!HasVideoNonEmptySize() && preserve_audio)
+     return false;
+ 
+   // Video PiP is the only exception when background video playback is disabled.
+--- a/third_party/blink/renderer/platform/media/web_media_player_impl.h
++++ b/third_party/blink/renderer/platform/media/web_media_player_impl.h
+@@ -216,6 +216,9 @@
+   bool HasVideo() const override;
+   bool HasAudio() const override;
+ 
++  // True is has video and it's frame size is not zero
++  bool HasVideoNonEmptySize() const;
++
+   void EnabledAudioTracksChanged(
+       std::optional<WebMediaPlayer::TrackId> enabled_track_id) override;
+   void SelectedVideoTrackChanged(
