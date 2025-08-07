@@ -678,7 +678,12 @@ if [ $MARCH_SET -eq 1 ] || [ $MTUNE_SET -eq 1 ]; then
   # Catch any quirks
   case $MARCH in
     x86-64*)
-      MTUNE=generic ;;
+      MTUNE=generic
+
+      case $MARCH in
+        x86-64-v3|x86-64-v4)
+          AVX=0 ;;
+      esac ;;
 
     generic)
       MARCH=x86-64-v2
