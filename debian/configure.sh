@@ -826,9 +826,14 @@ fi
 [ $CAP_SCR -eq 1 ] || POL="$POL -e \"/ScreenCaptureAllowed/s@true@false@\""
 [ $CAP_VID -eq 1 ] || POL="$POL -e \"/VideoCaptureAllowed/s@true@false@\""
 [ $DL_RESTRICT -eq 0 ] || POL="$POL -e \"/DownloadRestrictions/s@0@3@\""
-[ $DNS_BUILTIN -eq 0 ] || POL="$POL -e \"/BuiltInDnsClientEnabled/s@false@true@\""
+
 [ -z "$DNS_HOST" ] || POL="$POL -e \"/doh.opendns.com/s@doh.opendns.com@$DNS_HOST@\""
 [ $DNS_INTERCEPT -eq 1 ] || POL="$POL -e \"/DNSInterceptionChecksEnabled/s@true@false@\""
+
+if [ $DNS_BUILTIN -eq 1 ]; then
+  POL="$POL -e \"/BuiltInDnsClientEnabled/s@false@true@\""
+  SER_DB="$SER_DB \"/^kryptonite\/disable-async-dns\.patch/s@^@#@\""
+fi
 
 # Not part of managed policy but set this here with the other dns variables
 if [ $DNS_CONFIG -eq 0 ]; then
