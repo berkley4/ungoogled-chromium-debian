@@ -267,6 +267,7 @@ PCLMUL			1		For AMD Jaguar, Puma, Bulldozer, Piledriver, Steamroller and Westmer
 AES			1		Same as for PCLMUL but might be missing on some lower end CPUs (eg Pentium, Celeron, Core i3)
 AVX			1		Intel Sandybridge/AMD Bulldozer or newer (Haswell/Excavator or newer use x86-64-v3 instead)
 
+SSE4A			0		For AMD Barcelona archetecture from 2007 (not compatible with any Intel CPUs)
 ABM			0		For AMD Bulldozer plus those listed under BMI below (not for Bulldozer or pre-Haswell Intel)
 BMI			0		For AMD Jaguar, Puma, Piledriver and Steamroller CPUs (not for Bulldozer or pre-Haswell Intel)
 TBM			0		Only for AMD Piledriver, Steamroller and Excavator CPUs (nothing else supports TBM)

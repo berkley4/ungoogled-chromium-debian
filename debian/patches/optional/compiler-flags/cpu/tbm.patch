@@ -1,7 +1,7 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1251,6 +1251,7 @@
-           "-mavx",
+@@ -1252,6 +1252,7 @@
+           "-msse4a",
            "-mabm",
            "-mbmi",
 +          "-mtbm",

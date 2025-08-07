@@ -1,9 +1,9 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1249,6 +1249,7 @@
-           "-mtune=generic",
+@@ -1250,6 +1250,7 @@
            "-maes",
            "-mavx",
+           "-msse4a",
 +          "-mabm",
          ]
        } else {

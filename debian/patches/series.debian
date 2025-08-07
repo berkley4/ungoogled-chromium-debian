@@ -121,6 +121,7 @@ optional/compiler-flags/cpu/march.patch
 optional/compiler-flags/cpu/mtune.patch
 optional/compiler-flags/cpu/aes.patch
 optional/compiler-flags/cpu/avx.patch
+#optional/compiler-flags/cpu/sse4a.patch
 #optional/compiler-flags/cpu/abm.patch
 #optional/compiler-flags/cpu/bmi.patch
 #optional/compiler-flags/cpu/tbm.patch

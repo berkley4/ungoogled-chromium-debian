@@ -1,10 +1,10 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1251,6 +1251,7 @@
+@@ -1249,6 +1249,7 @@
+           "-mtune=generic",
+           "-maes",
            "-mavx",
-           "-msse4a",
-           "-mabm",
-+          "-mbmi",
++          "-msse4a",
          ]
        } else {
          cflags += [ "-m64" ]
