@@ -23,6 +23,7 @@ cromite/Partition-Blink-memory-cache.patch
 cromite/Partition-HSTS-cache-by-NAK.patch
 cromite/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
 cromite/Remove-navigator.connection-info.patch
+cromite/Remove-segmentation-platform.patch
 
 kryptonite/CORS-preflight-max-age-600s.patch
 kryptonite/disable-async-dns.patch
