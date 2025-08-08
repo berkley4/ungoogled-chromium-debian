@@ -797,7 +797,7 @@ case $RUST_INST in
   +pclmulqdq,+aes,+avx|*)
     case $RUST_INST in
       +pclmulqdq,+aes,+avx)
-        : ;;
+        R= ;;
 
       *)
         # Remove potential leading comma from RUST_INST string
@@ -1075,6 +1075,7 @@ else
   ins_enable="$ins_enable google-lens"
   DSB="$DSB -e \"/^components\/lens\/lens_features\.cc/d\""
 
+  L=
   if [ $LENS -ge 2 ]; then
     GOOGLE_API_KEYS=2
 
