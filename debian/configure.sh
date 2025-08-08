@@ -794,7 +794,7 @@ case $RUST_INST in
   "")
     op_disable="$op_disable compiler-flags/cpu/rust-instructions.patch" ;;
 
-  +pclmulqdq,+aes,+avx|*)
+  *)
     case $RUST_INST in
       +pclmulqdq,+aes,+avx)
         R= ;;
