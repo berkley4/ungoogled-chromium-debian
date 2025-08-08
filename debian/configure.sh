@@ -719,21 +719,6 @@ if [ $MARCH_SET -eq 1 ] || [ $MTUNE_SET -eq 1 ]; then
       arch_patches="$arch_patches march mtune" ;;
   esac
 
-#  case $MTUNE in
-#    generic)
-#      : ;;
-
-#    *)
-#      case $arch_patches in
-#        *mtune*)
-#          # No need to modify twice
-#          : ;;
-
-#        *)
-#          arch_patches="$arch_patches mtune" ;;
-#      esac ;;
-#  esac
-
   if [ "$OLD_MARCH" != "$MARCH" ] || [ "$OLD_MTUNE" != "$MTUNE" ]; then
     printf '%s\n' "INFO: Using MARCH=$MARCH MTUNE=$MTUNE"
   fi
