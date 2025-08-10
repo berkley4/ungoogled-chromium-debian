@@ -17,8 +17,6 @@ BIN_NAME=chrome
 LIBDIR=/usr/lib/$APP_NAME
 CHROMIUM=$LIBDIR/$BIN_NAME
 
-GDB=/usr/bin/gdb
-
 CHROMIUM_FLAGS=""
 
 no_inst="Your CPU lacks support for the @CPU_MSG@ instruction set."
@@ -128,6 +126,10 @@ while [ $# -gt 0 -a $# -ne $extra_args ]; do
       usage
       exit 0 ;;
     -g | --debug )
+      if ! command -v gdb >/dev/null; then
+        printf '%s\n' "Cannot find a usable gdb. Please install it."
+        exit 1
+      fi
       want_debug=1
       shift ;;
     --temp-profile )
@@ -213,11 +215,6 @@ case $CHROMIUM_FLAGS in
     CHROMIUM_FLAGS="$(echo $CHROMIUM_FLAGS | strip_features) $FEATURES" ;;
 esac
 
-
-if [ $want_debug -eq 1 ] && [ ! -x $GDB ]; then
-  echo "Sorry, can't find usable $GDB. Please install it."
-  exit 1
-fi
 
 if [ $want_temp -eq 1 ]; then
   TEMP_PROFILE=$(mktemp -d) && echo "Temporary profile: $TEMP_PROFILE"
