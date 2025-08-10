@@ -18,6 +18,7 @@
   "DownloadRestrictions": 0,
   "NativeMessagingUserLevelHosts": false,
   "NetworkPredictionOptions": 2,
+  "NetworkServiceSandboxEnabled": true,
   "PromotionalTabsEnabled": false,
   "RemoteDebuggingAllowed": false,
   "SandboxExternalProtocolBlocked": false,
