@@ -29,9 +29,9 @@ output_error() {
     *)
       # Prefer gxmessage over xmessage. Fallback to echo.
       XMESSAGE=echo
-      if [ -x /usr/bin/gxmessage ]; then
+      if command -v gxmessage >/dev/null; then
         XMESSAGE=gxmessage
-      elif [ -x /usr/bin/xmessage ]; then
+      elif command -v xmessage >/dev/null; then
         XMESSAGE=xmessage
       fi
 
