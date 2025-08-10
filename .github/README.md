@@ -5,6 +5,7 @@ This is my fork of the unified branch of [ungoogle-chromium-debian](https://gith
 There are debs in the release section which are built with -march=x86-64-v2 --mtune=generic -mavx -maes -mpclmul (refer [here](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels) for info about x86-64-v2).
 These should run on CPUs which support AVX instructions, which should encompass the Intel Sandybridge/AMD Bulldozer era (circa 2011) onwards.
 Builders with Intel Haswell/AMD Excavator or newer should configure with MARCH=x86-64-v3 (which includes AVX, AVX2, ABM and BMI1).
+A patch to enable SSE4a instructions is for those with AMD Phenom and later CPUs.
 Patches to enable ABM and BMI1 support is for those with AMD Jaguar, Puma, Piledriver or Steamroller CPUs (all pre x86-64-v3).
 A patch to enable TBM support is exclusively for those with AMD Piledriver, Steamroller or Excavator CPUs.
 
@@ -72,6 +73,7 @@ ___Security/Privacy improvements___
 - Overflow prevention (-fwrapv) - see [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1031653) and [here](https://gitlab.e.foundation/e/apps/browser/-/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch)
 - Extra cromite and vanadium patches (and generic copies of patches derived from these projects)
 - A policy file is installed to help lock down the browser (use [this](https://chromeenterprise.google/policies/) as a reference guide)
+- The Network Service Sandbox is enabled by default
 - The Web Bluetooth/HID/Serial/USB APIs are disabled via managed policy
 - Text fragments are disabled by default via the poilcy file (see [here](https://xsleaks.dev/docs/attacks/experiments/scroll-to-text-fragment/) for more info)
 - Some security/privacy themed flag files are installed to /etc/chromium.d
