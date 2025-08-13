@@ -18,7 +18,7 @@ Build-Depends:
  generate-ninja,
  ninja-build,
  pkg-config,
-#brotli,
+ brotli (>= 1.1.0),
  gperf,
  libncurses-dev,
  libcups2-dev,
