@@ -570,8 +570,6 @@ fi
 
 
 if [ $SYS_RUST -ge 1 ]; then
-  op_enable="$op_enable optional/system/rust.patch"
-
   # GN_FLAGS += rust_sysroot_absolute=\"$(RUST_PATH)\" rustc_version=\"$(RUST_VER)\"
   gn_enable="$gn_enable rust_sysroot_absolute="
 
@@ -1372,6 +1370,10 @@ fi
 ## Items which are (or are likely to become) unstable-only
 
 if [ $STABLE -eq 1 ]; then
+  if [ $SYS_RUST -eq 1 ]; then
+    op_enable="$op_enable optional/system/rust.patch"
+  fi
+
   # For STABLE=1 we disable brotli by default but allow force-enablement
   [ $SYS_BROTLI_SET -eq 1 ] && [ $SYS_BROTLI -eq 1 ] || SYS_BROTLI=0
 

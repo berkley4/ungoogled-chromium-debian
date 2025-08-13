@@ -12,7 +12,7 @@ Build-Depends:
 #lld-@@LLVM_CTRL_VER@@,
 #clang-@@LLVM_CTRL_VER@@,
 #libclang-rt-@@LLVM_CTRL_VER@@-dev,
-#rustc (>= 1.79.0+dfsg1-2) | rustc-web (>= 1.78.0+dfsg1-2~deb12u3),
+#rustc (>= 1.85.0),
  generate-ninja,
 #nodejs,
  python-is-python3,
