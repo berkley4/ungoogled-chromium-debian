@@ -23,8 +23,8 @@ SER_U=; SERIES_DB=; SERIES_UC=; SMF=
 BLUEZ_SET=0; BUILD_TS_SET=0; CLANG_VER_SET=0
 CPU_SET=0; DBUS_SET=0; MARCH_SET=0
 MEDIA_REMOTING_SET=0; MTUNE_SET=0; POLLY_SET=0
-RELEASE_SET=0; SYS_BROTLI_SET=0; SYS_DRM_SET=0
-SYS_ICU_SET=0; SYS_WEBP_SET=0
+RELEASE_SET=0; SYS_DRM_SET=0; SYS_ICU_SET=0
+SYS_WEBP_SET=0
 
 # LLVM_PGO_VER (current bundled version) is only effective when TEST=1
 LLVM_CTRL_VER=19
@@ -142,11 +142,9 @@ if [ $NO_SYS_LIBS -eq 1 ]; then
   RUL="$RUL -e \"/^SYS_LIBS.*double-conversion/s@^@#@\""
 fi
 
+[ -n "$SYS_BROTLI" ] || SYS_BROTLI=1
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
 [ -n "$SYS_ZSTD" ] || SYS_ZSTD=1
-
-## Allow force-enabling brotli for stable users who have installed my deb packages
-[ -n "$SYS_BROTLI" ] && SYS_BROTLI_SET=1 || SYS_BROTLI=1
 
 ## Allow force-enabling libdrm for stable users who have installed libdrm from backports
 [ -n "$SYS_DRM" ] && SYS_DRM_SET=1 || SYS_DRM=1
@@ -1374,14 +1372,6 @@ if [ $STABLE -eq 1 ]; then
 
   if [ $SYS_RUST -eq 1 ]; then
     op_enable="$op_enable optional/system/rust.patch"
-  fi
-
-  # For STABLE=1 we disable brotli by default but allow force-enablement
-  [ $SYS_BROTLI_SET -eq 1 ] && [ $SYS_BROTLI -eq 1 ] || SYS_BROTLI=0
-
-  if [ $SYS_BROTLI -eq 1 ]; then
-    # Implied enablement of system freetype when SYS_BROTLI=1
-    op_enable="$op_enable system/freetype-COLRV1.patch"
   fi
 
   # For STABLE=1 we disable libdrm by default but allow force-enablement

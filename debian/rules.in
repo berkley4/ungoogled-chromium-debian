@@ -256,12 +256,11 @@ GN_FLAGS += v8_enable_wasm_simd256_revec=true
 # libstdc++ issue      : crc32c, flatbuffers, highway, libyuv
 #                        jsoncpp, re2, snappy, woff2
 #
-# Too old for stable   : brotli, dav1d, icu
+# Too old for stable   : dav1d, icu
 #                        libwebp (libsharpyuv dependency)
 #                        libdrm (hint: check out debian backports)
 #
-# Dependent on too old : fontconfig, freetype, harfbuzz-ng
-# for stable             libxml, libxslt
+# Dependent on too old : harfbuzz-ng, libxml, libxslt
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #

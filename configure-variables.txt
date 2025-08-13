@@ -228,7 +228,7 @@ OPENH264		1		Used for software h264 media encoding and webrtc h264 encoding/deco
 
 VAAPI			1		Used for hardware encoding/decoding
 
-SYS_BROTLI		1		Disabled by default when STABLE=1
+SYS_BROTLI		1		Kept for legacy reasons
 SYS_DRM			1		Disabled by default when STABLE=1
 SYS_ICU			1		Disabled by default when STABLE=1
 SYS_JPEG		1		Set to zero if building for both debian and ubuntu (unsupported)
