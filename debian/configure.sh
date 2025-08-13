@@ -23,7 +23,7 @@ SER_U=; SERIES_DB=; SERIES_UC=; SMF=
 BLUEZ_SET=0; BUILD_TS_SET=0; CLANG_VER_SET=0
 CPU_SET=0; DBUS_SET=0; MARCH_SET=0
 MEDIA_REMOTING_SET=0; MTUNE_SET=0; POLLY_SET=0
-RELEASE_SET=0; SYS_DRM_SET=0; SYS_ICU_SET=0
+RELEASE_SET=0; SYS_ICU_SET=0
 
 # LLVM_PGO_VER (current bundled version) is only effective when TEST=1
 LLVM_CTRL_VER=19
@@ -127,12 +127,12 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 
 if [ $NO_SYS_LIBS -eq 1 ]; then
   # Zero all SYS_* library variables before any are declared later on
-  for i in SYS_BROTLI SYS_DRM SYS_ICU SYS_JPEG SYS_OPENH264 SYS_ZSTD VAAPI; do
+  for i in SYS_BROTLI SYS_ICU SYS_JPEG SYS_OPENH264 SYS_ZSTD VAAPI; do
     eval $i=0
   done
 
   # Disable dependencies for system libraries without configuration variables
-  for i in double-conversion libflac libopus libpng libsecret libusb libwebp libXNVCtrl libxslt1; do
+  for i in double-conversion libdrmlibflac libopus libpng libsecret libusb libwebp libXNVCtrl libxslt1; do
     deps_disable="$deps_disable $i"
   done
 
@@ -144,9 +144,6 @@ fi
 [ -n "$SYS_BROTLI" ] || SYS_BROTLI=1
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
 [ -n "$SYS_ZSTD" ] || SYS_ZSTD=1
-
-## Allow force-enabling libdrm for stable users who have installed libdrm from backports
-[ -n "$SYS_DRM" ] && SYS_DRM_SET=1 || SYS_DRM=1
 
 ## Allow stable users to force enable icu (eg if they have self-compiled an icu package)
 [ -n "$SYS_ICU" ] && SYS_ICU_SET=1 || SYS_ICU=0
@@ -1370,9 +1367,6 @@ if [ $STABLE -eq 1 ]; then
     op_enable="$op_enable optional/system/rust.patch"
   fi
 
-  # For STABLE=1 we disable libdrm by default but allow force-enablement
-  [ $SYS_DRM_SET -eq 1 ] && [ $SYS_DRM -eq 1 ] || SYS_DRM=0
-
   # Allow stable users (eg with a self-compiled icu package) to enable SYS_ICU
   [ $SYS_ICU_SET -eq 1 ] && [ $SYS_ICU -eq 1 ] || SYS_ICU=0
 
@@ -1406,13 +1400,6 @@ if [ $SYS_BROTLI -eq 0 ]; then
   if [ $SYS_ICU -eq 0 ]; then
     sys_enable="$sys_enable libpng"
   fi
-fi
-
-
-if [ $SYS_DRM -eq 0 ]; then
-  op_disable="$op_disable system/libdrm.patch"
-  sys_disable="$sys_disable libdrm"
-  deps_disable="$deps_disable libdrm"
 fi
 
 
