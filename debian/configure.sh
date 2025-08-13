@@ -603,8 +603,6 @@ if [ $SYS_BINDGEN -gt 0 ]; then
       exit 1
     fi
 
-    op_enable="$op_enable system/bindgen-crabbyav1f.patch"
-
     BINDGEN_PATH="/usr"
   fi
 
@@ -1370,6 +1368,10 @@ fi
 ## Items which are (or are likely to become) unstable-only
 
 if [ $STABLE -eq 1 ]; then
+  if [ $SYS_BINDGEN -eq 1 ]; then
+    op_enable="$op_enable system/bindgen-crabbyav1f.patch"
+  fi
+
   if [ $SYS_RUST -eq 1 ]; then
     op_enable="$op_enable optional/system/rust.patch"
   fi
