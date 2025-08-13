@@ -256,8 +256,7 @@ GN_FLAGS += v8_enable_wasm_simd256_revec=true
 # libstdc++ issue      : crc32c, flatbuffers, highway, libyuv
 #                        jsoncpp, re2, snappy, woff2
 #
-# Too old for stable   : dav1d, libwebp (libsharpyuv dependency)
-#                        libdrm (hint: check out debian backports)
+# Too old for stable   : dav1d, libdrm (hint: check out debian backports)
 #
 # Too new              : icu
 #
@@ -273,7 +272,7 @@ GN_FLAGS += v8_enable_wasm_simd256_revec=true
 #     freetype depends on brotli and libpng
 #
 
-SYS_LIBS := double-conversion flac libsecret libusb libxml libXNVCtrl libxslt opus zlib
+SYS_LIBS := double-conversion flac libsecret libusb libwebp libxml libXNVCtrl libxslt opus zlib
 
 # The below is best configured via debian/configure.sh, which is better
 # suited to automatically deal with any of the dependency issues
@@ -286,9 +285,6 @@ SYS_LIBS += libdrm
 
 # Enable libjpeg (debs won't be installable on both debian and ubuntu)
 SYS_LIBS += libjpeg
-
-# Enable libwebp
-SYS_LIBS += libwebp
 
 # Enable openh264
 SYS_LIBS += openh264

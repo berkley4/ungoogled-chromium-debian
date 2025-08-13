@@ -24,7 +24,6 @@ BLUEZ_SET=0; BUILD_TS_SET=0; CLANG_VER_SET=0
 CPU_SET=0; DBUS_SET=0; MARCH_SET=0
 MEDIA_REMOTING_SET=0; MTUNE_SET=0; POLLY_SET=0
 RELEASE_SET=0; SYS_DRM_SET=0; SYS_ICU_SET=0
-SYS_WEBP_SET=0
 
 # LLVM_PGO_VER (current bundled version) is only effective when TEST=1
 LLVM_CTRL_VER=19
@@ -128,12 +127,12 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 
 if [ $NO_SYS_LIBS -eq 1 ]; then
   # Zero all SYS_* library variables before any are declared later on
-  for i in SYS_BROTLI SYS_DRM SYS_ICU SYS_JPEG SYS_OPENH264 SYS_WEBP SYS_ZSTD VAAPI; do
+  for i in SYS_BROTLI SYS_DRM SYS_ICU SYS_JPEG SYS_OPENH264 SYS_ZSTD VAAPI; do
     eval $i=0
   done
 
   # Disable dependencies for system libraries without configuration variables
-  for i in double-conversion libflac libopus libpng libsecret libusb libXNVCtrl libxslt1; do
+  for i in double-conversion libflac libopus libpng libsecret libusb libwebp libXNVCtrl libxslt1; do
     deps_disable="$deps_disable $i"
   done
 
@@ -151,9 +150,6 @@ fi
 
 ## Allow stable users to force enable icu (eg if they have self-compiled an icu package)
 [ -n "$SYS_ICU" ] && SYS_ICU_SET=1 || SYS_ICU=0
-
-## Allow force-enabling libwebp for stable users who have installed libsharpyuv from backports
-[ -n "$SYS_WEBP" ] && SYS_WEBP_SET=1 || SYS_WEBP=1
 
 ## Need to error out if MEDIA_REMOTING is explicitly enabled when CHROMECAST=0
 [ -n "$MEDIA_REMOTING" ] && MEDIA_REMOTING_SET=1 || MEDIA_REMOTING=0
@@ -1380,9 +1376,6 @@ if [ $STABLE -eq 1 ]; then
   # Allow stable users (eg with a self-compiled icu package) to enable SYS_ICU
   [ $SYS_ICU_SET -eq 1 ] && [ $SYS_ICU -eq 1 ] || SYS_ICU=0
 
-  # For STABLE=1 we disable libwebp by default but allow force-enablement
-  [ $SYS_WEBP_SET -eq 1 ] && [ $SYS_WEBP -eq 1 ] || SYS_WEBP=0
-
   # Disable dav1d (too old)
   op_disable="$op_disable system/unstable/dav1d/"
   sys_disable="$sys_disable dav1d"
@@ -1442,12 +1435,6 @@ if [ $SYS_ICU -eq 1 ]; then
   # icudtl.dat is not needed with system icu
   ins_disable="$ins_disable icudtl.dat"
   RUL="$RUL -e \"/icudtl.dat/s@^\t@\t#@\""
-fi
-
-
-if [ $SYS_WEBP -eq 0 ]; then
-  sys_disable="$sys_disable libwebp"
-  deps_disable="$deps_disable libwebp"
 fi
 
 
