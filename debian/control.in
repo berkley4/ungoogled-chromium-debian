@@ -13,7 +13,6 @@ Build-Depends:
 #clang-@@LLVM_CTRL_VER@@,
 #libclang-rt-@@LLVM_CTRL_VER@@-dev,
 #rustc (>= 1.85.0),
- generate-ninja,
 #nodejs,
  python-is-python3,
  generate-ninja,
