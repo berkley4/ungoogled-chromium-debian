@@ -133,7 +133,7 @@ if [ $NO_SYS_LIBS -eq 1 ]; then
   done
 
   # Disable dependencies for system libraries without configuration variables
-  for i in double-conversion libflac libopus libpng libsecret libusb libXNVCtrl; do
+  for i in double-conversion libflac libopus libpng libsecret libusb libXNVCtrl libxslt1; do
     deps_disable="$deps_disable $i"
   done
 
@@ -1379,14 +1379,6 @@ if [ $STABLE -eq 1 ]; then
 
   # Allow stable users (eg with a self-compiled icu package) to enable SYS_ICU
   [ $SYS_ICU_SET -eq 1 ] && [ $SYS_ICU -eq 1 ] || SYS_ICU=0
-
-  # On stable there is an interdependency between libxslt, libxml and icu
-  if [ $SYS_ICU -eq 0 ]; then
-    deps_disable="$deps_disable libxslt1"
-
-    # SYS_LIBS += libxslt libxml
-    sys_disable="$sys_disable libxslt"
-  fi
 
   # For STABLE=1 we disable libwebp by default but allow force-enablement
   [ $SYS_WEBP_SET -eq 1 ] && [ $SYS_WEBP -eq 1 ] || SYS_WEBP=0

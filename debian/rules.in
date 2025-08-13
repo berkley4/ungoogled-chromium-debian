@@ -256,26 +256,24 @@ GN_FLAGS += v8_enable_wasm_simd256_revec=true
 # libstdc++ issue      : crc32c, flatbuffers, highway, libyuv
 #                        jsoncpp, re2, snappy, woff2
 #
-# Too old for stable   : dav1d, icu
-#                        libwebp (libsharpyuv dependency)
+# Too old for stable   : dav1d, libwebp (libsharpyuv dependency)
 #                        libdrm (hint: check out debian backports)
 #
-# Dependent on too old : harfbuzz-ng, libxml, libxslt
+# Too new              : icu
+#
+# Dependent on too new : harfbuzz-ng
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-# Interdependent POSSIBLE :-
+# Interdependent libraries :-
 #
 #     libxslt depends on libxml
 #     harfbuzz-ng depends on freetype and icu
 #     fontconfig depend on freetype
 #     freetype depends on brotli and libpng
 #
-#     On stable :-
-#       libxml depends on icu
-#
 
-SYS_LIBS := double-conversion flac libsecret libusb libXNVCtrl opus zlib
+SYS_LIBS := double-conversion flac libsecret libusb libxml libXNVCtrl libxslt opus zlib
 
 # The below is best configured via debian/configure.sh, which is better
 # suited to automatically deal with any of the dependency issues
@@ -310,9 +308,6 @@ SYS_LIBS += fontconfig freetype brotli libpng
 
 # Disable if unbundling icu
 GN_FLAGS += icu_copy_icudata_to_root_build_dir=false
-
-# Disable on stable builds due to icu, libxslt and libxml interdependency
-SYS_LIBS += libxslt libxml
 
 # Enable if NOT unbundling either icu OR brotli
 #SYS_LIBS += libpng

@@ -42,6 +42,7 @@ Build-Depends:
  libopenjp2-7-dev,
  libdouble-conversion-dev,
  libxnvctrl-dev,
+ libxslt1-dev,
  libopenh264-dev,
  libpipewire-0.3-dev,
  libpng-dev,
@@ -55,8 +56,7 @@ Build-Depends:
  libdav1d-dev,
  libfontconfig-dev,
 #libharfbuzz-dev,
-#libicu-dev (= 74.2-2),
- libxslt1-dev
+#libicu-dev (= 74.2-2)
 
 Package: ungoogled-chromium
 Architecture: i386 amd64 arm64 armhf
