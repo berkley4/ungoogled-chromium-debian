@@ -132,13 +132,13 @@ if [ $NO_SYS_LIBS -eq 1 ]; then
   done
 
   # Disable dependencies for system libraries without configuration variables
-  for i in double-conversion libdrmlibflac libopus libpng libsecret libusb libwebp libXNVCtrl libxslt1; do
+  for i in double-conversion libdav1d libdrmlibflac libopus libpng libsecret libusb libwebp libXNVCtrl libxslt1; do
     deps_disable="$deps_disable $i"
   done
 
   # Disable the unbundle toolchain, sys library GN_FLAGS and non-configurable SYS_LIBS
   RUL="$RUL -e \"/_toolchain=/s@^@#@\" -e \"/^[^#].*use_system/s@^@#@\""
-  RUL="$RUL -e \"/^SYS_LIBS.*double-conversion/s@^@#@\""
+  RUL="$RUL -e \"/^SYS_LIBS.*dav1d/s@^@#@\""
 fi
 
 [ -n "$SYS_BROTLI" ] || SYS_BROTLI=1
@@ -1369,11 +1369,6 @@ if [ $STABLE -eq 1 ]; then
 
   # Allow stable users (eg with a self-compiled icu package) to enable SYS_ICU
   [ $SYS_ICU_SET -eq 1 ] && [ $SYS_ICU -eq 1 ] || SYS_ICU=0
-
-  # Disable dav1d (too old)
-  op_disable="$op_disable system/unstable/dav1d/"
-  sys_disable="$sys_disable dav1d"
-  deps_disable="$deps_disable libdav1d"
 
   if [ $GTK -eq 1 ]; then
     # Reverse time_t transition dependencies for stable
