@@ -132,7 +132,7 @@ if [ $NO_SYS_LIBS -eq 1 ]; then
   done
 
   # Disable dependencies for system libraries without configuration variables
-  for i in double-conversion libdav1d libdrmlibflac libopus libpng libsecret libusb libwebp libXNVCtrl libxslt1 libzstd; do
+  for i in double-conversion libdav1d libdrm libflac libopus libpng libsecret libusb libwebp libXNVCtrl libxslt1 libzstd; do
     deps_disable="$deps_disable $i"
   done
 
