@@ -222,9 +222,6 @@ GN_FLAGS += tint_build_glsl_writer=false tint_build_hlsl_writer=false tint_build
 # Comment out if enabling both WebGPU and vulkan
 GN_FLAGS += dawn_enable_vulkan=false
 
-# Disable zstd
-#GN_FLAGS += disable_zstd_filter=true
-
 
 ### CPU intructions
 
@@ -272,7 +269,9 @@ GN_FLAGS += v8_enable_wasm_simd256_revec=true
 #     freetype depends on brotli and libpng
 #
 
-SYS_LIBS := dav1d double-conversion flac libdrm libsecret libusb libwebp libxml libXNVCtrl libxslt opus zlib
+# Globally enabled system libraries
+SYS_LIBS := dav1d double-conversion flac libdrm libsecret libusb
+SYS_LIBS += libwebp libxml libXNVCtrl libxslt opus zlib zstd
 
 # The below is best configured via debian/configure.sh, which is better
 # suited to automatically deal with any of the dependency issues
@@ -282,9 +281,6 @@ SYS_LIBS += libjpeg
 
 # Enable openh264
 SYS_LIBS += openh264
-
-# Enable zstd
-SYS_LIBS += zstd
 
 
 ### Dependency chains around icu and brotli (unstable/experimental only)

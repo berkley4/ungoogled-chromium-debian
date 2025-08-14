@@ -30,5 +30,4 @@
   "VideoCaptureAllowed": true,
   "WebRtcIPHandling": "disable_non_proxied_udp",
   "WPADQuickCheckEnabled": false,
-  "ZstdContentEncodingEnabled": false
 }

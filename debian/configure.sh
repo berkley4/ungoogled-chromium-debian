@@ -127,12 +127,12 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 
 if [ $NO_SYS_LIBS -eq 1 ]; then
   # Zero all SYS_* library variables before any are declared later on
-  for i in SYS_BROTLI SYS_ICU SYS_JPEG SYS_OPENH264 SYS_ZSTD VAAPI; do
+  for i in SYS_BROTLI SYS_ICU SYS_JPEG SYS_OPENH264 VAAPI; do
     eval $i=0
   done
 
   # Disable dependencies for system libraries without configuration variables
-  for i in double-conversion libdav1d libdrmlibflac libopus libpng libsecret libusb libwebp libXNVCtrl libxslt1; do
+  for i in double-conversion libdav1d libdrmlibflac libopus libpng libsecret libusb libwebp libXNVCtrl libxslt1 libzstd; do
     deps_disable="$deps_disable $i"
   done
 
@@ -143,7 +143,6 @@ fi
 
 [ -n "$SYS_BROTLI" ] || SYS_BROTLI=1
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
-[ -n "$SYS_ZSTD" ] || SYS_ZSTD=1
 
 ## Allow stable users to force enable icu (eg if they have self-compiled an icu package)
 [ -n "$SYS_ICU" ] && SYS_ICU_SET=1 || SYS_ICU=0
@@ -1345,14 +1344,6 @@ if [ $SYS_OPENH264 -eq 0 ]; then
   op_disable="$op_disable system/openh264.patch"
   sys_disable="$sys_disable openh264"
   deps_disable="$deps_disable libopenh264"
-fi
-
-
-if [ $SYS_ZSTD -eq 0 ]; then
-  sys_disable="$sys_disable zstd"
-  deps_disable="$deps_disable libzstd"
-
-  POL="$POL -e \"/ZstdContentEncodingEnabled/s@true@false@\""
 fi
 
 

@@ -232,7 +232,6 @@ SYS_BROTLI		1		Kept for legacy reasons
 SYS_ICU			0		It's recommended not to touch this unless you know what you are doing
 SYS_JPEG		1		Set to zero if building for both debian and ubuntu (unsupported)
 SYS_OPENH264		1		The bundled OpenH264 library (SYS_OPENH264=0) cannot be redistributed
-SYS_ZSTD		1		Used for zstd content encoding (web server compression)
 
 
 ## CPU threading options
