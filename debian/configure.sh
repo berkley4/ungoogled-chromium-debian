@@ -806,7 +806,7 @@ fi
 
 
 # Set the CPU instruction requirement (for the shell launcher)
-[ -n "CPU_MSG" ] || CPU_MSG=$CPU
+[ -n "$CPU_MSG" ] || CPU_MSG=$CPU
 
 case $CPU in
   pclmulqdq)
