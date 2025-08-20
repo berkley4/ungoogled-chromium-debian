@@ -1,0 +1,78 @@
+From bbdc38bc2d1693f56154f78eb5d4ff296d8ca3da Mon Sep 17 00:00:00 2001
+From: Ben Wagner <bungeman@chromium.org>
+Date: Mon, 18 Aug 2025 14:52:24 -0700
+Subject: [PATCH] Change UseTTCharmapUnicode to prefer MSSymbol
+
+Prior to "Treat all Unicode character maps like MSUnicode" [0] only the
+cmap(3,1) (Windows,Unicode BMP) was considered as Unicode. After that
+change, all Unicode cmaps like cmap(0,*) (Unicode,*) are considered as
+Unicode. This fixes a number of issues with embedded fonts that do not
+have a cmap(3,1).
+
+However, this caused a regression in the case of embedded fonts with
+Unicode cmap that isn't cmap(3,1) which also have a cmap(3,0)
+(Windows,Symbol). In this case the Unicode cmap is now chosen over the
+Symbol cmap. The Symbol cmap has special rules to augment the cmap as
+well as special rules around converting to Unicode which will not be
+applied to a Unicode cmap.
+
+This changes the rule to prefer cmap(3,1) as before, then any other
+Unicode cmap so long as there is no cmap(3,0). This restores the
+previous behavior while still using Unicode cmaps when they are
+available.
+
+[0] https://pdfium.googlesource.com/pdfium/+/5da0e90faa40079145dc146f70bf186d3ad5e93f
+
+Bug: 438810722, 439629188, 439646297
+Change-Id: I247bb739fcb39b177923a7d4f3821df70dbca4fe
+Reviewed-on: https://pdfium-review.googlesource.com/c/pdfium/+/135030
+Reviewed-by: Lei Zhang <thestig@chromium.org>
+Commit-Queue: Ben Wagner <bungeman@google.com>
+Reviewed-by: Ben Wagner <bungeman@google.com>
+(cherry picked from commit 40111e6fed154aeab93ea26a3e0a691745d13419)
+Reviewed-on: https://pdfium-review.googlesource.com/c/pdfium/+/135111
+---
+
+diff --git a/core/fpdfapi/font/cpdf_font.cpp b/core/fpdfapi/font/cpdf_font.cpp
+index d8baa11..f41df30 100644
+--- a/third_party/pdfium/core/fpdfapi/font/cpdf_font.cpp
++++ b/third_party/pdfium/core/fpdfapi/font/cpdf_font.cpp
+@@ -34,6 +34,7 @@
+ #include "core/fxge/cfx_fontmapper.h"
+ #include "core/fxge/cfx_substfont.h"
+ #include "core/fxge/fx_font.h"
++#include "core/fxge/fx_fontencoding.h"
+ 
+ namespace {
+ 
+@@ -429,11 +430,29 @@
+ }
+ 
+ bool CPDF_Font::UseTTCharmapUnicode(const RetainPtr<CFX_Face>& face) {
++  size_t charmap_unicode_index = 0;
++  bool charmap_unicode_found = false;
++  bool charmap_mssymbol_found = false;
+   for (size_t i = 0; i < face->GetCharMapCount(); i++) {
+-    if (face->GetCharMapEncodingByIndex(i) == fxge::FontEncoding::kUnicode) {
++    const int platform_id = face->GetCharMapPlatformIdByIndex(i);
++    const int encoding_id = face->GetCharMapEncodingIdByIndex(i);
++    const fxge::FontEncoding encoding = face->GetCharMapEncodingByIndex(i);
++    if (platform_id == 3 && encoding_id == 1) {
+       face->SetCharMapByIndex(i);
+       return true;
+     }
++    if (platform_id == 3 && encoding_id == 0) {
++      charmap_mssymbol_found = true;
++      continue;
++    }
++    if (!charmap_unicode_found && encoding == fxge::FontEncoding::kUnicode) {
++      charmap_unicode_found = true;
++      charmap_unicode_index = i;
++    }
++  }
++  if (charmap_unicode_found && !charmap_mssymbol_found) {
++    face->SetCharMapByIndex(charmap_unicode_index);
++    return true;
+   }
+   return false;
+ }
