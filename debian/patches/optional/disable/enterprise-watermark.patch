@@ -1,6 +1,6 @@
 --- a/chrome/browser/ui/views/frame/browser_view.h
 +++ b/chrome/browser/ui/views/frame/browser_view.h
-@@ -888,9 +888,11 @@
+@@ -852,9 +852,11 @@
      return web_app_frame_toolbar();
    }
  
@@ -12,7 +12,7 @@
  
    // This value is used in a common calculation in NonClientFrameView
    // subclasses. This must be added to the origin of the first painted pixel of
-@@ -1303,8 +1305,10 @@
+@@ -1256,8 +1258,10 @@
    // contents_web_view_.
    raw_ptr<views::View> lens_overlay_view_ = nullptr;
  
@@ -25,10 +25,10 @@
    // Handled by ContentsLayoutManager.
 --- a/chrome/browser/ui/views/frame/browser_view.cc
 +++ b/chrome/browser/ui/views/frame/browser_view.cc
-@@ -1093,8 +1093,12 @@
-             .Build());
-   }
- #endif
+@@ -1006,8 +1006,12 @@
+   lens_overlay_view_ =
+       contents_container->AddChildView(std::move(lens_overlay_view));
+ 
 +#if BUILDFLAG(ENTERPRISE_WATERMARK)
    watermark_view_ = contents_container->AddChildView(
        std::make_unique<enterprise_watermark::WatermarkView>());
@@ -36,19 +36,19 @@
 +  views::View* watermark_view_ = nullptr;
 +#endif  // BUILDFLAG(ENTERPRISE_WATERMARK)
  
- #if BUILDFLAG(ENABLE_GLIC)
    contents_container->SetLayoutManager(std::make_unique<ContentsLayoutManager>(
-@@ -1243,7 +1247,9 @@
+       devtools_web_view_, devtools_scrim_view_, contents_view,
+@@ -1149,7 +1153,9 @@
+   devtools_web_view_ = nullptr;
    devtools_scrim_view_ = nullptr;
-   contents_scrim_view_ = nullptr;
    window_scrim_view_ = nullptr;
 +#if BUILDFLAG(ENTERPRISE_WATERMARK)
    watermark_view_ = nullptr;
 +#endif
-   glic_border_ = nullptr;
-   new_tab_footer_web_view_ = nullptr;
-   new_tab_footer_web_view_separator_ = nullptr;
-@@ -6487,6 +6493,7 @@
+   contents_container_ = nullptr;
+   vertical_tab_strip_container_ = nullptr;
+   unified_side_panel_ = nullptr;
+@@ -6284,6 +6290,7 @@
    return is_web_app;
  }
  
@@ -56,8 +56,8 @@
  void BrowserView::ApplyWatermarkSettings(const std::string& watermark_text) {
    if (watermark_view_) {
      PrefService* prefs = browser_->profile()->GetPrefs();
-@@ -6495,6 +6502,7 @@
-                                enterprise_watermark::GetOutlineColor(prefs));
+@@ -6293,6 +6300,7 @@
+                                enterprise_watermark::GetFontSize(prefs));
    }
  }
 +#endif  // BUILDFLAG(ENTERPRISE_WATERMARK)
@@ -91,7 +91,7 @@
    // Regardless of whether watermark text is empty, attach it as web contents
    // user data so that other browser process code can draw watermarks outside
    // of the context of a navigation (ex. when printing).
-@@ -169,6 +173,7 @@
+@@ -170,6 +174,7 @@
    if (!clear_watermark_text_on_page_load_) {
      browser_view->ApplyWatermarkSettings(settings.watermark_text);
    }
@@ -99,7 +99,7 @@
  
    if (!on_delay_apply_data_protection_settings_if_empty_called_for_testing_
             .is_null()) {
-@@ -200,7 +205,9 @@
+@@ -201,7 +206,9 @@
      return;
    }
  
@@ -109,7 +109,7 @@
  
  #if BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
    browser_view->ApplyScreenshotSettings(settings.allow_screenshots);
-@@ -246,10 +253,12 @@
+@@ -247,10 +254,12 @@
    if (!browser_view) {
      return;
    }

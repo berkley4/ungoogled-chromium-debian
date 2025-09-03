@@ -40,7 +40,7 @@ kryptonite/replace-dns-probe-hostname-with-example-com.patch
 kryptonite/stop-omnibar-searches-triggering-dns-requests.patch
 kryptonite/use-boringssl-for-randbytes.patch
 
-vanadium/0053-stub-out-the-battery-status-API.patch
+vanadium/0052-stub-out-the-battery-status-API.patch
 
 vanadinite/0001-switch-to-fstack-protector-strong.patch
 vanadinite/0002-disable-showing-popular-sites-by-default.patch
@@ -53,7 +53,7 @@ vanadinite/0008-enable-split-cache-by-default.patch
 vanadinite/0009-enable-partitioning-connections-by-default.patch
 vanadinite/0010-disable-component-updater-pings-by-default.patch
 vanadinite/0011-enable-strict-origin-isolation-by-default.patch
-vanadinite/0013-enable-partitioning-content-settings-by-default.patch
+vanadinite/0012-enable-partitioning-content-settings-by-default.patch
 
 various/compiler-flags/add-warning-suppression-flags.patch
 various/compiler-flags/do-not-link-with-libatomic.patch
@@ -72,6 +72,7 @@ various/disable/lens-features.patch
 various/disable/motherboard-metrics.patch
 various/disable/rtc-tools.patch
 various/disable/screen-ai-service.patch
+various/disable/tests.patch
 various/disable/tint-benchmarks.patch
 various/disable/tint-fuzzers.patch
 various/disable/crashpad-handler/crashpad-handler.patch
@@ -175,19 +176,20 @@ optional/fixes/widevine/widevine-locations.patch
 #optional/opentype-svg/0001-OT-SVG-hook.patch
 #optional/opentype-svg/0002-use-FreeType-for-non-Linux-OT-SVG-support.patch
 #optional/system/bindgen-crabbyav1f.patch
+#optional/system/icu.patch
 optional/system/jpeg.patch
 optional/system/libdbus.patch
 #optional/system/node/node.patch
 #optional/system/node/node-version-ck.patch
 #optional/system/node/node-version-ck_2.patch
 optional/system/openh264.patch
-#optional/system/rust.patch
 #optional/system/clang/clang-version.patch
 #optional/system/clang/clang-version-check.patch
 #optional/system/clang/rust-clanglib.patch
 #optional/system/gn/gn-allowlist.patch
 #optional/system/gn/gn-path-exists.patch
-#optional/system/unstable/icu.patch
+#optional/system/rust/no-adler2.patch
+#optional/system/rust/no-alloc-shim.patch
 optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
 optional/translate/revert-disable.patch
 optional/translate/stop-unsupported-switch-warning.patch

@@ -1,6 +1,6 @@
 --- a/third_party/blink/renderer/core/exported/web_view_impl.cc
 +++ b/third_party/blink/renderer/core/exported/web_view_impl.cc
-@@ -1884,7 +1884,7 @@
+@@ -1888,7 +1888,7 @@
        prefs.default_maximum_page_scale_factor);
  #endif
  

@@ -1,6 +1,6 @@
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -8509,7 +8509,6 @@
+@@ -8536,7 +8536,6 @@
        "//chrome/browser/webauthn:test_support",
        "//chrome/browser/webauthn/proto",
        "//chrome/common/read_anything:mojo_bindings",
@@ -8,7 +8,7 @@
        "//components/app_constants",
        "//components/application_locale_storage",
        "//components/color",
-@@ -8578,6 +8577,10 @@
+@@ -8607,6 +8606,10 @@
        "//ui/webui/resources/js/browser_command:mojo_bindings",
      ]
  

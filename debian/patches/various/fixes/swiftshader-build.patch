@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -514,7 +514,8 @@
+@@ -507,7 +507,8 @@
      }
  
      if ((is_win || is_mac || is_linux || is_chromeos || is_fuchsia) &&
@@ -18,7 +18,7 @@
  import("//extensions/buildflags/buildflags.gni")
 +import("//gpu/vulkan/features.gni")
  import("//media/media_options.gni")
- import("//ppapi/buildflags/buildflags.gni")
+ import("//services/shape_detection/features.gni")
  import("//third_party/angle/gni/angle.gni")
 @@ -1675,7 +1676,7 @@
        deps = [
@@ -29,7 +29,7 @@
          deps += [ ":swiftshader_vk_symbols" ]
        }
        if (!is_chromeos && angle_shared_libvulkan) {
-@@ -1717,17 +1718,19 @@
+@@ -1720,17 +1721,19 @@
          deps = [ "//components/crash/core/app:chrome_crashpad_handler" ]
        }
      }

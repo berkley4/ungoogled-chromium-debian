@@ -73,8 +73,8 @@ configs, need to change the header manually to fix this.
  #define CB 1
 --- a/third_party/ffmpeg/libavcodec/hevc/hevcdec.c
 +++ b/third_party/ffmpeg/libavcodec/hevc/hevcdec.c
-@@ -38,23 +38,23 @@
- #include "libavutil/stereo3d.h"
+@@ -39,23 +39,23 @@
+ #include "libavutil/tdrdi.h"
  #include "libavutil/timecode.h"
  
 -#include "aom_film_grain.h"

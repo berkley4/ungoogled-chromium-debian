@@ -3,7 +3,7 @@ author: Michael Gilbert <mgilbert@debian.org>
 
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -380,7 +380,7 @@
+@@ -373,7 +373,7 @@
      # Allow building md5sum tool for other OSes (android is added below).
      # For Windows, see: crbug.com/1090428.
      # TODO(cavalcantii): move it out of 'android' folder.
@@ -12,3 +12,13 @@ author: Michael Gilbert <mgilbert@debian.org>
        deps += [ "//tools/android/md5sum" ]
      }
  
+--- a/chrome/browser/vr/BUILD.gn
++++ b/chrome/browser/vr/BUILD.gn
+@@ -3,7 +3,6 @@
+ # found in the LICENSE file.
+ 
+ import("//build/buildflag_header.gni")
+-import("//chrome/android/modules/buildflags.gni")
+ import("//chrome/common/features.gni")
+ import("//device/vr/buildflags/buildflags.gni")
+ import("//testing/libfuzzer/fuzzer_test.gni")

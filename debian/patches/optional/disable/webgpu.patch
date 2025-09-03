@@ -1,27 +1,47 @@
+--- a/content/utility/on_device_model/on_device_model_sandbox_init.cc
++++ b/content/utility/on_device_model/on_device_model_sandbox_init.cc
+@@ -25,7 +25,7 @@
+ #include "sandbox/policy/linux/sandbox_linux.h"
+ #endif
+ 
+-#if !BUILDFLAG(IS_FUCHSIA) && \
++#if !BUILDFLAG(IS_FUCHSIA) && BUILDFLAG(USE_DAWN) && \
+     !(BUILDFLAG(IS_LINUX) && BUILDFLAG(ENABLE_CAST_RECEIVER))
+ #include "base/feature_list.h"
+ #include "third_party/dawn/include/dawn/dawn_proc.h"          // nogncheck
+@@ -100,7 +100,7 @@
+   }
+ #endif
+ 
+-#if !BUILDFLAG(IS_FUCHSIA) && \
++#if !BUILDFLAG(IS_FUCHSIA) && BUILDFLAG(USE_DAWN) && \
+     !(BUILDFLAG(IS_LINUX) && BUILDFLAG(ENABLE_CAST_RECEIVER))
+   if (base::FeatureList::IsEnabled(kOnDeviceModelWarmDrivers)
+ #if defined(ENABLE_ML_INTERNAL)
 --- a/gpu/BUILD.gn
 +++ b/gpu/BUILD.gn
-@@ -119,7 +119,6 @@
-     "//gpu/command_buffer/client:webgpu_interface",
+@@ -109,7 +109,6 @@
+     "//gpu/command_buffer/service",
      "//gpu/ipc:gpu_thread_holder",
      "//third_party/dawn/include/dawn:cpp_headers",
 -    "//third_party/dawn/src/dawn:proc",
    ]
    deps = [
      "//base/test:test_support",
-@@ -144,6 +143,10 @@
-     ]
+@@ -136,6 +135,10 @@
    }
    deps += [ "//third_party/angle:translator" ]
-+
+ 
 +  if (use_dawn) {
 +    public_deps += [ "//third_party/dawn/src/dawn:proc" ]
 +  }
- }
- 
- if (!is_android && !is_fuchsia && !is_chromeos && !is_ios) {
++
+   # TODO(crbug.com/40031409): Fix code that adds exit-time destructors and
+   # enable the diagnostic by removing this line.
+   configs += [ "//build/config/compiler:no_exit_time_destructors" ]
 --- a/gpu/command_buffer/service/BUILD.gn
 +++ b/gpu/command_buffer/service/BUILD.gn
-@@ -329,7 +329,10 @@
+@@ -334,7 +334,10 @@
    }
  
    if (use_dawn) {
@@ -33,7 +53,7 @@
      sources += [
        "dawn_caching_interface.cc",
        "dawn_caching_interface.h",
-@@ -383,7 +386,6 @@
+@@ -393,7 +396,6 @@
      "//third_party/angle:angle_image_util",
      "//third_party/angle:angle_version_info",
      "//third_party/dawn/include/dawn:cpp_headers",
@@ -49,14 +69,15 @@
  import("//third_party/dawn/scripts/dawn_features.gni")
 +import("//ui/gl/features.gni")
  
- component("on_device_model_service") {
+ component("backend_interfaces") {
    sources = [
-@@ -44,7 +45,7 @@
-   if (is_linux || is_chromeos) {
-     deps += [ "//gpu/config" ]
+@@ -63,7 +64,8 @@
+   if (is_android) {
+     deps += [ "//services/on_device_model/android" ]
    }
--  if (!is_fuchsia) {
-+  if (!is_fuchsia && use_dawn) {
+-  if (!is_fuchsia && !(is_linux && enable_cast_receiver)) {
++  if (!is_fuchsia && use_dawn &&
++      !(is_linux && enable_cast_receiver)) {
      deps += [
        "//third_party/dawn/include/dawn:cpp_headers",
        "//third_party/dawn/src/dawn:proc",
@@ -70,8 +91,8 @@
  
  source_set("api") {
    public = [
-@@ -66,9 +67,13 @@
-       "//components/translate/core/language_detection",
+@@ -68,9 +69,13 @@
+       "//services/on_device_model:backend_interfaces",
        "//third_party/abseil-cpp:absl",
        "//third_party/angle:includes",
 -      "//third_party/dawn/src/dawn:proc",
@@ -85,24 +106,4 @@
 +    }
      if (enable_constraints) {
        defines += [ "ENABLE_ON_DEVICE_CONSTRAINTS" ]
-       deps += [ "//third_party/rust/llguidance/v0_7:lib" ]
---- a/services/on_device_model/pre_sandbox_init.cc
-+++ b/services/on_device_model/pre_sandbox_init.cc
-@@ -19,7 +19,7 @@
- #include "gpu/config/gpu_info_collector.h"                    // nogncheck
- #endif
- 
--#if !BUILDFLAG(IS_FUCHSIA)
-+#if !BUILDFLAG(IS_FUCHSIA) && BUILDFLAG(USE_DAWN)
- #include "third_party/dawn/include/dawn/dawn_proc.h"          // nogncheck
- #include "third_party/dawn/include/dawn/native/DawnNative.h"  // nogncheck
- #include "third_party/dawn/include/dawn/webgpu_cpp.h"         // nogncheck
-@@ -92,7 +92,7 @@
-   }
- #endif
- 
--#if !BUILDFLAG(IS_FUCHSIA)
-+#if !BUILDFLAG(IS_FUCHSIA) && BUILDFLAG(USE_DAWN)
-   if (base::FeatureList::IsEnabled(kOnDeviceModelWarmDrivers)
- #if defined(ENABLE_ML_INTERNAL)
-       && !ml::IsGpuBlocked(ml::ChromeML::Get()->api(), /*log_histogram=*/false)
+       deps += [ "//third_party/rust/llguidance/v1:lib" ]

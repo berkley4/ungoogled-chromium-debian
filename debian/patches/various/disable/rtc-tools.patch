@@ -1,6 +1,6 @@
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -47,7 +47,7 @@
+@@ -46,7 +46,7 @@
  import("//testing/libfuzzer/fuzzer_test.gni")
  import("//testing/test.gni")
  import("//third_party/protobuf/proto_library.gni")
@@ -9,7 +9,7 @@
  import("//third_party/widevine/cdm/widevine.gni")
  import("//ui/base/ui_features.gni")
  import("//ui/gl/features.gni")
-@@ -2930,7 +2930,7 @@
+@@ -2990,7 +2990,7 @@
        "//tools/media_engagement_preload:make_dafsa_runtime",
      ]
  

@@ -1,8 +1,8 @@
 --- a/components/enterprise/BUILD.gn
 +++ b/components/enterprise/BUILD.gn
-@@ -84,6 +84,7 @@
+@@ -79,6 +79,7 @@
      "//base",
-     "//components/device_signals/core/browser:browser",
+     "//components/device_signals/core/browser",
      "//components/device_signals/core/common:features",
 +    "//components/enterprise/buildflags:buildflags",
      "//components/policy/core/browser",

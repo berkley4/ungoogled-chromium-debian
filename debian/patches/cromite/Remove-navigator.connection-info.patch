@@ -15,7 +15,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/third_party/blink/renderer/modules/netinfo/network_information.cc
 +++ b/third_party/blink/renderer/modules/netinfo/network_information.cc
-@@ -79,7 +79,7 @@
+@@ -80,7 +80,7 @@
  }
  
  bool NetworkInformation::IsObserving() const {
@@ -24,7 +24,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  }
  
  V8ConnectionType NetworkInformation::type() const {
-@@ -176,6 +176,7 @@
+@@ -181,6 +181,7 @@
      const std::optional<base::TimeDelta>& transport_rtt,
      const std::optional<double>& downlink_mbps,
      bool save_data) {
@@ -32,7 +32,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    DCHECK(GetExecutionContext()->IsContextThread());
  
    const String host = Host();
-@@ -257,6 +258,7 @@
+@@ -262,6 +263,7 @@
  }
  
  bool NetworkInformation::HasPendingActivity() const {
@@ -40,7 +40,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    DCHECK(context_stopped_ || IsObserving() == HasEventListeners());
  
    // Prevent collection of this object when there are active listeners.
-@@ -269,6 +271,7 @@
+@@ -274,6 +276,7 @@
  }
  
  void NetworkInformation::StartObserving() {
@@ -48,7 +48,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    if (!IsObserving() && !context_stopped_) {
      type_ = GetNetworkStateNotifier().ConnectionType();
      DCHECK(!connection_observer_handle_);
-@@ -279,6 +282,7 @@
+@@ -284,6 +287,7 @@
  }
  
  void NetworkInformation::StopObserving() {

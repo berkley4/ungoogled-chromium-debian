@@ -1,11 +1,16 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1263,8 +1263,6 @@
+@@ -1289,9 +1289,10 @@
+     # CPU architecture. We may or may not be doing a cross compile now, so for
+     # simplicity we always explicitly set the architecture.
      if (current_cpu == "x64") {
-       if (is_clang && !is_android && !is_nacl && !is_fuchsia &&
-           !is_chromeos_device) {
+-      if (is_clang && !is_android && !is_fuchsia && !is_chromeos_device) {
 -        cflags += [ "--target=x86_64-unknown-linux-gnu" ]
 -        ldflags += [ "--target=x86_64-unknown-linux-gnu" ]
++      if (is_clang && !is_android && !is_fuchsia &&
++          !is_chromeos_device && !is_linux) {
++            cflags += [ "--target=x86_64-unknown-linux-gnu" ]
++            ldflags += [ "--target=x86_64-unknown-linux-gnu" ]
        } else {
          cflags += [ "-m64" ]
          ldflags += [ "-m64" ]

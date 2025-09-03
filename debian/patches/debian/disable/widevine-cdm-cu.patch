@@ -3,7 +3,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
 
 --- a/chrome/browser/component_updater/registration.cc
 +++ b/chrome/browser/component_updater/registration.cc
-@@ -133,10 +133,6 @@
+@@ -131,10 +131,6 @@
    RegisterMediaFoundationWidevineCdmComponent(cus);
  #endif
  
@@ -11,6 +11,6 @@ author: Michel Le Bihan <michel@lebihan.pl>
 -  RegisterWidevineCdmComponent(cus);
 -#endif  // BUILDFLAG(ENABLE_WIDEVINE_CDM_COMPONENT)
 -
- #if BUILDFLAG(ENABLE_NACL) && !BUILDFLAG(IS_ANDROID)
- #if BUILDFLAG(IS_CHROMEOS)
-   // PNaCl on Chrome OS is on rootfs and there is no need to download it. But
+   RegisterSubresourceFilterComponent(cus);
+   RegisterOnDeviceHeadSuggestComponent(
+       cus, g_browser_process->GetApplicationLocale());

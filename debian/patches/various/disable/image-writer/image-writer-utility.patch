@@ -1,6 +1,6 @@
 --- a/chrome/browser/extensions/BUILD.gn
 +++ b/chrome/browser/extensions/BUILD.gn
-@@ -520,6 +520,7 @@
+@@ -545,6 +545,7 @@
      "//chrome/browser/ui/toolbar",
      "//chrome/common",
      "//chrome/common/safe_browsing:proto",
@@ -8,15 +8,15 @@
      "//components/bookmarks/browser",
      "//components/bookmarks/managed",
      "//components/content_settings/core/browser",
-@@ -950,7 +951,6 @@
+@@ -976,7 +977,6 @@
        "//chrome/browser/web_applications/extensions",
        "//chrome/common/extensions/api:extensions_features",
-       "//chrome/services/file_util/public/mojom:mojom",
+       "//chrome/services/file_util/public/mojom",
 -      "//chrome/services/removable_storage_writer/public/mojom",
        "//components/affiliations/core/browser:affiliations",
        "//components/app_constants",
        "//components/autofill/content/browser",
-@@ -1080,6 +1080,10 @@
+@@ -1104,6 +1104,10 @@
        "//url",
      ]
  
@@ -29,7 +29,7 @@
          "api/certificate_provider/certificate_provider_api.cc",
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -2435,7 +2435,6 @@
+@@ -2491,7 +2491,6 @@
        "//chrome/common:version_header",
        "//chrome/common/privacy_budget:test_support",
        "//chrome/renderer",
@@ -37,7 +37,7 @@
        "//chrome/test/data/webui:resources",
        "//chrome/test/data/webui/mojo:mojo_bindings",
        "//chrome/test/media_router/access_code_cast:access_code_cast_integration_base",
-@@ -2795,6 +2794,10 @@
+@@ -2851,6 +2850,10 @@
        "//v8",
      ]
  
@@ -45,9 +45,9 @@
 +      deps += [ "//chrome/services/removable_storage_writer:lib" ]
 +    }
 +
-     # TODO(413315837): Remove this dependency when
-     # c/b/ui/views/privacy_sandbox/privacy_sandbox_dialog_view_browsertest.cc gets modularized.
-     deps += [ "//chrome/browser/privacy_sandbox/notice:factory" ]
+     # TODO(crbug.com/428666921): Remove this dependency when
+     # c/b/ui/views/performance_controls/*browsertest.cc get componentized.
+     deps += [ "//chrome/browser/ui/performance_controls/test_support" ]
 --- a/chrome/utility/BUILD.gn
 +++ b/chrome/utility/BUILD.gn
 @@ -5,6 +5,7 @@
@@ -96,7 +96,7 @@
  #include "chrome/services/speech/buildflags/buildflags.h"
  #include "components/paint_preview/buildflags/buildflags.h"
  #include "components/password_manager/core/common/password_manager_features.h"
-@@ -72,7 +73,7 @@
+@@ -74,7 +75,7 @@
  #include "chrome/services/file_util/file_util_service.h"  // nogncheck
  #endif
  
@@ -105,7 +105,7 @@
  #include "chrome/services/removable_storage_writer/public/mojom/removable_storage_writer.mojom.h"
  #include "chrome/services/removable_storage_writer/removable_storage_writer.h"
  #endif
-@@ -273,7 +274,7 @@
+@@ -283,7 +284,7 @@
  }
  #endif
  
@@ -114,7 +114,7 @@
  auto RunRemovableStorageWriter(
      mojo::PendingReceiver<chrome::mojom::RemovableStorageWriter> receiver) {
    return std::make_unique<RemovableStorageWriter>(std::move(receiver));
-@@ -488,7 +489,7 @@
+@@ -499,7 +500,7 @@
    services.Add(RunFileUtil);
  #endif
  

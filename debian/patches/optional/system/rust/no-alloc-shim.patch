@@ -1,0 +1,29 @@
+author: Andres Salomon <dilinger@debian.org>
+
+work around the following build error (likely required by a newer rustc):
+
+ld.lld-19: error: undefined symbol: __rust_no_alloc_shim_is_unstable
+>>> referenced by raw_vec.rs:0 (library/alloc/src/raw_vec.rs:0)
+>>>               std-204c535bb1c72e7d.std.83f6108400cae6c8-cgu.04.rcgu.o:(core::slice::sort::stable::driftsort_main::h2af4412729044fb7) in archive prebuilt_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd.rlib
+
+This reverts commit 8393b61ba876c8e1614275c97767f9b06b889f48
+Author: Hans Wennborg <hans@chromium.org>
+Date:   Mon Jun 30 07:45:33 2025 -0700
+
+    [rust] Remove __rust_no_alloc_shim_is_unstable
+
+--- a/build/rust/allocator/lib.rs
++++ b/build/rust/allocator/lib.rs
+@@ -90,6 +90,12 @@
+     #[linkage = "weak"]
+     fn __rust_no_alloc_shim_is_unstable_v2() {}
+ 
++    // TODO(crbug.com/422538133) Remove after rolling past
++    // https://github.com/rust-lang/rust/pull/141061
++    #[no_mangle]
++    #[linkage = "weak"]
++    static __rust_no_alloc_shim_is_unstable: u8 = 0;
++
+     // Mangle the symbol name as rustc expects.
+     #[rustc_std_internal_symbol]
+     #[allow(non_upper_case_globals)]

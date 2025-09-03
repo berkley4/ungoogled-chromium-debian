@@ -10,7 +10,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/third_party/blink/renderer/platform/media/web_media_player_impl.cc
 +++ b/third_party/blink/renderer/platform/media/web_media_player_impl.cc
-@@ -1335,6 +1335,12 @@
+@@ -1330,6 +1330,12 @@
    return pipeline_metadata_.has_audio;
  }
  
@@ -23,7 +23,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  void WebMediaPlayerImpl::EnabledAudioTracksChanged(
      std::optional<WebMediaPlayer::TrackId> enabled_track_id) {
    DCHECK(main_task_runner_->BelongsToCurrentThread());
-@@ -3703,7 +3709,10 @@
+@@ -3683,7 +3689,10 @@
            : HasAudio();
  
    // Audio only stream is allowed to play when in background.
@@ -37,7 +37,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // Video PiP is the only exception when background video playback is disabled.
 --- a/third_party/blink/renderer/platform/media/web_media_player_impl.h
 +++ b/third_party/blink/renderer/platform/media/web_media_player_impl.h
-@@ -216,6 +216,9 @@
+@@ -211,6 +211,9 @@
    bool HasVideo() const override;
    bool HasAudio() const override;
  

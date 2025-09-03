@@ -1,6 +1,6 @@
 --- a/media/audio/BUILD.gn
 +++ b/media/audio/BUILD.gn
-@@ -151,8 +151,10 @@
+@@ -150,8 +150,10 @@
    ]
    libs = []
    defines = []
@@ -13,7 +13,7 @@
  
 --- a/media/base/BUILD.gn
 +++ b/media/base/BUILD.gn
-@@ -415,9 +415,10 @@
+@@ -430,9 +430,10 @@
    ]
  
    libs = []
@@ -38,7 +38,7 @@
 +      "//media:subcomponent_config",
 +    ]
    } else {
-     visibility = [ "//media/cdm/library_cdm/clear_key_cdm:clear_key_cdm" ]
+     visibility = [ "//media/cdm/library_cdm/clear_key_cdm" ]
    }
 --- a/media/ffmpeg/BUILD.gn
 +++ b/media/ffmpeg/BUILD.gn
@@ -57,7 +57,7 @@
      "ffmpeg_common.h",
 --- a/media/filters/BUILD.gn
 +++ b/media/filters/BUILD.gn
-@@ -67,7 +67,11 @@
+@@ -81,7 +81,11 @@
      "wsola_internals.h",
    ]
  
@@ -129,7 +129,7 @@
      ]
 --- a/media/muxers/BUILD.gn
 +++ b/media/muxers/BUILD.gn
-@@ -56,7 +56,11 @@
+@@ -58,7 +58,11 @@
    assert(use_libgav1_parser)
    deps += [ "//third_party/libgav1:libgav1_parser" ]
  

@@ -1,6 +1,6 @@
 --- a/build/config/compiler/pgo/BUILD.gn
 +++ b/build/config/compiler/pgo/BUILD.gn
-@@ -150,6 +150,13 @@
+@@ -162,6 +162,13 @@
        ]
      }
  

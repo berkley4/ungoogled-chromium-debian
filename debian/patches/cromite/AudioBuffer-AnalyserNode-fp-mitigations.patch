@@ -24,7 +24,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -4906,6 +4906,10 @@
+@@ -4973,6 +4973,10 @@
      {"ui-disable-partial-swap", flag_descriptions::kUiPartialSwapName,
       flag_descriptions::kUiPartialSwapDescription, kOsAll,
       SINGLE_DISABLE_VALUE_TYPE(switches::kUIDisablePartialSwap)},
@@ -37,7 +37,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       FEATURE_VALUE_TYPE(features::kWebRtcHWDecoding)},
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -4591,6 +4591,11 @@
+@@ -4512,6 +4512,11 @@
      "When enabled, removes the requirement that all certificates used for "
      "WebTransport over HTTP/3 are issued by a known certificate root.";
  
@@ -51,7 +51,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  const char kWebUsbDeviceDetectionDescription[] =
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -2656,6 +2656,9 @@
+@@ -2593,6 +2593,9 @@
  extern const char kWebrtcUseMinMaxVEADimensionsName[];
  extern const char kWebrtcUseMinMaxVEADimensionsDescription[];
  
@@ -63,7 +63,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  extern const char kWebSigninLeadsToImplicitlySignedInStateDescription[];
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -197,6 +197,10 @@
+@@ -211,6 +211,10 @@
                     "allow_list",
                     "");
  
@@ -77,8 +77,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
 @@ -111,6 +111,8 @@
- BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(
-     kAvoidForcedLayoutOnInitialEmptyDocumentInSubframe);
+ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE_PARAM(bool,
+                                                kAutoSpeculationRulesHoldback);
  
 +BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kAudioContextShuffleEnabled);
 +
@@ -121,7 +121,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        uint32_t length,
 --- a/third_party/blink/renderer/modules/webaudio/audio_context.cc
 +++ b/third_party/blink/renderer/modules/webaudio/audio_context.cc
-@@ -15,6 +15,7 @@
+@@ -16,6 +16,7 @@
  #include "third_party/blink/public/common/features.h"
  #include "third_party/blink/public/common/mediastream/media_devices.h"
  #include "third_party/blink/public/platform/browser_interface_broker_proxy.h"
@@ -129,7 +129,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "third_party/blink/public/platform/modules/webrtc/webrtc_logging.h"
  #include "third_party/blink/public/platform/web_audio_latency_hint.h"
  #include "third_party/blink/renderer/bindings/core/v8/script_promise_resolver.h"
-@@ -684,7 +685,9 @@
+@@ -696,7 +697,9 @@
    DCHECK_CALLED_ON_VALID_SEQUENCE(main_thread_sequence_checker_);
    DCHECK(destination());
  
@@ -150,7 +150,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "third_party/blink/public/mojom/devtools/console_message.mojom-blink.h"
  #include "third_party/blink/public/mojom/frame/lifecycle.mojom-shared.h"
  #include "third_party/blink/public/platform/platform.h"
-@@ -716,6 +717,17 @@
+@@ -710,6 +711,17 @@
    return To<LocalDOMWindow>(GetExecutionContext());
  }
  
@@ -191,25 +191,25 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      // promise too.
 --- a/third_party/blink/renderer/modules/webaudio/realtime_analyser.cc
 +++ b/third_party/blink/renderer/modules/webaudio/realtime_analyser.cc
-@@ -36,6 +36,7 @@
- #include <bit>
+@@ -32,6 +32,7 @@
  #include <complex>
  
+ #include "base/compiler_specific.h"
 +#include "third_party/blink/renderer/modules/webaudio/base_audio_context.h"
  #include "third_party/blink/renderer/platform/audio/audio_bus.h"
  #include "third_party/blink/renderer/platform/audio/audio_utilities.h"
  #include "third_party/blink/renderer/platform/audio/vector_math.h"
-@@ -160,6 +161,7 @@
+@@ -156,6 +157,7 @@
            input_buffer[(i + write_index - fft_size + kInputBufferSize) %
-                        kInputBufferSize];
+                        kInputBufferSize]);
  
 +      value = BaseAudioContext::ShuffleAudioData(value, i);
-       destination[i] = value;
+       UNSAFE_TODO(destination[i]) = value;
      }
    }
-@@ -187,6 +189,8 @@
+@@ -183,6 +185,8 @@
            input_buffer[(i + write_index - fft_size + kInputBufferSize) %
-                        kInputBufferSize];
+                        kInputBufferSize]);
  
 +      value = BaseAudioContext::ShuffleAudioData(value, i);
 +
@@ -223,19 +223,19 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 +      scaled_value = BaseAudioContext::ShuffleAudioData(scaled_value, i);
 +
        // Clip to valid range.
-       destination[i] =
+       UNSAFE_TODO(destination[i]) =
            static_cast<unsigned char>(ClampTo(scaled_value, 0, UCHAR_MAX));
 @@ -325,6 +331,7 @@
-       float linear_value = source[i];
+       float linear_value = UNSAFE_TODO(source[i]);
        double db_mag = audio_utilities::LinearToDecibels(linear_value);
-       destination[i] = static_cast<float>(db_mag);
-+      destination[i] = BaseAudioContext::ShuffleAudioData(destination[i], i);
+       UNSAFE_TODO(destination[i]) = static_cast<float>(db_mag);
++      UNSAFE_TODO(destination[i]) = BaseAudioContext::ShuffleAudioData(destination[i], i);
      }
    }
  }
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -548,9 +548,8 @@
+@@ -565,9 +565,8 @@
      {
        // AudioContext.playoutStats interface.
        // https://chromestatus.com/feature/5172818344148992

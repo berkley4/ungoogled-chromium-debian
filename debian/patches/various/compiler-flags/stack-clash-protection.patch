@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -3396,6 +3396,16 @@
+@@ -3343,6 +3343,16 @@
    }
  }
  
@@ -19,7 +19,7 @@
  
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
-@@ -365,6 +365,7 @@
+@@ -370,6 +370,7 @@
    "//build/config/compiler:default_include_dirs",
    "//build/config/compiler:default_init_stack_vars",
    "//build/config/compiler:default_optimization",

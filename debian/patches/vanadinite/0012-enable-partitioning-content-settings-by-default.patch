@@ -1,6 +1,6 @@
 --- a/components/content_settings/core/common/features.cc
 +++ b/components/content_settings/core/common/features.cc
-@@ -161,7 +161,7 @@
+@@ -175,7 +175,7 @@
  
  BASE_FEATURE(kContentSettingsPartitioning,
               "ContentSettingsPartitioning",
