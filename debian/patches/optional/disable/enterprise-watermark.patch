@@ -1,3 +1,88 @@
+--- a/chrome/browser/enterprise/data_protection/data_protection_navigation_controller.cc
++++ b/chrome/browser/enterprise/data_protection/data_protection_navigation_controller.cc
+@@ -11,11 +11,14 @@
+ #include "chrome/browser/profiles/profile.h"
+ #include "chrome/browser/ui/browser_finder.h"
+ #include "chrome/browser/ui/views/frame/browser_view.h"
+-#include "components/enterprise/watermarking/content/watermark_text_container.h"
+-#include "components/enterprise/watermarking/watermark.h"
+ #include "components/tabs/public/tab_interface.h"
+ #include "content/public/browser/web_contents.h"
+ 
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
++#include "components/enterprise/watermarking/content/watermark_text_container.h"
++#include "components/enterprise/watermarking/watermark.h"
++#endif
++
+ namespace {
+ 
+ // The preferred way to fetch the browser pointer is using `FindBrowserWithTab`.
+@@ -143,6 +146,7 @@
+   }
+ #endif  // BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
+ 
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+   // Regardless of whether watermark text is empty, attach it as web contents
+   // user data so that other browser process code can draw watermarks outside
+   // of the context of a navigation (ex. when printing).
+@@ -170,6 +174,7 @@
+   if (!clear_watermark_text_on_page_load_) {
+     browser_view->ApplyWatermarkSettings(settings.watermark_text);
+   }
++#endif  // BUILDFLAG(ENTERPRISE_WATERMARK)
+ 
+   if (!on_delay_apply_data_protection_settings_if_empty_called_for_testing_
+            .is_null()) {
+@@ -201,7 +206,9 @@
+     return;
+   }
+ 
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+   browser_view->ApplyWatermarkSettings(settings.watermark_text);
++#endif
+ 
+ #if BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
+   browser_view->ApplyScreenshotSettings(settings.allow_screenshots);
+@@ -247,10 +254,12 @@
+   if (!browser_view) {
+     return;
+   }
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+   if (clear_watermark_text_on_page_load_) {
+     browser_view->ApplyWatermarkSettings(std::string());
+     clear_watermark_text_on_page_load_ = false;
+   }
++#endif
+ 
+ #if BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
+   if (clear_screenshot_protection_on_page_load_) {
+--- a/chrome/browser/enterprise/data_protection/data_protection_navigation_observer.cc
++++ b/chrome/browser/enterprise/data_protection/data_protection_navigation_observer.cc
+@@ -49,8 +49,12 @@
+ safe_browsing::RealTimeUrlLookupServiceBase* g_lookup_service = nullptr;
+ 
+ bool IsWatermarkWebUIURL(const GURL& url) {
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+   return url.SchemeIs(content::kChromeUIScheme) &&
+          url.host_piece() == chrome::kChromeUIWatermarkHost;
++#else
++  return false;
++#endif
+ }
+ 
+ content::Page& GetPageFromWebContents(content::WebContents* web_contents) {
+@@ -164,7 +168,11 @@
+ 
+ bool IsEnterpriseLookupEnabled(content::BrowserContext* context) {
+   DCHECK(context);
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+   return IsEnterpriseLookupEnabled(Profile::FromBrowserContext(context));
++#else
++  return false;
++#endif
+ }
+ 
+ void DoLookup(safe_browsing::RealTimeUrlLookupServiceBase* lookup_service,
 --- a/chrome/browser/ui/views/frame/browser_view.h
 +++ b/chrome/browser/ui/views/frame/browser_view.h
 @@ -852,9 +852,11 @@
@@ -64,61 +149,3 @@
  
  #if BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
  void BrowserView::ApplyScreenshotSettings(bool allow) {
---- a/chrome/browser/enterprise/data_protection/data_protection_navigation_controller.cc
-+++ b/chrome/browser/enterprise/data_protection/data_protection_navigation_controller.cc
-@@ -11,11 +11,14 @@
- #include "chrome/browser/profiles/profile.h"
- #include "chrome/browser/ui/browser_finder.h"
- #include "chrome/browser/ui/views/frame/browser_view.h"
--#include "components/enterprise/watermarking/content/watermark_text_container.h"
--#include "components/enterprise/watermarking/watermark.h"
- #include "components/tabs/public/tab_interface.h"
- #include "content/public/browser/web_contents.h"
- 
-+#if BUILDFLAG(ENTERPRISE_WATERMARK)
-+#include "components/enterprise/watermarking/content/watermark_text_container.h"
-+#include "components/enterprise/watermarking/watermark.h"
-+#endif
-+
- namespace {
- 
- // The preferred way to fetch the browser pointer is using `FindBrowserWithTab`.
-@@ -143,6 +146,7 @@
-   }
- #endif  // BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
- 
-+#if BUILDFLAG(ENTERPRISE_WATERMARK)
-   // Regardless of whether watermark text is empty, attach it as web contents
-   // user data so that other browser process code can draw watermarks outside
-   // of the context of a navigation (ex. when printing).
-@@ -170,6 +174,7 @@
-   if (!clear_watermark_text_on_page_load_) {
-     browser_view->ApplyWatermarkSettings(settings.watermark_text);
-   }
-+#endif  // BUILDFLAG(ENTERPRISE_WATERMARK)
- 
-   if (!on_delay_apply_data_protection_settings_if_empty_called_for_testing_
-            .is_null()) {
-@@ -201,7 +206,9 @@
-     return;
-   }
- 
-+#if BUILDFLAG(ENTERPRISE_WATERMARK)
-   browser_view->ApplyWatermarkSettings(settings.watermark_text);
-+#endif
- 
- #if BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
-   browser_view->ApplyScreenshotSettings(settings.allow_screenshots);
-@@ -247,10 +254,12 @@
-   if (!browser_view) {
-     return;
-   }
-+#if BUILDFLAG(ENTERPRISE_WATERMARK)
-   if (clear_watermark_text_on_page_load_) {
-     browser_view->ApplyWatermarkSettings(std::string());
-     clear_watermark_text_on_page_load_ = false;
-   }
-+#endif
- 
- #if BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
-   if (clear_screenshot_protection_on_page_load_) {
