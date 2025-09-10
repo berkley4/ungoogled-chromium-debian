@@ -148,7 +148,7 @@
 -
    'src/clank': {
      'url': Var('chrome_git') + '/clank/internal/apps.git' + '@' +
-     'e7044235cba63bd42e2d3d365b0e799701ca3d1b',
+     '058e9b2aa355eaba5eaf0b2511a814dea5e75a8a',
      'condition': 'checkout_android and checkout_src_internal',
    },
  
