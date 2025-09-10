@@ -1492,6 +1492,7 @@ case $DEPS_PATCH in
     DSB="$DSB -e \"/^third_party\/blink\/renderer\/core\/css\/perftest_data\//d\""
     DSB="$DSB -e \"/^third_party\/colorama\//d\""
     DSB="$DSB -e \"/^third_party\/cros-components\//d\""
+    DSB="$DSB -e \"/^third_party\/crossbench\//d\""
     DSB="$DSB -e \"/^third_party\/crossbench-web-tests\//d\""
     DSB="$DSB -e \"/^third_party\/depot_tools\//d\""
     DSB="$DSB -e \"/^third_party\/domato\//d\""
