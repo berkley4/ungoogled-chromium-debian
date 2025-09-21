@@ -138,7 +138,7 @@ if [ $NO_SYS_LIBS -eq 1 ]; then
 
   # Disable the unbundle toolchain, sys library GN_FLAGS and non-configurable SYS_LIBS
   RUL="$RUL -e \"/_toolchain=/s@^@#@\" -e \"/^[^#].*use_system/s@^@#@\""
-  RUL="$RUL -e \"/^SYS_LIBS.*dav1d/s@^@#@\""
+  RUL="$RUL -e \"/^SYS_LIBS.*dav1d/s@^@#@\" -e \"/^SYS_LIBS.*libwebp/s@^@#@\""
 fi
 
 [ -n "$SYS_BROTLI" ] || SYS_BROTLI=1
