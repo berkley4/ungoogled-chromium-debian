@@ -37,6 +37,9 @@
 # Enable purging stale entries in the GrShader disk cache on program start
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=ClearGrShaderDiskCacheOnInvalidPrefix"
 
+# Process the LayerTree with the GPU
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=TreesInViz"
+
 # This might help with eg google streetview on very old GPUs
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-accelerated-2d-canvas"
 
