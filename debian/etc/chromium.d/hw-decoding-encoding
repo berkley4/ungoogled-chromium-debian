@@ -10,15 +10,15 @@
 #
 
 ### GL
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoDecodeLinuxGL"
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoDecodeLinuxZeroCopyGL"
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=AcceleratedVideoDecodeLinuxGL"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=AcceleratedVideoDecodeLinuxZeroCopyGL"
 
 
 # Disable VA-API hardware decoder
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=VaapiVideoDecoder"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-features=AcceleratedVideoDecoder"
 
 # Enable VA-API hardware encoder
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=VaapiVideoEncoder"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=AcceleratedVideoEncoder"
 
 
 # Disable WebRTC hardware decoding/encoding
