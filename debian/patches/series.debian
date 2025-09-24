@@ -103,13 +103,7 @@ various/system/perfetto-system-zlib.patch
 various/system/xdg-scripts.patch
 various/system/zlib.patch
 
-optional/bundle-hyphen-data.patch
-#optional/enable-esbuild-for-official-builds.patch
-optional/enable-middle-click-autoscroll.patch
-optional/mutex-priority-inheritance.patch
-#optional/use-oauth2-client-switches-as-default.patch
 optional/remove-target-from-flags.patch
-#optional/return-RSA-16384-key-support.patch
 #optional/build-timestamp/compute-fixed-build-timestamp.patch
 #optional/build-timestamp/use-non-official-build-timestamp.patch
 #optional/chromecast/add-flag-to-enable-mdns.patch
@@ -148,6 +142,12 @@ optional/disable/media-remoting/media-remoting.patch
 optional/disable/media-remoting/registry-pref.patch
 #optional/disable/theme-buttons/no-gtk-button.patch
 #optional/disable/theme-buttons/no-qt-button.patch
+#optional/enable/esbuild.patch
+optional/enable/hyphen-data.patch
+optional/enable/middle-click-autoscroll.patch
+optional/enable/mutex-priority-inheritance.patch
+#optional/enable/oauth2.patch
+#optional/enable/rsa-16384.patch
 optional/ffmpeg-extra-codecs/audio-codecs.patch
 optional/ffmpeg-extra-codecs/context-fixup.patch
 optional/ffmpeg-extra-codecs/hevc/add-hevc-ffmpeg-decoder-parser-for-linux.patch

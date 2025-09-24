@@ -459,7 +459,7 @@ if [ $ESBUILD -ge 0 ]; then
   PRU_PY="$PRU_PY -e \"/third_party\/esbuild\//d\""
 
   if [ $ESBUILD -eq 1 ]; then
-    op_enable="$op_enable enable-esbuild-for-official-builds.patch"
+    op_enable="$op_enable enable/esbuild.patch"
     gn_enable="$gn_enable devtools_fast_bundle=true"
   fi
 fi
@@ -1043,7 +1043,7 @@ fi
 
 
 if [ $HYPHENATION -eq 0 ]; then
-  op_disable="$op_disable bundle-hyphen-data.patch"
+  op_disable="$op_disable enable/hyphen-data.patch"
 else
   DSB="$DSB -e \"/^third_party\/blink\/renderer\/platform\/text\/hyphenation\/hyphenation_minikin\.cc/d\""
   DSB="$DSB -e \"/^third_party\/hyphenation-patterns\//d\""
@@ -1091,7 +1091,7 @@ fi
 
 
 if [ $MCLICK_AUTOSCROLL -eq 0 ]; then
-  op_disable="$op_disable enable-middle-click-autoscroll.patch"
+  op_disable="$op_disable enable/middle-click-autoscroll.patch"
 fi
 
 
@@ -1102,7 +1102,7 @@ fi
 
 
 if [ $MUTEX_PI -eq 0 ]; then
-  op_disable="$op_disable mutex-priority-inheritance.patch"
+  op_disable="$op_disable enable/mutex-priority-inheritance.patch"
   gn_disable="$gn_disable enable_mutex_priority_inheritance=true"
 else
   # The build flag is disabled separately a few lines below
@@ -1113,7 +1113,7 @@ fi
 
 
 if [ $OAUTH2 -eq 1 ]; then
-  op_enable="$op_enable use-oauth2-client-switches-as-default.patch"
+  op_enable="$op_enable enable/oauth2.patch"
 fi
 
 
@@ -1145,7 +1145,7 @@ fi
 
 
 if [ $RSA_16K -eq 1 ]; then
-  op_enable="$op_enable return-RSA-16384-key-support.patch"
+  op_enable="$op_enable enable/rsa-16384.patch"
 fi
 
 
