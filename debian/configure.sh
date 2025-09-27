@@ -198,8 +198,6 @@ FF_AAC=1
 [ -n "$NON_FREE" ] || NON_FREE=1
 
 if [ $NON_FREE -eq 0 ]; then
-  sed -e "/EnforceNoopenerOnBlobURLNavigation/s@^#@@" -i $FLAG_DIR/isolation
-
   SER_DB="$SER_DB -e \"s@^\(cromite/\)@#\1@\" -e \"s@^\(vanadium/\)@#\1@\""
 
   if [ $FF_FDK -eq 1 ]; then
