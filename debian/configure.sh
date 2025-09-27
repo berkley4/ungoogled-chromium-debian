@@ -211,6 +211,8 @@ if [ $NON_FREE -eq 0 ]; then
     printf '%s\n' "ERROR: Cannot set SYS_OPENH264=1 when NON_FREE=0"
     exit 1
   fi
+else
+  ins_enable="$ins_enable cromite"
 fi
 
 

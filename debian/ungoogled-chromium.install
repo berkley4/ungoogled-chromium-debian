@@ -45,6 +45,7 @@ debian/etc/chromium.d/anti-fingerprint                                         e
 debian/etc/chromium.d/anti-phish-track                                         etc/chromium.d
 debian/etc/chromium.d/blocked-files                                            etc/chromium.d
 debian/etc/chromium.d/blocked-flags                                            etc/chromium.d
+#debian/etc/chromium.d/cromite                                                  etc/chromium.d
 debian/etc/chromium.d/google-api-keys                                          etc/chromium.d
 #debian/etc/chromium.d/google-lens                                              etc/chromium.d
 debian/etc/chromium.d/google-translate                                         etc/chromium.d
