@@ -6,9 +6,6 @@
 # Intended for diagnosing bugs that may be due to out-of-process iframes.
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --site-isolation-trial-opt-out"
 
-# Disable partitioning of third-party storage by top-level site.
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=DisableThirdPartyStoragePartitioning3DeprecationTrial"
-
 # Note: this breaks the document.domain feature of websites which itself 
 #       is in the process of being obsoleted due to security concerns.
 #       Ref - https://developer.chrome.com/blog/immutable-document-domain/
