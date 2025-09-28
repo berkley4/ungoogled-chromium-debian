@@ -311,7 +311,7 @@ esac
 if [ $TEST -eq 0 ]; then
   ## Get clang_version from build/toolchain/toolchain.gni when TEST=0
   tc_gni=$RT_DIR/build/toolchain/toolchain.gni
-  LLVM_PGO_VER=$(sed -n '/clang_version =/h; ${x;s@[ _="a-z]@@gp;}' $tc_gni)
+  #LLVM_PGO_VER=$(sed -n '/clang_version =/h; ${x;s@[ _="a-z]@@gp;}' $tc_gni)
 
   # Check that hyphenation files are present when HYPHENATION=1
   hyphen_dir=$RT_DIR/third_party/hyphenation-patterns
