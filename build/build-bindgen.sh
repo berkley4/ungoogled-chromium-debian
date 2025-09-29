@@ -20,7 +20,7 @@ esac
 
 DL_CACHE=.download_cache
 
-bg_tag=upstream/v0.72.0
+bg_tag=upstream/v0.72.1
 nc_ver=Ws0ru48A4IYoYLVKbV5K5_mDYT4ml9LAQUKdkiczdlMC
 
 bg_repo=https://chromium.googlesource.com/external/github.com/rust-lang/rust-bindgen.git
