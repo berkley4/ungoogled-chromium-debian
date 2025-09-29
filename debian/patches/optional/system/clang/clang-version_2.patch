@@ -1,0 +1,12 @@
+--- a/build/toolchain/toolchain.gni
++++ b/build/toolchain/toolchain.gni
+@@ -38,8 +38,7 @@
+   } else if (llvm_force_head_revision) {
+     clang_version = "22"
+   } else {
+-    # TODO(crbug.com/432036065): Remove in the next Clang roll.
+-    clang_version = "21"
++    clang_version = "22"
+   }
+ }
+ 

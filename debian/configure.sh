@@ -529,9 +529,16 @@ else
 
   RUL="$RUL -e \"s@_LLVM_BASE_DIR@$LLVM_BASE_DIR@\""
 
-  if [ $PGO -eq 1 ] && [ $LLVM_VER -ne $LLVM_PGO_VER ]; then
+  if [ $LLVM_VER -ne $LLVM_PGO_VER ]; then
+    op_enable="$op_enable system/clang/clang-version_2.patch"
     gn_enable="$gn_enable clang_version="
+
     RUL="$RUL -e \"s@_LLVM_VER@$LLVM_VER@\""
+
+    # TODO: re-evaluate this after clang 22 becomes the upstream default
+    if [ $LLVM_VER -ne 22 ]; then
+      sed "/^+ /s@22@$LLVM_VER@" -i $OP_DIR/system/clang/clang-version_2.patch
+    fi
 
     printf '%s\n' "INFO: Using clang $LLVM_VER"
   fi
