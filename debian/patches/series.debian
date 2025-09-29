@@ -180,9 +180,6 @@ optional/fixes/widevine/widevine-locations.patch
 #optional/system/icu.patch
 optional/system/jpeg.patch
 optional/system/libdbus.patch
-#optional/system/node/node.patch
-#optional/system/node/node-version-ck.patch
-#optional/system/node/node-version-ck_2.patch
 optional/system/openh264.patch
 #optional/system/clang/clang-version.patch
 #optional/system/clang/clang-version-check.patch
@@ -190,6 +187,9 @@ optional/system/openh264.patch
 #optional/system/clang/rust-clanglib.patch
 #optional/system/gn/gn-allowlist.patch
 #optional/system/gn/gn-path-exists.patch
+#optional/system/node/node.patch
+#optional/system/node/node-version-ck.patch
+#optional/system/node/node-version-ck_2.patch
 #optional/system/rust/no-adler2.patch
 #optional/system/rust/no-alloc-shim.patch
 optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
