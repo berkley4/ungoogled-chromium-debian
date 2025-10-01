@@ -890,7 +890,7 @@ if [ $CHROMECAST -eq 0 ]; then
   fi
 else
   op_disable="$op_disable disable/media-router.patch"
-  op_enable="$op_enable chromecast/"
+  op_enable="$op_enable enable/add-flag-to-enable-mdns.patch"
 
   P=fix-building-without-mdns-and-service-discovery.patch
   SER_UC="$SER_UC -e \"/^extra\/ungoogled-chromium\/$P/s@^@#@\""
