@@ -1,14 +1,14 @@
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -6990,6 +6990,7 @@
+@@ -7044,6 +7044,7 @@
        "metrics/pressure/pressure_metrics_reporter.cc",
        "metrics/pressure/pressure_metrics_reporter.h",
        "obsolete_system/obsolete_system_linux.cc",
 +      "platform_util_linux.cc",
        "shell_integration_linux.cc",
        "shell_integration_linux.h",
-       "upgrade_detector/directory_monitor.cc",
-@@ -7012,7 +7013,6 @@
+     ]
+@@ -7063,7 +7064,6 @@
          "dbus_memory_pressure_evaluator_linux.h",
          "notifications/notification_platform_bridge_linux.cc",
          "notifications/notification_platform_bridge_linux.h",

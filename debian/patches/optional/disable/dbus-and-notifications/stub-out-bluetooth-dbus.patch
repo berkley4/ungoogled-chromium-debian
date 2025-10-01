@@ -1,35 +1,40 @@
 --- a/chrome/browser/chrome_browser_main_linux.cc
 +++ b/chrome/browser/chrome_browser_main_linux.cc
-@@ -62,11 +62,11 @@
-   }
-   // Don't initialize DBus here. Bluetooth DBusManager initialization depends on
-   // FeatureList, and is done elsewhere.
-+#elif defined(USE_DBUS)
-+  bluez::BluezDBusManager::Initialize(nullptr /* system_bus */);
+@@ -65,8 +65,10 @@
  #endif  // BUILDFLAG(IS_CHROMEOS)
  
  #if !BUILDFLAG(IS_CHROMEOS)
--  bluez::BluezDBusManager::Initialize(nullptr /* system_bus */);
--
++#if BUILDFLAG(USE_DBUS)
+   bluez::BluezDBusManager::Initialize(
+       dbus_thread_linux::GetSharedSystemBus().get());
++#endif  // BUILDFLAG(USE_DBUS)
+ 
    // Set up crypt config. This needs to be done before anything starts the
    // network service, as the raw encryption key needs to be shared with the
-   // network service for encrypted cookie storage.
-@@ -131,7 +131,7 @@
+@@ -132,7 +134,7 @@
  void ChromeBrowserMainPartsLinux::PostDestroyThreads() {
  #if BUILDFLAG(IS_CHROMEOS)
    // No-op; per PostBrowserStart() comment, this is done elsewhere.
 -#else
-+#elif defined(USE_DBUS)
++#elif BUILDFLAG(USE_DBUS)
    bluez::BluezDBusManager::Shutdown();
-   bluez::BluezDBusThreadManager::Shutdown();
  #endif  // BUILDFLAG(IS_CHROMEOS)
+ 
 --- a/chrome/browser/metrics/bluetooth_metrics_provider.cc
 +++ b/chrome/browser/metrics/bluetooth_metrics_provider.cc
-@@ -15,11 +15,15 @@
+@@ -6,6 +6,7 @@
+ 
+ #include "base/functional/bind.h"
+ #include "base/metrics/histogram_functions.h"
++#include "build/config/linux/dbus/buildflags.h"
+ #include "device/bluetooth/floss/floss_features.h"
+ 
+ namespace metrics {
+@@ -15,11 +16,15 @@
  BluetoothMetricsProvider::~BluetoothMetricsProvider() = default;
  
  bool BluetoothMetricsProvider::ProvideHistograms() {
-+#if defined(USE_DBUS)
++#if BUILDFLAG(USE_DBUS)
    base::UmaHistogramEnumeration("Bluetooth.StackName",
                                  floss::features::IsFlossEnabled()
                                      ? BluetoothStackName::kFloss
@@ -41,115 +46,18 @@
  }
  
  }  // namespace metrics
---- a/device/bluetooth/adapter.cc
-+++ b/device/bluetooth/adapter.cc
-@@ -111,7 +111,7 @@
-   mojom::AdapterInfoPtr adapter_info = mojom::AdapterInfo::New();
-   adapter_info->address = adapter_->GetAddress();
-   adapter_info->name = adapter_->GetName();
--#if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX)
-+#if BUILDFLAG(IS_CHROMEOS) || (BUILDFLAG(IS_LINUX) && defined(USE_DBUS))
-   adapter_info->system_name = adapter_->GetSystemName();
- #endif
- #if BUILDFLAG(IS_CHROMEOS)
---- a/device/bluetooth/bluetooth_adapter_factory.cc
-+++ b/device/bluetooth/bluetooth_adapter_factory.cc
-@@ -42,7 +42,7 @@
-   // instance even on platforms that would otherwise not support it.
-   if (Get()->adapter_)
-     return true;
--#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || \
-+#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_WIN) || (BUILDFLAG(IS_LINUX) && defined(USE_DBUS)) || \
-     BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_APPLE)
-   return true;
- #else
-@@ -55,7 +55,7 @@
-     return override_values_->GetLESupported();
-   }
- 
--#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX) || \
-+#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_CHROMEOS) || (BUILDFLAG(IS_LINUX) && defined(USE_DBUS)) || \
-     BUILDFLAG(IS_APPLE) || BUILDFLAG(IS_WIN)
-   return true;
- #else
-@@ -112,7 +112,7 @@
- #endif  // BUILDFLAG(IS_WIN)
- }
- 
--#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
-+#if (BUILDFLAG(IS_LINUX) && defined(USE_DBUS)) || BUILDFLAG(IS_CHROMEOS)
- // static
- void BluetoothAdapterFactory::Shutdown() {
-   if (Get()->adapter_)
---- a/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc
-+++ b/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc
-@@ -1281,7 +1281,7 @@
- // TODO: Ideally this should be handled by our feature system, so that this
- // code doesn't even compile on OSes it isn't being used on, but currently this
- // is not possible.
--#if !BUILDFLAG(IS_WIN)
-+#if !BUILDFLAG(IS_WIN) && (!BUILDFLAG(IS_LINUX) || defined(USE_DBUS))
-   base::WeakPtr<device::BluetoothLocalGattService> service =
-       event_router_->adapter()->CreateLocalGattService(
-           device::BluetoothUUID(params_->service.uuid),
-@@ -1309,6 +1309,7 @@
- }
- 
- void BluetoothLowEnergyCreateCharacteristicFunction::DoWork() {
-+#if !BUILDFLAG(IS_LINUX) || defined(USE_DBUS)
-   device::BluetoothLocalGattService* service =
-       event_router_->adapter()->GetGattService(params_->service_id);
-   if (!service) {
-@@ -1329,6 +1330,9 @@
- 
-   Respond(ArgumentList(apibtle::CreateCharacteristic::Results::Create(
-       characteristic->GetIdentifier())));
-+#else
-+  Respond(Error(kErrorPlatformNotSupported));
-+#endif
- }
- 
- // createDescriptor:
-@@ -1345,6 +1349,7 @@
- }
- 
- void BluetoothLowEnergyCreateDescriptorFunction::DoWork() {
-+#if !BUILDFLAG(IS_LINUX) || defined(USE_DBUS)
-   device::BluetoothLocalGattCharacteristic* characteristic =
-       event_router_->GetLocalCharacteristic(params_->characteristic_id);
-   if (!characteristic) {
-@@ -1360,6 +1365,9 @@
- 
-   Respond(ArgumentList(
-       apibtle::CreateDescriptor::Results::Create(descriptor->GetIdentifier())));
-+#else
-+  Respond(Error(kErrorPlatformNotSupported));
-+#endif
- }
- 
- // registerService:
---- a/services/device/wake_lock/power_save_blocker/BUILD.gn
-+++ b/services/device/wake_lock/power_save_blocker/BUILD.gn
-@@ -80,6 +80,9 @@
-     visibility = [ ":power_save_blocker" ]
-     sources = java_sources_needing_jni
-   }
-+  if (!is_chromeos && use_x11 && !use_dbus) {
-+    sources += [ "power_save_blocker_ozone.cc" ]
-+  }
- 
-   android_library("java") {
-     # Conceptually, this should be visible only to //services/device:java.
 --- a/chrome/browser/platform_util_linux.cc
 +++ b/chrome/browser/platform_util_linux.cc
-@@ -31,15 +31,18 @@
+@@ -30,16 +30,20 @@
+ #include "base/strings/utf_string_conversions.h"
  #include "base/task/thread_pool.h"
  #include "base/types/expected.h"
++#include "build/config/linux/dbus/buildflags.h"
  #include "chrome/browser/platform_util_internal.h"
 +#include "content/public/browser/browser_thread.h"
 +#include "url/gurl.h"
 +
-+#if defined(USE_DBUS)
++#if BUILDFLAG(USE_DBUS)
  #include "components/dbus/properties/types.h"
  #include "components/dbus/thread_linux/dbus_thread_linux.h"
  #include "components/dbus/utils/check_for_service_and_start.h"
@@ -163,15 +71,15 @@
  
  using content::BrowserThread;
  
-@@ -47,6 +50,7 @@
+@@ -47,6 +51,7 @@
  
  namespace {
  
-+#if defined(USE_DBUS)
++#if BUILDFLAG(USE_DBUS)
  const char kFreedesktopFileManagerName[] = "org.freedesktop.FileManager1";
  const char kFreedesktopFileManagerPath[] = "/org/freedesktop/FileManager1";
  const char kMethodShowItems[] = "ShowItems";
-@@ -293,6 +297,7 @@
+@@ -293,6 +298,7 @@
    // Requests that are queued until the API availability is determined.
    std::queue<base::FilePath> pending_requests_;
  };
@@ -179,14 +87,137 @@
  
  void OnLaunchOptionsCreated(const std::string& command,
                              const base::FilePath& working_directory,
-@@ -371,8 +376,10 @@
+@@ -371,8 +377,10 @@
  }  // namespace internal
  
  void ShowItemInFolder(Profile*, const base::FilePath& full_path) {
-+#if defined(USE_DBUS)
++#if BUILDFLAG(USE_DBUS)
    DCHECK_CURRENTLY_ON(BrowserThread::UI);
    ShowItemHelper::GetInstance().ShowItemInFolder(full_path);
 +#endif
  }
  
  void OpenExternal(const GURL& url) {
+--- a/device/bluetooth/adapter.cc
++++ b/device/bluetooth/adapter.cc
+@@ -14,6 +14,7 @@
+ #include "base/memory/ptr_util.h"
+ #include "base/metrics/histogram_functions.h"
+ #include "build/build_config.h"
++#include "build/config/linux/dbus/buildflags.h"
+ #include "device/bluetooth/advertisement.h"
+ #include "device/bluetooth/bluetooth_local_gatt_service.h"
+ #include "device/bluetooth/bluetooth_socket.h"
+@@ -111,7 +112,7 @@
+   mojom::AdapterInfoPtr adapter_info = mojom::AdapterInfo::New();
+   adapter_info->address = adapter_->GetAddress();
+   adapter_info->name = adapter_->GetName();
+-#if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX)
++#if BUILDFLAG(IS_CHROMEOS) || (BUILDFLAG(IS_LINUX) && BUILDFLAG(USE_DBUS))
+   adapter_info->system_name = adapter_->GetSystemName();
+ #endif
+ #if BUILDFLAG(IS_CHROMEOS)
+--- a/device/bluetooth/bluetooth_adapter_factory.cc
++++ b/device/bluetooth/bluetooth_adapter_factory.cc
+@@ -15,6 +15,7 @@
+ #include "base/memory/weak_ptr.h"
+ #include "base/no_destructor.h"
+ #include "build/build_config.h"
++#include "build/config/linux/dbus/buildflags.h"
+ #include "device/bluetooth/bluetooth_adapter.h"
+ 
+ #if BUILDFLAG(IS_APPLE)
+@@ -42,7 +43,7 @@
+   // instance even on platforms that would otherwise not support it.
+   if (Get()->adapter_)
+     return true;
+-#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || \
++#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_WIN) || (BUILDFLAG(IS_LINUX) && BUILDFLAG(USE_DBUS)) || \
+     BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_APPLE)
+   return true;
+ #else
+@@ -55,7 +56,7 @@
+     return override_values_->GetLESupported();
+   }
+ 
+-#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX) || \
++#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_CHROMEOS) || (BUILDFLAG(IS_LINUX) && BUILDFLAG(USE_DBUS)) || \
+     BUILDFLAG(IS_APPLE) || BUILDFLAG(IS_WIN)
+   return true;
+ #else
+@@ -112,7 +113,7 @@
+ #endif  // BUILDFLAG(IS_WIN)
+ }
+ 
+-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
++#if (BUILDFLAG(IS_LINUX) && BUILDFLAG(USE_DBUS)) || BUILDFLAG(IS_CHROMEOS)
+ // static
+ void BluetoothAdapterFactory::Shutdown() {
+   if (Get()->adapter_)
+--- a/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc
++++ b/extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.cc
+@@ -22,6 +22,7 @@
+ #include "base/types/expected_macros.h"
+ #include "base/values.h"
+ #include "build/build_config.h"
++#include "build/config/linux/dbus/buildflags.h"
+ #include "content/public/browser/browser_thread.h"
+ #include "device/bluetooth/bluetooth_adapter.h"
+ #include "device/bluetooth/bluetooth_gatt_characteristic.h"
+@@ -1281,7 +1282,7 @@
+ // TODO: Ideally this should be handled by our feature system, so that this
+ // code doesn't even compile on OSes it isn't being used on, but currently this
+ // is not possible.
+-#if !BUILDFLAG(IS_WIN)
++#if !BUILDFLAG(IS_WIN) && (!BUILDFLAG(IS_LINUX) || BUILDFLAG(USE_DBUS))
+   base::WeakPtr<device::BluetoothLocalGattService> service =
+       event_router_->adapter()->CreateLocalGattService(
+           device::BluetoothUUID(params_->service.uuid),
+@@ -1309,6 +1310,7 @@
+ }
+ 
+ void BluetoothLowEnergyCreateCharacteristicFunction::DoWork() {
++#if !BUILDFLAG(IS_LINUX) || BUILDFLAG(USE_DBUS)
+   device::BluetoothLocalGattService* service =
+       event_router_->adapter()->GetGattService(params_->service_id);
+   if (!service) {
+@@ -1329,6 +1331,9 @@
+ 
+   Respond(ArgumentList(apibtle::CreateCharacteristic::Results::Create(
+       characteristic->GetIdentifier())));
++#else
++  Respond(Error(kErrorPlatformNotSupported));
++#endif
+ }
+ 
+ // createDescriptor:
+@@ -1345,6 +1350,7 @@
+ }
+ 
+ void BluetoothLowEnergyCreateDescriptorFunction::DoWork() {
++#if !BUILDFLAG(IS_LINUX) || BUILDFLAG(USE_DBUS)
+   device::BluetoothLocalGattCharacteristic* characteristic =
+       event_router_->GetLocalCharacteristic(params_->characteristic_id);
+   if (!characteristic) {
+@@ -1360,6 +1366,9 @@
+ 
+   Respond(ArgumentList(
+       apibtle::CreateDescriptor::Results::Create(descriptor->GetIdentifier())));
++#else
++  Respond(Error(kErrorPlatformNotSupported));
++#endif
+ }
+ 
+ // registerService:
+--- a/services/device/wake_lock/power_save_blocker/BUILD.gn
++++ b/services/device/wake_lock/power_save_blocker/BUILD.gn
+@@ -82,6 +82,9 @@
+     visibility = [ ":power_save_blocker" ]
+     sources = java_sources_needing_jni
+   }
++  if (!is_chromeos && use_x11 && !use_dbus) {
++    sources += [ "power_save_blocker_ozone.cc" ]
++  }
+ 
+   android_library("java") {
+     # Conceptually, this should be visible only to //services/device:java.

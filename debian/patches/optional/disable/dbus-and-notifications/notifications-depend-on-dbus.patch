@@ -1,28 +1,38 @@
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5604,13 +5604,13 @@
-      kOsLinux | kOsAndroid | kOsCrOS,
+@@ -5594,13 +5594,13 @@
+      flag_descriptions::kVulkanFromAngleDescription, kOsLinux | kOsAndroid,
       FEATURE_VALUE_TYPE(features::kVulkanFromANGLE)},
  
 -#if !BUILDFLAG(IS_CHROMEOS)
-+#if defined(USE_DBUS) && !BUILDFLAG(IS_CHROMEOS)
++#if BUILDFLAG(USE_DBUS) && !BUILDFLAG(IS_CHROMEOS)
      {"enable-system-notifications",
       flag_descriptions::kNotificationsSystemFlagName,
       flag_descriptions::kNotificationsSystemFlagDescription,
       kOsMac | kOsLinux | kOsWin,
       FEATURE_VALUE_TYPE(features::kSystemNotifications)},
 -#endif  // !BUILDFLAG(IS_CHROMEOS)
-+#endif  // defined(USE_DBUS) && !BUILDFLAG(IS_CHROMEOS)
++#endif  // BUILDFLAG(USE_DBUS) && !BUILDFLAG(IS_CHROMEOS)
  #if BUILDFLAG(IS_CHROMEOS)
      {"enable-ongoing-processes", flag_descriptions::kEnableOngoingProcessesName,
       flag_descriptions::kEnableOngoingProcessesDescription, kOsCrOS,
+--- a/chrome/browser/browser_features.h
++++ b/chrome/browser/browser_features.h
+@@ -18,6 +18,7 @@
+ #include "build/branding_buildflags.h"
+ #include "build/build_config.h"
+ #include "build/chromeos_buildflags.h"
++#include "build/config/linux/dbus/buildflags.h"
+ #include "extensions/buildflags/buildflags.h"
+ 
+ namespace features {
 --- a/chrome/browser/browser_process_impl.cc
 +++ b/chrome/browser/browser_process_impl.cc
-@@ -921,9 +921,13 @@
+@@ -917,9 +917,13 @@
  }
  
  NotificationPlatformBridge* BrowserProcessImpl::notification_platform_bridge() {
-+#if defined(USE_DBUS)
++#if BUILDFLAG(USE_DBUS)
    if (!created_notification_bridge_)
      CreateNotificationPlatformBridge();
    return notification_bridge_.get();
@@ -32,11 +42,11 @@
  }
  
  policy::ChromeBrowserPolicyConnector*
-@@ -1503,9 +1507,11 @@
+@@ -1500,9 +1504,11 @@
  }
  
  void BrowserProcessImpl::CreateNotificationPlatformBridge() {
-+#if defined(USE_DBUS)
++#if BUILDFLAG(USE_DBUS)
    DCHECK(!notification_bridge_);
    notification_bridge_ = NotificationPlatformBridge::Create();
    created_notification_bridge_ = true;
@@ -46,11 +56,19 @@
  void BrowserProcessImpl::CreateNotificationUIManager() {
 --- a/chrome/browser/browser_process_impl.h
 +++ b/chrome/browser/browser_process_impl.h
-@@ -361,7 +361,9 @@
+@@ -23,6 +23,7 @@
+ #include "base/sequence_checker.h"
+ #include "base/timer/timer.h"
+ #include "build/build_config.h"
++#include "build/config/linux/dbus/buildflags.h"
+ #include "chrome/browser/browser_process.h"
+ #include "chrome/common/buildflags.h"
+ #include "components/keep_alive_registry/keep_alive_state_observer.h"
+@@ -361,7 +362,9 @@
  
    std::unique_ptr<StatusTray> status_tray_;
  
-+#if defined(USE_DBUS)
++#if BUILDFLAG(USE_DBUS)
    bool created_notification_bridge_ = false;
 +#endif
  
@@ -62,10 +80,10 @@
  NotificationsTest::NotificationsTest() {
  // Temporary change while the whole support class is changed to deal
  // with system notifications. crbug.com/714679
-+#if defined(USE_DBUS)
++#if BUILDFLAG(USE_DBUS)
    feature_list_.InitWithFeatures(
        {}, {features::kNativeNotifications, features::kSystemNotifications});
-+#endif  // defined(USE_DBUS)
++#endif  // BUILDFLAG(USE_DBUS)
  }
  
  int NotificationsTest::GetNotificationCount() {
@@ -73,14 +91,14 @@
  
  NotificationsTestWithPermissionsEmbargo ::
      NotificationsTestWithPermissionsEmbargo() {
-+#if defined(USE_DBUS)
++#if BUILDFLAG(USE_DBUS)
    feature_list_.InitWithFeatures(
        {},
        {features::kSystemNotifications});
 +#else
 +  feature_list_.InitWithFeatures(
 +      {});
-+#endif  //  defined(USE_DBUS)
++#endif  //  BUILDFLAG(USE_DBUS)
  }
 --- a/chrome/browser/notifications/notification_platform_bridge_delegator.cc
 +++ b/chrome/browser/notifications/notification_platform_bridge_delegator.cc
@@ -88,7 +106,7 @@
  // Please try to keep this comment up to date when changing behaviour on one of
  // the platforms supported by the browser.
  bool SystemNotificationsEnabled(Profile* profile) {
-+#if defined(USE_DBUS)
++#if BUILDFLAG(USE_DBUS)
  #if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_ANDROID)
    return true;
  #elif BUILDFLAG(IS_WIN)
@@ -98,7 +116,7 @@
  #endif  // BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_ANDROID)
 +#else
 +  return false;
-+#endif  // defined(USE_DBUS)
++#endif  // BUILDFLAG(USE_DBUS)
  }
  
  NotificationPlatformBridge* GetSystemNotificationPlatformBridge(
@@ -106,39 +124,43 @@
  NotificationPlatformBridge*
  NotificationPlatformBridgeDelegator::GetBridgeForType(
      NotificationHandler::Type type) {
-+#if defined(USE_DBUS)
++#if BUILDFLAG(USE_DBUS)
    // Prefer the system bridge if available and it can handle |type|.
    if (system_bridge_ && NotificationPlatformBridge::CanHandleType(type))
      return system_bridge_;
-+#endif  // defined(USE_DBUS)
++#endif  // BUILDFLAG(USE_DBUS)
    return message_center_bridge_;
  }
  
 --- a/chrome/common/chrome_features.cc
 +++ b/chrome/common/chrome_features.cc
-@@ -1200,6 +1200,7 @@
+@@ -1021,9 +1021,11 @@
  // Enables the use of system notification centers instead of using the Message
  // Center for displaying the toasts. The feature is hardcoded to enabled for
  // Chrome OS.
-+#if defined(USE_DBUS) && !BUILDFLAG(IS_CHROMEOS)
- BASE_FEATURE(kNativeNotifications,
-              "NativeNotifications",
-              base::FEATURE_ENABLED_BY_DEFAULT);
-@@ -1207,6 +1208,7 @@
- BASE_FEATURE(kSystemNotifications,
-              "SystemNotifications",
-              base::FEATURE_ENABLED_BY_DEFAULT);
-+#endif  // defined(USE_DBUS) && !BUILDFLAG(IS_CHROMEOS)
++#if BUILDFLAG(USE_DBUS)
+ BASE_FEATURE(NativeNotifications, base::FEATURE_ENABLED_BY_DEFAULT);
+ 
+ BASE_FEATURE(SystemNotifications, base::FEATURE_ENABLED_BY_DEFAULT);
++#endif
  
  #if BUILDFLAG(IS_MAC)
  // Enables the usage of Apple's new Notification API.
 --- a/chrome/common/chrome_features.h
 +++ b/chrome/common/chrome_features.h
-@@ -714,9 +714,11 @@
+@@ -15,6 +15,7 @@
+ #include "build/branding_buildflags.h"
+ #include "build/build_config.h"
+ #include "build/buildflag.h"
++#include "build/config/linux/dbus/buildflags.h"
+ #include "chrome/common/buildflags.h"
+ #include "device/vr/buildflags/buildflags.h"
+ #include "extensions/buildflags/buildflags.h"
+@@ -731,9 +732,11 @@
  BASE_DECLARE_FEATURE(kShowHiddenNetworkToggle);
  #endif
  
-+#if defined(USE_DBUS)
++#if BUILDFLAG(USE_DBUS)
  COMPONENT_EXPORT(CHROME_FEATURES) BASE_DECLARE_FEATURE(kNativeNotifications);
  
  COMPONENT_EXPORT(CHROME_FEATURES) BASE_DECLARE_FEATURE(kSystemNotifications);
