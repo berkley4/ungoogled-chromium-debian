@@ -149,9 +149,6 @@ GN_FLAGS += enable_platform_ac3_eac3_audio=true
 # Disable enterprise watermark
 GN_FLAGS += enterprise_watermark=false
 
-# Enable ESbuild
-#GN_FLAGS += devtools_fast_bundle=true
-
 # Disable GTK
 #GN_FLAGS += use_gtk=false
 

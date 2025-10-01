@@ -454,14 +454,8 @@ elif [ $BUILD_TS -eq 2 ]; then
 fi
 
 
-if [ $ESBUILD -ge 0 ]; then
-  # Avoid the hassle of having to re-obtain after deletion
-  PRU_PY="$PRU_PY -e \"/third_party\/esbuild\//d\""
-
-  if [ $ESBUILD -eq 1 ]; then
-    op_enable="$op_enable enable/esbuild.patch"
-    gn_enable="$gn_enable devtools_fast_bundle=true"
-  fi
+if [ $ESBUILD -eq 1 ]; then
+  op_enable="$op_enable enable/esbuild.patch"
 fi
 
 
@@ -1538,6 +1532,8 @@ esac
 PRU="$PRU -e \"/^chrome\/build\/pgo_profiles\//d\""
 PRU="$PRU -e \"/^third_party\/depot_tools\//d\""
 PRU="$PRU -e \"/^third_party\/node\/node_modules\//d\""
+
+PRU_PY="$PRU_PY -e \"/third_party\/esbuild\//d\""
 
 ## Exempt node from pruning only if DEPS-no-node.patch has NOT been applied
 case $DEPS_PATCH in

@@ -1,11 +1,13 @@
 --- a/third_party/devtools-frontend/src/scripts/build/ninja/bundle.gni
 +++ b/third_party/devtools-frontend/src/scripts/build/ninja/bundle.gni
-@@ -11,8 +11,6 @@
+@@ -10,9 +10,7 @@
+   assert(defined(invoker.entrypoint),
           "You must define the 'entrypoint' for a bundle target")
  
-   _fast_bundle = is_debug || devtools_skip_typecheck
+-  _fast_bundle = is_debug || devtools_skip_typecheck
 -  assert(!is_official_build || !_fast_bundle,
 -         "Fast bundling is disallowed for official builds.")
++  _fast_bundle = true
  
    if (_fast_bundle) {
      node_action(target_name) {
