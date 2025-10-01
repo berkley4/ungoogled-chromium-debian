@@ -171,8 +171,8 @@ GN_FLAGS += enable_media_remoting=false
 # Disable openh264
 #GN_FLAGS += media_use_openh264=false rtc_use_h264=false
 
-# Disable pdfium javascript/XFA forms support
-GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
+# Disable pdfium javascript (also disables XFA forms support)
+GN_FLAGS += pdf_enable_v8=false
 
 # Enable fontations support for pdfium
 GN_FLAGS += pdf_enable_fontations=true

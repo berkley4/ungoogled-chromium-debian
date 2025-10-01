@@ -1,0 +1,27 @@
+--- a/third_party/pdfium/pdfium.gni
++++ b/third_party/pdfium/pdfium.gni
+@@ -8,6 +8,11 @@
+ # This file contains PDFium-related build flags.
+ 
+ declare_args() {
++  # Build PDFium either with or without v8 support.
++  pdf_enable_v8 = pdf_enable_v8_override
++}
++
++declare_args() {
+   # Build PDFium either:
+   # 1) When set to true, with a bundled FreeType, built from FreeType source
+   #    code in //third_party/freetype and PDFium's FreeType configs in
+@@ -19,11 +24,8 @@
+   # Generate logging messages for click events that reach PDFium
+   pdf_enable_click_logging = false
+ 
+-  # Build PDFium either with or without v8 support.
+-  pdf_enable_v8 = pdf_enable_v8_override
+-
+   # Build PDFium either with or without XFA Forms support.
+-  pdf_enable_xfa = pdf_enable_xfa_override
++  pdf_enable_xfa = pdf_enable_v8 && pdf_enable_xfa_override
+ 
+   # If XFA, also support bmp codec. Ignored if not XFA.
+   pdf_enable_xfa_bmp = true

@@ -1134,7 +1134,7 @@ fi
 
 
 if [ $PDF_JS -eq 1 ]; then
-  # GN_FLAGS += pdf_enable_v8=false pdf_enable_xfa=false
+  # GN_FLAGS += pdf_enable_v8=false
   gn_disable="$gn_disable pdf_enable_v8=false"
 fi
 
