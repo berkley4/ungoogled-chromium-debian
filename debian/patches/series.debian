@@ -85,6 +85,7 @@ various/fixes/enterprise-buildflags.patch
 various/fixes/ffmpeg-codec-list.patch
 various/fixes/disabled-speech-build-error.patch
 various/fixes/InkDropHost-crash.patch
+various/fixes/make-use_clang_modules-depend-on-sysroot.patch
 various/fixes/shim-fix-for-official-builds.patch
 various/fixes/silence-some-error-log-messages.patch
 various/fixes/swiftshader-build.patch

@@ -1,0 +1,19 @@
+--- a/build/config/clang/clang.gni
++++ b/build/config/clang/clang.gni
+@@ -5,6 +5,7 @@
+ import("//build/config/cast.gni")
+ import("//build/config/cronet/config.gni")
+ import("//build/config/gclient_args.gni")
++import("//build/config/sysroot.gni")
+ import("//build/toolchain/kythe.gni")
+ import("//build/toolchain/rbe.gni")
+ import("//build/toolchain/siso.gni")
+@@ -59,6 +60,8 @@
+   # TODO(https://crbug.com/440260716): Enable for Cronet in AOSP once gn2bp
+   # supports copy targets.
+   use_clang_modules =
++      # Clang modules require a sysroot to be present
++      use_sysroot &&
+       # Clang modules doesn't work with translation_unit used in codesearch
+       # pipeline http://b/436082487.
+       !enable_kythe_annotations && is_clang && is_linux &&
