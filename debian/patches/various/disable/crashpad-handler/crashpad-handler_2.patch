@@ -10,7 +10,7 @@
  #endif
  
  #if BUILDFLAG(ENABLE_EXTENSIONS)
-@@ -1429,9 +1431,11 @@
+@@ -1446,9 +1448,11 @@
        base::android::InitJavaExceptionReporterForChildProcess();
      }
  #else
@@ -22,7 +22,7 @@
  #endif  // BUILDFLAG(IS_ANDROID)
    }
  #endif  // BUILDFLAG(IS_POSIX) && !BUILDFLAG(IS_MAC)
-@@ -1552,9 +1556,11 @@
+@@ -1569,9 +1573,11 @@
        base::CommandLine::ForCurrentProcess();
    std::string process_type =
        command_line->GetSwitchValueASCII(switches::kProcessType);
@@ -36,7 +36,7 @@
    crash_keys::SetCrashKeysFromCommandLine(*command_line);
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -564,7 +564,7 @@
+@@ -581,7 +581,7 @@
  #include "services/network/public/mojom/permissions_policy/permissions_policy_feature.mojom.h"
  #endif  //  !BUILDFLAG(IS_ANDROID)
  
@@ -45,7 +45,7 @@
  #include "components/crash/core/app/crash_switches.h"
  #include "components/crash/core/app/crashpad.h"
  #endif
-@@ -939,7 +939,7 @@
+@@ -957,7 +957,7 @@
  int GetCrashSignalFD(const base::CommandLine& command_line) {
    return crashpad::CrashHandlerHost::Get()->GetDeathSignalSocket();
  }
@@ -54,7 +54,7 @@
  int GetCrashSignalFD(const base::CommandLine& command_line) {
    int fd;
    return crash_reporter::GetHandlerSocket(&fd, nullptr) ? fd : -1;
-@@ -5039,7 +5039,7 @@
+@@ -5189,7 +5189,7 @@
    DCHECK(!app_data_path.empty());
  #endif  // BUILDFLAG(IS_ANDROID)
  

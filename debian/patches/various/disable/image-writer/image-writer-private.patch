@@ -8,7 +8,7 @@
  import("//components/enterprise/buildflags/buildflags.gni")
  import("//components/safe_browsing/buildflags.gni")
  import("//content/public/common/features.gni")
-@@ -691,32 +692,6 @@
+@@ -702,32 +703,6 @@
        "api/identity/identity_get_auth_token_function.h",
        "api/identity/identity_remove_cached_auth_token_function.cc",
        "api/identity/identity_remove_cached_auth_token_function.h",
@@ -41,7 +41,7 @@
        "api/language_settings_private/language_settings_private_api.cc",
        "api/language_settings_private/language_settings_private_api.h",
        "api/language_settings_private/language_settings_private_delegate.cc",
-@@ -814,6 +789,37 @@
+@@ -818,6 +793,37 @@
        "webstore_install_with_prompt.h",
      ]
  
@@ -79,15 +79,15 @@
      if (safe_browsing_mode != 0) {
        sources += [
          "api/safe_browsing_private/safe_browsing_private_event_router.cc",
-@@ -1213,7 +1219,6 @@
+@@ -1219,7 +1225,6 @@
        sources += [
          "api/enterprise_reporting_private/chrome_desktop_report_request_helper.cc",
          "api/enterprise_reporting_private/chrome_desktop_report_request_helper.h",
 -        "api/image_writer_private/operation_nonchromeos.cc",
-         "chrome_kiosk_delegate.cc",
          "preinstalled_apps.cc",
          "preinstalled_apps.h",
-@@ -1223,6 +1228,9 @@
+       ]
+@@ -1228,6 +1233,9 @@
          "//components/enterprise/common/proto:connectors_proto",
          "//components/keep_alive_registry",
        ]
@@ -97,7 +97,7 @@
        if (use_gio) {
          configs += [ "//build/linux:gio_config" ]
        }
-@@ -1460,7 +1468,7 @@
+@@ -1466,7 +1474,7 @@
        ]
      }
  
@@ -125,14 +125,14 @@
  #include "chrome/browser/extensions/forced_extensions/assessment_assistant_tracker.h"
 --- a/chrome/browser/extensions/api/api_browser_context_keyed_service_factories.cc
 +++ b/chrome/browser/extensions/api/api_browser_context_keyed_service_factories.cc
-@@ -34,7 +34,6 @@
+@@ -35,7 +35,6 @@
  #include "chrome/browser/extensions/api/braille_display_private/braille_display_private_api.h"
  #include "chrome/browser/extensions/api/enterprise_reporting_private/enterprise_reporting_private_event_router.h"
  #include "chrome/browser/extensions/api/identity/identity_api.h"
 -#include "chrome/browser/extensions/api/image_writer_private/operation_manager.h"
  #include "chrome/browser/extensions/api/language_settings_private/language_settings_private_delegate_factory.h"
- #include "chrome/browser/extensions/api/messaging/incognito_connectability.h"  // nogncheck
  #include "chrome/browser/extensions/api/networking_private/networking_private_ui_delegate_factory_impl.h"
+ #include "chrome/browser/extensions/api/passwords_private/passwords_private_delegate_factory.h"
 @@ -47,6 +46,7 @@
  #include "chrome/browser/extensions/api/tab_capture/tab_capture_registry.h"
  #include "chrome/browser/extensions/api/tab_groups/tab_groups_event_router_factory.h"
@@ -172,7 +172,7 @@
  import("//pdf/features.gni")
  
  assert(enable_extensions_core)
-@@ -76,7 +77,6 @@
+@@ -77,7 +78,6 @@
      "downloads.idl",
      "downloads_internal.idl",
      "enterprise_reporting_private.idl",
@@ -201,7 +201,7 @@
  import("//chrome/services/speech/buildflags/buildflags.gni")
  import("//chrome/test/include_js_tests.gni")
  import("//components/allocation_recorder/testing/testing.gni")
-@@ -4503,9 +4504,6 @@
+@@ -4557,9 +4558,6 @@
          "../browser/extensions/api/identity/identity_apitest.cc",
          "../browser/extensions/api/identity/web_auth_flow_browsertest.cc",
          "../browser/extensions/api/idltest/idltest_apitest.cc",
@@ -211,7 +211,7 @@
          "../browser/extensions/api/management/management_api_browsertest.cc",
          "../browser/extensions/api/management/management_api_non_persistent_apitest.cc",
          "../browser/extensions/api/management/management_apitest.cc",
-@@ -4660,6 +4658,14 @@
+@@ -4714,6 +4712,14 @@
          "../renderer/controlled_frame/web_url_pattern_natives_browsertest.cc",
        ]
  
@@ -226,7 +226,7 @@
        public_deps += [
          "//chrome/browser/ui/extensions:extension_enable_flow_delegate",
          "//chrome/test/supervised_user:live_tests",
-@@ -4763,13 +4769,16 @@
+@@ -4816,7 +4822,6 @@
  
        sources += [
          "../browser/extensions/api/automation/automation_apitest.cc",
@@ -234,7 +234,8 @@
          "../browser/ui/extensions/extension_install_blocked_dialog_browsertest.cc",
          "../browser/ui/extensions/extension_multiple_uninstall_dialog_browsertest.cc",
          "../browser/ui/extensions/extension_uninstall_dialog_impl_browsertest.cc",
-         "../browser/ui/extensions/reload_page_dialog_controller_browsertest.cc",
+@@ -4827,6 +4832,10 @@
+         "../browser/ui/extensions/settings_overridden_dialog_browsertest.cc",
        ]
  
 +      if (enable_extractors) {

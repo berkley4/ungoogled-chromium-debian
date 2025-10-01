@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1292,6 +1292,9 @@
+@@ -1285,6 +1285,9 @@
            !is_chromeos_device && !is_linux) {
              cflags += [ "--target=x86_64-unknown-linux-gnu" ]
              ldflags += [ "--target=x86_64-unknown-linux-gnu" ]

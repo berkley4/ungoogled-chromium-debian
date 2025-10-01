@@ -1,6 +1,6 @@
 --- a/third_party/blink/renderer/core/xml/xslt_processor.h
 +++ b/third_party/blink/renderer/core/xml/xslt_processor.h
-@@ -77,7 +77,11 @@
+@@ -79,7 +79,11 @@
  
    void reset();
  

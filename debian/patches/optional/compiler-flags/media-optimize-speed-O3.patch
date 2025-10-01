@@ -1,6 +1,6 @@
 --- a/media/audio/BUILD.gn
 +++ b/media/audio/BUILD.gn
-@@ -150,8 +150,10 @@
+@@ -148,8 +148,10 @@
    ]
    libs = []
    defines = []
@@ -97,7 +97,7 @@
      "//build/config/compiler:wexit_time_destructors",
      "//build/config/compiler:wglobal_constructors",
    ]
-@@ -385,7 +387,9 @@
+@@ -387,7 +389,9 @@
      ]
    }
  
@@ -107,7 +107,7 @@
      "//build/config/compiler:wexit_time_destructors",
      "//build/config/compiler:wglobal_constructors",
    ]
-@@ -470,7 +474,9 @@
+@@ -472,7 +476,9 @@
      "command_buffer_helper.h",
    ]
  
@@ -117,7 +117,7 @@
      "//build/config/compiler:wexit_time_destructors",
      "//build/config/compiler:wglobal_constructors",
    ]
-@@ -516,7 +522,9 @@
+@@ -518,7 +524,9 @@
        "video_frame_mapper_factory.h",
      ]
  
@@ -144,7 +144,7 @@
  source_set("unit_tests") {
 --- a/media/renderers/BUILD.gn
 +++ b/media/renderers/BUILD.gn
-@@ -98,7 +98,11 @@
+@@ -99,7 +99,11 @@
      ]
    }
  

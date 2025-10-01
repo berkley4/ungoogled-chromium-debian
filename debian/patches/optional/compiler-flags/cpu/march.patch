@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1277,6 +1277,7 @@
+@@ -1270,6 +1270,7 @@
  config("compiler_cpu_abi") {
    cflags = []
    ldflags = []
@@ -8,7 +8,7 @@
    defines = []
  
    configs = []
-@@ -1294,12 +1295,15 @@
+@@ -1287,12 +1288,15 @@
              ldflags += [ "--target=x86_64-unknown-linux-gnu" ]
          cflags += [
            "-mpclmul",

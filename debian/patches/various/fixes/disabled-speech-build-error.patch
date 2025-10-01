@@ -1,6 +1,6 @@
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -8536,7 +8536,6 @@
+@@ -8599,7 +8599,6 @@
        "//chrome/browser/webauthn:test_support",
        "//chrome/browser/webauthn/proto",
        "//chrome/common/read_anything:mojo_bindings",
@@ -8,8 +8,8 @@
        "//components/app_constants",
        "//components/application_locale_storage",
        "//components/color",
-@@ -8607,6 +8606,10 @@
-       "//ui/webui/resources/js/browser_command:mojo_bindings",
+@@ -8672,6 +8671,10 @@
+       "//ui/webui/tracked_element:unit_tests",
      ]
  
 +    if (enable_speech_service) {

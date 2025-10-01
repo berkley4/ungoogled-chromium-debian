@@ -12,7 +12,7 @@ author: Michel Le Bihan <michel@lebihan.pl>
    import("angle_perftests.gni")
  
    # This test suite is for perf tests that use ANGLE's internals in some direct way.
-@@ -2095,7 +2095,7 @@
+@@ -2101,7 +2101,7 @@
    if (is_clang && angle_has_frame_capture) {
      deps += [ "capture_replay_tests" ]
    }

@@ -11,7 +11,7 @@
  
 --- a/chrome/browser/media/webrtc/webrtc_event_log_manager_common.cc
 +++ b/chrome/browser/media/webrtc/webrtc_event_log_manager_common.cc
-@@ -31,7 +31,7 @@
+@@ -27,7 +27,7 @@
  #include "content/public/browser/browser_thread.h"
  #include "content/public/browser/render_process_host.h"
  #include "third_party/abseil-cpp/absl/strings/ascii.h"

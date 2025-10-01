@@ -10,7 +10,7 @@
      FLAC,
 --- a/media/base/mime_util_internal.cc
 +++ b/media/base/mime_util_internal.cc
-@@ -105,6 +105,7 @@
+@@ -104,6 +104,7 @@
        {"ac-4", MimeUtil::AC4},
        {"mp4a.ae", MimeUtil::AC4},
        {"mp4a.AE", MimeUtil::AC4},
@@ -18,7 +18,7 @@
    });
  
    return *kStringToCodecMap;
-@@ -198,6 +199,8 @@
+@@ -197,6 +198,8 @@
        return AudioCodec::kAC4;
      case MimeUtil::IAMF:
        return AudioCodec::kIAMF;
@@ -27,7 +27,7 @@
      default:
        break;
    }
-@@ -607,6 +610,9 @@
+@@ -609,6 +612,9 @@
        // with MSE/EME) or with a software decoder (the unified pipeline).
        return true;
  
@@ -39,7 +39,7 @@
  
 --- a/media/base/supported_types.cc
 +++ b/media/base/supported_types.cc
-@@ -485,11 +485,11 @@
+@@ -484,11 +484,11 @@
      case AudioCodec::kPCM_S24BE:
      case AudioCodec::kPCM_ALAW:
      case AudioCodec::kVorbis:

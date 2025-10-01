@@ -21,7 +21,7 @@
  
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -1881,7 +1881,6 @@
+@@ -1853,7 +1853,6 @@
      # should be added to browser_generated_files.
      ":browser_public_dependencies",
      "//chrome/browser/google",
@@ -29,7 +29,7 @@
      "//chrome/browser/profiles",
      "//chrome/browser/ui/tabs:tab_enums",
    ]
-@@ -2237,7 +2236,6 @@
+@@ -2218,7 +2217,6 @@
      "//components/gcm_driver",
      "//components/guest_view/buildflags",
      "//components/handoff",
@@ -37,16 +37,16 @@
      "//components/heap_profiling/in_process",
      "//components/heap_profiling/in_process:mojom",
      "//components/heavy_ad_intervention",
-@@ -3849,8 +3847,6 @@
-       "first_run/first_run.h",
-       "first_run/first_run_dialog.h",
+@@ -3860,8 +3858,6 @@
+       "first_run/first_run_features.cc",
+       "first_run/first_run_features.h",
        "first_run/first_run_internal.h",
 -      "headless/chrome_browser_main_extra_parts_headless.cc",
 -      "headless/chrome_browser_main_extra_parts_headless.h",
        "hid/chrome_hid_delegate.cc",
        "hid/chrome_hid_delegate.h",
        "hid/hid_chooser_context.cc",
-@@ -4482,8 +4478,6 @@
+@@ -4496,8 +4492,6 @@
        "//components/feedback",
        "//components/feedback/content:factory",
        "//components/feedback/redaction_tool",
@@ -55,7 +55,7 @@
        "//components/image_fetcher/core",
        "//components/keep_alive_registry",
        "//components/live_caption",
-@@ -7193,7 +7187,7 @@
+@@ -7244,7 +7238,7 @@
      deps += [ "//components/power_metrics" ]
    }
  
@@ -64,7 +64,7 @@
      deps += [ "//chrome/browser/headless:metrics" ]
    }
  
-@@ -7241,7 +7235,6 @@
+@@ -7292,7 +7286,6 @@
      deps += [
        "//chrome/common/printing",
        "//components/printing/browser",
@@ -74,7 +74,7 @@
        "//components/services/print_compositor/public/mojom",
 --- a/chrome/browser/ui/BUILD.gn
 +++ b/chrome/browser/ui/BUILD.gn
-@@ -255,7 +255,6 @@
+@@ -242,7 +242,6 @@
      "//chrome/browser:browser_public_dependencies",
      "//chrome/browser:primitives",
      "//chrome/browser/feedback",
@@ -82,7 +82,7 @@
      "//chrome/browser/media/webrtc",
      "//chrome/browser/search",
      "//chrome/browser/task_manager",
-@@ -1508,7 +1507,6 @@
+@@ -1414,7 +1413,6 @@
        "//chrome/browser/download",
        "//chrome/browser/enterprise/watermark:watermark_view_lib",
        "//chrome/browser/feedback:feedback_enum",
@@ -90,17 +90,17 @@
        "//chrome/browser/hid",
        "//chrome/browser/image_editor",
        "//chrome/browser/image_editor:image_editor_component_util",
-@@ -1635,7 +1633,6 @@
-       "//components/endpoint_fetcher",
+@@ -1544,7 +1542,6 @@
        "//components/enterprise/common:files_scan_data",
        "//components/feedback/proto",
+       "//components/headless/console_message_logger",
 -      "//components/headless/policy",
        "//components/history_embeddings",
        "//components/keep_alive_registry",
        "//components/manta",
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -2316,7 +2316,6 @@
+@@ -2345,7 +2345,6 @@
        "//chrome/browser/file_system_access",
        "//chrome/browser/file_system_access:browser_tests",
        "//chrome/browser/first_party_sets",
@@ -108,7 +108,7 @@
        "//chrome/browser/icon_transcoder:browser_tests",
        "//chrome/browser/image_decoder:browser_tests",
        "//chrome/browser/image_fetcher",
-@@ -4096,7 +4095,6 @@
+@@ -4149,7 +4148,6 @@
              "../browser/devtools/protocol/devtools_printtopdf_browsertest.cc",
            ]
            deps += [
@@ -136,7 +136,7 @@
  #define ENABLE_OLD_HEADLESS_INFO
  #endif
  
-@@ -195,6 +193,7 @@
+@@ -194,6 +192,7 @@
    // function, which are now redundant.
    base::PoissonAllocationSampler::Init();
  
@@ -144,9 +144,9 @@
    // Chrome-specific process modes.
    std::unique_ptr<headless::HeadlessModeHandle> headless_mode_handle;
    if (headless::IsHeadlessMode()) {
-@@ -204,13 +203,12 @@
-     }
-     headless_mode_handle = headless::InitHeadlessMode();
+@@ -210,13 +209,12 @@
+ 
+     headless_mode_handle = std::move(init_headless_mode.value());
    } else {
 -#ifdef ENABLE_OLD_HEADLESS_INFO
      if (headless::IsOldHeadlessMode()) {
@@ -169,7 +169,7 @@
  #include "chrome/browser/lifetime/browser_shutdown.h"
  #include "chrome/browser/metrics/chrome_feature_list_creator.h"
  #include "chrome/browser/startup_data.h"
-@@ -1474,7 +1473,7 @@
+@@ -1491,7 +1490,7 @@
    // before field trial initialization, so the values of
    // `kPersistentHistogramsFeature` and `kPersistentHistogramsStorage` will
    // not be used. Persist histograms to a memory-mapped file.
@@ -180,7 +180,7 @@
        InstantiatePersistentHistograms(
 --- a/chrome/browser/chrome_browser_main.cc
 +++ b/chrome/browser/chrome_browser_main.cc
-@@ -184,12 +184,14 @@
+@@ -186,12 +186,14 @@
  #endif
  
  #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN)
@@ -196,7 +196,7 @@
  #include "ui/base/pointer/touch_ui_controller.h"
  #include "ui/gfx/switches.h"
  #endif
-@@ -1323,7 +1325,7 @@
+@@ -1318,7 +1320,7 @@
        *UrlLanguageHistogramFactory::GetForBrowserContext(profile));
  #endif
  
@@ -205,7 +205,7 @@
    if (headless::IsHeadlessMode()) {
      headless::ReportHeadlessActionMetrics();
    }
-@@ -1432,7 +1434,7 @@
+@@ -1427,7 +1429,7 @@
    // In headless mode provide alternate SelectFileDialog factory overriding
    // any platform specific SelectFileDialog implementation that may have been
    // set.
@@ -214,7 +214,7 @@
    if (headless::IsHeadlessMode()) {
      headless::HeadlessSelectFileDialogFactory::SetUp();
    }
-@@ -1961,7 +1963,7 @@
+@@ -1970,7 +1972,7 @@
  
    // Drop the request if headless mode is in effect or the request is from
    // a headless Chrome process.
@@ -225,7 +225,7 @@
      return false;
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -84,7 +84,6 @@
+@@ -90,7 +90,6 @@
  #include "chrome/browser/favicon/favicon_utils.h"
  #include "chrome/browser/font_family_cache.h"
  #include "chrome/browser/gpu/chrome_browser_main_extra_parts_gpu.h"
@@ -233,7 +233,7 @@
  #include "chrome/browser/hid/chrome_hid_delegate.h"
  #include "chrome/browser/history/history_service_factory.h"
  #include "chrome/browser/interstitials/enterprise_util.h"
-@@ -536,7 +535,6 @@
+@@ -551,7 +550,6 @@
  #include "chrome/browser/devtools/chrome_devtools_manager_delegate.h"
  #include "chrome/browser/devtools/devtools_window.h"
  #include "chrome/browser/direct_sockets/chrome_direct_sockets_delegate.h"
@@ -241,7 +241,7 @@
  #include "chrome/browser/media/unified_autoplay_config.h"
  #include "chrome/browser/metrics/usage_scenario/chrome_responsiveness_calculator_delegate.h"
  #include "chrome/browser/new_tab_page/new_tab_page_util.h"
-@@ -1704,7 +1702,7 @@
+@@ -1748,7 +1746,7 @@
            enterprise_util::ChromeBrowserMainExtraPartsEnterprise>());
  #endif
  
@@ -250,7 +250,7 @@
    main_parts->AddParts(
        std::make_unique<headless::ChromeBrowserMainExtraPartsHeadless>());
  #endif
-@@ -1956,7 +1954,7 @@
+@@ -2021,7 +2019,7 @@
    static bool is_devtools_user = true;
  #else
    static bool is_devtools_user =
@@ -319,15 +319,15 @@
    return DownloadCoreServiceFactory::GetForBrowserContext(
 --- a/chrome/browser/first_run/first_run.cc
 +++ b/chrome/browser/first_run/first_run.cc
-@@ -26,7 +26,6 @@
- #include "chrome/browser/extensions/updater/extension_updater.h"
+@@ -31,7 +31,6 @@
+ #include "chrome/browser/first_run/first_run_features.h"
  #include "chrome/browser/first_run/first_run_internal.h"
  #include "chrome/browser/google/google_brand.h"
 -#include "chrome/browser/headless/headless_mode_util.h"
+ #include "chrome/browser/image_fetcher/image_fetcher_service_factory.h"
  #include "chrome/browser/importer/external_process_importer_host.h"
  #include "chrome/browser/importer/importer_list.h"
- #include "chrome/browser/importer/importer_progress_observer.h"
-@@ -124,8 +123,6 @@
+@@ -159,8 +158,6 @@
    ExternalProcessImporterHost* importer_host =
        new ExternalProcessImporterHost;
    // Don't show the warning dialog if import fails.
@@ -336,7 +336,7 @@
    ImportEndedObserver observer;
    importer_host->set_observer(&observer);
    importer_host->StartImportSettings(source_profile,
-@@ -398,10 +395,7 @@
+@@ -599,10 +596,7 @@
    DCHECK(!user_data_dir.empty());
  
    if (initial_prefs.get()) {
@@ -350,7 +350,7 @@
  
 --- a/chrome/browser/policy/configuration_policy_handler_list_factory.cc
 +++ b/chrome/browser/policy/configuration_policy_handler_list_factory.cc
-@@ -152,7 +152,6 @@
+@@ -153,7 +153,6 @@
  #include "chrome/browser/policy/local_sync_policy_handler.h"
  #include "chrome/browser/policy/managed_account_policy_handler.h"
  #include "chrome/browser/web_applications/policy/web_app_settings_policy_handler.h"
@@ -358,7 +358,7 @@
  #include "components/lens/lens_overlay_permission_utils.h"
  #include "components/media_router/common/pref_names.h"
  #include "components/search_engines/enterprise/search_aggregator_policy_handler.h"
-@@ -2565,7 +2564,6 @@
+@@ -2578,7 +2577,6 @@
                                              prefs::kPromotionsEnabled,
                                              base::Value::Type::BOOLEAN)));
  
@@ -368,15 +368,15 @@
  
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -313,7 +313,6 @@
- #include "chrome/browser/ui/webui/tab_search/tab_search_prefs.h"
+@@ -316,7 +316,6 @@
  #include "chrome/browser/upgrade_detector/upgrade_detector.h"
  #include "chrome/browser/user_education/browser_user_education_storage_service.h"
+ #include "chrome/browser/webauthn/chrome_authenticator_request_delegate.h"
 -#include "components/headless/policy/headless_mode_prefs.h"
  #include "components/lens/lens_overlay_permission_utils.h"
  #include "components/live_caption/live_caption_controller.h"
  #include "components/live_caption/live_translate_controller.h"
-@@ -1684,7 +1683,6 @@
+@@ -1764,7 +1763,6 @@
    registry->RegisterBooleanPref(lens::kLensCameraAssistedSearchEnabled, true);
  #else  // BUILDFLAG(IS_ANDROID)
    gcm::RegisterPrefs(registry);
@@ -434,7 +434,7 @@
  #endif
  
  #if !BUILDFLAG(IS_CHROMEOS)
-@@ -1019,7 +1021,7 @@
+@@ -986,7 +988,7 @@
    TRACE_EVENT0("startup", "StartupBrowserCreator::ProcessCmdLineImpl");
    ComputeAndRecordLaunchMode(command_line);
  
@@ -500,7 +500,7 @@
 --- a/chrome/browser/ui/startup/startup_tab_provider.cc
 +++ b/chrome/browser/ui/startup/startup_tab_provider.cc
 @@ -63,7 +63,7 @@
- #include "extensions/browser/extension_registry.h"
+ #include "extensions/common/manifest_handlers/chrome_url_overrides_handler.h"
  #endif  // !BUILDFLAG(IS_ANDROID)
  
 -#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN)
@@ -527,7 +527,7 @@
  #include "chrome/browser/profiles/profile.h"
  #include "chrome/browser/themes/custom_theme_supplier.h"
  #include "chrome/browser/themes/theme_service.h"
-@@ -143,7 +142,7 @@
+@@ -151,7 +150,7 @@
        views::Widget::InitParams::NATIVE_WIDGET_OWNS_WIDGET);
    params.name = "BrowserFrame";
    params.delegate = browser_view_;
@@ -646,9 +646,9 @@
        "test/data/content_bookmark_parser/",
        "test/data/history/",
        "test/data/html_viewer/",
-@@ -606,7 +605,6 @@
-       "//components/fingerprinting_protection_filter/common:unit_tests",
-       "//components/fingerprinting_protection_filter/interventions/browser:unit_tests",
+@@ -610,7 +609,6 @@
+       "//components/content_settings/browser/ui:unit_tests",
+       "//components/fingerprinting_protection_filter/browser:unit_tests",
        "//components/fingerprinting_protection_filter/renderer:unit_tests",
 -      "//components/headless/test:unit_tests",
        "//components/ip_protection:unit_tests",

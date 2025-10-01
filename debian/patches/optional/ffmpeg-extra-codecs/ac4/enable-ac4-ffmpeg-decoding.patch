@@ -1,6 +1,6 @@
 --- a/media/base/supported_types.cc
 +++ b/media/base/supported_types.cc
-@@ -325,13 +325,15 @@
+@@ -324,13 +324,15 @@
  }
  
  bool IsDecoderDolbyAc4Supported(const AudioType& type) {
@@ -22,7 +22,7 @@
  bool IsEncoderH264BuiltInVideoType(const VideoType& type) {
 --- a/media/ffmpeg/ffmpeg_common.cc
 +++ b/media/ffmpeg/ffmpeg_common.cc
-@@ -166,6 +166,10 @@
+@@ -164,6 +164,10 @@
      case AV_CODEC_ID_EAC3:
        return AudioCodec::kEAC3;
  #endif
@@ -33,7 +33,7 @@
      case AV_CODEC_ID_MP3:
        return AudioCodec::kMP3;
      case AV_CODEC_ID_VORBIS:
-@@ -245,6 +249,10 @@
+@@ -243,6 +247,10 @@
      case AudioCodec::kEAC3:
        return AV_CODEC_ID_EAC3;
  #endif
@@ -44,7 +44,7 @@
  #if BUILDFLAG(ENABLE_PLATFORM_MPEG_H_AUDIO)
      case AudioCodec::kMpegHAudio:
        return AV_CODEC_ID_MPEGH_3D_AUDIO;
-@@ -422,7 +430,8 @@
+@@ -420,7 +428,8 @@
      // not fill |sample_fmt|.
      case AudioCodec::kAC3:
      case AudioCodec::kEAC3:
@@ -54,7 +54,7 @@
        // The spec for AC3/EAC3 audio is ETSI TS 102 366. According to sections
        // F.3.1 and F.5.1 in that spec the sample_format for AC3/EAC3 must be 16.
        sample_format = kSampleFormatS16;
-@@ -476,6 +485,11 @@
+@@ -474,6 +483,11 @@
    if (codec == AudioCodec::kAC3 || codec == AudioCodec::kEAC3)
      return true;
  #endif

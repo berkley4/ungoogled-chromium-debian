@@ -9,15 +9,25 @@
      !(BUILDFLAG(IS_LINUX) && BUILDFLAG(ENABLE_CAST_RECEIVER))
  #include "base/feature_list.h"
  #include "third_party/dawn/include/dawn/dawn_proc.h"          // nogncheck
-@@ -100,7 +100,7 @@
-   }
- #endif
- 
+@@ -72,7 +72,8 @@
+ // enabling the sandbox.
+ BASE_FEATURE(kOnDeviceModelWarmDrivers,
+              "OnDeviceModelWarmDrivers",
+-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_WIN)
++#if BUILDFLAG(USE_DAWN) && \
++    (BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_WIN))
+              base::FEATURE_ENABLED_BY_DEFAULT
+ #else
+              base::FEATURE_DISABLED_BY_DEFAULT
+@@ -121,7 +122,7 @@
+     // Warm any relevant drivers before attempting to bring up the sandbox. For
+     // good measure we initialize a device instance for any adapter with an
+     // appropriate backend on top of any integrated or discrete GPU.
 -#if !BUILDFLAG(IS_FUCHSIA) && \
 +#if !BUILDFLAG(IS_FUCHSIA) && BUILDFLAG(USE_DAWN) && \
      !(BUILDFLAG(IS_LINUX) && BUILDFLAG(ENABLE_CAST_RECEIVER))
-   if (base::FeatureList::IsEnabled(kOnDeviceModelWarmDrivers)
- #if defined(ENABLE_ML_INTERNAL)
+     dawnProcSetProcs(&dawn::native::GetProcs());
+     auto instance = std::make_unique<dawn::native::Instance>();
 --- a/gpu/BUILD.gn
 +++ b/gpu/BUILD.gn
 @@ -109,7 +109,6 @@
@@ -71,7 +81,7 @@
  
  component("backend_interfaces") {
    sources = [
-@@ -63,7 +64,8 @@
+@@ -65,7 +66,8 @@
    if (is_android) {
      deps += [ "//services/on_device_model/android" ]
    }

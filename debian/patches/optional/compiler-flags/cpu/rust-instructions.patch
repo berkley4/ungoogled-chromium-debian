@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1302,6 +1302,7 @@
+@@ -1295,6 +1295,7 @@
          ]
          rustflags += [
            "-Ctarget-cpu=x86-64-v2",

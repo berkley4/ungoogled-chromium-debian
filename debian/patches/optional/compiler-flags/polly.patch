@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2667,6 +2667,17 @@
+@@ -2662,6 +2662,17 @@
    common_optimize_on_cflags = []
    common_optimize_on_ldflags = []
  
@@ -18,7 +18,7 @@
    if (is_android) {
      # TODO(jdduke) Re-enable on mips after resolving linking
      # issues with libc++ (crbug.com/456380).
-@@ -2793,7 +2804,7 @@
+@@ -2788,7 +2799,7 @@
      # vectorization while otherwise optimizing for size.
      rustflags = [ "-Copt-level=s" ]
    } else {
@@ -27,7 +27,7 @@
  
      if (use_lld) {
        ldflags += [ "-Wl,--lto-CGO2" ]
-@@ -2851,7 +2862,7 @@
+@@ -2846,7 +2857,7 @@
    } else if (optimize_for_fuzzing) {
      cflags = [ "-O1" ] + common_optimize_on_cflags
    } else {
@@ -36,7 +36,7 @@
      if (use_lld) {
        ldflags += [ "-Wl,--lto-CGO2" ]
      }
-@@ -2878,7 +2889,7 @@
+@@ -2873,7 +2884,7 @@
    } else if (optimize_for_fuzzing) {
      cflags = [ "-O1" ] + common_optimize_on_cflags
    } else {

@@ -1,8 +1,8 @@
 --- a/components/translate/core/browser/translate_url_fetcher.cc
 +++ b/components/translate/core/browser/translate_url_fetcher.cc
-@@ -98,7 +98,6 @@
-   if (!extra_request_header_.empty())
-     resource_request->headers.AddHeaderFromString(extra_request_header_);
+@@ -97,7 +97,6 @@
+   resource_request->credentials_mode = network::mojom::CredentialsMode::kOmit;
+   resource_request->headers.MergeFrom(extra_request_header_);
  
 -  fprintf(stderr, "translator: fetching something from %s\n", url_.spec().c_str());
    simple_loader_ =
@@ -17,5 +17,5 @@
 -const char kSecurityOrigin[] = "trk:220:https://translate.googleapis.com/";
 +const char kSecurityOrigin[] = "https://translate.googleapis.com/";
  
- // The feature is explicitly disabled on Webview and Weblayer.
- // TODO(crbug.com/40819484): Enable the feature on Webview.
+ // The feature is explicitly disabled on WebView.
+ // TODO(crbug.com/40819484): Enable the feature on WebView.

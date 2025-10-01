@@ -14,7 +14,7 @@ etc... as long as ffmpeg support it.
 
 --- a/media/base/supported_types.cc
 +++ b/media/base/supported_types.cc
-@@ -229,25 +229,12 @@
+@@ -228,25 +228,12 @@
  #endif  // !BUILDFLAG(USE_PROPRIETARY_CODECS)
  
  bool IsDecoderHevcProfileSupported(const VideoType& type) {
@@ -44,7 +44,7 @@ etc... as long as ffmpeg support it.
  }
  
  bool IsDecoderVp9ProfileSupported(const VideoType& type) {
-@@ -586,7 +573,7 @@
+@@ -585,7 +572,7 @@
  
  bool IsDecoderBuiltInVideoCodec(VideoCodec codec) {
  #if BUILDFLAG(ENABLE_FFMPEG_VIDEO_DECODERS) && BUILDFLAG(USE_PROPRIETARY_CODECS)
@@ -55,7 +55,7 @@ etc... as long as ffmpeg support it.
  #endif  // BUILDFLAG(ENABLE_FFMPEG_VIDEO_DECODERS) &&
 --- a/media/ffmpeg/ffmpeg_common.cc
 +++ b/media/ffmpeg/ffmpeg_common.cc
-@@ -65,7 +65,7 @@
+@@ -63,7 +63,7 @@
  const char* GetAllowedVideoDecoders() {
    // This should match the configured lists in //third_party/ffmpeg.
  #if BUILDFLAG(USE_PROPRIETARY_CODECS) && BUILDFLAG(ENABLE_FFMPEG_VIDEO_DECODERS)

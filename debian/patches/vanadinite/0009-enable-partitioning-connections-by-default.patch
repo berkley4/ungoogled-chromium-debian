@@ -1,11 +1,11 @@
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -145,7 +145,7 @@
+@@ -121,7 +121,7 @@
+              base::FEATURE_ENABLED_BY_DEFAULT);
  
- BASE_FEATURE(kPartitionConnectionsByNetworkIsolationKey,
-              "PartitionConnectionsByNetworkIsolationKey",
+ BASE_FEATURE(PartitionConnectionsByNetworkIsolationKey,
 -             base::FEATURE_DISABLED_BY_DEFAULT);
 +             base::FEATURE_ENABLED_BY_DEFAULT);
  
- BASE_FEATURE(kPrefixCookieHttp,
-              "PrefixCookieHttp",
+ BASE_FEATURE(PrefixCookieHttp, base::FEATURE_ENABLED_BY_DEFAULT);
+ 

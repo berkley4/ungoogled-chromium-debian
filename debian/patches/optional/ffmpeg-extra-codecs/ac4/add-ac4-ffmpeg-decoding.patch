@@ -1,6 +1,6 @@
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
-@@ -489,6 +489,7 @@
+@@ -492,6 +492,7 @@
  #define CONFIG_SOL_DPCM_DECODER 0
  #define CONFIG_XAN_DPCM_DECODER 0
  #define CONFIG_WADY_DPCM_DECODER 0
@@ -8,7 +8,7 @@
  #define CONFIG_ADPCM_4XM_DECODER 0
  #define CONFIG_ADPCM_ADX_DECODER 0
  #define CONFIG_ADPCM_AFC_DECODER 0
-@@ -1697,7 +1698,7 @@
+@@ -1711,7 +1712,7 @@
  #define CONFIG_AVS_DEMUXER 0
  #define CONFIG_AVS2_DEMUXER 0
  #define CONFIG_AVS3_DEMUXER 0
@@ -8440,7 +8440,7 @@
 +#endif /* AVCODEC_AC4DEC_DATA_H */
 --- a/third_party/ffmpeg/libavcodec/allcodecs.c
 +++ b/third_party/ffmpeg/libavcodec/allcodecs.c
-@@ -432,6 +432,7 @@
+@@ -433,6 +433,7 @@
  extern const FFCodec ff_ac3_decoder;
  extern const FFCodec ff_ac3_fixed_encoder;
  extern const FFCodec ff_ac3_fixed_decoder;

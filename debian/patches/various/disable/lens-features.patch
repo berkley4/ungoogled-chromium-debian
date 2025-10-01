@@ -14,7 +14,7 @@
               base::FEATURE_DISABLED_BY_DEFAULT
  #else
               base::FEATURE_ENABLED_BY_DEFAULT
-@@ -525,7 +525,7 @@
+@@ -521,7 +521,7 @@
      &kLensStandalone, "lens-html-redirect-fix", false};
  
  constexpr base::FeatureParam<bool> kShouldIssuePreconnectForLens{
