@@ -1,0 +1,73 @@
+--- a/chrome/browser/BUILD.gn
++++ b/chrome/browser/BUILD.gn
+@@ -4617,7 +4617,6 @@
+       "//chrome/browser/ui/views/new_tab_footer",
+       "//chrome/browser/ui/webui/searchbox",
+       "//chrome/browser/ui/webui/top_chrome:impl",
+-      "//chrome/browser/ui/webui/watermark",
+       "//chrome/browser/ui/content_settings:impl",
+       "//chrome/browser/ui/commerce:impl",
+       "//chrome/browser/picture_in_picture:impl",
+@@ -6694,6 +6693,9 @@
+       "//components/enterprise/watermarking",
+       "//components/enterprise/watermarking/content",
+     ]
++    allow_circular_includes_from += [
++      "//chrome/browser/ui/webui/watermark"
++    ]
+   }
+ 
+   if (enterprise_data_controls) {
+--- a/chrome/test/BUILD.gn
++++ b/chrome/test/BUILD.gn
+@@ -2337,7 +2337,6 @@
+       "//chrome/browser/devtools",
+       "//chrome/browser/devtools:test_support",
+       "//chrome/browser/enterprise/incognito",
+-      "//chrome/browser/enterprise/watermark:watermark_view_lib",
+       "//chrome/browser/error_reporting:test_support",
+       "//chrome/browser/favicon",
+       "//chrome/browser/feedback",
+@@ -2515,7 +2514,6 @@
+       "//chrome/browser/ui/webui/signin:test_support_ui",
+       "//chrome/browser/ui/webui/top_chrome",
+       "//chrome/browser/ui/webui/top_chrome:test_support",
+-      "//chrome/browser/ui/webui/watermark",
+       "//chrome/browser/ui/webui/whats_new",
+       "//chrome/browser/web_applications:browser_tests",
+       "//chrome/browser/web_applications:features",
+@@ -2887,6 +2885,13 @@
+       "//v8",
+     ]
+ 
++    if (enterprise_watermark) {
++      deps += [
++        "//chrome/browser/enterprise/watermark:watermark_view_lib",
++        "//chrome/browser/ui/webui/watermark",
++      ]
++    }
++
+     if (enable_extractors) {
+       deps += [ "//chrome/services/removable_storage_writer:lib" ]
+     }
+@@ -10336,7 +10341,6 @@
+ 
+   if (toolkit_views) {
+     deps += [
+-      "//chrome/browser/enterprise/watermark:watermark_view_lib",
+       "//chrome/browser/ui:test_support",
+       "//chrome/browser/ui/actions",
+       "//chrome/browser/ui/actions:actions_headers",
+@@ -10388,6 +10392,12 @@
+       deps += [ "//apps/ui/views" ]
+     }
+ 
++    if (toolkit_views && enterprise_watermark) {
++      deps += [
++        "//chrome/browser/enterprise/watermark:watermark_view_lib",
++      ]
++    }
++
+     sources += [
+       "../../ui/views/controls/webview/web_dialog_view_unittest.cc",
+       "../../ui/views/controls/webview/webview_unittest.cc",

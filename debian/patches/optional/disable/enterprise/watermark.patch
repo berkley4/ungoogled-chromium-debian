@@ -1,0 +1,253 @@
+--- a/chrome/browser/enterprise/data_protection/data_protection_navigation_controller.cc
++++ b/chrome/browser/enterprise/data_protection/data_protection_navigation_controller.cc
+@@ -18,12 +18,15 @@
+ #include "chrome/browser/ui/tabs/public/tab_features.h"
+ #include "chrome/browser/ui/views/frame/browser_view.h"
+ #include "components/enterprise/connectors/core/reporting_constants.h"
+-#include "components/enterprise/watermarking/content/watermark_text_container.h"
+-#include "components/enterprise/watermarking/watermark.h"
+ #include "components/tabs/public/tab_interface.h"
+ #include "content/public/browser/web_contents.h"
+ #include "content/public/browser/web_contents_observer.h"
+ 
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
++#include "components/enterprise/watermarking/content/watermark_text_container.h"
++#include "components/enterprise/watermarking/watermark.h"
++#endif
++
+ namespace enterprise_data_protection {
+ 
+ DataProtectionNavigationController::DataProtectionNavigationController(
+@@ -188,6 +191,7 @@
+   }
+ #endif  // BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
+ 
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+   // Regardless of whether watermark text is empty, attach it as web contents
+   // user data so that other browser process code can draw watermarks outside
+   // of the context of a navigation (ex. when printing).
+@@ -216,6 +220,7 @@
+     watermark_text_ = settings.watermark_text;
+     watermark_string_updated_callbacks_.Notify(watermark_text_);
+   }
++#endif  // BUILDFLAG(ENTERPRISE_WATERMARK)
+ 
+   if (!on_delay_apply_data_protection_settings_if_empty_called_for_testing_
+            .is_null()) {
+--- a/chrome/browser/enterprise/data_protection/data_protection_navigation_observer.cc
++++ b/chrome/browser/enterprise/data_protection/data_protection_navigation_observer.cc
+@@ -49,8 +49,12 @@
+ safe_browsing::RealTimeUrlLookupServiceBase* g_lookup_service = nullptr;
+ 
+ bool IsWatermarkWebUIURL(const GURL& url) {
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+   return url.SchemeIs(content::kChromeUIScheme) &&
+          url.host_piece() == chrome::kChromeUIWatermarkHost;
++#else
++  return false;
++#endif
+ }
+ 
+ content::Page& GetPageFromWebContents(content::WebContents* web_contents) {
+--- a/chrome/browser/enterprise/data_protection/data_protection_ui_controller.cc
++++ b/chrome/browser/enterprise/data_protection/data_protection_ui_controller.cc
+@@ -10,18 +10,21 @@
+ #include "chrome/browser/enterprise/data_protection/data_protection_features.h"
+ #include "chrome/browser/enterprise/data_protection/data_protection_navigation_controller.h"
+ #include "chrome/browser/enterprise/data_protection/data_protection_navigation_observer.h"
+-#include "chrome/browser/enterprise/watermark/settings.h"
+ #include "chrome/browser/profiles/profile.h"
+ #include "chrome/browser/ui/browser_finder.h"
+ #include "chrome/browser/ui/browser_window/public/browser_window_interface.h"
+ #include "chrome/browser/ui/tabs/public/tab_features.h"
+ #include "chrome/browser/ui/views/frame/browser_view.h"
+-#include "components/enterprise/watermarking/content/watermark_text_container.h"
+-#include "components/enterprise/watermarking/watermark.h"
+ #include "components/tabs/public/tab_interface.h"
+ #include "content/public/browser/web_contents.h"
+ #include "content/public/browser/web_contents_observer.h"
+ 
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
++#include "chrome/browser/enterprise/watermark/settings.h"
++#include "components/enterprise/watermarking/content/watermark_text_container.h"
++#include "components/enterprise/watermarking/watermark.h"
++#endif
++
+ namespace enterprise_data_protection {
+ 
+ DataProtectionUIController::ContentsViewDataProtectionController::
+@@ -59,6 +62,7 @@
+   enterprise_data_protection::DataProtectionNavigationController* controller =
+       tab->GetTabFeatures()->data_protection_controller();
+ 
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+   contents_container_view_->ApplyWatermarkSettings(
+       controller->watermark_text(), enterprise_watermark::GetFillColor(prefs_),
+       enterprise_watermark::GetOutlineColor(prefs_),
+@@ -68,6 +72,7 @@
+       controller->RegisterWatermarkStringUpdatedCallback(base::BindRepeating(
+           &ContentsViewDataProtectionController::OnWatermarkStringUpdated,
+           base::Unretained(this)));
++#endif
+ #if BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
+   owner_->MaybeUpdateScreenshotSettings();
+ 
+@@ -80,12 +85,15 @@
+ 
+ void DataProtectionUIController::ContentsViewDataProtectionController::
+     OnWebContentsDetached(views::WebView* web_view) {
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+   watermark_subscription_ = base::CallbackListSubscription();
++#endif
+ #if BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
+   screenshot_subscription_ = base::CallbackListSubscription();
+ #endif
+ }
+ 
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+ void DataProtectionUIController::ContentsViewDataProtectionController::
+     OnWatermarkStringUpdated(const std::string& watermark_string) {
+   contents_container_view_->ApplyWatermarkSettings(
+@@ -93,6 +101,7 @@
+       enterprise_watermark::GetOutlineColor(prefs_),
+       enterprise_watermark::GetFontSize(prefs_));
+ }
++#endif
+ 
+ #if BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
+ void DataProtectionUIController::ContentsViewDataProtectionController::
+@@ -146,6 +155,7 @@
+       browser_window_interface->GetUnownedUserDataHost());
+ }
+ 
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+ void DataProtectionUIController::ApplyWatermarkSettings(
+     const std::string& watermark_text,
+     SkColor fill_color,
+@@ -157,6 +167,7 @@
+                                                     outline_color, font_size);
+   }
+ }
++#endif
+ 
+ #if BUILDFLAG(ENTERPRISE_SCREENSHOT_PROTECTION)
+ void DataProtectionUIController::MaybeUpdateScreenshotSettings() {
+--- a/chrome/browser/ui/views/frame/contents_container_view.h
++++ b/chrome/browser/ui/views/frame/contents_container_view.h
+@@ -12,6 +12,7 @@
+ #include "base/scoped_observation.h"
+ #include "chrome/browser/devtools/devtools_contents_resizing_strategy.h"
+ #include "chrome/browser/ui/views/frame/tab_modal_dialog_host.h"
++#include "components/enterprise/buildflags/buildflags.h"
+ #include "ui/views/focus/external_focus_tracker.h"
+ #include "ui/views/layout/delegating_layout_manager.h"
+ #include "ui/views/view.h"
+@@ -39,9 +40,11 @@
+ class Widget;
+ }  // namespace views
+ 
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+ namespace enterprise_watermark {
+ class WatermarkView;
+ }  // namespace enterprise_watermark
++#endif
+ 
+ // ContentsContainerView is owned by MultiContentsView and holds the
+ // ContentsWebView and the outlines and minitoolbar when in split view.
+@@ -85,9 +88,11 @@
+   views::Widget* capture_contents_border_widget() {
+     return capture_contents_border_widget_.get();
+   }
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+   enterprise_watermark::WatermarkView* watermark_view() {
+     return watermark_view_;
+   }
++#endif
+   const ContentsContainerOutline* contents_outline_view() const {
+     return container_outline_;
+   }
+@@ -102,10 +107,12 @@
+     return strategy_;
+   }
+ 
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+   void ApplyWatermarkSettings(const std::string& watermark_text,
+                               SkColor fill_color,
+                               SkColor outline_color,
+                               int font_size);
++#endif
+ 
+   void UpdateBorderAndOverlay(bool is_in_split,
+                               bool is_active,
+@@ -160,8 +167,10 @@
+   // Separator between the web contents and the Footer.
+   raw_ptr<views::View> new_tab_footer_view_separator_ = nullptr;
+ 
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+   // The view that overlays a watermark on the contents container.
+   raw_ptr<enterprise_watermark::WatermarkView> watermark_view_ = nullptr;
++#endif
+ 
+   // The scrim view that covers the content area when a tab-modal dialog is
+   // open.
+--- a/chrome/browser/ui/views/frame/contents_container_view.cc
++++ b/chrome/browser/ui/views/frame/contents_container_view.cc
+@@ -8,7 +8,6 @@
+ #include <optional>
+ 
+ #include "chrome/browser/devtools/devtools_contents_resizing_strategy.h"
+-#include "chrome/browser/enterprise/watermark/watermark_view.h"
+ #include "chrome/browser/profiles/profile.h"
+ #include "chrome/browser/ui/browser_element_identifiers.h"
+ #include "chrome/browser/ui/color/chrome_color_id.h"
+@@ -45,6 +44,10 @@
+ #include "chrome/browser/glic/public/glic_enabling.h"
+ #endif
+ 
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
++#include "chrome/browser/enterprise/watermark/watermark_view.h"
++#endif
++
+ #if BUILDFLAG(IS_WIN)
+ #include "ui/views/widget/native_widget_aura.h"
+ #endif
+@@ -95,8 +98,10 @@
+     new_tab_footer_view_->SetVisible(false);
+   }
+ 
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+   watermark_view_ =
+       AddChildView(std::make_unique<enterprise_watermark::WatermarkView>());
++#endif
+ 
+   contents_scrim_view_ = AddChildView(std::make_unique<ScrimView>());
+   contents_scrim_view_->layer()->SetName("ContentsScrimView");
+@@ -286,6 +291,7 @@
+   InvalidateLayout();
+ }
+ 
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+ void ContentsContainerView::ApplyWatermarkSettings(
+     const std::string& watermark_text,
+     SkColor fill_color,
+@@ -294,6 +300,7 @@
+   watermark_view_->SetString(watermark_text, fill_color, outline_color,
+                              font_size);
+ }
++#endif
+ 
+ void ContentsContainerView::UpdateDevToolsDockedPlacement() {
+   DevToolsDockedPlacement placement = DevToolsDockedPlacement::kUnknown;
+@@ -507,10 +514,12 @@
+                                      contents_scrim_view_->GetVisible(),
+                                      full_contents_bounds);
+ 
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+   CHECK(watermark_view_);
+   layouts.child_layouts.emplace_back(watermark_view_.get(),
+                                      watermark_view_->GetVisible(),
+                                      full_contents_bounds);
++#endif
+ 
+   // Actor Overlay view bounds are the same as the contents view.
+   if (actor_overlay_view_) {

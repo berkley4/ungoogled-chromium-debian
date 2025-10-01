@@ -1,0 +1,14 @@
+--- a/chrome/browser/enterprise/data_protection/data_protection_navigation_observer.cc
++++ b/chrome/browser/enterprise/data_protection/data_protection_navigation_observer.cc
+@@ -164,7 +164,11 @@
+ 
+ bool IsEnterpriseLookupEnabled(content::BrowserContext* context) {
+   DCHECK(context);
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+   return IsEnterpriseLookupEnabled(Profile::FromBrowserContext(context));
++#else
++  return false;
++#endif
+ }
+ 
+ void DoLookup(safe_browsing::RealTimeUrlLookupServiceBase* lookup_service,
