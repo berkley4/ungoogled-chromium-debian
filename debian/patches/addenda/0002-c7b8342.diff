@@ -1,0 +1,70 @@
+From c7b83421b0c0da04ef18f5455b7ef6d47516c5bb Mon Sep 17 00:00:00 2001
+From: Mikel Astiz <mastiz@chromium.org>
+Date: Tue, 30 Sep 2025 11:35:25 -0700
+Subject: [PATCH] [M141][TrustedVault] Fix public import missing size validation
+
+`SecureBoxPublicKey::CreateByImport()` should have safeguards against
+input data not matching the expected size, and return null in that case.
+
+(cherry picked from commit 0e63d7ab62928f5645a42484fbf47cba43b0128f)
+
+Bug: 443196747
+Change-Id: I0996dbe383a51b1fd8269fbe429c78f24f283989
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6990129
+Reviewed-by: Maksim Moskvitin <mmoskvitin@google.com>
+Commit-Queue: Mikel Astiz <mastiz@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1521442}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/7000268
+Bot-Commit: Rubber Stamper <rubber-stamper@appspot.gserviceaccount.com>
+Cr-Commit-Position: refs/branch-heads/7390@{#2086}
+Cr-Branched-From: d481efce5eb300acbb896686676ebd0352a6f1db-refs/heads/main@{#1509326}
+---
+
+--- a/components/trusted_vault/securebox.cc
++++ b/components/trusted_vault/securebox.cc
+@@ -63,11 +63,16 @@
+   return result;
+ }
+ 
+-// Creates public EC_KEY from |public_key_bytes|. |public_key_bytes| must be
+-// a X9.62 formatted NIST P-256 point.
++// Creates public EC_KEY from |public_key_bytes|. Returns nullptr if
++// |public_key_bytes| does not represent a X9.62 formatted NIST P-256 point.
+ bssl::UniquePtr<EC_KEY> ECPublicKeyFromBytes(
+     base::span<const uint8_t> public_key_bytes,
+     const crypto::OpenSSLErrStackTracer& err_tracer) {
++  if (public_key_bytes.size() != kECPointLength) {
++    // |public_key_bytes| doesn't represent a valid NIST P-256 point.
++    return nullptr;
++  }
++
+   bssl::UniquePtr<EC_KEY> ec_key(
+       EC_KEY_new_by_curve_name(NID_X9_62_prime256v1));
+   DCHECK(ec_key);
+--- a/components/trusted_vault/securebox_unittest.cc
++++ b/components/trusted_vault/securebox_unittest.cc
+@@ -25,6 +25,7 @@
+ 
+ using testing::Eq;
+ using testing::IsEmpty;
++using testing::IsNull;
+ using testing::Ne;
+ using testing::NotNull;
+ using testing::SizeIs;
+@@ -43,6 +44,16 @@
+   const std::vector<uint8_t> kTestPayload = StringToBytes("TEST_PAYLOAD");
+ };
+ 
++TEST_F(SecureBoxTest, ShouldReturnNullIfCreateByImportWithIncorrectSize) {
++  // Sizes other than `kPublicKeyLengthInBytes` should return null.
++  EXPECT_THAT(SecureBoxPublicKey::CreateByImport(std::vector<uint8_t>(64, 1)),
++              IsNull());
++  EXPECT_THAT(SecureBoxPublicKey::CreateByImport(std::vector<uint8_t>(66, 1)),
++              IsNull());
++  EXPECT_THAT(SecureBoxPublicKey::CreateByImport(std::vector<uint8_t>()),
++              IsNull());
++}
++
+ TEST_F(SecureBoxTest, ShouldExportAndImportPublicKey) {
+   std::unique_ptr<SecureBoxKeyPair> key_pair =
+       SecureBoxKeyPair::GenerateRandom();

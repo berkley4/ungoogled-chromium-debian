@@ -1,0 +1,154 @@
+From 0a0510086ae30e0c75264ca1cf29618db5ae4760 Mon Sep 17 00:00:00 2001
+From: Steve Becker <stevebe@microsoft.com>
+Date: Tue, 30 Sep 2025 21:22:57 -0700
+Subject: [PATCH] [Merge M141] IDB: don't make new Connection after being force closed
+
+When a Database is force-closed:
+* Queued open requests are cancelled in ConnectionCoordinator
+* Database is deleted asynchronously
+
+New connection requests that make it in between the queued deletion
+(BucketContext::QueueRunTasks()) and the actual deletion
+(BucketContext::RunTasks()) should also be cancelled/errored out in the
+same manner as those which are already waiting in the
+ConnectionCoordinator task queue.
+
+Bug: 446722008
+Change-Id: Id95b337fbfff7f361d2ff61e21bb46f18f577da4
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6972630
+Reviewed-by: Steve Becker <stevebe@microsoft.com>
+Commit-Queue: Evan Stade <evanstade@microsoft.com>
+Cr-Commit-Position: refs/heads/main@{#1520777}
+(cherry picked from commit 1beff97455387771199af33e569c7961edd8d979)
+
+IDB: Add unit test to verify Open() during force close
+
+(cherry picked from commit f290157a6918c954f06f2f652b2412ce09eb41aa)
+
+Bug: 446722008
+Change-Id: I4f86a4f6a020b8d7317b20bf8a95bca2c027163a
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6986021
+Commit-Queue: Evan Stade <evanstade@microsoft.com>
+Reviewed-by: Steve Becker <stevebe@microsoft.com>
+Cr-Original-Commit-Position: refs/heads/main@{#1520862}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/7001353
+Reviewed-by: Mingyu Lei <leimy@chromium.org>
+Commit-Queue: Mingyu Lei <leimy@chromium.org>
+Auto-Submit: Steve Becker <stevebe@microsoft.com>
+Cr-Commit-Position: refs/branch-heads/7390@{#2106}
+Cr-Branched-From: d481efce5eb300acbb896686676ebd0352a6f1db-refs/heads/main@{#1509326}
+---
+
+--- a/content/browser/indexed_db/indexed_db_unittest.cc
++++ b/content/browser/indexed_db/indexed_db_unittest.cc
+@@ -1585,6 +1585,64 @@
+   EXPECT_TRUE(base::DirectoryExists(test_path));
+ }
+ 
++// Regression test for https://crbug.com/446722008
++TEST_P(IndexedDBTest, AvoidCrashAfterForceCloseDbAndThenOpen) {
++  storage::BucketInfo bucket_info = InitBucket(GetTestStorageKey());
++  BucketLocator bucket_locator = bucket_info.ToBucketLocator();
++  mojo::PendingRemote<storage::mojom::IndexedDBClientStateChecker>
++      checker_remote;
++  BindFactory(std::move(checker_remote),
++              factory_remote_.BindNewPipeAndPassReceiver(), bucket_info);
++
++  // Open a database.
++  base::RunLoop run_loop_for_first_open;
++  MockMojoDatabaseCallbacks database_callbacks;
++  EXPECT_CALL(database_callbacks, ForcedClose())
++      .WillOnce(
++          ::base::test::RunClosure(run_loop_for_first_open.QuitClosure()));
++  MockMojoFactoryClient client;
++  mojo::PendingAssociatedRemote<blink::mojom::IDBDatabase> pending_database;
++  EXPECT_CALL(client, MockedOpenSuccess)
++      .WillOnce(testing::DoAll(MoveArgPointee<0>(&pending_database)));
++  mojo::AssociatedRemote<blink::mojom::IDBTransaction> transaction_remote;
++  factory_remote_->Open(client.CreateInterfacePtrAndBind(),
++                        database_callbacks.CreateInterfacePtrAndBind(),
++                        u"opendb", /*version=*/0,
++                        transaction_remote.BindNewEndpointAndPassReceiver(),
++                        /*host_transaction_id=*/0, /*priority=*/0);
++
++  // Delete with force_close = true.
++  MockMojoFactoryClient delete_client;
++  factory_remote_->DeleteDatabase(delete_client.CreateInterfacePtrAndBind(),
++                                  u"opendb",
++                                  /*force_close=*/true);
++
++  // Open the database again, without waiting for any of the previous steps to
++  // finish. The timing of this is very particular, which is why this test does
++  // not use `VerifyForcedClosedCalled()`. If the second open() comes any later,
++  // it will succeed because the original Database will have finished being
++  // deleted. We want to verify that there is no crash in the situation where
++  // the second open is handled while the database is still in the process of
++  // being deleted.
++  MockMojoFactoryClient client2;
++  EXPECT_CALL(client2, Error);
++  MockMojoDatabaseCallbacks database_callbacks2;
++  base::RunLoop run_loop_for_second_open;
++  EXPECT_CALL(database_callbacks2, ForcedClose())
++      .WillOnce(
++          ::base::test::RunClosure(run_loop_for_second_open.QuitClosure()));
++  mojo::AssociatedRemote<blink::mojom::IDBTransaction> transaction_remote2;
++  factory_remote_->Open(
++      client2.CreateInterfacePtrAndBind(),
++      database_callbacks2.CreateInterfacePtrAndBind(), u"opendb",
++      /*version=*/0, transaction_remote2.BindNewEndpointAndPassReceiver(),
++      /*host_transaction_id=*/42, /*priority=*/0);
++
++  // Block until expectations are satisfied.
++  run_loop_for_first_open.Run();
++  run_loop_for_second_open.Run();
++}
++
+ TEST_P(IndexedDBTest, BasicFactoryCreationAndTearDown) {
+   const blink::StorageKey storage_key_1 =
+       blink::StorageKey::CreateFromStringForTesting("http://localhost:81");
+--- a/content/browser/indexed_db/instance/bucket_context.cc
++++ b/content/browser/indexed_db/instance/bucket_context.cc
+@@ -612,6 +612,21 @@
+     database_ptr = CreateAndAddDatabase(name);
+   } else {
+     database_ptr = it->second.get();
++
++    // The `Database` might have been forced closed by dev tools, in which case
++    // no new connections should be added. The `Database` should be deleted
++    // *soon* in this case, but the request can arrive while `RunTasks()` is
++    // still queued. We could try to reschedule this open() request, but if the
++    // open request had already made it to ConnectionCoordinator, it would be
++    // pruned and errors reported: see `ShouldPruneForForceClose()`. So do that
++    // here too.
++    if (!database_ptr->IsAcceptingConnections()) {
++      connection->factory_client->OnError(
++          DatabaseError(blink::mojom::IDBException::kAbortError,
++                        "The connection was closed."));
++      connection->database_callbacks->OnForcedClose();
++      return;
++    }
+   }
+ 
+   pending_connections_.push_back(connection->weak_factory.GetWeakPtr());
+--- a/content/browser/indexed_db/instance/database.cc
++++ b/content/browser/indexed_db/instance/database.cc
+@@ -430,6 +430,8 @@
+ 
+ void Database::ScheduleOpenConnection(
+     std::unique_ptr<PendingConnection> connection) {
++  CHECK(IsAcceptingConnections());
++
+   connection_coordinator_.ScheduleOpenConnection(std::move(connection));
+ }
+ 
+--- a/content/browser/indexed_db/instance/database.h
++++ b/content/browser/indexed_db/instance/database.h
+@@ -108,6 +108,8 @@
+   // Number of connections that have progressed passed initial open call.
+   size_t ConnectionCount() const { return connections_.size(); }
+ 
++  bool IsAcceptingConnections() const { return !force_closing_; }
++
+   // Number of active open/delete calls (running or blocked on other
+   // connections).
+   size_t ActiveOpenDeleteCount() const {

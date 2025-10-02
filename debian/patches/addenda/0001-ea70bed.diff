@@ -1,0 +1,73 @@
+From ea70bed042e2e0a6fe241683fed49e2fd73d162a Mon Sep 17 00:00:00 2001
+From: Chris Thompson <cthomp@chromium.org>
+Date: Tue, 30 Sep 2025 09:51:46 -0700
+Subject: [PATCH] [M141] Disable LocalNetworkAccessChecks feature by default
+
+This is step 1 of go/finch-killswitch#process.
+
+This was previously enabled-by-default in crrev.com/c/6910012
+
+(cherry picked from commit 2656546c617d273e102bf1d1c287147e3b0e3245)
+
+Bug: 448107420,442860602
+Fixed: 448199407
+Change-Id: I78346c8fac8c8f859b148414845256d77bde2674
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6996152
+Commit-Queue: Chris Thompson <cthomp@chromium.org>
+Reviewed-by: Reilly Grant <reillyg@chromium.org>
+Reviewed-by: Chris Harrelson <chrishtr@chromium.org>
+Reviewed-by: Hubert Chao <hchao@chromium.org>
+Cr-Original-Commit-Position: refs/heads/main@{#1522559}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6998932
+Commit-Queue: Srinivas Sista <srinivassista@chromium.org>
+Owners-Override: Srinivas Sista <srinivassista@chromium.org>
+Cr-Commit-Position: refs/branch-heads/7390@{#2082}
+Cr-Branched-From: d481efce5eb300acbb896686676ebd0352a6f1db-refs/heads/main@{#1509326}
+---
+
+--- a/services/network/public/cpp/features.cc
++++ b/services/network/public/cpp/features.cc
+@@ -247,7 +247,7 @@
+ // Spec: https://wicg.github.io/local-network-access/
+ BASE_FEATURE(kLocalNetworkAccessChecks,
+              "LocalNetworkAccessChecks",
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             base::FEATURE_DISABLED_BY_DEFAULT);
+ 
+ // If true, local network access checks will only be warnings.
+ BASE_FEATURE_PARAM(bool,
+--- a/services/network/url_loader_unittest.cc
++++ b/services/network/url_loader_unittest.cc
+@@ -1900,6 +1900,10 @@
+ }
+ 
+ TEST_F(URLLoaderTest, SecureLocalToLoopbackDefault) {
++  // This test presumes that LNA enforcement is enabled.
++  base::test::ScopedFeatureList feature_list(
++      features::kLocalNetworkAccessChecks);
++
+   auto client_security_state = NewSecurityState();
+   client_security_state->is_web_secure_context = true;
+   client_security_state->ip_address_space = mojom::IPAddressSpace::kLocal;
+@@ -1939,6 +1943,10 @@
+ }
+ 
+ TEST_F(URLLoaderTest, NonSecureLocalToLoopbackDefault) {
++  // This test presumes that LNA enforcement is enabled.
++  base::test::ScopedFeatureList feature_list(
++      features::kLocalNetworkAccessChecks);
++
+   auto client_security_state = NewSecurityState();
+   client_security_state->ip_address_space = mojom::IPAddressSpace::kLocal;
+   set_factory_client_security_state(std::move(client_security_state));
+@@ -2428,6 +2436,10 @@
+ // more-private address space or not. The test is parameterized by
+ // (client address space, server address space, expected result) tuple.
+ TEST_P(URLLoaderFakeTransportInfoTest, LocalNetworkRequestLoadsCorrectly) {
++  // This test presumes that LNA enforcement is enabled.
++  base::test::ScopedFeatureList feature_list(
++      features::kLocalNetworkAccessChecks);
++
+   const auto params = GetParam();
+ 
+   auto client_security_state = NewSecurityState();
