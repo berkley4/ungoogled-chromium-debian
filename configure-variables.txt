@@ -167,7 +167,7 @@ LENS			0		Goodle Lens
                                         2 - enable fully
 
 LOCALES_EXTRA		1		Extra locales (via upstream ungoogled chromium patch)
-MEDIA_REMOTING		0		Render and play back media on remote devices when a tab is casted
+MEDIA_REMOTING		0		Render and play back media on remote devices when a tab is cast
 					Depends on CHROMECAST=1 (which is not the default)
 
 MCLICK_AUTOSCROLL	1		Enable middle click autoscroll

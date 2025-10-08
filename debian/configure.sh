@@ -147,7 +147,7 @@ fi
 ## Allow stable users to force enable icu (eg if they have self-compiled an icu package)
 [ -n "$SYS_ICU" ] && SYS_ICU_SET=1 || SYS_ICU=0
 
-## Need to error out if MEDIA_REMOTING is explicitly enabled when CHROMECAST=0
+## Default to MEDIA_REMOTING=0 (but enable by default later on if CHROMECAST=1)
 [ -n "$MEDIA_REMOTING" ] && MEDIA_REMOTING_SET=1 || MEDIA_REMOTING=0
 
 ## OpenH264 support
@@ -261,6 +261,12 @@ else
     printf '%s\n' "ERROR: Cannot set QT_6=1 when STABLE=1"
     exit 1
   fi
+fi
+
+
+if [ $CHROMECAST -eq 0 ] && [ $MEDIA_REMOTING -eq 1 ]; then
+  printf '%s\n' "ERROR: Cannot set MEDIA_REMOTING=1 when CHROMECAST=0"
+  exit 1
 fi
 
 
@@ -875,18 +881,7 @@ if [ $CATAPULT -eq 1 ]; then
 fi
 
 
-if [ $CHROMECAST -eq 0 ]; then
-  if [ $MEDIA_REMOTING -eq 1 ]; then
-    if [ $MEDIA_REMOTING_SET -eq 0 ]; then
-      printf '$s\n' "WARN: Setting MEDIA_REMOTING=0 since CHROMECAST=0"
-      printf '%s\n' "WARN: Set MEDIA_REMOTING=0 to silence these warnings"
-      MEDIA_REMOTING=0
-    else
-      printf '%s\n' "ERROR: Cannot set MEDIA_REMOTING=1 when CHROMECAST=0"
-      exit 1
-    fi
-  fi
-else
+if [ $CHROMECAST -eq 1 ]; then
   op_disable="$op_disable disable/media-router.patch"
   op_enable="$op_enable enable/add-flag-to-enable-mdns.patch"
 
@@ -900,6 +895,14 @@ else
     sed -e '/media-router=0/s@^@#@' \
         -e '/enable-mdns/s@^#@@' \
         -i $FLAG_DIR/network
+  fi
+
+  # Default to MEDIA_REMOTING=1 when CHROMECAST=1
+  [ $MEDIA_REMOTING_SET -eq 1 ] && [ $MEDIA_REMOTING -eq 0 ] || MEDIA_REMOTING=1
+
+  if [ $MEDIA_REMOTING -eq 1 ]; then
+    op_disable="$op_disable disable/media-remoting/"
+    gn_disable="$gn_disable enable_media_remoting=false"
   fi
 fi
 
@@ -1091,12 +1094,6 @@ fi
 
 if [ $MCLICK_AUTOSCROLL -eq 0 ]; then
   op_disable="$op_disable enable/middle-click-autoscroll.patch"
-fi
-
-
-if [ $MEDIA_REMOTING -eq 1 ]; then
-  op_disable="$op_disable disable/media-remoting/"
-  gn_disable="$gn_disable enable_media_remoting=false"
 fi
 
 
