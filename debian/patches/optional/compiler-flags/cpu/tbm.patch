@@ -1,10 +1,10 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1252,6 +1252,7 @@
+@@ -1296,6 +1296,7 @@
            "-msse4a",
            "-mabm",
            "-mbmi",
 +          "-mtbm",
          ]
-       } else {
-         cflags += [ "-m64" ]
+         rustflags += [
+           "-Ctarget-cpu=x86-64-v2",

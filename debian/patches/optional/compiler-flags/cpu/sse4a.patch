@@ -1,10 +1,10 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1249,6 +1249,7 @@
+@@ -1293,6 +1293,7 @@
            "-mtune=generic",
            "-maes",
            "-mavx",
 +          "-msse4a",
          ]
-       } else {
-         cflags += [ "-m64" ]
+         rustflags += [
+           "-Ctarget-cpu=x86-64-v2",

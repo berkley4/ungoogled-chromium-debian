@@ -1,17 +1,17 @@
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -1697,7 +1697,7 @@
+@@ -1678,7 +1678,7 @@
        if (is_linux && enable_swiftshader_vulkan) {
          deps += [ ":swiftshader_vk_symbols" ]
        }
 -      if (!is_chromeos && angle_shared_libvulkan) {
-+      if (!is_chromeos && angle_shared_libvulkan &&angle_enable_vulkan) {
++      if (!is_chromeos && angle_shared_libvulkan && angle_enable_vulkan) {
          deps += [ ":angle_libvulkan_symbols" ]
        }
        if (build_with_internal_optimization_guide) {
-@@ -1768,7 +1768,7 @@
- 
-       deps = [ "//third_party/angle:libGLESv2" ]
+@@ -1760,7 +1760,7 @@
+         deps = [ "//third_party/angle:libGLESv2" ]
+       }
      }
 -    if (!is_chromeos && angle_shared_libvulkan) {
 +    if (!is_chromeos && angle_shared_libvulkan && angle_enable_vulkan) {
@@ -20,20 +20,20 @@
  
 --- a/components/exo/wayland/BUILD.gn
 +++ b/components/exo/wayland/BUILD.gn
-@@ -397,12 +397,17 @@
+@@ -377,12 +377,17 @@
  
    deps = [
      "//base",
--    "//gpu/vulkan:vulkan",
--    "//gpu/vulkan/init:init",
+-    "//gpu/vulkan",
+-    "//gpu/vulkan/init",
      "//ui/gl",
      "//ui/gl/init",
    ]
  
 +  if (enable_vulkan) {
 +    deps += [
-+      "//gpu/vulkan:vulkan",
-+      "//gpu/vulkan/init:init",
++      "//gpu/vulkan",
++      "//gpu/vulkan/init",
 +    ]
 +  }
 +
@@ -42,15 +42,15 @@
      "//components/exo/wayland/protocol:aura_shell_protocol",
 --- a/ui/gl/gl_switches.cc
 +++ b/ui/gl/gl_switches.cc
-@@ -15,6 +15,7 @@
- 
- #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_ANDROID)
+@@ -19,6 +19,7 @@
+ #if BUILDFLAG(ENABLE_VULKAN) && \
+     (BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_ANDROID))
  #include <vulkan/vulkan_core.h>
 +#include "gpu/vulkan/buildflags.h"
  #include "third_party/angle/src/gpu_info_util/SystemInfo.h"  // nogncheck
- #endif
- 
-@@ -294,6 +295,7 @@
+ #endif  // BUILDFLAG(ENABLE_VULKAN) && (BUILDFLAG(IS_LINUX) ||
+         // BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_ANDROID))
+@@ -306,6 +307,7 @@
  #endif
  
  bool IsDefaultANGLEVulkan() {
@@ -58,8 +58,8 @@
    // Force on if DefaultANGLEVulkan feature is enabled from command line.
    base::FeatureList* feature_list = base::FeatureList::GetInstance();
    if (feature_list && feature_list->IsFeatureOverriddenFromCommandLine(
-@@ -404,6 +406,9 @@
-         // BUILDFLAG(IS_ANDROID)
+@@ -442,6 +444,9 @@
+ 
    return base::FeatureList::IsEnabled(kDefaultANGLEVulkan);
  #endif  // !defined(MEMORY_SANITIZER)
 +#else   // !BUILDFLAG(ENABLE_VULKAN)
