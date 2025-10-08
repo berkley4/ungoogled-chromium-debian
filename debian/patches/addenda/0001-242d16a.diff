@@ -1,0 +1,202 @@
+From 242d16a34374155b5a49e9a9b9698c91a6edbc60 Mon Sep 17 00:00:00 2001
+From: Mitsuru Oshima <oshima@chromium.org>
+Date: Tue, 07 Oct 2025 08:30:13 -0700
+Subject: [PATCH] [m141] Revert "Move WindowTreeHost Resize throttle to Surface Activatiom"
+
+This reverts commit e4798c2213f241aca389b15f79d03d785561cb9f.
+
+Reason for revert: b/444168545
+
+Original change's description:
+>Move WindowTreeHost Resize throttle to Surface Activatiom
+>
+>Currently on ChromeOS only there is some holding of input during a
+>resize. This is using OnCompositingAckDeprecated as the signal to
+>begin processing input again.
+>
+>We are planning to eliminate this signal. So we are adding a new
+>signal `ui::Compositor::OnChildResizeActivated`. This parallels
+>`OnChildResizing` which was being called by `DelegatedFrameHost`
+>when a resize occurs. Since these resizes require a new
+>`viz::SurfaceId` to be activated, we can use the existing signal
+>`DelegatedFrameHost::OnFirstSurfaceActivation` to signal the end
+>of throttling.
+>
+>Bug: 40900977
+>Change-Id: Id94e0cf70a71da98f6befedc58a1e754e8762f8b
+
+Bug: 444168545
+Fixed: 449814131
+Change-Id: Ibe653493efb84eb365cba88f0334fa0358485659
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/7014867
+Reviewed-by: Jonathan Ross <jonross@chromium.org>
+Commit-Queue: Mitsuru Oshima <oshima@chromium.org>
+Cr-Commit-Position: refs/branch-heads/7390@{#2188}
+Cr-Branched-From: d481efce5eb300acbb896686676ebd0352a6f1db-refs/heads/main@{#1509326}
+---
+
+--- a/content/browser/renderer_host/delegated_frame_host.cc
++++ b/content/browser/renderer_host/delegated_frame_host.cc
+@@ -352,11 +352,8 @@
+     client_->DelegatedFrameHostGetLayer()->SetShowSurface(
+         new_primary_surface_id, current_frame_size_in_dip_, GetGutterColor(),
+         deadline_policy, false /* stretch_content_to_fill_bounds */);
+-#if BUILDFLAG(IS_CHROMEOS)
+-    if (compositor_) {
++    if (compositor_)
+       compositor_->OnChildResizing();
+-    }
+-#endif  // BUILDFLAG(IS_CHROMEOS)
+   }
+ }
+ 
+@@ -369,13 +366,7 @@
+ 
+ void DelegatedFrameHost::OnFirstSurfaceActivation(
+     const viz::SurfaceInfo& surface_info) {
+-#if BUILDFLAG(IS_CHROMEOS)
+-  if (compositor_) {
+-    compositor_->OnChildResizeActivated();
+-  }
+-#else
+   NOTREACHED();
+-#endif  // BUILDFLAG(IS_CHROMEOS)
+ }
+ 
+ void DelegatedFrameHost::OnFrameTokenChanged(uint32_t frame_token,
+@@ -719,13 +710,7 @@
+   owns_frame_sink_id_ = is_owner;
+   if (owns_frame_sink_id_) {
+     host_frame_sink_manager_->RegisterFrameSinkId(
+-        frame_sink_id_, this,
+-#if BUILDFLAG(IS_CHROMEOS)
+-        viz::ReportFirstSurfaceActivation::kYes
+-#else
+-        viz::ReportFirstSurfaceActivation::kNo
+-#endif  // BUILDFLAG(IS_CHROMEOS)
+-    );
++        frame_sink_id_, this, viz::ReportFirstSurfaceActivation::kNo);
+     host_frame_sink_manager_->SetFrameSinkDebugLabel(frame_sink_id_,
+                                                      "DelegatedFrameHost");
+   }
+--- a/ui/aura/window_tree_host.cc
++++ b/ui/aura/window_tree_host.cc
+@@ -809,25 +809,28 @@
+   dispatcher()->OnCursorMovedToRootLocation(root_location);
+ }
+ 
++void WindowTreeHost::OnCompositingAckDeprecated(ui::Compositor* compositor) {
++  // Currently, input is only throttled on ash and is not well supported on
++  // other platforms. See crbug.com/41359082.
+ #if BUILDFLAG(IS_CHROMEOS)
+-void WindowTreeHost::OnChildResizeActivated() {
+-  if (!holding_pointer_moves_) {
++  if (!holding_pointer_moves_)
+     return;
+-  }
+ 
+   dispatcher_->ReleasePointerMoves();
+   holding_pointer_moves_ = false;
++#endif
+ }
+ 
+-void WindowTreeHost::OnCompositingChildResizing() {
++void WindowTreeHost::OnCompositingChildResizing(ui::Compositor* compositor) {
+   // Currently, input is only throttled on ash and is not well supported on
+   // other platforms. See crbug.com/41359082.
++#if BUILDFLAG(IS_CHROMEOS)
+   if (!Env::GetInstance()->throttle_input_on_resize() || holding_pointer_moves_)
+     return;
+   dispatcher_->HoldPointerMoves();
+   holding_pointer_moves_ = true;
++#endif
+ }
+-#endif  // BUILDFLAG(IS_CHROMEOS)
+ 
+ void WindowTreeHost::OnFrameSinksToThrottleUpdated(
+     const base::flat_set<viz::FrameSinkId>& ids) {
+--- a/ui/aura/window_tree_host.h
++++ b/ui/aura/window_tree_host.h
+@@ -429,10 +429,8 @@
+                             const gfx::Point& host_location);
+ 
+   // Overridden from CompositorObserver:
+-#if BUILDFLAG(IS_CHROMEOS)
+-  void OnCompositingChildResizing() final;
+-  void OnChildResizeActivated() final;
+-#endif
++  void OnCompositingAckDeprecated(ui::Compositor* compositor) final;
++  void OnCompositingChildResizing(ui::Compositor* compositor) final;
+   void OnFrameSinksToThrottleUpdated(
+       const base::flat_set<viz::FrameSinkId>& ids) final;
+   void OnSetPreferredRefreshRate(ui::Compositor*,
+--- a/ui/aura/window_tree_host_unittest.cc
++++ b/ui/aura/window_tree_host_unittest.cc
+@@ -151,14 +151,7 @@
+   // Wait for a CompositorFrame to be activated.
+   ui::DrawWaiterForTest::WaitForCompositingEnded(host()->compositor());
+ 
+-  // Pointer moves should still be blocked until the child surface has
+-  // activated.
+-  EXPECT_TRUE(dispatcher_api.HoldingPointerMoves());
+-
+-  // Signal that the child has had its resized surface activated.
+-  host()->compositor()->OnChildResizeActivated();
+-
+-  // Pointer moves should be routed normally after activation.
++  // Pointer moves should be routed normally after commit.
+   EXPECT_FALSE(dispatcher_api.HoldingPointerMoves());
+ }
+ #endif
+--- a/ui/compositor/compositor.cc
++++ b/ui/compositor/compositor.cc
+@@ -397,16 +397,10 @@
+   }
+ }
+ 
+-#if BUILDFLAG(IS_CHROMEOS)
+ void Compositor::OnChildResizing() {
+-  observer_list_.Notify(&CompositorObserver::OnCompositingChildResizing);
++  observer_list_.Notify(&CompositorObserver::OnCompositingChildResizing, this);
+ }
+ 
+-void Compositor::OnChildResizeActivated() {
+-  observer_list_.Notify(&CompositorObserver::OnChildResizeActivated);
+-}
+-#endif  // BUILDFLAG(IS_CHROMEOS)
+-
+ void Compositor::ScheduleDraw() {
+   host_->SetNeedsCommit();
+ }
+--- a/ui/compositor/compositor.h
++++ b/ui/compositor/compositor.h
+@@ -183,14 +183,8 @@
+       mojo::AssociatedRemote<viz::mojom::ExternalBeginFrameController>
+           external_begin_frame_controller);
+ 
+-#if BUILDFLAG(IS_CHROMEOS)
+   // Called when a child surface is about to resize.
+   void OnChildResizing();
+-  // Called when a child surface has activated for a resize. This occurs once
+-  // all dependent surfaces are available in the GPU Process. This precedes
+-  // drawing and presentation of the content of the surface.
+-  void OnChildResizeActivated();
+-#endif  // BUILDFLAG(IS_CHROMEOS)
+ 
+   // Schedules a redraw of the layer tree associated with this compositor.
+   void ScheduleDraw();
+--- a/ui/compositor/compositor_observer.h
++++ b/ui/compositor/compositor_observer.h
+@@ -53,11 +53,8 @@
+   // To determine when presentation occurred see `OnDidPresentCompositorFrame`.
+   virtual void OnCompositingAckDeprecated(Compositor* compositor) {}
+ 
+-#if BUILDFLAG(IS_CHROMEOS)
+   // Called when a child of the compositor is resizing.
+-  virtual void OnCompositingChildResizing() {}
+-  virtual void OnChildResizeActivated() {}
+-#endif  // BUILDFLAG(IS_CHROMEOS)
++  virtual void OnCompositingChildResizing(Compositor* compositor) {}
+ 
+ #if BUILDFLAG(IS_LINUX) && BUILDFLAG(IS_OZONE_X11)
+   // Called when a swap with new size is completed.
