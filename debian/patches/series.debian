@@ -175,7 +175,6 @@ optional/fixes/icudata-file-path.patch
 optional/fixes/qt-ui.patch
 #optional/fixes/skia-allow-bundled-freetype.patch
 optional/fixes/skia-allow-bundled-harfbuzz.patch
-#optional/fixes/skia-gamma.patch
 optional/fixes/chromedriver/brandversion.patch
 optional/fixes/chromedriver/fix-paths.patch
 optional/fixes/widevine/widevine-locations.patch

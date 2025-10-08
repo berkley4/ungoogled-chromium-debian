@@ -109,7 +109,6 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$QT_6" ] || QT_6=0
 [ -n "$RSA_16K" ] || RSA_16K=0
 [ -n "$RUSTY_PNG" ] || RUSTY_PNG=1
-[ -n "$SKIA_GAMMA" ] || SKIA_GAMMA=0
 [ -n "$SPEECH" ] || SPEECH=1
 [ -n "$SPOOF_WEBGL_INFO" ] || SPOOF_WEBGL_INFO=1
 [ -n "$SWIFTSHADER" ] || SWIFTSHADER=1
@@ -1268,25 +1267,6 @@ if [ $GOOGLE_API_KEYS -eq 0 ]; then
 elif [ $GOOGLE_API_KEYS -ge 2 ]; then
   sed -e '/^#export GOOGLE_/s@^#@@' -i $FLAG_DIR/google-api-keys
 fi
-
-
-
-## Skia gamma range: 1.0 to 3.0 (a value of 1 just enables the patch)
-case $SKIA_GAMMA in
-  [23])
-    # Ensure skia gamma values have one decimal place
-    SKIA_GAMMA=${SKIA_GAMMA}.0 ;;
-esac
-
-case $SKIA_GAMMA in
-  1|[12].[0-9]|3.0)
-    case $SKIA_GAMMA in
-      [12].[0-9]|3.0)
-        sed -e "s@2\.2@$SKIA_GAMMA@" -i $OP_DIR/fixes/skia-gamma.patch ;;
-    esac
-
-    op_enable="$op_enable skia-gamma.patch" ;;
-esac
 
 
 
