@@ -531,9 +531,8 @@ else
     # TODO: re-evaluate this after clang 22 becomes the upstream default
     if [ $LLVM_VER -ne 22 ]; then
       sed "/^+ /s@22@$LLVM_VER@" -i $OP_DIR/system/clang/clang-version_2.patch
+      printf '%s\n' "INFO: Using clang $LLVM_VER"
     fi
-
-    printf '%s\n' "INFO: Using clang $LLVM_VER"
   fi
 
   if [ $SYS_CLANG -eq 1 ]; then
