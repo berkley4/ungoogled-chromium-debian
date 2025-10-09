@@ -1,0 +1,102 @@
+From a349c507694b702d5511efba55b684a75b4b0679 Mon Sep 17 00:00:00 2001
+From: Patrick Meenan <pmeenan@chromium.org>
+Date: Wed, 08 Oct 2025 15:52:37 -0700
+Subject: [PATCH] [M141] Do not use did_use_shared_dictionary for cached responses
+
+Original change's description:
+> Do not use did_use_shared_dictionary for cached responses
+> 
+> Dictionary-compressed responses are stored uncompressed in the HTTP
+> cache and independent of Accept-Encoding or Available-Dictionary
+> headers which are applied on outgoing requests below the cache
+> layer.
+> 
+> The only time the client needs to know if a response was
+> dictionary-compressed is when the dictionary itself was actually used
+> (in which case, the dictionary could theoretically be used in an
+> oracle attack to reveal the contents of an opaque payload).
+> 
+> Bug: 446047080, 40255884
+> Change-Id: Iaaba74c065550c007a4c379fb2cadc257c54dc5d
+> Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/7014448
+> Reviewed-by: Tsuyoshi Horo <horo@chromium.org>
+> Commit-Queue: Patrick Meenan <pmeenan@chromium.org>
+> Cr-Commit-Position: refs/heads/main@{#1526010}
+
+(cherry picked from commit 93d4c8920d8ad232215226044d35ada3edfd4a7a)
+
+Bug: 450270442,446047080,40255884
+Change-Id: Iaaba74c065550c007a4c379fb2cadc257c54dc5d
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/7023437
+Bot-Commit: Rubber Stamper <rubber-stamper@appspot.gserviceaccount.com>
+Commit-Queue: Rubber Stamper <rubber-stamper@appspot.gserviceaccount.com>
+Auto-Submit: Chrome Cherry Picker <chrome-cherry-picker@chops-service-accounts.iam.gserviceaccount.com>
+Cr-Commit-Position: refs/branch-heads/7390@{#2199}
+Cr-Branched-From: d481efce5eb300acbb896686676ebd0352a6f1db-refs/heads/main@{#1509326}
+---
+
+--- a/net/http/http_response_info.cc
++++ b/net/http/http_response_info.cc
+@@ -138,8 +138,8 @@
+ // These values can be bit-wise combined to form the extra flags field of the
+ // serialized HttpResponseInfo.
+ enum {
+-  // This bit is set if the request usd a shared dictionary for decoding its
+-  // body.
++  // This bit was set if the request used a shared dictionary for decoding its
++  // body but is no longer persisted.
+   RESPONSE_EXTRA_INFO_DID_USE_SHARED_DICTIONARY = 1,
+ 
+   // This bit is set if the response has valid `proxy_chain`.
+@@ -365,8 +365,10 @@
+     browser_run_id = std::make_optional(id);
+   }
+ 
+-  did_use_shared_dictionary =
+-      (extra_flags & RESPONSE_EXTRA_INFO_DID_USE_SHARED_DICTIONARY) != 0;
++  // Do NOT restore the did_use_shared_dictionary flag since
++  // dictionary-compressed responses are decoded before being stored in cache.
++  // It is no longer persisted but old cache entries may have it set.
++  did_use_shared_dictionary = false;
+ 
+   if (extra_flags & RESPONSE_EXTRA_INFO_HAS_PROXY_CHAIN) {
+     std::optional<ProxyChain> unpickled_proxy_chain =
+@@ -434,10 +436,6 @@
+   if (browser_run_id.has_value())
+     flags |= RESPONSE_INFO_BROWSER_RUN_ID;
+ 
+-  if (did_use_shared_dictionary) {
+-    extra_flags |= RESPONSE_EXTRA_INFO_DID_USE_SHARED_DICTIONARY;
+-  }
+-
+   if (proxy_chain.IsValid()) {
+     extra_flags |= RESPONSE_EXTRA_INFO_HAS_PROXY_CHAIN;
+   }
+--- a/net/http/http_response_info.h
++++ b/net/http/http_response_info.h
+@@ -204,6 +204,8 @@
+   std::optional<int64_t> browser_run_id;
+ 
+   // True if the response used a shared dictionary for decoding its body.
++  // This is always false for resources served from cache (where
++  // dictionary-compressed responses are stored uncompressed).
+   bool did_use_shared_dictionary = false;
+ };
+ 
+--- a/net/http/http_response_info_unittest.cc
++++ b/net/http/http_response_info_unittest.cc
+@@ -308,12 +308,12 @@
+   EXPECT_FALSE(restored_response_info.browser_run_id.has_value());
+ }
+ 
+-// Test that did_use_shared_dictionary is preserved .
++// Test that did_use_shared_dictionary is NOT preserved .
+ TEST_F(HttpResponseInfoTest, DidUseSharedDictionary) {
+   response_info_.did_use_shared_dictionary = true;
+   HttpResponseInfo restored_response_info;
+   PickleAndRestore(response_info_, &restored_response_info);
+-  EXPECT_TRUE(restored_response_info.did_use_shared_dictionary);
++  EXPECT_FALSE(restored_response_info.did_use_shared_dictionary);
+ }
+ 
+ }  // namespace

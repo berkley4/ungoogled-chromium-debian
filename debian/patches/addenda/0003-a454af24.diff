@@ -1,0 +1,33 @@
+From a454af24fc33a97182ff15eb0992745bfcd7d9bf Mon Sep 17 00:00:00 2001
+From: Hannah Collins <hannahrogers@google.com>
+Date: Wed, 08 Oct 2025 13:29:09 -0700
+Subject: [PATCH] [omnibox] Do not send URLs as AIM input
+
+This is to resolve a privacy concern, around passing urls to AI Mode.
+
+(cherry picked from commit 69cbfc0ed2b77c9d2a2a0c2f0356398ebca90751)
+
+Change-Id: I28d10614d211e6863992070309162bb5afa7c50a
+Bug: 450296604
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/7014907
+Reviewed-by: Khalid Peer <khalidpeer@chromium.org>
+Commit-Queue: Hannah Collins <hannahrogers@google.com>
+Cr-Original-Commit-Position: refs/heads/main@{#1526522}
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/7023190
+Cr-Commit-Position: refs/branch-heads/7390@{#2195}
+Cr-Branched-From: d481efce5eb300acbb896686676ebd0352a6f1db-refs/heads/main@{#1509326}
+---
+
+--- a/components/omnibox/browser/omnibox_edit_model.cc
++++ b/components/omnibox/browser/omnibox_edit_model.cc
+@@ -750,7 +750,9 @@
+ }
+ 
+ void OmniboxEditModel::OpenAiMode(bool via_keyboard) {
+-  std::u16string query_text = current_match_.contents;
++  std::u16string query_text =
++      AutocompleteMatch::IsSearchType(current_match_.type) ?
++      current_match_.contents : u"";
+   RecordAiModeMetrics(query_text, /*activated=*/true, via_keyboard);
+   GURL ai_mode_url =
+       GetUrlForAim(controller_->client()->GetTemplateURLService(),
