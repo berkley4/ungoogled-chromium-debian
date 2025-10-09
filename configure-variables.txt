@@ -192,7 +192,7 @@ QT			1		0 - disable
 					At least one of GTK or QT must be enabled to avoid crashes
 
 QT_6			0		0 - disable Qt version 6
-					1 - enable Qt version 6 (implies QT=6; unstable only)
+					1 - enable Qt version 6 (implies QT=6)
 
 RSA_16K			0		Enable connecting to (arguably misconfigured) websites using RSA 16384 keys
 RUSTY_PNG		1		Rust-based png library (alternative to libpng)

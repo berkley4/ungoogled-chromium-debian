@@ -256,11 +256,6 @@ else
     printf '%s\n' "ERROR: Cannot set QT=6 when QT_6=0"
     exit 1
   fi
-
-  if [ $QT_6 -eq 1 ] && [ $STABLE -eq 1 ]; then
-    printf '%s\n' "ERROR: Cannot set QT_6=1 when STABLE=1"
-    exit 1
-  fi
 fi
 
 
