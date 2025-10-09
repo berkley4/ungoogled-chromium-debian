@@ -1,0 +1,19 @@
+--- a/BUILD.gn
++++ b/BUILD.gn
+@@ -31,6 +31,7 @@
+ import("//printing/buildflags/buildflags.gni")
+ import("//remoting/remoting_enable.gni")
+ import("//services/on_device_model/on_device_model.gni")
++import("//third_party/abseil-cpp/absl.gni")
+ import("//third_party/closure_compiler/compile_js.gni")
+ import("//tools/ipc_fuzzer/ipc_fuzzer.gni")
+ import("//ui/base/ui_features.gni")
+@@ -130,7 +131,7 @@
+       ]
+     }
+ 
+-    if (!is_component_build) {
++    if (!is_component_build && absl_build_tests) {
+       deps += [ "//third_party/abseil-cpp:absl_tests" ]
+     }
+ 

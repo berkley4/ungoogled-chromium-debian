@@ -82,6 +82,7 @@ GN_FLAGS +=					\
 
 # Disabled components
 GN_FLAGS +=					\
+	absl_build_tests=false			\
 	angle_has_histograms=false		\
 	angle_has_rapidjson=false		\
 	enable_extractors=false			\
