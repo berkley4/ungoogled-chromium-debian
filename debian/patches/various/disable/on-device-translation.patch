@@ -1,0 +1,100 @@
+--- a/chrome/browser/ui/BUILD.gn
++++ b/chrome/browser/ui/BUILD.gn
+@@ -15,6 +15,7 @@
+ import("//components/lens/features.gni")
+ import("//components/metrics/structured/buildflags/buildflags.gni")
+ import("//components/offline_pages/buildflags/features.gni")
++import("//components/services/on_device_translation/buildflags/features.gni")
+ import("//content/browser/devtools/features.gni")
+ import("//crypto/features.gni")
+ import("//device/vr/buildflags/buildflags.gni")
+@@ -2893,10 +2894,6 @@
+       "webui/intro/intro_handler.h",
+       "webui/intro/intro_ui.cc",
+       "webui/intro/intro_ui.h",
+-      "webui/on_device_translation_internals/on_device_translation_internals_page_handler_impl.cc",
+-      "webui/on_device_translation_internals/on_device_translation_internals_page_handler_impl.h",
+-      "webui/on_device_translation_internals/on_device_translation_internals_ui.cc",
+-      "webui/on_device_translation_internals/on_device_translation_internals_ui.h",
+       "webui/profile_helper.cc",
+       "webui/profile_helper.h",
+       "webui/settings/settings_default_browser_handler.cc",
+@@ -2907,6 +2904,15 @@
+       "webui/settings/system_handler.h",
+     ]
+ 
++    if (enable_on_device_translation) {
++      sources += [
++        "webui/on_device_translation_internals/on_device_translation_internals_page_handler_impl.cc",
++        "webui/on_device_translation_internals/on_device_translation_internals_page_handler_impl.h",
++        "webui/on_device_translation_internals/on_device_translation_internals_ui.cc",
++        "webui/on_device_translation_internals/on_device_translation_internals_ui.h",
++      ]
++    }
++
+     if (enable_video_effects) {
+       sources += [
+         "views/media_preview/camera_preview/blur_switch_view_controller.cc",
+@@ -2916,7 +2922,6 @@
+ 
+     deps += [
+       "//chrome/app:generated_resources",
+-      "//chrome/browser/on_device_translation",
+       "//chrome/browser/profiles",
+       "//chrome/browser/shortcuts",
+       "//chrome/browser/ui/download",
+@@ -2935,6 +2940,10 @@
+       "//services/video_effects/buildflags",
+     ]
+ 
++    if (enable_on_device_translation) {
++      deps += [ "//chrome/browser/on_device_translation" ]
++    }
++
+     # Any circular includes must depend on the target "//chrome/browser:browser_public_dependencies".
+     # Non-android and non-chromeos-ash circular deps.
+     allow_circular_includes_from += [
+--- a/chrome/browser/chrome_browser_interface_binders_webui.cc
++++ b/chrome/browser/chrome_browser_interface_binders_webui.cc
+@@ -64,7 +64,9 @@
+ 
+ #if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
+ #include "chrome/browser/ui/webui/app_settings/web_app_settings_ui.h"
++#if BUILDFLAG(ENABLE_ON_DEVICE_TRANSLATION)
+ #include "chrome/browser/ui/webui/on_device_translation_internals/on_device_translation_internals_ui.h"
++#endif
+ #include "chrome/browser/ui/webui/signin/history_sync_optin/history_sync_optin.mojom.h"
+ #include "chrome/browser/ui/webui/signin/history_sync_optin/history_sync_optin_ui.h"
+ #include "chrome/browser/ui/webui/whats_new/whats_new_ui.h"
+@@ -493,9 +495,11 @@
+   RegisterWebUIControllerInterfaceBinder<
+       app_management::mojom::PageHandlerFactory, WebAppSettingsUI>(map);
+ 
++#if BUILDFLAG(ENABLE_ON_DEVICE_TRANSLATION)
+   RegisterWebUIControllerInterfaceBinder<
+       on_device_translation_internals::mojom::PageHandlerFactory,
+       OnDeviceTranslationInternalsUI>(map);
++#endif
+ 
+   if (base::FeatureList::IsEnabled(switches::kEnableHistorySyncOptin)) {
+     RegisterWebUIControllerInterfaceBinder<
+--- a/chrome/browser/ui/webui/chrome_web_ui_configs.cc
++++ b/chrome/browser/ui/webui/chrome_web_ui_configs.cc
+@@ -55,6 +55,7 @@
+ #include "components/safe_browsing/buildflags.h"
+ #include "components/security_interstitials/content/connection_help_ui.h"
+ #include "components/security_interstitials/content/known_interception_disclosure_ui.h"
++#include "components/services/on_device_translation/buildflags/buildflags.h"
+ #include "content/public/browser/webui_config_map.h"
+ #include "extensions/buildflags/buildflags.h"
+ #include "printing/buildflags/buildflags.h"
+@@ -383,7 +384,9 @@
+ #if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
+   map.AddWebUIConfig(std::make_unique<BrowserSwitchUIConfig>());
+   map.AddWebUIConfig(std::make_unique<HistorySyncOptinUIConfig>());
++#if BUILDFLAG(ENABLE_ON_DEVICE_TRANSLATION)
+   map.AddWebUIConfig(std::make_unique<OnDeviceTranslationInternalsUIConfig>());
++#endif
+   map.AddWebUIConfig(std::make_unique<WebAppSettingsUIConfig>());
+   map.AddWebUIConfig(std::make_unique<WhatsNewUIConfig>());
+ #endif  // BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)

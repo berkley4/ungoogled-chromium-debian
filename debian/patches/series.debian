@@ -71,6 +71,7 @@ various/disable/angle-perftests.patch
 various/disable/CollectWebGPUSupportMetrics.patch
 various/disable/lens-features.patch
 various/disable/motherboard-metrics.patch
+various/disable/on-device-translation.patch
 various/disable/rtc-tools.patch
 various/disable/screen-ai-service.patch
 various/disable/tests.patch

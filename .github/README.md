@@ -94,6 +94,7 @@ ___Security/Privacy improvements___
         - Media remoting (*)
         - Media router (++)
         - mDNS (++)
+        - On-device translation
         - Swiftshader
         - Vulkan
         - WebGPU (*)
