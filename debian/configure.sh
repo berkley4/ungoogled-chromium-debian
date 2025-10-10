@@ -1029,13 +1029,9 @@ fi
 
 
 if [ $HLS_PLAYER -eq 0 ]; then
-  fl_block="$fl_block disable-builtin-hls enable-builtin-hls"
+  fl_block="$fl_block enable-hls-playback"
   gn_enable="$gn_enable enable_hls_demuxer=false"
   ins_disable="$ins_disable hls-player"
-elif [ $HLS_PLAYER -ge 2 ]; then
-  sed -e '/enable-builtin-hls/s@^#@@' \
-      -e '/enable-features=HlsPlayer/s@^#@@' \
-      -i $FLAG_DIR/hls-player
 fi
 
 

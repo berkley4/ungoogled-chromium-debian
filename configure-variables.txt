@@ -154,8 +154,7 @@ GTK			1		GTK user interface
 HEADLESS		0		Headless browsing mode
 HLS_PLAYER		1		Enables the HLS manifest parser/demuxer/player (experimental)
 					0 - disable
-					1 - enable (need to edit /etc/chromium.d/hls-player to fully enable)
-					2 - enable fully
+					1 - enable (need to edit /etc/chromium.d/hls-player to disable)
 
 HYPHENATION		1		Enable hyphenation data (see https://clagnut.com/sandbox/hyphenation.html for info)
 IDB_FG_CLIENT_BOOST	1		Enable boosting priority of backend tasks associated with foreground clients for IDB
