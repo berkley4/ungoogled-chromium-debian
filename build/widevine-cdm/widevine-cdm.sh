@@ -32,7 +32,7 @@ esac
 
 case $DL_CACHE in
   "")
-    DL_CACHE=$CUR_DIR/../download_cache ;;
+    DL_CACHE=$CUR_DIR/../.download_cache ;;
 esac
 
 
