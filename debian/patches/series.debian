@@ -202,8 +202,3 @@ optional/system/openh264.patch
 optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
 optional/translate/revert-disable.patch
 optional/translate/stop-unsupported-switch-warning.patch
-
-addenda/0001-242d16a.diff
-addenda/0002-6318e0d.diff
-addenda/0004-a349c50.diff
-addenda/0005-1dd0be21.diff
