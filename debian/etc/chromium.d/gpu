@@ -4,13 +4,6 @@
 # For those using wayland (not X11)
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --ozone-platform-hint=wayland"
 
-# WebGPU
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-unsafe-webgpu"
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-skia-graphite"
-
-# Skia graphite (dawn-swiftshader, dawn-vulkan, dawn-metal or metal)
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --skia-graphite-backend=dawn-vulkan"
-
 # Vulkan
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-angle=vulkan"
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-vulkan"

@@ -59,4 +59,5 @@ debian/etc/chromium.d/network                                                  e
 debian/etc/chromium.d/ui                                                       etc/chromium.d
 debian/etc/chromium.d/user-agent.sample                                        etc/chromium.d
 debian/etc/chromium.d/webassembly                                              etc/chromium.d
+#debian/etc/chromium.d/webgpu                                                   etc/chromium.d
 debian/etc/chromium.d/README                                                   etc/chromium.d

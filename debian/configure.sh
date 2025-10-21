@@ -1193,7 +1193,7 @@ if [ $VULKAN -eq 0 ]; then
 fi
 
 
-if [ $WEBGPU -ge 1 ]; then
+if [ $WEBGPU -eq 1 ]; then
   op_disable="$op_disable disable/webgpu.patch"
 
   # Refer to debian/rules.in to see which flags are disabled
@@ -1202,9 +1202,8 @@ if [ $WEBGPU -ge 1 ]; then
   gn_disable="$gn_disable tint_build_glsl_validator=false"
   gn_disable="$gn_disable tint_build_glsl_writer=false"
 
-  if [ $WEBGPU -ge 2 ]; then
-    FLAG_GPU="$FLAG_GPU -e \"/enable-unsafe-webgpu/s@^#@@\""
-  fi
+  fl_unblock="$fl_unblock enable-skia-graphite enable-unsafe-webgpu"
+  ins_enable"$ins_enable webgpu"
 fi
 
 
