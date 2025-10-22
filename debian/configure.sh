@@ -1185,8 +1185,12 @@ if [ $VULKAN -eq 0 ]; then
   gn_enable="$gn_enable enable_vulkan=false"
   gn_enable="$gn_enable angle_build_vulkan_system_info=false"
 
+  fl_block="$fl_block use-angle=vulkan use-vulkan"
+
   ins_disable="$ins_disable libVkICD_mock_icd.so"
-  ins_disable="$ins_disable libvulkan.so.1"
+  ins_disable="$ins_disable vulkan"
+
+  FLAG_GPU="$FLAG_GPU -e \"/use-angle=gl/s@^#@@\""
 
   SWIFTSHADER=0
   WEBGPU=0

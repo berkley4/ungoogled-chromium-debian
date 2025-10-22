@@ -4,12 +4,7 @@
 # For those using wayland (not X11)
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --ozone-platform-hint=wayland"
 
-# Vulkan
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-angle=vulkan"
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-vulkan"
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=Vulkan,DefaultANGLEVulkan,VulkanFromANGLE"
-
-# GL
+# GL - enable this if you've disabled vulkun (or compiled it out)
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-angle=gl"
 
 

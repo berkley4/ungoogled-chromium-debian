@@ -1,12 +1,9 @@
 # https://chromium.googlesource.com/chromium/src/+/main/docs/gpu/vaapi.md#vaapi-on-linux
 #
-# One can also try editing /etc/chromium.d/gpu to enable the following...
+# One can also try editing /etc/chromium.d/gpu to enable/disable the following...
 #   --ignore-gpu-blocklist
 #   --disable-gpu-driver-bug-workaround
 #   --ozone-platform-hint=wayland
-#   --use-angle=vulkan | --use-angle=gl
-#
-# Note: some of the GL and vulkan flags might not be mutually compatible
 #
 
 ### GL
