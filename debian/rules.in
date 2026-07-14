@@ -56,10 +56,10 @@ export RUSTC_BOOTSTRAP=1
 #GN_FLAGS += rust_bindgen_root=\"_BINDGEN_PATH\"
 
 # Use parallel jobs if requested
-JOBS := 1
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
-JOBS := $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+JOBS ?= $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 endif
+JOBS ?= 1
 
 # Find the distribution codename for this release
 CODENAME := $(patsubst %:,,$(shell lsb_release -c))
