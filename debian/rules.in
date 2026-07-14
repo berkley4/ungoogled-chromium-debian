@@ -155,9 +155,6 @@ GN_FLAGS += headless_use_policy=false headless_use_prefs=false ozone_platform_he
 # Enable HEVC (h265) decoding
 #GN_FLAGS += enable_platform_hevc=false
 
-# Enable HLS manifest parser and demuxer
-#GN_FLAGS += enable_hls_demuxer=false
-
 # Google lens
 #GN_FLAGS += enable_lens_desktop=false
 

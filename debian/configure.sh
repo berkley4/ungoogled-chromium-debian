@@ -90,7 +90,6 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$GRCACHE_PURGE" ] || GRCACHE_PURGE=0
 [ -n "$GTK" ] || GTK=1
 [ -n "$HEADLESS" ] || HEADLESS=0
-[ -n "$HLS_PLAYER" ] || HLS_PLAYER=1
 [ -n "$HYPHENATION" ] || HYPHENATION=1
 [ -n "$IDB_FG_CLIENT_BOOST" ] || IDB_FG_CLIENT_BOOST=1
 [ -n "$LENS" ] || LENS=0
@@ -976,13 +975,6 @@ if [ $HEADLESS -eq 1 ]; then
   fl_unblock="$fl_unblock headless"
   op_disable="$op_disable disable/headless.patch"
   gn_disable="$gn_disable headless_enable_commands=false headless_use_policy=false"
-fi
-
-
-if [ $HLS_PLAYER -eq 0 ]; then
-  fl_block="$fl_block enable-hls-playback"
-  gn_enable="$gn_enable enable_hls_demuxer=false"
-  ins_disable="$ins_disable hls-player"
 fi
 
 
