@@ -129,11 +129,6 @@ FAST_RESTART		0		Remove out/Release/arg.gn (if it exists) and only run the 'gn g
 					if no args.gn file exists in out/Release (ie only first runs invokes 'gn gen')
 					Note: any changes to build flags between a stop and restart require running './debian/rules gn_gen'
 
-FF_AC3			1		AC3/EAC3 playback support
-FF_ALAC			0		ALAC (Apple Lossless Audio Codec) playback support
-FF_FDK_AAC		0		Enable AAC playback via the fraunhofer FDK AAC decoder (adds xHE-AAC adaptive bitrate decoding)
-					Requires NON_FREE=1
-
 FF_HEVC			1		HEVC (H.265) playback support
 
 FONTATIONS		1		0 - Disable (ie hard disable with a patch)

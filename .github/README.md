@@ -118,10 +118,6 @@ ___Other features___
 - Fontations support for pdfium pdf reader
 - Experimental Opentype SVG support (via third party patches)
 - HEVC (h265) playback support (via third party patches)
-- AC3/EAC3 playback support
-- AC4 playback support (experimental, build support only)
-- ALAC (Apple Lossless Audio Codec) playblack support (build support only)
-- xHE-AAC adaptive bitrate playback support (sample files [here](https://www2.iis.fraunhofer.de/AAC/xhe-aac-abr.html)) via the FDK AAC decoder (build support only)
 - The shell launcher has the ability to block switches (aka flags)
 
 

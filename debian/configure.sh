@@ -82,6 +82,7 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$DRIVER" ] || DRIVER=1
 [ -n "$ENTERPRISE_WATERMARK" ] || ENTERPRISE_WATERMARK=0
 [ -n "$FAST_RESTART" ] || FAST_RESTART=0
+[ -n "$FF_HEVC" ] || FF_HEVC=1
 [ -n "$FONTATIONS" ] || FONTATIONS=1
 [ -n "$FONTATIONS_PDF" ] || FONTATIONS_PDF=1
 [ -n "$GOOGLE_API_KEYS" ] || GOOGLE_API_KEYS=1
@@ -154,16 +155,6 @@ fi
 [ -n "$OPENH264" ] && [ $OPENH264 -eq 0 ] && SYS_OPENH264=0 || OPENH264=1
 [ -n "$SYS_OPENH264" ] || SYS_OPENH264=1
 
-## FFmpeg codecs
-FF_AC="aac"
-
-FF_AAC=1
-[ -n "$FF_AC3" ] || FF_AC3=1
-[ -n "$FF_AC4" ] || FF_AC4=0
-[ -n "$FF_ALAC" ] || FF_ALAC=0
-[ -n "$FF_FDK" ] || FF_FDK=0
-[ -n "$FF_HEVC" ] || FF_HEVC=1
-
 ## CPU. MARCH and MTUNE defaults
 [ -n "$CPU" ] && CPU_SET=1 || CPU=avx
 [ -n "$MARCH" ] && MARCH_SET=1 || MARCH=x86-64-v2
@@ -198,11 +189,6 @@ FF_AAC=1
 
 if [ $NON_FREE -eq 0 ]; then
   SER_DB="$SER_DB -e \"s@^\(cromite/\)@#\1@\" -e \"s@^\(vanadium/\)@#\1@\""
-
-  if [ $FF_FDK -eq 1 ]; then
-    printf '%s\n' "ERROR: Cannot set FF_FDK=0 when NON_FREE=0"
-    exit 1
-  fi
 
   if [ $OPENH264 -eq 1 ] && [ $SYS_OPENH264 -eq 0 ]; then
     printf '%s\n' "ERROR: Cannot set SYS_OPENH264=1 when NON_FREE=0"
@@ -947,43 +933,8 @@ if [ $FAST_RESTART -eq 1 ]; then
 fi
 
 
-if [ $FF_FDK -eq 1 ]; then
-  op_enable="$op_enable ffmpeg-extra-codecs/fdk-aac/"
-
-  FF_AAC=0
-  FF_AC="libfdk_aac"
-
-  FDK_DIR=$RT_DIR/third_party/ffmpeg/libavcodec/fdk-aac
-  if [ $TEST -eq 0 ] && [ ! -d $FDK_DIR ]; then
-    printf '%s\n' "ERROR: Cannot find $FDK_DIR"
-    exit 1
-  fi
-fi
-
-
-if [ $FF_AC3 -eq 0 ]; then
-  op_disable="$op_disable ffmpeg-extra-codecs/ac3/"
-  gn_disable="$gn_disable enable_platform_ac3_eac3_audio=true"
-else
-  FF_AC="$FF_AC,ac3,eac3"
-fi
-
-
-if [ $FF_AC4 -eq 1 ]; then
-  op_enable="$op_enable ffmpeg-extra-codecs/ac4/"
-  gn_enable="$gn_enable enable_platform_ac4_audio=true"
-  FF_AC="$FF_AC,ac4"
-fi
-
-
-if [ $FF_ALAC -eq 1 ]; then
-  op_enable="$op_enable ffmpeg-extra-codecs/alac/"
-  FF_AC="$FF_AC,alac"
-fi
-
-
 if [ $FF_HEVC -eq 0 ]; then
-  op_disable="$op_disable ffmpeg-extra-codecs/hevc/"
+  op_disable="$op_disable ffmpeg-hevc/"
   gn_enable="$gn_enable enable_platform_hevc=false"
 
   RUL="$RUL -e \"/^HEVC_/s@^@#@\""
@@ -1236,18 +1187,6 @@ if [ $WIDEVINE -eq 0 ]; then
   op_disable="$op_disable fixes/widevine/"
   SMF="$SMF -e \"/^enable_widevine=/s@true@false@\""
 fi
-
-
-
-case $FF_AC in
-  aac)
-    op_disable="$op_disable ffmpeg-extra-codecs/audio-codecs.patch"
-    op_disable="$op_disable ffmpeg-extra-codecs/context-fixup.patch" ;;
-
-  *)
-    sed -e "s@_ff_ac@$FF_AC@" \
-        -i $OP_DIR/ffmpeg-extra-codecs/audio-codecs.patch ;;
-esac
 
 
 
