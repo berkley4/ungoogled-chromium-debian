@@ -40,7 +40,6 @@ The main features and changes are as follows :-
 ___Performance improvements___
 
 - Profile Guided Optimisation (PGO) - a smaller, faster chrome binary
-- PartitionAlloc pointer compression - should help reduce memory usage and help boost performance
 - Mutex Priority Inheritance - greater smoothness and responsiveness (see [here](https://lwn.net/Articles/177111/))
 - Partition Lock Priority Inheritance - equivalent to the above but for futexes instead of mutexes
 - The ffmpeg and core media components have been patched to use the -O3 optimisation level
