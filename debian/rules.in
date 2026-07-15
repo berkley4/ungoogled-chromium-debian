@@ -39,6 +39,9 @@ GN_FLAGS := $(shell sed -z -e 's@\x22@\x5c\x22@g' -e 's@\n@ @g' $(UC_DIR)/flags.
 #export PATH=/usr/lib/ccache:$(shell printenv PATH)
 #export CCACHE_BASEDIR=_CCACHE_BASEDIR
 
+# Enable bundled gn
+export PATH=$(RT_DIR)/buildtools/linux64:$(shell printenv PATH)
+
 # Clang toolchain
 #GN_FLAGS += clang_version=\"_LLVM_VER\"
 #GN_FLAGS += clang_base_path=\"_LLVM_BASE_DIR\"

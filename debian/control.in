@@ -15,7 +15,7 @@ Build-Depends:
 #rustc (>= 1.85.0),
 #nodejs,
  python-is-python3,
- generate-ninja,
+#generate-ninja,
  ninja-build,
  pkg-config,
  brotli (>= 1.1.0),

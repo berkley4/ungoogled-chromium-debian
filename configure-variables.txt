@@ -50,7 +50,7 @@ SYS_BINDGEN		1		Use bindgen from the system package
 					SYS_BINDGEN=2 is compatible with all values of SYS_CLANG
 					Refer to Bindgen.md for more details.
 
-SYS_GN			1		Use system generate-ninja package
+SYS_GN			0		Use system generate-ninja package (not recommended)
 
 SYS_NODE		0		Use in-tree node
 			1		Use system node package (safest on unstable)

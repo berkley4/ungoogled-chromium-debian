@@ -56,7 +56,7 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$SYS_CLANG" ] || SYS_CLANG=0
 [ -n "$SYS_RUST" ] || SYS_RUST=0
 [ -n "$SYS_BINDGEN" ] || SYS_BINDGEN=2
-[ -n "$SYS_GN" ] || SYS_GN=1
+[ -n "$SYS_GN" ] || SYS_GN=0
 [ -n "$SYS_NODE" ] || SYS_NODE=0
 
 [ -n "$ABM" ] || ABM=0
@@ -595,13 +595,10 @@ if [ $SYS_BINDGEN -gt 0 ]; then
 fi
 
 
-if [ $SYS_GN -eq 0 ]; then
-  deps_disable="$deps_disable generate-ninja"
-else
-  # The patches are only needed on stable
-  if [ $STABLE -eq 1 ]; then
-    op_enable="$op_enable system/gn/"
-  fi
+if [ $SYS_GN -eq 1 ]; then
+  deps_enable="$deps_enable generate-ninja"
+  op_enable="$op_enable system/gn/"
+  RUL="$RUL -e \"/buildtools\/linux64/s@^@#@\""
 fi
 
 
