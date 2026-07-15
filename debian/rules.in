@@ -90,7 +90,6 @@ GN_FLAGS +=					\
 	angle_has_rapidjson=false		\
 	enable_extractors=false			\
 	enable_glic=false			\
-	enable_on_device_translation=false	\
 	libyuv_disable_rvv=true			\
 	safe_browsing_use_unrar=false		\
 	tint_build_benchmarks=false		\
