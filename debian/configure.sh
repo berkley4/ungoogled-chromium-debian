@@ -20,10 +20,9 @@ CON=; DSB=; FLAG_GPU=; FLAG_MISC=; INS=; POL=
 PRU=; PRU_PY=; RUL=; RUST_INST=; SER_DB=
 SER_U=; SERIES_DB=; SERIES_UC=; SMF=
 
-BLUEZ_SET=0; BUILD_TS_SET=0; CLANG_VER_SET=0
-CPU_SET=0; DBUS_SET=0; MARCH_SET=0
-MEDIA_REMOTING_SET=0; MTUNE_SET=0; POLLY_SET=0
-RELEASE_SET=0; SYS_ICU_SET=0
+BUILD_TS_SET=0; CLANG_VER_SET=0; CPU_SET=0
+MARCH_SET=0; MEDIA_REMOTING_SET=0 MTUNE_SET=0
+POLLY_SET=0; RELEASE_SET=0; SYS_ICU_SET=0
 
 # LLVM_PGO_VER (current bundled version) is only effective when TEST=1
 LLVM_CTRL_VER=19
@@ -76,6 +75,7 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 
 [ -n "$ATK" ] || ATK=1
 [ -n "$BACKGROUND_AUDIO" ] || BACKGROUND_AUDIO=1
+[ -n "$BLUEZ" ] || BLUEZ=1
 [ -n "$CATAPULT" ] || CATAPULT=0
 [ -n "$CHROMECAST" ] || CHROMECAST=0
 [ -n "$CLICK_TO_CALL" ] || CLICK_TO_CALL=1
@@ -88,7 +88,6 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$GOOGLE_UI_URLS" ] || GOOGLE_UI_URLS=1
 [ -n "$GRCACHE_PURGE" ] || GRCACHE_PURGE=0
 [ -n "$GTK" ] || GTK=1
-[ -n "$HEADLESS" ] || HEADLESS=0
 [ -n "$HYPHENATION" ] || HYPHENATION=1
 [ -n "$IDB_FG_CLIENT_BOOST" ] || IDB_FG_CLIENT_BOOST=1
 [ -n "$LENS" ] || LENS=0
@@ -202,21 +201,6 @@ fi
 ## can also set X11_ONLY=1 (or alternatively OZONE_WAYLAND=0)
 [ -n "$X11_ONLY" ] && [ $X11_ONLY -eq 1 ] && OZONE_WAYLAND=0 || X11_ONLY=0
 
-
-## Make NOTIFICATIONS an alias for DBUS (but have DBUS take precedence)
-[ -n "$DBUS" ] && DBUS_SET=1 || DBUS=1
-[ -z "$NOTIFICATIONS" ] || [ $DBUS_SET -eq 1 ] || DBUS=$NOTIFICATIONS
-
-
-## Check if BLUEZ is explicitly set
-[ -n "$BLUEZ" ] && BLUEZ_SET=1 || BLUEZ=1
-
-## DBUS=0 will (implicitly) disable BLUEZ
-## Only error out if BLUEZ is explicitly enabled when DBUS=0
-if [ $BLUEZ_SET -eq 1 ] && [ $BLUEZ -eq 1 ] && [ $DBUS -eq 0 ]; then
-  printf '%s\n' "ERROR: Cannot set BLUEZ=1 when DBUS=0 (BLUEZ depends on DBUS)"
-  exit 1
-fi
 
 
 # Imply QT=6 when QT_6=1
@@ -889,20 +873,9 @@ if [ $CLICK_TO_CALL -eq 0 ]; then
 fi
 
 
-if [ $DBUS -eq 0 ]; then
-  op_disable="$op_disable system/libdbus.patch"
-  op_enable="$op_enable disable/dbus-and-notifications/"
-
-  gn_enable="$gn_enable use_dbus=false"
-  deps_disable="$deps_disable libdbus-1"
-
-  SYS_NOTIFICATIONS=0
-else
-  # BLUEZ=0 should only effect DBUS=1
-  if [ $BLUEZ -eq 0 ]; then
-    op_enable="$op_enable disable/bluez.patch"
-    gn_enable="$gn_enable use_bluez=false"
-  fi
+if [ $BLUEZ -eq 0 ]; then
+  op_enable="$op_enable disable/bluez.patch"
+  gn_enable="$gn_enable use_bluez=false"
 fi
 
 
@@ -957,13 +930,6 @@ if [ $GTK -eq 0 ]; then
   op_enable="$op_enable disable/theme-buttons/no-gtk-button.patch"
   deps_disable="$deps_disable libgtk-3 libgtk-3-0t64 "
   gn_enable="$gn_enable use_gtk=false"
-fi
-
-
-if [ $HEADLESS -eq 1 ]; then
-  fl_unblock="$fl_unblock headless"
-  op_disable="$op_disable disable/headless.patch"
-  gn_disable="$gn_disable headless_enable_commands=false headless_use_policy=false"
 fi
 
 

@@ -100,6 +100,7 @@ various/fixes/unshrink-ui-font.patch
 various/fixes/user-ed-incomplete-type.patch
 various/fixes/webrtc-filter-labels.patch
 various/system/dav1d.patch
+various/system/libdbus.patch
 various/system/libdrm.patch
 various/system/libusb-api.patch
 various/system/libxml2.patch
@@ -134,14 +135,9 @@ optional/disable/catapult.patch
 #optional/disable/click-to-call.patch
 optional/disable/dns_config_service.patch
 #optional/disable/fontations.patch
-optional/disable/headless.patch
 optional/disable/media-router.patch
 #optional/disable/vulkan.patch
 optional/disable/webgpu.patch
-#optional/disable/dbus-and-notifications/dbus-secret-portal-depends-on-dbus.patch
-#optional/disable/dbus-and-notifications/include-platform-util-linux-on-non-dbus.patch
-#optional/disable/dbus-and-notifications/notifications-depend-on-dbus.patch
-#optional/disable/dbus-and-notifications/stub-out-bluetooth-dbus.patch
 optional/disable/enterprise/lookup-service.patch
 optional/disable/enterprise/watermark.patch
 optional/disable/enterprise/watermark_2.patch
@@ -176,7 +172,6 @@ optional/fixes/widevine/widevine-locations.patch
 #optional/system/bindgen-crabbyav1f.patch
 #optional/system/icu.patch
 optional/system/jpeg.patch
-optional/system/libdbus.patch
 optional/system/openh264.patch
 #optional/system/clang/clang-version.patch
 #optional/system/clang/clang-version-check.patch

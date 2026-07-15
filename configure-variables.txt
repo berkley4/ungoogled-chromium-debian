@@ -112,7 +112,6 @@ BACKGROUND_AUDIO	1		Controls enablement of a cromite patch to prevent audio muti
 					Relies on NON_FREE=1 to have any effect
 
 BLUEZ			1		Support for the linux bluetooth protocol stack
-					Note that BLUEZ=0 is only effective when DBUS=1 since the former is effectively a subset of DBUS=0 
 
 CATAPULT		0		Catapult profiling support
 CHROMECAST		0		Note that enabling (CHROMECAST=1) is untested
@@ -121,8 +120,6 @@ CHROMECAST		0		Note that enabling (CHROMECAST=1) is untested
 					2 - enable fully
 
 CLICK_TO_CALL		1		Feature for using chromium to make a call via an android phone
-DBUS			1		Disabling this will disable dbus and the notifications system
-					Note that DBUS=0 is a effectively a superset of BLUEZ=0 (use_dbus=false makes use_bluez false)
 
 ENTERPRISE_WATERMARK	0		Watermarking security/privacy feature (for Chrome Enterprise Premium users)
 
@@ -143,8 +140,6 @@ GRCACHE_PURGE		0		Enable purging stale entries in the GrShader disk cache on pro
 GTK			1		GTK user interface
 					At least one of GTK or QT must be enabled to avoid crashes
 
-HEADLESS		0		Headless browsing mode
-
 HYPHENATION		1		Enable hyphenation data (see https://clagnut.com/sandbox/hyphenation.html for info)
 IDB_FG_CLIENT_BOOST	1		Enable boosting priority of backend tasks associated with foreground clients for IDB
 
@@ -163,7 +158,6 @@ MCLICK_AUTOSCROLL	1		Enable middle click autoscroll
 MUTEX_PI		1		Mutex priority inheritance
 PART_LOCK_PI		1		Partition lock priority inheritance
 
-NOTIFICATIONS		1		An alias for DBUS
 SYS_NOTIFICATIONS	1		System notifications (chrome will fall back to using native notifications if disabled)
 
 OAUTH2			0		Enable OAuth 2.0 client switches
