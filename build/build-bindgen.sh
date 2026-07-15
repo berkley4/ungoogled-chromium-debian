@@ -75,14 +75,7 @@ elif [ $SYS_RUST -ge 2 ]; then
   RUST_PATH=$HOME/.cargo/bin
 fi
 
-if [ $SYS_RUST -eq 0 ] || [ $SYS_RUST -ge 2 ]; then
-  if [ $SYS_RUST -eq 0 ] && [ $SYS_CLANG -ne 0 ]; then
-    printf '%s\n' "ERROR: cannot set SYS_CLANG=$SYS_CLANG when SYS_RUST=0"
-    exit 1
-  fi
-
-  export PATH="$RUST_PATH:$PATH"
-fi
+export PATH="$RUST_PATH:$PATH"
 
 
 # Set CLANG_PATH according to value of SYS_CLANG (default is SYS_CLANG=0)
