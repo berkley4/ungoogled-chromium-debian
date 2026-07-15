@@ -156,6 +156,9 @@ fi
 [ -n "$MARCH" ] && MARCH_SET=1 || MARCH=x86-64-v2
 [ -n "$MTUNE" ] && MTUNE_SET=1 || MTUNE=generic
 
+# Set MARCH=x86-64-v4 by default when AVX512=1
+[ -n "$AVX512" ] && [ $AVX512 -eq 1 ] && [ $MARCH_SET -eq 0 ] && MARCH=x86-64-v4 || AVX512=0
+
 # Clang Polly defaults
 [ -n "$POLLY" ] && POLLY_SET=1 || POLLY=0
 
@@ -644,7 +647,12 @@ if [ $MARCH_SET -eq 1 ] || [ $MTUNE_SET -eq 1 ]; then
 
         x86-64-v3|x86-64-v4)
           AVX=0
-          MTUNE=generic ;;
+          MTUNE=generic
+
+          case $MARCH in
+            x86-64-v4)
+              AVX512=1 ;;
+          esac ;;
 
         *)
           # Invalid MARCH (eg x86-64-v6) so error out
@@ -661,10 +669,7 @@ if [ $MARCH_SET -eq 1 ] || [ $MTUNE_SET -eq 1 ]; then
       op_disable="$op_disable compiler-flags/cpu/march.patch"
       op_disable="$op_disable compiler-flags/cpu/mtune.patch"
 
-      AES=0; ABM=0; AVX=0; BMI=0; PCLMUL=0; SSE4A=0; TBM=0; RTC_AVX2=0; V8_AVX2=0
-
-      # Has no effect but avoids the MARCH/MTUNE warning below
-      MTUNE=generic ;;
+      RTC_AVX2=0; V8_AVX2=0; MTUNE=generic ;;
 
     *)
       # Specific CPUs (eg Skylake) so alter march and mtune patches
@@ -689,8 +694,16 @@ if [ $MARCH_SET -eq 1 ] || [ $MTUNE_SET -eq 1 ]; then
 fi
 
 
-# Initial rust cpu instructions
-RUST_INST="+pclmulqdq"
+
+if [ $AVX512 -eq 1 ] || [ "$MARCH" = "0" ]; then
+  AES=0; ABM=0; AVX=0; BMI=0; PCLMUL=0; SSE4A=0; TBM=0
+  RUST_INST=
+  if [ $AVX512 -eq 1 ]; then
+    gn_disable="$gn_disable allow_avx512=false"
+  fi
+else
+  RUST_INST="+pclmulqdq"
+fi
 
 if [ $TBM -eq 1 ]; then
   BMI=1; RUST_INST="$RUST_INST,+tbm"

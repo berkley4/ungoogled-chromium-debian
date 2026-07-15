@@ -210,6 +210,9 @@ GN_FLAGS += dawn_enable_vulkan=false
 # Disable RTC AVX2 instructions
 #GN_FLAGS += rtc_enable_avx2=false
 
+# Comment out to enable AVX512
+GN_FLAGS += allow_avx512=false
+
 # Enable 256-bit re-vectorization pass in WASM compilation pipeline
 GN_FLAGS += v8_enable_wasm_simd256_revec=true
 
