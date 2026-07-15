@@ -17,7 +17,11 @@ from debian or apt.llvm.org :-
 
 - The ability to customise what gets installed (ie less bloat)
 - One can match the exact version (even the git commit) of the bundled version
-- Build an LTO, PGO and Bolt-optimised toolchain
+- Build an PGO/Bolt/LTO optimised toolchain
+
+Note: it's recommended when using BOLT-PGO.config with LTO to have at least 32GB
+of ram. Those with 16GB or less should use PGO.cmake and configure the build with
+DPGO_INSTRUMENT_LTO=Off.
 
 With building chromium taking some hours on an older PC, the best argument is
 probably speed. As far as I know, the packages from the debian and llvm repos
@@ -67,24 +71,26 @@ ln -sf $LLVM_DIR/lld x86_64-linux-gnu-ld
 
 You can optionally add the following feature flags to the command below :-
 
--DLLVM_ENABLE_FFI=ON for libffi support
-
 -DLLVM_ENABLE_RTTI=ON to enable RTTI (needed by mesa)
 
--DLLVM_PARALLEL_LINK_JOBS=1 if you are thread/ram limited
+-DLLVM_PARALLEL_LINK_JOBS=1 if you are ram limited
+
+Note: limiting the link jobs is probably a good idea even with 32GB if compiling the BOLT-PGO config.
 
 Now copy and edit the text below into a single line and execute inside the git root directory :-
 
 ```sh
-AR=$LLVM_DIR/llvm-ar NM=$LLVM_DIR/llvm-nm RANLIB=$LLVM_DIR/llvm-ranlib CC=$LLVM_DIR/clang CXX=$LLVM_DIR/clang++ \
-cmake -B build -G Ninja -S llvm -C clang/cmake/caches/BOLT-PGO.cmake -DCMAKE_BUILD_TYPE=Release \
--DLLVM_ENABLE_PROJECTS='bolt;clang;lld;openmp;polly' -DLLVM_BUILD_UTILS=OFF -DLLVM_TARGETS_TO_BUILD="X86;WebAssembly" \
--DLLVM_ENABLE_CURL=OFF -DLLVM_ENABLE_LLD=ON -DLLVM_ENABLE_TERMINFO=OFF -DLLVM_ENABLE_UNWIND_TABLES=OFF -DLLVM_ENABLE_Z3_SOLVER=OFF \
+export LLVM_DIR=/usr/local/bin; AR=$LLVM_DIR/llvm-ar NM=$LLVM_DIR/llvm-nm RANLIB=$LLVM_DIR/llvm-ranlib \
+CC=$LLVM_DIR/clang CXX=$LLVM_DIR/clang++ cmake -B build -G Ninja -S llvm -C clang/cmake/caches/BOLT-PGO.cmake \
+-DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS="bolt;clang;lld;polly" -DLLVM_ENABLE_RUNTIMES="compiler-rt" \
+-DLLVM_BUILD_UTILS=OFF -DLLVM_TARGETS_TO_BUILD="X86;WebAssembly" -DLLVM_ENABLE_CURL=OFF -DLLVM_ENABLE_LLD=ON \
+-DLLVM_ENABLE_RTTI=ON -DLLVM_ENABLE_TERMINFO=OFF -DLLVM_ENABLE_UNWIND_TABLES=OFF -DLLVM_ENABLE_Z3_SOLVER=OFF \
 -DLLVM_INCLUDE_GO_TESTS=OFF -DLLVM_USE_SPLIT_DWARF=ON -DCLANG_ENABLE_ARCMT=OFF -DCLANG_ENABLE_STATIC_ANALYZER=OFF \
--DCLANG_PLUGIN_SUPPORT=OFF -DCOMPILER_RT_BUILD_BUILTINS=OFF -DCOMPILER_RT_BUILD_CRT=OFF -DCOMPILER_RT_BUILD_LIBFUZZER=OFF \
--DCOMPILER_RT_BUILD_SANITIZERS=ON -DCOMPILER_RT_BUILD_XRAY=OFF \
--DCOMPILER_RT_SANITIZERS_TO_BUILD='asan;dfsan;msan;hwasan;tsan;safestack;cfi' -DCOMPILER_RT_USE_LIBCXX=NO -DLLVM_BUILD_LLVM_DYLIB=ON \
--DLLVM_LINK_LLVM_DYLIB=ON -DBOOTSTRAP_LLVM_ENABLE_LLD=ON -DBOOTSTRAP_BOOTSTRAP_LLVM_ENABLE_LLD=ON -DPGO_INSTRUMENT_LTO=Thin
+-DCLANG_PLUGIN_SUPPORT=OFF -DCOMPILER_RT_BUILD_BUILTINS=OFF -DCOMPILER_RT_BUILD_CRT=OFF \
+-DCOMPILER_RT_BUILD_LIBFUZZER=OFF -DCOMPILER_RT_BUILD_SANITIZERS=ON -DCOMPILER_RT_BUILD_XRAY=OFF \
+-DCOMPILER_RT_SANITIZERS_TO_BUILD="asan;dfsan;msan;hwasan;tsan;safestack" -DCOMPILER_RT_USE_LIBCXX=NO \
+-DLLVM_BUILD_LLVM_DYLIB=ON -DLLVM_LINK_LLVM_DYLIB=ON -DBOOTSTRAP_LLVM_ENABLE_LLD=ON \
+-DBOOTSTRAP_BOOTSTRAP_LLVM_ENABLE_LLD=ON -DPGO_INSTRUMENT_LTO=Thin -DLLVM_PARALLEL_LINK_JOBS=1
 ```
 
 
@@ -110,6 +116,22 @@ Default install target is /usr/local, so do this as root :-
 
 ```sh
 ninja -j4 install/strip
+```
+
+
+___Check for existence of cfi_ignorelist.txt (Important)___
+
+This seems to be a bug which is easiest to solve by manually
+copying the file from your git checkout to your installation.
+
+```sh
+cp compiler-rt/lib/cfi/cfi_ignorelist.txt /usr/local/lib/clang/23/share/
+```
+
+As root, make sure this file is owned by root and readable by all :-
+```sh
+chown root:root /usr/local/lib/clang/23/share/cfi_ignorelist.txt
+chmod 0644 /usr/local/lib/clang/23/share/cfi_ignorelist.txt
 ```
 
 
