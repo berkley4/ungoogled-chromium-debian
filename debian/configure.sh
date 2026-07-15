@@ -22,7 +22,7 @@ SER_U=; SERIES_DB=; SERIES_UC=; SMF=
 
 BUILD_TS_SET=0; CLANG_VER_SET=0; CPU_SET=0
 MARCH_SET=0; MEDIA_REMOTING_SET=0 MTUNE_SET=0
-POLLY_SET=0; RELEASE_SET=0; SYS_ICU_SET=0
+POLLY_SET=0; RELEASE_SET=0
 
 # LLVM_PGO_VER (current bundled version) is only effective when TEST=1
 LLVM_CTRL_VER=19
@@ -124,7 +124,7 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 
 if [ $NO_SYS_LIBS -eq 1 ]; then
   # Zero all SYS_* library variables before any are declared later on
-  for i in SYS_BROTLI SYS_ICU SYS_JPEG SYS_OPENH264 VAAPI; do
+  for i in SYS_BROTLI SYS_JPEG SYS_OPENH264 VAAPI; do
     eval $i=0
   done
 
@@ -140,9 +140,6 @@ fi
 
 [ -n "$SYS_BROTLI" ] || SYS_BROTLI=1
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
-
-## Allow stable users to force enable icu (eg if they have self-compiled an icu package)
-[ -n "$SYS_ICU" ] && SYS_ICU_SET=1 || SYS_ICU=0
 
 ## Default to MEDIA_REMOTING=0 (but enable by default later on if CHROMECAST=1)
 [ -n "$MEDIA_REMOTING" ] && MEDIA_REMOTING_SET=1 || MEDIA_REMOTING=0
@@ -1228,9 +1225,6 @@ if [ $STABLE -eq 1 ]; then
     op_enable="$op_enable system/rust/no-adler2.patch"
   fi
 
-  # Allow stable users (eg with a self-compiled icu package) to enable SYS_ICU
-  [ $SYS_ICU_SET -eq 1 ] && [ $SYS_ICU -eq 1 ] || SYS_ICU=0
-
   if [ $GTK -eq 1 ]; then
     # Reverse time_t transition dependencies for stable
     CON="$CON -e \"/libgtk-3-0t64/s@t64@@\""
@@ -1252,34 +1246,7 @@ if [ $SYS_BROTLI -eq 0 ]; then
   # libfontconfig pulls in libfreetype
   # libfreetype pulls in libbrotli and libpng
   deps_disable="$deps_disable libfontconfig"
-
-  if [ $SYS_ICU -eq 0 ]; then
-    sys_enable="$sys_enable libpng"
-  fi
 fi
-
-
-if [ $SYS_ICU -eq 1 ]; then
-  op_disable="$op_disable fixes/icudata-file-path.patch"
-  op_disable="$op_disable fixes/skia-allow-bundled-harfbuzz.patch"
-  op_enable="$op_enable system/unstable/icu.patch"
-
-  gn_disable="$gn_disable icu_copy_icudata_to_root_build_dir=false"
-
-  # GN_FLAGS += icu_use_data_file=false use_system_harfbuzz=true
-  gn_enable="$gn_enable icu_use_data_file=false"
-
-  # SYS_LIBS += harfbuzz-ng icu
-  sys_enable="$sys_enable harfbuzz-ng"
-
-  # harfbuzz pulls in libicu
-  deps_enable="$deps_enable libharfbuzz libicu"
-
-  # icudtl.dat is not needed with system icu
-  ins_disable="$ins_disable icudtl.dat"
-  RUL="$RUL -e \"/icudtl.dat/s@^\t@\t#@\""
-fi
-
 
 
 

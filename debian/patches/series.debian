@@ -86,6 +86,7 @@ various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
 various/fixes/enterprise-buildflags.patch
 various/fixes/ffmpeg-codec-list.patch
 various/fixes/disabled-speech-build-error.patch
+various/fixes/icudata-file-path.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/make-pdf-xfa-depend-on-pdf-v8.patch
 various/fixes/make-use_clang_modules-depend-on-sysroot.patch
@@ -156,19 +157,16 @@ optional/ffmpeg-hevc/enable-hevc-ffmpeg-decoding.patch
 optional/ffmpeg-hevc/change-libavcodec-header.patch
 #optional/fixes/enum-table-crash.patch
 optional/fixes/enum-table-crash-hdis.patch
-optional/fixes/icudata-file-path.patch
 #optional/fixes/opentype-svg-on-bundled-freetype.patch
 #optional/fixes/partition-lock-priority-inheritance.patch
 optional/fixes/qt-ui.patch
 #optional/fixes/skia-allow-bundled-freetype.patch
-optional/fixes/skia-allow-bundled-harfbuzz.patch
 optional/fixes/chromedriver/brandversion.patch
 optional/fixes/chromedriver/fix-paths.patch
 optional/fixes/widevine/widevine-locations.patch
 #optional/opentype-svg/0001-OT-SVG-hook.patch
 #optional/opentype-svg/0002-use-FreeType-for-non-Linux-OT-SVG-support.patch
 #optional/system/bindgen-crabbyav1f.patch
-#optional/system/icu.patch
 optional/system/jpeg.patch
 optional/system/openh264.patch
 #optional/system/clang/clang-version.patch

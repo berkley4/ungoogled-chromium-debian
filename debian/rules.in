@@ -232,14 +232,13 @@ GN_FLAGS += v8_enable_wasm_simd256_revec=true
 #
 # Problematic          : ffmpeg, libaom, libvpx
 #
-# libstdc++ issue      : crc32c, flatbuffers, highway, libyuv
-#                        jsoncpp, re2, snappy, woff2
+# libstdc++ issue      : crc32c, flatbuffers, highway, icu
+#                        libyuv, jsoncpp, re2, snappy, woff2
 #
 # Too old for stable   : [currently nothing]
 #
-# Too new              : icu
-#
-# Dependent on too new : harfbuzz-ng
+# Depends on libstdc++
+# affected icu         : harfbuzz-ng
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
@@ -265,26 +264,18 @@ SYS_LIBS += libjpeg
 SYS_LIBS += openh264
 
 
-### Dependency chains around icu and brotli (unstable/experimental only)
-
-# Enable to unbundle brotli
+# Inter-dependency chain
 SYS_LIBS += fontconfig freetype brotli libpng
-
-# Enable to unbundle icu
-#SYS_LIBS += harfbuzz-ng icu
-#GN_FLAGS += icu_use_data_file=false use_system_harfbuzz=true
-
-# Disable if unbundling icu
-GN_FLAGS += icu_copy_icudata_to_root_build_dir=false
-
-# Enable if NOT unbundling either icu OR brotli
-#SYS_LIBS += libpng
 
 
 # Add extra flags for system libs
 GN_FLAGS += perfetto_use_system_zlib=true use_system_lcms2=true
 GN_FLAGS += use_system_libopenjpeg2=true use_system_libpng=true
 GN_FLAGS += use_system_zlib=true
+
+
+# Used for bundled in-tree icu
+GN_FLAGS += icu_copy_icudata_to_root_build_dir=false
 
 
 %:

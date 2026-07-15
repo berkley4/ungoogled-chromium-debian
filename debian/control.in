@@ -53,9 +53,7 @@ Build-Depends:
  libzstd-dev,
  qtbase5-dev,
  libdav1d-dev,
- libfontconfig-dev,
-#libharfbuzz-dev,
-#libicu-dev (= 74.2-2)
+ libfontconfig-dev
 
 Package: ungoogled-chromium
 Architecture: i386 amd64 arm64 armhf
