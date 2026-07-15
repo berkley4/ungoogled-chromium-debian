@@ -109,6 +109,7 @@ various/system/xdg-scripts.patch
 various/system/zlib.patch
 
 optional/remove-target-from-flags.patch
+optional/translate-stop-unsupported-switch-warning.patch
 #optional/build-timestamp/compute-fixed-build-timestamp.patch
 #optional/build-timestamp/use-non-official-build-timestamp.patch
 optional/compiler-flags/machine-function-splitting.patch
@@ -189,5 +190,3 @@ optional/system/openh264.patch
 #optional/system/rust/no-adler2.patch
 #optional/system/rust/no-alloc-shim.patch
 optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
-optional/translate/revert-disable.patch
-optional/translate/stop-unsupported-switch-warning.patch
