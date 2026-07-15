@@ -81,7 +81,6 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$CLICK_TO_CALL" ] || CLICK_TO_CALL=1
 [ -n "$DRIVER" ] || DRIVER=1
 [ -n "$ENTERPRISE_WATERMARK" ] || ENTERPRISE_WATERMARK=0
-[ -n "$FAST_RESTART" ] || FAST_RESTART=0
 [ -n "$FF_HEVC" ] || FF_HEVC=1
 [ -n "$FONTATIONS" ] || FONTATIONS=1
 [ -n "$FONTATIONS_PDF" ] || FONTATIONS_PDF=1
@@ -922,13 +921,6 @@ fi
 if [ $ENTERPRISE_WATERMARK -eq 1 ]; then
   op_disable="$op_disable disable/enterprise/"
   gn_disable="$gn_disable enterprise_watermark=false"
-fi
-
-
-if [ $FAST_RESTART -eq 1 ]; then
-  [ ! -f $OUT_DIR/args.gn ] || rm $OUT_DIR/args.gn
-
-  RUL="$RUL -e \"/gn gen/s@^\t@\ttest -f \x24\x28ARGS_GN\x29 || @\""
 fi
 
 

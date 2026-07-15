@@ -308,9 +308,6 @@ cleandead:
 rm_release:
 	test ! -d $(OUT_DIR) || rm -rf $(OUT_DIR)
 
-gn_gen:
-	test ! -f $(ARGS_GN) || rm $(ARGS_GN)
-
 prune:
 	$(UL_DIR)/prune_binaries.py $(RT_DIR) $(UC_DIR)/pruning.list 2>/dev/null
 
