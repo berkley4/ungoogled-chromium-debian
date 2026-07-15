@@ -138,9 +138,6 @@ GN_FLAGS += enable_mutex_priority_inheritance=true
 # Disable bluez
 #GN_FLAGS += use_bluez=false
 
-# Disable click-to-call
-#GN_FLAGS += enable_click_to_call=false
-
 # Disable enterprise watermark
 GN_FLAGS += enterprise_watermark=false
 

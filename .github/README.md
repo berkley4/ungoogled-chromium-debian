@@ -86,7 +86,6 @@ ___Security/Privacy improvements___
         - ATK
         - Bluez
         - Catapult
-        - Click-to-call
         - DNS config service
         - Enterprise watermark (*)
         - Media remoting (*)

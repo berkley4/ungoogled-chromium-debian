@@ -119,8 +119,6 @@ CHROMECAST		0		Note that enabling (CHROMECAST=1) is untested
 					1 - enable (need to edit /etc/chromium.d/network)
 					2 - enable fully
 
-CLICK_TO_CALL		1		Feature for using chromium to make a call via an android phone
-
 ENTERPRISE_WATERMARK	0		Watermarking security/privacy feature (for Chrome Enterprise Premium users)
 
 FF_HEVC			1		HEVC (H.265) playback support

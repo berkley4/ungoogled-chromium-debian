@@ -78,7 +78,6 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$BLUEZ" ] || BLUEZ=1
 [ -n "$CATAPULT" ] || CATAPULT=0
 [ -n "$CHROMECAST" ] || CHROMECAST=0
-[ -n "$CLICK_TO_CALL" ] || CLICK_TO_CALL=1
 [ -n "$DRIVER" ] || DRIVER=1
 [ -n "$ENTERPRISE_WATERMARK" ] || ENTERPRISE_WATERMARK=0
 [ -n "$FF_HEVC" ] || FF_HEVC=1
@@ -864,12 +863,6 @@ if [ $CHROMECAST -eq 1 ]; then
     op_disable="$op_disable disable/media-remoting/"
     gn_disable="$gn_disable enable_media_remoting=false"
   fi
-fi
-
-
-if [ $CLICK_TO_CALL -eq 0 ]; then
-  op_enable="$op_enable disable/click-to-call.patch"
-  gn_enable="$gn_enable enable_click_to_call=false"
 fi
 
 
