@@ -546,7 +546,7 @@ fi
 
 
 if [ $SYS_RUST -ge 1 ]; then
-  op_enable="$op_enable optional/system/rust/no-alloc-shim.patch"
+  op_enable="$op_enable system/rust/no-alloc-shim.patch"
 
   # GN_FLAGS += rust_sysroot_absolute=\"$(RUST_PATH)\" rustc_version=\"$(RUST_VER)\"
   gn_enable="$gn_enable rust_sysroot_absolute="
@@ -1264,7 +1264,7 @@ if [ $STABLE -eq 1 ]; then
   fi
 
   if [ $SYS_RUST -eq 1 ]; then
-    op_enable="$op_enable optional/system/rust/no-adler2.patch"
+    op_enable="$op_enable system/rust/no-adler2.patch"
   fi
 
   # Allow stable users (eg with a self-compiled icu package) to enable SYS_ICU
