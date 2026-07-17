@@ -1,0 +1,11 @@
+--- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
++++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
+@@ -5423,7 +5423,7 @@
+     },
+     {
+       name: "Serial",
+-      status: "stable",
++      status: "test",
+       base_feature: "WebSerialAPI",
+     },
+     {

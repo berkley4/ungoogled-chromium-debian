@@ -118,6 +118,7 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$VAAPI" ] || VAAPI=1
 [ -n "$VULKAN" ] || VULKAN=1
 [ -n "$WEBGPU" ] || WEBGPU=0
+[ -n "$WEBSERIAL" ] || WEBSERIAL=0
 [ -n "$WIDEVINE" ] || WIDEVINE=1
 [ -n "$XZ_EXTREME" ] || XZ_EXTREME=0
 
@@ -1130,6 +1131,11 @@ else
   if [ $WEBGPU -eq 0 ] || ([ $WEBGPU -eq 1 ] && [ $SWIFTSHADER_WEBGPU -eq 0 ]); then
     gn_enable="$gn_enable dawn_use_swiftshader=false"
   fi
+fi
+
+
+if [ $WEBSERIAL -eq 1 ]; then
+  op_disable="$op_disable disable/webserial.patch"
 fi
 
 

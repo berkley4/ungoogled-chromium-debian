@@ -93,6 +93,7 @@ ___Security/Privacy improvements___
         - Swiftshader
         - Vulkan
         - WebGPU (*)
+        - Web Serial API
     - Some other features/components are always patched out
         - Crashpad handler
         - Image writer (+ removable storage writer service)
