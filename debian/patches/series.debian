@@ -72,6 +72,7 @@ various/disable/autofill-ai.patch
 various/disable/CollectWebGPUSupportMetrics.patch
 various/disable/lens-features.patch
 various/disable/motherboard-metrics.patch
+various/disable/rtc-protobuf.patch
 various/disable/rtc-tools.patch
 various/disable/screen-ai-service.patch
 various/disable/tests.patch

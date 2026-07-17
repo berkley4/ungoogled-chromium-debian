@@ -1,0 +1,27 @@
+--- a/third_party/webrtc/api/audio/BUILD.gn
++++ b/third_party/webrtc/api/audio/BUILD.gn
+@@ -169,7 +169,7 @@
+   deps = [ ":aec3_config" ]
+ }
+ 
+-if (rtc_enable_protobuf) {
++if (true) {
+   rtc_library("neural_residual_echo_estimator_creator") {
+     visibility = [ "*" ]
+     allow_poison = [ "default_neural_residual_echo_estimator" ]
+--- a/third_party/webrtc/modules/audio_processing/aec3/neural_residual_echo_estimator/BUILD.gn
++++ b/third_party/webrtc/modules/audio_processing/aec3/neural_residual_echo_estimator/BUILD.gn
+@@ -7,11 +7,11 @@
+ # be found in the AUTHORS file in the root of the source tree.
+ 
+ import("../../../../webrtc.gni")
+-if (rtc_enable_protobuf) {
++if (true) {
+   import("//third_party/protobuf/proto_library.gni")
+ }
+ 
+-if (rtc_enable_protobuf) {
++if (true) {
+   proto_library("neural_residual_echo_estimator_proto") {
+     sources = [ "neural_residual_echo_estimator.proto" ]
+     proto_out_dir =
