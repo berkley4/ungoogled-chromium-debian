@@ -89,8 +89,6 @@ GN_FLAGS +=					\
 	enable_extractors=false			\
 	libyuv_disable_rvv=true			\
 	safe_browsing_use_unrar=false		\
-	tint_build_benchmarks=false		\
-	tint_build_unittests=false		\
 	use_kerberos=false			\
 	use_sysroot=false
 
@@ -112,7 +110,9 @@ GN_FLAGS +=					\
 	rtc_disable_trace_events=true		\
 	rtc_enable_google_benchmarks=false	\
 	rtc_enable_protobuf=false		\
-	skia_enable_skshaper_tests=false
+	skia_enable_skshaper_tests=false	\
+	tint_build_benchmarks=false		\
+	tint_build_unittests=false
 
 # The items below are best configured via debian/configure.sh
 # (this needs to be run anyway when self-compiling).
