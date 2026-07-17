@@ -1,0 +1,27 @@
+--- a/third_party/pdfium/core/fxge/BUILD.gn
++++ b/third_party/pdfium/core/fxge/BUILD.gn
+@@ -12,10 +12,20 @@
+ 
+ if (pdf_enable_fontations) {
+   config("skrifa_cxx_config") {
+-    include_dirs = [
+-      "//core/fxge/skrifa/src",
+-      "$root_gen_dir/core/fxge/skrifa/src",
+-    ]
++    include_dirs = [ "skrifa/src" ]
++
++    if (build_with_chromium) {
++      include_dirs += [
++        "//third_party/pdfium",
++        "$root_gen_dir/third_party/pdfium",
++        "$root_gen_dir/third_party/pdfium/core/fxge/skrifa/src",
++      ]
++    } else {
++      include_dirs += [
++        "//core/fxge/skrifa/src",
++        "$root_gen_dir/core/fxge/skrifa/src",
++      ]
++    }
+   }
+ }
+ 
