@@ -101,7 +101,7 @@ various/fixes/unshrink-ui-font.patch
 various/fixes/user-ed-incomplete-type.patch
 various/fixes/webrtc-filter-labels.patch
 various/system/dav1d.patch
-various/system/libdbus.patch
+various/system/dbus.patch
 various/system/libdrm.patch
 various/system/libusb-api.patch
 various/system/libxml2.patch
