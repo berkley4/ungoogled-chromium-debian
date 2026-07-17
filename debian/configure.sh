@@ -893,8 +893,8 @@ fi
 
 
 if [ $ENTERPRISE_WATERMARK -eq 1 ]; then
-  op_disable="$op_disable disable/enterprise/"
-  gn_disable="$gn_disable enterprise_watermark=false"
+  op_disable="$op_disable disable/enterprise-watermark.patch"
+  gn_enable="$gn_enable enterprise_watermark=false"
 fi
 
 

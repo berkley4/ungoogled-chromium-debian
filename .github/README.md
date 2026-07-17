@@ -86,21 +86,18 @@ ___Security/Privacy improvements___
         - Bluez
         - Catapult
         - DNS config service
-        - Enterprise watermark (*)
-        - Media remoting (*)
-        - Media router (++)
-        - mDNS (++)
+        - Enterprise watermark
+        - Media remoting
+        - Media router
+        - mDNS
         - Swiftshader
         - Vulkan
-        - WebGPU (*)
+        - WebGPU
         - Web Serial API
     - Some other features/components are always patched out
         - Crashpad handler
-        - Image writer (+ removable storage writer service)
+        - Image writer/removable storage writer service
         - Motherboard metrics collection
-
-    - *  = Disabled by default via its own configuration variable
-    - ++ = Disabled via the CHROMECAST variable being disabled by default
 
 
 ___Other features___

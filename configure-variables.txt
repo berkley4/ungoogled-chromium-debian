@@ -119,7 +119,7 @@ CHROMECAST		0		Note that enabling (CHROMECAST=1) is untested
 					1 - enable (need to edit /etc/chromium.d/network)
 					2 - enable fully
 
-ENTERPRISE_WATERMARK	0		Watermarking security/privacy feature (for Chrome Enterprise Premium users)
+ENTERPRISE_WATERMARK	0		Note: enterprise watermark is only for Chrome Enterprise Premium users
 
 FF_HEVC			1		HEVC (H.265) playback support
 

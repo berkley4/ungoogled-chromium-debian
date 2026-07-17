@@ -135,14 +135,12 @@ optional/compiler-flags/cpu/rust-instructions.patch
 #optional/disable/bluez.patch
 optional/disable/catapult.patch
 optional/disable/dns_config_service.patch
+optional/disable/enterprise-watermark.patch
 #optional/disable/fontations.patch
 optional/disable/media-router.patch
 #optional/disable/vulkan.patch
 optional/disable/webgpu.patch
 optional/disable/webserial.patch
-optional/disable/enterprise/lookup-service.patch
-optional/disable/enterprise/watermark.patch
-optional/disable/enterprise/watermark_2.patch
 optional/disable/media-remoting/media-remoting.patch
 optional/disable/media-remoting/registry-pref.patch
 #optional/disable/theme-buttons/no-gtk-button.patch
