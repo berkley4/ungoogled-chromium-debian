@@ -24,9 +24,8 @@ BUILD_TS_SET=0; CLANG_VER_SET=0; CPU_SET=0
 MARCH_SET=0; MEDIA_REMOTING_SET=0 MTUNE_SET=0
 POLLY_SET=0; RELEASE_SET=0
 
-# LLVM_PGO_VER (current bundled version) is only effective when TEST=1
-LLVM_CTRL_VER=19
-LLVM_PGO_VER=21
+LLVM_CTRL_VER=22
+LLVM_PGO_VER=23
 
 # ${example%/*} = $(dirname example)
 DEBIAN=$(OLDPWD=- CDPATH= cd -P -- ${0%/*} && pwd)
