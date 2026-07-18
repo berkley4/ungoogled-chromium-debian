@@ -521,10 +521,6 @@ if [ $LLVM_VER -ge 19 ]; then
   # Do not apply hardware destructive interference patch for clang versions >= 19
   P=hardware_destructive_interference_size.patch
   SER_UC="$SER_UC -e \"/^upstream-fixes\/$P/s@^@#@\""
-else
-  # Enable the non-hdis version of the enum table patch for older clang versions
-  op_disable="$op_disable fixes/enum-table-crash-hdis.patch"
-  op_enable="$op_enable fixes/enum-table-crash.patch"
 fi
 
 
