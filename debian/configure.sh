@@ -817,7 +817,7 @@ if [ $DNS_BUILTIN -eq 1 ]; then
 fi
 
 # Not part of managed policy but set this here with the other dns variables
-if [ $DNS_CONFIG -eq 0 ]; then
+if [ $DNS_CONFIG -eq 1 ]; then
   op_disable="$op_disable disable/dns_config_service.patch"
 fi
 
