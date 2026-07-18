@@ -12,7 +12,7 @@
  }  // namespace content
 --- a/chrome/browser/predictors/loading_data_collector.cc
 +++ b/chrome/browser/predictors/loading_data_collector.cc
-@@ -125,8 +125,18 @@
+@@ -124,8 +124,18 @@
            net::SimplifyUrlForRequest(resource_load_info.final_url);
        if (is_low_priority) {
          low_priority_subresource_urls.insert(final_url);

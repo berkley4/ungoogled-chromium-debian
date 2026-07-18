@@ -1,6 +1,6 @@
 --- a/chrome/browser/resources/settings/appearance_page/appearance_page.ts
 +++ b/chrome/browser/resources/settings/appearance_page/appearance_page.ts
-@@ -411,9 +411,8 @@
+@@ -481,9 +481,8 @@
    }
  
    /** @return Whether to show the "USE QT" button. */

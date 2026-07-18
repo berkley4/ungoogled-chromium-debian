@@ -22,10 +22,10 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
                                     const KURL& ping_url,
                                     const KURL& destination_url) {
 +  if ((true)) return;
-   if (!ping_url.ProtocolIsInHTTPFamily())
+   if (!ping_url.ProtocolIsInHttpFamily()) {
      return;
- 
-@@ -148,6 +150,7 @@
+   }
+@@ -149,6 +151,7 @@
                                       const KURL& report_url,
                                       scoped_refptr<EncodedFormData> report,
                                       bool is_frame_ancestors_violation) {

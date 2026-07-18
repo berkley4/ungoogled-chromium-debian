@@ -1,24 +1,24 @@
-From 776f957791b3bcac91f949fab2e1b785f829f4c5 Mon Sep 17 00:00:00 2001
+From e9cd2be0856ba2d1a3820e74a849fef78ebc4290 Mon Sep 17 00:00:00 2001
 From: Sta Zhu <zhusidayoyo@hotmail.com>
-Date: Mon, 18 Nov 2024 19:39:32 +0800
+Date: Sat, 19 Jul 2025 22:24:16 +0800
 Subject: [PATCH] Video: Update `libavcodec` header
 
 The recent ffmpeg changes doesn't match with chromium include
 configs, need to change the header manually to fix this.
 ---
  libavcodec/hevc/cabac.c         |  2 +-
- libavcodec/hevc/dsp_template.c  | 10 ++++-----
+ libavcodec/hevc/dsp_template.c  | 10 +++++-----
  libavcodec/hevc/filter.c        |  2 +-
- libavcodec/hevc/hevcdec.c       | 36 ++++++++++++++++-----------------
+ libavcodec/hevc/hevcdec.c       | 28 ++++++++++++++--------------
  libavcodec/hevc/mvs.c           |  2 +-
  libavcodec/hevc/parse.c         |  4 ++--
- libavcodec/hevc/parser.c        |  6 +++---
+ libavcodec/hevc/parser.c        |  8 ++++----
  libavcodec/hevc/pred_template.c |  2 +-
- libavcodec/hevc/ps.c            |  8 ++++----
+ libavcodec/hevc/ps.c            |  6 +++---
  libavcodec/hevc/ps_enc.c        |  4 ++--
- libavcodec/hevc/refs.c          |  8 ++++----
+ libavcodec/hevc/refs.c          |  6 +++---
  libavcodec/hevc/sei.c           |  4 ++--
- 12 files changed, 43 insertions(+), 45 deletions(-)
+ 12 files changed, 39 insertions(+), 39 deletions(-)
 
 --- a/third_party/ffmpeg/libavcodec/hevc/cabac.c
 +++ b/third_party/ffmpeg/libavcodec/hevc/cabac.c
@@ -51,7 +51,7 @@ configs, need to change the header manually to fix this.
  
  static void FUNC(put_pcm)(uint8_t *_dst, ptrdiff_t stride, int width, int height,
                            GetBitContext *gb, int pcm_bit_depth)
-@@ -817,7 +817,7 @@
+@@ -836,7 +836,7 @@
  #define TQ2 pix[2  * xstride + 3 * ystride]
  #define TQ3 pix[3  * xstride + 3 * ystride]
  
@@ -73,7 +73,7 @@ configs, need to change the header manually to fix this.
  #define CB 1
 --- a/third_party/ffmpeg/libavcodec/hevc/hevcdec.c
 +++ b/third_party/ffmpeg/libavcodec/hevc/hevcdec.c
-@@ -39,23 +39,23 @@
+@@ -39,24 +39,24 @@
  #include "libavutil/tdrdi.h"
  #include "libavutil/timecode.h"
  
@@ -83,12 +83,14 @@ configs, need to change the header manually to fix this.
 -#include "codec_internal.h"
 -#include "decode.h"
 -#include "golomb.h"
+-#include "h274.h"
 +#include "libavcodec/aom_film_grain.h"
 +#include "libavcodec/bswapdsp.h"
 +#include "libavcodec/cabac_functions.h"
 +#include "libavcodec/codec_internal.h"
 +#include "libavcodec/decode.h"
 +#include "libavcodec/golomb.h"
++#include "libavcodec/h274.h"
  #include "hevc.h"
  #include "parse.h"
  #include "hevcdec.h"
@@ -136,13 +138,15 @@ configs, need to change the header manually to fix this.
  
 --- a/third_party/ffmpeg/libavcodec/hevc/parser.c
 +++ b/third_party/ffmpeg/libavcodec/hevc/parser.c
-@@ -23,13 +23,13 @@
+@@ -23,14 +23,14 @@
  #include "libavutil/common.h"
  #include "libavutil/mem.h"
  
 -#include "golomb.h"
 +#include "libavcodec/golomb.h"
  #include "hevc.h"
+-#include "parser_internal.h"
++#include "libavcodec/parser_internal.h"
  #include "parse.h"
  #include "ps.h"
  #include "sei.h"
@@ -163,7 +167,7 @@ configs, need to change the header manually to fix this.
 +#include "libavcodec/bit_depth_template.c"
  #include "pred.h"
  
- #define POS(x, y) src[(x) + stride * (y)]
+ static void FUNC(ref_filter_3tap)(uint8_t *filtered_left,
 --- a/third_party/ffmpeg/libavcodec/hevc/ps.c
 +++ b/third_party/ffmpeg/libavcodec/hevc/ps.c
 @@ -25,11 +25,11 @@
@@ -197,7 +201,7 @@ configs, need to change the header manually to fix this.
  {
 --- a/third_party/ffmpeg/libavcodec/hevc/refs.c
 +++ b/third_party/ffmpeg/libavcodec/hevc/refs.c
-@@ -25,10 +25,10 @@
+@@ -25,11 +25,11 @@
  #include "libavutil/mem.h"
  #include "libavutil/stereo3d.h"
  
@@ -206,10 +210,12 @@ configs, need to change the header manually to fix this.
  #include "hevc.h"
  #include "hevcdec.h"
 -#include "progressframe.h"
+-#include "thread.h"
 +#include "libavcodec/progressframe.h"
- #include "thread.h"
++#include "libavcodec/thread.h"
  #include "libavutil/refstruct.h"
  
+ void ff_hevc_unref_frame(HEVCFrame *frame, int flags)
 --- a/third_party/ffmpeg/libavcodec/hevc/sei.c
 +++ b/third_party/ffmpeg/libavcodec/hevc/sei.c
 @@ -22,8 +22,8 @@

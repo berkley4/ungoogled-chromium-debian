@@ -4,13 +4,24 @@ Subject: Allow playing audio in background
 
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
+ .../renderer/render_frame_media_playback_options.cc   |  1 +
  .../renderer/platform/media/web_media_player_impl.cc  | 11 ++++++++++-
  .../renderer/platform/media/web_media_player_impl.h   |  3 +++
- 2 files changed, 13 insertions(+), 1 deletion(-)
+ 3 files changed, 14 insertions(+), 1 deletion(-)
 
+--- a/content/public/renderer/render_frame_media_playback_options.cc
++++ b/content/public/renderer/render_frame_media_playback_options.cc
+@@ -14,6 +14,7 @@
+ 
+ namespace content {
+ bool IsBackgroundMediaSuspendEnabled() {
++  if ((true)) return false;
+ #if BUILDFLAG(IS_ANDROID)
+   // For Android devices, do not suspend background media for devices with large
+   // displays. Exception is for Webview.
 --- a/third_party/blink/renderer/platform/media/web_media_player_impl.cc
 +++ b/third_party/blink/renderer/platform/media/web_media_player_impl.cc
-@@ -1330,6 +1330,12 @@
+@@ -1348,6 +1348,12 @@
    return pipeline_metadata_.has_audio;
  }
  
@@ -23,7 +34,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  void WebMediaPlayerImpl::EnabledAudioTracksChanged(
      std::optional<WebMediaPlayer::TrackId> enabled_track_id) {
    DCHECK(main_task_runner_->BelongsToCurrentThread());
-@@ -3679,7 +3685,10 @@
+@@ -3774,7 +3780,10 @@
  
    const bool preserve_audio = HasUnmutedAudio() || audio_source_provider_->IsAudioBeingCaptured();
    // Audio only stream is allowed to play when in background.
@@ -37,7 +48,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // Video PiP is the only exception when background video playback is disabled.
 --- a/third_party/blink/renderer/platform/media/web_media_player_impl.h
 +++ b/third_party/blink/renderer/platform/media/web_media_player_impl.h
-@@ -212,6 +212,9 @@
+@@ -217,6 +217,9 @@
    bool HasVideo() const override;
    bool HasAudio() const override;
  

@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -435,7 +435,7 @@
+@@ -459,7 +459,7 @@
        } else if (is_posix || is_fuchsia) {
          if (current_os != "aix") {
            # Not available on aix.

@@ -1,0 +1,17 @@
+author: Andres Salomon <dilinger@debian.org>
+
+TODO: why is this required? v130 also deleted third_party/updater,
+and chrome/updater/BUILD.gn was still including old_updater with
+the same logic..
+
+
+--- a/chrome/updater/BUILD.gn
++++ b/chrome/updater/BUILD.gn
+@@ -1343,7 +1343,6 @@
+     }
+     if (is_linux) {
+       data_deps = [ "//chrome/updater/linux:updater_test" ]
+-      data_deps += [ "//third_party/updater:old_updater" ]
+     }
+   }
+ 

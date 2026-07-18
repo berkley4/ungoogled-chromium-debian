@@ -1,6 +1,6 @@
 --- a/content/utility/on_device_model/on_device_model_sandbox_init.cc
 +++ b/content/utility/on_device_model/on_device_model_sandbox_init.cc
-@@ -25,7 +25,7 @@
+@@ -26,7 +26,7 @@
  #include "sandbox/policy/linux/sandbox_linux.h"
  #endif
  
@@ -10,9 +10,9 @@
  #include "base/feature_list.h"
  #include "third_party/dawn/include/dawn/dawn_proc.h"          // nogncheck
 @@ -72,7 +72,8 @@
+ // adapter. This makes sure any relevant drivers or other libs are loaded before
  // enabling the sandbox.
  BASE_FEATURE(kOnDeviceModelWarmDrivers,
-              "OnDeviceModelWarmDrivers",
 -#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_WIN)
 +#if BUILDFLAG(USE_DAWN) && \
 +    (BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_WIN))
@@ -38,7 +38,7 @@
    ]
    deps = [
      "//base/test:test_support",
-@@ -136,6 +135,10 @@
+@@ -135,6 +134,10 @@
    }
    deps += [ "//third_party/angle:translator" ]
  
@@ -51,8 +51,8 @@
    configs += [ "//build/config/compiler:no_exit_time_destructors" ]
 --- a/gpu/command_buffer/service/BUILD.gn
 +++ b/gpu/command_buffer/service/BUILD.gn
-@@ -334,7 +334,10 @@
-   }
+@@ -328,7 +328,10 @@
+   ]
  
    if (use_dawn) {
 -    deps += [ "//gpu/webgpu:common" ]
@@ -63,9 +63,9 @@
      sources += [
        "dawn_caching_interface.cc",
        "dawn_caching_interface.h",
-@@ -393,7 +396,6 @@
-     "//third_party/angle:angle_image_util",
+@@ -396,7 +399,6 @@
      "//third_party/angle:angle_version_info",
+     "//third_party/angle:translator",
      "//third_party/dawn/include/dawn:cpp_headers",
 -    "//third_party/dawn/src/dawn:proc",
      "//third_party/libyuv",
@@ -93,27 +93,29 @@
        "//third_party/dawn/src/dawn:proc",
 --- a/services/on_device_model/ml/BUILD.gn
 +++ b/services/on_device_model/ml/BUILD.gn
-@@ -4,6 +4,7 @@
- 
+@@ -5,6 +5,7 @@
  import("//build/config/features.gni")
+ import("//components/optimization_guide/features.gni")
  import("//services/on_device_model/on_device_model.gni")
 +import("//ui/gl/features.gni")
  
  source_set("api") {
    public = [
-@@ -68,9 +69,13 @@
-       "//services/on_device_model:backend_interfaces",
+@@ -74,10 +75,15 @@
+       "//services/on_device_model/safety:safety_util",
        "//third_party/abseil-cpp:absl",
        "//third_party/angle:includes",
 -      "//third_party/dawn/src/dawn:proc",
 -      "//third_party/dawn/src/dawn/native",
      ]
+ 
 +    if (use_dawn) {
 +      deps += [
 +        "//third_party/dawn/src/dawn:proc",
 +        "//third_party/dawn/src/dawn/native",
 +      ]
 +    }
++
      if (enable_constraints) {
        defines += [ "ENABLE_ON_DEVICE_CONSTRAINTS" ]
        deps += [ "//third_party/rust/llguidance/v1:lib" ]

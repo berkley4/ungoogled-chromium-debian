@@ -6,5 +6,5 @@
  constexpr bool IS_AUTOFILL_AI_PLATFORM = BUILDFLAG(IS_CHROMEOS) ||
 -                                         BUILDFLAG(IS_LINUX) ||
                                           BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN);
- }
+ }  // namespace
  

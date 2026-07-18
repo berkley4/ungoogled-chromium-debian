@@ -3,15 +3,15 @@
 @@ -1,12 +1,12 @@
  .\" This file is processed to generate manpages in the
  .\" build diretory.
--.TH @@PACKAGE@@ 1 "" "" "USER COMMANDS"
+-.TH @@PACKAGE 1 "" "" "USER COMMANDS"
 +.TH chromium 1 "" "" "USER COMMANDS"
  
  .SH NAME
--@@PACKAGE@@ \- the web browser from Google
+-@@PACKAGE \- the web browser from Google
 +chromium \- the web browser from Google
  
  .SH SYNOPSIS
--.B @@PACKAGE@@
+-.B @@PACKAGE
 +.B chromium
  [\fIOPTION\fR] [\fIPATH\fR|\fIURL\fR]
  
@@ -20,7 +20,7 @@
  This manpage only describes invocation, environment, and arguments.
  
  .SH OPTIONS
--@@MENUNAME@@ has hundreds of undocumented command-line flags that are added
+-@@MENUNAME has hundreds of undocumented command-line flags that are added
 +Chromium has hundreds of undocumented command-line flags that are added
  and removed at the whim of the developers.  Here, we document relatively
  stable flags.
@@ -28,9 +28,9 @@
  \fB\-\-user\-data\-dir\fR=\fIDIR\fR
  Specifies the directory that user data (your "profile") is kept in.
  Defaults to
--.I $HOME/.config/@@PACKAGE@@ .
--Separate instances of @@MENUNAME@@ must use separate user data directories;
--repeated invocations of @@PACKAGE@@ will reuse an existing process for
+-.I $HOME/.config/@@PACKAGE .
+-Separate instances of @@MENUNAME must use separate user data directories;
+-repeated invocations of @@PACKAGE will reuse an existing process for
 +.I $HOME/.config/chromium .
 +Separate instances of Chromium must use separate user data directories;
 +repeated invocations of chromium will reuse an existing process for
@@ -41,7 +41,7 @@
  Show version information.
  
  .PP
--As a GTK+ app, @@MENUNAME@@ also obeys GTK+ command-line flags, such
+-As a GTK+ app, @@MENUNAME also obeys GTK+ command-line flags, such
 +As a GTK+ app, Chromium also obeys GTK+ command-line flags, such
  as
  .BR \-\-display .
@@ -54,7 +54,7 @@
 +<https://docs.gtk.org/gtk3/x11.html>
  
  .SH ENVIRONMENT
--@@MENUNAME@@ obeys the following environment variables:
+-@@MENUNAME obeys the following environment variables:
 +Chromium obeys the following environment variables:
  
  .TP
@@ -63,12 +63,12 @@
  
  .SH FILES
  .TP
--.I $HOME/.config/@@PACKAGE@@
+-.I $HOME/.config/@@PACKAGE
 +.I $HOME/.config/chromium
  Default directory for configuration data.
  
  .TP
--.I $HOME/.cache/@@PACKAGE@@
+-.I $HOME/.cache/@@PACKAGE
 +.I $HOME/.cache/chromium
  Default directory for cache data.  (Why?  See
 -<http://standards.freedesktop.org/basedir-spec/latest/> .)
@@ -88,24 +88,24 @@
  <?xml version="1.0" encoding="UTF-8"?>
  <!-- Copyright 2024 The Chromium Authors -->
  <component type="desktop">
--  <id>@@PACKAGE@@.desktop</id>
--  <update_contact>@@MAINTMAIL@@</update_contact>
+-  <id>@@PACKAGE.desktop</id>
+-  <update_contact>@@MAINTMAIL</update_contact>
 +  <id>chromium.desktop</id>
    <metadata_license>CC0-1.0</metadata_license>
--  <project_license>@@PROJECT_LICENSE@@</project_license>
--  <name>@@MENUNAME@@</name>
--  <summary>@@SHORTDESC@@</summary>
+-  <project_license>@@PROJECT_LICENSE</project_license>
+-  <name>@@MENUNAME</name>
+-  <summary>@@SHORTDESC</summary>
 +  <project_license>BSD-3-Clause and LGPL-2.1+ and Apache-2.0 and IJG and MIT and GPL-2.0+ and ISC and OpenSSL and (MPL-1.1 or GPL-2.0 or LGPL-2.0)</project_license>
 +  <name>Chromium</name>
 +  <summary>The web browser from Chromium project</summary>
    <description>
      <p>
--    @@FULLDESC@@
+-    @@FULLDESC
 +    Chromium is an open-source browser project that aims to build a safer, faster,
 +    and more stable way to experience the web.
      </p>
    </description>
--  <url type="homepage">@@PRODUCTURL@@</url>
+-  <url type="homepage">@@PRODUCTURL</url>
 -  <screenshots>
 -    <screenshot type="default">
 -      <image>https://www.gstatic.com/chrome/appstream/chrome-2.png</image>
@@ -114,9 +114,9 @@
 -  </screenshots>
 +  <url type="homepage">https://www.chromium.org/Home</url>
    <translation/>
--  <developer_name>@@DEVELOPER_NAME@@</developer_name>
--  <url type="bugtracker">@@BUGTRACKERURL@@</url>
--  <url type="help">@@HELPURL@@</url>
+-  <developer_name>@@DEVELOPER_NAME</developer_name>
+-  <url type="bugtracker">@@BUGTRACKERURL</url>
+-  <url type="help">@@HELPURL</url>
 +  <developer_name>The Chromium Authors</developer_name>
 +  <url type="bugtracker">https://www.chromium.org/for-testers/bug-reporting-guidelines</url>
 +  <url type="help">https://chromium.googlesource.com/chromium/src/+/main/docs/linux/debugging.md</url>
@@ -126,7 +126,7 @@
 @@ -1,6 +1,6 @@
  [Desktop Entry]
  Version=1.0
--Name=@@MENUNAME@@
+-Name=@@MENUNAME
 +Name=Chromium
  # Only KDE 4 seems to use GenericName, so we reuse the KDE strings.
  # From Ubuntu's language-pack-kde-XX-base packages, version 9.04-20090413.
@@ -135,27 +135,27 @@
  Comment[zh_CN]=访问互联网
  Comment[zh_HK]=連線到網際網路
  Comment[zh_TW]=連線到網際網路
--Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@ %U
+-Exec=/usr/bin/@@usr_bin_symlink_name %U
 +Exec=/usr/bin/chromium %U
  StartupNotify=true
  Terminal=false
--Icon=@@PACKAGE@@
+-Icon=@@PACKAGE
 +Icon=chromium
  Type=Application
  Categories=Network;WebBrowser;
- MimeType=application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/http;x-scheme-handler/https;
-@@ -166,7 +166,7 @@
+ MimeType=application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/http;x-scheme-handler/https;@@uri_scheme
+@@ -167,7 +167,7 @@
  Name[vi]=Cửa sổ Mới
  Name[zh_CN]=新建窗口
  Name[zh_TW]=開新視窗
--Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@
+-Exec=/usr/bin/@@usr_bin_symlink_name
 +Exec=/usr/bin/chromium
  
  [Desktop Action new-private-window]
  Name=New Incognito Window
-@@ -218,4 +218,4 @@
+@@ -219,4 +219,4 @@
  Name[vi]=Cửa sổ ẩn danh mới
  Name[zh_CN]=新建隐身窗口
  Name[zh_TW]=新增無痕式視窗
--Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@ --incognito
+-Exec=/usr/bin/@@usr_bin_symlink_name --incognito
 +Exec=/usr/bin/chromium --incognito

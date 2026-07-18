@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -31,6 +31,7 @@
+@@ -33,6 +33,7 @@
  import("//printing/buildflags/buildflags.gni")
  import("//remoting/remoting_enable.gni")
  import("//services/on_device_model/on_device_model.gni")

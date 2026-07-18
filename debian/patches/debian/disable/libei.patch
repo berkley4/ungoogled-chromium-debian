@@ -1,0 +1,26 @@
+We removed libei due to prebuilt upstream binaries. In
+https://chromium-review.googlesource.com/c/chromium/src/+/7774469 moved
+away from the prebuilt binaries, but in the process also add some references
+to the deleted directory. For now, just remove those references; maybe later
+we re-add libei.
+
+--- a/remoting/host/BUILD.gn
++++ b/remoting/host/BUILD.gn
+@@ -673,7 +673,6 @@
+     deps += [
+       "//remoting/host/linux:platform_impls",
+       "//remoting/host/linux:utils",
+-      "//third_party/libei",
+       "//ui/base/x",
+       "//ui/events/platform/x11",
+       "//ui/gfx/x",
+--- a/remoting/host/linux/BUILD.gn
++++ b/remoting/host/linux/BUILD.gn
+@@ -345,7 +345,6 @@
+     "//remoting/host/security_key",
+     "//remoting/proto",
+     "//remoting/protocol",
+-    "//third_party/libei",
+     "//third_party/webrtc_overrides:webrtc_component",
+     "//ui/base",
+     "//ui/base/x",

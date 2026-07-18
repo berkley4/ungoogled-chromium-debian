@@ -1,24 +1,24 @@
-From e916b70b8a904cb7e69cc6c00229a9ae914030b6 Mon Sep 17 00:00:00 2001
+From 12755cfdd3bfed86405287e9098b534d93b64d3a Mon Sep 17 00:00:00 2001
 From: Sta Zhu <zhusidayoyo@hotmail.com>
-Date: Sun, 12 Jan 2025 19:08:56 +0800
+Date: Sun, 17 May 2026 21:37:40 +0800
 Subject: [PATCH] Video: Enable HEVC ffmpeg decoding
 
 This will consider all HEVC profile as to supported, let FFMpegVideoDecoder
 handle SW fallback and help you be able to play video's like HEVC Rext, SCC
 etc... as long as ffmpeg support it.
 ---
- media/base/supported_types.cc         | 33 ++++-----------------------
+ media/base/supported_types.cc         | 23 +++++------------------
  media/ffmpeg/ffmpeg_common.cc         |  2 +-
- media/filters/ffmpeg_video_decoder.cc |  7 +++---
- 3 files changed, 10 insertions(+), 32 deletions(-)
+ media/filters/ffmpeg_video_decoder.cc |  7 ++++---
+ 3 files changed, 10 insertions(+), 22 deletions(-)
 
 --- a/media/base/supported_types.cc
 +++ b/media/base/supported_types.cc
-@@ -228,25 +228,12 @@
+@@ -229,25 +229,12 @@
  #endif  // !BUILDFLAG(USE_PROPRIETARY_CODECS)
  
  bool IsDecoderHevcProfileSupported(const VideoType& type) {
--  if (!IsDecoderColorSpaceSupported(type.color_space)) {
+-  if (!IsColorSpaceSupported(type.color_space)) {
 -    return false;
 -  }
 -
@@ -44,7 +44,7 @@ etc... as long as ffmpeg support it.
  }
  
  bool IsDecoderVp9ProfileSupported(const VideoType& type) {
-@@ -585,7 +572,7 @@
+@@ -579,7 +566,7 @@
  
  bool IsDecoderBuiltInVideoCodec(VideoCodec codec) {
  #if BUILDFLAG(ENABLE_FFMPEG_VIDEO_DECODERS) && BUILDFLAG(USE_PROPRIETARY_CODECS)
@@ -55,7 +55,7 @@ etc... as long as ffmpeg support it.
  #endif  // BUILDFLAG(ENABLE_FFMPEG_VIDEO_DECODERS) &&
 --- a/media/ffmpeg/ffmpeg_common.cc
 +++ b/media/ffmpeg/ffmpeg_common.cc
-@@ -63,7 +63,7 @@
+@@ -70,7 +70,7 @@
  const char* GetAllowedVideoDecoders() {
    // This should match the configured lists in //third_party/ffmpeg.
  #if BUILDFLAG(USE_PROPRIETARY_CODECS) && BUILDFLAG(ENABLE_FFMPEG_VIDEO_DECODERS)
@@ -88,9 +88,9 @@ etc... as long as ffmpeg support it.
  bool FFmpegVideoDecoder::IsCodecSupported(VideoCodec codec) {
 -  // We only build support for H.264.
 -  return codec == VideoCodec::kH264 && IsDecoderBuiltInVideoCodec(codec);
-+  // We only build support for H.264 / H.264.
++  // We only build support for H.264 / H.265.
 +  return (codec == VideoCodec::kH264 || codec == VideoCodec::kHEVC) &&
 +         IsDecoderBuiltInVideoCodec(codec);
  }
  
- FFmpegVideoDecoder::FFmpegVideoDecoder(MediaLog* media_log)
+ FFmpegVideoDecoder::FFmpegVideoDecoder(std::unique_ptr<MediaLog> media_log)

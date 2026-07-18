@@ -8,13 +8,13 @@
 +             base::FEATURE_DISABLED_BY_DEFAULT);
  
  BASE_FEATURE(kSegmentationPlatformUkmEngine,
-              "SegmentationPlatformUkmEngine",
-@@ -26,7 +26,7 @@
+ 
+@@ -24,7 +24,7 @@
+ #endif
  
  BASE_FEATURE(kSegmentationPlatformAdaptiveToolbarV2Feature,
-              "SegmentationPlatformAdaptiveToolbarV2Feature",
 -             base::FEATURE_ENABLED_BY_DEFAULT);
 +             base::FEATURE_DISABLED_BY_DEFAULT);
  
  BASE_FEATURE(kSegmentationPlatformLowEngagementFeature,
-              "SegmentationPlatformLowEngagementFeature",
+              base::FEATURE_ENABLED_BY_DEFAULT);

@@ -1,11 +1,11 @@
 --- a/components/content_settings/core/browser/content_settings_registry.cc
 +++ b/components/content_settings/core/browser/content_settings_registry.cc
-@@ -391,7 +391,7 @@
+@@ -349,7 +349,7 @@
    // TODO(crbug.com/40602007): Update this to "SECURE_ONLY" once
    // DeviceOrientationEvents and DeviceMotionEvents are only fired in secure
    // contexts.
 -  Register(ContentSettingsType::SENSORS, "sensors", CONTENT_SETTING_ALLOW,
 +  Register(ContentSettingsType::SENSORS, "sensors", CONTENT_SETTING_BLOCK,
             WebsiteSettingsInfo::UNSYNCABLE, /*allowlisted_primary_schemes=*/{},
-            /*valid_settings=*/{CONTENT_SETTING_ALLOW, CONTENT_SETTING_BLOCK},
-            WebsiteSettingsInfo::TOP_ORIGIN_ONLY_SCOPE,
+            /*valid_settings=*/
+            {CONTENT_SETTING_ALLOW, CONTENT_SETTING_BLOCK, CONTENT_SETTING_ASK},

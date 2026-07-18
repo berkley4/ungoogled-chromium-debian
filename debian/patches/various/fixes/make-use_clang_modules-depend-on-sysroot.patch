@@ -5,15 +5,23 @@
  import("//build/config/cronet/config.gni")
  import("//build/config/gclient_args.gni")
 +import("//build/config/sysroot.gni")
+ import("//build/toolchain/cc_wrapper.gni")
  import("//build/toolchain/kythe.gni")
  import("//build/toolchain/rbe.gni")
- import("//build/toolchain/siso.gni")
-@@ -59,6 +60,8 @@
-   # TODO(https://crbug.com/440260716): Enable for Cronet in AOSP once gn2bp
-   # supports copy targets.
-   use_clang_modules =
-+      # Clang modules require a sysroot to be present
-+      use_sysroot &&
-       # Clang modules doesn't work with translation_unit used in codesearch
-       # pipeline http://b/436082487.
-       !enable_kythe_annotations && is_clang && is_linux &&
+@@ -41,13 +42,14 @@
+ ]
+ clang_modules_platform_supported =
+     # s390x should work, but IBM doesn't want it enabled for that cpu arch.
+-    (is_linux && current_cpu != "s390x") ||
++    use_sysroot &&
++    ((is_linux && current_cpu != "s390x") ||
+     (is_android &&
+      filter_include(android_supported_cpus, [ current_cpu ]) != []) ||
+     is_apple || is_fuchsia || is_chromeos ||
+     # Cross-compiling linux -> windows works, but win -> win appears to still
+     # have issues.
+-    (is_win && current_cpu == "x64" && current_os != target_os)
++    (is_win && current_cpu == "x64" && current_os != target_os))
+ 
+ declare_args() {
+   # Indicates if the build should use the Chrome-specific plugins for enforcing

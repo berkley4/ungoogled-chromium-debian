@@ -1,10 +1,10 @@
 --- a/components/enterprise/BUILD.gn
 +++ b/components/enterprise/BUILD.gn
-@@ -79,6 +79,7 @@
+@@ -109,6 +109,7 @@
      "//base",
      "//components/device_signals/core/browser",
      "//components/device_signals/core/common:features",
 +    "//components/enterprise/buildflags:buildflags",
-     "//components/policy/core/browser",
-     "//components/policy/core/common",
-     "//components/policy/proto",
+     "//components/enterprise/common/proto:saas_usage_report_event",
+     "//components/enterprise/connectors/core:constants",
+     "//components/enterprise/device_attestation",

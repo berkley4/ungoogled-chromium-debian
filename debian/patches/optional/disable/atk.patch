@@ -1,6 +1,6 @@
 --- a/build/config/ui.gni
 +++ b/build/config/ui.gni
-@@ -41,7 +41,9 @@
+@@ -40,7 +40,9 @@
  
  assert(!use_glib || (is_linux && !is_castos))
  

@@ -1,18 +1,18 @@
 --- a/chrome/browser/ui/startup/BUILD.gn
 +++ b/chrome/browser/ui/startup/BUILD.gn
-@@ -42,7 +42,6 @@
-   if (!is_android) {
+@@ -45,7 +45,6 @@
      sources += [
        "automation_infobar_delegate.h",
+       "features.h",
 -      "google_api_keys_infobar_delegate.h",
+       "google_chrome_scheme_util.h",
        "infobar_utils.h",
        "launch_mode_recorder.h",
-       "obsolete_system_infobar_delegate.h",
-@@ -155,7 +154,6 @@
-   if (!is_android) {
+@@ -196,7 +195,6 @@
      sources += [
        "automation_infobar_delegate.cc",
+       "features.cc",
 -      "google_api_keys_infobar_delegate.cc",
+       "google_chrome_scheme_util.cc",
        "infobar_utils.cc",
        "launch_mode_recorder.cc",
-       "obsolete_system_infobar_delegate.cc",

@@ -1,31 +1,11 @@
 --- a/components/autofill/core/common/autofill_features.cc
 +++ b/components/autofill/core/common/autofill_features.cc
-@@ -1037,7 +1037,7 @@
- // i.e., https://other.autofill.server:port/tbproxy/af/
- BASE_FEATURE(kAutofillServerCommunication,
-              "AutofillServerCommunication",
--             base::FEATURE_ENABLED_BY_DEFAULT);
-+             base::FEATURE_DISABLED_BY_DEFAULT);
+@@ -927,7 +927,7 @@
  
- // Enables showing DOM Node ID of elements.
- BASE_FEATURE(kShowDomNodeIDs,
---- a/components/autofill/core/common/autofill_prefs.cc
-+++ b/components/autofill/core/common/autofill_prefs.cc
-@@ -43,7 +43,7 @@
-       kAutofillCreditCardEnabled, false,
-       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
-   registry->RegisterBooleanPref(
--      kAutofillPaymentCvcStorage, true,
-+      kAutofillPaymentCvcStorage, false,
-       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
-   registry->RegisterBooleanPref(
-       kAutofillPaymentCardBenefits, true,
-@@ -91,7 +91,7 @@
- #endif
+ // If enabled, upload votes for sms otp.
+ // TODO(crbug.com/453999673): Clean up when launched.
+-BASE_FEATURE(kAutofillSmsOtpCrowdsourcing, base::FEATURE_ENABLED_BY_DEFAULT);
++BASE_FEATURE(kAutofillSmsOtpCrowdsourcing, base::FEATURE_DISABLED_BY_DEFAULT);
  
-   // Deprecated prefs registered for migration.
--  registry->RegisterBooleanPref(kAutofillEnabledDeprecated, true);
-+  registry->RegisterBooleanPref(kAutofillEnabledDeprecated, false);
-   registry->RegisterStringPref(kAutofillAblationSeedPref, "");
-   registry->RegisterBooleanPref(kAutofillRanQuasiDuplicateExtraDeduplication,
-                                 false);
+ // If enabled, fetch sms otp from gmscore and upload votes for sms otp.
+ // TODO(crbug.com/453999673): Clean up when launched.

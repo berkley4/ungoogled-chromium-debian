@@ -1,17 +1,17 @@
 --- a/chrome/browser/extensions/BUILD.gn
 +++ b/chrome/browser/extensions/BUILD.gn
-@@ -8,6 +8,7 @@
+@@ -7,6 +7,7 @@
  import("//build/config/ozone.gni")
  import("//build/config/ui.gni")
  import("//chrome/common/features.gni")
 +import("//chrome/services/file_util/public/features.gni")
  import("//components/enterprise/buildflags/buildflags.gni")
+ import("//components/guest_view/buildflags/buildflags.gni")
  import("//components/safe_browsing/buildflags.gni")
- import("//content/public/common/features.gni")
-@@ -702,32 +703,6 @@
-       "api/identity/identity_get_auth_token_function.h",
-       "api/identity/identity_remove_cached_auth_token_function.cc",
-       "api/identity/identity_remove_cached_auth_token_function.h",
+@@ -746,32 +747,6 @@
+       "api/file_system/chrome_file_system_delegate.h",
+       "api/file_system/file_entry_picker.cc",
+       "api/file_system/file_entry_picker.h",
 -      "api/image_writer_private/destroy_partitions_operation.cc",
 -      "api/image_writer_private/destroy_partitions_operation.h",
 -      "api/image_writer_private/error_constants.cc",
@@ -41,7 +41,7 @@
        "api/language_settings_private/language_settings_private_api.cc",
        "api/language_settings_private/language_settings_private_api.h",
        "api/language_settings_private/language_settings_private_delegate.cc",
-@@ -818,6 +793,37 @@
+@@ -849,6 +824,37 @@
        "webstore_install_with_prompt.h",
      ]
  
@@ -79,37 +79,37 @@
      if (safe_browsing_mode != 0) {
        sources += [
          "api/safe_browsing_private/safe_browsing_private_event_router.cc",
-@@ -1219,7 +1225,6 @@
+@@ -1229,7 +1235,6 @@
        sources += [
          "api/enterprise_reporting_private/chrome_desktop_report_request_helper.cc",
          "api/enterprise_reporting_private/chrome_desktop_report_request_helper.h",
 -        "api/image_writer_private/operation_nonchromeos.cc",
-         "preinstalled_apps.cc",
-         "preinstalled_apps.h",
        ]
-@@ -1228,6 +1233,9 @@
+       deps += [
          "//components/enterprise/common/proto:connectors_proto",
-         "//components/keep_alive_registry",
-       ]
-+      if (enable_extractors) {
-+        sources += [ "api/image_writer_private/operation_nonchromeos.cc" ]
-+      }
+@@ -1238,6 +1243,9 @@
        if (use_gio) {
          configs += [ "//build/linux:gio_config" ]
        }
-@@ -1466,7 +1474,7 @@
++      if (enable_extractors) {
++        sources += [ "api/image_writer_private/operation_nonchromeos.cc" ]
++      }
+     }
+ 
+     if (is_chromeos) {
+@@ -1475,7 +1483,7 @@
        ]
      }
  
 -    if (is_linux) {
-+    if (enable_extractors && is_linux) {
++    if (is_linux && enable_extractors) {
        sources +=
            [ "api/image_writer_private/removable_storage_provider_linux.cc" ]
      }
 --- a/chrome/browser/extensions/keyed_services/chrome_browser_context_keyed_service_factories.cc
 +++ b/chrome/browser/extensions/keyed_services/chrome_browser_context_keyed_service_factories.cc
-@@ -40,9 +40,14 @@
- #include "chrome/browser/extensions/permissions/permissions_updater.h"
+@@ -38,9 +38,14 @@
+ #if BUILDFLAG(ENABLE_EXTENSIONS)
  #include "chrome/browser/extensions/plugin_manager.h"
  #include "chrome/browser/extensions/warning_badge_service_factory.h"
 +#include "chrome/services/file_util/buildflags.h"
@@ -125,24 +125,24 @@
  #include "chrome/browser/extensions/forced_extensions/assessment_assistant_tracker.h"
 --- a/chrome/browser/extensions/api/api_browser_context_keyed_service_factories.cc
 +++ b/chrome/browser/extensions/api/api_browser_context_keyed_service_factories.cc
-@@ -35,7 +35,6 @@
+@@ -37,7 +37,6 @@
+ #include "chrome/browser/extensions/api/bookmark_manager_private/bookmark_manager_private_api.h"
  #include "chrome/browser/extensions/api/braille_display_private/braille_display_private_api.h"
  #include "chrome/browser/extensions/api/enterprise_reporting_private/enterprise_reporting_private_event_router.h"
- #include "chrome/browser/extensions/api/identity/identity_api.h"
 -#include "chrome/browser/extensions/api/image_writer_private/operation_manager.h"
  #include "chrome/browser/extensions/api/language_settings_private/language_settings_private_delegate_factory.h"
  #include "chrome/browser/extensions/api/networking_private/networking_private_ui_delegate_factory_impl.h"
  #include "chrome/browser/extensions/api/passwords_private/passwords_private_delegate_factory.h"
-@@ -47,6 +46,7 @@
- #include "chrome/browser/extensions/api/tab_capture/tab_capture_registry.h"
- #include "chrome/browser/extensions/api/tab_groups/tab_groups_event_router_factory.h"
- #include "chrome/browser/extensions/api/web_navigation/web_navigation_api.h"
+@@ -45,6 +44,7 @@
+ #include "chrome/browser/extensions/api/settings_overrides/settings_overrides_api.h"
+ #include "chrome/browser/extensions/api/settings_private/settings_private_event_router_factory.h"
+ #include "chrome/browser/extensions/api/side_panel/side_panel_service.h"
 +#include "chrome/services/file_util/buildflags.h"
  #include "components/safe_browsing/buildflags.h"
- #include "extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.h"
  #include "extensions/browser/api/networking_private/networking_private_delegate_factory.h"
-@@ -66,6 +66,10 @@
- #include "chrome/browser/extensions/api/terminal/terminal_private_api.h"
+ #include "pdf/buildflags.h"
+@@ -69,6 +69,10 @@
+ #include "extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.h"
  #endif
  
 +#if BUILDFLAG(ENABLE_EXTRACTORS)
@@ -152,7 +152,7 @@
  #if BUILDFLAG(ENABLE_SERVICE_DISCOVERY)
  #include "chrome/browser/extensions/api/mdns/mdns_api.h"
  #endif
-@@ -115,7 +119,9 @@
+@@ -121,7 +125,9 @@
  #if BUILDFLAG(IS_CHROMEOS)
    extensions::InputImeAPI::GetFactoryInstance();
  #endif
@@ -164,33 +164,33 @@
    auto networking_private_ui_delegate_factory =
 --- a/chrome/common/extensions/api/api_sources.gni
 +++ b/chrome/common/extensions/api/api_sources.gni
-@@ -4,6 +4,7 @@
+@@ -3,6 +3,7 @@
+ # found in the LICENSE file.
  
- import("//build/config/features.gni")
  import("//chrome/common/features.gni")
 +import("//chrome/services/file_util/public/features.gni")
+ import("//components/guest_view/buildflags/buildflags.gni")
  import("//pdf/features.gni")
  
- assert(enable_extensions_core)
-@@ -77,7 +78,6 @@
-     "downloads.idl",
-     "downloads_internal.idl",
-     "enterprise_reporting_private.idl",
+@@ -82,7 +83,6 @@
+     "enterprise_reporting_private.webidl",
+     "experimental_actor.webidl",
+     "experimental_ai_data.webidl",
 -    "image_writer_private.idl",
+     "indigo_private.webidl",
      "language_settings_private.idl",
      "passwords_private.idl",
-     "resources_private.idl",
-@@ -95,6 +95,10 @@
-     "webrtc_desktop_capture_private.idl",
-   ]
- 
-+  if (enable_extractors) {
-+    schema_sources_ += [ "image_writer_private.idl" ]
-+  }
+@@ -151,6 +151,10 @@
+         "printing_metrics.idl",
+       ]
+     }
 +
-   if (is_chromeos) {
-     schema_sources_ += [
-       "accessibility_private.json",
++    if (enable_extractor) {
++      schema_sources_ += [ "image_writer_private.idl" ]
++    }
+   }
+ 
+   if (is_linux || is_win || is_chromeos) {
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
 @@ -17,6 +17,7 @@
@@ -201,47 +201,50 @@
  import("//chrome/services/speech/buildflags/buildflags.gni")
  import("//chrome/test/include_js_tests.gni")
  import("//components/allocation_recorder/testing/testing.gni")
-@@ -4557,9 +4558,6 @@
-         "../browser/extensions/api/identity/identity_apitest.cc",
-         "../browser/extensions/api/identity/web_auth_flow_browsertest.cc",
+@@ -4861,10 +4862,6 @@
+         "../browser/extensions/api/hid/hid_apitest.cc",
+         "../browser/extensions/api/identity/gaia_remote_consent_flow_browsertest.cc",
          "../browser/extensions/api/idltest/idltest_apitest.cc",
 -        "../browser/extensions/api/image_writer_private/extractor_browsertest.cc",
+-        "../browser/extensions/api/image_writer_private/image_writer_private_apitest.cc",
 -        "../browser/extensions/api/image_writer_private/test_utils.cc",
 -        "../browser/extensions/api/image_writer_private/test_utils.h",
-         "../browser/extensions/api/management/management_api_browsertest.cc",
-         "../browser/extensions/api/management/management_api_non_persistent_apitest.cc",
-         "../browser/extensions/api/management/management_apitest.cc",
-@@ -4714,6 +4712,14 @@
-         "../renderer/controlled_frame/web_url_pattern_natives_browsertest.cc",
-       ]
+         "../browser/extensions/api/metrics_private/metrics_apitest.cc",
+         "../browser/extensions/api/passwords_private/passwords_private_apitest.cc",
+         "../browser/extensions/api/passwords_private/passwords_private_delegate_impl_browsertest.cc",
+@@ -4991,6 +4988,15 @@
+         ]
+       }
  
 +      if (enable_extractors) {
 +        sources += [
 +          "../browser/extensions/api/image_writer_private/extractor_browsertest.cc",
++          "../browser/extensions/api/image_writer_private/image_writer_private_apitest.cc",
 +          "../browser/extensions/api/image_writer_private/test_utils.cc",
 +          "../browser/extensions/api/image_writer_private/test_utils.h",
 +        ]
 +      }
 +
-       public_deps += [
-         "//chrome/browser/ui/extensions:extension_enable_flow_delegate",
-         "//chrome/test/supervised_user:live_tests",
-@@ -4816,7 +4822,6 @@
- 
-       sources += [
-         "../browser/extensions/api/automation/automation_apitest.cc",
--        "../browser/extensions/api/image_writer_private/image_writer_private_apitest.cc",
-         "../browser/ui/extensions/extension_install_blocked_dialog_browsertest.cc",
-         "../browser/ui/extensions/extension_multiple_uninstall_dialog_browsertest.cc",
-         "../browser/ui/extensions/extension_uninstall_dialog_impl_browsertest.cc",
-@@ -4827,6 +4832,10 @@
-         "../browser/ui/extensions/settings_overridden_dialog_browsertest.cc",
+       if (enable_pdf) {
+         sources += [ "../browser/extensions/api/pdf_viewer_private/pdf_viewer_private_apitest.cc" ]
+       }
+@@ -6196,7 +6202,6 @@
+         "../browser/enterprise/signin/enterprise_signin_service_browsertest.cc",
+         "../browser/enterprise/signin/oidc_authentication_signin_interceptor_browsertest.cc",
+         "../browser/enterprise/signin/user_policy_oidc_signin_service_browsertest.cc",
+-        "../browser/extensions/api/image_writer_private/image_writer_utility_client_browsertest.cc",
+         "../browser/profiles/profile_statistics_browsertest.cc",
+         "../browser/signin/signin_hats_util_browsertest.cc",
        ]
- 
+@@ -6206,6 +6211,11 @@
+         "//chrome/browser/ui/webui/signin:browser_tests",
+         "//chrome/browser/updates:browser_tests",
+       ]
 +      if (enable_extractors) {
-+        sources += [ "../browser/extensions/api/image_writer_private/image_writer_private_apitest.cc" ]
++        sources += [
++          "../browser/extensions/api/image_writer_private/image_writer_utility_client_browsertest.cc",
++        ]
 +      }
-+
-       if (is_chromeos) {
-         sources += [
-           "../browser/apps/platform_apps/api/arc_apps_private/arc_apps_private_apitest.cc",
+     }
+ 
+     if ((is_linux || is_chromeos) && is_asan && is_lsan) {

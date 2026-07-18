@@ -1,0 +1,54 @@
+author: Andres Salomon <dilinger@debian.org>
+
+Commit 4f7637304eca894adf2e70078a55654a88224a30 creates a separate
+libpng_for_testonly target in order to limit visiblity and enforce
+correctness on testonly targets. However, they forgot to add the
+target to build/linux/unbundle/libpng.gn.
+
+I'd send this upstream, except they're planning on replacing libpng
+with their own in-house rust implementation (see
+<https://issues.chromium.org/issues/443128323>), so.. meh. Very much
+not worth it.
+
+--- a/chrome/test/BUILD.gn
++++ b/chrome/test/BUILD.gn
+@@ -11620,7 +11620,7 @@
+       "//testing/gtest",
+       "//third_party/hunspell",
+       "//third_party/icu",
+-      "//third_party/libpng:libpng_for_testonly",
++      "//third_party/libpng",
+       "//ui/base:base_interactive_ui_tests",
+       "//ui/base:ozone_buildflags",
+       "//ui/base:test_support",
+@@ -12642,7 +12642,7 @@
+       "//testing/gtest",
+       "//third_party/hunspell",
+       "//third_party/icu",
+-      "//third_party/libpng:libpng_for_testonly",
++      "//third_party/libpng",
+       "//ui/base:test_support",
+       "//ui/resources:ui_test_pak",
+       "//ui/views",
+--- a/tools/imagediff/BUILD.gn
++++ b/tools/imagediff/BUILD.gn
+@@ -48,7 +48,7 @@
+     deps = [
+       "//base",
+       "//build/win:default_exe_manifest",
+-      "//third_party/libpng:libpng_for_testonly",
++      "//third_party/libpng",
+       "//third_party/zlib",
+     ]
+   }
+--- a/ui/gfx/BUILD.gn
++++ b/ui/gfx/BUILD.gn
+@@ -891,7 +891,7 @@
+     "//skia:skcms",
+     "//testing/gtest",
+     "//third_party/icu:icuuc",
+-    "//third_party/libpng:libpng_for_testonly",
++    "//third_party/libpng",
+     "//third_party/zlib",
+     "//ui/base",
+     "//ui/gfx/animation",

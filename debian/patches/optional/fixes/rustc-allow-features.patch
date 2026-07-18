@@ -1,0 +1,18 @@
+Author: Daniel Richard G. <skunk@iSKUNK.ORG>
+Description: Don't restrict the use of unstable Rust features
+
+  error[E0725]: the feature `foobaz` is not in the list of allowed features
+
+We often need to make use of these to get the build working with older
+versions of Rust.
+
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -1260,7 +1260,6 @@
+ # Don't allow unstable features to be enabled by `#![feature()]` without
+ # additional command line flags.
+ config("disallow_unstable_features") {
+-  rustflags = [ "-Zallow-features=" ]
+ }
+ 
+ # The BUILDCONFIG file sets this config on targets by default, which means when

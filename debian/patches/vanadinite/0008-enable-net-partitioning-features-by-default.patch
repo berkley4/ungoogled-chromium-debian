@@ -1,0 +1,23 @@
+--- a/net/base/features.cc
++++ b/net/base/features.cc
+@@ -133,16 +133,16 @@
+         "EffectiveConnectionTypeRecomputationInterval", base::Seconds(10)};
+ 
+ BASE_FEATURE(kSplitCacheByIncludeCredentials,
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             base::FEATURE_ENABLED_BY_DEFAULT);
+ 
+ BASE_FEATURE(kSplitCacheByNetworkIsolationKey,
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             base::FEATURE_ENABLED_BY_DEFAULT);
+ 
+ BASE_FEATURE(kSplitCodeCacheByNetworkIsolationKey,
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             base::FEATURE_ENABLED_BY_DEFAULT);
+ 
+ BASE_FEATURE(kPartitionConnectionsByNetworkIsolationKey,
+-             base::FEATURE_DISABLED_BY_DEFAULT);
++             base::FEATURE_ENABLED_BY_DEFAULT);
+ 
+ BASE_FEATURE(kSplitHostCacheByNetworkAnonymizationKey,
+              base::FEATURE_ENABLED_BY_DEFAULT);

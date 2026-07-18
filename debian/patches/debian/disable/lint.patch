@@ -1,0 +1,57 @@
+Author: Daniel Richard G. <skunk@iSKUNK.ORG>
+Description: Disable CSS/JavaScript linting tools
+
+Not only do we have no use for these, they are implemented in Node.js code
+that breaks on older systems.
+
+--- /dev/null
++++ b/build/touch.py
+@@ -0,0 +1,6 @@
++from pathlib import Path
++import sys
++for arg in sys.argv[1:]:
++	if arg == '--end':
++		sys.exit(0)
++	Path(arg).touch()
+--- a/ui/webui/resources/tools/eslint_ts.gni
++++ b/ui/webui/resources/tools/eslint_ts.gni
+@@ -11,7 +11,7 @@
+ 
+ template("eslint_ts") {
+   node(target_name) {
+-    script = "//ui/webui/resources/tools/eslint_ts.py"
++    script = "//build/touch.py"
+ 
+     forward_variables_from(invoker,
+                            [
+@@ -45,6 +45,9 @@
+     config_base = "${root_gen_dir}/ui/webui/resources/tools/eslint/eslint_ts.config_base.js"
+ 
+     args = [
++             rebase_path(target_gen_dir + "/eslint.config.mjs", root_build_dir),
++             "--end",
++
+              "--in_folder",
+              rebase_path(in_folder, root_build_dir),
+              "--out_folder",
+--- a/ui/webui/resources/tools/stylelint.gni
++++ b/ui/webui/resources/tools/stylelint.gni
+@@ -8,7 +8,7 @@
+ 
+ template("stylelint") {
+   node(target_name) {
+-    script = "//ui/webui/resources/tools/stylelint.py"
++    script = "//build/touch.py"
+ 
+     forward_variables_from(invoker,
+                            [
+@@ -34,6 +34,9 @@
+     }
+ 
+     args = [
++             rebase_path(out_file, root_build_dir),
++             "--end",
++
+              "--config",
+              rebase_path(config, root_build_dir),
+              "--in_folder",

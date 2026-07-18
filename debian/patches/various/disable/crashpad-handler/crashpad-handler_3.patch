@@ -1,17 +1,26 @@
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -7188,7 +7188,7 @@
-     ]
+@@ -1528,7 +1528,7 @@
+ 
+   deps += [ "//chrome/browser/vr:chrome_xr_integration_client" ]
+ 
+-  if (is_posix && !is_mac) {
++  if (is_posix && !is_linux && !is_mac) {
+     deps += [ "//chrome/app:chrome_crash_reporter_client" ]
    }
  
--  if (is_win || is_android || is_linux) {
-+  if (is_win || is_android) {
-     sources += [
-       "metrics/chrome_metrics_service_crash_reporter.cc",
-       "metrics/chrome_metrics_service_crash_reporter.h",
+@@ -4729,7 +4729,7 @@
+     allow_circular_includes_from += [ "//chrome/browser/downgrade:impl" ]
+   }
+ 
+-  if (is_posix && !is_mac) {
++  if (is_posix && !is_linux && !is_mac) {
+     sources += [ "//chrome/app/chrome_crash_reporter_client.cc" ]
+     deps += [
+       "//chrome/app:chrome_crash_reporter_client",
 --- a/chrome/browser/metrics/chrome_metrics_service_client.cc
 +++ b/chrome/browser/metrics/chrome_metrics_service_client.cc
-@@ -208,7 +208,7 @@
+@@ -205,7 +205,7 @@
  #include "components/metrics/motherboard_metrics_provider.h"
  #endif
  
@@ -20,7 +29,7 @@
  #include "chrome/browser/metrics/chrome_metrics_service_crash_reporter.h"
  #endif
  
-@@ -246,7 +246,7 @@
+@@ -232,7 +232,7 @@
  // Needs to be kept in sync with the writer in
  // third_party/crashpad/crashpad/handler/handler_main.cc.
  const char kCrashpadHistogramAllocatorName[] = "CrashpadMetrics";
@@ -29,7 +38,7 @@
  ChromeMetricsServiceCrashReporter& GetCrashReporter() {
    static base::NoDestructor<ChromeMetricsServiceCrashReporter> crash_reporter;
    return *crash_reporter;
-@@ -638,7 +638,7 @@
+@@ -639,7 +639,7 @@
  void ChromeMetricsServiceClient::OnEnvironmentUpdate(std::string* environment) {
    // TODO(https://bugs.chromium.org/p/crashpad/issues/detail?id=135): call this
    // on Mac when the Crashpad API supports it.

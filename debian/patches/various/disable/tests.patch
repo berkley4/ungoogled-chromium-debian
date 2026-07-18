@@ -1,10 +1,10 @@
 --- a/third_party/devtools-frontend/src/BUILD.gn
 +++ b/third_party/devtools-frontend/src/BUILD.gn
-@@ -27,7 +27,6 @@
- 
+@@ -28,7 +28,6 @@
    data_deps = devtools_frontend_resources_deps + [
                  "front_end:web_test_resources",
+                 "scripts/hosted_mode",
 -                "test",
                ]
    deps = [ ":frontend_indexer_tsconfig" ]
-   public_deps = [ "front_end/ui/components/docs" ]
+   public_deps = [ "scripts/component_docs" ]

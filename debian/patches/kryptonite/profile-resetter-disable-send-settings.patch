@@ -1,6 +1,6 @@
 --- a/chrome/browser/profile_resetter/reset_report_uploader.cc
 +++ b/chrome/browser/profile_resetter/reset_report_uploader.cc
-@@ -20,7 +20,7 @@
+@@ -23,7 +23,7 @@
  
  namespace {
  const char kResetReportUrl[] =

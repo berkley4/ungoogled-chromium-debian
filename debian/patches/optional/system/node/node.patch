@@ -1,6 +1,6 @@
 --- a/third_party/devtools-frontend/src/scripts/devtools_paths.py
 +++ b/third_party/devtools-frontend/src/scripts/devtools_paths.py
-@@ -38,13 +38,7 @@
+@@ -37,13 +37,7 @@
  
  # This points to the node binary downloaded as part of the checkout.
  def node_path():
@@ -35,11 +35,11 @@
 -
 +  return '/usr/bin/nodejs'
  
- def RunNode(cmd_parts, stdout=None):
+ def RunNodeRaw(cmd_parts, stdout=None):
    cmd = [GetBinaryPath()] + cmd_parts
 --- a/third_party/node/node.gni
 +++ b/third_party/node/node.gni
-@@ -23,7 +23,7 @@
+@@ -24,7 +24,7 @@
      # When use_remoteexec=true, node actions may run on remote
      # Linux worker. So it should include linux node binary in inputs.
      if (is_linux || is_chromeos || use_remoteexec) {
@@ -50,7 +50,7 @@
        inputs += [ "//third_party/node/win/node.exe" ]
 --- a/third_party/protobuf/proto_library.gni
 +++ b/third_party/protobuf/proto_library.gni
-@@ -262,7 +262,7 @@
+@@ -261,7 +261,7 @@
  # Linux worker. So it should include linux node binary in inputs.
  if (is_linux || is_chromeos || use_remoteexec) {
    _protoc_gen_ts_runtime_deps +=

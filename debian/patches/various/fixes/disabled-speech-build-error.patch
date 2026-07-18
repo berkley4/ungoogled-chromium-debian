@@ -1,6 +1,6 @@
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -8599,7 +8599,6 @@
+@@ -9036,7 +9036,6 @@
        "//chrome/browser/webauthn:test_support",
        "//chrome/browser/webauthn/proto",
        "//chrome/common/read_anything:mojo_bindings",
@@ -8,14 +8,15 @@
        "//components/app_constants",
        "//components/application_locale_storage",
        "//components/color",
-@@ -8672,6 +8671,10 @@
-       "//ui/webui/tracked_element:unit_tests",
-     ]
- 
+@@ -9115,6 +9114,11 @@
+     if (include_js2gtest_tests && is_chromeos) {
+       data += js2gtest_js_libraries
+     }
++
 +    if (enable_speech_service) {
 +      deps += [ "//chrome/services/speech:unit_tests" ]
 +    }
 +
-     if (enable_video_effects) {
-       deps += [ "//services/video_effects/test:test_support" ]
-     }
+   }
+ 
+   if (enable_webui_ntp) {

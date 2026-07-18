@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2174,6 +2174,17 @@
+@@ -1967,6 +1967,17 @@
        cflags_cc += [ "-Wunique-object-duplication" ]
      }
  

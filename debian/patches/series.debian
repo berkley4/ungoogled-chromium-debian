@@ -8,21 +8,28 @@
 debian/debianization/master-preferences.patch
 debian/fixes/atspi.patch
 debian/fixes/fix-assert-in-vnc-sessions.patch
+debian/fixes/libpng-testonly.patch
 debian/fixes/memory-allocator-dcheck-assert-fix.patch
 debian/fixes/ps-print.patch
 debian/fixes/predictor-denial-of-service.patch
-debian/disable/android.patch
+debian/fixes/updater-test.patch
 debian/disable/font-tests.patch
+debian/disable/libei.patch
+debian/disable/lint.patch
 debian/disable/tests-swiftshader.patch
 debian/disable/widevine-cdm-cu.patch
 debian/system/openjpeg.patch
-
+debian/upstream/ar-path1.patch
+debian/upstream/ar-path2.patch
+debian/upstream/sysroot.patch
+ 
 cromite/Allow-playing-audio-in-background.patch
 cromite/Disable-csp-reports.patch
 cromite/AudioBuffer-AnalyserNode-fp-mitigations.patch
 cromite/Partition-Blink-memory-cache.patch
 cromite/Partition-HSTS-cache-by-NAK.patch
 cromite/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
+cromite/Reduce-input-capability-fingerprinting-through-normalization.patch
 cromite/Remove-navigator.connection-info.patch
 cromite/Remove-segmentation-platform.patch
 
@@ -40,7 +47,7 @@ kryptonite/replace-dns-probe-hostname-with-example-com.patch
 kryptonite/stop-omnibar-searches-triggering-dns-requests.patch
 kryptonite/use-boringssl-for-randbytes.patch
 
-vanadium/0052-stub-out-the-battery-status-API.patch
+vanadium/0103-stub-out-the-battery-status-API.patch
 
 vanadinite/0001-switch-to-fstack-protector-strong.patch
 vanadinite/0002-disable-showing-popular-sites-by-default.patch
@@ -49,18 +56,17 @@ vanadinite/0004-disable-content-feed-suggestions-by-default.patch
 vanadinite/0005-disable-sensors-access-by-default.patch
 vanadinite/0006-disable-background-sync-by-default.patch
 vanadinite/0007-disable-media-DRM-preprovisioning-by-default.patch
-vanadinite/0008-enable-split-cache-by-default.patch
-vanadinite/0009-enable-partitioning-connections-by-default.patch
+vanadinite/0008-enable-net-partitioning-features-by-default.patch
+vanadinite/0009-enable-kBackToAdIntervention-by-default.patch
 vanadinite/0010-disable-component-updater-pings-by-default.patch
-vanadinite/0011-enable-strict-origin-isolation-by-default.patch
-vanadinite/0012-enable-partitioning-content-settings-by-default.patch
+vanadinite/0011-disable-WebUSB-API-by-default.patch
+vanadinite/0012-disable-WebXR-API-by-default.patch
 
 various/compiler-flags/add-warning-suppression-flags.patch
 various/compiler-flags/do-not-link-with-libatomic.patch
 various/compiler-flags/ffmpeg-optimize-speed-O3.patch
 various/compiler-flags/fortify-level-three.patch
 various/compiler-flags/function-import-limits.patch
-various/compiler-flags/init-stack-vars-zero.patch
 various/compiler-flags/no-plt.patch
 various/compiler-flags/optimize-debug-info.patch
 various/compiler-flags/optimize-lto-CGO.patch
@@ -77,13 +83,12 @@ various/disable/rtc-tools.patch
 various/disable/screen-ai-service.patch
 various/disable/tests.patch
 various/disable/tint-benchmarks.patch
-various/disable/tint-fuzzers.patch
 various/disable/crashpad-handler/crashpad-handler.patch
 various/disable/crashpad-handler/crashpad-handler_2.patch
 various/disable/crashpad-handler/crashpad-handler_3.patch
 various/disable/image-writer/image-writer-private.patch
 various/disable/image-writer/image-writer-utility.patch
-various/fixes/Add-missing-null-check-for-password-manager-autofill.patch
+various/fixes/AutoDarkModeSkipImages.patch
 various/fixes/enterprise-buildflags.patch
 various/fixes/ffmpeg-codec-list.patch
 various/fixes/disabled-speech-build-error.patch
@@ -99,7 +104,7 @@ various/fixes/template-correction.patch
 various/fixes/test-dependencies.patch
 various/fixes/unbundle-script-dh-clean-interoperabilty.patch
 various/fixes/unshrink-ui-font.patch
-various/fixes/user-ed-incomplete-type.patch
+various/fixes/v8-always-use-baked-zoneinfo64-data.patch
 various/fixes/webrtc-filter-labels.patch
 various/system/dav1d.patch
 various/system/dbus.patch
@@ -107,11 +112,10 @@ various/system/libdrm.patch
 various/system/libusb-api.patch
 various/system/libxml2.patch
 various/system/minizip.patch
+various/system/minizip_2.patch
 various/system/perfetto-system-zlib.patch
-various/system/xdg-scripts.patch
 various/system/zlib.patch
 
-optional/remove-target-from-flags.patch
 optional/translate-stop-unsupported-switch-warning.patch
 #optional/build-timestamp/compute-fixed-build-timestamp.patch
 #optional/build-timestamp/use-non-official-build-timestamp.patch
@@ -160,6 +164,7 @@ optional/ffmpeg-hevc/change-libavcodec-header.patch
 #optional/fixes/opentype-svg-on-bundled-freetype.patch
 #optional/fixes/partition-lock-priority-inheritance.patch
 optional/fixes/qt-ui.patch
+#optional/fixes/rustc-allow-features.patch
 #optional/fixes/skia-allow-bundled-freetype.patch
 optional/fixes/chromedriver/brandversion.patch
 optional/fixes/chromedriver/fix-paths.patch

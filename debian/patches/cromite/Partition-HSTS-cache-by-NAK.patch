@@ -31,17 +31,17 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 
 --- a/chrome/browser/ssl/https_upgrades_interceptor.cc
 +++ b/chrome/browser/ssl/https_upgrades_interceptor.cc
-@@ -414,6 +414,7 @@
+@@ -392,6 +392,7 @@
  
    CHECK(tentative_resource_request.trusted_params);
    network_context->IsHSTSActiveForHost(
 +      tentative_resource_request.trusted_params->isolation_info.network_anonymization_key(),
-       tentative_resource_request.url.host(),
+       tentative_resource_request.url.GetHost(),
        tentative_resource_request.trusted_params->isolation_info
            .IsOutermostMainFrameRequest(),
 --- a/chrome/browser/ui/webui/net_internals/net_internals_ui.cc
 +++ b/chrome/browser/ui/webui/net_internals/net_internals_ui.cc
-@@ -395,7 +395,10 @@
+@@ -400,7 +400,10 @@
      // There cannot be a unicode entry in the HSTS set.
      return;
    }
@@ -52,7 +52,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
        *domain, base::BindOnce(&IgnoreBoolCallback));
  }
  
-@@ -405,7 +408,10 @@
+@@ -410,7 +413,10 @@
    DCHECK(callback_id && domain);
  
    AllowJavascript();
@@ -63,7 +63,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
        *domain,
        base::BindOnce(&NetInternalsMessageHandler::ResolveCallbackWithResult,
                       weak_factory_.GetWeakPtr(), *callback_id));
-@@ -431,8 +437,12 @@
+@@ -436,8 +442,12 @@
    const bool sts_include_subdomains = list[1].GetBool();
  
    base::Time expiry = base::Time::Now() + base::Days(1000);
@@ -95,15 +95,15 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  void VerifyCert(const scoped_refptr<net::X509Certificate>& certificate,
                  const GURL& url,
 +                const net::NetworkAnonymizationKey& network_anonymization_key,
-                 const std::string& ocsp_result,
+                 const std::string& ocsp_response,
                  const std::string& sct_list,
                  FrameTreeNodeId frame_tree_node_id,
 @@ -115,7 +116,7 @@
    }
  
    network_context->VerifyCertForSignedExchange(
--      certificate, net::HostPortPair::FromURL(url), ocsp_result, sct_list,
-+      certificate, net::HostPortPair::FromURL(url), network_anonymization_key, ocsp_result, sct_list,
+-      certificate, net::HostPortPair::FromURL(url), ocsp_response, sct_list,
++      certificate, net::HostPortPair::FromURL(url), network_anonymization_key, ocsp_response, sct_list,
        std::move(wrapped_callback));
  }
  
@@ -134,7 +134,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
                              weak_factory_.GetWeakPtr()));
 --- a/content/browser/web_package/signed_exchange_handler.h
 +++ b/content/browser/web_package/signed_exchange_handler.h
-@@ -104,6 +104,7 @@
+@@ -105,6 +105,7 @@
        std::unique_ptr<net::SourceStream> body,
        ExchangeHeadersCallback headers_callback,
        std::unique_ptr<SignedExchangeCertFetcherFactory> cert_fetcher_factory,
@@ -142,7 +142,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
        std::optional<net::IsolationInfo> outer_request_isolation_info,
        int load_flags,
        const net::IPEndPoint& remote_endpoint,
-@@ -193,6 +194,9 @@
+@@ -196,6 +197,9 @@
    // `cert_fetcher_` borrows reference from `devtools_proxy_`, so it needs to be
    // declared last, so that it is destroyed first.
    std::unique_ptr<SignedExchangeCertFetcher> cert_fetcher_;
@@ -154,7 +154,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
    std::optional<net::IsolationInfo> outer_request_isolation_info_;
 --- a/content/browser/web_package/signed_exchange_loader.cc
 +++ b/content/browser/web_package/signed_exchange_loader.cc
-@@ -77,6 +77,7 @@
+@@ -79,6 +79,7 @@
      std::unique_ptr<SignedExchangeReporter> reporter,
      scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory,
      URLLoaderThrottlesGetter url_loader_throttles_getter,
@@ -162,7 +162,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
      FrameTreeNodeId frame_tree_node_id,
      const std::string& accept_langs,
      bool keep_entry_for_prefetch_cache)
-@@ -154,7 +155,7 @@
+@@ -156,7 +157,7 @@
              std::move(outer_response_body)),
          base::BindOnce(&SignedExchangeLoader::OnHTTPExchangeFound,
                         weak_factory_.GetWeakPtr()),
@@ -173,7 +173,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
              : std::make_optional(outer_request_.trusted_params->isolation_info),
 --- a/content/browser/web_package/signed_exchange_loader.h
 +++ b/content/browser/web_package/signed_exchange_loader.h
-@@ -32,6 +32,7 @@
+@@ -33,6 +33,7 @@
  }  // namespace blink
  
  namespace net {
@@ -181,7 +181,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  class SourceStream;
  }  // namespace net
  
-@@ -74,6 +75,7 @@
+@@ -75,6 +76,7 @@
        std::unique_ptr<SignedExchangeReporter> reporter,
        scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory,
        URLLoaderThrottlesGetter url_loader_throttles_getter,
@@ -212,7 +212,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  
 --- a/net/http/transport_security_state.cc
 +++ b/net/http/transport_security_state.cc
-@@ -79,7 +79,7 @@
+@@ -78,7 +78,7 @@
  // Converts |hostname| from dotted form ("www.google.com") to the form
  // used in DNS: "\x03www\x06google\x03com", lowercases that, and returns
  // the result.
@@ -221,7 +221,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
    // We cannot perform the operations as detailed in the spec here as `host`
    // has already undergone IDN processing before it reached us. Thus, we
    // lowercase the input (probably redudnant since most input here has been
-@@ -100,6 +100,29 @@
+@@ -99,6 +99,29 @@
    return std::move(new_host).value();
  }
  
@@ -233,7 +233,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 +  }
 +
 +  // esclude opaque or transient nak
-+  if (!nak.IsFullyPopulated() || nak.IsTransient())
++  if (nak.IsEmpty() || nak.IsTransient())
 +    return std::vector<uint8_t>();
 +
 +  std::string lowered_host = base::ToLowerASCII(
@@ -251,7 +251,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  // PreloadResult is the result of resolving a specific name in the preloaded
  // data.
  struct PreloadResult {
-@@ -190,7 +213,7 @@
+@@ -176,7 +199,7 @@
  
    // Ensure that |search_hostname| is a valid hostname before
    // processing.
@@ -260,7 +260,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
      return false;
    }
    // Normalize any trailing '.' used for DNS suffix searches.
-@@ -249,18 +272,19 @@
+@@ -235,18 +258,19 @@
  
  // Both HSTS and HPKP cause fatal SSL errors, so return true if a
  // host has either.
@@ -272,18 +272,18 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 +  return GetSTSState(nak, host, &unused_sts) || GetPKPState(nak, host, &unused_pkp);
  }
  
- base::Value::Dict TransportSecurityState::NetLogUpgradeToSSLParam(
+ base::DictValue TransportSecurityState::NetLogUpgradeToSSLParam(
 +    const NetworkAnonymizationKey& nak,
      std::string_view host) {
    STSState sts_state;
-   base::Value::Dict dict;
+   base::DictValue dict;
    dict.Set("host", host);
 -  dict.Set("get_sts_state_result", GetSTSState(host, &sts_state));
 +  dict.Set("get_sts_state_result", GetSTSState(nak, host, &sts_state));
    dict.Set("should_upgrade_to_ssl", sts_state.ShouldUpgradeToSSL());
    dict.Set("host_found_in_hsts_bypass_list",
             hsts_host_bypass_list_.find(host) != hsts_host_bypass_list_.end());
-@@ -268,12 +292,13 @@
+@@ -254,12 +278,13 @@
  }
  
  SSLUpgradeDecision TransportSecurityState::GetSSLUpgradeDecision(
@@ -298,7 +298,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  
    // Only top level navigations should be upgraded when
    // kHstsTopLevelNavigationsOnly is enabled.
-@@ -284,7 +309,7 @@
+@@ -270,7 +295,7 @@
  
    STSState sts_state;
    // Check the dynamic list first (removing the entry if expired).
@@ -307,7 +307,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
      // [*.]localhost hosts now ignore Strict-Transport-Security response
      // headers, but an entry may have been stored before this restriction
      // was introduced (crbug.com/41251622).
-@@ -309,29 +334,31 @@
+@@ -295,29 +320,31 @@
  }
  
  bool TransportSecurityState::ShouldUpgradeToSSL(
@@ -345,7 +345,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  }
  
  ct::CTRequirementsStatus TransportSecurityState::CheckCTRequirements(
-@@ -385,12 +412,13 @@
+@@ -377,12 +404,13 @@
  }
  
  void TransportSecurityState::AddHSTSInternal(
@@ -360,7 +360,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
    if (canonicalized_host.empty())
      return;
  
-@@ -414,13 +442,14 @@
+@@ -406,13 +434,14 @@
    DirtyNotify();
  }
  
@@ -377,7 +377,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
    if (canonicalized_host.empty())
      return;
  
-@@ -468,10 +497,10 @@
+@@ -460,10 +489,10 @@
    return PKPStatus::VIOLATED;
  }
  
@@ -390,7 +390,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
    if (canonicalized_host.empty())
      return false;
  
-@@ -548,7 +577,8 @@
+@@ -540,7 +569,8 @@
      delegate_->StateIsDirty(this);
  }
  
@@ -400,7 +400,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
                                             std::string_view value) {
    DCHECK_CALLED_ON_VALID_THREAD(thread_checker_);
  
-@@ -567,23 +597,25 @@
+@@ -559,23 +589,25 @@
      upgrade_mode = STSState::MODE_FORCE_HTTPS;
    }
  
@@ -431,7 +431,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  }
  
  size_t TransportSecurityState::num_sts_entries() const {
-@@ -608,9 +640,10 @@
+@@ -600,9 +632,10 @@
  TransportSecurityState::CheckPublicKeyPinsImpl(
      std::string_view host,
      bool is_issued_by_known_root,
@@ -444,17 +444,17 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  
    // HasPublicKeyPins should have returned true in order for this method to have
    // been called.
-@@ -651,7 +684,7 @@
-   PreloadResult result;
-   if (host_pins_.has_value()) {
-     // Ensure that |host| is a valid hostname before processing.
--    if (CanonicalizeHost(host).empty()) {
-+    if (CanonicalizeHostWithoutNak(host).empty()) {
-       return false;
-     }
-     // Normalize any trailing '.' used for DNS suffix searches.
-@@ -716,21 +749,21 @@
-   return false;
+@@ -641,7 +674,7 @@
+   }
+ 
+   // Ensure that |host| is a valid hostname before processing.
+-  if (CanonicalizeHost(host).empty()) {
++  if (CanonicalizeHostWithoutNak(host).empty()) {
+     return false;
+   }
+   // Normalize any trailing '.' used for DNS suffix searches.
+@@ -724,21 +757,21 @@
+   }
  }
  
 -bool TransportSecurityState::GetSTSState(std::string_view host,
@@ -481,7 +481,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
    if (canonicalized_host.empty())
      return false;
  
-@@ -767,11 +800,11 @@
+@@ -775,11 +808,11 @@
    return false;
  }
  
@@ -497,7 +497,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  
 --- a/net/http/transport_security_state.h
 +++ b/net/http/transport_security_state.h
-@@ -248,6 +248,7 @@
+@@ -247,6 +247,7 @@
    // As ShouldUpgradeToSSL(), but also returns whether the decision came from
    // static or dynamic state, for metrics.
    SSLUpgradeDecision GetSSLUpgradeDecision(
@@ -505,7 +505,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
        std::string_view host,
        bool is_top_level_nav,
        const NetLogWithSource& net_log = NetLogWithSource());
-@@ -257,15 +258,16 @@
+@@ -256,15 +257,16 @@
    // primary public interface; direct access to STS and PKP states is best
    // left to tests. The caller needs to handle the optional pinning override
    // when is_issued_by_known_root is false.
@@ -526,7 +526,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  
    // Returns CT_REQUIREMENTS_NOT_MET if a connection violates CT policy
    // requirements: that is, if a connection to |host|, using the validated
-@@ -351,7 +353,7 @@
+@@ -350,7 +352,7 @@
    //
    // If an entry is deleted, the new state will be persisted through
    // the Delegate (if any).
@@ -535,7 +535,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  
    // Returns true and updates |*result| if |host| has dynamic or static
    // HSTS/HPKP (respectively) state. If multiple entries match |host|, dynamic
-@@ -361,8 +363,8 @@
+@@ -360,8 +362,8 @@
    //
    // Note that these methods are not const because they opportunistically remove
    // entries that have expired.
@@ -546,7 +546,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  
    // Returns true and updates |*result| iff |host| has static HSTS/HPKP
    // (respectively) state. If multiple entries match |host|, the most specific
-@@ -376,22 +378,24 @@
+@@ -375,22 +377,24 @@
    //
    // Note that these methods are not const because they opportunistically remove
    // entries that have expired.
@@ -576,16 +576,16 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
                 base::Time expiry,
                 bool include_subdomains,
                 const HashValueVector& hashes);
-@@ -433,7 +437,7 @@
+@@ -432,7 +436,7 @@
    typedef std::map<HashedHost, STSState> STSStateMap;
    typedef std::map<HashedHost, PKPState> PKPStateMap;
  
--  base::Value::Dict NetLogUpgradeToSSLParam(std::string_view host);
-+  base::Value::Dict NetLogUpgradeToSSLParam(const NetworkAnonymizationKey& nak, std::string_view host);
+-  base::DictValue NetLogUpgradeToSSLParam(std::string_view host);
++  base::DictValue NetLogUpgradeToSSLParam(const NetworkAnonymizationKey& nak, std::string_view host);
  
    // IsBuildTimely returns true if the current build is new enough ensure that
    // built in security information (i.e. HSTS preloading and pinning
-@@ -443,7 +447,8 @@
+@@ -442,7 +446,8 @@
    // Helper method for actually checking pins.
    PKPStatus CheckPublicKeyPinsImpl(std::string_view host,
                                     bool is_issued_by_known_root,
@@ -595,7 +595,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  
    // If a Delegate is present, notify it that the internal state has
    // changed.
-@@ -453,11 +458,13 @@
+@@ -452,11 +457,13 @@
    // any previous state for the |host|, including static entries.
    //
    // The new state for |host| is persisted using the Delegate (if any).
@@ -613,7 +613,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
                         bool include_subdomains,
 --- a/net/quic/crypto/proof_verifier_chromium.cc
 +++ b/net/quic/crypto/proof_verifier_chromium.cc
-@@ -410,7 +410,8 @@
+@@ -409,7 +409,8 @@
      TransportSecurityState::PKPStatus pin_validity =
          transport_security_state_->CheckPublicKeyPins(
              hostname_, cert_verify_result.is_issued_by_known_root,
@@ -623,7 +623,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
      switch (pin_validity) {
        case TransportSecurityState::PKPStatus::VIOLATED:
          result = ERR_SSL_PINNED_KEY_NOT_IN_CERT_CHAIN;
-@@ -435,7 +436,7 @@
+@@ -434,7 +435,7 @@
    verify_details_->is_fatal_cert_error =
        IsCertStatusError(cert_status) &&
        result != ERR_CERT_KNOWN_INTERCEPTION_BLOCKED &&
@@ -634,7 +634,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
      std::string error_string = ErrorToString(result);
 --- a/net/quic/quic_chromium_client_session.cc
 +++ b/net/quic/quic_chromium_client_session.cc
-@@ -1544,7 +1544,7 @@
+@@ -1571,7 +1571,7 @@
  
    return SpdySession::CanPool(transport_security_state_, ssl_info,
                                *ssl_config_service_, session_key_.host(),
@@ -645,7 +645,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  bool QuicChromiumClientSession::ShouldCreateIncomingStream(
 --- a/net/socket/ssl_client_socket_impl.cc
 +++ b/net/socket/ssl_client_socket_impl.cc
-@@ -1160,7 +1160,8 @@
+@@ -1231,7 +1231,8 @@
          context_->transport_security_state()->CheckPublicKeyPins(
              host_and_port_.host(),
              server_cert_verify_result_.is_issued_by_known_root,
@@ -655,7 +655,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
      switch (pin_validity) {
        case TransportSecurityState::PKPStatus::VIOLATED:
          server_cert_verify_result_.cert_status |=
-@@ -1180,7 +1181,7 @@
+@@ -1251,7 +1252,7 @@
        IsCertStatusError(server_cert_verify_result_.cert_status) &&
        result != ERR_CERT_KNOWN_INTERCEPTION_BLOCKED &&
        context_->transport_security_state()->ShouldSSLErrorsBeFatal(
@@ -666,7 +666,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
      if (!GetECHNameOverride().empty()) {
 --- a/net/spdy/spdy_session.cc
 +++ b/net/spdy/spdy_session.cc
-@@ -731,7 +731,8 @@
+@@ -723,7 +723,8 @@
                            const SSLInfo& ssl_info,
                            const SSLConfigService& ssl_config_service,
                            std::string_view old_hostname,
@@ -676,7 +676,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
    // Pooling is prohibited if the server cert is not valid for the new domain,
    // and for connections on which client certs were sent. It is also prohibited
    // when channel ID was sent if the hosts are from different eTLDs+1.
-@@ -749,7 +750,7 @@
+@@ -741,7 +742,7 @@
  
    if (transport_security_state->CheckPublicKeyPins(
            new_hostname, ssl_info.is_issued_by_known_root,
@@ -685,7 +685,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
        TransportSecurityState::PKPStatus::VIOLATED) {
      return false;
    }
-@@ -987,7 +988,8 @@
+@@ -1006,7 +1007,8 @@
      return true;  // This is not a secure session, so all domains are okay.
  
    return CanPool(transport_security_state_, ssl_info, *ssl_config_service_,
@@ -695,19 +695,19 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  }
  
  void SpdySession::EnqueueStreamWrite(
-@@ -3101,7 +3103,8 @@
+@@ -3217,7 +3219,8 @@
        return;
      }
      if (!CanPool(transport_security_state_, ssl_info, *ssl_config_service_,
--                 host_port_pair().host(), gurl.host_piece())) {
-+                 host_port_pair().host(), gurl.host_piece(),
+-                 host_port_pair().host(), gurl.host())) {
++                 host_port_pair().host(), gurl.host(),
 +                 spdy_session_key_.network_anonymization_key())) {
        return;
      }
      scheme_host_port = url::SchemeHostPort(gurl);
 --- a/net/spdy/spdy_session.h
 +++ b/net/spdy/spdy_session.h
-@@ -319,7 +319,8 @@
+@@ -333,7 +333,8 @@
                        const SSLInfo& ssl_info,
                        const SSLConfigService& ssl_config_service,
                        std::string_view old_hostname,
@@ -719,7 +719,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
    // |spdy_session_key| is the host/port that this session connects to, privacy
 --- a/net/url_request/url_request_context_builder.cc
 +++ b/net/url_request/url_request_context_builder.cc
-@@ -406,20 +406,6 @@
+@@ -408,20 +408,6 @@
  
    context->set_transport_security_state(
        std::make_unique<TransportSecurityState>(hsts_policy_bypass_list_));
@@ -742,43 +742,43 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
      context->set_http_server_properties(std::move(http_server_properties_));
 --- a/net/url_request/url_request_http_job.cc
 +++ b/net/url_request/url_request_http_job.cc
-@@ -378,6 +378,7 @@
+@@ -368,6 +368,7 @@
    if (TransportSecurityState* hsts =
            request->context()->transport_security_state()) {
      upgrade_decision = hsts->GetSSLUpgradeDecision(
 +        request->isolation_info().network_anonymization_key(),
-         url.host(),
+         url.GetHost(),
          /*is_top_level_nav=*/
          request->isolation_info().IsOutermostMainFrameRequest(),
-@@ -1252,7 +1253,7 @@
+@@ -1224,7 +1225,7 @@
    std::optional<std::string_view> value;
    if ((value =
             headers->EnumerateHeader(nullptr, "Strict-Transport-Security"))) {
--    security_state->AddHSTSHeader(request_info_.url.host(), *value);
-+    security_state->AddHSTSHeader(request_info_.network_anonymization_key, request_info_.url.host(), *value);
+-    security_state->AddHSTSHeader(request_info_.url.GetHost(), *value);
++    security_state->AddHSTSHeader(request_info_.network_anonymization_key, request_info_.url.GetHost(), *value);
    }
  }
  
-@@ -1323,7 +1324,7 @@
+@@ -1304,7 +1305,7 @@
      TransportSecurityState* state = context->transport_security_state();
      NotifySSLCertificateError(
          result, transaction_->GetResponseInfo()->ssl_info,
--        state->ShouldSSLErrorsBeFatal(request_info_.url.host()) &&
-+        state->ShouldSSLErrorsBeFatal(request_->isolation_info().network_anonymization_key(), request_info_.url.host()) &&
+-        state->ShouldSSLErrorsBeFatal(request_info_.url.GetHost()) &&
++        state->ShouldSSLErrorsBeFatal(request_->isolation_info().network_anonymization_key(), request_info_.url.GetHost()) &&
              result != ERR_CERT_KNOWN_INTERCEPTION_BLOCKED);
    } else if (result == ERR_SSL_CLIENT_AUTH_CERT_NEEDED) {
      NotifyCertificateRequested(
 --- a/services/network/network_context.cc
 +++ b/services/network/network_context.cc
-@@ -2065,6 +2065,7 @@
+@@ -2168,6 +2168,7 @@
  void NetworkContext::VerifyCertInternal(
      const scoped_refptr<net::X509Certificate>& certificate,
      const net::HostPortPair& host_port,
 +    const net::NetworkAnonymizationKey& network_anonymization_key,
-     const std::string& ocsp_result,
+     const std::string& ocsp_response,
      const std::string& sct_list,
      CTVerificationMode ct_verification_mode,
-@@ -2076,6 +2077,7 @@
+@@ -2179,6 +2180,7 @@
    pending_cert_verify->result = std::make_unique<net::CertVerifyResult>();
    pending_cert_verify->certificate = certificate;
    pending_cert_verify->host_port = host_port;
@@ -786,16 +786,16 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
    net::CertVerifier* cert_verifier =
        g_cert_verifier_for_testing ? g_cert_verifier_for_testing
                                    : url_request_context_->cert_verifier();
-@@ -2106,20 +2108,22 @@
+@@ -2209,20 +2211,22 @@
  void NetworkContext::VerifyCert(
      const scoped_refptr<net::X509Certificate>& certificate,
      const net::HostPortPair& host_port,
 +    const net::NetworkAnonymizationKey& network_anonymization_key,
-     const std::string& ocsp_result,
+     const std::string& ocsp_response,
      const std::string& sct_list,
      VerifyCertCallback callback) {
--  VerifyCertInternal(certificate, host_port, ocsp_result, sct_list,
-+  VerifyCertInternal(certificate, host_port, network_anonymization_key, ocsp_result, sct_list,
+-  VerifyCertInternal(certificate, host_port, ocsp_response, sct_list,
++  VerifyCertInternal(certificate, host_port, network_anonymization_key, ocsp_response, sct_list,
                       CTVerificationMode::kTlsCertificate, std::move(callback));
  }
  
@@ -803,15 +803,15 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
      const scoped_refptr<net::X509Certificate>& certificate,
      const net::HostPortPair& host_port,
 +    const net::NetworkAnonymizationKey& network_anonymization_key,
-     const std::string& ocsp_result,
+     const std::string& ocsp_response,
      const std::string& sct_list,
      VerifyCertCallback callback) {
--  VerifyCertInternal(certificate, host_port, ocsp_result, sct_list,
-+  VerifyCertInternal(certificate, host_port, network_anonymization_key, ocsp_result, sct_list,
+-  VerifyCertInternal(certificate, host_port, ocsp_response, sct_list,
++  VerifyCertInternal(certificate, host_port, network_anonymization_key, ocsp_response, sct_list,
                       CTVerificationMode::kSignedExchange, std::move(callback));
  }
  
-@@ -2160,17 +2164,19 @@
+@@ -2263,17 +2267,19 @@
    std::move(callback).Run();
  }
  
@@ -834,7 +834,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
                                           bool is_top_level_nav,
                                           IsHSTSActiveForHostCallback callback) {
    net::TransportSecurityState* security_state =
-@@ -2182,10 +2188,10 @@
+@@ -2285,10 +2291,10 @@
    }
  
    std::move(callback).Run(
@@ -845,9 +845,9 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 -void NetworkContext::GetHSTSState(const std::string& domain,
 +void NetworkContext::GetHSTSState(const net::NetworkAnonymizationKey& nak, const std::string& domain,
                                    GetHSTSStateCallback callback) {
-   base::Value::Dict result;
+   base::DictValue result;
  
-@@ -2223,10 +2229,10 @@
+@@ -2326,10 +2332,10 @@
        net::TransportSecurityState::STSState dynamic_sts_state;
        net::TransportSecurityState::PKPState dynamic_pkp_state;
        bool found_sts_dynamic = transport_security_state->GetDynamicSTSState(
@@ -860,7 +860,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
        if (found_sts_dynamic) {
          result.Set("dynamic_upgrade_mode",
                     static_cast<int>(dynamic_sts_state.upgrade_mode));
-@@ -2264,6 +2270,7 @@
+@@ -2367,6 +2373,7 @@
  }
  
  void NetworkContext::DeleteDynamicDataForHost(
@@ -868,7 +868,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
      const std::string& host,
      DeleteDynamicDataForHostCallback callback) {
    net::TransportSecurityState* transport_security_state =
-@@ -2274,7 +2281,7 @@
+@@ -2377,7 +2384,7 @@
    }
  
    std::move(callback).Run(
@@ -877,7 +877,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  }
  
  void NetworkContext::EnableStaticKeyPinningForTesting(
-@@ -2329,7 +2336,7 @@
+@@ -2436,7 +2443,7 @@
    DCHECK(!require_network_anonymization_key_ ||
           !network_anonymization_key.IsEmpty());
  
@@ -886,7 +886,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  
    // |PreconnectSockets| may receive arguments from the renderer, which is not
    // guaranteed to validate them.
-@@ -3187,7 +3194,9 @@
+@@ -3308,7 +3315,9 @@
    }
  }
  
@@ -897,15 +897,15 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
    // TODO(lilyhoughton) This needs to be gotten rid of once explicit
    // construction with a URLRequestContext is no longer supported.
  
-@@ -3213,6 +3222,7 @@
+@@ -3334,6 +3343,7 @@
    // top-level navigation so we need to disallow HSTS upgrades for every
    // preconnect.
    if (!url_request_context_->transport_security_state()->ShouldUpgradeToSSL(
 +          network_anonymization_key,
-           original_url.host(), /*is_top_level_nav=*/false)) {
+           original_url.GetHost(), /*is_top_level_nav=*/false)) {
      RecordHSTSPreconnectUpgradeReason(
          HSTSRedirectUpgradeReason::kNotUpgradedNoHSTSPin);
-@@ -3266,7 +3276,8 @@
+@@ -3395,7 +3405,8 @@
          url_request_context_->transport_security_state()->CheckPublicKeyPins(
              pending_cert_verify->host_port.host(),
              pending_cert_verify->result->is_issued_by_known_root,
@@ -917,22 +917,22 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
          pending_cert_verify->result->cert_status |=
 --- a/services/network/network_context.h
 +++ b/services/network/network_context.h
-@@ -425,12 +425,14 @@
+@@ -431,12 +431,14 @@
        mojo::PendingReceiver<mojom::HostResolver> receiver) override;
    void VerifyCert(const scoped_refptr<net::X509Certificate>& certificate,
                    const net::HostPortPair& host_port,
 +                  const net::NetworkAnonymizationKey& network_anonymization_key,
-                   const std::string& ocsp_result,
+                   const std::string& ocsp_response,
                    const std::string& sct_list,
                    VerifyCertCallback callback) override;
    void VerifyCertForSignedExchange(
        const scoped_refptr<net::X509Certificate>& certificate,
        const net::HostPortPair& host_port,
 +      const net::NetworkAnonymizationKey& network_anonymization_key,
-       const std::string& ocsp_result,
+       const std::string& ocsp_response,
        const std::string& sct_list,
        VerifyCertCallback callback) override;
-@@ -439,16 +441,18 @@
+@@ -445,16 +447,18 @@
        const std::string& hostname,
        const scoped_refptr<net::X509Certificate>& tls_certificate,
        Verify2QwacCertBindingCallback callback) override;
@@ -954,7 +954,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
        const std::string& host,
        DeleteDynamicDataForHostCallback callback) override;
    void SetCorsOriginAccessListsForOrigin(
-@@ -809,7 +813,8 @@
+@@ -824,7 +828,8 @@
        mojo::PendingRemote<mojom::CookieAccessObserver> cookie_observer,
        net::FirstPartySetMetadata first_party_set_metadata);
  
@@ -964,15 +964,15 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  
  #if BUILDFLAG(IS_P2P_ENABLED)
    void DestroySocketManager(P2PSocketManager* socket_manager);
-@@ -821,6 +826,7 @@
+@@ -836,6 +841,7 @@
    void VerifyCertInternal(
        const scoped_refptr<net::X509Certificate>& certificate,
        const net::HostPortPair& host_port,
 +      const net::NetworkAnonymizationKey& network_anonymization_key,
-       const std::string& ocsp_result,
+       const std::string& ocsp_response,
        const std::string& sct_list,
        CTVerificationMode ct_verification_mode,
-@@ -1006,6 +1012,7 @@
+@@ -1021,6 +1027,7 @@
      VerifyCertCallback callback;
      scoped_refptr<net::X509Certificate> certificate;
      net::HostPortPair host_port;
@@ -982,7 +982,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
        cert_verifier_requests_;
 --- a/services/network/public/mojom/network_context.mojom
 +++ b/services/network/public/mojom/network_context.mojom
-@@ -1586,6 +1586,7 @@
+@@ -1591,6 +1591,7 @@
    // Checks the given certificate against the CertVerifier and CTVerifier.
    VerifyCert(X509Certificate certificate,
               HostPortPair host_port,
@@ -990,7 +990,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
               string ocsp_response,
               string sct_list)
        => (int32 error_code, CertVerifyResult cv_result, bool pkp_bypassed);
-@@ -1594,6 +1595,7 @@
+@@ -1599,6 +1600,7 @@
    // This implementation is specific for use by Signed Exchange.
    VerifyCertForSignedExchange(X509Certificate certificate,
                                HostPortPair host_port,
@@ -998,7 +998,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
                                string ocsp_response,
                                string sct_list)
        => (int32 error_code, CertVerifyResult cv_result, bool pkp_bypassed);
-@@ -1608,18 +1610,18 @@
+@@ -1612,18 +1614,18 @@
  
    // Adds explicitly-specified data as if it was processed from an
    // HSTS header. Used by tests and implementation of chrome://net-internals.
@@ -1020,7 +1020,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  
    // Sets allowed and blocked origins respectively for the URLLoaderFactory
    // consumers to access beyond the same-origin policy. The list is managed per
-@@ -1638,7 +1640,7 @@
+@@ -1642,7 +1644,7 @@
    // Deletes any dynamic data stored for |host| from the transport
    // security state. Returns true iff an entry was deleted.
    // See net::TransportSecurityState::DeleteDynamicDataForHost for more detail.

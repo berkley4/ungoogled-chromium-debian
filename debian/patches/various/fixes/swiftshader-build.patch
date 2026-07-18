@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -507,7 +507,8 @@
+@@ -496,7 +496,8 @@
      }
  
      if ((is_win || is_mac || is_linux || is_chromeos || is_fuchsia) &&
@@ -12,7 +12,7 @@
          "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan",
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -23,6 +23,7 @@
+@@ -21,6 +21,7 @@
  import("//chrome/process_version_rc_template.gni")
  import("//components/optimization_guide/features.gni")
  import("//extensions/buildflags/buildflags.gni")
@@ -20,7 +20,7 @@
  import("//media/media_options.gni")
  import("//services/shape_detection/features.gni")
  import("//third_party/angle/gni/angle.gni")
-@@ -1675,7 +1676,7 @@
+@@ -1693,7 +1694,7 @@
        deps = [
          ":chrome_symbols",
        ]
@@ -29,7 +29,7 @@
          deps += [ ":swiftshader_vk_symbols" ]
        }
        if (!is_chromeos && angle_shared_libvulkan) {
-@@ -1720,17 +1721,19 @@
+@@ -1738,17 +1739,19 @@
          deps = [ "//components/crash/core/app:chrome_crashpad_handler" ]
        }
      }
@@ -82,10 +82,10 @@
  
  import("//build_overrides/angle.gni")
 +import("//ui/gl/features.gni")
- 
- declare_args() {
-   # Extract native libs in ANGLE apk. Useful for flamegraph generation.
-@@ -249,7 +250,8 @@
+ if (angle_has_build) {
+   import("//build/config/gclient_args.gni")
+ }
+@@ -285,7 +286,8 @@
  declare_args() {
    # Currently SwiftShader's Vulkan front-end doesn't build on Android.
    # Disabled by default on MSVC because of compiler warnings/errors.

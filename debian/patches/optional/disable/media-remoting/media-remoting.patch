@@ -1,6 +1,6 @@
 --- a/chrome/browser/media/cast_mirroring_service_host.cc
 +++ b/chrome/browser/media/cast_mirroring_service_host.cc
-@@ -494,10 +494,12 @@
+@@ -492,10 +492,12 @@
      mojo::PendingReceiver<media::mojom::RemotingSource> receiver) {
    if (source_media_id_.type == content::DesktopMediaID::TYPE_WEB_CONTENTS) {
      content::WebContents* source_contents = web_contents();
@@ -15,7 +15,7 @@
  
 --- a/chrome/browser/media/router/mojo/media_router_desktop.cc
 +++ b/chrome/browser/media/router/mojo/media_router_desktop.cc
-@@ -171,6 +171,7 @@
+@@ -172,6 +172,7 @@
    }
  
    const MediaSource source(source_id);
@@ -23,7 +23,7 @@
    if (source.IsTabMirroringSource()) {
      // Ensure the CastRemotingConnector is created before mirroring starts.
      CastRemotingConnector* const connector =
-@@ -179,6 +180,7 @@
+@@ -180,6 +181,7 @@
  
      MediaRouterMojoMetrics::RecordTabMirroringMetrics(web_contents);
    }

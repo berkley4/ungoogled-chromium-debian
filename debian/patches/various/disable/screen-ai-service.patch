@@ -9,11 +9,11 @@
  #if BUILDFLAG(IS_CHROMEOS)
  #include "chrome/browser/ash/accessibility/accessibility_manager.h"
 @@ -36,7 +37,9 @@
-   void HandleGetScreenReaderState(const base::Value::List& args);
-   void HandleCheckAccessibilityImageLabels(const base::Value::List& args);
+   void HandleGetScreenReaderState(const base::ListValue& args);
+   void HandleCheckAccessibilityImageLabels(const base::ListValue& args);
  
 +#if BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
-   void HandleGetScreenAIInstallState(const base::Value::List& args);
+   void HandleGetScreenAIInstallState(const base::ListValue& args);
 +#endif  // BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
  
    void SendScreenReaderStateChanged();

@@ -1,14 +1,14 @@
 --- a/chrome/browser/extensions/BUILD.gn
 +++ b/chrome/browser/extensions/BUILD.gn
-@@ -552,6 +552,7 @@
-     "//chrome/browser/ui/toolbar",
+@@ -565,6 +565,7 @@
+     "//chrome/browser/undo",
+     "//chrome/browser/update_client",
      "//chrome/common",
-     "//chrome/common/safe_browsing:proto",
 +    "//chrome/services/file_util:buildflags",
      "//components/bookmarks/browser",
      "//components/bookmarks/managed",
      "//components/content_settings/core/browser",
-@@ -981,7 +982,6 @@
+@@ -1001,7 +1002,6 @@
        "//chrome/browser/web_applications/extensions",
        "//chrome/common/extensions/api:extensions_features",
        "//chrome/services/file_util/public/mojom",
@@ -16,7 +16,7 @@
        "//components/affiliations/core/browser:affiliations",
        "//components/app_constants",
        "//components/autofill/content/browser",
-@@ -1110,6 +1110,10 @@
+@@ -1121,6 +1121,10 @@
        "//url",
      ]
  
@@ -29,36 +29,36 @@
          "api/certificate_provider/certificate_provider_api.cc",
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -2527,7 +2527,6 @@
-       "//chrome/common:version_header",
-       "//chrome/common/privacy_budget:test_support",
+@@ -3121,7 +3121,6 @@
        "//chrome/renderer",
+       "//chrome/renderer/actor:browser_tests",
+       "//chrome/renderer/webui_browser:browser_tests",
 -      "//chrome/services/removable_storage_writer:lib",
+       "//chrome/test/components_tests:browser_tests",
        "//chrome/test/data/webui:resources",
        "//chrome/test/data/webui/mojo:mojo_bindings",
-       "//chrome/test/media_router/access_code_cast:access_code_cast_integration_base",
-@@ -2889,6 +2888,10 @@
-       "//v8",
-     ]
+@@ -3490,6 +3489,10 @@
+       deps += [ "//chrome/updater:browser_sources" ]
+     }
  
 +    if (enable_extractors) {
 +      deps += [ "//chrome/services/removable_storage_writer:lib" ]
 +    }
 +
-     # TODO(crbug.com/428666921): Remove this dependency when
-     # c/b/ui/views/performance_controls/*browsertest.cc get componentized.
-     deps += [ "//chrome/browser/ui/performance_controls/test_support" ]
+     if (enable_guest_view) {
+       deps += [ "//chrome/browser/guest_view" ]
+     }
 --- a/chrome/utility/BUILD.gn
 +++ b/chrome/utility/BUILD.gn
-@@ -5,6 +5,7 @@
- import("//build/config/features.gni")
+@@ -4,6 +4,7 @@
+ 
  import("//build/config/sysroot.gni")
  import("//chrome/common/features.gni")
 +import("//chrome/services/file_util/public/features.gni")
  import("//chrome/services/speech/buildflags/buildflags.gni")
- import("//chromeos/ash/components/assistant/assistant.gni")
- import("//components/services/on_device_translation/buildflags/features.gni")
-@@ -151,16 +152,24 @@
+ import("//components/on_device_translation/buildflags/features.gni")
+ import("//crypto/features.gni")
+@@ -153,16 +154,24 @@
    if (enable_extensions) {
      deps += [
        "//chrome/common/extensions/api",
@@ -83,7 +83,7 @@
 +      ]
 +    }
 +
-     # Prevent wininet from loading in the renderer. http://crbug.com/460679
+     # Prevent wininet from loading in the renderer. http://crbug.com/40406692
      if (is_win) {
        ldflags = [ "/DELAYLOAD:wininet.dll" ]
 --- a/chrome/utility/services.cc
@@ -94,9 +94,9 @@
  #include "build/build_config.h"
 +#include "chrome/services/file_util/buildflags.h"
  #include "chrome/services/speech/buildflags/buildflags.h"
+ #include "components/on_device_translation/buildflags/buildflags.h"
  #include "components/paint_preview/buildflags/buildflags.h"
- #include "components/password_manager/core/common/password_manager_features.h"
-@@ -74,7 +75,7 @@
+@@ -75,7 +76,7 @@
  #include "chrome/services/file_util/file_util_service.h"  // nogncheck
  #endif
  
@@ -105,7 +105,7 @@
  #include "chrome/services/removable_storage_writer/public/mojom/removable_storage_writer.mojom.h"
  #include "chrome/services/removable_storage_writer/removable_storage_writer.h"
  #endif
-@@ -283,7 +284,7 @@
+@@ -274,7 +275,7 @@
  }
  #endif
  
@@ -114,7 +114,7 @@
  auto RunRemovableStorageWriter(
      mojo::PendingReceiver<chrome::mojom::RemovableStorageWriter> receiver) {
    return std::make_unique<RemovableStorageWriter>(std::move(receiver));
-@@ -499,7 +500,7 @@
+@@ -470,7 +471,7 @@
    services.Add(RunFileUtil);
  #endif
  

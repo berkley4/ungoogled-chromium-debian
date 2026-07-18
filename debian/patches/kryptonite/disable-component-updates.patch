@@ -1,6 +1,6 @@
 --- a/components/component_updater/component_updater_service.cc
 +++ b/components/component_updater/component_updater_service.cc
-@@ -546,8 +546,7 @@
+@@ -580,8 +580,7 @@
    // If the preference is not set the component updates are enabled by default
    // unless in Chrome for Testing where we never want components to be updated
    // automatically.

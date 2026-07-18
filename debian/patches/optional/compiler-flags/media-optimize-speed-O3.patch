@@ -1,6 +1,6 @@
 --- a/media/audio/BUILD.gn
 +++ b/media/audio/BUILD.gn
-@@ -148,8 +148,10 @@
+@@ -144,8 +144,10 @@
    ]
    libs = []
    defines = []
@@ -13,7 +13,7 @@
  
 --- a/media/base/BUILD.gn
 +++ b/media/base/BUILD.gn
-@@ -430,9 +430,10 @@
+@@ -433,9 +433,10 @@
    ]
  
    libs = []
@@ -57,7 +57,7 @@
      "ffmpeg_common.h",
 --- a/media/filters/BUILD.gn
 +++ b/media/filters/BUILD.gn
-@@ -81,7 +81,11 @@
+@@ -85,7 +85,11 @@
      "wsola_internals.h",
    ]
  
@@ -72,7 +72,7 @@
      "//base",
 --- a/media/formats/BUILD.gn
 +++ b/media/formats/BUILD.gn
-@@ -90,7 +90,11 @@
+@@ -93,7 +93,11 @@
      "//third_party/libwebm",
    ]
  
@@ -87,7 +87,7 @@
      deps += [ "//media/video" ]
 --- a/media/gpu/BUILD.gn
 +++ b/media/gpu/BUILD.gn
-@@ -84,7 +84,9 @@
+@@ -82,7 +82,9 @@
      "gpu_video_encode_accelerator_factory.h",
    ]
  
@@ -107,7 +107,7 @@
      "//build/config/compiler:wexit_time_destructors",
      "//build/config/compiler:wglobal_constructors",
    ]
-@@ -472,7 +476,9 @@
+@@ -473,7 +477,9 @@
      "command_buffer_helper.h",
    ]
  
@@ -117,7 +117,7 @@
      "//build/config/compiler:wexit_time_destructors",
      "//build/config/compiler:wglobal_constructors",
    ]
-@@ -518,7 +524,9 @@
+@@ -515,7 +521,9 @@
        "video_frame_mapper_factory.h",
      ]
  
@@ -144,7 +144,7 @@
  source_set("unit_tests") {
 --- a/media/renderers/BUILD.gn
 +++ b/media/renderers/BUILD.gn
-@@ -99,7 +99,11 @@
+@@ -95,7 +95,11 @@
      ]
    }
  
@@ -159,7 +159,7 @@
  # Note: This is a roll-up only target; do not expand the visibility. DEPS should
 --- a/media/video/BUILD.gn
 +++ b/media/video/BUILD.gn
-@@ -54,7 +54,11 @@
+@@ -55,7 +55,11 @@
      "//ui/gl",
    ]
  
