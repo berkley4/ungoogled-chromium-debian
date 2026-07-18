@@ -1,27 +1,46 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1270,6 +1270,7 @@
- config("compiler_cpu_abi") {
-   cflags = []
-   ldflags = []
-+  rustflags = []
-   defines = []
+@@ -2538,6 +2538,7 @@
+   if (is_clang) {
+     extra_cflags += [
+       "-mpclmul",
++      "-march=x86-64-v2",
+     ]
+   }
+ }
+@@ -2636,7 +2637,10 @@
+     # The `-O3` for clang turns on extra optimizations compared to the standard
+     # `-O2`. But for rust, `-Copt-level=3` is the default and is thus reliable
+     # to use.
+-    rustflags = [ "-Copt-level=3" ]
++    rustflags = [
++      "-Copt-level=3",
++      "-Ctarget-cpu=x86-64-v2",
++    ]
+   }
+ }
  
-   configs = []
-@@ -1287,12 +1288,15 @@
-             ldflags += [ "--target=x86_64-unknown-linux-gnu" ]
-         cflags += [
-           "-mpclmul",
-+          "-march=x86-64-v2",
-+        ]
-+        rustflags += [
-+          "-Ctarget-cpu=x86-64-v2",
-         ]
-       } else {
-         cflags += [ "-m64" ]
-         ldflags += [ "-m64" ]
-       }
--      cflags += [ "-msse3" ]
-     } else if (current_cpu == "x86") {
-       if (is_clang && !is_android && !is_chromeos_device) {
-         cflags += [ "--target=i386-unknown-linux-gnu" ]
+@@ -2690,7 +2694,10 @@
+       ldflags += [ "-Wl,--lto-CGO2" ]
+     }
+   }
+-  rustflags = [ "-Copt-level=3" ]
++  rustflags = [
++    "-Copt-level=3",
++    "-Ctarget-cpu=x86-64-v2",
++  ]
+ }
+ 
+ # This config can be used to override the default settings for per-component
+@@ -2717,7 +2724,10 @@
+       ldflags += [ "-Wl,--lto-CGO3" ]
+     }
+   }
+-  rustflags = [ "-Copt-level=3" ]
++  rustflags = [
++    "-Copt-level=3",
++    "-Ctarget-cpu=x86-64-v2",
++  ]
+ }
+ 
+ config("optimize_fuzzing") {

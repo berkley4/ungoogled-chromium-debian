@@ -1,10 +1,10 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1294,6 +1294,7 @@
-           "-maes",
-           "-mavx",
-           "-msse4a",
-+          "-mabm",
-         ]
-         rustflags += [
-           "-Ctarget-cpu=x86-64-v2",
+@@ -2543,6 +2543,7 @@
+       "-maes",
+       "-mavx",
+       "-msse4a",
++      "-mabm",
+     ]
+   }
+ }

@@ -1,0 +1,37 @@
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -2466,6 +2466,7 @@
+ } else {
+   common_optimize_on_cflags = []
+   common_optimize_on_ldflags = []
++  extra_cflags = []
+ 
+   if (is_android && (use_lld || use_mold)) {
+     # TODO(jdduke) Re-enable on mips after resolving linking
+@@ -2608,7 +2609,7 @@
+     # vectorization while otherwise optimizing for size.
+     rustflags = [ "-Copt-level=s" ]
+   } else {
+-    cflags = [ "-O2" ] + common_optimize_on_cflags
++    cflags = [ "-O2" ] + common_optimize_on_cflags + extra_cflags
+ 
+     if (use_lld) {
+       ldflags += [ "-Wl,--lto-CGO2" ]
+@@ -2666,7 +2667,7 @@
+   } else if (optimize_for_fuzzing) {
+     cflags = [ "-O1" ] + common_optimize_on_cflags
+   } else {
+-    cflags = [ "-O2" ] + common_optimize_on_cflags
++    cflags = [ "-O2" ] + common_optimize_on_cflags + extra_cflags
+     if (use_lld) {
+       ldflags += [ "-Wl,--lto-CGO2" ]
+     }
+@@ -2693,7 +2694,7 @@
+   } else if (optimize_for_fuzzing) {
+     cflags = [ "-O1" ] + common_optimize_on_cflags
+   } else {
+-    cflags = [ "-O3" ] + common_optimize_on_cflags
++    cflags = [ "-O3" ] + common_optimize_on_cflags + extra_cflags
+     if (use_lld) {
+       ldflags += [ "-Wl,--lto-CGO3" ]
+     }

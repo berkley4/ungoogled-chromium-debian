@@ -1,12 +1,15 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1285,6 +1285,9 @@
-           !is_chromeos_device && !is_linux) {
-             cflags += [ "--target=x86_64-unknown-linux-gnu" ]
-             ldflags += [ "--target=x86_64-unknown-linux-gnu" ]
-+        cflags += [
-+          "-mpclmul",
-+        ]
-       } else {
-         cflags += [ "-m64" ]
-         ldflags += [ "-m64" ]
+@@ -2534,6 +2534,12 @@
+     # TODO(crbug.com/445202451): Remove this after rolling in a fixed compiler.
+     common_optimize_on_cflags += [ "-fno-slp-vectorize" ]
+   }
++
++  if (is_clang) {
++    extra_cflags += [
++      "-mpclmul",
++    ]
++  }
+ }
+ 
+ config("default_stack_frames") {

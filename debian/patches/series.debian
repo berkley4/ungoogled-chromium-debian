@@ -117,6 +117,7 @@ optional/translate-stop-unsupported-switch-warning.patch
 #optional/build-timestamp/use-non-official-build-timestamp.patch
 optional/compiler-flags/machine-function-splitting.patch
 optional/compiler-flags/media-optimize-speed-O3.patch
+optional/compiler-flags/extra-cflags.patch
 #optional/compiler-flags/polly.patch
 #optional/compiler-flags/polly-vectorizer.patch
 #optional/compiler-flags/thinlto-cache-location.patch

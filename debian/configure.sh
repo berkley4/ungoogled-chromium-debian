@@ -619,16 +619,12 @@ if [ $MARCH_SET -eq 1 ] || [ $MTUNE_SET -eq 1 ]; then
 
   # Catch any quirks
   case $MARCH in
-    x86-64-v2)
-      # The default so do nothing except force MTUNE=generic
-      MTUNE=generic ;;
-
     x86-64*)
       # Need to modify march and mtune patches for x86-64, x86-64-v3 and x86-64-v4
       arch_patches="$arch_patches march mtune"
 
       case $MARCH in
-        x86-64)
+        x86-64|x86-64-v2)
           MTUNE=generic ;;
 
         x86-64-v3|x86-64-v4)
@@ -666,17 +662,25 @@ if [ $MARCH_SET -eq 1 ] || [ $MTUNE_SET -eq 1 ]; then
     printf '%s\n' "INFO: Using MARCH=$MARCH MTUNE=$MTUNE"
   fi
 
-  # Non-null $arch_patches means we need to edit any patches containing -march/-mtune
-  if [ -n "$arch_patches" ]; then
-    [ $AES -eq 0 ] || arch_patches="$arch_patches aes"
-    [ $AVX -eq 0 ] || arch_patches="$arch_patches avx"
-    [ $SSE4A -eq 0 ] || arch_patches="$arch_patches sse4a"
 
-    for i in $arch_patches; do
-      sed -e "s@x86-64-v2@$MARCH@" -e "s@generic@$MTUNE@" \
-          -i $OP_DIR/compiler-flags/cpu/$i.patch
-    done
-  fi
+  case $arch_patches in
+    "")
+      # Null arch_patches and POLLY=0 means we don't need extra-cflags.patch
+      if [ $POLLY -eq 0 ]; then
+        op_disable="$op_disable compiler-flags/extra-cflags.patch"
+      fi ;;
+
+    *)
+      # Non-null arch_patches means we need to edit any patches containing -march/-mtune
+      [ $AES -eq 0 ] || arch_patches="$arch_patches aes"
+      [ $AVX -eq 0 ] || arch_patches="$arch_patches avx"
+      [ $SSE4A -eq 0 ] || arch_patches="$arch_patches sse4a"
+
+      for i in $arch_patches; do
+        sed -e "s@x86-64-v2@$MARCH@" -e "s@generic@$MTUNE@" \
+            -i $OP_DIR/compiler-flags/cpu/$i.patch
+      done ;;
+  esac
 fi
 
 

@@ -1,10 +1,26 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1295,6 +1295,7 @@
-         ]
-         rustflags += [
-           "-Ctarget-cpu=x86-64-v2",
-+          "-Ctarget-feature=+pclmulqdq,+aes,+avx",
-         ]
-       } else {
-         cflags += [ "-m64" ]
+@@ -2643,6 +2643,7 @@
+     rustflags = [
+       "-Copt-level=3",
+       "-Ctarget-cpu=x86-64-v2",
++      "-Ctarget-feature=+pclmulqdq,+aes,+avx",
+     ]
+   }
+ }
+@@ -2700,6 +2701,7 @@
+   rustflags = [
+     "-Copt-level=3",
+     "-Ctarget-cpu=x86-64-v2",
++    "-Ctarget-feature=+pclmulqdq,+aes,+avx",
+   ]
+ }
+ 
+@@ -2730,6 +2732,7 @@
+   rustflags = [
+     "-Copt-level=3",
+     "-Ctarget-cpu=x86-64-v2",
++    "-Ctarget-feature=+pclmulqdq,+aes,+avx",
+   ]
+ }
+ 

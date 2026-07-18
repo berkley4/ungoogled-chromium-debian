@@ -1,10 +1,10 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1290,6 +1290,7 @@
-           "-mpclmul",
-           "-march=x86-64-v2",
-           "-mtune=generic",
-+          "-maes",
-         ]
-         rustflags += [
-           "-Ctarget-cpu=x86-64-v2",
+@@ -2540,6 +2540,7 @@
+       "-mpclmul",
+       "-march=x86-64-v2",
+       "-mtune=generic",
++      "-maes",
+     ]
+   }
+ }
