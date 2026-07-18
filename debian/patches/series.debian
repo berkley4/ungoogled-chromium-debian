@@ -170,6 +170,7 @@ optional/fixes/widevine/widevine-locations.patch
 #optional/system/bindgen-crabbyav1f.patch
 optional/system/jpeg.patch
 optional/system/openh264.patch
+#optional/system/clang/bindgen-paths.patch
 #optional/system/clang/clang-version.patch
 #optional/system/clang/clang-version-check.patch
 #optional/system/clang/clang-version_2.patch

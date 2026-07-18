@@ -1,0 +1,11 @@
+--- a/build/rust/rust_bindgen_generator.gni
++++ b/build/rust/rust_bindgen_generator.gni
+@@ -36,6 +36,8 @@
+   _libclang_path += "/lib"
+ }
+ 
++_libclang_path = clang_base_path + "/lib"
++
+ # Template to build Rust/C bindings with bindgen.
+ #
+ # If you're developing first-party code then consider using `rust_bindgen`

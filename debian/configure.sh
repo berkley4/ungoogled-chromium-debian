@@ -481,6 +481,7 @@ else
   fi
 
   ## Set optional patches, build flags and format d/rules and d/control
+  op_enable="$op_enable system/clang/bindgen-paths.patch"
   op_enable="$op_enable system/clang/clang-version-check.patch"
   gn_enable="$gn_enable clang_base_path= custom_toolchain= host_toolchain="
 
