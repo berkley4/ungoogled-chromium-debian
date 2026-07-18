@@ -1,0 +1,2 @@
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=WebBluetooth"
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=BluetoothGattConnections"

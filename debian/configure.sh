@@ -74,7 +74,7 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 
 [ -n "$ATK" ] || ATK=1
 [ -n "$BACKGROUND_AUDIO" ] || BACKGROUND_AUDIO=1
-[ -n "$BLUEZ" ] || BLUEZ=1
+[ -n "$BLUETOOTH" ] || BLUETOOTH=0
 [ -n "$CATAPULT" ] || CATAPULT=0
 [ -n "$CHROMECAST" ] || CHROMECAST=0
 [ -n "$DRIVER" ] || DRIVER=1
@@ -876,9 +876,15 @@ if [ $CHROMECAST -eq 1 ]; then
 fi
 
 
-if [ $BLUEZ -eq 0 ]; then
-  op_enable="$op_enable disable/bluez.patch"
-  gn_enable="$gn_enable use_bluez=false"
+if [ $BLUETOOTH -ge 1 ]; then
+  op_disable="$op_disable disable/bluez.patch"
+  gn_disable="$gn_disable use_bluez=false"
+  ins_enable="$ins_enable bluetooth"
+
+  if [ $BLUETOOTH -ge 2 ]; then
+    POL="$POL -e \"/DefaultBluetoothGuardSetting/s@2@3@\""
+    sed 's@^#@@' -i $FLAG_DIR/bluetooth
+  fi
 fi
 
 

@@ -111,7 +111,9 @@ ATK			1		Accessibility toolkit
 BACKGROUND_AUDIO	1		Controls enablement of a cromite patch to prevent audio muting when switching tabs
 					Relies on NON_FREE=1 to have any effect
 
-BLUEZ			1		Support for the linux bluetooth protocol stack
+BLUETOOTH		0		0 - Disable bluetooth functionality
+					1 - Enable but don't enable the runtime flags or group policy
+					2 - Enable fully
 
 CATAPULT		0		Catapult profiling support
 CHROMECAST		0		Note that enabling (CHROMECAST=1) is untested

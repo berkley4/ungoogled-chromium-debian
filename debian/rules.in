@@ -132,8 +132,8 @@ GN_FLAGS += enable_mutex_priority_inheritance=true
 # Disable ATK
 #GN_FLAGS += use_atk=false
 
-# Disable bluez
-#GN_FLAGS += use_bluez=false
+# Disable bluetooth (protocol stack)
+GN_FLAGS += use_bluez=false
 
 # Disable enterprise watermark
 GN_FLAGS += enterprise_watermark=false
