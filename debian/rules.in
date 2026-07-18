@@ -101,6 +101,7 @@ GN_FLAGS +=					\
 	dawn_tests_use_angle=false		\
 	enable_perfetto_unittests=false		\
 	enable_trace_logging=false		\
+	enable_vrp_flags=false			\
 	optional_trace_events_enabled=false	\
 	rtc_build_examples=false		\
 	rtc_build_tools=false			\
@@ -112,7 +113,10 @@ GN_FLAGS +=					\
 	rtc_enable_protobuf=false		\
 	skia_enable_skshaper_tests=false	\
 	tint_build_benchmarks=false		\
-	tint_build_unittests=false
+	tint_build_fuzzer_vulkan_support=false  \
+        tint_build_null_writer=false            \
+	tint_build_unittests=false		\
+	tint_has_protobuf=false
 
 # The items below are best configured via debian/configure.sh
 # (this needs to be run anyway when self-compiling).
