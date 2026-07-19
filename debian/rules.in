@@ -146,7 +146,7 @@ GN_FLAGS += enterprise_watermark=false
 #GN_FLAGS += use_gtk=false
 
 # Enable HEVC (h265) decoding
-#GN_FLAGS += enable_platform_hevc=false
+#GN_FLAGS += enable_platform_hevc=false enable_hevc_parser_and_hw_decoder=false
 
 # Google lens
 #GN_FLAGS += enable_lens_desktop=false

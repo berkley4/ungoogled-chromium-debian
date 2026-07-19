@@ -898,7 +898,9 @@ fi
 
 if [ $FF_HEVC -eq 0 ]; then
   op_disable="$op_disable ffmpeg-hevc/"
+
   gn_enable="$gn_enable enable_platform_hevc=false"
+  gn_enable="$gn_enable enable_hevc_parser_and_hw_decoder=false"
 
   RUL="$RUL -e \"/^HEVC_/s@^@#@\""
   RUL="$RUL -e \"/libavcodec-hevc-/s@\(for\)@#\1@\""
