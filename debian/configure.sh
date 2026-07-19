@@ -345,20 +345,19 @@ if [ -n "$LTO_DIR" ]; then
     exit 1
   fi
 
-  op_enable="$op_enable compiler-flags/thinlto-cache-location.patch"
-
-  sed -e "s@_thinlto_cache_dir@$LTO_DIR@" \
-      -i $OP_DIR/compiler-flags/thinlto-cache-location.patch
+  tcl_p="compiler-flags/thinlto-cache-location.patch"
+  op_enable="$op_enable $tcl_p"
+  sed "s@_thinlto_cache_dir@$LTO_DIR@" -i $OP_DIR/$tcl_p
 fi
 
 case $LTO_JOBS in
   [1-9]|[1-9][0-9])
-    op_enable="$op_enable compiler-flags/thinlto-jobs.patch"
+    tj_p="compiler-flags/thinlto-jobs.patch"
+    op_enable="$op_enable $tj_p"
 
     case $LTO_JOBS in
       [2-9]|[1-9][0-9])
-        sed -e "s@\(thinlto-jobs=\)1@\1$LTO_JOBS@" \
-            -i $OP_DIR/compiler-flags/thinlto-jobs.patch ;;
+        sed "/thinlto-jobs=/s@=1@=$LTO_JOBS@" -i $OP_DIR/$tj_p ;;
     esac ;;
 esac
 
