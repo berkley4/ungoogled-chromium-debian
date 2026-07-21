@@ -124,6 +124,9 @@ GN_FLAGS +=					\
 
 ### Code/Compiler build options
 
+# Enable auto partitioning (security isolation via the malloc)
+GN_FLAGS += enable_auto_partitioning=true shim_supports_alloc_token=true
+
 # Cluster size (a size of 100 suits <= 8 cpu cores)
 #GN_FLAGS += cluster_size=100
 

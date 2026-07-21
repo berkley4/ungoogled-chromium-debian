@@ -70,6 +70,7 @@ ___Security/Privacy improvements___
 - Higher fortification level (-D_FORTIFY_SOURCE=3) - see [here](https://developers.redhat.com/articles/2022/09/17/gccs-new-fortification-level) and [here](https://developers.redhat.com/articles/2023/02/06/how-improve-application-security-using-fortifysource3)
 - Enhanced stack protection (-fstack-protector-strong; chromium's default is the less-strict -fstack-protector)
 - Overflow prevention (-fwrapv) - see [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1031653) and [here](https://gitlab.e.foundation/e/apps/browser/-/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch)
+- Built with auto partitioning enabled in the malloc for greater isolation
 - Extra cromite and vanadium patches (and generic copies of patches derived from these projects)
 - A policy file is installed to help lock down the browser (use [this](https://chromeenterprise.google/policies/) as a reference guide)
 - The Network Service Sandbox is enabled by default
