@@ -72,6 +72,11 @@ CCACHE_BASEDIR		<dir>		Set CCACHE_BASEDIR to <dir> (must be an absolute path)
 			1		Set CCACHE_BASEDIR to the root directory of the source tree
 					Unless you have multiple source trees that you want to share with ccache then it's perhaps best to leave unset
 
+CLUSTER_SIZE		0		0 - do not enable cluster_size build flag
+					1 - build with cluster_size=100
+					n - build with cluster_size=n
+					Number of files/cluster. Default is 25, up to 100 is suggested for 8 cpu cores.
+
 ESBUILD			0		Use the faster ESbuild javascript bundler instead of the default rollup
 					The slight package size increase means this is probably only worth enabling on fast machines
 

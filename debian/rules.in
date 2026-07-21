@@ -124,6 +124,9 @@ GN_FLAGS +=					\
 
 ### Code/Compiler build options
 
+# Cluster size (a size of 100 suits <= 8 cpu cores)
+#GN_FLAGS += cluster_size=100
+
 # Enable partition lock priority inheritance
 GN_FLAGS += enable_partition_lock_priority_inheritance=true
 

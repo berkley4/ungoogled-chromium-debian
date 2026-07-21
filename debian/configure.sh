@@ -45,6 +45,7 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 ####################
 
 [ -n "$CCACHE" ] || CCACHE=0
+[ -n "$CLUSTER_SIZE" ] || CLUSTER_SIZE=0
 [ -n "$ESBUILD" ] || ESBUILD=0
 [ -n "$NO_SYS_LIBS" ] || NO_SYS_LIBS=0
 [ -n "$PGO" ] || PGO=1
@@ -406,6 +407,14 @@ if [ $CCACHE -eq 1 ]; then
   esac
 
   [ $BUILD_TS_SET -eq 1 ] || BUILD_TS=1
+fi
+
+
+if [ $CLUSTER_SIZE -gt 0 ]; then
+  gn_enable="$gn_enable cluster_size="
+  if [ $CLUSTER_SIZE -gt 1 ]; then
+    RUL="$RUL -e \"/cluster_size/s@=100@=$CLUSTER_SIZE@\""
+  fi
 fi
 
 
