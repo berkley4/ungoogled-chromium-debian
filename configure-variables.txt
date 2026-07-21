@@ -146,7 +146,6 @@ GTK			1		GTK user interface
 					At least one of GTK or QT must be enabled to avoid crashes
 
 HYPHENATION		1		Enable hyphenation data (see https://clagnut.com/sandbox/hyphenation.html for info)
-IDB_FG_CLIENT_BOOST	1		Enable boosting priority of backend tasks associated with foreground clients for IDB
 
 LENS_TRANSLATE		1		Goodle Lens image translation subfeature
 LENS			0		Goodle Lens

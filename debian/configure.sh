@@ -88,7 +88,6 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$GRCACHE_PURGE" ] || GRCACHE_PURGE=0
 [ -n "$GTK" ] || GTK=1
 [ -n "$HYPHENATION" ] || HYPHENATION=1
-[ -n "$IDB_FG_CLIENT_BOOST" ] || IDB_FG_CLIENT_BOOST=1
 [ -n "$LENS" ] || LENS=0
 [ -n "$LENS_TRANSLATE" ] || LENS_TRANSLATE=1
 [ -n "$LOCALES_EXTRA" ] || LOCALES_EXTRA=1
@@ -951,11 +950,6 @@ else
   DSB="$DSB -e \"/^third_party\/blink\/renderer\/platform\/text\/hyphenation\/hyphenation_minikin\.cc/d\""
   DSB="$DSB -e \"/^third_party\/hyphenation-patterns\//d\""
   PRU="$PRU -e \"/^third_party\/hyphenation-patterns\//d\""
-fi
-
-
-if [ $IDB_FG_CLIENT_BOOST -eq 0  ]; then
-  FLAG_MISC="$FLAG_MISC -e \"/IdbExpediteBackend/s@^@#@\""
 fi
 
 
