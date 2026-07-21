@@ -959,9 +959,8 @@ if [ $IDB_FG_CLIENT_BOOST -eq 0  ]; then
 fi
 
 
-if [ $LENS -eq 0 ]; then
-  gn_enable="$gn_enable enable_lens_desktop=false"
-else
+if [ $LENS -gt 0 ]; then
+  gn_disable="$gn_disable enable_lens_desktop=false"
   fl_unblock="$fl_unblock disable-lens-standalone enable-lens-standalone"
   ins_enable="$ins_enable google-lens"
   DSB="$DSB -e \"/^components\/lens\/lens_features\.cc/d\""
