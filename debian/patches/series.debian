@@ -152,7 +152,6 @@ optional/disable/media-remoting/registry-pref.patch
 #optional/disable/theme-buttons/no-gtk-button.patch
 #optional/disable/theme-buttons/no-qt-button.patch
 #optional/enable/add-flag-to-enable-mdns.patch
-#optional/enable/esbuild.patch
 optional/enable/hyphen-data.patch
 optional/enable/middle-click-autoscroll.patch
 optional/enable/mutex-priority-inheritance.patch

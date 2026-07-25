@@ -77,9 +77,6 @@ CLUSTER_SIZE		0		0 - do not enable cluster_size build flag
 					n - build with cluster_size=n
 					Number of files/cluster. Default is 25, up to 100 is suggested for 8 cpu cores.
 
-ESBUILD			0		Use the faster ESbuild javascript bundler instead of the default rollup
-					The slight package size increase means this is probably only worth enabling on fast machines
-
 LTO_DIR			<dir>		Default iis <source root>/out/Release/thinlto-cache
 
 PGO			1		Enable/disable building with PGO profile optimisation
