@@ -1,0 +1,56 @@
+--- a/BUILD.gn
++++ b/BUILD.gn
+@@ -215,7 +215,6 @@
+         "//third_party/blink/renderer/platform/heap:blink_heap_unittests",
+         "//third_party/blink/renderer/platform/wtf:wtf_unittests",
+         "//third_party/libjingle_xmpp:libjingle_xmpp_unittests",
+-        "//tools/imagediff",
+         "//tools/memory:all",
+         "//ui/display:display_unittests",
+         "//ui/gl:gl_unittests",
+@@ -1203,7 +1202,6 @@
+       "//third_party/blink/public/mojom:mojom_platform_js_data_deps",
+       "//third_party/blink/renderer/core:gen_files_for_web_tests",
+       "//third_party/hyphenation-patterns:test_data",
+-      "//tools/imagediff",
+     ]
+ 
+     if (is_android) {
+--- a/third_party/blink/tools/BUILD.gn
++++ b/third_party/blink/tools/BUILD.gn
+@@ -34,7 +34,6 @@
+   ]
+   data_deps = [
+     "//testing:test_scripts_shared",
+-    "//tools/imagediff",
+   ]
+   if (!is_ios) {
+     data_deps += [ ":wpt_tests_mojo_bindings" ]
+--- a/ui/gfx/BUILD.gn
++++ b/ui/gfx/BUILD.gn
+@@ -891,7 +891,6 @@
+     "//skia:skcms",
+     "//testing/gtest",
+     "//third_party/icu:icuuc",
+-    "//third_party/libpng",
+     "//third_party/zlib",
+     "//ui/base",
+     "//ui/gfx/animation",
+--- a/chrome/test/BUILD.gn
++++ b/chrome/test/BUILD.gn
+@@ -11640,7 +11640,6 @@
+       "//testing/gtest",
+       "//third_party/hunspell",
+       "//third_party/icu",
+-      "//third_party/libpng",
+       "//ui/base:base_interactive_ui_tests",
+       "//ui/base:ozone_buildflags",
+       "//ui/base:test_support",
+@@ -12661,7 +12660,6 @@
+       "//testing/gtest",
+       "//third_party/hunspell",
+       "//third_party/icu",
+-      "//third_party/libpng",
+       "//ui/base:test_support",
+       "//ui/resources:ui_test_pak",
+       "//ui/views",
