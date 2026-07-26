@@ -7,10 +7,10 @@
 +    if (is_linux) {
 +      # Excessive warnings
 +      cflags += [
-+        "-Wno-deprecated-builtins",
++        "-Wno-deprecated-attributes",
 +        "-Wno-deprecated-copy",
 +        "-Wno-include-angled-in-module-purview",
-+        "-Wno-unnecessary-virtual-specifier",
++        "-Wno-unused-template",
 +        "-Wno-vla-cxx-extension",
 +      ]
 +    }
