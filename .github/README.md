@@ -80,10 +80,9 @@ ___Security/Privacy improvements___
 - Potentially privacy/security -unfriendly Google features are guarded behind runtime flags
     - Google Lens
     - Google Translate
-    - WebGPU
 - Reduced attack surface
-    - Some components/features can variously be disabled/patched out at compile time
-        - ATK
+    - Some components/features can optionally be disabled/enabled/patched out at compile time
+        - ATK (+)
         - Bluez
         - Catapult
         - DNS config service
@@ -91,14 +90,16 @@ ___Security/Privacy improvements___
         - Media remoting
         - Media router
         - mDNS
-        - Swiftshader
-        - Vulkan
+        - Swiftshader (+)
+        - Vulkan (+)
         - WebGPU
         - Web Serial API
     - Some other features/components are always patched out
         - Crashpad handler
         - Image writer/removable storage writer service
         - Motherboard metrics collection
+
+    (+) = Enabled by default ie functional in the deb releases.
 
 
 ___Other features___
