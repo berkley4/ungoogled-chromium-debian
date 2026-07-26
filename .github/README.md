@@ -75,6 +75,7 @@ ___Security/Privacy improvements___
 - A policy file is installed to help lock down the browser (use [this](https://chromeenterprise.google/policies/) as a reference guide)
 - The Network Service Sandbox is enabled by default
 - The Web Bluetooth/HID/Serial/USB APIs are disabled via managed policy
+- The WebUSB and WebXR feature flags are disabled by default via patches
 - Text fragments are disabled by default via the poilcy file (see [here](https://xsleaks.dev/docs/attacks/experiments/scroll-to-text-fragment/) for more info)
 - Some security/privacy themed flag files are installed to /etc/chromium.d
 - Potentially privacy/security -unfriendly Google features are guarded behind runtime flags
