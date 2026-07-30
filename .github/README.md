@@ -455,7 +455,9 @@ CATAPULT=0 DRIVER=0 MARCH=native MTUNE=native ./debian/configure.sh
 # Example for stable :-
 DRIVER=0 MARCH=native MTUNE=native TRANSLATE=1 STABLE=1 ./debian/configure.sh
 
-# Prune the binaries :-
+# OPTIONAL: Prune the binaries
+# WARNING: This is destructive and is intended for distro releases to ensure correctness
+# If you're building for yourself then you can safely skip this step
 ./debian/rules prune
 ```
 
