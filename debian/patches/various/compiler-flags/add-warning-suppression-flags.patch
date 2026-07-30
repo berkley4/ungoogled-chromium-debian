@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1967,6 +1967,17 @@
+@@ -1967,6 +1967,18 @@
        cflags_cc += [ "-Wunique-object-duplication" ]
      }
  
@@ -10,6 +10,7 @@
 +        "-Wno-deprecated-attributes",
 +        "-Wno-deprecated-copy",
 +        "-Wno-include-angled-in-module-purview",
++        "-Wno-macro-redefined",
 +        "-Wno-unused-template",
 +        "-Wno-vla-cxx-extension",
 +      ]
