@@ -1,11 +1,11 @@
 --- a/DEPS
 +++ b/DEPS
-@@ -1013,7 +1013,7 @@
-         'sha256sum': '3e5cf980edb893cbdc915d62bce1b29b896eda6df6455e145200bf25a52576b1',
-         'size_bytes': 159517088,
-         'generation': 1756377175296503,
--        'condition': 'host_os == "linux" and non_git_source',
-+        'condition': 'host_os != "linux" and non_git_source',
-       },
+@@ -1031,7 +1031,7 @@
+   'src/third_party/rust-toolchain': {
+     'dep_type': 'gcs',
+     'bucket': 'chromium-browser-clang',
+-    'condition': 'not rust_force_head_revision',
++    'condition': 'rust_force_head_revision',
+     'objects': [
        {
-         'object_name': 'Mac/rust-toolchain-22be76b7e259f27bf3e55eb931f354cd8b69d55f-4-llvmorg-21-init-16348-gbd809ffb.tar.xz',
+         'object_name': 'Linux_x64/rust-toolchain-b998449636a48e2c4a362809085b600a0174e1f2-2-llvmorg-23-init-19482-g53d18800.tar.xz',
