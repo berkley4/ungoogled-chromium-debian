@@ -1176,7 +1176,7 @@ fi
 
 
 if [ $PIPEWIRE -eq 0 ]; then
-  gn_disable="$gn_disable rtc_use_pipewire=false"
+  gn_disable="$gn_disable rtc_use_pipewire=true"
   deps_disable="$deps_disable libpipewire"
 fi
 
