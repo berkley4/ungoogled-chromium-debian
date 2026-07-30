@@ -4,6 +4,7 @@ solutions = [
     "url": "https://chromium.googlesource.com/chromium/src.git",
     "managed": False,
     "custom_vars": {
+      "checkout_angle_internal": False,
       "checkout_arm": False,
       "checkout_arm64": False,
       "checkout_configuration": "small",
