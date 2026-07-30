@@ -18,6 +18,7 @@ debian/disable/libei.patch
 debian/disable/lint.patch
 debian/disable/tests-swiftshader.patch
 debian/disable/widevine-cdm-cu.patch
+debian/system/golang.patch
 debian/system/openjpeg.patch
 debian/upstream/ar-path1.patch
 debian/upstream/ar-path2.patch

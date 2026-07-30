@@ -14,6 +14,7 @@ Build-Depends:
 #libclang-rt-@@LLVM_CTRL_VER@@-dev,
 #rustc (>= 1.85.0),
 #nodejs,
+ golang,
  python-is-python3,
 #generate-ninja,
  ninja-build,
