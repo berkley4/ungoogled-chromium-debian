@@ -1,0 +1,56 @@
+--- a/third_party/webrtc/webrtc.gni
++++ b/third_party/webrtc/webrtc.gni
+@@ -570,7 +570,7 @@
+     # when build_with_chromium=true
+     if (build_with_chromium && defined(deps)) {
+       absl_dependencies =
+-          filter_labels_include(deps, [ "//third_party/abseil-cpp/*" ])
++          filter_include(deps, [ "//third_party/abseil-cpp/*" ])
+       if (absl_dependencies != []) {
+         filtered_deps =
+             filter_labels_exclude(deps, [ "//third_party/abseil-cpp/*" ])
+@@ -694,7 +694,7 @@
+     # when build_with_chromium=true
+     if (build_with_chromium && defined(deps)) {
+       absl_dependencies =
+-          filter_labels_include(deps, [ "//third_party/abseil-cpp/*" ])
++          filter_include(deps, [ "//third_party/abseil-cpp/*" ])
+       if (absl_dependencies != []) {
+         filtered_deps =
+             filter_labels_exclude(deps, [ "//third_party/abseil-cpp/*" ])
+@@ -787,7 +787,7 @@
+     # when build_with_chromium=true
+     if (build_with_chromium && defined(deps)) {
+       absl_dependencies =
+-          filter_labels_include(deps, [ "//third_party/abseil-cpp/*" ])
++          filter_include(deps, [ "//third_party/abseil-cpp/*" ])
+       if (absl_dependencies != []) {
+         filtered_deps =
+             filter_labels_exclude(deps, [ "//third_party/abseil-cpp/*" ])
+@@ -931,7 +931,7 @@
+     # when build_with_chromium=true
+     if (build_with_chromium && defined(deps)) {
+       absl_dependencies =
+-          filter_labels_include(deps, [ "//third_party/abseil-cpp/*" ])
++          filter_include(deps, [ "//third_party/abseil-cpp/*" ])
+       if (absl_dependencies != []) {
+         filtered_deps =
+             filter_labels_exclude(deps, [ "//third_party/abseil-cpp/*" ])
+@@ -989,7 +989,7 @@
+     # executables, but not libraries to use absl flags.
+     if (build_with_chromium && defined(deps)) {
+       absl_dependencies =
+-          filter_labels_include(deps, [ "//third_party/abseil-cpp/*" ])
++          filter_include(deps, [ "//third_party/abseil-cpp/*" ])
+       if (absl_dependencies != []) {
+         filtered_deps =
+             filter_labels_exclude(deps, [ "//third_party/abseil-cpp/*" ])
+@@ -1529,7 +1529,7 @@
+ 
+   # Explicitly assert that //build/rust:cxx_rustdeps is listed in deps.
+   assert(defined(invoker.deps) &&
+-             filter_labels_include(invoker.deps,
++             filter_include(invoker.deps,
+                                    [ "//build/rust:cxx_rustdeps" ]) != [],
+          "rtc_rust_cxx_bridge requires //build/rust:cxx_rustdeps in deps.")
+   assert(

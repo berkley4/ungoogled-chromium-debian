@@ -107,7 +107,6 @@ various/fixes/test-dependencies.patch
 various/fixes/unbundle-script-dh-clean-interoperabilty.patch
 various/fixes/unshrink-ui-font.patch
 various/fixes/v8-always-use-baked-zoneinfo64-data.patch
-various/fixes/webrtc-filter-labels.patch
 various/system/dav1d.patch
 various/system/dbus.patch
 various/system/libdrm.patch
@@ -181,6 +180,7 @@ optional/system/openh264.patch
 #optional/system/clang/rust-clanglib.patch
 #optional/system/gn/gn-allowlist.patch
 #optional/system/gn/gn-path-exists.patch
+#optional/system/gn/webrtc-filter-labels.patch
 #optional/system/node/node.patch
 #optional/system/node/node-version-ck.patch
 #optional/system/node/node-version-ck_2.patch
