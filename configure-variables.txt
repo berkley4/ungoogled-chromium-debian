@@ -189,6 +189,10 @@ TRANSLATE		1		Google translate support
 					1 - enable (need to edit google-translate flag file and policies.json)
 					2 - enable fully
 
+V8_HUGEPAGE		1		Enable hugepage support for v8 (should work on non-hugepage setups too)
+					Note: systems with hugepage support configured can use
+					the 'transparent_hugepage=madvise' kernel boot parameter to reduce memory usage
+
 VR			0		Virtual reality hardware support
 VULKAN			1		Vulkan (disabling will also disable WebGPU)
 WEBSERIAL		0		Webserial API to use the browser to interact with serial devices

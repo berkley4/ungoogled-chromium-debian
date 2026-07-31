@@ -212,7 +212,7 @@ GN_FLAGS += tint_build_glsl_writer=false tint_build_hlsl_writer=false tint_build
 GN_FLAGS += dawn_enable_vulkan=false
 
 
-### CPU intructions
+### CPU-related features
 
 # Disable RTC AVX2 instructions
 #GN_FLAGS += rtc_enable_avx2=false
@@ -225,6 +225,9 @@ GN_FLAGS += v8_enable_wasm_simd256_revec=true
 
 # Disable Intel CET
 #GN_FLAGS += enable_cet_shadow_stack=false
+
+# Enable hugepages for v8
+GN_FLAGS += v8_enable_hugepage=true
 
 
 ### X11 Only

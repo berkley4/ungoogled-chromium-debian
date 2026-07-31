@@ -43,6 +43,8 @@ ___Performance improvements___
 - Mutex Priority Inheritance - greater smoothness and responsiveness (see [here](https://lwn.net/Articles/177111/))
 - Partition Lock Priority Inheritance - equivalent to the above but for futexes instead of mutexes
 - The ffmpeg and core media components have been patched to use the -O3 optimisation level
+- Built with v8 hugepage support enabled to improve javascript performance
+    - Systems with hugepage support configured ought to use the 'transparent_hugepage=madvise' kernel boot parameter
 - Various compiler flags aimed at improving speed
     - -march=[x86-64-v2](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels)
     - -maes - enables AES instructions
