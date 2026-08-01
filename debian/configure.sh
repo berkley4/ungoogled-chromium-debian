@@ -105,9 +105,7 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$RUSTY_PNG" ] || RUSTY_PNG=1
 [ -n "$SPEECH" ] || SPEECH=0
 [ -n "$SPOOF_WEBGL_INFO" ] || SPOOF_WEBGL_INFO=1
-[ -n "$SWIFTSHADER" ] || SWIFTSHADER=1
-[ -n "$SWIFTSHADER_VULKAN" ] || SWIFTSHADER_VULKAN=1
-[ -n "$SWIFTSHADER_WEBGPU" ] || SWIFTSHADER_WEBGPU=1
+[ -n "$SWIFTSHADER" ] || SWIFTSHADER=0
 [ -n "$SWITCH_BLOCKING" ] || SWITCH_BLOCKING=1
 [ -n "$SYS_NOTIFICATIONS" ] || SYS_NOTIFICATIONS=1
 [ -n "$TRANSLATE" ] || TRANSLATE=1
@@ -158,6 +156,7 @@ fi
 # Clang Polly defaults
 [ -n "$POLLY" ] && POLLY_SET=1 || POLLY=0
 
+
 ## LTO Jobs (patch = 1; chromium default = all)
 [ -n "$LTO_JOBS" ] || LTO_JOBS=0
 
@@ -177,6 +176,14 @@ fi
 
 ## DNS config service
 [ -n "$DNS_CONFIG" ] || DNS_CONFIG=0
+
+# Swiftshader vulkan and webgpu components
+if [ $SWIFTSHADER -eq 0 ]; then
+  SWIFTSHADER_VULKAN=0; SWIFTSHADER_WEBGPU=0
+else
+  [ -n "$SWIFTSHADER_VULKAN" ] || SWIFTSHADER_VULKAN=1
+  [ -n "$SWIFTSHADER_WEBGPU" ] || SWIFTSHADER_WEBGPU=1
+fi
 
 
 ## Disable non-free stuff if NON_FREE=0
@@ -225,28 +232,39 @@ else
 fi
 
 
+
+## Catch mis-configurations and error out
+
 if [ $CHROMECAST -eq 0 ] && [ $MEDIA_REMOTING -eq 1 ]; then
   printf '%s\n' "ERROR: Cannot set MEDIA_REMOTING=1 when CHROMECAST=0"
   exit 1
 fi
-
 
 if [ $FONTATIONS -eq 0 ] && [ $FONTATIONS_PDF -eq 1 ]; then
   printf '%s\n' "ERROR: Cannot set FONTATIONS_PDF=1 when FONTATIONS=0"
   exit 1
 fi
 
-
 if [ $MUTEX_PI -eq 0 ] && [ $PART_LOCK_PI -eq 1 ]; then
   printf '%s\n' "ERROR: Cannot set PART_LOCK_PI=1 when MUTEX_PI=0"
   exit 1
 fi
 
+if [ $VULKAN -eq 0 ] && [ $SWIFTSHADER_VULKAN -eq 1 ]; then
+  printf '%s\n' "ERROR: Cannot set SWIFTSHADER_VULKAN=1 when VULKAN=0"
+  exit 1
+fi
+
+if [ $WEBGPU -eq 0 ] && [ $SWIFTSHADER_WEBGPU -eq 1 ]; then
+  printf '%s\n' "ERROR: Cannot set SWIFTSHADER_WEBGPU=1 when WEBGPU=0"
+  exit 1
+fi
 
 if [ -n "$TIMESTAMP" ] && [ -n "$BUILD_TS" ] && [ $BUILD_TS -lt 2 ]; then
   printf '%s\n' "ERROR: Cannot set TIMESTAMP when BUILD_TS=$BUILD_TS"
   exit 1
 fi
+
 
 case $TIMESTAMP in
   [1-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])
@@ -1088,43 +1106,45 @@ if [ $VULKAN -eq 0 ]; then
   ins_disable="$ins_disable vulkan"
 
   FLAG_GPU="$FLAG_GPU -e \"/use-angle=gl/s@^#@@\""
-
-  SWIFTSHADER=0
-  WEBGPU=0
 fi
 
 
-if [ $WEBGPU -eq 1 ]; then
+if [ $WEBGPU -ge 1 ]; then
   op_disable="$op_disable disable/webgpu.patch"
 
-  # Refer to debian/rules.in to see which flags are disabled
+  fl_unblock="$fl_unblock enable-skia-graphite enable-unsafe-webgpu"
+  ins_enable"$ins_enable webgpu"
+
   gn_disable="$gn_disable use_dawn=false"
   gn_disable="$gn_disable dawn_enable_desktop_gl=false"
   gn_disable="$gn_disable tint_build_glsl_validator=false"
   gn_disable="$gn_disable tint_build_glsl_writer=false"
 
-  fl_unblock="$fl_unblock enable-skia-graphite enable-unsafe-webgpu"
-  ins_enable"$ins_enable webgpu"
-fi
-
-
-if [ $VULKAN -eq 1 ] && [ $WEBGPU -ge 1 ]; then
   # Refer to debian/rules.in to see which flags are disabled
-  gn_disable="$gn_disable dawn_enable_vulkan=false"
-fi
-
-
-if [ $SWIFTSHADER -eq 0 ]; then
-  op_disable="$op_disable fixes/swiftshader-color-input-nullptr-crash.patch"
-  gn_enable="$gn_enable enable_swiftshader=false"
-  ins_disable="$ins_disable swiftshader"
-else
-  if [ $VULKAN -eq 0 ] || ([ $VULKAN -eq 1 ] && [ $SWIFTSHADER_VULKAN -eq 0 ]); then
-    gn_enable="$gn_enable enable_swiftshader_vulkan=false"
+  if [ $VULKAN -eq 1 ]; then
+    gn_disable="$gn_disable dawn_enable_vulkan=false"
   fi
 
-  if [ $WEBGPU -eq 0 ] || ([ $WEBGPU -eq 1 ] && [ $SWIFTSHADER_WEBGPU -eq 0 ]); then
-    gn_enable="$gn_enable dawn_use_swiftshader=false"
+  if [ $WEBGPU -ge 2 ]; then
+    sed 's@^#@@' -i $FLAG_DIR/webgpu
+  fi
+fi
+
+
+if [ $SWIFTSHADER -ge 1 ]; then
+  gn_disable="$gn_disable enable_swiftshader=false"
+  ins_enable="$ins_enable swiftshader"
+
+  if [ $VULKAN -eq 1 ] && [ $SWIFTSHADER_VULKAN -eq 1 ]; then
+    gn_disable="$gn_disable enable_swiftshader_vulkan=false"
+  fi
+
+  if [ $WEBGPU -eq 1 ] && [ $SWIFTSHADER_WEBGPU -eq 1 ]; then
+    gn_disable="$gn_disable dawn_use_swiftshader=false"
+  fi
+
+  if [ $SWIFTSHADER -ge 2 ]; then
+    sed 's@^#@@' -i $FLAG_DIR/swiftshader
   fi
 fi
 

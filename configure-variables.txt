@@ -180,9 +180,14 @@ QT_6			0		0 - disable Qt version 6
 RUSTY_PNG		1		Rust-based png library (alternative to libpng)
 SPEECH			0		Speech service (voice recognition)
 SPOOF_WEBGL_INFO	1		Spoof webgl info (via flag in /etc/chromium.d/anti-fingerprint)
-SWIFTSHADER		1		Swiftshader
-SWIFTSHADER_VULKAN	1		Swiftshader for vulkan
-SWIFTSHADER_WEBGPU	1		Swiftshader for WebGPU
+
+SWIFTSHADER_VULKAN	0		Swiftshader for vulkan (auto enabled when VULKAN=1 and SWIFTSHADER=1)
+SWIFTSHADER_WEBGPU	0		Swiftshader for WebGPU (auto enabled when WBGPU=1 and SWIFTSHADER=1)
+SWIFTSHADER		0		Swiftshader
+					0 - disable
+					1 - enable (need to edit /etc/chromium.d/swiftshader)
+					2 - enable fully
+
 TRANSLATE		1		Google translate support
 					0 - disable
 					1 - enable (need to edit google-translate flag file and policies.json)
@@ -193,11 +198,13 @@ V8_HUGEPAGE		1		Enable hugepage support for v8 (should work on non-hugepage setu
 					the 'transparent_hugepage=madvise' kernel boot parameter to reduce memory usage
 
 VR			0		Virtual reality hardware support
-VULKAN			1		Vulkan (disabling will also disable WebGPU)
+VULKAN			1		Vulkan
 WEBSERIAL		0		Webserial API to use the browser to interact with serial devices
-WEBGPU			0		WebGPU (seems to have performance/stability and potential security issues)
+
+WEBGPU			0		WebGPU
 					0 - disable
-					1 - enable (need to edit /etc/chromium.d/hls-player to disable)
+					1 - enable (need to edit /etc/chromium.d/webgpu)
+					2 - enable fully
 
 WIDEVINE		1		Needs various extra components to enable
 

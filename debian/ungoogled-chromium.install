@@ -14,8 +14,8 @@ out/Release/libqt5_shim.so                                                     u
 out/Release/libVkICD_mock_icd.so                                               usr/lib/chromium
 #out/Release/libVkLayer_khronos_validation.so                                   usr/lib/chromium
 out/Release/libvulkan.so.1                                                     usr/lib/chromium
-out/Release/libvk_swiftshader.so                                               usr/lib/chromium
-out/Release/vk_swiftshader_icd.json                                            usr/lib/chromium
+#out/Release/libvk_swiftshader.so                                               usr/lib/chromium
+#out/Release/vk_swiftshader_icd.json                                            usr/lib/chromium
 
 third_party/icu/common/icudtl.dat                                              usr/lib/chromium
 
@@ -55,6 +55,7 @@ debian/etc/chromium.d/hw-decoding-encoding                                     e
 debian/etc/chromium.d/isolation                                                etc/chromium.d
 debian/etc/chromium.d/miscellaneous                                            etc/chromium.d
 debian/etc/chromium.d/network                                                  etc/chromium.d
+#debian/etc/chromium.d/swiftshader                                              etc/chromium.d
 #debian/etc/chromium.d/sys-notifications                                        etc/chromium.d
 debian/etc/chromium.d/ui                                                       etc/chromium.d
 debian/etc/chromium.d/user-agent.sample                                        etc/chromium.d

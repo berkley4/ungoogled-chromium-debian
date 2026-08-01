@@ -93,7 +93,7 @@ ___Security/Privacy improvements___
         - Media remoting
         - Media router
         - mDNS
-        - Swiftshader (+)
+        - Swiftshader
         - Vulkan (+)
         - WebGPU
         - Web Serial API

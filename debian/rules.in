@@ -188,9 +188,9 @@ GN_FLAGS += use_qt5=true
 GN_FLAGS += enable_speech_service=false
 
 # Disable swiftshader
-#GN_FLAGS += enable_swiftshader=false
-#GN_FLAGS += dawn_use_swiftshader=false
-#GN_FLAGS += enable_swiftshader_vulkan=false
+GN_FLAGS += enable_swiftshader=false
+GN_FLAGS += dawn_use_swiftshader=false
+GN_FLAGS += enable_swiftshader_vulkan=false
 
 # Disable VA-API
 #GN_FLAGS += use_vaapi=false
