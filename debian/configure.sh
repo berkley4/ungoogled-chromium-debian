@@ -102,7 +102,6 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$PULSE" ] || PULSE=1
 [ -n "$QT" ] || QT=1
 [ -n "$QT_6" ] || QT_6=0
-[ -n "$RSA_16K" ] || RSA_16K=0
 [ -n "$RUSTY_PNG" ] || RUSTY_PNG=1
 [ -n "$SPEECH" ] || SPEECH=0
 [ -n "$SPOOF_WEBGL_INFO" ] || SPOOF_WEBGL_INFO=1
@@ -1026,11 +1025,6 @@ fi
 if [ $PRINT_PREVIEW -eq 0 ]; then
   # GN_FLAGS += enable_print_preview=false enable_oop_printing=false
   gn_enable="$gn_enable enable_print_preview=false"
-fi
-
-
-if [ $RSA_16K -eq 1 ]; then
-  op_enable="$op_enable enable/rsa-16384.patch"
 fi
 
 

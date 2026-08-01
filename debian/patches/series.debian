@@ -152,7 +152,6 @@ optional/enable/hyphen-data.patch
 optional/enable/middle-click-autoscroll.patch
 optional/enable/mutex-priority-inheritance.patch
 #optional/enable/oauth2.patch
-#optional/enable/rsa-16384.patch
 optional/ffmpeg-hevc/add-hevc-ffmpeg-decoder-parser-for-linux.patch
 optional/ffmpeg-hevc/add-hevc-ffmpeg-decoder-parser-for-linux-asm.patch
 optional/ffmpeg-hevc/enable-hevc-ffmpeg-decoding.patch
