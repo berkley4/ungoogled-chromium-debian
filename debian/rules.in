@@ -185,7 +185,7 @@ GN_FLAGS += link_pulseaudio=true
 GN_FLAGS += use_qt5=true
 
 # Disable speech service
-#GN_FLAGS += enable_speech_service=false
+GN_FLAGS += enable_speech_service=false
 
 # Disable swiftshader
 #GN_FLAGS += enable_swiftshader=false

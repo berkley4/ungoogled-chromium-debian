@@ -104,7 +104,7 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$QT_6" ] || QT_6=0
 [ -n "$RSA_16K" ] || RSA_16K=0
 [ -n "$RUSTY_PNG" ] || RUSTY_PNG=1
-[ -n "$SPEECH" ] || SPEECH=1
+[ -n "$SPEECH" ] || SPEECH=0
 [ -n "$SPOOF_WEBGL_INFO" ] || SPOOF_WEBGL_INFO=1
 [ -n "$SWIFTSHADER" ] || SWIFTSHADER=1
 [ -n "$SWIFTSHADER_VULKAN" ] || SWIFTSHADER_VULKAN=1
@@ -1034,8 +1034,8 @@ if [ $RSA_16K -eq 1 ]; then
 fi
 
 
-if [ $SPEECH -eq 0 ]; then
-  gn_enable="$gn_enable enable_speech_service=false"
+if [ $SPEECH -eq 1 ]; then
+  gn_disable="$gn_disable enable_speech_service=false"
 fi
 
 
