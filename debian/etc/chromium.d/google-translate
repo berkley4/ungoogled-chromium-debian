@@ -1,5 +1,5 @@
 ### You will also need to ensure that the exports in
-### /etc/chromium.d/google-translate are uncommented
+### /etc/chromium.d/google-api-keys are uncommented
 
 # Uncomment to enable google translate
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --translate-script-url=https://translate.googleapis.com/translate_a/element.js"
