@@ -1,36 +1,14 @@
---- a/chrome/browser/BUILD.gn
-+++ b/chrome/browser/BUILD.gn
-@@ -3148,7 +3148,6 @@
-       "//chrome/browser/ui/webui/searchbox",
-       "//chrome/browser/ui/webui/cr_components/searchbox:searchbox_impl",
-       "//chrome/browser/ui/webui/top_chrome:impl",
--      "//chrome/browser/ui/webui/watermark",
-       "//chrome/browser/ui/content_settings:impl",
-       "//chrome/browser/ui/commerce:impl",
-       "//chrome/browser/picture_in_picture:impl",
-@@ -3235,6 +3234,11 @@
-           [ "//chrome/browser/ui/webui/signin:inline_login_impl" ]
-     }
- 
-+    if (enterprise_watermark) {
-+      allow_circular_includes_from +=
-+          [ "//chrome/browser/ui/webui/watermark" ]
-+    }
-+
-     #!is_android
-     if (!is_chromeos) {
-       sources += [ "platform_util.cc" ]
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -3092,7 +3092,6 @@
-       "//chrome/browser/ui/webui/signin:test_support_ui",
+@@ -2673,7 +2673,6 @@
+       "//chrome/browser/ui/webui/tab_search:browser_tests",
        "//chrome/browser/ui/webui/top_chrome",
        "//chrome/browser/ui/webui/top_chrome:test_support",
 -      "//chrome/browser/ui/webui/watermark",
        "//chrome/browser/ui/webui/webui_toolbar:browser_tests",
        "//chrome/browser/ui/webui/webui_toolbar/adapters:impl",
        "//chrome/browser/ui/webui/whats_new",
-@@ -3497,6 +3496,10 @@
+@@ -3084,6 +3083,10 @@
        deps += [ "//chrome/browser/guest_view" ]
      }
  
@@ -38,9 +16,9 @@
 +      deps += [ "//chrome/browser/ui/webui/watermark" ]
 +    }
 +
-     # TODO(crbug.com/428666921): Remove this dependency when
-     # c/b/ui/views/performance_controls/*browsertest.cc get componentized.
-     deps += [ "//chrome/browser/ui/performance_controls/test_support" ]
+     # TODO(crbug.com/437811373): Remove this dependency when
+     # c/b/ui/passwords/password_change_ui_controller.h gets built from
+     # `//c/b/ui/passwords:passwords`.
 --- a/chrome/browser/enterprise/data_protection/data_protection_ui_controller.cc
 +++ b/chrome/browser/enterprise/data_protection/data_protection_ui_controller.cc
 @@ -10,17 +10,20 @@
@@ -160,7 +138,7 @@
    void MaybeUpdateScreenshotSettings();
 --- a/chrome/browser/ui/views/frame/contents_container_view.cc
 +++ b/chrome/browser/ui/views/frame/contents_container_view.cc
-@@ -33,6 +33,7 @@
+@@ -34,6 +34,7 @@
  #include "chrome/browser/ui/views/indigo/indigo_toolbar.h"
  #include "chrome/browser/ui/views/new_tab_footer/footer_web_view.h"
  #include "chrome/common/chrome_features.h"
@@ -168,7 +146,7 @@
  #include "components/search/ntp_features.h"
  #include "content/public/browser/web_contents.h"
  #include "ui/accessibility/accessibility_features.h"
-@@ -384,6 +385,7 @@
+@@ -358,6 +359,7 @@
    InvalidateLayout();
  }
  
@@ -176,7 +154,7 @@
  void ContentsContainerView::ApplyWatermarkSettings(
      const std::string& watermark_text,
      SkColor fill_color,
-@@ -392,6 +394,7 @@
+@@ -366,6 +368,7 @@
    data_protection_overlay_view_->SetWatermarkText(watermark_text, fill_color,
                                                    outline_color, font_size);
  }
@@ -191,10 +169,10 @@
  #include "chrome/browser/devtools/devtools_contents_resizing_strategy.h"
  #include "chrome/browser/ui/views/frame/tab_modal_dialog_host.h"
 +#include "components/enterprise/buildflags/buildflags.h"
+ #include "ui/gfx/geometry/rounded_corners_f.h"
  #include "ui/views/focus/external_focus_tracker.h"
  #include "ui/views/layout/delegating_layout_manager.h"
- #include "ui/views/view.h"
-@@ -113,10 +114,12 @@
+@@ -114,10 +115,12 @@
      return strategy_;
    }
  

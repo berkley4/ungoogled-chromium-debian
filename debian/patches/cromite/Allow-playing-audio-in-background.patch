@@ -21,7 +21,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // displays. Exception is for Webview.
 --- a/third_party/blink/renderer/platform/media/web_media_player_impl.cc
 +++ b/third_party/blink/renderer/platform/media/web_media_player_impl.cc
-@@ -1348,6 +1348,12 @@
+@@ -1351,6 +1351,12 @@
    return pipeline_metadata_.has_audio;
  }
  
@@ -34,7 +34,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  void WebMediaPlayerImpl::EnabledAudioTracksChanged(
      std::optional<WebMediaPlayer::TrackId> enabled_track_id) {
    DCHECK(main_task_runner_->BelongsToCurrentThread());
-@@ -3774,7 +3780,10 @@
+@@ -3788,7 +3794,10 @@
  
    const bool preserve_audio = HasUnmutedAudio() || audio_source_provider_->IsAudioBeingCaptured();
    // Audio only stream is allowed to play when in background.

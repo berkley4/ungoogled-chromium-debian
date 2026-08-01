@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2473,6 +2473,8 @@
+@@ -2494,6 +2494,8 @@
        "-mllvm",
        "-polly",
        "-mllvm",

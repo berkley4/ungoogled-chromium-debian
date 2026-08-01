@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2541,6 +2541,7 @@
+@@ -2560,6 +2560,7 @@
        "-march=x86-64-v2",
        "-mtune=generic",
        "-maes",

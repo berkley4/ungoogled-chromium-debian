@@ -1,6 +1,6 @@
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
-@@ -1294,7 +1294,7 @@
+@@ -1315,7 +1315,7 @@
  
  // Controls whether the WebUSB API is enabled:
  // https://wicg.github.io/webusb

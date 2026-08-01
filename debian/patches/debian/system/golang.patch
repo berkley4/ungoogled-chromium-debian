@@ -4,7 +4,7 @@ Author: Andres Salomon <dilinger@debian.org>
 
 --- a/third_party/dawn/tools/generate-sources-gn.py
 +++ b/third_party/dawn/tools/generate-sources-gn.py
-@@ -40,8 +40,7 @@ from tools.python import cipd_deps
+@@ -40,8 +40,7 @@
  
  
  def main() -> int:

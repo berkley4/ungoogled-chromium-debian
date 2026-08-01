@@ -1,6 +1,6 @@
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -760,7 +760,7 @@
+@@ -774,7 +774,7 @@
        // as if they are in light mode.
        // P.N. `AutoDarkMode` needs to be applied separately.
        name: "AutoDarkModeSkipImages",

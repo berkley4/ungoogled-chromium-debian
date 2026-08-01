@@ -12,7 +12,7 @@ not worth it.
 
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -11620,7 +11620,7 @@
+@@ -9959,7 +9959,7 @@
        "//testing/gtest",
        "//third_party/hunspell",
        "//third_party/icu",
@@ -21,7 +21,7 @@ not worth it.
        "//ui/base:base_interactive_ui_tests",
        "//ui/base:ozone_buildflags",
        "//ui/base:test_support",
-@@ -12642,7 +12642,7 @@
+@@ -10900,7 +10900,7 @@
        "//testing/gtest",
        "//third_party/hunspell",
        "//third_party/icu",
@@ -43,7 +43,7 @@ not worth it.
    }
 --- a/ui/gfx/BUILD.gn
 +++ b/ui/gfx/BUILD.gn
-@@ -891,7 +891,7 @@
+@@ -897,7 +897,7 @@
      "//skia:skcms",
      "//testing/gtest",
      "//third_party/icu:icuuc",

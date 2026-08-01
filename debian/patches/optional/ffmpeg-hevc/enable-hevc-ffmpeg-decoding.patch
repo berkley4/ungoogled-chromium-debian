@@ -44,7 +44,7 @@ etc... as long as ffmpeg support it.
  }
  
  bool IsDecoderVp9ProfileSupported(const VideoType& type) {
-@@ -579,7 +566,7 @@
+@@ -588,7 +575,7 @@
  
  bool IsDecoderBuiltInVideoCodec(VideoCodec codec) {
  #if BUILDFLAG(ENABLE_FFMPEG_VIDEO_DECODERS) && BUILDFLAG(USE_PROPRIETARY_CODECS)

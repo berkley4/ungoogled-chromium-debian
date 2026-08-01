@@ -20,9 +20,6 @@ debian/disable/tests-swiftshader.patch
 debian/disable/widevine-cdm-cu.patch
 debian/system/golang.patch
 debian/system/openjpeg.patch
-debian/upstream/ar-path1.patch
-debian/upstream/ar-path2.patch
-debian/upstream/sysroot.patch
  
 cromite/Allow-playing-audio-in-background.patch
 cromite/Disable-csp-reports.patch
@@ -46,7 +43,6 @@ kryptonite/profile-resetter-disable-send-settings.patch
 kryptonite/remove-window-name-on-cross-origin-navigation.patch
 kryptonite/replace-dns-probe-hostname-with-example-com.patch
 kryptonite/stop-omnibar-searches-triggering-dns-requests.patch
-kryptonite/use-boringssl-for-randbytes.patch
 
 vanadium/stub-out-the-battery-status-API.patch
 

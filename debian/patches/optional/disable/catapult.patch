@@ -11,7 +11,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
 
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -250,7 +250,6 @@
+@@ -251,7 +251,6 @@
      if (!is_ios) {
        deps += [
          "//google_apis/gcm:mcs_probe",
@@ -19,15 +19,15 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
        ]
        if (!is_android) {
          if (!is_castos && !is_fuchsia) {
-@@ -1200,7 +1199,6 @@
+@@ -1217,7 +1216,6 @@
        "//third_party/blink/public:blink_devtools_inspector_resources",
        "//third_party/blink/public/mojom:mojom_platform_js_data_deps",
        "//third_party/blink/renderer/core:gen_files_for_web_tests",
 -      "//third_party/catapult/third_party/typ",
        "//third_party/hyphenation-patterns:test_data",
-       "//tools/imagediff",
      ]
-@@ -1459,10 +1457,6 @@
+ 
+@@ -1475,10 +1473,6 @@
        "//third_party/blink/web_tests/VirtualTestSuites",
        "//third_party/blink/web_tests/W3CImportExpectations",
        "//third_party/blink/web_tests/paint/invalidation/repaint-overlay/",
@@ -40,16 +40,18 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
        "//third_party/depot_tools/pylintrc-2.7",
 --- a/chrome/chrome_paks.gni
 +++ b/chrome/chrome_paks.gni
-@@ -265,14 +265,11 @@
-         "$root_gen_dir/chrome/webui_toolbar_resources.pak",
+@@ -270,8 +270,6 @@
+         "$root_gen_dir/chrome/webui_toolbar_shared_resources.pak",
          "$root_gen_dir/chrome/whats_new_resources.pak",
          "$root_gen_dir/components/headless/command_handler/headless_command_resources.pak",
 -        "$root_gen_dir/content/browser/tracing/tracing_resources.pak",
 -        "$root_gen_dir/content/traces_internals_resources.pak",
        ]
+ 
        deps += [
-         "//chrome/browser/actor/resources:browser_resources",
+@@ -279,7 +277,6 @@
          "//chrome/browser/indigo/resources:browser_resources",
+         "//chrome/browser/resources/contextual_cueing/internals:resources",
          "//components/headless/command_handler",
 -        "//content/browser/tracing:resources",
        ]
@@ -57,15 +59,15 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
          sources += [
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -12611,7 +12611,6 @@
+@@ -10858,7 +10858,6 @@
        "//chrome/test/data/password/captured_sites/",
        "//chrome/test/data/web_page_replay_go_helper_scripts/automation_helper.js",
        "//components/test/data/autofill/web_page_replay_support_files/",
 -      "//third_party/catapult/telemetry/telemetry/bin/",
-       "//third_party/webpagereplay/",
      ]
- 
-@@ -12718,7 +12717,6 @@
+     if (!is_chromeos) {
+       data += [ "//third_party/webpagereplay/" ]
+@@ -10968,7 +10967,6 @@
      deps = [ "//tools/perf/chrome_telemetry_build:telemetry_chrome_test" ]
  
      data = [
@@ -75,7 +77,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
      ]
 --- a/content/browser/BUILD.gn
 +++ b/content/browser/BUILD.gn
-@@ -3635,7 +3635,6 @@
+@@ -3668,7 +3668,6 @@
        "//components/speech",
        "//components/vector_icons",
        "//components/webauthn/json",
@@ -186,12 +188,12 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
    data_deps = [
      "//testing:test_scripts_shared",
 -    "//third_party/catapult/third_party/typ",
-     "//tools/imagediff",
    ]
    if (!is_ios) {
+     data_deps += [ ":wpt_tests_mojo_bindings" ]
 --- a/third_party/webrtc/test/BUILD.gn
 +++ b/third_party/webrtc/test/BUILD.gn
-@@ -382,10 +382,6 @@
+@@ -383,10 +383,6 @@
    ]
    if (rtc_enable_protobuf) {
      sources += [ "testsupport/perf_test_histogram_writer.cc" ]
@@ -202,14 +204,14 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
    } else {
      sources += [ "testsupport/perf_test_histogram_writer_no_protobuf.cc" ]
    }
-@@ -827,7 +823,6 @@
- 
-       if (rtc_enable_protobuf) {
-         sources += [ "testsupport/perf_test_histogram_writer_unittest.cc" ]
--        deps += [ "//third_party/catapult/tracing/tracing:histogram" ]
-       }
- 
-       data = test_support_unittests_resources
+@@ -1192,7 +1188,6 @@
+         deps = [
+           ":perf_test",
+           ":test_support",
+-          "//third_party/catapult/tracing/tracing:histogram",
+         ]
+         data = test_support_unittests_resources
+         if (is_ios) {
 --- a/tools/binary_size/BUILD.gn
 +++ b/tools/binary_size/BUILD.gn
 @@ -22,7 +22,6 @@
@@ -257,7 +259,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
  //tools/grit/grit/clique.py
 --- a/tools/gritsettings/resource_ids.spec
 +++ b/tools/gritsettings/resource_ids.spec
-@@ -1554,10 +1554,6 @@
+@@ -1562,10 +1562,6 @@
      "META": {"sizes": {"includes": [20]}},
      "includes": [8280],
    },
@@ -270,7 +272,15 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
      "includes": [8320],
 --- a/tools/metrics/BUILD.gn
 +++ b/tools/metrics/BUILD.gn
-@@ -65,7 +65,6 @@
+@@ -46,7 +46,6 @@
+   # TODO(crbug.com/329080012): Remove this once dirmd works in non-git
+   # checkouts.
+   if (generate_location_tags) {
+-    deps += [ ":histograms_xml" ]
+   }
+ }
+ 
+@@ -65,7 +64,6 @@
      # The run_isolated_script_test.py script and its dependencies.
      "//testing/scripts/run_isolated_script_test.py",
      "//testing/scripts/common.py",

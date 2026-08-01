@@ -8,7 +8,7 @@
  import("//device/vr/buildflags/buildflags.gni")
  import("//extensions/buildflags/buildflags.gni")
  import("//media/gpu/args.gni")
-@@ -4638,6 +4639,9 @@
+@@ -1571,6 +1572,9 @@
      deps += [ "//third_party/fontconfig" ]
      if (use_dbus) {
        deps += [ "//dbus" ]
@@ -20,7 +20,7 @@
  
 --- a/chrome/browser/chrome_browser_main_linux.cc
 +++ b/chrome/browser/chrome_browser_main_linux.cc
-@@ -65,10 +65,10 @@
+@@ -64,10 +64,10 @@
  #endif  // BUILDFLAG(IS_CHROMEOS)
  
  #if !BUILDFLAG(IS_CHROMEOS)
@@ -33,7 +33,7 @@
  #endif  // !BUILDFLAG(IS_CHROMEOS)
  
    ChromeBrowserMainPartsPosix::PostCreateMainMessageLoop();
-@@ -110,7 +110,7 @@
+@@ -109,7 +109,7 @@
  void ChromeBrowserMainPartsLinux::PostDestroyThreads() {
  #if BUILDFLAG(IS_CHROMEOS)
    // No-op; per PostBrowserStart() comment, this is done elsewhere.

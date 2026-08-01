@@ -25,3 +25,14 @@
    }
  }
  
+@@ -236,8 +246,8 @@
+     features = [ "agl" ]
+     deps = [
+       "//build/rust:cxx_cppdeps",
+-      "//third_party/rust/read_fonts/v0_39:lib",
+-      "//third_party/rust/skrifa/v0_42:lib",
++      "//third_party/rust/read_fonts/v0_40:lib",
++      "//third_party/rust/skrifa/v0_43:lib",
+     ]
+     configs += [ ":skrifa_cxx_config" ]
+   }

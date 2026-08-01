@@ -1,6 +1,6 @@
 --- a/third_party/protobuf/proto_library.gni
 +++ b/third_party/protobuf/proto_library.gni
-@@ -558,7 +558,6 @@
+@@ -586,7 +586,6 @@
                    _protoc_gen_ts_path,
                    "//tools/protoc_wrapper/protoc-gen-ts_proto.py",
                  ] + _protoc_gen_ts_runtime_deps

@@ -59,3 +59,14 @@
  }
  if (is_win && host_os == "win") {
    _protoc_gen_ts_runtime_deps += [ "//third_party/node/win/node.exe" ]
+--- a/third_party/devtools-frontend/src/scripts/build/ninja/node.gni
++++ b/third_party/devtools-frontend/src/scripts/build/ninja/node.gni
+@@ -26,7 +26,7 @@
+     ]
+ 
+     if (host_os == "linux") {
+-      inputs += [ "//third_party/node/linux/node-linux-x64/bin/node" ]
++      inputs += [ "/usr/bin/nodejs" ]
+     } else if (host_os == "win") {
+       inputs += [ "//third_party/node/win/node.exe" ]
+     } else if (host_os == "mac") {

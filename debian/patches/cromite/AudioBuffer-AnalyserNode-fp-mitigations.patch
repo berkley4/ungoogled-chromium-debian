@@ -24,7 +24,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -4745,6 +4745,10 @@
+@@ -4776,6 +4776,10 @@
      {"ui-disable-partial-swap", flag_descriptions::kUiPartialSwapName,
       flag_descriptions::kUiPartialSwapDescription, kOsAll,
       SINGLE_DISABLE_VALUE_TYPE(switches::kUIDisablePartialSwap)},
@@ -37,7 +37,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       FEATURE_VALUE_TYPE(features::kWebRtcHWDecoding)},
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -6273,6 +6273,11 @@
+@@ -6358,6 +6358,11 @@
  // FLAG_DESCRIPTIONS_ANDROID_END
  // Non-Android -----------------------------------------------------------------
  
@@ -51,7 +51,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  inline constexpr char kAllowAllSitesToInitiateMirroringDescription[] =
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -136,6 +136,9 @@
+@@ -144,6 +144,9 @@
  BASE_FEATURE(kDisplayWarningDeprecateURNIframesUseFencedFrames,
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -116,7 +116,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "third_party/blink/public/platform/modules/webrtc/webrtc_logging.h"
  #include "third_party/blink/public/platform/web_audio_latency_hint.h"
  #include "third_party/blink/renderer/bindings/core/v8/script_promise_resolver.h"
-@@ -1150,7 +1151,9 @@
+@@ -1189,7 +1190,9 @@
    DCHECK_CALLED_ON_VALID_SEQUENCE(main_thread_sequence_checker_);
    DCHECK(destination());
  
@@ -141,7 +141,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "third_party/blink/public/mojom/devtools/console_message.mojom-blink.h"
  #include "third_party/blink/public/mojom/frame/lifecycle.mojom-shared.h"
  #include "third_party/blink/public/platform/platform.h"
-@@ -775,6 +777,17 @@
+@@ -772,6 +774,17 @@
    return To<LocalDOMWindow>(GetExecutionContext());
  }
  
@@ -237,7 +237,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -727,9 +727,8 @@
+@@ -733,9 +733,8 @@
      {
        // AudioContext.playoutStats interface.
        // https://chromestatus.com/feature/5172818344148992

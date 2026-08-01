@@ -21,7 +21,7 @@ Change-Id: Ib19d50bc4a3cd70b27dac3e54574c7015f9ac355
 
 --- a/v8/BUILD.gn
 +++ b/v8/BUILD.gn
-@@ -3637,8 +3637,8 @@
+@@ -3657,8 +3657,8 @@
  }
  
  if (v8_enable_temporal_support) {
@@ -32,7 +32,7 @@ Change-Id: Ib19d50bc4a3cd70b27dac3e54574c7015f9ac355
    action("make_temporal_zoneinfo_cpp") {
      script = "tools/include-file-as-bytes.py"
      inputs = [ get_label_info("//third_party/icu/", "dir") +
-@@ -6907,9 +6907,7 @@
+@@ -6940,9 +6940,7 @@
      ]
    }
  

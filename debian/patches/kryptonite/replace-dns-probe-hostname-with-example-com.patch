@@ -1,6 +1,6 @@
 --- a/net/dns/dns_transaction.h
 +++ b/net/dns/dns_transaction.h
-@@ -28,7 +28,7 @@
+@@ -29,7 +29,7 @@
  class ResolveContext;
  
  // The hostname probed by CreateDohProbeRunner().

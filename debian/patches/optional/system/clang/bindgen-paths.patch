@@ -1,3 +1,6 @@
+The bindgen build rules need to know the location of the rustfmt binary and
+the libclang shared library.
+
 --- a/build/rust/rust_bindgen_generator.gni
 +++ b/build/rust/rust_bindgen_generator.gni
 @@ -36,6 +36,8 @@

@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -33,6 +33,7 @@
+@@ -35,6 +35,7 @@
  import("//printing/buildflags/buildflags.gni")
  import("//remoting/remoting_enable.gni")
  import("//services/on_device_model/on_device_model.gni")
@@ -8,7 +8,7 @@
  import("//third_party/closure_compiler/compile_js.gni")
  import("//tools/ipc_fuzzer/ipc_fuzzer.gni")
  import("//ui/base/ui_features.gni")
-@@ -130,7 +131,7 @@
+@@ -132,7 +133,7 @@
        ]
      }
  

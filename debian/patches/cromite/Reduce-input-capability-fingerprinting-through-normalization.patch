@@ -18,7 +18,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 
 --- a/ui/android/java/src/org/chromium/ui/base/TouchDevice.java
 +++ b/ui/android/java/src/org/chromium/ui/base/TouchDevice.java
-@@ -42,18 +42,17 @@
+@@ -40,18 +40,17 @@
          } else if (ContextUtils.getApplicationContext()
                  .getPackageManager()
                  .hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_DISTINCT)) {
@@ -41,7 +41,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
      }
  
      /**
-@@ -64,6 +63,7 @@
+@@ -62,6 +61,7 @@
       */
      @CalledByNative
      private static int[] availablePointerAndHoverTypes() {

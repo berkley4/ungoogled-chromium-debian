@@ -6,7 +6,7 @@ we re-add libei.
 
 --- a/remoting/host/BUILD.gn
 +++ b/remoting/host/BUILD.gn
-@@ -673,7 +673,6 @@
+@@ -692,7 +692,6 @@
      deps += [
        "//remoting/host/linux:platform_impls",
        "//remoting/host/linux:utils",

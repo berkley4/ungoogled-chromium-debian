@@ -12,7 +12,7 @@
    # Build PDFium either:
    # 1) When set to true, with a bundled FreeType, built from FreeType source
    #    code in //third_party/freetype and PDFium's FreeType configs in
-@@ -19,11 +24,8 @@
+@@ -22,11 +27,8 @@
    # Generate logging messages for click events that reach PDFium
    pdf_enable_click_logging = false
  

@@ -1,6 +1,6 @@
 --- a/v8/BUILD.gn
 +++ b/v8/BUILD.gn
-@@ -2726,11 +2726,10 @@
+@@ -2745,11 +2745,10 @@
      sources = []
  
      if (v8_depend_on_icu_data_file) {
@@ -14,3 +14,105 @@
        }
      }
  
+--- a/components/autofill/core/browser/BUILD.gn
++++ b/components/autofill/core/browser/BUILD.gn
+@@ -115,12 +115,11 @@
+ 
+ compiled_action("generate_country_native_names") {
+   tool = ":country_native_names_generator"
+-  inputs = [ "$root_build_dir/icudtl.dat" ]
++  inputs = [ "//third_party/icu/common/icudtb.dat" ]
+   outputs = [ "$target_gen_dir/geo/country_native_names_inl.h" ]
+   args = [ "--output-file-path=" +
+            rebase_path("$target_gen_dir/geo/country_native_names_inl.h",
+                        root_build_dir) ]
+-  deps = [ "//third_party/icu:copy_icudata($default_toolchain)" ]
+ }
+ 
+ proto_library("amount_extraction_heuristic_regexes_proto") {
+--- a/components/url_formatter/spoof_checks/top_domains/BUILD.gn
++++ b/components/url_formatter/spoof_checks/top_domains/BUILD.gn
+@@ -45,11 +45,10 @@
+     "//components/url_formatter/spoof_checks/top_domains/domains.skeletons",
+     "//components/url_formatter/spoof_checks/top_domains/top_domains_trie_header.template",
+   ]
+-  inputs = _tool_inputs + [ "$root_build_dir/icudtl.dat" ]
++  inputs = _tool_inputs + [ "//third_party/icu/common/icudtl.dat" ]
+   outputs = [ "$target_gen_dir/domains-trie.h" ]
+   args = rebase_path(_tool_inputs, root_build_dir) +
+          rebase_path(outputs, root_build_dir)
+-  deps = [ "//third_party/icu:copy_icudata($default_toolchain)" ]
+ }
+ 
+ # TODO(crbug.com/41432246): Combine this and the previous one into a
+@@ -62,12 +61,11 @@
+     "//components/url_formatter/spoof_checks/top_domains/idn_test_domains.skeletons",
+     "//components/url_formatter/spoof_checks/top_domains/idn_test_top_domains_trie_header.template",
+   ]
+-  inputs = _tool_inputs + [ "$root_build_dir/icudtl.dat" ]
++  inputs = _tool_inputs + [ "//third_party/icu/common/icudtb.dat" ]
+   outputs = [ "$target_gen_dir/idn_test_domains_trie.h" ]
+ 
+   args = rebase_path(_tool_inputs, root_build_dir) +
+          rebase_path(outputs, root_build_dir)
+-  deps = [ "//third_party/icu:copy_icudata($default_toolchain)" ]
+ }
+ 
+ # TODO(crbug.com/41432246): Combine this and the previous one into a
+@@ -80,12 +78,11 @@
+     "//components/url_formatter/spoof_checks/top_domains/test_domains.skeletons",
+     "//components/url_formatter/spoof_checks/top_domains/test_top_domains_trie_header.template",
+   ]
+-  inputs = _tool_inputs + [ "$root_build_dir/icudtl.dat" ]
++  inputs = _tool_inputs + [ "//third_party/icu/common/icudtb.dat" ]
+   outputs = [ "$target_gen_dir/test_domains_trie.h" ]
+ 
+   args = rebase_path(_tool_inputs, root_build_dir) +
+          rebase_path(outputs, root_build_dir)
+-  deps = [ "//third_party/icu:copy_icudata($default_toolchain)" ]
+ }
+ 
+ executable("make_top_domain_list_variables") {
+@@ -131,11 +128,10 @@
+   # Inputs in order expected by the command line of the tool.
+   _tool_inputs =
+       [ "//components/url_formatter/spoof_checks/top_domains/domains.list" ]
+-  inputs = _tool_inputs + [ "$root_build_dir/icudtl.dat" ]
++  inputs = _tool_inputs + [ "//third_party/icu/common/icudtb.dat" ]
+   outputs = [ "$target_gen_dir/top-bucket-domains-inc.cc" ]
+   args = rebase_path(_tool_inputs, root_build_dir) + [ "top_bucket_domains" ] +
+          rebase_path(outputs, root_build_dir)
+-  deps = [ "//third_party/icu:copy_icudata($default_toolchain)" ]
+ }
+ 
+ # TODO(crbug.com/41432246): Combine this and the previous one into a
+@@ -147,11 +143,10 @@
+   _tool_inputs = [
+     "//components/url_formatter/spoof_checks/top_domains/test_domains.list",
+   ]
+-  inputs = _tool_inputs + [ "$root_build_dir/icudtl.dat" ]
++  inputs = _tool_inputs + [ "//third_party/icu/common/icudtb.dat" ]
+   outputs = [ "$target_gen_dir/test-top-bucket-domains-inc.cc" ]
+   args = rebase_path(_tool_inputs, root_build_dir) +
+          [ "test_top_bucket_domains" ] + rebase_path(outputs, root_build_dir)
+-  deps = [ "//third_party/icu:copy_icudata($default_toolchain)" ]
+ }
+ 
+ # top_bucket_domains and top_bucket_domains_header are intentionally separated
+--- a/third_party/blink/renderer/platform/BUILD.gn
++++ b/third_party/blink/renderer/platform/BUILD.gn
+@@ -132,13 +132,12 @@
+ 
+ compiled_action("character_data") {
+   tool = ":character_data_generator"
+-  inputs = [ "$root_build_dir/icudtl.dat" ]
++  inputs = [ "//third_party/icu/common/icudtb.dat" ]
+   outputs = [
+     "$blink_platform_output_dir/character_property_data.cc",
+     "$blink_platform_output_dir/text/break_iterator_data_inline_header.h",
+   ]
+   args = rebase_path(outputs, root_build_dir)
+-  deps = [ "//third_party/icu:copy_icudata($default_toolchain)" ]
+ }
+ 
+ executable("character_data_generator") {

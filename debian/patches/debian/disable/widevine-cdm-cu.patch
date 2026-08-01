@@ -3,14 +3,12 @@ author: Michel Le Bihan <michel@lebihan.pl>
 
 --- a/chrome/browser/component_updater/registration.cc
 +++ b/chrome/browser/component_updater/registration.cc
-@@ -142,10 +142,6 @@
-   RegisterMediaFoundationWidevineCdmComponent(cus);
- #endif
+@@ -137,7 +137,7 @@
+ #endif  // BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
  
--#if BUILDFLAG(ENABLE_WIDEVINE_CDM_COMPONENT)
+ #if BUILDFLAG(ENABLE_WIDEVINE_CDM_COMPONENT)
 -  RegisterWidevineCdmComponent(cus);
--#endif  // BUILDFLAG(ENABLE_WIDEVINE_CDM_COMPONENT)
--
++  //RegisterWidevineCdmComponent(cus);
+ #endif  // BUILDFLAG(ENABLE_WIDEVINE_CDM_COMPONENT)
+ 
    RegisterSubresourceFilterComponent(cus);
-   RegisterOnDeviceHeadSuggestComponent(
-       cus, g_browser_process->GetApplicationLocale());

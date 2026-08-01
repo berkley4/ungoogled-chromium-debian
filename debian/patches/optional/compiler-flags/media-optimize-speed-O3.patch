@@ -1,6 +1,6 @@
 --- a/media/audio/BUILD.gn
 +++ b/media/audio/BUILD.gn
-@@ -144,8 +144,10 @@
+@@ -145,8 +145,10 @@
    ]
    libs = []
    defines = []
@@ -13,7 +13,7 @@
  
 --- a/media/base/BUILD.gn
 +++ b/media/base/BUILD.gn
-@@ -433,9 +433,10 @@
+@@ -435,9 +435,10 @@
    ]
  
    libs = []
@@ -72,7 +72,7 @@
      "//base",
 --- a/media/formats/BUILD.gn
 +++ b/media/formats/BUILD.gn
-@@ -93,7 +93,11 @@
+@@ -118,7 +118,11 @@
      "//third_party/libwebm",
    ]
  

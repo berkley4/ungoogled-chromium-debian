@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2643,6 +2643,7 @@
+@@ -2662,6 +2662,7 @@
      rustflags = [
        "-Copt-level=3",
        "-Ctarget-cpu=x86-64-v2",
@@ -8,7 +8,7 @@
      ]
    }
  }
-@@ -2700,6 +2701,7 @@
+@@ -2719,6 +2720,7 @@
    rustflags = [
      "-Copt-level=3",
      "-Ctarget-cpu=x86-64-v2",
@@ -16,7 +16,7 @@
    ]
  }
  
-@@ -2730,6 +2732,7 @@
+@@ -2749,6 +2751,7 @@
    rustflags = [
      "-Copt-level=3",
      "-Ctarget-cpu=x86-64-v2",
