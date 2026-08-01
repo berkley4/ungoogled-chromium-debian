@@ -1,24 +1,19 @@
-# General info: some of these prefs might be already covered by existing
-# patches. However, it probably won't hurt to enable some of these, even
-# if they've been pre-enabled via patch.
-
-# Disables site isolation (SitePerProcess, IsolateOrigins, etc).
-# Intended for diagnosing bugs that may be due to out-of-process iframes.
-#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --site-isolation-trial-opt-out"
-
-# Note: this breaks the document.domain feature of websites which itself 
-#       is in the process of being obsoleted due to security concerns.
-#       Ref - https://developer.chrome.com/blog/immutable-document-domain/
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --strict-origin-isolation"
-
-# Enable experimental support for isolated web apps.
+# Enable experimental support for isolated web apps
 # See https://github.com/reillyeon/isolated-web-apps for more information
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-isolated-web-apps"
 
-# Prevent out-of-process iframes from reusing compatible processes from
-# unrelated tabs. This will result in more processes being created.
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --disable-process-reuse"
-
 # Out-of-Process iframes (OOPIFs) for the PDF Viewer
 # See - https://www.chromium.org/developers/design-documents/oop-iframes/
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --pdf-oopif"
+export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=PdfOopif"
+
+
+### !! Flags below can break/cause problems with some websites
+
+# Optimises resources by grouping same-site tabs into one process
+# Marginal security benefit but less problematic than StrictOriginIsolation
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --no-process-per-site"
+
+# Enforce process boundaries by individual origin (port and subdomain) rather than just by site (domain)
+# More secure that --no-process-per-site but far problematic
+#export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=StrictOriginIsolation"
+
