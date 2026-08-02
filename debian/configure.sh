@@ -80,7 +80,6 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$DRIVER" ] || DRIVER=1
 [ -n "$ENTERPRISE_WATERMARK" ] || ENTERPRISE_WATERMARK=0
 [ -n "$FF_HEVC" ] || FF_HEVC=1
-[ -n "$FONTATIONS" ] || FONTATIONS=1
 [ -n "$FONTATIONS_PDF" ] || FONTATIONS_PDF=1
 [ -n "$GOOGLE_API_KEYS" ] || GOOGLE_API_KEYS=1
 [ -n "$GOOGLE_UI_URLS" ] || GOOGLE_UI_URLS=1
@@ -237,11 +236,6 @@ fi
 
 if [ $CHROMECAST -eq 0 ] && [ $MEDIA_REMOTING -eq 1 ]; then
   printf '%s\n' "ERROR: Cannot set MEDIA_REMOTING=1 when CHROMECAST=0"
-  exit 1
-fi
-
-if [ $FONTATIONS -eq 0 ] && [ $FONTATIONS_PDF -eq 1 ]; then
-  printf '%s\n' "ERROR: Cannot set FONTATIONS_PDF=1 when FONTATIONS=0"
   exit 1
 fi
 
@@ -926,16 +920,8 @@ if [ $FF_HEVC -eq 0 ]; then
 fi
 
 
-if [ $FONTATIONS -eq 0 ]; then
-  op_enable="$op_enable disable/fontations.patch"
-else
-  if [ $FONTATIONS -eq 2 ]; then
-    FLAG_MISC="$FLAG_MISC -e \"/enable-fontations-backend/s@^#@@\""
-  fi
-
-  if [ $FONTATIONS_PDF -eq 0 ]; then
-    gn_disable="$gn_disable pdf_enable_fontations=true"
-  fi
+if [ $FONTATIONS_PDF -eq 0 ]; then
+  gn_disable="$gn_disable pdf_enable_fontations=true"
 fi
 
 

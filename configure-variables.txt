@@ -127,11 +127,7 @@ ENTERPRISE_WATERMARK	0		Note: enterprise watermark is only for Chrome Enterprise
 
 FF_HEVC			1		HEVC (H.265) playback support
 
-FONTATIONS		1		0 - Disable (ie hard disable with a patch)
-					1 - Enable (need to uncomment the enable-fontations-backend flag /etc/chromium.d/miscellaneous)
-					2 - Fully enable
-
-FONTATIONS_PDF		1		Extend fontations support to the pdf viewer (enabling requires FONTATIONS to be enabled)
+FONTATIONS_PDF		1		Extend fontations support to the pdf viewer
 
 GOOGLE_API_KEYS		1		0 - disable
 					1 - enable (need to uncomment the GOOGLE_* variables in /etc/chromium.d/google-api-keys)
