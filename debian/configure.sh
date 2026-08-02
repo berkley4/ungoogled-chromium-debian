@@ -101,7 +101,6 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$PULSE" ] || PULSE=1
 [ -n "$QT" ] || QT=1
 [ -n "$QT_6" ] || QT_6=0
-[ -n "$RUSTY_PNG" ] || RUSTY_PNG=1
 [ -n "$SPEECH" ] || SPEECH=0
 [ -n "$SPOOF_WEBGL_INFO" ] || SPOOF_WEBGL_INFO=1
 [ -n "$SWIFTSHADER" ] || SWIFTSHADER=0
@@ -1191,11 +1190,6 @@ if [ $PULSE -eq 0 ]; then
   gn_disable="$gn_disable link_pulseaudio=true"
   gn_enable="$gn_enable use_pulseaudio=false"
   deps_disable="$deps_disable libpulse"
-fi
-
-
-if [ $RUSTY_PNG -eq 0 ]; then
-  FLAG_MISC="$FLAG_MISC -e \"/rusty-png/s@^@#@\""
 fi
 
 

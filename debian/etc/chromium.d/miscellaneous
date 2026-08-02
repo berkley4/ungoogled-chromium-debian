@@ -14,9 +14,6 @@ export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --show-component-extension-options"
 # Possible values: "prerender_page" or "all_invisible_page"
 export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-lazy-load-image-for-invisible-pages=prerender_page"
 
-# Rust-based PNG decoder
-export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --rusty-png"
-
 # Kill switch for WebFeed
 #export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-features=WebFeedKillSwitch"
 
