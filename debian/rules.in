@@ -7,6 +7,7 @@ UL_DIR   := $(UC_DIR)/utils
 DS_CACHE := $(DEBIAN)/domsubcache.tar.gz
 OUT_DIR  := out/Release
 ARGS_GN  := $(OUT_DIR)/args.gn
+BTS_DIR   := $(RT_DIR)/buildtools
 
 UB_REP_SCRIPT := build/linux/unbundle/replace_gn_files.py
 
@@ -40,7 +41,7 @@ GN_FLAGS := $(shell sed -z -e 's@\x22@\x5c\x22@g' -e 's@\n@ @g' $(UC_DIR)/flags.
 #export CCACHE_BASEDIR=_CCACHE_BASEDIR
 
 # Enable bundled gn
-export PATH=$(RT_DIR)/buildtools/linux64:$(shell printenv PATH)
+export PATH=$(BTS_DIR)/linux64:$(shell printenv PATH)
 
 # Clang toolchain
 #GN_FLAGS += clang_version=\"_LLVM_VER\"
@@ -323,6 +324,8 @@ override_dh_auto_configure: revert_unbundle
 	test ! -f $(DEBIAN)/en-US.pak || test ! -d $(OUT_DIR)/locales || mv $(DEBIAN)/en-US.pak $(OUT_DIR)/locales/
 	test -h $(OUT_DIR)/icudtl.dat || ln -sf ../../third_party/icu/common/icudtl.dat -t $(OUT_DIR)
 	test -z "$(HEVC_LIST)" || for h in $(HEVC_LIST); do test -h $$h || ln -sf $(HEVC_DIR)/$$h $(HEVC_DIR)/autorename_libavcodec_hevc_$$h; done
+	#mkdir -p $(BTS_DIR)/linux64-format
+	#test -h $(BTS_DIR)/linux64-format/clang-format || ln -sf $(LLVM_DIR)/clang-format -t $(BTS_DIR)/linux64-format
 
 override_dh_auto_build:
 	ninja -j $(JOBS) -C $(OUT_DIR) chrome chrome_sandbox chromedriver

@@ -530,6 +530,8 @@ else
     sed -e "s/@@LLVM_CTRL_VER@@/$LLVM_VER/" \
         -i $OP_DIR/system/clang/clang-version.patch
   fi
+
+  RUL="$RUL -e \"/linux64-format/s@#@@\""
 fi
 
 
