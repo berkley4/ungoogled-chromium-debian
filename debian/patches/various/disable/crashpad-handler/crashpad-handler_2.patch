@@ -10,7 +10,7 @@
  #endif
  
  #if BUILDFLAG(ENABLE_EXTENSIONS_CORE)
-@@ -1340,7 +1342,7 @@
+@@ -1362,7 +1364,7 @@
  
    crash_reporter::InitializeCrashKeys();
  
@@ -19,7 +19,7 @@
    ChromeCrashReporterClient::Create();
  #endif
  
-@@ -1481,9 +1483,11 @@
+@@ -1503,9 +1505,11 @@
        base::android::InitJavaExceptionReporterForChildProcess();
      }
  #else
@@ -31,7 +31,7 @@
  #endif  // BUILDFLAG(IS_ANDROID)
    }
  #endif  // BUILDFLAG(IS_POSIX) && !BUILDFLAG(IS_MAC)
-@@ -1623,9 +1627,11 @@
+@@ -1645,9 +1649,11 @@
        base::CommandLine::ForCurrentProcess();
    std::string process_type =
        command_line->GetSwitchValueASCII(switches::kProcessType);
@@ -45,7 +45,7 @@
    crash_keys::SetCrashKeysFromCommandLine(*command_line);
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -618,7 +618,7 @@
+@@ -620,7 +620,7 @@
  #include "third_party/cros_system_api/switches/chrome_switches.h"
  #endif  // BUILDFLAG(IS_CHROMEOS)
  
@@ -54,7 +54,7 @@
  #include "components/crash/core/app/crash_switches.h"
  #include "components/crash/core/app/crashpad.h"
  #endif
-@@ -1050,7 +1050,7 @@
+@@ -1076,7 +1076,7 @@
  int GetCrashSignalFD(const base::CommandLine& command_line) {
    return crashpad::CrashHandlerHost::Get()->GetDeathSignalSocket();
  }
@@ -63,7 +63,7 @@
  int GetCrashSignalFD(const base::CommandLine& command_line) {
    int fd;
    return crash_reporter::GetHandlerSocket(&fd, nullptr) ? fd : -1;
-@@ -2856,7 +2856,7 @@
+@@ -2924,7 +2924,7 @@
                                      client_info->client_id);
    }
  #elif BUILDFLAG(IS_POSIX)
@@ -72,7 +72,7 @@
    pid_t pid;
    if (crash_reporter::GetHandlerSocket(nullptr, &pid)) {
      command_line->AppendSwitchASCII(
-@@ -5341,7 +5341,7 @@
+@@ -5291,7 +5291,7 @@
    DCHECK(!app_data_path.empty());
  #endif  // BUILDFLAG(IS_ANDROID)
  
@@ -94,7 +94,7 @@
        int child_process_id,
 --- a/headless/lib/browser/headless_content_browser_client.cc
 +++ b/headless/lib/browser/headless_content_browser_client.cc
-@@ -55,8 +55,10 @@
+@@ -56,8 +56,10 @@
  #include "ui/gfx/switches.h"
  
  #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
@@ -105,7 +105,7 @@
  #include "content/public/common/content_descriptors.h"
  #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
  
-@@ -76,7 +78,7 @@
+@@ -77,7 +79,7 @@
  
  namespace {
  
@@ -114,7 +114,7 @@
  int GetCrashSignalFD(const base::CommandLine& command_line,
                       const HeadlessBrowser::Options& options) {
    int fd;
-@@ -246,7 +248,7 @@
+@@ -281,7 +283,7 @@
    return content::GeneratedCodeCacheSettings(true, 0, context->GetPath());
  }
  
@@ -123,7 +123,7 @@
  void HeadlessContentBrowserClient::GetAdditionalMappedFilesForChildProcess(
      const base::CommandLine& command_line,
      int child_process_id,
-@@ -267,7 +269,7 @@
+@@ -302,7 +304,7 @@
      command_line->AppendSwitchASCII(::switches::kHeadless, "old");
    }
  

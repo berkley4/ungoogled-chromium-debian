@@ -30,7 +30,7 @@
      auto instance = std::make_unique<dawn::native::Instance>();
 --- a/gpu/BUILD.gn
 +++ b/gpu/BUILD.gn
-@@ -109,7 +109,6 @@
+@@ -110,7 +110,6 @@
      "//gpu/command_buffer/service",
      "//gpu/ipc:gpu_thread_holder",
      "//third_party/dawn/include/dawn:cpp_headers",
@@ -38,7 +38,7 @@
    ]
    deps = [
      "//base/test:test_support",
-@@ -135,6 +134,10 @@
+@@ -136,6 +135,10 @@
    }
    deps += [ "//third_party/angle:translator" ]
  
@@ -63,7 +63,7 @@
      sources += [
        "dawn_caching_interface.cc",
        "dawn_caching_interface.h",
-@@ -397,7 +400,6 @@
+@@ -399,7 +402,6 @@
      "//third_party/angle:angle_version_info",
      "//third_party/angle:translator",
      "//third_party/dawn/include/dawn:cpp_headers",
@@ -81,7 +81,7 @@
  
  component("backend_interfaces") {
    sources = [
-@@ -65,7 +66,8 @@
+@@ -68,7 +69,8 @@
    if (is_android) {
      deps += [ "//services/on_device_model/android" ]
    }

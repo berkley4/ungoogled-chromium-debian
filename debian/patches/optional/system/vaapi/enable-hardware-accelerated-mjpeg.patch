@@ -1,6 +1,6 @@
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5782,12 +5782,12 @@
+@@ -5928,12 +5928,12 @@
       FEATURE_VALUE_TYPE(device::features::kOpenXR)},
  #endif  // BUILDFLAG(IS_ANDROID) && BUILDFLAG(ENABLE_OPENXR)
  #endif  // ENABLE_VR

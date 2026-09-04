@@ -72,7 +72,7 @@
      "//base",
 --- a/media/formats/BUILD.gn
 +++ b/media/formats/BUILD.gn
-@@ -118,7 +118,11 @@
+@@ -119,7 +119,11 @@
      "//third_party/libwebm",
    ]
  
@@ -97,7 +97,7 @@
      "//build/config/compiler:wexit_time_destructors",
      "//build/config/compiler:wglobal_constructors",
    ]
-@@ -387,7 +389,9 @@
+@@ -384,7 +386,9 @@
      ]
    }
  
@@ -107,7 +107,7 @@
      "//build/config/compiler:wexit_time_destructors",
      "//build/config/compiler:wglobal_constructors",
    ]
-@@ -473,7 +477,9 @@
+@@ -470,7 +474,9 @@
      "command_buffer_helper.h",
    ]
  
@@ -117,7 +117,7 @@
      "//build/config/compiler:wexit_time_destructors",
      "//build/config/compiler:wglobal_constructors",
    ]
-@@ -515,7 +521,9 @@
+@@ -512,7 +518,9 @@
        "video_frame_mapper_factory.h",
      ]
  

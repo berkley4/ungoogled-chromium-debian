@@ -100,7 +100,7 @@ profiles to have software HEVC decoding ability.
 
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.h
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.h
-@@ -730,7 +730,7 @@
+@@ -734,7 +734,7 @@
  #define CONFIG_AUDIO_FRAME_QUEUE 0
  #define CONFIG_AUDIODSP 0
  #define CONFIG_BLOCKDSP 0
@@ -109,16 +109,7 @@ profiles to have software HEVC decoding ability.
  #define CONFIG_CABAC 1
  #define CONFIG_CBS 0
  #define CONFIG_CBS_APV 0
-@@ -754,7 +754,7 @@
- #define CONFIG_DEFLATE_WRAPPER 0
- #define CONFIG_DIRAC_PARSE 1
- #define CONFIG_DNN 0
--#define CONFIG_DOVI_RPUDEC 0
-+#define CONFIG_DOVI_RPUDEC 1
- #define CONFIG_DOVI_RPUENC 0
- #define CONFIG_DVPROFILE 0
- #define CONFIG_EVCPARSE 0
-@@ -773,8 +773,8 @@
+@@ -777,8 +777,8 @@
  #define CONFIG_H264PRED 1
  #define CONFIG_H264QPEL 1
  #define CONFIG_H264_SEI 1
@@ -131,7 +122,7 @@ profiles to have software HEVC decoding ability.
  #define CONFIG_HUFFYUVDSP 0
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config_components.h
-@@ -142,7 +142,7 @@
+@@ -144,7 +144,7 @@
  #define CONFIG_H264_QSV_DECODER 0
  #define CONFIG_H264_RKMPP_DECODER 0
  #define CONFIG_HAP_DECODER 0
@@ -140,7 +131,7 @@ profiles to have software HEVC decoding ability.
  #define CONFIG_HEVC_QSV_DECODER 0
  #define CONFIG_HEVC_RKMPP_DECODER 0
  #define CONFIG_HEVC_V4L2M2M_DECODER 0
-@@ -1047,7 +1047,7 @@
+@@ -1050,7 +1050,7 @@
  #define CONFIG_H261_PARSER 0
  #define CONFIG_H263_PARSER 0
  #define CONFIG_H264_PARSER 1
@@ -167,17 +158,13 @@ profiles to have software HEVC decoding ability.
      NULL };
 --- a/third_party/ffmpeg/ffmpeg_generated.gni
 +++ b/third_party/ffmpeg/ffmpeg_generated.gni
-@@ -298,6 +298,27 @@
+@@ -306,6 +306,23 @@
      (is_apple && ffmpeg_branding == "Chrome") ||
      (is_win && ffmpeg_branding == "Chrome") ||
      (use_linux_config && ffmpeg_branding == "Chrome")) {
 +
 +  ffmpeg_c_sources += [
-+    "libavcodec/aom_film_grain.c",
 +    "libavcodec/bswapdsp.c",
-+    "libavcodec/dovi_rpu.c",
-+    "libavcodec/dovi_rpudec.c",
-+    "libavcodec/dynamic_hdr_vivid.c",
 +    "libavcodec/hevc/autorename_libavcodec_hevc_parse.c",
 +    "libavcodec/hevc/autorename_libavcodec_hevc_parser.c",
 +    "libavcodec/hevc/autorename_libavcodec_hevc_cabac.c",
@@ -193,9 +180,9 @@ profiles to have software HEVC decoding ability.
 +  ]
 +
    ffmpeg_c_sources += [
+     "libavcodec/aom_film_grain.c",
      "libavcodec/atsc_a53.c",
-     "libavcodec/autorename_libavcodec_videodsp.c",
-@@ -332,6 +353,25 @@
+@@ -345,6 +362,25 @@
  if ((current_cpu == "x64" && ffmpeg_branding == "Chrome") ||
      (is_win && current_cpu == "x86" && ffmpeg_branding == "Chrome") ||
      (use_linux_config && current_cpu == "x86" && ffmpeg_branding == "Chrome")) {
@@ -220,4 +207,4 @@ profiles to have software HEVC decoding ability.
 +
    ffmpeg_c_sources += [
      "libavcodec/x86/autorename_libavcodec_x86_aacpsdsp_init.c",
-     "libavcodec/x86/autorename_libavcodec_x86_h264dsp_init.c",
+     "libavcodec/x86/autorename_libavcodec_x86_h264_intrapred_init.c",

@@ -1,6 +1,6 @@
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -7613,7 +7613,6 @@
+@@ -6822,7 +6822,6 @@
        "//chrome/browser/webauthn:test_support",
        "//chrome/browser/webauthn/proto",
        "//chrome/common/read_anything:mojo_bindings",
@@ -8,7 +8,7 @@
        "//components/app_constants",
        "//components/application_locale_storage",
        "//components/color",
-@@ -7692,6 +7691,11 @@
+@@ -6901,6 +6900,11 @@
      if (include_js2gtest_tests && is_chromeos) {
        data += js2gtest_js_libraries
      }

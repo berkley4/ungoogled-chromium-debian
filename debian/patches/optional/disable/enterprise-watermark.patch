@@ -1,6 +1,14 @@
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -2673,7 +2673,6 @@
+@@ -2094,7 +2094,6 @@
+       "//chrome/browser/enterprise/incognito",
+       "//chrome/browser/enterprise/platform_auth:browser_tests",
+       "//chrome/browser/enterprise/signals:browser_tests",
+-      "//chrome/browser/enterprise/watermark:browser_tests",
+       "//chrome/browser/error_reporting:browser_tests",
+       "//chrome/browser/error_reporting:test_support",
+       "//chrome/browser/extensions",
+@@ -2464,7 +2463,6 @@
        "//chrome/browser/ui/webui/tab_search:browser_tests",
        "//chrome/browser/ui/webui/top_chrome",
        "//chrome/browser/ui/webui/top_chrome:test_support",
@@ -8,17 +16,91 @@
        "//chrome/browser/ui/webui/webui_toolbar:browser_tests",
        "//chrome/browser/ui/webui/webui_toolbar/adapters:impl",
        "//chrome/browser/ui/webui/whats_new",
-@@ -3084,6 +3083,10 @@
+@@ -2876,6 +2874,13 @@
        deps += [ "//chrome/browser/guest_view" ]
      }
  
 +    if (enterprise_watermark) {
-+      deps += [ "//chrome/browser/ui/webui/watermark" ]
++      deps += [
++        "//chrome/browser/enterprise/watermark:browser_tests",
++        "//chrome/browser/ui/webui/watermark",
++      ]
 +    }
 +
      # TODO(crbug.com/437811373): Remove this dependency when
      # c/b/ui/passwords/password_change_ui_controller.h gets built from
      # `//c/b/ui/passwords:passwords`.
+--- a/chrome/browser/enterprise/data_protection/BUILD.gn
++++ b/chrome/browser/enterprise/data_protection/BUILD.gn
+@@ -19,11 +19,14 @@
+       "//skia",
+     ]
+ 
+-    public_deps = [
+-      "//chrome/browser/enterprise/watermark:watermark_lib",
+-      "//components/enterprise/watermarking",
+-      "//ui/views",
+-    ]
++    public_deps = [ "//ui/views" ]
++
++    if (enterprise_watermark) {
++      public_deps += [
++        "//chrome/browser/enterprise/watermark:watermark_lib",
++        "//components/enterprise/watermarking",
++      ]
++    }
+   }
+ }
+ 
+--- a/chrome/browser/enterprise/data_protection/data_protection_overlay_view.cc
++++ b/chrome/browser/enterprise/data_protection/data_protection_overlay_view.cc
+@@ -14,6 +14,7 @@
+ #include "cc/paint/paint_canvas.h"
+ #include "cc/paint/paint_recorder.h"
+ #include "chrome/browser/enterprise/watermark/settings.h"
++#include "components/enterprise/buildflags/buildflags.h"
+ #include "components/enterprise/watermarking/watermark.h"
+ #include "third_party/skia/include/core/SkColor.h"
+ #include "ui/base/metadata/metadata_impl_macros.h"
+@@ -30,10 +31,12 @@
+   SetCanProcessEventsWithinSubtree(false);
+   SetPaintToLayer();
+   layer()->SetFillsBoundsOpaquely(false);
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+   UpdateWatermarkBlock(/*watermark_text=*/std::string(""),
+                        enterprise_watermark::GetDefaultFillColor(),
+                        enterprise_watermark::GetDefaultOutlineColor(),
+                        enterprise_watermark::GetDefaultFontSize());
++#endif
+   GetViewAccessibility().SetIsInvisible(true);
+ }
+ 
+@@ -65,7 +68,9 @@
+     outline_color_ = outline_color;
+     font_size_ = font_size;
+ 
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+     UpdateWatermarkBlock(watermark_text, fill_color, outline_color, font_size);
++#endif
+   }
+ }
+ 
+@@ -87,6 +92,7 @@
+       SkSize::Make(contents_bounds.width(), contents_bounds.height()));
+ }
+ 
++#if BUILDFLAG(ENTERPRISE_WATERMARK)
+ void DataProtectionOverlayView::UpdateWatermarkBlock(const std::string& text,
+                                                      SkColor fill_color,
+                                                      SkColor outline_color,
+@@ -95,6 +101,7 @@
+       text, fill_color, outline_color, font_size);
+   InvalidateView();
+ }
++#endif
+ 
+ void DataProtectionOverlayView::SetBackgroundColor(SkColor background_color) {
+   background_color_ = background_color;
 --- a/chrome/browser/enterprise/data_protection/data_protection_ui_controller.cc
 +++ b/chrome/browser/enterprise/data_protection/data_protection_ui_controller.cc
 @@ -10,17 +10,20 @@
@@ -138,7 +220,7 @@
    void MaybeUpdateScreenshotSettings();
 --- a/chrome/browser/ui/views/frame/contents_container_view.cc
 +++ b/chrome/browser/ui/views/frame/contents_container_view.cc
-@@ -34,6 +34,7 @@
+@@ -32,6 +32,7 @@
  #include "chrome/browser/ui/views/indigo/indigo_toolbar.h"
  #include "chrome/browser/ui/views/new_tab_footer/footer_web_view.h"
  #include "chrome/common/chrome_features.h"
@@ -146,7 +228,7 @@
  #include "components/search/ntp_features.h"
  #include "content/public/browser/web_contents.h"
  #include "ui/accessibility/accessibility_features.h"
-@@ -358,6 +359,7 @@
+@@ -355,6 +356,7 @@
    InvalidateLayout();
  }
  
@@ -154,7 +236,7 @@
  void ContentsContainerView::ApplyWatermarkSettings(
      const std::string& watermark_text,
      SkColor fill_color,
-@@ -366,6 +368,7 @@
+@@ -363,6 +365,7 @@
    data_protection_overlay_view_->SetWatermarkText(watermark_text, fill_color,
                                                    outline_color, font_size);
  }

@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -675,7 +675,7 @@
+@@ -682,7 +682,7 @@
        ]
      }
  
@@ -11,7 +11,7 @@
          "//third_party/crashpad/crashpad/tools:crashpad_database_util",
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -3349,7 +3349,6 @@
+@@ -3363,7 +3363,6 @@
        "//components/webauthn/core/browser",
        "//components/webauthn/core/browser:passkey_model",
        "//services/device/public/cpp/hid",
@@ -19,7 +19,7 @@
        "//third_party/zxcvbn-cpp",
        "//ui/views",
        "//ui/web_dialogs",
-@@ -3365,6 +3364,10 @@
+@@ -3379,6 +3378,10 @@
        deps += [ "//chrome/browser/ui/webui/signin:inline_login_impl" ]
      }
  
@@ -32,7 +32,7 @@
        deps += [
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -312,7 +312,9 @@
+@@ -319,7 +319,9 @@
          "//chrome/common:buildflags",
        ]
  
@@ -43,7 +43,7 @@
  
        ldflags = []
  
-@@ -1673,7 +1675,6 @@
+@@ -1719,7 +1721,6 @@
    if (!(is_debug && use_debug_fission)) {
      group("linux_symbols") {
        deps = [
@@ -51,7 +51,7 @@
          ":chrome_symbols",
        ]
        if (is_linux) {
-@@ -1708,17 +1709,19 @@
+@@ -1754,17 +1755,19 @@
  
        deps = [ ":chrome" ]
      }
@@ -82,7 +82,7 @@
        binary = "$root_out_dir/libvk_swiftshader.so"
 --- a/chrome/installer/linux/BUILD.gn
 +++ b/chrome/installer/linux/BUILD.gn
-@@ -62,7 +62,6 @@
+@@ -61,7 +61,6 @@
  
  packaging_files_executables = [
    "$root_out_dir/chrome",
@@ -90,7 +90,7 @@
    "$root_out_dir/chrome_management_service",
    "$root_out_dir/chrome_sandbox",
  ]
-@@ -204,11 +203,6 @@
+@@ -203,11 +202,6 @@
    deps = [ "//chrome" ]
  }
  
@@ -102,7 +102,7 @@
  strip_binary("strip_chrome_management_service") {
    binary_input = "$root_out_dir/chrome_management_service"
    deps = [ "//chrome/browser/enterprise/connectors/device_trust/key_management/installer/management_service:chrome_management_service" ]
-@@ -454,7 +448,6 @@
+@@ -457,7 +451,6 @@
      ":deb_packaging_files",
      ":save_build_info",
      ":strip_chrome_binary",
@@ -110,7 +110,7 @@
      ":strip_chrome_management_service",
      ":strip_chrome_sandbox",
      ":theme_files",
-@@ -462,7 +455,6 @@
+@@ -465,7 +458,6 @@
      "//chrome:packed_resources",
      "//chrome/browser/enterprise/connectors/device_trust/key_management/installer/management_service:chrome_management_service",
      "//chrome/browser/resources/media/mei_preload:component",
@@ -120,8 +120,8 @@
    ]
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -711,10 +711,6 @@
-     public_deps += [ "//printing:test_support" ]
+@@ -578,10 +578,6 @@
+     ]
    }
  
 -  if (is_linux) {
@@ -153,7 +153,7 @@
    executable("chrome_crashpad_handler") {
 --- a/content/shell/BUILD.gn
 +++ b/content/shell/BUILD.gn
-@@ -801,7 +801,7 @@
+@@ -799,7 +799,7 @@
      if (is_win) {
        data_deps +=
            [ "//third_party/crashpad/crashpad/handler:crashpad_handler" ]

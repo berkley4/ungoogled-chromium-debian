@@ -50,7 +50,7 @@
        inputs += [ "//third_party/node/win/node.exe" ]
 --- a/third_party/protobuf/proto_library.gni
 +++ b/third_party/protobuf/proto_library.gni
-@@ -261,7 +261,7 @@
+@@ -271,7 +271,7 @@
  # Linux worker. So it should include linux node binary in inputs.
  if (is_linux || is_chromeos || use_remoteexec) {
    _protoc_gen_ts_runtime_deps +=

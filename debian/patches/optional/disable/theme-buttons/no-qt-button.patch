@@ -1,13 +1,12 @@
 --- a/chrome/browser/resources/settings/appearance_page/appearance_page.ts
 +++ b/chrome/browser/resources/settings/appearance_page/appearance_page.ts
-@@ -469,9 +469,8 @@
-   }
+@@ -489,9 +489,7 @@
  
    /** @return Whether to show the "USE QT" button. */
--  private showUseQt_(themeId: string): boolean {
+   protected showUseQt_(): boolean {
+-    const themeId = this.themeIdPref_?.value;
 -    return (!!themeId || this.systemTheme_ !== SystemTheme.QT) &&
 -        !this.appearanceBrowserProxy_.isChildAccount();
-+  private showUseQt_(): boolean {
 +    return false;
    }
  

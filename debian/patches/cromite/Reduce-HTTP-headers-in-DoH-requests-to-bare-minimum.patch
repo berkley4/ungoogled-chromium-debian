@@ -22,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  // See note at top of file about why adding LoadFlags is often a bad idea.
 --- a/net/dns/dns_http_attempt.cc
 +++ b/net/dns/dns_http_attempt.cc
-@@ -173,7 +173,7 @@
+@@ -176,7 +176,7 @@
    // avoid deadlock and enable the use of preconfigured IP addresses.
    request_->SetSecureDnsPolicy(SecureDnsPolicy::kBootstrap);
    request_->SetLoadFlags(request_->load_flags() | LOAD_DISABLE_CACHE |

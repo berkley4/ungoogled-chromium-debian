@@ -1,6 +1,6 @@
 --- a/components/autofill/core/common/autofill_features.cc
 +++ b/components/autofill/core/common/autofill_features.cc
-@@ -901,7 +901,7 @@
+@@ -865,7 +865,7 @@
  
  // If enabled, upload votes for sms otp.
  // TODO(crbug.com/453999673): Clean up when launched.

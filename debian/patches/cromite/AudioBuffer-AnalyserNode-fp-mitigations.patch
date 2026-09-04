@@ -24,7 +24,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -4776,6 +4776,10 @@
+@@ -4905,6 +4905,10 @@
      {"ui-disable-partial-swap", flag_descriptions::kUiPartialSwapName,
       flag_descriptions::kUiPartialSwapDescription, kOsAll,
       SINGLE_DISABLE_VALUE_TYPE(switches::kUIDisablePartialSwap)},
@@ -37,7 +37,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       FEATURE_VALUE_TYPE(features::kWebRtcHWDecoding)},
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -6358,6 +6358,11 @@
+@@ -6580,6 +6580,11 @@
  // FLAG_DESCRIPTIONS_ANDROID_END
  // Non-Android -----------------------------------------------------------------
  
@@ -51,7 +51,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  inline constexpr char kAllowAllSitesToInitiateMirroringDescription[] =
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -144,6 +144,9 @@
+@@ -136,6 +136,9 @@
  BASE_FEATURE(kDisplayWarningDeprecateURNIframesUseFencedFrames,
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -63,7 +63,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  // it will use the kNormal type thread when disabled.
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -148,6 +148,8 @@
+@@ -142,6 +142,8 @@
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE_PARAM(bool,
                                                 kAutoSpeculationRulesHoldback);
  
@@ -108,7 +108,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/third_party/blink/renderer/modules/webaudio/audio_context.cc
 +++ b/third_party/blink/renderer/modules/webaudio/audio_context.cc
-@@ -22,6 +22,7 @@
+@@ -24,6 +24,7 @@
  #include "third_party/blink/public/common/mediastream/media_devices.h"
  #include "third_party/blink/public/mojom/permissions/permission_status.mojom-blink.h"
  #include "third_party/blink/public/platform/browser_interface_broker_proxy.h"
@@ -116,7 +116,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "third_party/blink/public/platform/modules/webrtc/webrtc_logging.h"
  #include "third_party/blink/public/platform/web_audio_latency_hint.h"
  #include "third_party/blink/renderer/bindings/core/v8/script_promise_resolver.h"
-@@ -1189,7 +1190,9 @@
+@@ -1270,7 +1271,9 @@
    DCHECK_CALLED_ON_VALID_SEQUENCE(main_thread_sequence_checker_);
    DCHECK(destination());
  
@@ -235,17 +235,3 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        // Scale from nominal -1 -> +1 to unsigned byte.
        const double scaled_value = 128 * (value + 1);
  
---- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
-+++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -733,9 +733,8 @@
-     {
-       // AudioContext.playoutStats interface.
-       // https://chromestatus.com/feature/5172818344148992
--      name: "AudioContextPlayoutStats",
--      origin_trial_feature_name: "AudioContextPlayoutStats",
--      status: "experimental",
-+      name: "AudioContextPlayoutStats",   // keep AudioContextPlayoutStats
-+      status: "experimental",             // experimental
-     },
-     {
-       name: "AudioContextSetSinkId",

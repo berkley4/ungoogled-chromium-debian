@@ -21,7 +21,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // displays. Exception is for Webview.
 --- a/third_party/blink/renderer/platform/media/web_media_player_impl.cc
 +++ b/third_party/blink/renderer/platform/media/web_media_player_impl.cc
-@@ -1351,6 +1351,12 @@
+@@ -1345,6 +1345,12 @@
    return pipeline_metadata_.has_audio;
  }
  
@@ -34,7 +34,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  void WebMediaPlayerImpl::EnabledAudioTracksChanged(
      std::optional<WebMediaPlayer::TrackId> enabled_track_id) {
    DCHECK(main_task_runner_->BelongsToCurrentThread());
-@@ -3788,7 +3794,10 @@
+@@ -3765,7 +3771,10 @@
  
    const bool preserve_audio = HasUnmutedAudio() || audio_source_provider_->IsAudioBeingCaptured();
    // Audio only stream is allowed to play when in background.
@@ -48,9 +48,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    // Video PiP is the only exception when background video playback is disabled.
 --- a/third_party/blink/renderer/platform/media/web_media_player_impl.h
 +++ b/third_party/blink/renderer/platform/media/web_media_player_impl.h
-@@ -217,6 +217,9 @@
-   bool HasVideo() const override;
+@@ -213,6 +213,9 @@
    bool HasAudio() const override;
+   bool IsVideoBeingCaptured() const override;
  
 +  // True is has video and it's frame size is not zero
 +  bool HasVideoNonEmptySize() const;

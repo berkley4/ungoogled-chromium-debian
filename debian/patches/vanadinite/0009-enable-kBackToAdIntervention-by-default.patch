@@ -1,6 +1,6 @@
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
-@@ -214,7 +214,7 @@
+@@ -217,7 +217,7 @@
  // session history when navigating via back/forward buttons. This extends the
  // existing history manipulation intervention logic.
  // See https://crbug.com/375523824.

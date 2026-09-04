@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -505,7 +505,8 @@
+@@ -512,7 +512,8 @@
      }
  
      if ((is_win || is_mac || is_linux || is_chromeos || is_fuchsia) &&
@@ -12,15 +12,15 @@
          "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan",
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -21,6 +21,7 @@
- import("//chrome/process_version_rc_template.gni")
+@@ -22,6 +22,7 @@
  import("//components/optimization_guide/features.gni")
+ import("//content/common/features.gni")
  import("//extensions/buildflags/buildflags.gni")
 +import("//gpu/vulkan/features.gni")
  import("//media/media_options.gni")
  import("//services/on_device_model/on_device_model.gni")
  import("//services/shape_detection/features.gni")
-@@ -1677,7 +1678,7 @@
+@@ -1723,7 +1724,7 @@
        deps = [
          ":chrome_symbols",
        ]
@@ -29,7 +29,7 @@
          deps += [ ":swiftshader_vk_symbols" ]
        }
        if (!is_chromeos && angle_shared_libvulkan) {
-@@ -1723,17 +1724,19 @@
+@@ -1769,17 +1770,19 @@
          deps = [ "//components/crash/core/app:chrome_crashpad_handler" ]
        }
      }
@@ -60,7 +60,7 @@
        binary = "$root_out_dir/libEGL.so"
 --- a/chrome/installer/linux/BUILD.gn
 +++ b/chrome/installer/linux/BUILD.gn
-@@ -82,7 +82,7 @@
+@@ -81,7 +81,7 @@
    packaging_files_shlibs += [ "$root_out_dir/libvulkan.so.1" ]
  }
  
@@ -69,7 +69,7 @@
    packaging_files_shlibs += [ "$root_out_dir/libvk_swiftshader.so" ]
  }
  
-@@ -106,7 +106,7 @@
+@@ -105,7 +105,7 @@
                      "$root_out_dir/PrivacySandboxAttestationsPreloaded/manifest.json",
                      "$root_out_dir/PrivacySandboxAttestationsPreloaded/privacy-sandbox-attestations.dat",
                    ]
@@ -105,7 +105,7 @@
  if (angle_has_build) {
    import("//build/config/gclient_args.gni")
  }
-@@ -330,7 +331,8 @@
+@@ -338,7 +339,8 @@
  declare_args() {
    # Currently SwiftShader's Vulkan front-end doesn't build on Android.
    # Disabled by default on MSVC because of compiler warnings/errors.
@@ -114,7 +114,7 @@
 +    angle_enable_vulkan && enable_swiftshader && !is_android && is_clang
  
    # Translator backend support:
-   angle_enable_hlsl = angle_enable_d3d9 || angle_enable_d3d11
+   angle_enable_hlsl = angle_enable_d3d11
 --- a/third_party/dawn/scripts/dawn_features.gni
 +++ b/third_party/dawn/scripts/dawn_features.gni
 @@ -27,6 +27,7 @@
@@ -125,12 +125,12 @@
  import("dawn_overrides_with_defaults.gni")
  
  declare_args() {
-@@ -68,7 +69,7 @@
-   # Enables SwiftShader as the fallback adapter. Requires dawn_swiftshader_dir
-   # to be set to take effect.
-   # TODO(dawn:1536): Enable SwiftShader for Android.
--  dawn_use_swiftshader = !is_android && !is_ios
-+  dawn_use_swiftshader = !is_android && !is_ios && enable_swiftshader
+@@ -65,7 +66,7 @@
+   declare_args() {
+     # Enables SwiftShader as the fallback adapter. Requires dawn_swiftshader_dir
+     # to be set to take effect.
+-    dawn_use_swiftshader = true
++    dawn_use_swiftshader = enable_swiftshader
+   }
+ }
  
-   # Whether we allow building DXC.
-   # DXC requires SM6.0+ which is blocklisted on x86.

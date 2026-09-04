@@ -1,6 +1,6 @@
 --- a/base/allocator/partition_allocator/src/partition_alloc/partition_bucket.cc
 +++ b/base/allocator/partition_allocator/src/partition_alloc/partition_bucket.cc
-@@ -470,6 +470,9 @@
+@@ -471,6 +471,9 @@
         partition_page_count <= kMaxPartitionPagesPerRegularSlotSpan;
         partition_page_count++) {
      size_t candidate_size = partition_page_count * PartitionPageSize();
@@ -10,7 +10,7 @@
      size_t waste = candidate_size % slot_size;
      if (waste <= .02 * SystemPageSize()) {
        return partition_page_count * NumSystemPagesPerPartitionPage();
-@@ -486,6 +489,9 @@
+@@ -487,6 +490,9 @@
        size_t system_page_count =
            partition_page_count * NumSystemPagesPerPartitionPage() - slack;
        size_t candidate_size = system_page_count * SystemPageSize();

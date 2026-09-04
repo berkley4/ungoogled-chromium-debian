@@ -1,6 +1,6 @@
 --- a/chrome/browser/extensions/BUILD.gn
 +++ b/chrome/browser/extensions/BUILD.gn
-@@ -578,6 +578,7 @@
+@@ -568,6 +568,7 @@
      "//chrome/browser/undo",
      "//chrome/browser/update_client",
      "//chrome/common",
@@ -8,7 +8,7 @@
      "//components/bookmarks/browser",
      "//components/bookmarks/managed",
      "//components/content_settings/core/browser",
-@@ -1004,7 +1005,6 @@
+@@ -1007,7 +1008,6 @@
        "//chrome/browser/web_applications/extensions",
        "//chrome/common/extensions/api:extensions_features",
        "//chrome/services/file_util/public/mojom",
@@ -16,7 +16,7 @@
        "//components/affiliations/core/browser:affiliations",
        "//components/app_constants",
        "//components/autofill/content/browser",
-@@ -1124,6 +1124,10 @@
+@@ -1127,6 +1127,10 @@
        "//url",
      ]
  
@@ -29,7 +29,7 @@
          "api/certificate_provider/certificate_provider_api.cc",
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -2702,7 +2702,6 @@
+@@ -2492,7 +2492,6 @@
        "//chrome/renderer",
        "//chrome/renderer/actor:browser_tests",
        "//chrome/renderer/webui_browser:browser_tests",
@@ -37,7 +37,7 @@
        "//chrome/test/components_tests:browser_tests",
        "//chrome/test/data/webui:resources",
        "//chrome/test/data/webui/mojo:mojo_bindings",
-@@ -3077,6 +3076,10 @@
+@@ -2869,6 +2868,10 @@
        deps += [ "//chrome/updater:browser_sources" ]
      }
  
@@ -58,7 +58,7 @@
  import("//chrome/services/speech/buildflags/buildflags.gni")
  import("//components/on_device_translation/buildflags/features.gni")
  import("//crypto/features.gni")
-@@ -154,16 +155,24 @@
+@@ -155,16 +156,24 @@
    if (enable_extensions) {
      deps += [
        "//chrome/common/extensions/api",
@@ -96,7 +96,7 @@
  #include "chrome/services/speech/buildflags/buildflags.h"
  #include "components/on_device_translation/buildflags/buildflags.h"
  #include "components/paint_preview/buildflags/buildflags.h"
-@@ -76,7 +77,7 @@
+@@ -85,7 +86,7 @@
  #include "chrome/services/file_util/file_util_service.h"  // nogncheck
  #endif
  
@@ -105,7 +105,7 @@
  #include "chrome/services/removable_storage_writer/public/mojom/removable_storage_writer.mojom.h"
  #include "chrome/services/removable_storage_writer/removable_storage_writer.h"
  #endif
-@@ -285,7 +286,7 @@
+@@ -303,7 +304,7 @@
  }
  #endif
  
@@ -114,7 +114,7 @@
  auto RunRemovableStorageWriter(
      mojo::PendingReceiver<chrome::mojom::RemovableStorageWriter> receiver) {
    return std::make_unique<RemovableStorageWriter>(std::move(receiver));
-@@ -482,7 +483,7 @@
+@@ -517,7 +518,7 @@
    services.Add(RunFileUtil);
  #endif
  

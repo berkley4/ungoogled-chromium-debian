@@ -79,7 +79,7 @@
      if (safe_browsing_mode != 0) {
        sources += [
          "api/safe_browsing_private/safe_browsing_private_event_router.cc",
-@@ -1230,7 +1236,6 @@
+@@ -1233,7 +1239,6 @@
        sources += [
          "api/enterprise_reporting_private/chrome_desktop_report_request_helper.cc",
          "api/enterprise_reporting_private/chrome_desktop_report_request_helper.h",
@@ -87,7 +87,7 @@
        ]
        deps += [
          "//components/enterprise/common/proto:connectors_proto",
-@@ -1239,6 +1244,9 @@
+@@ -1242,6 +1247,9 @@
        if (use_gio) {
          configs += [ "//build/linux:gio_config" ]
        }
@@ -97,7 +97,7 @@
      }
  
      if (is_chromeos) {
-@@ -1476,7 +1484,7 @@
+@@ -1479,7 +1487,7 @@
        ]
      }
  
@@ -108,7 +108,7 @@
      }
 --- a/chrome/browser/extensions/keyed_services/chrome_browser_context_keyed_service_factories.cc
 +++ b/chrome/browser/extensions/keyed_services/chrome_browser_context_keyed_service_factories.cc
-@@ -39,9 +39,14 @@
+@@ -38,9 +38,14 @@
  #if BUILDFLAG(ENABLE_EXTENSIONS)
  #include "chrome/browser/extensions/plugin_manager.h"
  #include "chrome/browser/extensions/warning_badge_service_factory.h"
@@ -125,7 +125,7 @@
  #include "chrome/browser/extensions/forced_extensions/assessment_assistant_tracker.h"
 --- a/chrome/browser/extensions/api/api_browser_context_keyed_service_factories.cc
 +++ b/chrome/browser/extensions/api/api_browser_context_keyed_service_factories.cc
-@@ -38,7 +38,6 @@
+@@ -37,7 +37,6 @@
  #include "chrome/browser/extensions/api/bookmark_manager_private/bookmark_manager_private_api.h"
  #include "chrome/browser/extensions/api/braille_display_private/braille_display_private_api.h"
  #include "chrome/browser/extensions/api/enterprise_reporting_private/enterprise_reporting_private_event_router.h"
@@ -133,7 +133,7 @@
  #include "chrome/browser/extensions/api/language_settings_private/language_settings_private_delegate_factory.h"
  #include "chrome/browser/extensions/api/networking_private/networking_private_ui_delegate_factory_impl.h"
  #include "chrome/browser/extensions/api/passwords_private/passwords_private_delegate_factory.h"
-@@ -46,6 +45,7 @@
+@@ -45,6 +44,7 @@
  #include "chrome/browser/extensions/api/settings_overrides/settings_overrides_api.h"
  #include "chrome/browser/extensions/api/settings_private/settings_private_event_router_factory.h"
  #include "chrome/browser/extensions/api/side_panel/side_panel_service.h"
@@ -141,7 +141,7 @@
  #include "components/safe_browsing/buildflags.h"
  #include "extensions/browser/api/networking_private/networking_private_delegate_factory.h"
  #include "pdf/buildflags.h"
-@@ -70,6 +70,10 @@
+@@ -69,6 +69,10 @@
  #include "extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.h"
  #endif
  
@@ -152,7 +152,7 @@
  #if BUILDFLAG(ENABLE_SERVICE_DISCOVERY)
  #include "chrome/browser/extensions/api/mdns/mdns_api.h"
  #endif
-@@ -123,7 +127,9 @@
+@@ -121,7 +125,9 @@
  #if BUILDFLAG(IS_CHROMEOS)
    extensions::InputImeAPI::GetFactoryInstance();
  #endif
@@ -172,15 +172,15 @@
  import("//components/guest_view/buildflags/buildflags.gni")
  import("//pdf/features.gni")
  
-@@ -86,7 +87,6 @@
+@@ -85,7 +86,6 @@
      "enterprise_reporting_private.webidl",
      "experimental_actor.webidl",
      "experimental_ai_data.webidl",
--    "image_writer_private.idl",
+-    "image_writer_private.webidl",
      "indigo_private.webidl",
      "language_settings_private.idl",
      "passwords_private.idl",
-@@ -154,6 +154,10 @@
+@@ -153,6 +153,10 @@
          "printing_metrics.idl",
        ]
      }
@@ -193,15 +193,15 @@
    if (is_linux || is_win || is_chromeos) {
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -17,6 +17,7 @@
- import("//chrome/browser/page_load_metrics/integration_tests/sources.gni")
+@@ -15,6 +15,7 @@
+ import("//chrome/browser/downgrade/buildflags.gni")
  import("//chrome/common/features.gni")
  import("//chrome/common/request_header_integrity/buildflags.gni")
 +import("//chrome/services/file_util/public/features.gni")
  import("//chrome/services/speech/buildflags/buildflags.gni")
  import("//chrome/test/include_js_tests.gni")
  import("//components/allocation_recorder/testing/testing.gni")
-@@ -8195,7 +8196,6 @@
+@@ -7361,7 +7362,6 @@
        "//chrome/browser/web_applications:web_app_test",
        "//chrome/browser/web_applications:web_applications_unit_tests",
        "//chrome/browser/web_applications/extensions:unit_tests",
@@ -209,7 +209,7 @@
        "//components/services/unzip:in_process",
        "//extensions/browser/mime_handler",
        "//extensions/browser/mime_handler:stream_container",
-@@ -8203,6 +8203,10 @@
+@@ -7369,6 +7369,10 @@
        "//extensions/renderer:unit_test_support",
      ]
  

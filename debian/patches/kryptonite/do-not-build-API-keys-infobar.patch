@@ -8,7 +8,7 @@
        "google_chrome_scheme_util.h",
        "infobar_utils.h",
        "launch_mode_recorder.h",
-@@ -196,7 +195,6 @@
+@@ -197,7 +196,6 @@
      sources += [
        "automation_infobar_delegate.cc",
        "features.cc",

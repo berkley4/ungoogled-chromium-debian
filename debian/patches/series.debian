@@ -71,7 +71,6 @@ various/compiler-flags/stack-clash-protection.patch
 various/compiler-flags/unique-section-names.patch
 various/disable/absl-tests.patch
 various/disable/angle-perftests.patch
-various/disable/autofill-ai.patch
 various/disable/CollectWebGPUSupportMetrics.patch
 various/disable/lens-features.patch
 various/disable/motherboard-metrics.patch
@@ -154,7 +153,6 @@ optional/enable/mutex-priority-inheritance.patch
 optional/ffmpeg-hevc/add-hevc-ffmpeg-decoder-parser-for-linux.patch
 optional/ffmpeg-hevc/add-hevc-ffmpeg-decoder-parser-for-linux-asm.patch
 optional/ffmpeg-hevc/enable-hevc-ffmpeg-decoding.patch
-optional/ffmpeg-hevc/change-libavcodec-header.patch
 #optional/fixes/opentype-svg-on-bundled-freetype.patch
 #optional/fixes/partition-lock-priority-inheritance.patch
 optional/fixes/qt-ui.patch
@@ -180,4 +178,5 @@ optional/system/openh264.patch
 #optional/system/node/node-version-ck_2.patch
 #optional/system/rust/no-adler2.patch
 #optional/system/rust/no-alloc-shim.patch
+#optional/system/rust/no-cbor.patch
 optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch

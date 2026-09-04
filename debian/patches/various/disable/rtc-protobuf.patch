@@ -1,7 +1,7 @@
 --- a/third_party/webrtc/api/audio/BUILD.gn
 +++ b/third_party/webrtc/api/audio/BUILD.gn
-@@ -169,7 +169,7 @@
-   deps = [ ":aec3_config" ]
+@@ -183,7 +183,7 @@
+   }
  }
  
 -if (rtc_enable_protobuf) {
