@@ -259,6 +259,18 @@ if [ -n "$TIMESTAMP" ] && [ -n "$BUILD_TS" ] && [ $BUILD_TS -lt 2 ]; then
 fi
 
 
+# Warn about using non-bundled build tools
+
+for i in GN NODE RUST; do
+  eval "
+    if [ \$SYS_$i -ne 0 ]; then
+      printf '%s\n' \"WARN: Using non-bundled \$i is not recommended [SYS_$i=\$SYS_$i]\"
+    fi
+  "
+done
+
+
+
 case $TIMESTAMP in
   [1-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])
     BUILD_TS=2 ;;
