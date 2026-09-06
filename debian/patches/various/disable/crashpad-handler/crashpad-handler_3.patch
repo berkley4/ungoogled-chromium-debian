@@ -18,6 +18,26 @@
      deps += [
        "//chrome/app:chrome_crash_reporter_client",
        "//components/crash/content/browser",
+--- a/chrome/browser/metrics/BUILD.gn
++++ b/chrome/browser/metrics/BUILD.gn
+@@ -221,7 +221,7 @@
+     ]
+   }
+ 
+-  if (is_win || is_android || is_linux) {
++  if (is_win || is_android) {
+     public += [ "chrome_metrics_service_crash_reporter.h" ]
+   }
+ 
+@@ -492,7 +492,7 @@
+     deps += [ "//chrome/browser/updates:update_metrics" ]
+   }
+ 
+-  if (is_win || is_android || is_linux) {
++  if (is_win || is_android) {
+     sources += [ "chrome_metrics_service_crash_reporter.cc" ]
+   }
+ 
 --- a/chrome/browser/metrics/chrome_metrics_service_client.cc
 +++ b/chrome/browser/metrics/chrome_metrics_service_client.cc
 @@ -208,7 +208,7 @@
@@ -47,3 +67,27 @@
    // Register the environment with the crash reporter. Note that there is a
    // window from startup to this point during which crash reports will not have
    // an environment set.
+--- a/chrome/common/crash_keys.cc
++++ b/chrome/common/crash_keys.cc
+@@ -18,6 +18,7 @@
+ #include "base/strings/stringprintf.h"
+ #include "build/build_config.h"
+ #include "chrome/common/chrome_switches.h"
++#include "components/crash/core/common/crash_buildflags.h"
+ #include "components/crash/core/common/crash_key.h"
+ #include "components/crash/core/common/crash_keys.h"
+ #include "components/webui/flags/flags_ui_switches.h"
+@@ -56,7 +57,13 @@
+   ~CrashKeyWithName() = delete;
+ 
+   std::string_view Name() const { return name_; }
+-  std::string_view Value() const { return crash_key_.value(); }
++  std::string_view Value() const {
++#if BUILDFLAG(USE_CRASH_KEY_STUBS)
++    return "";
++#else
++    return crash_key_.value();
++#endif
++  }
+   void Clear() { crash_key_.Clear(); }
+   void Set(std::string_view value) { crash_key_.Set(value); }

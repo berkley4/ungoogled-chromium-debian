@@ -117,7 +117,8 @@ GN_FLAGS +=					\
 	tint_build_fuzzer_vulkan_support=false  \
         tint_build_null_writer=false            \
 	tint_build_unittests=false		\
-	tint_has_protobuf=false
+	tint_has_protobuf=false			\
+	use_crash_key_stubs=true
 
 # The items below are best configured via debian/configure.sh
 # (this needs to be run anyway when self-compiling).
