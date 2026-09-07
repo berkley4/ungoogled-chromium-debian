@@ -142,7 +142,7 @@ GN_FLAGS += enable_mutex_priority_inheritance=true
 ### General components
 
 # Disable ATK
-#GN_FLAGS += use_atk=false
+GN_FLAGS += use_atk=false
 
 # Disable bluetooth (protocol stack)
 GN_FLAGS += use_bluez=false

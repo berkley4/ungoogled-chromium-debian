@@ -85,7 +85,7 @@ ___Security/Privacy improvements___
     - Google Translate
 - Reduced attack surface
     - Some components/features can optionally be disabled/enabled/patched out at compile time
-        - ATK (+)
+        - ATK
         - Bluez
         - Catapult
         - DNS config service

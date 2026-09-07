@@ -72,7 +72,7 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$MEDIA_OPT_SPEED" ] || MEDIA_OPT_SPEED=1
 [ -n "$MF_SPLIT" ] || MF_SPLIT=1
 
-[ -n "$ATK" ] || ATK=1
+[ -n "$ATK" ] || ATK=0
 [ -n "$BACKGROUND_AUDIO" ] || BACKGROUND_AUDIO=1
 [ -n "$BLUETOOTH" ] || BLUETOOTH=0
 [ -n "$CATAPULT" ] || CATAPULT=0
@@ -853,9 +853,9 @@ fi
 ## Non-library features/components/patches ##
 #############################################
 
-if [ $ATK -eq 0 ]; then
-  op_enable="$op_enable disable/atk.patch"
-  gn_enable="$gn_enable use_atk=false"
+if [ $ATK -eq 1 ]; then
+  op_disable="$op_disable disable/atk.patch"
+  gn_disable="$gn_disable use_atk=false"
 fi
 
 

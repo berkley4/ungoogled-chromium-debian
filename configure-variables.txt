@@ -110,7 +110,7 @@ DNS_HOST		<hostname>	To set https://dns.example.net/dns-query{?dns} as DNS-over-
 
 DRIVER			1		Chromedriver package
 
-ATK			1		Accessibility toolkit
+ATK			0		Accessibility toolkit
 BACKGROUND_AUDIO	1		Controls enablement of a cromite patch to prevent audio muting when switching tabs
 					Relies on NON_FREE=1 to have any effect
 
