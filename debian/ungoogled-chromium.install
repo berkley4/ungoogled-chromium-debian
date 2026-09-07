@@ -10,7 +10,7 @@ out/Release/v8_context_snapshot.bin                                            u
 
 out/Release/libEGL.so                                                          usr/lib/chromium
 out/Release/libGLESv2.so                                                       usr/lib/chromium
-out/Release/libqt5_shim.so                                                     usr/lib/chromium
+#out/Release/libqt5_shim.so                                                     usr/lib/chromium
 out/Release/libVkICD_mock_icd.so                                               usr/lib/chromium
 #out/Release/libVkLayer_khronos_validation.so                                   usr/lib/chromium
 out/Release/libvulkan.so.1                                                     usr/lib/chromium

@@ -144,7 +144,7 @@ optional/disable/webserial.patch
 optional/disable/media-remoting/media-remoting.patch
 optional/disable/media-remoting/registry-pref.patch
 #optional/disable/theme-buttons/no-gtk-button.patch
-#optional/disable/theme-buttons/no-qt-button.patch
+optional/disable/theme-buttons/no-qt-button.patch
 #optional/enable/add-flag-to-enable-mdns.patch
 optional/enable/hyphen-data.patch
 optional/enable/middle-click-autoscroll.patch
@@ -155,7 +155,7 @@ optional/ffmpeg-hevc/add-hevc-ffmpeg-decoder-parser-for-linux-asm.patch
 optional/ffmpeg-hevc/enable-hevc-ffmpeg-decoding.patch
 #optional/fixes/opentype-svg-on-bundled-freetype.patch
 #optional/fixes/partition-lock-priority-inheritance.patch
-optional/fixes/qt-ui.patch
+#optional/fixes/qt-ui.patch
 #optional/fixes/rustc-allow-features.patch
 #optional/fixes/skia-allow-bundled-freetype.patch
 optional/fixes/chromedriver/brandversion.patch

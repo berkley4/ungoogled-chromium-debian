@@ -99,7 +99,7 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$PIPEWIRE" ] || PIPEWIRE=1
 [ -n "$PRINT_PREVIEW" ] || PRINT_PREVIEW=1
 [ -n "$PULSE" ] || PULSE=1
-[ -n "$QT" ] || QT=1
+[ -n "$QT" ] || QT=0
 [ -n "$QT_6" ] || QT_6=0
 [ -n "$SPEECH" ] || SPEECH=0
 [ -n "$SPOOF_WEBGL_INFO" ] || SPOOF_WEBGL_INFO=1
@@ -1173,13 +1173,13 @@ fi
 ##  Libraries  ##
 #################
 
-if [ $QT -eq 0 ]; then
-  op_disable="$op_disable fixes/qt-ui.patch"
-  op_enable="$op_enable disable/theme-buttons/no-qt-button.patch"
-  deps_disable="$deps_disable qtbase"
-  ins_disable="$ins_disable qt"
-  gn_disable="$gn_disable use_qt"
-else
+if [ $QT -eq 1 ]; then
+  op_enable="$op_enable fixes/qt-ui.patch"
+  op_disable="$op_disable disable/theme-buttons/no-qt-button.patch"
+  deps_enable="$deps_enable qtbase"
+  ins_enable="$ins_enable qt"
+  gn_enable="$gn_enable use_qt"
+
   if [ $QT_6 -eq 1 ]; then
     CON="$CON -e \"/qtbase/s@5@6@\""
     INS="$INS -e \"/libqt5_shim/s@5@6@\""

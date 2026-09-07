@@ -166,7 +166,7 @@ PIPEWIRE		1
 PRINT_PREVIEW		1		Can be disabled to replace the print dialogue with the system one
 PULSE			1		Pulseaudio
 
-QT			1		0 - disable
+QT			0		0 - disable
 					1 - enable
 					6 - alias for QT_6=1
 					At least one of GTK or QT must be enabled to avoid crashes

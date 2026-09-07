@@ -184,7 +184,7 @@ GN_FLAGS += rtc_use_pipewire=true
 GN_FLAGS += link_pulseaudio=true
 
 # Enable Qt (version 5)
-GN_FLAGS += use_qt5=true
+#GN_FLAGS += use_qt5=true
 
 # Disable speech service
 GN_FLAGS += enable_speech_service=false

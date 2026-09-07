@@ -52,7 +52,7 @@ Build-Depends:
  libva-dev,
  libwebp-dev,
  libzstd-dev,
- qtbase5-dev,
+#qtbase5-dev,
  libdav1d-dev,
  libfontconfig-dev
 
