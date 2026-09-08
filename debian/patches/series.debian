@@ -112,7 +112,6 @@ various/system/minizip_2.patch
 various/system/perfetto-system-zlib.patch
 various/system/zlib.patch
 
-optional/translate-stop-unsupported-switch-warning.patch
 #optional/build-timestamp/compute-fixed-build-timestamp.patch
 #optional/build-timestamp/use-non-official-build-timestamp.patch
 optional/compiler-flags/machine-function-splitting.patch
@@ -158,6 +157,7 @@ optional/ffmpeg-hevc/enable-hevc-ffmpeg-decoding.patch
 #optional/fixes/qt-ui.patch
 #optional/fixes/rustc-allow-features.patch
 #optional/fixes/skia-allow-bundled-freetype.patch
+optional/fixes/translate-stop-unsupported-switch-warning.patch
 optional/fixes/chromedriver/brandversion.patch
 optional/fixes/chromedriver/fix-paths.patch
 optional/fixes/widevine/widevine-locations.patch

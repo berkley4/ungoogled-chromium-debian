@@ -1067,7 +1067,7 @@ fi
 
 
 if [ $TRANSLATE -eq 0 ]; then
-  op_disable="$op_disable translate-stop-unsupported-switch-warning.patch"
+  op_disable="$op_disable fixes/translate-stop-unsupported-switch-warning.patch"
   ins_disable="$ins_disable google-translate"
 else
   DSB="$DSB -e \"/\/translate_manager_browsertest\.cc/d\""
