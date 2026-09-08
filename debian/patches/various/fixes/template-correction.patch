@@ -131,7 +131,7 @@
  # Only KDE 4 seems to use GenericName, so we reuse the KDE strings.
  # From Ubuntu's language-pack-kde-XX-base packages, version 9.04-20090413.
  GenericName=Web Browser
-@@ -105,11 +105,11 @@
+@@ -105,16 +105,15 @@
  Comment[zh_CN]=访问互联网
  Comment[zh_HK]=連線到網際網路
  Comment[zh_TW]=連線到網際網路
@@ -145,8 +145,14 @@
 +Icon=Chromium
  Type=Application
  Categories=Network;WebBrowser;
- MimeType=application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/http;x-scheme-handler/https;@@uri_scheme
-@@ -168,7 +168,7 @@
+-MimeType=application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/http;x-scheme-handler/https;@@uri_scheme
++MimeType=application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/http;x-scheme-handler/https
+ Actions=new-window;new-private-window;
+-@@extra_desktop_entries
+ 
+ [Desktop Action new-window]
+ Name=New Window
+@@ -168,7 +167,7 @@
  Name[vi]=Cửa sổ Mới
  Name[zh_CN]=新建窗口
  Name[zh_TW]=開新視窗
@@ -155,7 +161,7 @@
  
  [Desktop Action new-private-window]
  Name=New Incognito Window
-@@ -220,4 +220,4 @@
+@@ -220,4 +219,4 @@
  Name[vi]=Cửa sổ ẩn danh mới
  Name[zh_CN]=新建隐身窗口
  Name[zh_TW]=新增無痕式視窗
