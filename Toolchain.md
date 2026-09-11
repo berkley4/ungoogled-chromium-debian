@@ -125,13 +125,15 @@ This seems to be a bug which is easiest to solve by manually
 copying the file from your git checkout to your installation.
 
 ```sh
-cp compiler-rt/lib/cfi/cfi_ignorelist.txt /usr/local/lib/clang/23/share/
+ls compiler-rt/lib/cfi/cfi_ignorelist.txt
+```
+```sh
+cp compiler-rt/lib/cfi/cfi_ignorelist.txt /usr/local/lib/clang/24/share/
 ```
 
-As root, make sure this file is owned by root and readable by all :-
+As root, make sure this file is readable by all :-
 ```sh
-chown root:root /usr/local/lib/clang/23/share/cfi_ignorelist.txt
-chmod 0644 /usr/local/lib/clang/23/share/cfi_ignorelist.txt
+chmod 0644 /usr/local/lib/clang/24/share/cfi_ignorelist.txt
 ```
 
 
