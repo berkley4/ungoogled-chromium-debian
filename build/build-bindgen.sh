@@ -68,14 +68,14 @@ esac
 
 
 # Set RUST_PATH according to value of SYS_RUST (default is SYS_RUST=0)
-RUST_PATH=third_party/rust-toolchain/bin
+RUST_PATH=src/third_party/rust-toolchain/bin
 if [ $SYS_RUST -eq 1 ]; then
   RUST_PATH=/usr/bin
 elif [ $SYS_RUST -ge 2 ]; then
   RUST_PATH=$HOME/.cargo/bin
 fi
 
-export PATH="$RUST_PATH:$PATH"
+export PATH="$(real_dir_path $RUST_PATH):$PATH"
 
 
 # Set CLANG_PATH according to value of SYS_CLANG (default is SYS_CLANG=0)
