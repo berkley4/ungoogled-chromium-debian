@@ -1,0 +1,13 @@
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -512,6 +512,10 @@
+       cflags += [ "-funwind-tables" ]
+       rustflags += [ "-Cforce-unwind-tables=yes" ]
+     }
++
++    if (use_lld) {
++      rustflags += [ "-Clink-arg=-fuse-ld=lld" ]
++    }
+   }
+ 
+   # Apple compiler flags setup.
