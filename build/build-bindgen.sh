@@ -31,7 +31,7 @@ nc_file=ncursesw-linux-amd64.zip
 
 
 get_nc_url() {
-  sed -n -e 's@\&amp;@\&@g' -e 's@.*"\(https://storage.googleapis.com/[^"]*\).*@\1@p'
+  sed -n -e 's@\&amp;@\&@g' -e 's@#43;@+@g' -e 's@.*"\(https://storage.googleapis.com/[^"]*\).*@\1@p'
 }
 
 real_dir_path() {
