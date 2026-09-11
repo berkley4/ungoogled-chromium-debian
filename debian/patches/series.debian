@@ -21,7 +21,6 @@ debian/disable/widevine-cdm-cu.patch
 debian/system/golang.patch
 debian/system/openjpeg.patch
  
-cromite/Allow-playing-audio-in-background.patch
 cromite/Disable-csp-reports.patch
 cromite/AudioBuffer-AnalyserNode-fp-mitigations.patch
 cromite/Partition-Blink-memory-cache.patch
