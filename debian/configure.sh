@@ -78,7 +78,6 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$CATAPULT" ] || CATAPULT=0
 [ -n "$CHROMECAST" ] || CHROMECAST=0
 [ -n "$DRIVER" ] || DRIVER=1
-[ -n "$ENTERPRISE_WATERMARK" ] || ENTERPRISE_WATERMARK=0
 [ -n "$FF_HEVC" ] || FF_HEVC=1
 [ -n "$FONTATIONS_PDF" ] || FONTATIONS_PDF=1
 [ -n "$GOOGLE_API_KEYS" ] || GOOGLE_API_KEYS=1
@@ -916,12 +915,6 @@ if [ $DRIVER -eq 0 ]; then
   CON="$CON -e \"/^Package: ungoogled-chromium-driver/,/^Package:/{//!d}\""
   CON="$CON -e \"/^Package: ungoogled-chromium-driver/d\""
   RUL="$RUL -e \"s@ chromedriver@@\""
-fi
-
-
-if [ $ENTERPRISE_WATERMARK -eq 1 ]; then
-  op_disable="$op_disable disable/enterprise-watermark.patch"
-  gn_enable="$gn_enable enterprise_watermark=false"
 fi
 
 

@@ -89,7 +89,6 @@ ___Security/Privacy improvements___
         - Bluez
         - Catapult
         - DNS config service
-        - Enterprise watermark
         - Media remoting
         - Media router
         - mDNS
