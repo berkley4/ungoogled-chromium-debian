@@ -7,7 +7,7 @@ the same logic..
 
 --- a/chrome/updater/BUILD.gn
 +++ b/chrome/updater/BUILD.gn
-@@ -1352,7 +1352,6 @@
+@@ -1355,7 +1355,6 @@
      }
      if (is_linux) {
        data_deps = [ "//chrome/updater/linux:updater_test" ]

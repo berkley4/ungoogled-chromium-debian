@@ -1,6 +1,40 @@
+--- a/chrome/BUILD.gn
++++ b/chrome/BUILD.gn
+@@ -1057,7 +1057,6 @@
+     public_deps = [
+       "//chrome/app_shim:app_mode_loader",
+       "//chrome/browser/web_applications/os_integration/mac:web_app_shortcut_copier",
+-      "//components/crash/core/app:chrome_crashpad_handler",
+     ]
+ 
+     foreach(helper_params, chrome_mac_helpers) {
+@@ -1540,7 +1539,6 @@
+       deps = [
+         ":chrome_app",
+         ":chrome_framework",
+-        "//components/crash/core/app:chrome_crashpad_handler",
+         "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan",
+         dump_syms,
+       ]
+@@ -1594,7 +1592,6 @@
+       deps = [
+         ":chrome_app",
+         ":chrome_framework",
+-        "//components/crash/core/app:chrome_crashpad_handler",
+         "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan",
+       ]
+       deps += [ "//third_party/vulkan-loader/src:libvulkan" ]
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -1942,7 +1942,7 @@
+@@ -1129,7 +1129,6 @@
+     "//components/content_settings/browser/ui",
+     "//components/contextual_tasks/public",
+     "//components/contextual_tasks/public:feature_list",
+-    "//components/crash/core/app",
+     "//components/credential_management:browser",
+     "//components/custom_handlers",
+     "//components/data_sharing/public:features",
+@@ -1946,7 +1945,7 @@
      ]
    }
  
@@ -9,18 +43,24 @@
      sources += [ "//chrome/app/chrome_crash_reporter_client.cc" ]
      deps += [
        "//chrome/app:chrome_crash_reporter_client",
-@@ -4272,7 +4272,7 @@
-     public_deps += [ "//chrome/browser/downgrade:impl" ]
+@@ -3605,10 +3604,10 @@
    }
  
--  if (is_posix && !is_mac) {
-+  if (is_posix && !is_linux && !is_mac) {
-     deps += [
-       "//chrome/app:chrome_crash_reporter_client",
-       "//components/crash/content/browser",
+   if (is_posix && !is_mac) {
+-    deps += [
+-      "//components/crash/core/app",
+-      "//components/version_info:generate_version_info",
+-    ]
++    deps += [ "//components/version_info:generate_version_info" ]
++    if (!is_linux) {
++      deps += [ "//components/crash/core/app" ]
++    }
+   }
+ 
+   if (use_aura) {
 --- a/chrome/browser/metrics/BUILD.gn
 +++ b/chrome/browser/metrics/BUILD.gn
-@@ -221,7 +221,7 @@
+@@ -224,7 +224,7 @@
      ]
    }
  
@@ -29,7 +69,7 @@
      public += [ "chrome_metrics_service_crash_reporter.h" ]
    }
  
-@@ -492,7 +492,7 @@
+@@ -498,7 +498,7 @@
      deps += [ "//chrome/browser/updates:update_metrics" ]
    }
  
@@ -40,7 +80,7 @@
  
 --- a/chrome/browser/metrics/chrome_metrics_service_client.cc
 +++ b/chrome/browser/metrics/chrome_metrics_service_client.cc
-@@ -208,7 +208,7 @@
+@@ -210,7 +210,7 @@
  #include "components/metrics/motherboard_metrics_provider.h"
  #endif
  
@@ -49,7 +89,7 @@
  #include "chrome/browser/metrics/chrome_metrics_service_crash_reporter.h"
  #endif
  
-@@ -235,7 +235,7 @@
+@@ -237,7 +237,7 @@
  // Needs to be kept in sync with the writer in
  // third_party/crashpad/crashpad/handler/handler_main.cc.
  const char kCrashpadHistogramAllocatorName[] = "CrashpadMetrics";
@@ -58,7 +98,7 @@
  ChromeMetricsServiceCrashReporter& GetCrashReporter() {
    static base::NoDestructor<ChromeMetricsServiceCrashReporter> crash_reporter;
    return *crash_reporter;
-@@ -664,7 +664,7 @@
+@@ -671,7 +671,7 @@
  void ChromeMetricsServiceClient::OnEnvironmentUpdate(std::string* environment) {
    // TODO(https://bugs.chromium.org/p/crashpad/issues/detail?id=135): call this
    // on Mac when the Crashpad API supports it.
@@ -91,3 +131,4 @@
 +  }
    void Clear() { crash_key_.Clear(); }
    void Set(std::string_view value) { crash_key_.Set(value); }
+ 

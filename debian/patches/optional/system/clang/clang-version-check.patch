@@ -11,12 +11,12 @@ For now, let's just get this building in debian.
 
 --- a/tools/clang/scripts/update.py
 +++ b/tools/clang/scripts/update.py
-@@ -402,7 +402,7 @@
+@@ -439,7 +439,7 @@
        return 0
  
      stamp_version = ReadStampFile(STAMP_FILE).partition(',')[0]
 -    if PACKAGE_VERSION != stamp_version:
 +    if False:
-       print('The expected clang version is %s but the actual version is %s' %
-             (PACKAGE_VERSION, stamp_version))
-       print('Did you run "gclient sync"?')
+       print(
+         'The expected clang version is %s but the actual version is %s'
+         % (PACKAGE_VERSION, stamp_version)

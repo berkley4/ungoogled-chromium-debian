@@ -1,11 +1,11 @@
 --- a/components/autofill/core/common/autofill_features.cc
 +++ b/components/autofill/core/common/autofill_features.cc
-@@ -865,7 +865,7 @@
- 
- // If enabled, upload votes for sms otp.
- // TODO(crbug.com/453999673): Clean up when launched.
--BASE_FEATURE(kAutofillSmsOtpCrowdsourcing, base::FEATURE_ENABLED_BY_DEFAULT);
-+BASE_FEATURE(kAutofillSmsOtpCrowdsourcing, base::FEATURE_DISABLED_BY_DEFAULT);
- 
+@@ -966,7 +966,7 @@
  // If enabled, fetch sms otp from gmscore and upload votes for sms otp.
  // TODO(crbug.com/453999673): Clean up when launched.
+ BASE_FEATURE(kAutofillSmsOtpCrowdsourcingFetchFromGmscore,
+-             base::FEATURE_ENABLED_BY_DEFAULT);
++             base::FEATURE_DISABLED_BY_DEFAULT);
+ 
+ // If this feature is enabled, the AddressFieldParser does NOT try to parse
+ // address lines once it has found a street name and house number or other

@@ -23,5 +23,5 @@
 -  pdf_enable_xfa = pdf_enable_xfa_override
 +  pdf_enable_xfa = pdf_enable_v8 && pdf_enable_xfa_override
  
-   # If XFA, also support bmp codec. Ignored if not XFA.
-   pdf_enable_xfa_bmp = true
+   # Build PDFium against PartitionAlloc. When false, PDFium must build without
+   # requiring any PartitionAlloc headers or code to be present. When true,

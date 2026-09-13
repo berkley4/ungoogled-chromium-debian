@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -682,7 +682,7 @@
+@@ -680,7 +680,7 @@
        ]
      }
  
@@ -9,30 +9,9 @@
        deps += [
          "//third_party/crashpad/crashpad:crashpad_tests",
          "//third_party/crashpad/crashpad/tools:crashpad_database_util",
---- a/chrome/browser/BUILD.gn
-+++ b/chrome/browser/BUILD.gn
-@@ -3363,7 +3363,6 @@
-       "//components/webauthn/core/browser",
-       "//components/webauthn/core/browser:passkey_model",
-       "//services/device/public/cpp/hid",
--      "//third_party/crashpad/crashpad/client:common",
-       "//third_party/zxcvbn-cpp",
-       "//ui/views",
-       "//ui/web_dialogs",
-@@ -3379,6 +3378,10 @@
-       deps += [ "//chrome/browser/ui/webui/signin:inline_login_impl" ]
-     }
- 
-+    if (!is_linux) {
-+      deps += [ "//third_party/crashpad/crashpad/client:common" ]
-+    }
-+
-     #!is_android
-     if (!is_chromeos) {
-       deps += [
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -319,7 +319,9 @@
+@@ -326,7 +326,9 @@
          "//chrome/common:buildflags",
        ]
  
@@ -43,7 +22,7 @@
  
        ldflags = []
  
-@@ -1719,7 +1721,6 @@
+@@ -1867,7 +1869,6 @@
    if (!(is_debug && use_debug_fission)) {
      group("linux_symbols") {
        deps = [
@@ -51,7 +30,7 @@
          ":chrome_symbols",
        ]
        if (is_linux) {
-@@ -1754,17 +1755,19 @@
+@@ -1902,17 +1903,19 @@
  
        deps = [ ":chrome" ]
      }
@@ -90,7 +69,7 @@
    "$root_out_dir/chrome_management_service",
    "$root_out_dir/chrome_sandbox",
  ]
-@@ -203,11 +202,6 @@
+@@ -212,11 +211,6 @@
    deps = [ "//chrome" ]
  }
  
@@ -102,7 +81,7 @@
  strip_binary("strip_chrome_management_service") {
    binary_input = "$root_out_dir/chrome_management_service"
    deps = [ "//chrome/browser/enterprise/connectors/device_trust/key_management/installer/management_service:chrome_management_service" ]
-@@ -457,7 +451,6 @@
+@@ -466,7 +460,6 @@
      ":deb_packaging_files",
      ":save_build_info",
      ":strip_chrome_binary",
@@ -110,7 +89,7 @@
      ":strip_chrome_management_service",
      ":strip_chrome_sandbox",
      ":theme_files",
-@@ -465,7 +458,6 @@
+@@ -482,7 +475,6 @@
      "//chrome:packed_resources",
      "//chrome/browser/enterprise/connectors/device_trust/key_management/installer/management_service:chrome_management_service",
      "//chrome/browser/resources/media/mei_preload:component",
@@ -120,7 +99,7 @@
    ]
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -578,10 +578,6 @@
+@@ -525,10 +525,6 @@
      ]
    }
  
@@ -133,7 +112,7 @@
        ":test_support_ui_android",
 --- a/components/crash/core/app/BUILD.gn
 +++ b/components/crash/core/app/BUILD.gn
-@@ -85,7 +85,7 @@
+@@ -90,7 +90,7 @@
      "//third_party/crashpad/crashpad/util",
    ]
  
@@ -142,7 +121,7 @@
      sources += [ "crashpad_linux.cc" ]
      data_deps = [ ":chrome_crashpad_handler" ]
    }
-@@ -238,7 +238,7 @@
+@@ -242,7 +242,7 @@
    }
  }
  
@@ -153,7 +132,7 @@
    executable("chrome_crashpad_handler") {
 --- a/content/shell/BUILD.gn
 +++ b/content/shell/BUILD.gn
-@@ -799,7 +799,7 @@
+@@ -802,7 +802,7 @@
      if (is_win) {
        data_deps +=
            [ "//third_party/crashpad/crashpad/handler:crashpad_handler" ]

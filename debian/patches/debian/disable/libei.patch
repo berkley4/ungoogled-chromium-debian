@@ -6,7 +6,7 @@ we re-add libei.
 
 --- a/remoting/host/BUILD.gn
 +++ b/remoting/host/BUILD.gn
-@@ -701,7 +701,6 @@
+@@ -704,7 +704,6 @@
      deps += [
        "//remoting/host/linux:platform_impls",
        "//remoting/host/linux:utils",
@@ -16,10 +16,10 @@ we re-add libei.
        "//ui/gfx/x",
 --- a/remoting/host/linux/BUILD.gn
 +++ b/remoting/host/linux/BUILD.gn
-@@ -347,7 +347,6 @@
-     "//remoting/host/security_key",
+@@ -353,7 +353,6 @@
      "//remoting/proto",
      "//remoting/protocol",
+     "//sandbox/linux:seccomp_bpf",
 -    "//third_party/libei",
      "//third_party/webrtc_overrides:webrtc_component",
      "//ui/base",

@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2496,6 +2496,17 @@
+@@ -2524,6 +2524,17 @@
    common_optimize_on_ldflags = []
    extra_cflags = []
  

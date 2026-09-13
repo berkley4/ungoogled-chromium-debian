@@ -1,6 +1,6 @@
 --- a/chrome/browser/extensions/BUILD.gn
 +++ b/chrome/browser/extensions/BUILD.gn
-@@ -568,6 +568,7 @@
+@@ -565,6 +565,7 @@
      "//chrome/browser/undo",
      "//chrome/browser/update_client",
      "//chrome/common",
@@ -8,7 +8,7 @@
      "//components/bookmarks/browser",
      "//components/bookmarks/managed",
      "//components/content_settings/core/browser",
-@@ -1007,7 +1008,6 @@
+@@ -1000,7 +1001,6 @@
        "//chrome/browser/web_applications/extensions",
        "//chrome/common/extensions/api:extensions_features",
        "//chrome/services/file_util/public/mojom",
@@ -16,7 +16,7 @@
        "//components/affiliations/core/browser:affiliations",
        "//components/app_constants",
        "//components/autofill/content/browser",
-@@ -1127,6 +1127,10 @@
+@@ -1120,6 +1120,10 @@
        "//url",
      ]
  
@@ -29,7 +29,7 @@
          "api/certificate_provider/certificate_provider_api.cc",
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -2492,7 +2492,6 @@
+@@ -2424,7 +2424,6 @@
        "//chrome/renderer",
        "//chrome/renderer/actor:browser_tests",
        "//chrome/renderer/webui_browser:browser_tests",
@@ -37,7 +37,7 @@
        "//chrome/test/components_tests:browser_tests",
        "//chrome/test/data/webui:resources",
        "//chrome/test/data/webui/mojo:mojo_bindings",
-@@ -2869,6 +2868,10 @@
+@@ -2800,6 +2799,10 @@
        deps += [ "//chrome/updater:browser_sources" ]
      }
  
@@ -114,7 +114,7 @@
  auto RunRemovableStorageWriter(
      mojo::PendingReceiver<chrome::mojom::RemovableStorageWriter> receiver) {
    return std::make_unique<RemovableStorageWriter>(std::move(receiver));
-@@ -517,7 +518,7 @@
+@@ -521,7 +522,7 @@
    services.Add(RunFileUtil);
  #endif
  

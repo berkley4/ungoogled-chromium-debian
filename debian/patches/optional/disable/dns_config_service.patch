@@ -1,6 +1,6 @@
 --- a/net/dns/BUILD.gn
 +++ b/net/dns/BUILD.gn
-@@ -169,8 +169,8 @@
+@@ -173,8 +173,8 @@
      ]
    } else if (is_linux) {
      sources += [

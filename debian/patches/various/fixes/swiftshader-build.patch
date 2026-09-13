@@ -1,26 +1,61 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -512,7 +512,8 @@
+@@ -510,7 +510,7 @@
      }
  
      if ((is_win || is_mac || is_linux || is_chromeos || is_fuchsia) &&
 -        (target_cpu == "x86" || target_cpu == "x64")) {
-+        (target_cpu == "x86" || target_cpu == "x64") &&
-+         enable_swiftshader_vulkan) {
++        (target_cpu == "x86" || target_cpu == "x64") && enable_swiftshader_vulkan) {
        deps += [
          "//third_party/swiftshader/src/Vulkan:icd_file",
          "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan",
+@@ -1063,7 +1063,7 @@
+           data_deps += [ "//media/gpu/chromeos:vulkan_overlay_adaptor_test" ]
+         }
+       }
+-      if (enable_swiftshader) {
++      if (enable_swiftshader && enable_swiftshader_vulkan) {
+         data_deps += [
+           # libvk_swiftshader.so
+           "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan",
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
 @@ -22,6 +22,7 @@
  import("//components/optimization_guide/features.gni")
- import("//content/common/features.gni")
+ import("//content/public/common/features.gni")
  import("//extensions/buildflags/buildflags.gni")
 +import("//gpu/vulkan/features.gni")
  import("//media/media_options.gni")
  import("//services/on_device_model/on_device_model.gni")
  import("//services/shape_detection/features.gni")
-@@ -1723,7 +1724,7 @@
+@@ -1539,10 +1540,12 @@
+       deps = [
+         ":chrome_app",
+         ":chrome_framework",
+-        "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan",
+         dump_syms,
+       ]
+       deps += [ "//third_party/vulkan-loader/src:libvulkan" ]
++      if (enable_swiftshader_vulkan) {
++        deps += [ "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan" ]
++      }
+       if (build_with_internal_optimization_guide) {
+         deps += [ "//components/optimization_guide/internal:optimization_guide_internal" ]
+       }
+@@ -1592,9 +1595,11 @@
+       deps = [
+         ":chrome_app",
+         ":chrome_framework",
+-        "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan",
+       ]
+       deps += [ "//third_party/vulkan-loader/src:libvulkan" ]
++      if (enable_swiftshader_vulkan) {
++        deps += [ "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan" ]
++      }
+       if (build_with_internal_optimization_guide) {
+         deps += [ "//components/optimization_guide/internal:optimization_guide_internal" ]
+       }
+@@ -1868,7 +1873,7 @@
        deps = [
          ":chrome_symbols",
        ]
@@ -29,7 +64,7 @@
          deps += [ ":swiftshader_vk_symbols" ]
        }
        if (!is_chromeos && angle_shared_libvulkan) {
-@@ -1769,17 +1770,19 @@
+@@ -1914,17 +1919,19 @@
          deps = [ "//components/crash/core/app:chrome_crashpad_handler" ]
        }
      }
@@ -69,7 +104,7 @@
    packaging_files_shlibs += [ "$root_out_dir/libvk_swiftshader.so" ]
  }
  
-@@ -105,7 +105,7 @@
+@@ -114,7 +114,7 @@
                      "$root_out_dir/PrivacySandboxAttestationsPreloaded/manifest.json",
                      "$root_out_dir/PrivacySandboxAttestationsPreloaded/privacy-sandbox-attestations.dat",
                    ]
@@ -105,7 +140,7 @@
  if (angle_has_build) {
    import("//build/config/gclient_args.gni")
  }
-@@ -338,7 +339,8 @@
+@@ -342,7 +343,8 @@
  declare_args() {
    # Currently SwiftShader's Vulkan front-end doesn't build on Android.
    # Disabled by default on MSVC because of compiler warnings/errors.

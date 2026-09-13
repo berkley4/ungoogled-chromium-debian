@@ -8,8 +8,8 @@ Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  .../chrome_browser_main_extra_parts_segmentation_platform.cc  | 4 ++++
- components/segmentation_platform/public/features.cc           | 3 +++
- 2 files changed, 7 insertions(+)
+ components/segmentation_platform/public/features.cc           | 4 ++++
+ 2 files changed, 8 insertions(+)
 
 --- a/chrome/browser/segmentation_platform/chrome_browser_main_extra_parts_segmentation_platform.cc
 +++ b/chrome/browser/segmentation_platform/chrome_browser_main_extra_parts_segmentation_platform.cc

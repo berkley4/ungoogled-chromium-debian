@@ -1,0 +1,334 @@
+From 4e651587afd75366027c5b8db2db7bf4ac013a06 Mon Sep 17 00:00:00 2001
+From: Ho Cheung <hocheung@chromium.org>
+Date: Tue, 08 Sep 2026 15:51:43 -0700
+Subject: [PATCH] [M153] Fix spurious resize events during webview autosizing
+
+Original change's description:
+> Fix spurious resize events during webview autosizing
+>
+> Scroll-width autosizing temporarily resizes a webview to measure
+> narrower content. These internal sizes leaked resize notifications even
+> when the stable viewport size was unchanged.
+>
+> Suppress resize notifications during internal measurements and report
+> events and callbacks only when the stable size changes. Add coverage for
+> fixed overlays and resize handlers that modify the DOM.
+>
+> Fixed: 555294645,555299651
+> Change-Id: Ic8278dd93a63a08b26cf98f96f0b2ad50a6a6113
+> Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/8342172
+> Reviewed-by: Ian Kilpatrick <ikilpatrick@chromium.org>
+> Commit-Queue: Aaron Teo <hocheung@chromium.org>
+> Cr-Commit-Position: refs/heads/main@{#1692203}
+
+(cherry picked from commit 87d63788bf53b841b220b849ee4d6930bf2c30ed)
+
+Bug: 557550131,555294645,555299651
+Change-Id: Ic8278dd93a63a08b26cf98f96f0b2ad50a6a6113
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/8362965
+Commit-Queue: Aaron Teo <hocheung@chromium.org>
+Reviewed-by: Ian Kilpatrick <ikilpatrick@chromium.org>
+Cr-Commit-Position: refs/branch-heads/8010@{#966}
+Cr-Branched-From: 86cee6df69e0463a839c0cc8435c9d4c259434d3-refs/heads/main@{#1681091}
+---
+
+--- a/third_party/blink/renderer/core/exported/web_view_impl.cc
++++ b/third_party/blink/renderer/core/exported/web_view_impl.cc
+@@ -2976,6 +2976,7 @@
+ 
+ void WebViewImpl::DisableAutoResizeMode() {
+   should_auto_resize_ = false;
++  size_before_suppressed_autosize_.reset();
+   ConfigureAutoResizeMode();
+ }
+ 
+@@ -3998,15 +3999,41 @@
+   if (should_auto_resize_) {
+     LocalFrameView* view = MainFrameImpl()->GetFrame()->View();
+     gfx::Size frame_size = view->Size();
++    const bool should_suppress_notifications =
++        view->IsBeingAutoSized() &&
++        RuntimeEnabledFeatures::AutoSizeUsesScrollWidthForOverflowEnabled();
++    if (should_suppress_notifications && !size_before_suppressed_autosize_) {
++      size_before_suppressed_autosize_ = size_;
++    }
++    const bool had_suppressed_autosize_measurements =
++        size_before_suppressed_autosize_.has_value();
++    const gfx::Size previously_reported_size =
++        size_before_suppressed_autosize_.value_or(size_);
++    bool visual_viewport_size_changed = false;
+     if (frame_size != size_) {
+       size_ = frame_size;
+ 
+-      GetPage()->GetVisualViewport().SetSize(size_);
++      GetPage()->GetVisualViewport().SetSize(size_,
++                                             should_suppress_notifications);
++      visual_viewport_size_changed = true;
+       GetPageScaleConstraintsSet().DidChangeInitialContainingBlockSize(size_);
++    }
+ 
++    if (!should_suppress_notifications) {
++      size_before_suppressed_autosize_.reset();
++    }
++    if (!should_suppress_notifications &&
++        frame_size != previously_reported_size) {
+       web_view_client_->DidAutoResize(size_);
+       web_widget_->DidAutoResize(size_);
+       SendResizeEventForMainFrame();
++      if (!visual_viewport_size_changed) {
++        view->GetFrame().GetDocument()->EnqueueVisualViewportResizeEvent();
++      }
++      if (had_suppressed_autosize_measurements &&
++          !view->GetFrame().GetDocument()->Printing()) {
++        probe::DidResizeMainFrame(&view->GetFrame());
++      }
+     }
+   }
+ 
+--- a/third_party/blink/renderer/core/exported/web_view_impl.h
++++ b/third_party/blink/renderer/core/exported/web_view_impl.h
+@@ -819,6 +819,9 @@
+   // contents [e.g. to accomodate a keyboard] without forcing the web page to
+   // relayout. For more details, see the header for the VisualViewport class.
+   gfx::Size size_;
++  // Size before internal scroll-width autosize measurements, used to report
++  // only a stable size change.
++  std::optional<gfx::Size> size_before_suppressed_autosize_;
+   // If true, automatically resize the layout view around its content.
+   bool should_auto_resize_ = false;
+   // The lower bound on the size when auto-resizing.
+--- a/third_party/blink/renderer/core/exported/web_view_test.cc
++++ b/third_party/blink/renderer/core/exported/web_view_test.cc
+@@ -135,6 +135,7 @@
+ #include "third_party/blink/renderer/core/page/drag_state.h"
+ #include "third_party/blink/renderer/core/page/focus_controller.h"
+ #include "third_party/blink/renderer/core/page/page.h"
++#include "third_party/blink/renderer/core/page/page_animator.h"
+ #include "third_party/blink/renderer/core/page/page_hidden_state.h"
+ #include "third_party/blink/renderer/core/page/page_popup_client.h"
+ #include "third_party/blink/renderer/core/page/print_context.h"
+@@ -1187,6 +1188,148 @@
+ 
+   web_view_helper_.Reset();
+ }
++
++TEST_F(WebViewTest, AutoResizeReportsOnlyStableSize) {
++  ScopedAutoSizeUsesScrollWidthForOverflowForTest scoped_feature(true);
++  AutoResizeWebViewClient client;
++  WebLocalFrameImpl* frame = InitializeAutoResizeWebView(
++      R"HTML(
++        <!DOCTYPE html>
++        <style>
++          body {
++            box-sizing: border-box;
++            width: 400px;
++            height: 600px;
++            margin: 0;
++            padding: 12px;
++          }
++          #overlay {
++            position: fixed;
++            left: 12px;
++            top: 130px;
++            min-width: 160px;
++            padding: 8px;
++            opacity: 0;
++            transform: translateY(-4px);
++            pointer-events: none;
++          }
++          #overlay.open {
++            opacity: 1;
++            transform: translateY(0);
++            pointer-events: auto;
++          }
++          #log { margin-top: 120px; white-space: pre-wrap; }
++        </style>
++        <div id="overlay"></div>
++        <div id="log"></div>
++        <script>
++          window.resizeCount = 0;
++          window.visualViewportResizeCount = 0;
++          window.resizeEventOrder = [];
++          window.echoResizeEvents = false;
++          window.addEventListener('resize', () => {
++            ++resizeCount;
++            resizeEventOrder.push('window');
++            document.documentElement.dataset.resizeCount = resizeCount;
++            document.documentElement.dataset.resizeEventOrder =
++                resizeEventOrder.join(',');
++            document.documentElement.dataset.lastResizeSize =
++                `${innerWidth}x${innerHeight}`;
++            if (echoResizeEvents) {
++              log.textContent += `resize ${resizeCount}\n`;
++            }
++          });
++          visualViewport.addEventListener('resize', () => {
++            resizeEventOrder.push('visualViewport');
++            document.documentElement.dataset.visualViewportResizeCount =
++                ++visualViewportResizeCount;
++            document.documentElement.dataset.resizeEventOrder =
++                resizeEventOrder.join(',');
++          });
++        </script>
++      )HTML",
++      client);
++  Document* document = frame->GetFrame()->GetDocument();
++  Element* document_element = document->documentElement();
++  ASSERT_EQ(400, client.GetTestData().Width());
++  ASSERT_EQ(600, client.GetTestData().Height());
++
++  document->GetPage()->Animator().ServiceScriptedAnimations(
++      base::TimeTicks::Now());
++
++  EXPECT_EQ(1, client.ResizeCount());
++  EXPECT_EQ("1",
++            document_element->getAttribute(AtomicString("data-resize-count")));
++  EXPECT_EQ("1", document_element->getAttribute(
++                     AtomicString("data-visual-viewport-resize-count")));
++  EXPECT_EQ(
++      "window,visualViewport",
++      document_element->getAttribute(AtomicString("data-resize-event-order")));
++  EXPECT_EQ("400x600", document_element->getAttribute(
++                           AtomicString("data-last-resize-size")));
++
++  frame->ExecuteScript(WebScriptSource(
++      "resizeCount = 0; visualViewportResizeCount = 0; resizeEventOrder = []; "
++      "document.documentElement.dataset.resizeCount = 0; "
++      "document.documentElement.dataset.visualViewportResizeCount = 0; "
++      "document.documentElement.dataset.resizeEventOrder = '';"));
++  const int resize_count = client.ResizeCount();
++  frame->ExecuteScript(WebScriptSource(
++      "overlay.replaceChildren(...['Option A', 'Option B', 'Option C'].map("
++      "    label => Object.assign(document.createElement('div'), "
++      "                           {textContent: label}))); "
++      "overlay.classList.add('open');"));
++  UpdateAllLifecyclePhases();
++  document->GetPage()->Animator().ServiceScriptedAnimations(
++      base::TimeTicks::Now());
++
++  EXPECT_EQ(400, client.GetTestData().Width());
++  EXPECT_EQ(600, client.GetTestData().Height());
++  EXPECT_EQ(resize_count, client.ResizeCount());
++  EXPECT_EQ("0",
++            document_element->getAttribute(AtomicString("data-resize-count")));
++  EXPECT_EQ("0", document_element->getAttribute(
++                     AtomicString("data-visual-viewport-resize-count")));
++  EXPECT_EQ("", document_element->getAttribute(
++                    AtomicString("data-resize-event-order")));
++
++  // A stable size change is reported once, even when its handler modifies the
++  // DOM.
++  frame->ExecuteScript(WebScriptSource(
++      "echoResizeEvents = true; document.body.style.width = '300px';"));
++  UpdateAllLifecyclePhases();
++  document->GetPage()->Animator().ServiceScriptedAnimations(
++      base::TimeTicks::Now());
++
++  EXPECT_EQ(300, client.GetTestData().Width());
++  EXPECT_EQ(600, client.GetTestData().Height());
++  EXPECT_EQ(resize_count + 1, client.ResizeCount());
++  EXPECT_EQ("1",
++            document_element->getAttribute(AtomicString("data-resize-count")));
++  EXPECT_EQ("1", document_element->getAttribute(
++                     AtomicString("data-visual-viewport-resize-count")));
++  EXPECT_EQ(
++      "window,visualViewport",
++      document_element->getAttribute(AtomicString("data-resize-event-order")));
++  EXPECT_EQ("300x600", document_element->getAttribute(
++                           AtomicString("data-last-resize-size")));
++
++  for (int i = 0; i < 3; ++i) {
++    UpdateAllLifecyclePhases();
++    document->GetPage()->Animator().ServiceScriptedAnimations(
++        base::TimeTicks::Now());
++  }
++  EXPECT_EQ(resize_count + 1, client.ResizeCount());
++  EXPECT_EQ("1",
++            document_element->getAttribute(AtomicString("data-resize-count")));
++  EXPECT_EQ("1", document_element->getAttribute(
++                     AtomicString("data-visual-viewport-resize-count")));
++  EXPECT_EQ(
++      "window,visualViewport",
++      document_element->getAttribute(AtomicString("data-resize-event-order")));
++
++  web_view_helper_.Reset();
++}
+ 
+ TEST_F(WebViewTest, AutoResizePreservesHeightDuringWidthRemeasurement) {
+   ScopedAutoSizeUsesScrollWidthForOverflowForTest scoped_feature(true);
+--- a/third_party/blink/renderer/core/frame/local_frame_view.cc
++++ b/third_party/blink/renderer/core/frame/local_frame_view.cc
+@@ -3488,10 +3488,20 @@
+   // Second pass: run autosize until it stabilizes.
+   if (auto_size_info_) {
+     bool should_reset_for_layout = did_layout;
+-    while (auto_size_info_->AutoSizeIfNeeded(should_reset_for_layout)) {
+-      should_reset_for_layout = false;
++    bool did_run_autosize_layout = false;
++    {
+       base::AutoReset<bool> reset(&is_being_auto_sized_, true);
+-      did_layout |= UpdateStyleAndLayoutInternal();
++      while (auto_size_info_->AutoSizeIfNeeded(should_reset_for_layout)) {
++        should_reset_for_layout = false;
++        did_layout |= UpdateStyleAndLayoutInternal();
++        did_run_autosize_layout = true;
++      }
++    }
++    // Suppress notifications during scroll-width autosizing, then report any
++    // stable size change.
++    if (did_run_autosize_layout && frame_->IsMainFrame() &&
++        RuntimeEnabledFeatures::AutoSizeUsesScrollWidthForOverflowEnabled()) {
++      frame_->GetChromeClient().ResizeAfterLayout();
+     }
+     // We may have a mismatch as we impose an additional min-content constraint
+     // while auto-sizing, set the view as needing layout which will then fall
+@@ -4054,8 +4064,13 @@
+ 
+ void LocalFrameView::PropagateFrameRects() {
+   TRACE_EVENT0("blink", "LocalFrameView::PropagateFrameRects");
+-  if (LayoutSizeFixedToFrameSize())
+-    SetLayoutSizeInternal(Size());
++  if (LayoutSizeFixedToFrameSize()) {
++    SetLayoutSizeInternal(
++        Size(), {.should_suppress_events =
++                     is_being_auto_sized_ &&
++                     RuntimeEnabledFeatures::
++                         AutoSizeUsesScrollWidthForOverflowEnabled()});
++  }
+ 
+   ForAllChildViewsAndPlugins([](EmbeddedContentView& view) {
+     auto* local_frame_view = DynamicTo<LocalFrameView>(view);
+--- a/third_party/blink/renderer/core/frame/visual_viewport.cc
++++ b/third_party/blink/renderer/core/frame/visual_viewport.cc
+@@ -393,7 +393,8 @@
+     document->EnqueueVisualViewportResizeEvent();
+ }
+ 
+-void VisualViewport::SetSize(const gfx::Size& size) {
++void VisualViewport::SetSize(const gfx::Size& size,
++                             bool should_suppress_resize_event) {
+   if (size_ == size)
+     return;
+ 
+@@ -416,7 +417,9 @@
+     LocalMainFrame().View()->SetVisualViewportOrOverlayNeedsRepaint();
+   }
+ 
+-  EnqueueResizeEvent();
++  if (!should_suppress_resize_event) {
++    EnqueueResizeEvent();
++  }
+ }
+ 
+ void VisualViewport::Reset() {
+--- a/third_party/blink/renderer/core/frame/visual_viewport.h
++++ b/third_party/blink/renderer/core/frame/visual_viewport.h
+@@ -122,7 +122,7 @@
+ 
+   // The size of the Blink viewport area. See size_ for precise
+   // definition.
+-  void SetSize(const gfx::Size&);
++  void SetSize(const gfx::Size&, bool should_suppress_resize_event = false);
+   gfx::Size Size() const { return size_; }
+ 
+   // The area of the layout viewport rect visible in the visual viewport,

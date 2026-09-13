@@ -79,7 +79,7 @@
      if (safe_browsing_mode != 0) {
        sources += [
          "api/safe_browsing_private/safe_browsing_private_event_router.cc",
-@@ -1233,7 +1239,6 @@
+@@ -1224,7 +1230,6 @@
        sources += [
          "api/enterprise_reporting_private/chrome_desktop_report_request_helper.cc",
          "api/enterprise_reporting_private/chrome_desktop_report_request_helper.h",
@@ -87,7 +87,7 @@
        ]
        deps += [
          "//components/enterprise/common/proto:connectors_proto",
-@@ -1242,6 +1247,9 @@
+@@ -1233,6 +1238,9 @@
        if (use_gio) {
          configs += [ "//build/linux:gio_config" ]
        }
@@ -97,7 +97,7 @@
      }
  
      if (is_chromeos) {
-@@ -1479,7 +1487,7 @@
+@@ -1450,7 +1458,7 @@
        ]
      }
  
@@ -178,7 +178,7 @@
      "experimental_ai_data.webidl",
 -    "image_writer_private.webidl",
      "indigo_private.webidl",
-     "language_settings_private.idl",
+     "language_settings_private.webidl",
      "passwords_private.idl",
 @@ -153,6 +153,10 @@
          "printing_metrics.idl",
@@ -201,7 +201,7 @@
  import("//chrome/services/speech/buildflags/buildflags.gni")
  import("//chrome/test/include_js_tests.gni")
  import("//components/allocation_recorder/testing/testing.gni")
-@@ -7361,7 +7362,6 @@
+@@ -7284,7 +7285,6 @@
        "//chrome/browser/web_applications:web_app_test",
        "//chrome/browser/web_applications:web_applications_unit_tests",
        "//chrome/browser/web_applications/extensions:unit_tests",
@@ -209,7 +209,7 @@
        "//components/services/unzip:in_process",
        "//extensions/browser/mime_handler",
        "//extensions/browser/mime_handler:stream_container",
-@@ -7369,6 +7369,10 @@
+@@ -7292,6 +7292,10 @@
        "//extensions/renderer:unit_test_support",
      ]
  

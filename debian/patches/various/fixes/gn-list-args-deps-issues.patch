@@ -8,7 +8,7 @@
          "//tools/memory:all",
          "//ui/display:display_unittests",
          "//ui/gl:gl_unittests",
-@@ -1246,7 +1245,6 @@
+@@ -1244,7 +1243,6 @@
        "//third_party/blink/renderer/core:gen_files_for_web_tests",
        "//third_party/catapult/third_party/typ",
        "//third_party/hyphenation-patterns:test_data",
@@ -28,7 +28,7 @@
      data_deps += [ ":wpt_tests_mojo_bindings" ]
 --- a/ui/gfx/BUILD.gn
 +++ b/ui/gfx/BUILD.gn
-@@ -897,7 +897,6 @@
+@@ -898,7 +898,6 @@
      "//skia:skcms",
      "//testing/gtest",
      "//third_party/icu:icuuc",
@@ -38,7 +38,7 @@
      "//ui/gfx/animation",
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -8843,7 +8843,6 @@
+@@ -8797,7 +8797,6 @@
        "//testing/gtest",
        "//third_party/hunspell",
        "//third_party/icu",
@@ -46,7 +46,7 @@
        "//ui/base:base_interactive_ui_tests",
        "//ui/base:ozone_buildflags",
        "//ui/base:test_support",
-@@ -9779,7 +9778,6 @@
+@@ -9711,7 +9710,6 @@
        "//testing/gtest",
        "//third_party/hunspell",
        "//third_party/icu",

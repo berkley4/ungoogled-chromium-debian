@@ -100,7 +100,7 @@ profiles to have software HEVC decoding ability.
 
 --- a/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.h
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/x64/config.h
-@@ -734,7 +734,7 @@
+@@ -736,7 +736,7 @@
  #define CONFIG_AUDIO_FRAME_QUEUE 0
  #define CONFIG_AUDIODSP 0
  #define CONFIG_BLOCKDSP 0
@@ -109,7 +109,7 @@ profiles to have software HEVC decoding ability.
  #define CONFIG_CABAC 1
  #define CONFIG_CBS 0
  #define CONFIG_CBS_APV 0
-@@ -777,8 +777,8 @@
+@@ -779,8 +779,8 @@
  #define CONFIG_H264PRED 1
  #define CONFIG_H264QPEL 1
  #define CONFIG_H264_SEI 1
@@ -131,7 +131,7 @@ profiles to have software HEVC decoding ability.
  #define CONFIG_HEVC_QSV_DECODER 0
  #define CONFIG_HEVC_RKMPP_DECODER 0
  #define CONFIG_HEVC_V4L2M2M_DECODER 0
-@@ -1050,7 +1050,7 @@
+@@ -1051,7 +1051,7 @@
  #define CONFIG_H261_PARSER 0
  #define CONFIG_H263_PARSER 0
  #define CONFIG_H264_PARSER 1
@@ -158,7 +158,7 @@ profiles to have software HEVC decoding ability.
      NULL };
 --- a/third_party/ffmpeg/ffmpeg_generated.gni
 +++ b/third_party/ffmpeg/ffmpeg_generated.gni
-@@ -306,6 +306,23 @@
+@@ -307,6 +307,23 @@
      (is_apple && ffmpeg_branding == "Chrome") ||
      (is_win && ffmpeg_branding == "Chrome") ||
      (use_linux_config && ffmpeg_branding == "Chrome")) {
@@ -182,7 +182,7 @@ profiles to have software HEVC decoding ability.
    ffmpeg_c_sources += [
      "libavcodec/aom_film_grain.c",
      "libavcodec/atsc_a53.c",
-@@ -345,6 +362,25 @@
+@@ -346,6 +363,25 @@
  if ((current_cpu == "x64" && ffmpeg_branding == "Chrome") ||
      (is_win && current_cpu == "x86" && ffmpeg_branding == "Chrome") ||
      (use_linux_config && current_cpu == "x86" && ffmpeg_branding == "Chrome")) {

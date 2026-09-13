@@ -1,6 +1,6 @@
 --- a/tools/generate_shim_headers/generate_shim_headers.py
 +++ b/tools/generate_shim_headers/generate_shim_headers.py
-@@ -18,9 +18,6 @@
+@@ -17,9 +17,6 @@
  
  
  SHIM_TEMPLATE = """

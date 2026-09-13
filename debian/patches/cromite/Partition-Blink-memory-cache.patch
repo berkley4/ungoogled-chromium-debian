@@ -20,10 +20,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../renderer/core/loader/image_loader.cc      |  3 +-
  .../platform/loader/fetch/memory_cache.cc     |  8 +--
  .../platform/loader/fetch/memory_cache.h      |  5 +-
- .../platform/loader/fetch/resource_fetcher.cc | 62 +++++++++++++++----
+ .../platform/loader/fetch/resource_fetcher.cc | 71 +++++++++++++++----
  .../platform/loader/fetch/resource_fetcher.h  | 10 ++-
- .../platform/runtime_enabled_features.json5   |  3 +-
- 9 files changed, 70 insertions(+), 28 deletions(-)
+ .../platform/runtime_enabled_features.json5   |  4 ++
+ 9 files changed, 79 insertions(+), 29 deletions(-)
 
 --- a/third_party/blink/renderer/core/html/parser/html_srcset_parser.cc
 +++ b/third_party/blink/renderer/core/html/parser/html_srcset_parser.cc
@@ -39,7 +39,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
                          WebFeature::kSrcSetUsedHigherDensityImageFromCache);
 --- a/third_party/blink/renderer/core/inspector/inspector_network_agent.cc
 +++ b/third_party/blink/renderer/core/inspector/inspector_network_agent.cc
-@@ -2834,7 +2834,7 @@
+@@ -2792,7 +2792,7 @@
    if (!cached_resource) {
      cached_resource = MemoryCache::Get()->ResourceForURL(
          url, document->Fetcher()->GetCacheIdentifier(
@@ -61,7 +61,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      cached_resource = loader->ResourceForURL(url);
 --- a/third_party/blink/renderer/core/loader/image_loader.cc
 +++ b/third_party/blink/renderer/core/loader/image_loader.cc
-@@ -737,7 +737,8 @@
+@@ -726,7 +726,8 @@
    if (!url.IsNull()) {
      Resource* resource = MemoryCache::Get()->ResourceForURL(
          url, element_->GetDocument().Fetcher()->GetCacheIdentifier(
@@ -141,7 +141,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
        resource =
            MemoryCache::Get()->ResourceForURL(params.Url(), cache_identifier);
-@@ -1811,7 +1813,8 @@
+@@ -1822,7 +1824,8 @@
      const ResourceFactory& factory) {
    const String cache_identifier =
        GetCacheIdentifier(factory.GetType(), params.GetResourceRequest().Url(),
@@ -151,7 +151,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    DCHECK(!IsMainThread() || params.IsStaleRevalidation() ||
           !MemoryCache::Get()->ResourceForURL(params.GetResourceRequest().Url(),
                                               cache_identifier));
-@@ -3042,11 +3045,47 @@
+@@ -3053,11 +3056,47 @@
  }
  
  String ResourceFetcher::GetCacheIdentifier(const KURL& url,
@@ -204,7 +204,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    }
  
    // Requests that can be satisfied via `archive_` (i.e. MHTML) or
-@@ -3061,12 +3100,13 @@
+@@ -3072,22 +3111,26 @@
      return bundle->GetCacheIdentifier();
    }
  
@@ -215,12 +215,20 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  String ResourceFetcher::GetCacheIdentifier(ResourceType type,
                                             const KURL& url,
 -                                           bool skip_service_worker) const {
+-  // For SVG resource documents, use the SVG-specific cache identifier from
+-  // the fetch context.
+-  if (type == ResourceType::kSVGDocument) {
 +                                           bool skip_service_worker,
 +                                           const ResourceRequest& resource_request) const {
-   // For SVG resource documents, use the SVG-specific cache identifier from
-   // the fetch context.
-   if (type == ResourceType::kSVGDocument) {
-@@ -3076,7 +3116,7 @@
++  // For SVG resource documents, use the SVG-specific cache identifier when the
++  // feature is enabled and a cache identifier is available from the fetch
++  // context.
++  if (RuntimeEnabledFeatures::
++          SvgPartitionSVGDocumentResourcesInMemoryCacheEnabled() &&
++      type == ResourceType::kSVGDocument) {
+     String svg_cache_identifier = context_->GetSVGCacheIdentifier();
+     DCHECK(!svg_cache_identifier.empty());
+     return svg_cache_identifier;
    }
  
    // Fallback to the standard cache identifier logic.
@@ -250,3 +258,16 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
    // If `url` exists as a resource in a subresource bundle in this frame,
    // returns its UnguessableToken; otherwise, returns std::nullopt.
+--- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
++++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
+@@ -6089,6 +6089,10 @@
+       status: "experimental",
+     },
+     {
++      name: "SvgPartitionSVGDocumentResourcesInMemoryCache",
++      status: "experimental",
++    },
++    {
+       name: "SvgPathLengthCssProperty",
+       status: "experimental",
+     },

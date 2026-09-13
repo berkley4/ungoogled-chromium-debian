@@ -1,16 +1,16 @@
 --- a/chrome/app/chrome_main_delegate.cc
 +++ b/chrome/app/chrome_main_delegate.cc
-@@ -197,7 +197,9 @@
- #if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_ANDROID) || \
-     BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
- #include "chrome/browser/policy/policy_path_parser.h"
+@@ -213,7 +213,9 @@
+ #if !defined(BUILDING_CHROME_RENDERER)
+ #include "chrome/browser/policy/policy_path_parser.h"  // nogncheck
+ #endif  // !defined(BUILDING_CHROME_RENDERER)
 +#if !BUILDFLAG(IS_LINUX)
  #include "components/crash/core/app/crashpad.h"
 +#endif  // !BUILDFLAG(IS_LINUX)
  #endif
  
  #if BUILDFLAG(ENABLE_EXTENSIONS_CORE)
-@@ -1362,7 +1364,7 @@
+@@ -1415,7 +1417,7 @@
  
    crash_reporter::InitializeCrashKeys();
  
@@ -19,7 +19,7 @@
    ChromeCrashReporterClient::Create();
  #endif
  
-@@ -1503,9 +1505,11 @@
+@@ -1561,9 +1563,11 @@
        base::android::InitJavaExceptionReporterForChildProcess();
      }
  #else
@@ -31,7 +31,7 @@
  #endif  // BUILDFLAG(IS_ANDROID)
    }
  #endif  // BUILDFLAG(IS_POSIX) && !BUILDFLAG(IS_MAC)
-@@ -1645,9 +1649,11 @@
+@@ -1715,9 +1719,11 @@
        base::CommandLine::ForCurrentProcess();
    std::string process_type =
        command_line->GetSwitchValueASCII(switches::kProcessType);
@@ -45,7 +45,7 @@
    crash_keys::SetCrashKeysFromCommandLine(*command_line);
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -620,7 +620,7 @@
+@@ -628,7 +628,7 @@
  #include "third_party/cros_system_api/switches/chrome_switches.h"
  #endif  // BUILDFLAG(IS_CHROMEOS)
  
@@ -54,7 +54,7 @@
  #include "components/crash/core/app/crash_switches.h"
  #include "components/crash/core/app/crashpad.h"
  #endif
-@@ -1076,7 +1076,7 @@
+@@ -1100,7 +1100,7 @@
  int GetCrashSignalFD(const base::CommandLine& command_line) {
    return crashpad::CrashHandlerHost::Get()->GetDeathSignalSocket();
  }
@@ -63,7 +63,7 @@
  int GetCrashSignalFD(const base::CommandLine& command_line) {
    int fd;
    return crash_reporter::GetHandlerSocket(&fd, nullptr) ? fd : -1;
-@@ -2924,7 +2924,7 @@
+@@ -2901,7 +2901,7 @@
                                      client_info->client_id);
    }
  #elif BUILDFLAG(IS_POSIX)
@@ -72,7 +72,7 @@
    pid_t pid;
    if (crash_reporter::GetHandlerSocket(nullptr, &pid)) {
      command_line->AppendSwitchASCII(
-@@ -5291,7 +5291,7 @@
+@@ -5240,7 +5240,7 @@
    DCHECK(!app_data_path.empty());
  #endif  // BUILDFLAG(IS_ANDROID)
  
