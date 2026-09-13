@@ -56,6 +56,7 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$SYS_BINDGEN" ] || SYS_BINDGEN=2
 [ -n "$SYS_GN" ] || SYS_GN=0
 [ -n "$SYS_NODE" ] || SYS_NODE=0
+[ -n "$SYS_PYTHON" ] || SYS_PYTHON=0
 
 [ -n "$ABM" ] || ABM=0
 [ -n "$AES" ] || AES=1
@@ -260,7 +261,7 @@ fi
 
 # Warn about using non-bundled build tools
 
-for i in GN NODE RUST; do
+for i in GN NODE PYTHON RUST; do
   eval "
     if [ \$SYS_$i -ne 0 ]; then
       printf '%s\n' \"WARN: Using non-bundled \$i is not recommended [SYS_$i=\$SYS_$i]\"
@@ -292,8 +293,13 @@ esac
 ## Enter test mode if $RT_DIR/third_party does not exist
 [ -d $RT_DIR/third_party ] && TEST=0 || TEST=1
 
-# Allow setting DEPS_PATCH when TEST=1
-[ $TEST -eq 1 ] && [ -n "$DEPS_PATCH" ] || DEPS_PATCH=
+# Allow enabling DEPS_PATCH when TEST=1
+if [ $TEST -eq 1 ]; then
+  case $DEPS_PATCH in
+    true) : ;;
+    *) DEPS_PATCH=false ;;
+  esac
+fi
 
 
 if [ $TEST -eq 0 ]; then
@@ -605,6 +611,12 @@ fi
 if [ $SYS_NODE -eq 1 ]; then
   op_enable="$op_enable system/node/"
   deps_enable="$deps_enable nodejs"
+fi
+
+
+if [ $SYS_PYTHON -eq 1 ]; then
+  op_enable="$op_enable system/python.patch"
+  deps_enable="$deps_enable python-is-python3"
 fi
 
 
@@ -1272,27 +1284,11 @@ if [ $TEST -eq 0 ] && [ -f $RT_DIR/DEPS ]; then
   # Check for DEPS.patch application
   case $(sed -n '/webvr_info/p' $RT_DIR/DEPS) in
     *src/chrome/test/data/xr/webvr_info*)
-      # DEPS_PATCH=
-      : ;;
+      DEPS_PATCH=false ;;
 
     *)
-      DEPS_PATCH="dp" ;;
+      DEPS_PATCH=true ;;
   esac
-
-  # Check for DEPS-no-rust.patch application
-  case $(sed -n '/Linux_x64\/rust-toolchain-/,/condition/{/==/p}' $RT_DIR/DEPS) in
-    *condition*!=*)
-      DEPS_PATCH="$DEPS_PATCH,dr" ;;
-  esac
-
-  # Check for DEPS-no-node.patch application
-  case $(sed -n '\/node\/linux/,/condition/{/checkout_src_internal/p}' $RT_DIR/DEPS) in
-    *checkout_src_internal*)
-      DEPS_PATCH="$DEPS_PATCH,dn" ;;
-  esac
-
-  # Remove potential leading comma from DEPS_PATCH string
-  DEPS_PATCH=${DEPS_PATCH#,}
 fi
 
 
@@ -1331,7 +1327,8 @@ DSB="$DSB -e \"/^third_party\/zstd\/BUILD\.gn/d\""
 
 # Exempt files that don't exist after patching with DEPS.patch
 case $DEPS_PATCH in
-  *dp*)
+  true)
+    DSB="$DSB -e \"/^agents\/shared\//d\""
     DSB="$DSB -e \"/^build\/linux\/debian_bullseye_i386-sysroot\//d\""
     DSB="$DSB -e \"/^build\/linux\/debian_bullseye_amd64-sysroot\//d\""
     DSB="$DSB -e \"/^docs\/website\//d\""
@@ -1357,13 +1354,6 @@ case $DEPS_PATCH in
     ;;
 esac
 
-# Exempt rust toolchain after patching with DEPS-no-rust.patch
-case $DEPS_PATCH in
-  *dr*)
-    DSB="$DSB -e \"/^third_party\/rust-toolchain\//d\""
-    ;;
-esac
-
 
 #########################
 ## Exempt from pruning ##
@@ -1373,14 +1363,7 @@ PRU="$PRU -e \"/^chrome\/build\/pgo_profiles\//d\""
 PRU="$PRU -e \"/^third_party\/depot_tools\//d\""
 PRU="$PRU -e \"/^third_party\/node\/node_modules\//d\""
 
-## Exempt node from pruning only if DEPS-no-node.patch has NOT been applied
-case $DEPS_PATCH in
-  *dn*)
-    : ;;
-
-  *)
-    PRU_PY="$PRU_PY -e \"/third_party\/node\/linux\//d\"" ;;
-esac
+PRU_PY="$PRU_PY -e \"/third_party\/node\/linux\//d\""
 
 
 #############################################

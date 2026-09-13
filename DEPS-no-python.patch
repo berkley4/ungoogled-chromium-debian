@@ -1,0 +1,28 @@
+--- a/DEPS
++++ b/DEPS
+@@ -2236,7 +2236,7 @@
+           'version': Var('cpython3_version'),
+         },
+       ],
+-      'condition': 'non_git_source',
++      'condition': 'checkout_src_internal and non_git_source',
+       'dep_type': 'cipd',
+   },
+ 
+@@ -2249,7 +2249,7 @@
+           'version': Var('cpython3_version'),
+         },
+       ],
+-      'condition': 'non_git_source',
++      'condition': 'checkout_src_internal and non_git_source',
+       'dep_type': 'cipd',
+   },
+ 
+@@ -4259,6 +4259,7 @@
+   {
+     'name': 'vpython3_common',
+     'pattern': '.',
++    'condition': 'checkout_src_internal',
+     'action': [ 'vpython3',
+                 '-vpython-spec', 'src/.vpython3',
+                 '-vpython-tool', 'install',

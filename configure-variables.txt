@@ -56,6 +56,9 @@ SYS_GN			0		Use bundled gn (Recommended default)
 SYS_NODE		0		Use in-tree node (Recommended default)
 			1		Use system node package
 
+SYS_PYTHON		0		Use in-tree python (Recommended default)
+			1		Use system python package
+
 BUILD_TS		0		0 = build system default (do nothing)
 					1 = patch build/timestamp.gni to use a 'non-official build' timestamp (auto-updates monthly)
 					2 = patch build/compute_build_timestamp.py to use a fixed timestamp (1750109210)

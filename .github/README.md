@@ -125,7 +125,7 @@ ___Build system___
 - Self-built BOLT/LTO/PGO optimised and polly-enabled clang/llvm is preferred for building
     - a recent version of clang often means fewer build headaches
     - a script is provided to build bindgen against this copy of clang/llvm
-- Basic support for building with system or third party rust, nodejs and gn (NOT RECOMMENDED)
+- Basic support for building with system or third party rust, nodejs, python and gn (NOT RECOMMENDED)
 - A script is provided to build bindgen (build/build-bindgen.sh)
 - A configuration shell script is provided to enable easy customisation of the build
     - it takes out much of the complexity of having to manually edit build configuration files
@@ -418,11 +418,8 @@ patch -p1 < DEPS.patch
 # Do not download chromium's pre-built clang toolchain
 patch -p1 < DEPS-no-clang.patch
 
-# Omit the pre-built rust toolchain by applying a patch
-patch -p1 < DEPS-no-rust.patch
-
-# Omit the pre-built node toolchain by applying a patch (safest on unstable)
-patch -p1 < DEPS-no-node.patch
+# Omit the pre-built python toolchain by applying a patch (safest on unstable)
+patch -p1 < DEPS-no-python.patch
 
 
 
