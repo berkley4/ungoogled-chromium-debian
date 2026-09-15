@@ -74,13 +74,13 @@ GN_FLAGS +=					\
 	is_official_build=true			\
 	blink_symbol_level=0			\
 	symbol_level=0				\
-	ffmpeg_branding=\"ChromeOS\"
+	ffmpeg_branding=\"ChromeOS\"		\
 
 # Enabled components
 GN_FLAGS +=					\
 	proprietary_codecs=true			\
 	use_cfi_cast=true			\
-	use_text_section_splitting=true
+	use_text_section_splitting=true		\
 
 # Disabled components
 GN_FLAGS +=					\
@@ -91,7 +91,7 @@ GN_FLAGS +=					\
 	libyuv_disable_rvv=true			\
 	safe_browsing_use_unrar=false		\
 	use_kerberos=false			\
-	use_sysroot=false
+	use_sysroot=false			\
 
 # Disabled debug/development/test features
 GN_FLAGS +=					\
@@ -118,7 +118,7 @@ GN_FLAGS +=					\
         tint_build_null_writer=false            \
 	tint_build_unittests=false		\
 	tint_has_protobuf=false			\
-	use_crash_key_stubs=true
+	use_crash_key_stubs=true		\
 
 # The items below are best configured via debian/configure.sh
 # (this needs to be run anyway when self-compiling).
