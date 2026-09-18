@@ -261,7 +261,7 @@ fi
 
 # Warn about using non-bundled build tools
 
-for i in GN NODE PYTHON RUST; do
+for i in GN NODE RUST; do
   eval "
     if [ \$SYS_$i -ne 0 ]; then
       printf '%s\n' \"WARN: Using non-bundled \$i is not recommended [SYS_$i=\$SYS_$i]\"

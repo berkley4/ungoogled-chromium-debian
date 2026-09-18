@@ -125,6 +125,7 @@ ___Build system___
 - Self-built BOLT/LTO/PGO optimised and polly-enabled clang/llvm is preferred for building
     - a recent version of clang often means fewer build headaches
     - a script is provided to build bindgen against this copy of clang/llvm
+- Support for building with system golang and python
 - Basic support for building with system or third party rust, nodejs, python and gn (NOT RECOMMENDED)
 - A script is provided to build bindgen (build/build-bindgen.sh)
 - A configuration shell script is provided to enable easy customisation of the build
