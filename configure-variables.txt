@@ -56,6 +56,9 @@ SYS_GN			0		Use bundled gn (Recommended default)
 SYS_NODE		0		Use in-tree node (Recommended default)
 			1		Use system node package
 
+SYS_GOLANG		0		Use in-tree golang
+			1		Use system golang package
+
 SYS_PYTHON		0		Use in-tree python
 			1		Use system python package
 

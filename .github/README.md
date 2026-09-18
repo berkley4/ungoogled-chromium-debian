@@ -419,7 +419,10 @@ patch -p1 < DEPS.patch
 # Do not download chromium's pre-built clang toolchain
 patch -p1 < DEPS-no-clang.patch
 
-# Omit the pre-built python toolchain by applying a patch (safest on unstable)
+# Omit the pre-built golang toolchain (safest on unstable)
+patch -p1 < DEPS-no-python.patch
+
+# Omit the pre-built python toolchain (safest on unstable)
 patch -p1 < DEPS-no-python.patch
 
 

@@ -1,0 +1,11 @@
+--- a/third_party/dawn/DEPS
++++ b/third_party/dawn/DEPS
+@@ -561,7 +561,7 @@
+       'version': Var('dawn_go_version'),
+     }],
+     'dep_type': 'cipd',
+-    'condition': '(checkout_android or checkout_linux) and non_git_source',
++    'condition': 'checkout_android and non_git_source',
+   },
+   'tools/golang/linux-arm64': {
+     'packages': [{

@@ -56,6 +56,7 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$SYS_BINDGEN" ] || SYS_BINDGEN=2
 [ -n "$SYS_GN" ] || SYS_GN=0
 [ -n "$SYS_NODE" ] || SYS_NODE=0
+[ -n "$SYS_GOLANG" ] || SYS_GOLANG=0
 [ -n "$SYS_PYTHON" ] || SYS_PYTHON=0
 
 [ -n "$ABM" ] || ABM=0
@@ -611,6 +612,12 @@ fi
 if [ $SYS_NODE -eq 1 ]; then
   op_enable="$op_enable system/node/"
   deps_enable="$deps_enable nodejs"
+fi
+
+
+if [ $SYS_GOLANG -eq 1 ]; then
+  op_enable="$op_enable system/golang.patch"
+  deps_enable="$deps_enable golang"
 fi
 
 
