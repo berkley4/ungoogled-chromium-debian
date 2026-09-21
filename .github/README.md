@@ -466,7 +466,7 @@ DRIVER=0 MARCH=native MTUNE=native TRANSLATE=1 STABLE=1 ./debian/configure.sh
 
 ```sh
 # Recommended: apply and refresh patches
-while quilt push; do quilt refresh; done
+quilt push --refresh --fuzz=0 -a
 
 # Build the package (remove the '-nc' to rebuild after a successful build)
 JOBS=4 dpkg-buildpackage --source-option=--no-preparation -b -uc -nc
