@@ -16,7 +16,7 @@ ins_disable=; ins_enable=
 op_disable=; op_enable=
 sys_disable=; sys_enable=
 
-CON=; DSB=; FLAG_GPU=; FLAG_MISC=; INS=; POL=
+CON=; DSB=; FLAG_GPU=; INS=; POL=
 PRU=; PRU_PY=; RUL=; RUST_INST=; SER_DB=
 SER_U=; SERIES_DB=; SERIES_UC=; SMF=
 
@@ -1502,7 +1502,6 @@ echo "$SERIES_UC" "$SERIES_DB" > $DEBIAN/patches/series
 
 [ -z "$BFL" ] || eval sed $BFL -i $FLAG_DIR/blocked-flags
 [ -z "$FLAG_GPU" ] || eval sed $FLAG_GPU -i $FLAG_DIR/gpu
-[ -z "$FLAG_MISC" ] || eval sed $FLAG_MISC -i $FLAG_DIR/miscellaneous
 [ -z "$INS" ] || eval sed $INS -i $DEBIAN/ungoogled-chromium.install
 [ -z "$POL" ] || eval sed $POL -i $DEBIAN/etc/chromium/policies/managed/policies.json
 [ -z "$PRU_PY" ] || eval sed $PRU_PY -i $UC_DIR/utils/prune_binaries.py
