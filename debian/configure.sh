@@ -75,7 +75,6 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$MF_SPLIT" ] || MF_SPLIT=1
 
 [ -n "$ATK" ] || ATK=0
-[ -n "$BACKGROUND_AUDIO" ] || BACKGROUND_AUDIO=1
 [ -n "$BLUETOOTH" ] || BLUETOOTH=0
 [ -n "$CATAPULT" ] || CATAPULT=0
 [ -n "$CHROMECAST" ] || CHROMECAST=0
@@ -877,11 +876,6 @@ fi
 if [ $ATK -eq 1 ]; then
   op_disable="$op_disable disable/atk.patch"
   gn_disable="$gn_disable use_atk=false"
-fi
-
-
-if [ $BACKGROUND_AUDIO -eq 0 ] && [ $NON_FREE -eq 1 ]; then
-  SER_DB="$SER_DB \"/Allow-playing-audio-in-background/s@^@#@\""
 fi
 
 
