@@ -126,7 +126,7 @@ ___Build system___
     - a recent version of clang often means fewer build headaches
     - a script is provided to build bindgen against this copy of clang/llvm
 - Support for building with system golang and python
-- Basic support for building with system or third party rust, nodejs, python and gn (NOT RECOMMENDED)
+- Basic support for system or third party rust, nodejs, python, esbuild and gn (NOT RECOMMENDED)
 - A script is provided to build bindgen (build/build-bindgen.sh)
 - A configuration shell script is provided to enable easy customisation of the build
     - it takes out much of the complexity of having to manually edit build configuration files

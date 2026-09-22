@@ -54,6 +54,7 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$SYS_CLANG" ] || SYS_CLANG=0
 [ -n "$SYS_RUST" ] || SYS_RUST=0
 [ -n "$SYS_BINDGEN" ] || SYS_BINDGEN=2
+[ -n "$SYS_ESBUILD" ] || SYS_ESBUILD=0
 [ -n "$SYS_GN" ] || SYS_GN=0
 [ -n "$SYS_NODE" ] || SYS_NODE=0
 [ -n "$SYS_GOLANG" ] || SYS_GOLANG=0
@@ -261,7 +262,7 @@ fi
 
 # Warn about using non-bundled build tools
 
-for i in GN NODE RUST; do
+for i in ESBUILD GN NODE RUST; do
   eval "
     if [ \$SYS_$i -ne 0 ]; then
       printf '%s\n' \"WARN: Using non-bundled \$i is not recommended [SYS_$i=\$SYS_$i]\"
@@ -545,8 +546,8 @@ fi
 
 if [ $LLVM_VER -ge 19 ]; then
   # Do not apply hardware destructive interference patch for clang versions >= 19
-  P=hardware_destructive_interference_size.patch
-  SER_UC="$SER_UC -e \"/^upstream-fixes\/$P/s@^@#@\""
+  P1=hardware_destructive_interference_size.patch
+  SER_UC="$SER_UC -e \"/^upstream-fixes\/$P1/s@^@#@\""
 fi
 
 
@@ -598,6 +599,17 @@ if [ $SYS_BINDGEN -gt 0 ]; then
 
   # Set BINDGEN_PATH in d/rules (for passing to rust_bindgen_root build flag)
   RUL="$RUL -e \"s@_BINDGEN_PATH@$BINDGEN_PATH@\""
+fi
+
+
+# Disable core/ungoogled-chromium/build-with-wasm-rollup.patch
+P2=build-with-wasm-rollup.patch
+SER_UC="$SER_UC -e \"/^core\/ungoogled-chromium\/$P2/s@^@#@\""
+
+if [ $SYS_ESBUILD -eq 1 ]; then
+  deps_enable="$deps_enable esbuild"
+  op_enable="$op_enable system/esbuild.patch"
+  RUL="$RUL -e \"/buildtools\/linux64/s@^@#@\""
 fi
 
 
@@ -888,8 +900,8 @@ if [ $CHROMECAST -eq 1 ]; then
   op_disable="$op_disable disable/media-router.patch"
   op_enable="$op_enable enable/add-flag-to-enable-mdns.patch"
 
-  P=fix-building-without-mdns-and-service-discovery.patch
-  SER_UC="$SER_UC -e \"/^extra\/ungoogled-chromium\/$P/s@^@#@\""
+  P3=fix-building-without-mdns-and-service-discovery.patch
+  SER_UC="$SER_UC -e \"/^extra\/ungoogled-chromium\/$P3/s@^@#@\""
 
   SMF="$SMF -e \"/^enable_mdns=false/d\""
   SMF="$SMF -e \"/^enable_remoting=false/d\""
@@ -1001,8 +1013,8 @@ if [ $LOCALES_EXTRA -eq 0 ]; then
   CON="$CON -e \"/pa, pl, pt-BR, pt-PT, ro, ru,/d\""
   CON="$CON -e \"/th, tr, uk, ur, uz, vi, zh-CN,/d\""
 
-  P=enable-extra-locales.patch
-  SER_UC="$SER_UC -e \"/^extra\/ungoogled-chromium\/$P/s@^@#@\""
+  P4=enable-extra-locales.patch
+  SER_UC="$SER_UC -e \"/^extra\/ungoogled-chromium\/$P4/s@^@#@\""
 fi
 
 
@@ -1364,6 +1376,7 @@ PRU="$PRU -e \"/^chrome\/build\/pgo_profiles\//d\""
 PRU="$PRU -e \"/^third_party\/depot_tools\//d\""
 PRU="$PRU -e \"/^third_party\/node\/node_modules\//d\""
 
+PRU_PY="$PRU_PY -e \"/third_party\/esbuild\//d\""
 PRU_PY="$PRU_PY -e \"/third_party\/node\/linux\//d\""
 
 
@@ -1486,7 +1499,7 @@ sed -e "s;@@VERSION@@;$VERSION;" -e "s;@@RELEASE@@;$RELEASE;" \
 
 
 [ -n "$SER_DB" ] || SER_DB="-n p"
-[ -n "$SER_UC" ] || SER_UC="-n p"
+#[ -n "$SER_UC" ] || SER_UC="-n p"
 
 SERIES_DB="$(eval sed $SER_DB $DEBIAN/patches/series.debian)"
 SERIES_UC="$(eval sed $SER_UC $UC_DIR/patches/series)"

@@ -13,6 +13,7 @@ Build-Depends:
 #clang-@@LLVM_CTRL_VER@@,
 #libclang-rt-@@LLVM_CTRL_VER@@-dev,
 #rustc (>= 1.85.0),
+#esbuild,
 #nodejs,
 #golang,
 #python-is-python3,
