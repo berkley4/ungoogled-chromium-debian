@@ -986,7 +986,6 @@ fi
 
 
 if [ $LENS -gt 0 ]; then
-  gn_disable="$gn_disable enable_lens_desktop=false"
   fl_unblock="$fl_unblock disable-lens-standalone enable-lens-standalone"
   ins_enable="$ins_enable google-lens"
   DSB="$DSB -e \"/^components\/lens\/lens_features\.cc/d\""

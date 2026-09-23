@@ -153,9 +153,6 @@ GN_FLAGS += use_bluez=false
 # Disable HEVC (h265) decoding
 #GN_FLAGS += enable_platform_hevc=false enable_hevc_parser_and_hw_decoder=false
 
-# Google lens
-GN_FLAGS += enable_lens_desktop=false
-
 # Disable media remoting
 GN_FLAGS += enable_media_remoting=false
 
