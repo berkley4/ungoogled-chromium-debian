@@ -1,6 +1,6 @@
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -1678,7 +1678,7 @@
+@@ -1858,7 +1858,7 @@
        if (is_linux && enable_swiftshader_vulkan) {
          deps += [ ":swiftshader_vk_symbols" ]
        }
@@ -9,7 +9,7 @@
          deps += [ ":angle_libvulkan_symbols" ]
        }
        if (build_with_internal_optimization_guide) {
-@@ -1760,7 +1760,7 @@
+@@ -1950,7 +1950,7 @@
          deps = [ "//third_party/angle:libGLESv2" ]
        }
      }
@@ -20,7 +20,7 @@
  
 --- a/components/exo/wayland/BUILD.gn
 +++ b/components/exo/wayland/BUILD.gn
-@@ -377,12 +377,17 @@
+@@ -379,12 +379,17 @@
  
    deps = [
      "//base",
@@ -42,7 +42,7 @@
      "//components/exo/wayland/protocol:aura_shell_protocol",
 --- a/ui/gl/gl_switches.cc
 +++ b/ui/gl/gl_switches.cc
-@@ -19,6 +19,7 @@
+@@ -20,6 +20,7 @@
  #if BUILDFLAG(ENABLE_VULKAN) && \
      (BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_ANDROID))
  #include <vulkan/vulkan_core.h>
@@ -50,15 +50,15 @@
  #include "third_party/angle/src/gpu_info_util/SystemInfo.h"  // nogncheck
  #endif  // BUILDFLAG(ENABLE_VULKAN) && (BUILDFLAG(IS_LINUX) ||
          // BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_ANDROID))
-@@ -306,6 +307,7 @@
- #endif
+@@ -314,6 +315,7 @@
+              base::FEATURE_DISABLED_BY_DEFAULT);
  
  bool IsDefaultANGLEVulkan() {
 +#if BUILDFLAG(ENABLE_VULKAN)
    // Force on if DefaultANGLEVulkan feature is enabled from command line.
    base::FeatureList* feature_list = base::FeatureList::GetInstance();
    if (feature_list && feature_list->IsFeatureOverriddenFromCommandLine(
-@@ -442,6 +444,9 @@
+@@ -454,6 +456,9 @@
  
    return base::FeatureList::IsEnabled(kDefaultANGLEVulkan);
  #endif  // !defined(MEMORY_SANITIZER)
