@@ -1,13 +1,3 @@
---- a/chrome/browser/BUILD.gn
-+++ b/chrome/browser/BUILD.gn
-@@ -2663,6 +2663,7 @@
-     "//third_party/blink/public:resources",
-     "//third_party/blink/public:scaled_resources",
-     "//third_party/blink/public/common",
-+    "//third_party/hyphenation-patterns:bundle_hyphen_data",
-     "//third_party/icu",
-     "//third_party/leveldatabase",
-     "//third_party/libaddressinput",
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
 @@ -26,6 +26,7 @@
