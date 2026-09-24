@@ -11,7 +11,7 @@ CON=; DSB=; FLAG_GPU=; INS=; POL=
 PRU=; PRU_PY=; RUL=; RUST_INST=; SER_DB=
 SER_U=; SERIES_DB=; SERIES_UC=; SMF=
 
-MARCH_SET=0; MTUNE_SET=0; MEDIA_REMOTING_SET=0; POLLY_SET=0
+MARCH_SET=0; MTUNE_SET=0; POLLY_SET=0
 BUILD_TS_SET=false; CLANG_VER_SET=false; CPU_SET=false; RELEASE_SET=false
 
 LLVM_CTRL_VER=23
@@ -68,7 +68,6 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$ATK" ] || ATK=0
 [ -n "$BLUETOOTH" ] || BLUETOOTH=0
 [ -n "$CATAPULT" ] || CATAPULT=0
-[ -n "$CHROMECAST" ] || CHROMECAST=0
 [ -n "$DRIVER" ] || DRIVER=1
 [ -n "$FF_HEVC" ] || FF_HEVC=1
 [ -n "$FONTATIONS_PDF" ] || FONTATIONS_PDF=1
@@ -126,9 +125,6 @@ fi
 
 [ -n "$SYS_BROTLI" ] || SYS_BROTLI=1
 [ -n "$SYS_JPEG" ] || SYS_JPEG=1
-
-## Default to MEDIA_REMOTING=0 (but enable by default later on if CHROMECAST=1)
-[ -n "$MEDIA_REMOTING" ] && MEDIA_REMOTING_SET=1 || MEDIA_REMOTING=0
 
 ## OpenH264 support
 [ -n "$OPENH264" ] && [ $OPENH264 -eq 0 ] && SYS_OPENH264=0 || OPENH264=1
@@ -226,11 +222,6 @@ fi
 
 
 ## Catch mis-configurations and error out
-
-if [ $CHROMECAST -eq 0 ] && [ $MEDIA_REMOTING -eq 1 ]; then
-  printf '%s\n' "ERROR: Cannot set MEDIA_REMOTING=1 when CHROMECAST=0"
-  exit 1
-fi
 
 if [ $MUTEX_PI -eq 0 ] && [ $PART_LOCK_PI -eq 1 ]; then
   printf '%s\n' "ERROR: Cannot set PART_LOCK_PI=1 when MUTEX_PI=0"
@@ -904,32 +895,6 @@ fi
 
 if [ $CATAPULT -eq 1 ]; then
   op_disable="$op_disable disable/catapult.patch"
-fi
-
-
-if [ $CHROMECAST -eq 1 ]; then
-  op_disable="$op_disable disable/media-router.patch"
-  op_enable="$op_enable enable/add-flag-to-enable-mdns.patch"
-
-  P3=fix-building-without-mdns-and-service-discovery.patch
-  SER_UC="$SER_UC -e \"/^extra\/ungoogled-chromium\/$P3/s@^@#@\""
-
-  SMF="$SMF -e \"/^enable_mdns=false/d\""
-  SMF="$SMF -e \"/^enable_remoting=false/d\""
-
-  if [ $CHROMECAST -ge 2 ]; then
-    sed -e '/media-router=0/s@^@#@' \
-        -e '/enable-mdns/s@^#@@' \
-        -i $FLAG_DIR/network
-  fi
-
-  # Default to MEDIA_REMOTING=1 when CHROMECAST=1
-  [ $MEDIA_REMOTING_SET -eq 1 ] && [ $MEDIA_REMOTING -eq 0 ] || MEDIA_REMOTING=1
-
-  if [ $MEDIA_REMOTING -eq 1 ]; then
-    op_disable="$op_disable disable/media-remoting/"
-    gn_disable="$gn_disable enable_media_remoting=false"
-  fi
 fi
 
 

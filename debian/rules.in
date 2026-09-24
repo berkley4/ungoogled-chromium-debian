@@ -88,6 +88,7 @@ GN_FLAGS +=					\
 	angle_has_histograms=false		\
 	angle_has_rapidjson=false		\
 	enable_extractors=false			\
+	enable_media_remoting=false		\
 	libyuv_disable_rvv=true			\
 	safe_browsing_use_unrar=false		\
 	use_kerberos=false			\
@@ -152,9 +153,6 @@ GN_FLAGS += use_bluez=false
 
 # Disable HEVC (h265) decoding
 #GN_FLAGS += enable_platform_hevc=false enable_hevc_parser_and_hw_decoder=false
-
-# Disable media remoting
-GN_FLAGS += enable_media_remoting=false
 
 # Disable openh264
 #GN_FLAGS += media_use_openh264=false rtc_use_h264=false
