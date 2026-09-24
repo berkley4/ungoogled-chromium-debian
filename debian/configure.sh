@@ -7,15 +7,6 @@ case $USER in
 esac
 
 
-arch_patches=
-
-deps_disable=; deps_enable=
-fl_block=; fl_unblock=
-gn_disable=; gn_enable=
-ins_disable=; ins_enable=
-op_disable=; op_enable=
-sys_disable=; sys_enable=
-
 CON=; DSB=; FLAG_GPU=; INS=; POL=
 PRU=; PRU_PY=; RUL=; RUST_INST=; SER_DB=
 SER_U=; SERIES_DB=; SERIES_UC=; SMF=
