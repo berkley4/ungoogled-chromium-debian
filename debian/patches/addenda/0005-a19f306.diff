@@ -1,0 +1,155 @@
+From a19f30653f01875deab10b1e639969249fde194a Mon Sep 17 00:00:00 2001
+From: Alison Gale <agale@chromium.org>
+Date: Tue, 22 Sep 2026 19:08:22 -0700
+Subject: [PATCH] [M154] [Dialog] Fix crash with pip and dialog manager
+
+Original change's description:
+> [Dialog] Fix crash with pip and dialog manager
+>
+> Synchronously tearing down the pip window destroyed the tab features
+> associated with it which caused an asan crash when trying to show a
+> dialog on that window. Switch to exposing the async version to prevent
+> this.
+>
+> Bug: 560251736,560238698,560503095,562174487,467460499
+> Change-Id: Ie34406e317267d819472d90aec96914b4c5a38f5
+> Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/8408228
+> Commit-Queue: Alison Gale <agale@chromium.org>
+> Reviewed-by: Benjamin Keen <bkeen@google.com>
+> Cr-Commit-Position: refs/heads/main@{#1700295}
+
+(cherry picked from commit afb9b3f8eaf646f34743aa0f474988fc6970ff3f)
+
+Bug: 563677145,560251736,560238698,560503095,562174487,467460499
+Change-Id: Ie34406e317267d819472d90aec96914b4c5a38f5
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/8423629
+Commit-Queue: Alison Gale <agale@chromium.org>
+Reviewed-by: Alison Gale <agale@chromium.org>
+Reviewed-by: Foromo Daniel Soromou <koretadaniel@chromium.org>
+Reviewed-by: Tommy Steimel <steimel@chromium.org>
+Cr-Commit-Position: refs/branch-heads/8037@{#1356}
+Cr-Branched-From: e10b20e60f162e7ad88e4930833695a54f4e15fb-refs/heads/main@{#1689415}
+---
+
+--- a/chrome/browser/picture_in_picture/document_picture_in_picture_mixin_test_base.cc
++++ b/chrome/browser/picture_in_picture/document_picture_in_picture_mixin_test_base.cc
+@@ -9,6 +9,7 @@
+ #include "base/files/file_path.h"
+ #include "base/strings/strcat.h"
+ #include "base/strings/string_number_conversions.h"
++#include "base/test/run_until.h"
+ #include "base/time/time.h"
+ #include "chrome/browser/ui/browser_window/public/browser_window_interface.h"
+ #include "chrome/browser/ui/tabs/tab_strip_model.h"
+@@ -78,17 +79,8 @@
+ }
+ 
+ bool DocumentPictureInPictureMixinTestBase::AwaitPipWindowClosedSuccessfully() {
+-  auto* render_widget_host_view = GetRenderWidgetHostView();
+-  if (!render_widget_host_view) {
+-    return true;
+-  }
+-  ui_test_utils::CheckWaiter(
+-      base::BindRepeating(&content::RenderWidgetHostView::IsShowing,
+-                          base::Unretained(render_widget_host_view)),
+-      false, base::Seconds(30))
+-      .Wait();
+-
+-  return (GetRenderWidgetHostView() == nullptr);
++  return base::test::RunUntil(
++      [this]() { return GetRenderWidgetHostView() == nullptr; });
+ }
+ 
+ content::RenderWidgetHostView*
+--- a/chrome/browser/picture_in_picture/picture_in_picture_window_manager.cc
++++ b/chrome/browser/picture_in_picture/picture_in_picture_window_manager.cc
+@@ -280,6 +280,10 @@
+     pip_window_controller_->FocusInitiator();
+ }
+ 
++bool PictureInPictureWindowManager::IsInPictureInPicture() const {
++  return pip_window_controller_ != nullptr;
++}
++
+ content::WebContents* PictureInPictureWindowManager::GetWebContents() const {
+   if (!pip_window_controller_)
+     return nullptr;
+--- a/chrome/browser/picture_in_picture/picture_in_picture_window_manager.h
++++ b/chrome/browser/picture_in_picture/picture_in_picture_window_manager.h
+@@ -117,11 +117,29 @@
+   // Closes any existing picture-in-picture windows (video or document pip).
+   // Returns true if a picture-in-picture window was closed, and false if there
+   // were no picture-in-picture windows to close.
++  //
++  // NOTE: This synchronously closes the window and destroys associated objects
++  // (such as TabFeatures). Calling this synchronously from callbacks or
++  // observers (e.g. during widget show or visibility changes) can cause
++  // re-entrancy issues and use-after-free crashes. Use
++  // `ExitPictureInPictureSoon()` unless you know that synchronous closure will
++  // not be a problem.
+   bool ExitPictureInPicture();
+ 
++  // Exits picture in picture soon, but not before this call returns.  If
++  // picture in picture closes between now and then, that's okay.  Intended as a
++  // helper for callbacks and observers to avoid re-entrant calls during pip
++  // set-up or in observer notifications (e.g. when an occluded dialog is being
++  // shown).
++  static void ExitPictureInPictureSoon();
++
+   // Called to notify that the initiator web contents should be focused.
+   void FocusInitiator();
+ 
++  // Returns whether a picture-in-picture window (video or document pip) is
++  // currently open.
++  bool IsInPictureInPicture() const;
++
+   // Gets the web contents in the opener browser window.
+   content::WebContents* GetWebContents() const;
+ 
+@@ -346,10 +364,6 @@
+   // Called when the document PiP parent web contents is being destroyed.
+   void DocumentWebContentsDestroyed();
+ 
+-  // Exits picture in picture soon, but not before this call returns.  If
+-  // picture in picture closes between now and then, that's okay.  Intended as a
+-  // helper class for callbacks, to avoid re-entrant calls during pip set-up.
+-  static void ExitPictureInPictureSoon();
+ 
+ #if !BUILDFLAG(IS_ANDROID)
+   // Creates the `occlusion_tracker_` if it does not already exist and should
+--- a/chrome/browser/ui/views/shortcuts/create_desktop_shortcut_delegate.cc
++++ b/chrome/browser/ui/views/shortcuts/create_desktop_shortcut_delegate.cc
+@@ -103,10 +103,8 @@
+ }
+ 
+ void CreateDesktopShortcutDelegate::OnOcclusionStateChanged(bool occluded) {
+-  // If a picture-in-picture window is occluding the dialog, force it to close
+-  // to prevent spoofing.
+   if (occluded) {
+-    PictureInPictureWindowManager::GetInstance()->ExitPictureInPicture();
++    PictureInPictureWindowManager::ExitPictureInPictureSoon();
+   }
+ }
+ 
+--- a/chrome/browser/ui/views/web_apps/web_app_modal_dialog_delegate.cc
++++ b/chrome/browser/ui/views/web_apps/web_app_modal_dialog_delegate.cc
+@@ -55,7 +55,7 @@
+   // If a picture-in-picture window is occluding the dialog, force it to close
+   // to prevent spoofing.
+   if (occluded) {
+-    PictureInPictureWindowManager::GetInstance()->ExitPictureInPicture();
++    PictureInPictureWindowManager::ExitPictureInPictureSoon();
+   }
+ }
+ 
+--- a/chrome/browser/ui/views/web_apps/web_app_update_review_dialog.cc
++++ b/chrome/browser/ui/views/web_apps/web_app_update_review_dialog.cc
+@@ -202,7 +202,7 @@
+     // If a picture-in-picture window is occluding the dialog, force it to close
+     // to prevent spoofing.
+     if (occluded) {
+-      PictureInPictureWindowManager::GetInstance()->ExitPictureInPicture();
++      PictureInPictureWindowManager::ExitPictureInPictureSoon();
+     }
+   }
+ 

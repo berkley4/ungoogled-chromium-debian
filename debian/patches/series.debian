@@ -182,3 +182,10 @@ optional/system/openh264.patch
 #optional/system/rust/no-alloc-shim.patch
 #optional/system/rust/no-cbor.patch
 optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
+
+addenda/0001-9db86ce.diff
+addenda/0002-7ae7962.diff
+addenda/0003-18623060.diff
+addenda/0004-7344c587.diff
+addenda/0005-a19f306.diff
+addenda/0006-b392073.diff

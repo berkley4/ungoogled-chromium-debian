@@ -1,0 +1,138 @@
+From b39207341c4eaded0c880a977ddf166c4c601cbd Mon Sep 17 00:00:00 2001
+From: Jakob Linke <jgruber@chromium.org>
+Date: Tue, 15 Sep 2026 09:06:56 +0200
+Subject: [PATCH] [M154] [compiler] Validate the PropertyCell value map against the live value
+
+Original change's description:
+> [compiler] Validate the PropertyCell value map against the live value
+>
+> PropertyCellData::Cache snapshots a global property cell's value, and
+> the HeapObjectData constructor it reaches snapshots that value's map
+> later. Between the two, StoreGlobalIC_PropertyCellCase can replace a
+> kConstantType cell's value with another object of the same map, which
+> leaves the cell details untouched and frees the replaced object to
+> transition. Both details reads in Cache then agree while the recorded
+> map describes an object the cell no longer holds.
+>
+> ReduceGlobalAccess feeds that map into the LoadField on the live cell,
+> so optimized code could read a packed-double array's storage as tagged
+> pointers. GlobalPropertyDependency checked the cell type and the
+> read-only bit, StableMapDependency checked the recorded map's stability,
+> and both stayed valid while describing different objects.
+>
+> Record the value map in GlobalPropertyDependency for kConstantType cells
+> and check it against the cell's live value before installing the code.
+> The map comes from the same broker snapshot the consumers read, so
+> reused snapshots are covered. Maglev and Turbolev take the same
+> dependency from their load and store paths, and are fixed along with
+> TurboFan.
+>
+> Fixed: 560233248
+> Change-Id: Ic992a203ae6e3973bf518cb87489d892ec0661e7
+> Reviewed-on: https://chromium-review.googlesource.com/c/v8/v8/+/8398508
+> Commit-Queue: Darius Mercadier <dmercadier@chromium.org>
+> Auto-Submit: Jakob Linke <jgruber@chromium.org>
+> Reviewed-by: Darius Mercadier <dmercadier@chromium.org>
+> Cr-Commit-Position: refs/heads/main@{#109836}
+
+(cherry picked from commit dd0f8f20b696604962000ea5f805fc3db78286e1)
+
+Bug: 563218799,560233248
+Change-Id: Ic992a203ae6e3973bf518cb87489d892ec0661e7
+Reviewed-on: https://chromium-review.googlesource.com/c/v8/v8/+/8455008
+Commit-Queue: rubber-stamper@appspot.gserviceaccount.com <rubber-stamper@appspot.gserviceaccount.com>
+Auto-Submit: chrome-cherry-picker@chops-service-accounts.iam.gserviceaccount.com <chrome-cherry-picker@chops-service-accounts.iam.gserviceaccount.com>
+Bot-Commit: rubber-stamper@appspot.gserviceaccount.com <rubber-stamper@appspot.gserviceaccount.com>
+Cr-Commit-Position: refs/branch-heads/15.4@{#26}
+Cr-Branched-From: df65d5c8f2932045c5af72cd7ecd0c8002fa631e-refs/heads/15.4.80@{#1}
+Cr-Branched-From: 80bc5f0e75b24b5af485e0e46b1ffd7f561f323f-refs/heads/main@{#109578}
+---
+
+--- a/v8/src/compiler/compilation-dependencies.cc
++++ b/v8/src/compiler/compilation-dependencies.cc
+@@ -867,11 +867,12 @@
+ class GlobalPropertyDependency final : public CompilationDependency {
+  public:
+   GlobalPropertyDependency(PropertyCellRef cell, PropertyCellType type,
+-                           bool read_only)
++                           bool read_only, OptionalMapRef value_map)
+       : CompilationDependency(kGlobalProperty),
+         cell_(cell),
+         type_(type),
+-        read_only_(read_only) {
++        read_only_(read_only),
++        value_map_(value_map) {
+     DCHECK_EQ(type_, cell_.property_details().cell_type());
+     DCHECK_EQ(read_only_, cell_.property_details().IsReadOnly());
+   }
+@@ -884,8 +885,24 @@
+         *(broker->isolate()->factory()->property_cell_hole_value())) {
+       return false;
+     }
+-    return type_ == cell->property_details().cell_type() &&
+-           read_only_ == cell->property_details().IsReadOnly();
++    if (type_ != cell->property_details().cell_type() ||
++        read_only_ != cell->property_details().IsReadOnly()) {
++      return false;
++    }
++    // A same-map store can replace the value between the broker's read of the
++    // value and its read of the value's map. The replaced object can then
++    // transition without changing the cell details, and the recorded map stays
++    // stable, so neither existing check catches it.
++    if (value_map_.has_value()) {
++      DisallowGarbageCollection no_gc;
++      Tagged<Object> value = cell->value();
++      if (!IsHeapObject(value) ||
++          Cast<HeapObject>(value)->map() != *value_map_->object()) {
++        TRACE_BROKER_MISSING(broker, "Value map change detected in " << cell);
++        return false;
++      }
++    }
++    return true;
+   }
+   void Install(JSHeapBroker* broker, PendingDependencies* deps) const override {
+     SLOW_DCHECK(IsValid(broker));
+@@ -895,11 +912,16 @@
+  private:
+   size_t Hash() const override {
+     ObjectRef::Hash h;
+-    return base::hash_combine(h(cell_), static_cast<int>(type_), read_only_);
++    return base::hash_combine(h(cell_), static_cast<int>(type_), read_only_,
++                              value_map_.has_value() ? h(*value_map_) : 0);
+   }
+ 
+   bool Equals(const CompilationDependency* that) const override {
+     const GlobalPropertyDependency* const zat = that->AsGlobalProperty();
++    if (value_map_.has_value() != zat->value_map_.has_value()) return false;
++    if (value_map_.has_value() && !value_map_->equals(*zat->value_map_)) {
++      return false;
++    }
+     return cell_.equals(zat->cell_) && type_ == zat->type_ &&
+            read_only_ == zat->read_only_;
+   }
+@@ -907,6 +929,8 @@
+   const PropertyCellRef cell_;
+   const PropertyCellType type_;
+   const bool read_only_;
++  // Snapshotted value map for kConstantType heap objects; empty otherwise.
++  const OptionalMapRef value_map_;
+ };
+ 
+ class ContextCellDependency final : public CompilationDependency {
+@@ -1287,7 +1311,15 @@
+ void CompilationDependencies::DependOnGlobalProperty(PropertyCellRef cell) {
+   PropertyCellType type = cell.property_details().cell_type();
+   bool read_only = cell.property_details().IsReadOnly();
+-  RecordDependency(zone_->New<GlobalPropertyDependency>(cell, type, read_only));
++  // Read the map through the broker so validation checks the same map the
++  // compiler used.
++  OptionalMapRef value_map;
++  if (type == PropertyCellType::kConstantType) {
++    ObjectRef value = cell.value(broker_);
++    if (value.IsHeapObject()) value_map = value.AsHeapObject().map(broker_);
++  }
++  RecordDependency(
++      zone_->New<GlobalPropertyDependency>(cell, type, read_only, value_map));
+ }
+ 
+ bool CompilationDependencies::DependOnContextCell(ContextRef script_context,

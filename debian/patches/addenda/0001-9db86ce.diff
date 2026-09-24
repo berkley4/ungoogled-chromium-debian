@@ -1,0 +1,50 @@
+From 9db86ce5b5b454dfc96c435f9f0723012980c37f Mon Sep 17 00:00:00 2001
+From: Dale Curtis <dalecurtis@chromium.org>
+Date: Wed, 16 Sep 2026 21:55:37 +0000
+Subject: [PATCH] libavcodec/h264: Use inferred num_reorder_frames when VUI is absent
+
+When VUI bitstream_restriction is absent, H.264 specifies that
+max_num_reorder_frames should be inferred from the level's DPB limit.
+FFmpeg normally starts with has_b_frames = 0 to avoid latency for
+streams without B-frames, and increases the reorder buffer dynamically
+when out-of-order frames are detected. However, by only increasing
+has_b_frames to out_of_order, frames outside the initial reorder window
+can be emitted too early and dropped.
+
+When out-of-order frames are detected on a stream lacking VUI
+bitstream_restriction, set has_b_frames to the inferred
+sps->num_reorder_frames clamped to sps->ref_frame_count. Clamping to
+sps->ref_frame_count prevents over-allocating DPB reorder frames (e.g.
+up to 16 frames on low-resolution streams at high levels or 5 frames on
+4K streams with 2 reference frames) while ensuring all B-frames are
+properly ordered. Streams without B-frames continue to have zero
+reorder delay.
+
+Bug: 495269752, 559001366
+Change-Id: Ifcef68115ccebd0cd35fe53a742887779885d539
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/third_party/ffmpeg/+/8418569
+Reviewed-by: Thomas Guilbert <tguilbert@chromium.org>
+---
+
+--- a/third_party/ffmpeg/libavcodec/h264_slice.c
++++ b/third_party/ffmpeg/libavcodec/h264_slice.c
+@@ -1335,8 +1335,19 @@
+         cur->mmco_reset = 1;
+     } else if(h->avctx->has_b_frames < out_of_order && !sps->bitstream_restriction_flag){
+         int loglevel = h->avctx->frame_num > 1 ? AV_LOG_WARNING : AV_LOG_VERBOSE;
++        // Chromium: When VUI bitstream_restriction is absent, use the inferred
++        // sps->num_reorder_frames (clamped to sps->ref_frame_count) as soon as
++        // out-of-order frames are detected to avoid dropping initial B-frames.
++        // Upstream didn't want to accept this patch unfortunately; see
++        // https://code.ffmpeg.org/FFmpeg/FFmpeg/pulls/22630,
++        // https://crbug.com/495269752, and https://crbug.com/559001366.
++#if 0
+         av_log(h->avctx, loglevel, "Increasing reorder buffer to %d\n", out_of_order);
+         h->avctx->has_b_frames = out_of_order;
++#else
++        h->avctx->has_b_frames = FFMAX(out_of_order, FFMIN(sps->num_reorder_frames, sps->ref_frame_count));
++        av_log(h->avctx, loglevel, "Increasing reorder buffer to %d\n", h->avctx->has_b_frames);
++#endif
+     }
+ 
+     pics = 0;
