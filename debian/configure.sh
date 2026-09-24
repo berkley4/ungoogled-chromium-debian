@@ -11,9 +11,8 @@ CON=; DSB=; FLAG_GPU=; INS=; POL=
 PRU=; PRU_PY=; RUL=; RUST_INST=; SER_DB=
 SER_U=; SERIES_DB=; SERIES_UC=; SMF=
 
-BUILD_TS_SET=0; CLANG_VER_SET=0; CPU_SET=0
-MARCH_SET=0; MEDIA_REMOTING_SET=0 MTUNE_SET=0
-POLLY_SET=0; RELEASE_SET=0
+MARCH_SET=0; MTUNE_SET=0; MEDIA_REMOTING_SET=0; POLLY_SET=0
+BUILD_TS_SET=false; CLANG_VER_SET=false; CPU_SET=false; RELEASE_SET=false
 
 LLVM_CTRL_VER=23
 LLVM_PGO_VER=24
@@ -136,7 +135,10 @@ fi
 [ -n "$SYS_OPENH264" ] || SYS_OPENH264=1
 
 ## CPU. MARCH and MTUNE defaults
-[ -n "$CPU" ] && CPU_SET=1 || CPU=avx
+case $CPU in
+  "") CPU=avx ;;
+  *) CPU_SET=true ;;
+esac
 [ -n "$MARCH" ] && MARCH_SET=1 || MARCH=x86-64-v2
 [ -n "$MTUNE" ] && MTUNE_SET=1 || MTUNE=generic
 
@@ -277,7 +279,10 @@ case $TIMESTAMP in
 esac
 
 
-[ -n "$BUILD_TS" ] && BUILD_TS_SET=1 || BUILD_TS=0
+case $BUILD_TS in
+  "") BUILD_TS=0 ;;
+  *) BUILD_TS_SET=true ;;
+esac
 
 
 
@@ -324,11 +329,16 @@ CON="$CON -e \"s;@@AUTHOR@@;$AUTHOR;\""
 
 
 ## Set default RELEASE to unstable (if not explicitly set)
-[ -n "$RELEASE" ] && RELEASE_SET=1 || RELEASE=unstable
+case $RELEASE in
+  "") RELEASE=unstable ;;
+  *) RELEASE_SET=true ;;
+esac
 
 ## If STABLE=1 then set RELEASE to stable (if not explicity set)
 if [ $STABLE -eq 1 ]; then
-  [ $RELEASE_SET -eq 1 ] && [ "$RELEASE" != "stable" ] || RELEASE=stable
+  case $RELEASE_SET in
+    false) RELEASE=stable ;;
+  esac
 fi
 
 
@@ -424,7 +434,9 @@ if [ $CCACHE -eq 1 ]; then
       RUL="$RUL -e \"/^#export CCACHE_BASEDIR=/s@^#@@\"" ;;
   esac
 
-  [ $BUILD_TS_SET -eq 1 ] || BUILD_TS=1
+  case $BUILD_TS_SET in
+    false) BUILD_TS=1 ;;
+  esac
 fi
 
 
@@ -470,7 +482,7 @@ else
 
     [1-9][0-9]*)
       CLANG_VER=${CLANG_VER%%.*}
-      CLANG_VER_SET=1 ;;
+      CLANG_VER_SET=true ;;
 
     *)
       printf '%s\n' "ERROR: malformed CLANG_VER variable $CLANG_VER"
@@ -481,16 +493,18 @@ else
   [ $SYS_CLANG -eq 1 ] || LLVM_BASE_DIR=/usr/local
 
   if [ $TEST -eq 0 ]; then
-    if [ $CLANG_VER_SET -eq 0 ]; then
-      # If CLANG_VER has NOT been set explicity then set LLVM_VER via querying the clang binary
-      LLVM_VER=$($LLVM_BASE_DIR/bin/clang --version | sed -n 's@.*version \([^.]*\).*@\1@p')
-    else
-      # If CLANG_VER has been set explicity then trust the version and do a quick usability check
-      if [ ! -x $LLVM_BASE_DIR/bin/clang ]; then
-        printf '%s\n' "ERROR: Cannot find $LLVM_BASE_DIR/bin/clang"
-        exit 1
-      fi
-    fi
+    case $CLANG_VER_SET in
+      false)
+        # If CLANG_VER has NOT been set explicity then set LLVM_VER via querying the clang binary
+        LLVM_VER=$($LLVM_BASE_DIR/bin/clang --version | sed -n 's@.*version \([^.]*\).*@\1@p') ;;
+
+      true)
+        # If CLANG_VER has been set explicity then trust the version and do a quick usability check
+        if [ ! -x $LLVM_BASE_DIR/bin/clang ]; then
+          printf '%s\n' "ERROR: Cannot find $LLVM_BASE_DIR/bin/clang"
+          exit 1
+        fi ;;
+    esac
   fi
 
   # Start using LLVM_VER instead of CLANG_VER now that the actual version is known
@@ -776,7 +790,9 @@ if [ $AVX -eq 0 ]; then
   op_disable="$op_disable compiler-flags/cpu/avx.patch"
 
   # Default to sse3/pni instruction requirement when AVX=0 (and PCLMUL=0)
-  [ $CPU_SET -eq 1 ] || CPU='sse3\x5C\x7Cpni'
+  case $CPU_SET in
+    false) CPU='sse3\x5C\x7Cpni' ;;
+  esac
 else
   RUST_INST="$RUST_INST,+avx"
 
@@ -790,7 +806,9 @@ if [ $PCLMUL -eq 0 ]; then
 else
   # Default to pclmulqdq instruction requirement when AVX=0 and PCLMUL=1
   if [ $AVX -eq 0 ]; then
-    [ $CPU_SET -eq 1 ] || CPU=pclmulqdq
+    case $CPU_SET in
+      false) CPU=pclmulqdq ;;
+    esac
   fi
 fi
 
