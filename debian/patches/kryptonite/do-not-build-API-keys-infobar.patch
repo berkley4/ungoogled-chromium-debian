@@ -16,3 +16,30 @@
        "google_chrome_scheme_util.cc",
        "infobar_utils.cc",
        "launch_mode_recorder.cc",
+--- a/chrome/browser/ui/webui/infobar_internals/infobar_internals_handler.cc
++++ b/chrome/browser/ui/webui/infobar_internals/infobar_internals_handler.cc
+@@ -432,23 +432,7 @@
+ #endif
+     }
+     case InfoBarType::kGoogleApiKeys: {
+-      if (infobars::IsInfoBarMigrated(
+-              infobars::InfoBarDelegate::GOOGLE_API_KEYS_INFOBAR_DELEGATE)) {
+-        if (!browser_infobar_manager) {
+-          return false;
+-        }
+-        browser_infobar_manager->Show(
+-            bwi->GetActiveTabInterface(),
+-            infobars::InfoBarDelegate::GOOGLE_API_KEYS_INFOBAR_DELEGATE);
+-      } else {
+-        infobars::ContentInfoBarManager* infobar_manager =
+-            infobars::ContentInfoBarManager::FromWebContents(web_contents);
+-        if (!infobar_manager) {
+-          return false;
+-        }
+-        GoogleApiKeysInfoBarDelegate::Create(infobar_manager);
+-      }
+-      return true;
++      return false;
+     }
+     case InfoBarType::kIncognitoConnectability: {
+ #if BUILDFLAG(ENABLE_EXTENSIONS)
