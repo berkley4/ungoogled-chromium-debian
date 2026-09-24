@@ -287,7 +287,10 @@ esac
 
 
 ## Enter test mode if $RT_DIR/third_party does not exist
-[ -d $RT_DIR/third_party ] && TEST=0 || TEST=1
+## but allow TEST to be forced enabled
+case $TEST in
+  "") [ -d $RT_DIR/third_party ] && TEST=0 || TEST=1 ;;
+esac
 
 # Allow enabling DEPS_PATCH when TEST=1
 if [ $TEST -eq 1 ]; then
