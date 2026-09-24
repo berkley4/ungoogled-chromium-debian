@@ -1,7 +1,7 @@
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -207,16 +207,16 @@
-              base::FEATURE_ENABLED_BY_DEFAULT);
+@@ -204,16 +204,16 @@
+         "EffectiveConnectionTypeRecomputationInterval", base::Seconds(10)};
  
  BASE_FEATURE(kSplitCacheByIncludeCredentials,
 -             base::FEATURE_DISABLED_BY_DEFAULT);

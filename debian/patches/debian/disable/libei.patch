@@ -6,7 +6,7 @@ we re-add libei.
 
 --- a/remoting/host/BUILD.gn
 +++ b/remoting/host/BUILD.gn
-@@ -704,7 +704,6 @@
+@@ -690,7 +690,6 @@
      deps += [
        "//remoting/host/linux:platform_impls",
        "//remoting/host/linux:utils",
@@ -16,7 +16,7 @@ we re-add libei.
        "//ui/gfx/x",
 --- a/remoting/host/linux/BUILD.gn
 +++ b/remoting/host/linux/BUILD.gn
-@@ -353,7 +353,6 @@
+@@ -354,7 +354,6 @@
      "//remoting/proto",
      "//remoting/protocol",
      "//sandbox/linux:seccomp_bpf",

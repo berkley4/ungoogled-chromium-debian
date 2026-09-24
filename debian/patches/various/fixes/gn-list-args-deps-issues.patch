@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -214,7 +214,6 @@
+@@ -219,7 +219,6 @@
          "//third_party/blink/renderer/platform/heap:blink_heap_unittests",
          "//third_party/blink/renderer/platform/wtf:wtf_unittests",
          "//third_party/libjingle_xmpp:libjingle_xmpp_unittests",
@@ -8,7 +8,7 @@
          "//tools/memory:all",
          "//ui/display:display_unittests",
          "//ui/gl:gl_unittests",
-@@ -1244,7 +1243,6 @@
+@@ -1237,7 +1236,6 @@
        "//third_party/blink/renderer/core:gen_files_for_web_tests",
        "//third_party/catapult/third_party/typ",
        "//third_party/hyphenation-patterns:test_data",
@@ -38,7 +38,7 @@
      "//ui/gfx/animation",
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -8797,7 +8797,6 @@
+@@ -8883,7 +8883,6 @@
        "//testing/gtest",
        "//third_party/hunspell",
        "//third_party/icu",
@@ -46,7 +46,7 @@
        "//ui/base:base_interactive_ui_tests",
        "//ui/base:ozone_buildflags",
        "//ui/base:test_support",
-@@ -9711,7 +9710,6 @@
+@@ -9822,7 +9821,6 @@
        "//testing/gtest",
        "//third_party/hunspell",
        "//third_party/icu",

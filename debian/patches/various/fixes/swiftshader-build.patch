@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -510,7 +510,7 @@
+@@ -515,7 +515,7 @@
      }
  
      if ((is_win || is_mac || is_linux || is_chromeos || is_fuchsia) &&
@@ -9,7 +9,7 @@
        deps += [
          "//third_party/swiftshader/src/Vulkan:icd_file",
          "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan",
-@@ -1063,7 +1063,7 @@
+@@ -1056,7 +1056,7 @@
            data_deps += [ "//media/gpu/chromeos:vulkan_overlay_adaptor_test" ]
          }
        }
@@ -28,7 +28,7 @@
  import("//media/media_options.gni")
  import("//services/on_device_model/on_device_model.gni")
  import("//services/shape_detection/features.gni")
-@@ -1539,10 +1540,12 @@
+@@ -1521,10 +1522,12 @@
        deps = [
          ":chrome_app",
          ":chrome_framework",
@@ -42,7 +42,7 @@
        if (build_with_internal_optimization_guide) {
          deps += [ "//components/optimization_guide/internal:optimization_guide_internal" ]
        }
-@@ -1592,9 +1595,11 @@
+@@ -1574,9 +1577,11 @@
        deps = [
          ":chrome_app",
          ":chrome_framework",
@@ -55,7 +55,7 @@
        if (build_with_internal_optimization_guide) {
          deps += [ "//components/optimization_guide/internal:optimization_guide_internal" ]
        }
-@@ -1868,7 +1873,7 @@
+@@ -1850,7 +1855,7 @@
        deps = [
          ":chrome_symbols",
        ]
@@ -64,7 +64,7 @@
          deps += [ ":swiftshader_vk_symbols" ]
        }
        if (!is_chromeos && angle_shared_libvulkan) {
-@@ -1914,17 +1919,19 @@
+@@ -1896,17 +1901,19 @@
          deps = [ "//components/crash/core/app:chrome_crashpad_handler" ]
        }
      }
@@ -95,7 +95,7 @@
        binary = "$root_out_dir/libEGL.so"
 --- a/chrome/installer/linux/BUILD.gn
 +++ b/chrome/installer/linux/BUILD.gn
-@@ -81,7 +81,7 @@
+@@ -92,7 +92,7 @@
    packaging_files_shlibs += [ "$root_out_dir/libvulkan.so.1" ]
  }
  
@@ -104,7 +104,7 @@
    packaging_files_shlibs += [ "$root_out_dir/libvk_swiftshader.so" ]
  }
  
-@@ -114,7 +114,7 @@
+@@ -116,7 +116,7 @@
                      "$root_out_dir/PrivacySandboxAttestationsPreloaded/manifest.json",
                      "$root_out_dir/PrivacySandboxAttestationsPreloaded/privacy-sandbox-attestations.dat",
                    ]

@@ -97,7 +97,7 @@
      "//build/config/compiler:wexit_time_destructors",
      "//build/config/compiler:wglobal_constructors",
    ]
-@@ -384,7 +386,9 @@
+@@ -382,7 +384,9 @@
      ]
    }
  
@@ -107,7 +107,7 @@
      "//build/config/compiler:wexit_time_destructors",
      "//build/config/compiler:wglobal_constructors",
    ]
-@@ -470,7 +474,9 @@
+@@ -468,7 +472,9 @@
      "command_buffer_helper.h",
    ]
  
@@ -117,7 +117,7 @@
      "//build/config/compiler:wexit_time_destructors",
      "//build/config/compiler:wglobal_constructors",
    ]
-@@ -512,7 +518,9 @@
+@@ -510,7 +516,9 @@
        "video_frame_mapper_factory.h",
      ]
  

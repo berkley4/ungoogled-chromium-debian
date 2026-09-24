@@ -1,6 +1,6 @@
 --- a/chrome/browser/extensions/BUILD.gn
 +++ b/chrome/browser/extensions/BUILD.gn
-@@ -565,6 +565,7 @@
+@@ -570,6 +570,7 @@
      "//chrome/browser/undo",
      "//chrome/browser/update_client",
      "//chrome/common",
@@ -8,7 +8,7 @@
      "//components/bookmarks/browser",
      "//components/bookmarks/managed",
      "//components/content_settings/core/browser",
-@@ -1000,7 +1001,6 @@
+@@ -1007,7 +1008,6 @@
        "//chrome/browser/web_applications/extensions",
        "//chrome/common/extensions/api:extensions_features",
        "//chrome/services/file_util/public/mojom",
@@ -16,7 +16,7 @@
        "//components/affiliations/core/browser:affiliations",
        "//components/app_constants",
        "//components/autofill/content/browser",
-@@ -1120,6 +1120,10 @@
+@@ -1128,6 +1128,10 @@
        "//url",
      ]
  
@@ -29,7 +29,7 @@
          "api/certificate_provider/certificate_provider_api.cc",
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -2424,7 +2424,6 @@
+@@ -2450,7 +2450,6 @@
        "//chrome/renderer",
        "//chrome/renderer/actor:browser_tests",
        "//chrome/renderer/webui_browser:browser_tests",
@@ -37,7 +37,7 @@
        "//chrome/test/components_tests:browser_tests",
        "//chrome/test/data/webui:resources",
        "//chrome/test/data/webui/mojo:mojo_bindings",
-@@ -2800,6 +2799,10 @@
+@@ -2827,6 +2826,10 @@
        deps += [ "//chrome/updater:browser_sources" ]
      }
  

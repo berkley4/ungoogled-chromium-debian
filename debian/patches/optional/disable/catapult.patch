@@ -11,7 +11,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
 
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -249,7 +249,6 @@
+@@ -254,7 +254,6 @@
      if (!is_ios) {
        deps += [
          "//google_apis/gcm:mcs_probe",
@@ -19,7 +19,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
        ]
        if (!is_android) {
          if (!is_castos && !is_fuchsia) {
-@@ -1241,7 +1240,6 @@
+@@ -1234,7 +1233,6 @@
        "//third_party/blink/public:blink_devtools_inspector_resources",
        "//third_party/blink/public/mojom:mojom_platform_js_data_deps",
        "//third_party/blink/renderer/core:gen_files_for_web_tests",
@@ -27,7 +27,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
        "//third_party/hyphenation-patterns:test_data",
      ]
  
-@@ -1499,10 +1497,6 @@
+@@ -1492,10 +1490,6 @@
        "//third_party/blink/web_tests/VirtualTestSuites",
        "//third_party/blink/web_tests/W3CImportExpectations",
        "//third_party/blink/web_tests/paint/invalidation/repaint-overlay/",
@@ -40,7 +40,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
        "//third_party/depot_tools/pylintrc-2.7",
 --- a/chrome/chrome_paks.gni
 +++ b/chrome/chrome_paks.gni
-@@ -259,8 +259,6 @@
+@@ -261,8 +261,6 @@
          "$root_gen_dir/chrome/webui_toolbar_shared_resources.pak",
          "$root_gen_dir/chrome/whats_new_resources.pak",
          "$root_gen_dir/components/headless/command_handler/headless_command_resources.pak",
@@ -49,9 +49,9 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
        ]
  
        deps += [
-@@ -268,7 +266,6 @@
-         "//chrome/browser/indigo/resources:browser_resources",
+@@ -271,7 +269,6 @@
          "//chrome/browser/resources/contextual_cueing/internals:resources",
+         "//chrome/browser/resources/geic:resources",
          "//components/headless/command_handler",
 -        "//content/browser/tracing:resources",
        ]
@@ -59,7 +59,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
          sources += [
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -9658,7 +9658,6 @@
+@@ -9769,7 +9769,6 @@
        "//chrome/test/data/password/captured_sites/",
        "//chrome/test/data/web_page_replay_go_helper_scripts/automation_helper.js",
        "//components/test/data/autofill/web_page_replay_support_files/",
@@ -67,7 +67,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
      ]
      if (!is_chromeos) {
        data += [ "//third_party/webpagereplay/" ]
-@@ -9772,7 +9771,6 @@
+@@ -9883,7 +9882,6 @@
      deps = [ "//tools/perf/chrome_telemetry_build:telemetry_chrome_test" ]
  
      data = [
@@ -77,7 +77,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
      ]
 --- a/content/browser/BUILD.gn
 +++ b/content/browser/BUILD.gn
-@@ -3409,7 +3409,6 @@
+@@ -3424,7 +3424,6 @@
        "//components/speech",
        "//components/vector_icons",
        "//components/webauthn/json",
@@ -129,23 +129,23 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
 -}
 --- a/content/browser/tracing/tracing_ui.cc
 +++ b/content/browser/tracing/tracing_ui.cc
-@@ -27,7 +27,6 @@
- #include "base/trace_event/trace_config.h"
- #include "base/trace_event/trace_event.h"
- #include "base/values.h"
+@@ -4,7 +4,6 @@
+ 
+ #include "content/browser/tracing/tracing_ui.h"
+ 
 -#include "content/browser/tracing/grit/tracing_resources.h"
- #include "content/browser/tracing/tracing_controller_impl.h"
  #include "content/public/browser/browser_context.h"
- #include "content/public/browser/browser_thread.h"
-@@ -239,8 +238,6 @@
+ #include "content/public/browser/web_contents.h"
+ #include "content/public/browser/web_ui.h"
+@@ -19,8 +18,6 @@
        web_ui->GetWebContents()->GetBrowserContext(), kChromeUITracingHost);
    source->DisableTrustedTypesCSP();
    source->UseStringsJs();
 -  source->SetDefaultResource(IDR_TRACING_ABOUT_TRACING_HTML);
 -  source->AddResourcePath("tracing.js", IDR_TRACING_ABOUT_TRACING_JS);
+ }
  
-   source->SetRequestFilter(base::BindRepeating(OnShouldHandleRequest),
-                            base::BindRepeating(OnTracingRequest));
+ TracingUI::~TracingUI() = default;
 --- a/content/shell/BUILD.gn
 +++ b/content/shell/BUILD.gn
 @@ -585,13 +585,6 @@
@@ -259,7 +259,7 @@ Stuff like chai, jszip, and node-d3 are packaged for debian already.
  //tools/grit/grit/clique.py
 --- a/tools/gritsettings/resource_ids.spec
 +++ b/tools/gritsettings/resource_ids.spec
-@@ -1549,10 +1549,6 @@
+@@ -1552,10 +1552,6 @@
      "META": {"sizes": {"includes": [20,],}},
      "includes": [8260],
    },

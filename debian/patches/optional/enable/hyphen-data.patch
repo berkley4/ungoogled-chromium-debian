@@ -1,3 +1,13 @@
+--- a/chrome/browser/BUILD.gn
++++ b/chrome/browser/BUILD.gn
+@@ -2456,6 +2456,7 @@
+     "//third_party/blink/public:resources",
+     "//third_party/blink/public:scaled_resources",
+     "//third_party/blink/public/common",
++    "//third_party/hyphenation-patterns:bundle_hyphen_data",
+     "//third_party/leveldatabase",
+     "//third_party/libyuv",
+     "//third_party/zlib",
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
 @@ -26,6 +26,7 @@
@@ -8,7 +18,7 @@
  #include "base/functional/bind.h"
  #include "base/functional/callback.h"
  #include "base/functional/callback_helpers.h"
-@@ -456,7 +457,6 @@
+@@ -461,7 +462,6 @@
  #include "url/url_constants.h"
  
  #if BUILDFLAG(IS_WIN)
@@ -16,7 +26,7 @@
  #include "base/strings/string_tokenizer.h"
  #include "base/win/win_util.h"
  #include "base/win/windows_version.h"
-@@ -8411,17 +8411,14 @@
+@@ -8357,17 +8357,14 @@
    // automation frameworks), the hyphenation dictionaries directory is never
    // initialized. To work around this, provide the well known hyphenation
    // directory here bypassing the disabled component installer.

@@ -42,17 +42,6 @@
  
  namespace {
  
---- a/chrome/browser/profiling_host/profiling_process_host.cc
-+++ b/chrome/browser/profiling_host/profiling_process_host.cc
-@@ -29,7 +29,7 @@
- #include "content/public/browser/browser_task_traits.h"
- #include "content/public/browser/browser_thread.h"
- #include "services/network/public/cpp/shared_url_loader_factory.h"
--#include "third_party/zlib/zlib.h"
-+#include <zlib.h>
- #include "url/gurl.h"
- 
- #if BUILDFLAG(IS_WIN)
 --- a/components/sync/base/unique_position.cc
 +++ b/components/sync/base/unique_position.cc
 @@ -18,7 +18,7 @@

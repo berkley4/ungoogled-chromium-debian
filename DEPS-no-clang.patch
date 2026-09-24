@@ -1,6 +1,6 @@
 --- a/DEPS
 +++ b/DEPS
-@@ -764,7 +764,7 @@
+@@ -768,7 +768,7 @@
    },
    'src/buildtools/linux64-format': {
      'bucket': 'chromium-clang-format',
@@ -9,7 +9,7 @@
      'dep_type': 'gcs',
      'objects': [
        {
-@@ -878,7 +878,7 @@
+@@ -897,7 +897,7 @@
    'src/third_party/llvm-build/Release+Asserts': {
      'dep_type': 'gcs',
      'bucket': 'chromium-browser-clang',
@@ -17,4 +17,4 @@
 +    'condition': 'llvm_force_head_revision',
      'objects': [
        {
-         'object_name': 'Linux_x64/clang-android-runtime-library-llvmorg-24-init-3796-g20e97c4b-2.tar.xz',
+         'object_name': 'Linux_x64/clang-android-runtime-library-llvmorg-24-init-3796-g20e97c4b-27.tar.xz',

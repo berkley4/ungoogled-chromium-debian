@@ -109,7 +109,7 @@ profiles to have software HEVC decoding ability.
  #define CONFIG_CABAC 1
  #define CONFIG_CBS 0
  #define CONFIG_CBS_APV 0
-@@ -779,8 +779,8 @@
+@@ -778,8 +778,8 @@
  #define CONFIG_H264PRED 1
  #define CONFIG_H264QPEL 1
  #define CONFIG_H264_SEI 1

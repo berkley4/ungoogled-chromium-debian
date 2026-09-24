@@ -23,7 +23,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -4977,6 +4977,10 @@
+@@ -5023,6 +5023,10 @@
      {"ui-disable-partial-swap", flag_descriptions::kUiPartialSwapName,
       flag_descriptions::kUiPartialSwapDescription, kOsAll,
       SINGLE_DISABLE_VALUE_TYPE(switches::kUIDisablePartialSwap)},
@@ -36,7 +36,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       FEATURE_VALUE_TYPE(features::kWebRtcHWDecoding)},
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -6650,6 +6650,11 @@
+@@ -6802,6 +6802,11 @@
  // FLAG_DESCRIPTIONS_ANDROID_END
  // Non-Android -----------------------------------------------------------------
  
@@ -50,7 +50,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  inline constexpr char kAllowAllSitesToInitiateMirroringDescription[] =
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -136,6 +136,9 @@
+@@ -143,6 +143,9 @@
  BASE_FEATURE(kDisplayWarningDeprecateURNIframesUseFencedFrames,
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -62,7 +62,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  // it will use the kNormal type thread when disabled.
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -142,6 +142,8 @@
+@@ -153,6 +153,8 @@
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE_PARAM(bool,
                                                 kAutoSpeculationRulesHoldback);
  
@@ -188,7 +188,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "third_party/blink/renderer/platform/audio/audio_bus.h"
  #include "third_party/blink/renderer/platform/audio/audio_utilities.h"
  #include "third_party/blink/renderer/platform/audio/vector_math.h"
-@@ -117,7 +118,8 @@
+@@ -122,7 +123,8 @@
      for (unsigned i = 0; i < len; ++i) {
        const float linear_value = magnitude_buffer_[i];
        const double db_mag = audio_utilities::LinearToDecibels(linear_value);
@@ -198,7 +198,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      }
    }
  }
-@@ -153,9 +155,11 @@
+@@ -158,9 +160,11 @@
  
        // The range m_minDecibels to m_maxDecibels will be scaled to byte values
        // from 0 to UCHAR_MAX.
@@ -211,7 +211,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        // Clip to valid range.
        destination[i] =
            static_cast<unsigned char>(ClampTo(scaled_value, 0, UCHAR_MAX));
-@@ -184,6 +188,7 @@
+@@ -189,6 +193,7 @@
            input_buffer_[(i + write_index - fft_size + kInputBufferSize) %
                          kInputBufferSize];
  
@@ -219,7 +219,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
        destination[i] = value;
      }
    }
-@@ -205,10 +210,12 @@
+@@ -210,10 +215,12 @@
      base::span<unsigned char> destination = destination_array->AsSpan();
      for (unsigned i = 0; i < len; ++i) {
        // Buffer access is protected due to modulo operation.

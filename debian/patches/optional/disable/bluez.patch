@@ -8,7 +8,7 @@
  import("//device/vr/buildflags/buildflags.gni")
  import("//extensions/buildflags/buildflags.gni")
  import("//media/gpu/args.gni")
-@@ -1589,6 +1590,9 @@
+@@ -1605,6 +1606,9 @@
      deps += [ "//third_party/fontconfig" ]
      if (use_dbus) {
        deps += [ "//dbus" ]

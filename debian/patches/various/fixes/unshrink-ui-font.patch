@@ -1,6 +1,6 @@
 --- a/ui/webui/resources/css/text_defaults_md.css
 +++ b/ui/webui/resources/css/text_defaults_md.css
-@@ -21,7 +21,7 @@
+@@ -38,7 +38,7 @@
  
  body {
    font-family: $i18nRaw{fontfamilyMd};

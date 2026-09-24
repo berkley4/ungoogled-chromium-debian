@@ -1,6 +1,6 @@
 --- a/components/autofill/core/common/autofill_features.cc
 +++ b/components/autofill/core/common/autofill_features.cc
-@@ -966,7 +966,7 @@
+@@ -1005,7 +1005,7 @@
  // If enabled, fetch sms otp from gmscore and upload votes for sms otp.
  // TODO(crbug.com/453999673): Clean up when launched.
  BASE_FEATURE(kAutofillSmsOtpCrowdsourcingFetchFromGmscore,

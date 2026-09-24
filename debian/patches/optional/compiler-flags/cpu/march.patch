@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2592,6 +2592,7 @@
+@@ -2595,6 +2595,7 @@
    if (is_clang) {
      extra_cflags += [
        "-mpclmul",
@@ -8,7 +8,7 @@
      ]
    }
  }
-@@ -2690,7 +2691,10 @@
+@@ -2693,7 +2694,10 @@
      # The `-O3` for clang turns on extra optimizations compared to the standard
      # `-O2`. But for rust, `-Copt-level=3` is the default and is thus reliable
      # to use.
@@ -20,7 +20,7 @@
    }
  }
  
-@@ -2744,7 +2748,10 @@
+@@ -2747,7 +2751,10 @@
        ldflags += [ "-Wl,--lto-CGO2" ]
      }
    }
@@ -32,7 +32,7 @@
  }
  
  # This config can be used to override the default settings for per-component
-@@ -2771,7 +2778,10 @@
+@@ -2774,7 +2781,10 @@
        ldflags += [ "-Wl,--lto-CGO3" ]
      }
    }
