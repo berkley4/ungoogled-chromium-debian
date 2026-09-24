@@ -254,11 +254,10 @@ fi
 
 
 # Warn about using non-bundled build tools
-
 for i in ESBUILD GN NODE RUST; do
   eval "
-    if [ \$SYS_$i -ne 0 ]; then
-      printf '%s\n' \"WARN: Using non-bundled \$i is not recommended [SYS_$i=\$SYS_$i]\"
+    if [ \$SYS_$i -gt 0 ]; then
+      printf '%s\n' \"WARN: non-bundled \$i is not recommended [SYS_$i=\$SYS_$i]\"
     fi
   "
 done
