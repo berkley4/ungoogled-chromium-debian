@@ -82,6 +82,7 @@ various/disable/crashpad-handler/crashpad-handler_2.patch
 various/disable/crashpad-handler/crashpad-handler_3.patch
 various/disable/image-writer/image-writer-private.patch
 various/disable/image-writer/image-writer-utility.patch
+various/fixes/add-missing-opus-dep-to-devtools-media-encoding.patch
 various/fixes/AutoDarkModeSkipImages.patch
 various/fixes/enterprise-buildflags.patch
 various/fixes/ffmpeg-codec-list.patch
