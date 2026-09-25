@@ -7,9 +7,8 @@ case $USER in
 esac
 
 
-CON=; DSB=; FLAG_GPU=; INS=; POL=
-PRU=; PRU_PY=; RUL=; RUST_INST=; SER_DB=
-SER_U=; SERIES_DB=; SERIES_UC=; SMF=
+CON=; DSB=; FLAG_GPU=; INS=; POL=; PRU=; PRU_PY=;
+RUL=; RUST_INST=; SER_DB=; SER_U=; SMF=
 
 MARCH_SET=0; MTUNE_SET=0; POLLY_SET=0
 BUILD_TS_SET=false; CLANG_VER_SET=false; CPU_SET=false; RELEASE_SET=false
@@ -405,9 +404,14 @@ fi
 
 
 
-###########################################################
-## Clang/gn/Machine Function Splitter/Rust configuration ##
-###########################################################
+############################################
+## Buiid tool/general build configuration ##
+############################################
+
+# Avoid UC's non-standard use of wasm rollup in place of esbuild
+P1=build-with-wasm-rollup.patch
+SER_UC="$SER_UC -e \"/^core\/ungoogled-chromium\/$P1/s@^@#@\""
+
 
 ## Enable the use of ccache
 if [ $CCACHE -eq 1 ]; then
@@ -542,13 +546,6 @@ else
 fi
 
 
-if [ $LLVM_VER -ge 19 ]; then
-  # Do not apply hardware destructive interference patch for clang versions >= 19
-  P1=hardware_destructive_interference_size.patch
-  SER_UC="$SER_UC -e \"/^upstream-fixes\/$P1/s@^@#@\""
-fi
-
-
 if [ $SYS_RUST -ge 1 ]; then
   op_enable="$op_enable system/rust/no-alloc-shim.patch"
 
@@ -599,10 +596,6 @@ if [ $SYS_BINDGEN -gt 0 ]; then
   RUL="$RUL -e \"s@_BINDGEN_PATH@$BINDGEN_PATH@\""
 fi
 
-
-# Disable core/ungoogled-chromium/build-with-wasm-rollup.patch
-P2=build-with-wasm-rollup.patch
-SER_UC="$SER_UC -e \"/^core\/ungoogled-chromium\/$P2/s@^@#@\""
 
 if [ $SYS_ESBUILD -eq 1 ]; then
   deps_enable="$deps_enable esbuild"
@@ -988,8 +981,8 @@ if [ $LOCALES_EXTRA -eq 0 ]; then
   CON="$CON -e \"/pa, pl, pt-BR, pt-PT, ro, ru,/d\""
   CON="$CON -e \"/th, tr, uk, ur, uz, vi, zh-CN,/d\""
 
-  P4=enable-extra-locales.patch
-  SER_UC="$SER_UC -e \"/^extra\/ungoogled-chromium\/$P4/s@^@#@\""
+  P2=enable-extra-locales.patch
+  SER_UC="$SER_UC -e \"/^extra\/ungoogled-chromium\/$P2/s@^@#@\""
 fi
 
 
@@ -1473,13 +1466,12 @@ sed -e "s;@@VERSION@@;$VERSION;" -e "s;@@RELEASE@@;$RELEASE;" \
       < $DEBIAN/changelog.in > $DEBIAN/changelog
 
 
-[ -n "$SER_DB" ] || SER_DB="-n p"
-#[ -n "$SER_UC" ] || SER_UC="-n p"
+case $SER_DB in "") SER_DB="-n p" ;; esac
+case $SER_UC in "") SER_UC="-n p" ;; esac
 
-SERIES_DB="$(eval sed $SER_DB $DEBIAN/patches/series.debian)"
-SERIES_UC="$(eval sed $SER_UC $UC_DIR/patches/series)"
-
-echo "$SERIES_UC" "$SERIES_DB" > $DEBIAN/patches/series
+echo "$(eval sed $SER_UC $UC_DIR/patches/series)" \
+     "$(eval sed $SER_DB $DEBIAN/patches/series.debian)" \
+      > $DEBIAN/patches/series
 
 
 [ -z "$BFL" ] || eval sed $BFL -i $FLAG_DIR/blocked-flags
