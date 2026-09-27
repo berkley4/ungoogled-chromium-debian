@@ -190,6 +190,20 @@ case $CHROMIUM_FLAGS in
 esac
 
 
+# If DBUS_SESSION_BUS_ADDRESS is set to disabled then add --password-store=basic
+# to our flags to prevent chromium looking for a wallet manager (eg  gnome keyring)
+case $DBUS_SESSION_BUS_ADDRESS in
+  disabled)
+    case $CHROMIUM_FLAGS in
+      *--password-store=basic*)
+        : ;;
+
+      *)
+        CHROMIUM_FLAGS="$CHROMIUM_FLAGS --password-store=basic" ;;
+    esac ;;
+esac
+
+
 # Aggregate all instances of --enabled-features and --disabled-features
 case $CHROMIUM_FLAGS in
   *--enable-features=*|*--disable-features=*)
