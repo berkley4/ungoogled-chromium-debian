@@ -138,6 +138,8 @@ GTK			1		GTK user interface
 					At least one of GTK or QT must be enabled to avoid crashes
 
 HYPHENATION		1		Enable hyphenation data (see https://clagnut.com/sandbox/hyphenation.html for info)
+					Note that build/hyphen-data-get-sh is able to regenerate the required files
+					should they be missing for whatever reason.
 
 LENS_TRANSLATE		1		Goodle Lens image translation subfeature
 LENS			0		Goodle Lens
