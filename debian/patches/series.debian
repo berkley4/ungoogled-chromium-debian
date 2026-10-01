@@ -96,7 +96,6 @@ various/fixes/InkDropHost-crash.patch
 various/fixes/make-pdf-xfa-depend-on-pdf-v8.patch
 various/fixes/make-use_clang_modules-depend-on-sysroot.patch
 various/fixes/pdfium-skrifa.patch
-various/fixes/rust-use-lld.patch
 various/fixes/shim-fix-for-official-builds.patch
 various/fixes/silence-some-error-log-messages.patch
 various/fixes/swiftshader-build.patch
@@ -105,6 +104,8 @@ various/fixes/test-dependencies.patch
 various/fixes/unbundle-script-dh-clean-interoperabilty.patch
 various/fixes/unshrink-ui-font.patch
 various/fixes/v8-always-use-baked-zoneinfo64-data.patch
+various/fixes/rust/allow-unstable-features.patch
+various/fixes/rust/use-lld.patch
 various/system/dav1d.patch
 various/system/dbus.patch
 various/system/libdrm.patch
@@ -153,7 +154,6 @@ optional/ffmpeg-hevc/enable-hevc-ffmpeg-decoding.patch
 #optional/fixes/opentype-svg-on-bundled-freetype.patch
 #optional/fixes/partition-lock-priority-inheritance.patch
 #optional/fixes/qt-ui.patch
-#optional/fixes/rustc-allow-features.patch
 #optional/fixes/skia-allow-bundled-freetype.patch
 optional/fixes/translate-stop-unsupported-switch-warning.patch
 optional/fixes/chromedriver/brandversion.patch
