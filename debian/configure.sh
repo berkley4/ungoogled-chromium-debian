@@ -1474,11 +1474,13 @@ printf '%s\n%s\n' \
 [ -z "$POL" ] || eval sed $POL -i $DEBIAN/etc/chromium/policies/managed/policies.json
 [ -z "$PRU_PY" ] || eval sed $PRU_PY -i $UC_DIR/utils/prune_binaries.py
 
-eval sed $CON < $DEBIAN/control.in > $DEBIAN/control
-eval sed $RUL < $DEBIAN/rules.in > $DEBIAN/rules
-eval sed $DSB -i $UC_DIR/domain_substitution.list
-eval sed $SMF -i $UC_DIR/flags.gn
-eval sed $PRU -i $UC_DIR/pruning.list
+eval "
+  sed $CON < \$DEBIAN/control.in > \$DEBIAN/control
+  sed $RUL < \$DEBIAN/rules.in > \$DEBIAN/rules
+  sed $DSB -i \$UC_DIR/domain_substitution.list
+  sed $SMF -i \$UC_DIR/flags.gn
+  sed $PRU -i \$UC_DIR/pruning.list
+"
 
 
 ## Make d/rules and d/ungoogled-chromium.install executable
