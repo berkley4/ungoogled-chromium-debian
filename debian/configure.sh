@@ -1462,9 +1462,10 @@ sed -e "s;@@VERSION@@;$VERSION;" -e "s;@@RELEASE@@;$RELEASE;" \
 case $SER_DB in "") SER_DB="-n p" ;; esac
 case $SER_UC in "") SER_UC="-n p" ;; esac
 
-echo "$(eval sed $SER_UC $UC_DIR/patches/series)" \
-     "$(eval sed $SER_DB $DEBIAN/patches/series.debian)" \
-      > $DEBIAN/patches/series
+printf '%s\n%s\n' \
+  "$(eval sed $SER_UC $UC_DIR/patches/series)" \
+  "$(eval sed $SER_DB $DEBIAN/patches/series.debian)" \
+    > $DEBIAN/patches/series
 
 
 [ -z "$BFL" ] || eval sed $BFL -i $FLAG_DIR/blocked-flags
