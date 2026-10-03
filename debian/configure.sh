@@ -162,7 +162,7 @@ esac
 [ -n "$DNS_INTERCEPT" ] || DNS_INTERCEPT=1
 
 ## DNS config service
-[ -n "$DNS_CONFIG" ] || DNS_CONFIG=0
+[ -n "$DNS_CONFIG" ] || DNS_CONFIG=1
 
 # Swiftshader vulkan and webgpu components
 if [ $SWIFTSHADER -eq 0 ]; then
@@ -863,8 +863,8 @@ if [ $DNS_BUILTIN -eq 1 ]; then
 fi
 
 # Not part of managed policy but set this here with the other dns variables
-if [ $DNS_CONFIG -eq 1 ]; then
-  op_disable="$op_disable disable/dns_config_service.patch"
+if [ $DNS_CONFIG -eq 0 ]; then
+  op_enable="$op_enable disable/dns_config_service.patch"
 fi
 
 

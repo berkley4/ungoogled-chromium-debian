@@ -88,7 +88,7 @@ ___Security/Privacy improvements___
         - ATK
         - Bluez
         - Catapult
-        - DNS config service
+        - DNS config service (+)
         - Media remoting
         - Media router
         - mDNS

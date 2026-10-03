@@ -138,7 +138,7 @@ optional/compiler-flags/cpu/rust-instructions.patch
 optional/disable/atk.patch
 optional/disable/bluez.patch
 optional/disable/catapult.patch
-optional/disable/dns_config_service.patch
+#optional/disable/dns_config_service.patch
 #optional/disable/vulkan.patch
 optional/disable/webgpu.patch
 optional/disable/webserial.patch
