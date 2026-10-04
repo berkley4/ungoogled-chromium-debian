@@ -89,7 +89,6 @@ ___Security/Privacy improvements___
         - Bluez
         - Catapult
         - DNS config service (+)
-        - Media remoting
         - Media router
         - mDNS
         - Swiftshader
@@ -99,6 +98,7 @@ ___Security/Privacy improvements___
     - Some other features/components are always patched out
         - Crashpad handler
         - Image writer/removable storage writer service
+        - Media remoting
         - Motherboard metrics collection
 
     (+) = Enabled by default ie functional in the deb releases.
