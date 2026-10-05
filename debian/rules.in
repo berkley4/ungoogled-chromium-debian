@@ -50,7 +50,7 @@ export PATH=$(BTS_DIR)/linux64:$(shell printenv PATH)
 #GN_FLAGS += host_toolchain=\"//build/toolchain/linux/unbundle:default\"
 
 # Rust toolchain
-export RUSTC_BOOTSTRAP=1 RUSTFMT_BOOTSTRAP=1
+export RUSTC_BOOTSTRAP=1 RUSTFMT_BOOTSTRAP=1 CFG_RELEASE_CHANNEL=nightly
 #RUST_PATH := _RUST_PATH
 #RUST_VER := $(shell $(RUST_PATH)/bin/rustc -V)
 #GN_FLAGS += rust_sysroot_absolute=\"$(RUST_PATH)\" rustc_version=\"$(RUST_VER)\"

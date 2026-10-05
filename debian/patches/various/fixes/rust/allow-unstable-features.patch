@@ -1,3 +1,11 @@
+--- a/.rustfmt.toml
++++ b/.rustfmt.toml
+@@ -36,3 +36,5 @@
+   # (This entry "wins" over the `!third_party/rust/**` one because it is last.)
+   "third_party/rust/chromium_crates_io/vendor/**",
+ ]
++
++unstable_features = true
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
 @@ -1260,7 +1260,6 @@
