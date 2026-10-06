@@ -401,11 +401,6 @@ fi
 ## Buiid tool/general build configuration ##
 ############################################
 
-# Avoid UC's non-standard use of wasm rollup in place of esbuild
-P1=build-with-wasm-rollup.patch
-SER_UC="$SER_UC -e \"/^core\/ungoogled-chromium\/$P1/s@^@#@\""
-
-
 ## Enable the use of ccache
 if [ $CCACHE -eq 1 ]; then
   gn_enable="$gn_enable cc_wrapper="
@@ -979,8 +974,8 @@ if [ $LOCALES_EXTRA -eq 0 ]; then
   CON="$CON -e \"/pa, pl, pt-BR, pt-PT, ro, ru,/d\""
   CON="$CON -e \"/th, tr, uk, ur, uz, vi, zh-CN,/d\""
 
-  P2=enable-extra-locales.patch
-  SER_UC="$SER_UC -e \"/^extra\/ungoogled-chromium\/$P2/s@^@#@\""
+  P1=enable-extra-locales.patch
+  SER_UC="$SER_UC -e \"/^extra\/ungoogled-chromium\/$P1/s@^@#@\""
 fi
 
 
