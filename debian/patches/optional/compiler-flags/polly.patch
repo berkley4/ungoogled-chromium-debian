@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2527,6 +2527,17 @@
+@@ -2526,6 +2526,15 @@
    common_optimize_on_ldflags = []
    extra_cflags = []
  
@@ -10,8 +10,6 @@
 +      "-polly",
 +      "-mllvm",
 +      "-polly-run-dce",
-+      "-mllvm",
-+      "-polly-invariant-load-hoisting",
 +    ]
 +  }
 +
