@@ -2,20 +2,19 @@
 
 RT_DIR   := $(CURDIR)
 DEBIAN   := $(RT_DIR)/debian
+OUT_DIR  := $(RT_DIR)/out/Release
+BTS_DIR  := $(RT_DIR)/buildtools
+HEVC_DIR := $(RT_DIR)/third_party/ffmpeg/libavcodec/hevc
 UC_DIR   := $(DEBIAN)/submodules/ungoogled-chromium
 UL_DIR   := $(UC_DIR)/utils
-DS_CACHE := $(DEBIAN)/domsubcache.tar.gz
-OUT_DIR  := out/Release
-ARGS_GN  := $(OUT_DIR)/args.gn
-BTS_DIR   := $(RT_DIR)/buildtools
 
+DS_CACHE := $(DEBIAN)/domsubcache.tar.gz
 UB_REP_SCRIPT := build/linux/unbundle/replace_gn_files.py
 
 # Set the list of bundled library files
 UB_LIST := $(shell sed -z 's@\n@ @g' $(DEBIAN)/misc_files/bundled.txt)
 
 # Change various hevc filenames to avoid non-unique filename build errors
-HEVC_DIR := $(RT_DIR)/third_party/ffmpeg/libavcodec/hevc
 HEVC_LIST := $(shell sed -z 's@\n@ @g' $(DEBIAN)/misc_files/hevc-symlinks.txt)
 
 # Start with the upstream Ungoogled Chromium flags
