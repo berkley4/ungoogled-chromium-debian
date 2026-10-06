@@ -12,10 +12,12 @@ DS_CACHE := $(DEBIAN)/domsubcache.tar.gz
 UB_REP_SCRIPT := build/linux/unbundle/replace_gn_files.py
 
 # Set the list of bundled library files
-UB_LIST := $(shell sed -z 's@\n@ @g' $(DEBIAN)/misc_files/bundled.txt)
+BUNDLED := $(DEBIAN)/misc_files/bundled.txt
+UB_LIST := $(file < $(BUNDLED))
 
 # Change various hevc filenames to avoid non-unique filename build errors
-HEVC_LIST := $(shell sed -z 's@\n@ @g' $(DEBIAN)/misc_files/hevc-symlinks.txt)
+HEVC_SL   := $(DEBIAN)/misc_files/hevc-symlinks.txt
+HEVC_LIST := $(file < $(HEVC_SL))
 
 # Start with the upstream Ungoogled Chromium flags
 GN_FLAGS := $(shell sed -z -e 's@\x22@\x5c\x22@g' -e 's@\n@ @g' $(UC_DIR)/flags.gn)

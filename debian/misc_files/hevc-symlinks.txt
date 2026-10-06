@@ -1,3 +1,1 @@
-cabac.c
-parse.c
-parser.c
+cabac.c parse.c parser.c
