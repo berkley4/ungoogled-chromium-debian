@@ -142,6 +142,8 @@ optional/disable/catapult.patch
 #optional/disable/vulkan.patch
 optional/disable/webgpu.patch
 optional/disable/webserial.patch
+#optional/disable/crubit/crubit.patch
+#optional/disable/crubit/private-verification-tokens.patch
 #optional/disable/theme-buttons/no-gtk-button.patch
 optional/disable/theme-buttons/no-qt-button.patch
 optional/enable/hyphen-data.patch
@@ -179,7 +181,6 @@ optional/system/openh264.patch
 #optional/system/node/node-version-ck_2.patch
 #optional/system/rust/no-adler2.patch
 #optional/system/rust/no-alloc-shim.patch
-#optional/system/rust/no-cbor.patch
 optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
 
 addenda/0001-9db86ce.diff

@@ -622,6 +622,11 @@ if [ $SYS_PYTHON -eq 1 ]; then
 fi
 
 
+if [ $SYS_CLANG -eq 1 ] || [ $SYS_RUST -gt 0 ]; then
+  op_enable="$op_enable disable/crubit/"
+fi
+
+
 # Machine function splitting relies on PGO being enabled
 if [ $PGO -eq 0 ] && [ $MF_SPLIT -eq 1 ]; then
   printf '%s\n' "WARN: MF_SPLIT depends on PGO=1"
