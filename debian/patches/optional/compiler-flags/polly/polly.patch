@@ -1,0 +1,52 @@
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -2524,6 +2524,22 @@
+   common_optimize_on_cflags = []
+   common_optimize_on_ldflags = []
+   extra_cflags = []
++  extra_ldflags = []
++
++  if (is_clang) {
++    extra_cflags = [
++      "-mllvm",
++      "-polly",
++      "-mllvm",
++      "-polly-run-dce",
++    ]
++    if (use_lld && use_thin_lto) {
++      extra_ldflags = [
++        "-Wl,-mllvm,-polly",
++        "-Wl,-mllvm,-polly-run-dce",
++      ]
++    }
++  }
+ 
+   if (is_android && (use_lld || use_mold)) {
+     # TODO(jdduke) Re-enable on mips after resolving linking
+@@ -2677,7 +2693,7 @@
+     cflags = [ "-O2" ] + common_optimize_on_cflags + extra_cflags
+ 
+     if (use_lld) {
+-      ldflags += [ "-Wl,--lto-CGO2" ]
++      ldflags += [ "-Wl,--lto-CGO2" ] + extra_ldflags
+     }
+ 
+     # The `-O3` for clang turns on extra optimizations compared to the standard
+@@ -2738,7 +2754,7 @@
+   } else {
+     cflags = [ "-O2" ] + common_optimize_on_cflags + extra_cflags
+     if (use_lld) {
+-      ldflags += [ "-Wl,--lto-CGO2" ]
++      ldflags += [ "-Wl,--lto-CGO2" ] + extra_ldflags
+     }
+   }
+   rustflags = [
+@@ -2769,7 +2785,7 @@
+   } else {
+     cflags = [ "-O3" ] + common_optimize_on_cflags + extra_cflags
+     if (use_lld) {
+-      ldflags += [ "-Wl,--lto-CGO3" ]
++      ldflags += [ "-Wl,--lto-CGO3" ] + extra_ldflags
+     }
+   }
+   rustflags = [

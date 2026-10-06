@@ -836,10 +836,10 @@ export CPU=$CPU CPU_MSG="$CPU_MSG"
 
 # Our Polly implementation currently depends on AVX
 if [ $POLLY -eq 1 ]; then
-  op_enable="$op_enable compiler-flags/polly.patch"
-
-  if [ $POLLY_VEC -eq 1 ]; then
-    op_enable="$op_enable compiler-flags/polly-vectorizer.patch"
+  if [ $POLLY_VEC -eq 0 ]; then
+    op_enable="$op_enable compiler-flags/polly/polly.patch"
+  else
+    op_enable="$op_enable compiler-flags/polly/"
   fi
 fi
 

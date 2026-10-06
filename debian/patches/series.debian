@@ -121,8 +121,6 @@ various/system/zlib.patch
 optional/compiler-flags/machine-function-splitting.patch
 optional/compiler-flags/media-optimize-speed-O3.patch
 optional/compiler-flags/extra-cflags.patch
-#optional/compiler-flags/polly.patch
-#optional/compiler-flags/polly-vectorizer.patch
 #optional/compiler-flags/thinlto-cache-location.patch
 #optional/compiler-flags/thinlto-jobs.patch
 optional/compiler-flags/cpu/pclmul.patch
@@ -135,6 +133,8 @@ optional/compiler-flags/cpu/avx.patch
 #optional/compiler-flags/cpu/bmi.patch
 #optional/compiler-flags/cpu/tbm.patch
 optional/compiler-flags/cpu/rust-instructions.patch
+#optional/compiler-flags/polly/polly.patch
+#optional/compiler-flags/polly/polly-vectorizer.patch
 optional/disable/atk.patch
 optional/disable/bluez.patch
 optional/disable/catapult.patch
