@@ -133,8 +133,8 @@ optional/compiler-flags/cpu/avx.patch
 #optional/compiler-flags/cpu/bmi.patch
 #optional/compiler-flags/cpu/tbm.patch
 optional/compiler-flags/cpu/rust-instructions.patch
-#optional/compiler-flags/polly/polly.patch
-#optional/compiler-flags/polly/polly-vectorizer.patch
+optional/compiler-flags/polly/polly.patch
+optional/compiler-flags/polly/polly-vectorizer.patch
 optional/disable/atk.patch
 optional/disable/bluez.patch
 optional/disable/catapult.patch

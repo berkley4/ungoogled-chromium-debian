@@ -10,7 +10,7 @@ esac
 CON=; DSB=; FLAG_GPU=; INS=; POL=; PRU=; PRU_PY=;
 RUL=; RUST_INST=; SER_DB=; SER_U=; SMF=
 
-MARCH_SET=0; MTUNE_SET=0; POLLY_SET=0
+MARCH_SET=0; MTUNE_SET=0
 BUILD_TS_SET=false; CLANG_VER_SET=false; CPU_SET=false; RELEASE_SET=false
 
 LLVM_CTRL_VER=23
@@ -86,6 +86,8 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$PART_LOCK_PI" ] || PART_LOCK_PI=1
 [ -n "$PDF_JS" ] || PDF_JS=0
 [ -n "$PIPEWIRE" ] || PIPEWIRE=1
+[ -n "$POLLY" ] || POLLY=1
+[ -n "$POLLY_VEC" ] || POLLY_VEC=1
 [ -n "$PRINT_PREVIEW" ] || PRINT_PREVIEW=1
 [ -n "$PULSE" ] || PULSE=1
 [ -n "$QT" ] || QT=0
@@ -139,9 +141,6 @@ esac
 
 # Set MARCH=x86-64-v4 by default when AVX512=1
 [ -n "$AVX512" ] && [ $AVX512 -eq 1 ] && [ $MARCH_SET -eq 0 ] && MARCH=x86-64-v4 || AVX512=0
-
-# Clang Polly defaults
-[ -n "$POLLY" ] && POLLY_SET=1 || POLLY=0
 
 
 ## LTO Jobs (patch = 1; chromium default = all)
@@ -234,6 +233,16 @@ fi
 
 if [ $WEBGPU -eq 0 ] && [ $SWIFTSHADER_WEBGPU -eq 1 ]; then
   printf '%s\n' "ERROR: Cannot set SWIFTSHADER_WEBGPU=1 when WEBGPU=0"
+  exit 1
+fi
+
+if [ $SYS_CLANG -eq 0 ] && [ $POLLY -eq 1 ]; then
+  printf '%s\n' "ERROR: Cannot set POLLY=1 when SYS_CLANG=0"
+  exit 1
+fi
+
+if [ $POLLY -eq 0 ] && [ $POLLY_VEC -eq 1 ]; then
+  printf '%s\n' "ERROR: Cannot set POLLY_VEC=1 when POLLY=0"
   exit 1
 fi
 
@@ -445,21 +454,12 @@ fi
 
 
 if [ $SYS_CLANG -eq 0 ]; then
-  # Polly not available on bundled toolchain
-  if [ $POLLY -eq 1 ]; then
-    printf '%s\n' "ERROR: when SYS_CLANG=0 you cannot set POLLY=1"
-    exit 1
-  fi
-
   # Stop bundled toolchain directories from being pruned
   PRU="$PRU -e \"/^tools\/clang/d\""
   PRU_PY="$PRU_PY -e \"/third_party\/llvm\//d\""
 
   LLVM_VER=$LLVM_PGO_VER
 else
-  # Default enable POLLY when SYS_CLANG > 0 unless explicitly disabled
-  [ $POLLY_SET -eq 1 ] && [ $POLLY -eq 0 ] || POLLY=1
-
   ## Check for clang binary existence and PGO compatibility
   case $CLANG_VER in
     "")
@@ -774,9 +774,6 @@ if [ $AVX -eq 0 ]; then
   esac
 else
   RUST_INST="$RUST_INST,+avx"
-
-  # Let users be able to turn this off
-  [ -n "$POLLY_VEC" ] || POLLY_VEC=1
 fi
 
 if [ $PCLMUL -eq 0 ]; then
@@ -834,13 +831,8 @@ esac
 export CPU=$CPU CPU_MSG="$CPU_MSG"
 
 
-# Our Polly implementation currently depends on AVX
-if [ $POLLY -eq 1 ]; then
-  if [ $POLLY_VEC -eq 0 ]; then
-    op_enable="$op_enable compiler-flags/polly/polly.patch"
-  else
-    op_enable="$op_enable compiler-flags/polly/"
-  fi
+if [ $POLLY -eq 0 ]; then
+  op_disable="$op_disable compiler-flags/polly/"
 fi
 
 
