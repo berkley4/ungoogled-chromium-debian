@@ -6,7 +6,7 @@ third_party/dav1d/BUILD.gn.bundled
 third_party/ffmpeg/BUILD.gn.bundled
 third_party/flac/BUILD.gn.bundled
 third_party/fontconfig/BUILD.gn.bundled
-third_party/harfbuzz-ng/harfbuzz.gni.bundled
+third_party/harfbuzz/harfbuzz.gni.bundled
 third_party/icu/BUILD.gn.bundled
 third_party/libdrm/BUILD.gn.bundled
 third_party/libjpeg.gni.bundled
