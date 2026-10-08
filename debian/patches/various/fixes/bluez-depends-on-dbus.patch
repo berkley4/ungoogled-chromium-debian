@@ -1,0 +1,12 @@
+--- a/chrome/browser/chrome_browser_main_linux.cc
++++ b/chrome/browser/chrome_browser_main_linux.cc
+@@ -114,8 +114,8 @@
+ #else
+ #if BUILDFLAG(USE_DBUS)
+   session_end_listener_.reset();
+-#endif
+   bluez::BluezDBusManager::Shutdown();
++#endif
+ #endif  // BUILDFLAG(IS_CHROMEOS)
+ 
+   ChromeBrowserMainPartsPosix::PostDestroyThreads();

@@ -87,6 +87,7 @@ various/disable/media-remoting/media-remoting.patch
 various/disable/media-remoting/registry-pref.patch
 various/fixes/add-missing-opus-dep-to-devtools-media-encoding.patch
 various/fixes/AutoDarkModeSkipImages.patch
+various/fixes/bluez-depends-on-dbus.patch
 various/fixes/enterprise-buildflags.patch
 various/fixes/ffmpeg-codec-list.patch
 various/fixes/disabled-speech-build-error.patch
