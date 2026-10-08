@@ -1,6 +1,6 @@
 --- a/device/bluetooth/BUILD.gn
 +++ b/device/bluetooth/BUILD.gn
-@@ -603,12 +603,6 @@
+@@ -601,12 +601,6 @@
            "chromeos_platform_features.h",
          ]
        }
@@ -13,7 +13,7 @@
      } else {  # !use_bluez
        defines += [ "LINUX_WITHOUT_DBUS" ]
        sources += [
-@@ -617,6 +611,13 @@
+@@ -615,6 +609,13 @@
        ]
      }
  
@@ -24,6 +24,6 @@
 +      ]
 +    }
 +
-     # force_cast_bluetooth is used to compile with both cast & BlueZ, by
-     # omitting the stubs that would otherwise be added in.
-     if (!use_bluez || force_cast_bluetooth) {
+     if (!use_bluez) {
+       defines += [ "NO_PLATFORM_BLUETOOTH" ]
+       sources += [ "bluetooth_adapter_stub.cc" ]

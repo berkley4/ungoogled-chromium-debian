@@ -15,7 +15,7 @@
  
 --- a/chrome/browser/media/router/mojo/media_router_desktop.cc
 +++ b/chrome/browser/media/router/mojo/media_router_desktop.cc
-@@ -178,6 +178,7 @@
+@@ -179,6 +179,7 @@
    }
  
    const MediaSource source(source_id);
@@ -23,7 +23,7 @@
    if (source.IsTabMirroringSource()) {
      // Ensure the CastRemotingConnector is created before mirroring starts.
      CastRemotingConnector* const connector =
-@@ -186,6 +187,7 @@
+@@ -187,6 +188,7 @@
  
      MediaRouterMojoMetrics::RecordTabMirroringMetrics(web_contents);
    }

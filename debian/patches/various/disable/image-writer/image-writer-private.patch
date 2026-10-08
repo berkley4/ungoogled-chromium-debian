@@ -8,7 +8,7 @@
  import("//components/enterprise/buildflags/buildflags.gni")
  import("//components/guest_view/buildflags/buildflags.gni")
  import("//components/safe_browsing/buildflags.gni")
-@@ -774,32 +775,6 @@
+@@ -776,32 +777,6 @@
        "api/file_system/chrome_file_system_delegate.h",
        "api/file_system/file_entry_picker.cc",
        "api/file_system/file_entry_picker.h",
@@ -41,7 +41,7 @@
        "api/language_settings_private/language_settings_private_api.cc",
        "api/language_settings_private/language_settings_private_api.h",
        "api/language_settings_private/language_settings_private_delegate.cc",
-@@ -856,6 +831,37 @@
+@@ -858,6 +833,37 @@
        "webstore_install_with_prompt.h",
      ]
  
@@ -79,7 +79,7 @@
      if (safe_browsing_mode != 0) {
        sources += [
          "api/safe_browsing_private/safe_browsing_private_event_router.cc",
-@@ -1234,7 +1240,6 @@
+@@ -1128,7 +1134,6 @@
        sources += [
          "api/enterprise_reporting_private/chrome_desktop_report_request_helper.cc",
          "api/enterprise_reporting_private/chrome_desktop_report_request_helper.h",
@@ -87,7 +87,7 @@
        ]
        deps += [
          "//components/enterprise/common/proto:connectors_proto",
-@@ -1243,6 +1248,9 @@
+@@ -1137,6 +1142,9 @@
        if (use_gio) {
          configs += [ "//build/linux:gio_config" ]
        }
@@ -96,8 +96,8 @@
 +      }
      }
  
-     if (is_chromeos) {
-@@ -1460,7 +1468,7 @@
+     if (is_mac) {
+@@ -1149,7 +1157,7 @@
        ]
      }
  
@@ -108,7 +108,7 @@
      }
 --- a/chrome/browser/extensions/keyed_services/chrome_browser_context_keyed_service_factories.cc
 +++ b/chrome/browser/extensions/keyed_services/chrome_browser_context_keyed_service_factories.cc
-@@ -38,9 +38,14 @@
+@@ -39,9 +39,14 @@
  #if BUILDFLAG(ENABLE_EXTENSIONS)
  #include "chrome/browser/extensions/plugin_manager.h"
  #include "chrome/browser/extensions/warning_badge_service_factory.h"
@@ -125,7 +125,15 @@
  #include "chrome/browser/extensions/forced_extensions/assessment_assistant_tracker.h"
 --- a/chrome/browser/extensions/api/api_browser_context_keyed_service_factories.cc
 +++ b/chrome/browser/extensions/api/api_browser_context_keyed_service_factories.cc
-@@ -37,7 +37,6 @@
+@@ -26,6 +26,7 @@
+ #include "chrome/browser/extensions/api/web_navigation/web_navigation_api.h"
+ #include "chrome/browser/extensions/commands/command_service.h"
+ #include "chrome/common/buildflags.h"
++#include "chrome/services/file_util/buildflags.h"
+ #include "extensions/buildflags/buildflags.h"
+ #include "printing/buildflags/buildflags.h"
+ 
+@@ -38,7 +39,6 @@
  #include "chrome/browser/extensions/api/bookmark_manager_private/bookmark_manager_private_api.h"
  #include "chrome/browser/extensions/api/braille_display_private/braille_display_private_api.h"
  #include "chrome/browser/extensions/api/enterprise_reporting_private/enterprise_reporting_private_event_router.h"
@@ -133,14 +141,6 @@
  #include "chrome/browser/extensions/api/language_settings_private/language_settings_private_delegate_factory.h"
  #include "chrome/browser/extensions/api/networking_private/networking_private_ui_delegate_factory_impl.h"
  #include "chrome/browser/extensions/api/passwords_private/passwords_private_delegate_factory.h"
-@@ -45,6 +44,7 @@
- #include "chrome/browser/extensions/api/settings_overrides/settings_overrides_api.h"
- #include "chrome/browser/extensions/api/settings_private/settings_private_event_router_factory.h"
- #include "chrome/browser/extensions/api/side_panel/side_panel_service.h"
-+#include "chrome/services/file_util/buildflags.h"
- #include "components/safe_browsing/buildflags.h"
- #include "extensions/browser/api/networking_private/networking_private_delegate_factory.h"
- #include "pdf/buildflags.h"
 @@ -69,6 +69,10 @@
  #include "extensions/browser/api/bluetooth_low_energy/bluetooth_low_energy_api.h"
  #endif
@@ -152,7 +152,7 @@
  #if BUILDFLAG(ENABLE_SERVICE_DISCOVERY)
  #include "chrome/browser/extensions/api/mdns/mdns_api.h"
  #endif
-@@ -121,7 +125,9 @@
+@@ -122,7 +126,9 @@
  #if BUILDFLAG(IS_CHROMEOS)
    extensions::InputImeAPI::GetFactoryInstance();
  #endif
@@ -179,7 +179,7 @@
 -    "image_writer_private.webidl",
      "indigo_private.webidl",
      "language_settings_private.webidl",
-     "passwords_private.idl",
+     "passwords_private.webidl",
 @@ -152,6 +152,10 @@
          "printing_metrics.idl",
        ]
@@ -201,7 +201,7 @@
  import("//chrome/services/speech/buildflags/buildflags.gni")
  import("//chrome/test/include_js_tests.gni")
  import("//components/allocation_recorder/testing/testing.gni")
-@@ -7364,7 +7365,6 @@
+@@ -6919,7 +6920,6 @@
        "//chrome/browser/web_applications:web_app_test",
        "//chrome/browser/web_applications:web_applications_unit_tests",
        "//chrome/browser/web_applications/extensions:unit_tests",
@@ -209,7 +209,7 @@
        "//components/services/unzip:in_process",
        "//extensions/browser/mime_handler",
        "//extensions/browser/mime_handler:stream_container",
-@@ -7372,6 +7372,10 @@
+@@ -6927,6 +6927,10 @@
        "//extensions/renderer:unit_test_support",
      ]
  

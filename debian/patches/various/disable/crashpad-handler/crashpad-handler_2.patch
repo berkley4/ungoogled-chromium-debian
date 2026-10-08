@@ -1,6 +1,6 @@
 --- a/chrome/app/chrome_main_delegate.cc
 +++ b/chrome/app/chrome_main_delegate.cc
-@@ -170,7 +170,7 @@
+@@ -169,7 +169,7 @@
  #endif
  
  #if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_ANDROID) || \
@@ -9,7 +9,7 @@
  #include "components/crash/core/app/crashpad.h"
  #endif
  
-@@ -1427,7 +1427,7 @@
+@@ -1476,7 +1476,7 @@
  
    crash_reporter::InitializeCrashKeys();
  
@@ -18,7 +18,7 @@
    ChromeCrashReporterClient::Create();
  #endif
  
-@@ -1573,9 +1573,11 @@
+@@ -1622,9 +1622,11 @@
        base::android::InitJavaExceptionReporterForChildProcess();
      }
  #else
@@ -30,7 +30,7 @@
  #endif  // BUILDFLAG(IS_ANDROID)
    }
  #endif  // BUILDFLAG(IS_POSIX) && !BUILDFLAG(IS_MAC)
-@@ -1727,9 +1729,11 @@
+@@ -1776,9 +1778,11 @@
        base::CommandLine::ForCurrentProcess();
    std::string process_type =
        command_line->GetSwitchValueASCII(switches::kProcessType);
@@ -53,7 +53,7 @@
  #include "components/crash/core/app/crash_switches.h"
  #include "components/crash/core/app/crashpad.h"
  #endif
-@@ -1100,7 +1100,7 @@
+@@ -1110,7 +1110,7 @@
  int GetCrashSignalFD(const base::CommandLine& command_line) {
    return crashpad::CrashHandlerHost::Get()->GetDeathSignalSocket();
  }
@@ -62,7 +62,7 @@
  int GetCrashSignalFD(const base::CommandLine& command_line) {
    int fd;
    return crash_reporter::GetHandlerSocket(&fd, nullptr) ? fd : -1;
-@@ -2883,7 +2883,7 @@
+@@ -2906,7 +2906,7 @@
                                      client_info->client_id);
    }
  #elif BUILDFLAG(IS_POSIX)
@@ -71,7 +71,7 @@
    pid_t pid;
    if (crash_reporter::GetHandlerSocket(nullptr, &pid)) {
      command_line->AppendSwitchASCII(
-@@ -5181,7 +5181,7 @@
+@@ -5223,7 +5223,7 @@
    DCHECK(!app_data_path.empty());
  #endif  // BUILDFLAG(IS_ANDROID)
  

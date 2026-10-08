@@ -1,6 +1,6 @@
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -5631,7 +5631,7 @@
+@@ -5697,7 +5697,7 @@
      },
      {
        name: "Serial",

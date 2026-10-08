@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2524,6 +2524,22 @@
+@@ -2534,6 +2534,22 @@
    common_optimize_on_cflags = []
    common_optimize_on_ldflags = []
    extra_cflags = []
@@ -23,7 +23,7 @@
  
    if (is_android && (use_lld || use_mold)) {
      # TODO(jdduke) Re-enable on mips after resolving linking
-@@ -2677,7 +2693,7 @@
+@@ -2687,7 +2703,7 @@
      cflags = [ "-O2" ] + common_optimize_on_cflags + extra_cflags
  
      if (use_lld) {
@@ -32,7 +32,7 @@
      }
  
      # The `-O3` for clang turns on extra optimizations compared to the standard
-@@ -2738,7 +2754,7 @@
+@@ -2748,7 +2764,7 @@
    } else {
      cflags = [ "-O2" ] + common_optimize_on_cflags + extra_cflags
      if (use_lld) {
@@ -41,7 +41,7 @@
      }
    }
    rustflags = [
-@@ -2769,7 +2785,7 @@
+@@ -2779,7 +2795,7 @@
    } else {
      cflags = [ "-O3" ] + common_optimize_on_cflags + extra_cflags
      if (use_lld) {

@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -2577,6 +2577,12 @@
+@@ -2587,6 +2587,12 @@
      # TODO(crbug.com/445202451): Remove this after rolling in a fixed compiler.
      common_optimize_on_cflags += [ "-fno-slp-vectorize" ]
    }

@@ -1,6 +1,6 @@
 --- a/DEPS
 +++ b/DEPS
-@@ -2281,7 +2281,7 @@
+@@ -2311,7 +2311,7 @@
            'version': Var('cpython3_version'),
          },
        ],
@@ -9,7 +9,7 @@
        'dep_type': 'cipd',
    },
  
-@@ -2294,7 +2294,7 @@
+@@ -2324,7 +2324,7 @@
            'version': Var('cpython3_version'),
          },
        ],
@@ -18,11 +18,11 @@
        'dep_type': 'cipd',
    },
  
-@@ -4303,6 +4303,7 @@
+@@ -4341,6 +4341,7 @@
    {
      'name': 'vpython3_common',
      'pattern': '.',
 +    'condition': 'checkout_src_internal',
      'action': [ 'vpython3',
-                 '-vpython-spec', 'src/.vpython3',
+                 '-vpython-spec', 'src/vpython.toml',
                  '-vpython-tool', 'install',

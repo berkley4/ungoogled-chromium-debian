@@ -51,7 +51,7 @@
    configs += [ "//build/config/compiler:no_exit_time_destructors" ]
 --- a/gpu/command_buffer/service/BUILD.gn
 +++ b/gpu/command_buffer/service/BUILD.gn
-@@ -328,7 +328,10 @@
+@@ -329,7 +329,10 @@
    ]
  
    if (use_dawn) {
@@ -63,7 +63,7 @@
      sources += [
        "dawn_caching_interface.cc",
        "dawn_caching_interface.h",
-@@ -399,7 +402,6 @@
+@@ -400,7 +403,6 @@
      "//third_party/angle:angle_version_info",
      "//third_party/angle:translator",
      "//third_party/dawn/include/dawn:cpp_headers",

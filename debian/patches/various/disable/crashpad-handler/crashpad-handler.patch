@@ -11,7 +11,7 @@
          "//third_party/crashpad/crashpad/tools:crashpad_database_util",
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -326,7 +326,9 @@
+@@ -322,7 +322,9 @@
          "//chrome/common:buildflags",
        ]
  
@@ -22,7 +22,7 @@
  
        ldflags = []
  
-@@ -1849,7 +1851,6 @@
+@@ -1853,7 +1855,6 @@
    if (!(is_debug && use_debug_fission)) {
      group("linux_symbols") {
        deps = [
@@ -30,10 +30,10 @@
          ":chrome_symbols",
        ]
        if (is_linux) {
-@@ -1884,17 +1885,19 @@
- 
+@@ -1890,17 +1891,19 @@
        deps = [ ":chrome" ]
      }
+ 
 -    extract_symbols("chrome_crashpad_symbols") {
 -      binary = "$root_out_dir/chrome_crashpad_handler"
 +    if (is_chromeos) {
@@ -57,8 +57,8 @@
 +        deps = [ "//components/crash/core/app:chrome_crashpad_handler" ]
 +      }
      }
+ 
      extract_symbols("swiftshader_vk_symbols") {
-       binary = "$root_out_dir/libvk_swiftshader.so"
 --- a/chrome/installer/linux/BUILD.gn
 +++ b/chrome/installer/linux/BUILD.gn
 @@ -72,7 +72,6 @@
@@ -99,7 +99,7 @@
    ]
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -525,10 +525,6 @@
+@@ -391,10 +391,6 @@
      ]
    }
  
@@ -132,7 +132,7 @@
    executable("chrome_crashpad_handler") {
 --- a/content/shell/BUILD.gn
 +++ b/content/shell/BUILD.gn
-@@ -802,7 +802,7 @@
+@@ -803,7 +803,7 @@
      if (is_win) {
        data_deps +=
            [ "//third_party/crashpad/crashpad/handler:crashpad_handler" ]

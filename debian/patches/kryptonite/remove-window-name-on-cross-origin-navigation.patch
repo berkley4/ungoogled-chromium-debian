@@ -11,7 +11,7 @@
  
 --- a/third_party/blink/renderer/core/loader/document_loader.cc
 +++ b/third_party/blink/renderer/core/loader/document_loader.cc
-@@ -3240,11 +3240,10 @@
+@@ -3247,11 +3247,10 @@
        !frame_->DomWindow()->GetSecurityOrigin()->IsSameOriginWith(
            previous_window->GetSecurityOrigin());
    if (should_clear_window_name) {
@@ -27,7 +27,7 @@
      frame_->Tree().ExperimentalSetNulledName();
    }
  
-@@ -3252,9 +3251,10 @@
+@@ -3259,9 +3258,10 @@
        previous_window && frame_->IsOutermostMainFrame() &&
        is_cross_site_cross_browsing_context_group_;
    if (should_clear_cross_site_cross_browsing_context_group_window_name) {

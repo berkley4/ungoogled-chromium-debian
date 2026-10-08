@@ -8,7 +8,7 @@
 +unstable_features = true
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1260,7 +1260,6 @@
+@@ -1281,7 +1281,6 @@
  # Don't allow unstable features to be enabled by `#![feature()]` without
  # additional command line flags.
  config("disallow_unstable_features") {

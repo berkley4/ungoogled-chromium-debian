@@ -1,6 +1,6 @@
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -1040,7 +1040,6 @@
+@@ -1042,7 +1042,6 @@
      public_deps = [
        "//chrome/app_shim:app_mode_loader",
        "//chrome/browser/web_applications/os_integration/mac:web_app_shortcut_copier",
@@ -8,7 +8,7 @@
      ]
  
      foreach(helper_params, chrome_mac_helpers) {
-@@ -1522,7 +1521,6 @@
+@@ -1525,7 +1524,6 @@
        deps = [
          ":chrome_app",
          ":chrome_framework",
@@ -16,7 +16,7 @@
          "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan",
          dump_syms,
        ]
-@@ -1576,7 +1574,6 @@
+@@ -1579,7 +1577,6 @@
        deps = [
          ":chrome_app",
          ":chrome_framework",
@@ -26,7 +26,7 @@
        deps += [ "//third_party/vulkan-loader/src:libvulkan" ]
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -1137,7 +1137,6 @@
+@@ -1128,7 +1128,6 @@
      "//components/content_settings/browser/ui",
      "//components/contextual_tasks/public",
      "//components/contextual_tasks/public:feature_list",
@@ -34,7 +34,7 @@
      "//components/credential_management:browser",
      "//components/custom_handlers",
      "//components/data_sharing/public:features",
-@@ -1965,12 +1964,14 @@
+@@ -1961,12 +1960,14 @@
    }
  
    if (is_posix && !is_mac) {
@@ -55,7 +55,7 @@
    }
  
    if (is_mac) {
-@@ -3121,7 +3122,7 @@
+@@ -3127,7 +3128,7 @@
      public_deps += [ "//chrome/browser/downgrade:impl" ]
    }
  
@@ -66,7 +66,7 @@
  
 --- a/chrome/browser/metrics/BUILD.gn
 +++ b/chrome/browser/metrics/BUILD.gn
-@@ -225,7 +225,7 @@
+@@ -227,7 +227,7 @@
      ]
    }
  
@@ -75,7 +75,7 @@
      public += [ "chrome_metrics_service_crash_reporter.h" ]
    }
  
-@@ -500,7 +500,7 @@
+@@ -506,7 +506,7 @@
      deps += [ "//chrome/browser/updates:update_metrics" ]
    }
  
