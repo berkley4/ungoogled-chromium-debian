@@ -1,14 +1,19 @@
+--- a/build/config/features.gni
++++ b/build/config/features.gni
+@@ -40,6 +40,10 @@
+ 
+   use_blink = !is_ios
+ }
++
++declare_args() {
++  use_bluez = (is_linux && !is_castos && use_dbus) || is_chromeos
++}
+ #
+ # =============================================
+ #   PLEASE DO NOT ADD MORE FLAGS TO THIS FILE
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -27,6 +27,7 @@
- import("//components/spellcheck/spellcheck_build_features.gni")
- import("//content/public/common/features.gni")
- import("//crypto/features.gni")
-+import("//device/bluetooth/cast_bluetooth.gni")
- import("//device/vr/buildflags/buildflags.gni")
- import("//extensions/buildflags/buildflags.gni")
- import("//media/gpu/args.gni")
-@@ -1605,6 +1606,9 @@
+@@ -1597,6 +1597,9 @@
      deps += [ "//third_party/fontconfig" ]
      if (use_dbus) {
        deps += [ "//dbus" ]
@@ -20,28 +25,29 @@
  
 --- a/chrome/browser/chrome_browser_main_linux.cc
 +++ b/chrome/browser/chrome_browser_main_linux.cc
-@@ -64,10 +64,10 @@
- #endif  // BUILDFLAG(IS_CHROMEOS)
+@@ -66,8 +66,10 @@
  
  #if !BUILDFLAG(IS_CHROMEOS)
--#if BUILDFLAG(USE_DBUS)
+ #if BUILDFLAG(USE_DBUS)
 +#if defined(PLATFORM_BLUETOOTH)
    bluez::BluezDBusManager::Initialize(
        dbus_thread_linux::GetSharedSystemBus().get());
--#endif  // BUILDFLAG(USE_DBUS)
 +#endif  // defined(PLATFORM_BLUETOOTH)
+   session_end_listener_ = SessionEndListenerLinux::Create();
+ #endif  // BUILDFLAG(USE_DBUS)
  #endif  // !BUILDFLAG(IS_CHROMEOS)
- 
-   ChromeBrowserMainPartsPosix::PostCreateMainMessageLoop();
-@@ -109,7 +109,7 @@
- void ChromeBrowserMainPartsLinux::PostDestroyThreads() {
- #if BUILDFLAG(IS_CHROMEOS)
-   // No-op; per PostBrowserStart() comment, this is done elsewhere.
--#else
-+#elif defined(PLATFORM_BLUETOOTH)
+@@ -114,8 +116,10 @@
+ #else
+ #if BUILDFLAG(USE_DBUS)
+   session_end_listener_.reset();
++#if defined(PLATFORM_BLUETOOTH)
    bluez::BluezDBusManager::Shutdown();
+-#endif
++#endif  // defined(PLATFORM_BLUETOOTH)
++#endif  // BUILDFLAG(USE_DBUS)
  #endif  // BUILDFLAG(IS_CHROMEOS)
  
+   ChromeBrowserMainPartsPosix::PostDestroyThreads();
 --- a/chrome/browser/metrics/bluetooth_metrics_provider.cc
 +++ b/chrome/browser/metrics/bluetooth_metrics_provider.cc
 @@ -15,11 +15,15 @@
@@ -60,3 +66,16 @@
  }
  
  }  // namespace metrics
+--- a/device/bluetooth/BUILD.gn
++++ b/device/bluetooth/BUILD.gn
+@@ -6,10 +6,6 @@
+ import("//build/config/features.gni")
+ import("//device/bluetooth/emulation/buildflags.gni")
+ 
+-declare_args() {
+-  use_bluez = (is_linux && !is_castos && use_dbus) || is_chromeos
+-}
+-
+ if (is_android) {
+   import("//build/config/android/rules.gni")
+   import("//third_party/jni_zero/jni_zero.gni")
