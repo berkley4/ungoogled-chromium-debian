@@ -833,6 +833,10 @@ export CPU=$CPU CPU_MSG="$CPU_MSG"
 
 if [ $POLLY -eq 0 ]; then
   op_disable="$op_disable compiler-flags/polly/"
+else
+  if [ $POLLY_VEC -eq 0 ]; then
+    op_disable="$op_disable compiler-flags/polly/polly-vectorizer.patch"
+  fi
 fi
 
 
