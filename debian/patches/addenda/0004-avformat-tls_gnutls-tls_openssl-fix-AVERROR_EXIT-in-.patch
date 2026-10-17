@@ -1,0 +1,49 @@
+From 39cfc744bfb1e8a94f77419cf316ef731b214daf Mon Sep 17 00:00:00 2001
+From: Thomas Devoogdt <thomas@devoogdt.com>
+Date: Sun, 19 Jul 2026 19:23:52 +0200
+Subject: [PATCH] avformat/tls_gnutls, tls_openssl: fix AVERROR_EXIT in write
+ callbacks
+
+Returning 0 from a TLS write callback means "0 bytes sent", not "abort".
+GnuTLS therefore retries the write forever, and OpenSSL reports success
+while silently dropping the record.  Report an error instead: errno =
+EINTR, as required by the GnuTLS transport callback contract, and
+c->io_err for OpenSSL, so that an interrupted ffurl_write() propagates
+to the caller rather than hanging or losing data.
+
+Signed-off-by: Thomas Devoogdt <thomas@devoogdt.com>
+---
+ libavformat/tls_gnutls.c  | 7 ++++---
+ libavformat/tls_openssl.c | 5 +++--
+ 2 files changed, 7 insertions(+), 5 deletions(-)
+
+--- a/third_party/ffmpeg/libavformat/tls_gnutls.c
++++ b/third_party/ffmpeg/libavformat/tls_gnutls.c
+@@ -475,9 +475,10 @@
+     int ret = ffurl_write(uc, buf, len);
+     if (ret >= 0)
+         return ret;
+-    if (ret == AVERROR_EXIT)
+-        return 0;
+-    if (ret == AVERROR(EAGAIN)) {
++    if (ret == AVERROR_EXIT) {
++        /* Use EINTR, not 0: returning 0 would cause GnuTLS to busy-spin. */
++        errno = EINTR;
++    } else if (ret == AVERROR(EAGAIN)) {
+         errno = EAGAIN;
+     } else {
+         errno = EIO;
+--- a/third_party/ffmpeg/libavformat/tls_openssl.c
++++ b/third_party/ffmpeg/libavformat/tls_openssl.c
+@@ -572,8 +572,9 @@
+         return ret;
+     BIO_clear_retry_flags(b);
+     if (ret == AVERROR_EXIT)
+-        return 0;
+-    if (ret == AVERROR(EAGAIN))
++        /* Don't return 0: that signals success and silently drops the data. */
++        c->io_err = ret;
++    else if (ret == AVERROR(EAGAIN))
+         BIO_set_retry_write(b);
+     else
+         c->io_err = ret;

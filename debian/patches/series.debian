@@ -184,4 +184,8 @@ optional/system/openh264.patch
 #optional/system/rust/no-alloc-shim.patch
 optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
 
-addenda/0001-9db86ce.diff
+addenda/0001-avcodec-h264_slice-clear-the-ER-picture-when-startin.patch
+addenda/0002-libavcodec-h264-Use-inferred-num_reorder_frames-when.patch
+addenda/0003-avcodec-h264dec-do-not-add-0-to-the-NULL-plane-point.patch
+addenda/0004-avformat-tls_gnutls-tls_openssl-fix-AVERROR_EXIT-in-.patch
+addenda/0005-avcodec-h264_slice-reset-next_output_pic.patch

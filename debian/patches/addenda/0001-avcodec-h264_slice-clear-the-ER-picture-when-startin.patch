@@ -1,0 +1,37 @@
+From 46f327624835a97a9c838b103b4e75b47a2d34f0 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Kacper=20Michaj=C5=82ow?= <kasper93@gmail.com>
+Date: Thu, 30 Jul 2026 17:29:04 +0200
+Subject: [PATCH] avcodec/h264_slice: clear the ER picture when starting a
+ second field
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+h264_frame_start() clears h->er.cur_pic, and decode_nal_units() only sets
+it again for pictures that are not field coded, right before running error
+concealment. A second field goes through neither, so h->er.cur_pic keeps
+pointing at whatever frame coded picture the context decoded earlier.
+
+With frame threading the two fields of a pair are decoded by different
+contexts, so whether this triggers depends on what the context that picks
+up the second field decoded before, which is why the number of bogus
+warnings varies between runs.
+
+Signed-off-by: Kacper Michajłow <kasper93@gmail.com>
+---
+ libavcodec/h264_slice.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/third_party/ffmpeg/libavcodec/h264_slice.c
++++ b/third_party/ffmpeg/libavcodec/h264_slice.c
+@@ -1627,6 +1627,10 @@
+         int field = h->picture_structure == PICT_BOTTOM_FIELD;
+         release_unused_pictures(h, 0);
+         h->cur_pic_ptr->tf.owner[field] = h->avctx;
++        /* h264_frame_start(), which clears this for every other picture, is
++         * not called for a second field. */
++        if (CONFIG_ERROR_RESILIENCE)
++            ff_h264_set_erpic(&h->er.cur_pic, NULL);
+     }
+     /* Some macroblocks can be accessed before they're available in case
+     * of lost slices, MBAFF or threading. */

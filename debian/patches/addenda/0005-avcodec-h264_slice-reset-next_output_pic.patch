@@ -1,0 +1,45 @@
+From 5eed87f44b0ad576779d1aabce1d8e1e9b094f08 Mon Sep 17 00:00:00 2001
+From: Frank Liberato <liberato@chromium.org>
+Date: Mon, 5 Oct 2026 22:01:09 +0000
+Subject: [PATCH] avcodec/h264_slice: reset next_output_pic
+
+Ensure next_output_pic is cleared when updating thread context and when
+starting or selecting output for a field.
+
+Bug: 567936265
+Change-Id: I479b6161e286a2c110a18646db0a1691ca24d8f8
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/third_party/ffmpeg/+/8517542
+Reviewed-by: Eugene Zemtsov <ezemtsov@google.com>
+Reviewed-by: Eugene Zemtsov <eugene@chromium.org>
+Reviewed-by: Syed AbuTalib <lowkey@google.com>
+---
+ libavcodec/h264_slice.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+--- a/third_party/ffmpeg/libavcodec/h264_slice.c
++++ b/third_party/ffmpeg/libavcodec/h264_slice.c
+@@ -427,7 +427,7 @@
+     memcpy(h->delayed_pic, h1->delayed_pic, sizeof(h->delayed_pic));
+     memcpy(h->last_pocs,   h1->last_pocs,   sizeof(h->last_pocs));
+ 
+-    h->next_output_pic   = h1->next_output_pic;
++    h->next_output_pic   = NULL;
+     h->next_outputed_poc = h1->next_outputed_poc;
+     h->poc_offset        = h1->poc_offset;
+ 
+@@ -1402,6 +1402,7 @@
+             }
+         }
+     } else {
++        h->next_output_pic = NULL;
+         av_log(h->avctx, AV_LOG_DEBUG, "no picture %s\n", out_of_order ? "ooo" : "");
+     }
+ 
+@@ -1642,6 +1643,7 @@
+          * not called for a second field. */
+         if (CONFIG_ERROR_RESILIENCE)
+             ff_h264_set_erpic(&h->er.cur_pic, NULL);
++        h->next_output_pic = NULL;
+     }
+     /* Some macroblocks can be accessed before they're available in case
+     * of lost slices, MBAFF or threading. */
