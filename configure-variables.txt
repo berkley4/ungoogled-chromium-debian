@@ -268,9 +268,8 @@ TBM			0		Only for AMD Piledriver, Steamroller and Excavator CPUs (nothing else s
 RTC_AVX2		1		AVX2 for RTC. Nuilds and runs on non-AVX2 capable hosts (but can be disabled on non-AVX2).
 V8_AVX2			1		AVX2 for v8 (javascript). Builds and runs on non-AVX2 capable hosts (but can be disabled on non-AVX2).
 
-POLLY			0		Clang/LLVM Polly optimisations
+POLLY			1		Clang/LLVM Polly optimisations
 					Unless explicitly disabled, POLLY will be auto-enabled if SYS_CLANG > 0
 
-POLLY_VEC		0		Clang/LLVM Polly vectorizer optimisation.
-					Unless explicitly disabled, POLLY_VEC will be auto-enabled if POLLY=1
-					Will be hard-disabled when AVX=0
+POLLY_VEC		1		Clang/LLVM Polly vectorizer optimisation.
+					Will be hard-disabled when MARCH=0 (ancient pre-2011 CPUs)

@@ -693,7 +693,7 @@ if [ $MARCH_SET -eq 1 ] || [ $MTUNE_SET -eq 1 ]; then
       op_disable="$op_disable compiler-flags/cpu/march.patch"
       op_disable="$op_disable compiler-flags/cpu/mtune.patch"
 
-      RTC_AVX2=0; V8_AVX2=0; MTUNE=generic ;;
+      RTC_AVX2=0; V8_AVX2=0; MTUNE=generic; POLLY_VEC=0 ;;
 
     *)
       # Specific CPUs (eg Skylake) so alter march and mtune patches
@@ -765,7 +765,6 @@ else
 fi
 
 if [ $AVX -eq 0 ]; then
-  POLLY_VEC=0
   op_disable="$op_disable compiler-flags/cpu/avx.patch"
 
   # Default to sse3/pni instruction requirement when AVX=0 (and PCLMUL=0)
