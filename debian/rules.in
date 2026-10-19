@@ -241,14 +241,14 @@ GN_FLAGS += v8_enable_hugepage=true
 # Too old for stable   : [currently nothing]
 #
 # Depends on libstdc++
-# affected icu         : harfbuzz-ng
+# affected icu         : harfbuzz
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 # Interdependent libraries :-
 #
 #     libxslt depends on libxml
-#     harfbuzz-ng depends on freetype and icu
+#     harfbuzz depends on freetype and icu
 #     fontconfig depend on freetype
 #     freetype depends on brotli and libpng
 #
