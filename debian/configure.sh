@@ -177,8 +177,7 @@ fi
 
 if [ $NON_FREE -eq 0 ]; then
   SER_DB="$SER_DB -e \"s@^\(cromite/\)@#\1@\" -e \"s@^\(vanadium/\)@#\1@\""
-else
-  ins_enable="$ins_enable cromite"
+  ins_disable="$ins_disable cromite"
 fi
 
 
