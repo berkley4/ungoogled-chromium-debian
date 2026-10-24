@@ -144,7 +144,7 @@ optional/disable/catapult.patch
 optional/disable/webgpu.patch
 optional/disable/webserial.patch
 #optional/disable/crubit/crubit.patch
-#optional/disable/crubit/private-verification-tokens.patch
+#optional/disable/crubit/verification-tokens.patch
 #optional/disable/theme-buttons/no-gtk-button.patch
 optional/disable/theme-buttons/no-qt-button.patch
 optional/enable/hyphen-data.patch
