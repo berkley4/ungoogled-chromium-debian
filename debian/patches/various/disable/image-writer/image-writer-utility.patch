@@ -8,7 +8,7 @@
      "//components/bookmarks/browser",
      "//components/bookmarks/managed",
      "//components/content_settings/core/browser",
-@@ -1009,7 +1010,6 @@
+@@ -1016,7 +1017,6 @@
        "//chrome/browser/web_applications/extensions",
        "//chrome/common/extensions/api:extensions_features",
        "//chrome/services/file_util/public/mojom",
@@ -16,7 +16,7 @@
        "//components/affiliations/core/browser:affiliations",
        "//components/app_constants",
        "//components/autofill/content/browser",
-@@ -1130,6 +1130,10 @@
+@@ -1137,6 +1137,10 @@
        "//url",
      ]
  
@@ -29,7 +29,7 @@
          "api/enterprise_reporting_private/chrome_desktop_report_request_helper.cc",
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -2207,7 +2207,6 @@
+@@ -2209,7 +2209,6 @@
        "//chrome/renderer",
        "//chrome/renderer/actor:browser_tests",
        "//chrome/renderer/webui_browser:browser_tests",
@@ -37,7 +37,7 @@
        "//chrome/test/base:browser_tests",
        "//chrome/test/base:browser_tests_runner",
        "//chrome/test/components_tests:browser_tests",
-@@ -2578,6 +2577,10 @@
+@@ -2580,6 +2579,10 @@
        "//ui/webui/resources/cr_components/history_clusters:mojo_bindings",
      ]
  
@@ -50,7 +50,7 @@
      deps += [ "//chrome/browser/ui/performance_controls/test_support" ]
 --- a/chrome/utility/BUILD.gn
 +++ b/chrome/utility/BUILD.gn
-@@ -157,16 +157,24 @@
+@@ -159,16 +159,24 @@
    if (enable_extensions) {
      deps += [
        "//chrome/common/extensions/api",
@@ -80,7 +80,7 @@
        ldflags = [ "/DELAYLOAD:wininet.dll" ]
 --- a/chrome/utility/services.cc
 +++ b/chrome/utility/services.cc
-@@ -86,7 +86,7 @@
+@@ -87,7 +87,7 @@
  #include "chrome/services/file_util/file_util_service.h"  // nogncheck
  #endif
  
@@ -89,7 +89,7 @@
  #include "chrome/services/removable_storage_writer/public/mojom/removable_storage_writer.mojom.h"
  #include "chrome/services/removable_storage_writer/removable_storage_writer.h"
  #endif
-@@ -304,7 +304,7 @@
+@@ -310,7 +310,7 @@
  }
  #endif
  
@@ -98,7 +98,7 @@
  auto RunRemovableStorageWriter(
      mojo::PendingReceiver<chrome::mojom::RemovableStorageWriter> receiver) {
    return std::make_unique<RemovableStorageWriter>(std::move(receiver));
-@@ -522,7 +522,7 @@
+@@ -537,7 +537,7 @@
    services.Add(RunFileUtil);
  #endif
  

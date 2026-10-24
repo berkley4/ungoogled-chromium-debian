@@ -1,0 +1,46 @@
+From 94b840bf4e40b9cf33317cb91c883427ad0b0494 Mon Sep 17 00:00:00 2001
+From: Ted Meyer <tmathmeyer@chromium.org>
+Date: Wed, 21 Oct 2026 12:29:58 -0700
+Subject: [PATCH] libavformat/flacdec: error on overflow in metadata
+
+if accumulating metadata_head_size would lead to an integer overflow,
+return an error instead, and fail parsing.
+
+Bug: 40275888
+Change-Id: I8bbbcaef9d04cdd9fb474e9138ee2b66f60cc0fe
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/third_party/ffmpeg/+/8624188
+Reviewed-by: Syed AbuTalib <lowkey@google.com>
+Reviewed-by: Ted Meyer <tmathmeyer@google.com>
+---
+
+--- a/third_party/ffmpeg/libavformat/flacdec.c
++++ b/third_party/ffmpeg/libavformat/flacdec.c
+@@ -42,12 +42,16 @@
+     AVCodecContext *parser_dec;
+ } FLACDecContext;
+ 
+-static void reset_index_position(int64_t metadata_head_size, AVStream *st)
++static int reset_index_position(int64_t metadata_head_size, AVStream *st)
+ {
+     FFStream *const sti = ffstream(st);
+     /* the real seek index offset should be the size of metadata blocks with the offset in the frame blocks */
+-    for (int i = 0; i < sti->nb_index_entries; i++)
++    for (int i = 0; i < sti->nb_index_entries; i++) {
++        if (INT64_MAX - metadata_head_size < sti->index_entries[i].pos)
++            return AVERROR_INVALIDDATA;
+         sti->index_entries[i].pos += metadata_head_size;
++    }
++    return 0;
+ }
+ 
+ static const uint16_t sr_table[16] = {
+@@ -225,7 +229,8 @@
+     if (ret < 0)
+         return ret;
+ 
+-    reset_index_position(avio_tell(s->pb), st);
++    if (ret = reset_index_position(avio_tell(s->pb), st))
++        return ret;
+     return 0;
+ 
+ fail:

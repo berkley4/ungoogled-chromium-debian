@@ -1,6 +1,6 @@
 --- a/device/bluetooth/BUILD.gn
 +++ b/device/bluetooth/BUILD.gn
-@@ -601,12 +601,6 @@
+@@ -599,12 +599,6 @@
            "chromeos_platform_features.h",
          ]
        }
@@ -13,7 +13,7 @@
      } else {  # !use_bluez
        defines += [ "LINUX_WITHOUT_DBUS" ]
        sources += [
-@@ -615,6 +609,13 @@
+@@ -613,6 +607,13 @@
        ]
      }
  

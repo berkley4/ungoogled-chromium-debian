@@ -1,0 +1,87 @@
+From 8b30ccddb585d1d97671112e29a8dfe32a2a5a9a Mon Sep 17 00:00:00 2001
+From: David Awogbemila <awogbemila@chromium.org>
+Date: Tue, 27 Oct 2026 07:26:19 -0700
+Subject: [PATCH] [M156] Do not paint focus ring for display-locked <area> elements
+
+Original change's description:
+> Do not paint focus ring for display-locked <area> elements
+>
+> When painting an <img> with an associated focused <area> element,
+> ImagePainter::PaintAreaElementFocusRing calls EnsureComputedStyle() on
+> the <area> to check for outlines.
+>
+> In the linked bug, Blink attempts to paint a display-locked <area>
+> element. This triggers a style update mid-paint which leads to a
+> use-after-free.
+>
+> This CL skips painting the focus ring if the <area> is display-locked.
+>
+> Bug: 570743446
+> Change-Id: I6c2677fce30feb1e4a46e901a69c02084159c8b0
+> Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/8551233
+> Reviewed-by: Vladimir Levin <vmpstr@chromium.org>
+> Commit-Queue: David A <awogbemila@chromium.org>
+> Cr-Commit-Position: refs/heads/main@{#1715794}
+
+(cherry picked from commit b3da14aaebb1c60306443d0e1debda7fa286a944)
+
+Bug: 577988727,570743446
+Change-Id: I6c2677fce30feb1e4a46e901a69c02084159c8b0
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/8654706
+Commit-Queue: David A <awogbemila@chromium.org>
+Reviewed-by: Vladimir Levin <vmpstr@chromium.org>
+Cr-Commit-Position: refs/branch-heads/8078@{#1651}
+Cr-Branched-From: c50edc4214d81e4f944c3415d55104a49e46d214-refs/heads/main@{#1706539}
+---
+
+--- a/third_party/blink/renderer/core/paint/image_painter.cc
++++ b/third_party/blink/renderer/core/paint/image_painter.cc
+@@ -5,6 +5,7 @@
+ #include "third_party/blink/renderer/core/paint/image_painter.h"
+ 
+ #include "third_party/blink/renderer/core/animation/css/css_image_animations.h"
++#include "third_party/blink/renderer/core/display_lock/display_lock_utilities.h"
+ #include "third_party/blink/renderer/core/dom/document.h"
+ #include "third_party/blink/renderer/core/dom/element.h"
+ #include "third_party/blink/renderer/core/editing/frame_selection.h"
+@@ -76,6 +77,13 @@
+   if (area_element->ImageElement() != layout_image_.GetNode())
+     return;
+ 
++  // Don't paint or force style computation for <area> elements inside
++  // a display-locked subtree.
++  if (DisplayLockUtilities::IsDisplayLockedPreventingPaint(
++          area_element, /*inclusive_check=*/true)) {
++    return;
++  }
++
+   // We use EnsureComputedStyle() instead of GetComputedStyle() here because
+   // <area> is used and its style applied even if it has display:none. The style
+   // may still be null if the area_element is outside the flat tree.
+--- /dev/null
++++ b/third_party/blink/web_tests/external/wpt/css/css-contain/content-visibility/crashtests/area-focus-in-hidden.html
+@@ -0,0 +1,24 @@
++<!DOCTYPE html>
++<html class="test-wait">
++<title>Focus on area inside content-visibility:hidden does not crash during image paint</title>
++<link rel="help" href="https://crbug.com/570743446">
++<script src="/common/rendering-utils.js"></script>
++
++<img usemap="#m" width="1" height="1">
++
++<div style="content-visibility: hidden">
++  <map name="m">
++    <area id="area" href="#">
++  </map>
++</div>
++
++<script>
++onload = async () => {
++  area.focus();
++  area.style.color = 'red';
++
++  await waitForAtLeastOneFrame();
++  document.documentElement.classList.remove('test-wait');
++};
++</script>
++</html>

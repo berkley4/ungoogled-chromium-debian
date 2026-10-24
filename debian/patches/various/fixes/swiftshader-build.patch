@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -515,7 +515,7 @@
+@@ -521,7 +521,7 @@
      }
  
      if ((is_win || is_mac || is_linux || is_chromeos || is_fuchsia) &&
@@ -9,7 +9,7 @@
        deps += [
          "//third_party/swiftshader/src/Vulkan:icd_file",
          "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan",
-@@ -1058,7 +1058,7 @@
+@@ -1064,7 +1064,7 @@
            data_deps += [ "//media/gpu/chromeos:vulkan_overlay_adaptor_test" ]
          }
        }
@@ -28,7 +28,7 @@
  import("//media/media_options.gni")
  import("//services/on_device_model/on_device_model.gni")
  import("//services/shape_detection/features.gni")
-@@ -1524,10 +1525,12 @@
+@@ -1533,10 +1534,12 @@
        deps = [
          ":chrome_app",
          ":chrome_framework",
@@ -42,7 +42,7 @@
        if (build_with_internal_optimization_guide) {
          deps += [ "//components/optimization_guide/internal:optimization_guide_internal" ]
        }
-@@ -1577,9 +1580,11 @@
+@@ -1586,9 +1589,11 @@
        deps = [
          ":chrome_app",
          ":chrome_framework",
@@ -55,7 +55,7 @@
        if (build_with_internal_optimization_guide) {
          deps += [ "//components/optimization_guide/internal:optimization_guide_internal" ]
        }
-@@ -1854,7 +1859,7 @@
+@@ -1863,7 +1868,7 @@
        deps = [
          ":chrome_symbols",
        ]
@@ -64,7 +64,7 @@
          deps += [ ":swiftshader_vk_symbols" ]
        }
        if (!is_chromeos && angle_shared_libvulkan) {
-@@ -1903,17 +1908,19 @@
+@@ -1912,17 +1917,19 @@
        }
      }
  
@@ -104,9 +104,9 @@
    packaging_files_shlibs += [ "$root_out_dir/libvk_swiftshader.so" ]
  }
  
-@@ -116,7 +116,7 @@
-                     "$root_out_dir/PrivacySandboxAttestationsPreloaded/manifest.json",
-                     "$root_out_dir/PrivacySandboxAttestationsPreloaded/privacy-sandbox-attestations.dat",
+@@ -114,7 +114,7 @@
+                     "$root_out_dir/MEIPreload/manifest.json",
+                     "$root_out_dir/MEIPreload/preloaded_data.pb",
                    ]
 -if (enable_swiftshader) {
 +if (enable_swiftshader && enable_swiftshader_vulkan) {
@@ -140,7 +140,7 @@
  if (angle_has_build) {
    import("//build/config/gclient_args.gni")
  }
-@@ -342,7 +343,8 @@
+@@ -344,7 +345,8 @@
  declare_args() {
    # Currently SwiftShader's Vulkan front-end doesn't build on Android.
    # Disabled by default on MSVC because of compiler warnings/errors.
@@ -152,15 +152,15 @@
    angle_enable_hlsl = angle_enable_d3d11
 --- a/third_party/dawn/scripts/dawn_features.gni
 +++ b/third_party/dawn/scripts/dawn_features.gni
-@@ -27,6 +27,7 @@
- 
+@@ -28,6 +28,7 @@
  import("//build/config/clang/clang.gni")
+ import("//build/config/sanitizers/sanitizers.gni")
  import("//build_overrides/build.gni")
 +import("//ui/gl/features.gni")
  import("dawn_overrides_with_defaults.gni")
  
  declare_args() {
-@@ -65,7 +66,7 @@
+@@ -93,7 +94,7 @@
    declare_args() {
      # Enables SwiftShader as the fallback adapter. Requires dawn_swiftshader_dir
      # to be set to take effect.

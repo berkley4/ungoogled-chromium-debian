@@ -12,7 +12,7 @@ not worth it.
 
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -8399,7 +8399,7 @@
+@@ -8471,7 +8471,7 @@
        "//testing/gtest",
        "//third_party/hunspell",
        "//third_party/icu",
@@ -21,7 +21,7 @@ not worth it.
        "//ui/base:base_interactive_ui_tests",
        "//ui/base:ozone_buildflags",
        "//ui/base:test_support",
-@@ -9333,7 +9333,7 @@
+@@ -9423,7 +9423,7 @@
        "//testing/gtest",
        "//third_party/hunspell",
        "//third_party/icu",

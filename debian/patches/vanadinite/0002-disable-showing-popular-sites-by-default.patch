@@ -1,6 +1,6 @@
 --- a/components/ntp_tiles/features.cc
 +++ b/components/ntp_tiles/features.cc
-@@ -15,7 +15,7 @@
+@@ -31,7 +31,7 @@
  
  BASE_FEATURE(kPopularSitesBakedInContentFeature,
               "NTPPopularSitesBakedInContent",

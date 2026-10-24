@@ -1,6 +1,6 @@
---- a/chrome/browser/ui/omnibox/chrome_omnibox_navigation_observer.cc
-+++ b/chrome/browser/ui/omnibox/chrome_omnibox_navigation_observer.cc
-@@ -257,13 +257,6 @@
+--- a/chrome/browser/omnibox/chrome_omnibox_navigation_observer_base.cc
++++ b/chrome/browser/omnibox/chrome_omnibox_navigation_observer_base.cc
+@@ -282,14 +282,6 @@
        profile_(profile),
        show_infobar_(std::move(show_infobar)) {
    NavigationUserData::CreateForNavigationHandle(navigation, this);
@@ -8,9 +8,10 @@
 -    loader_ = std::make_unique<AlternativeNavigationURLLoader>(
 -        alternative_nav_match.destination_url, this,
 -        base::BindOnce(
--            &ChromeOmniboxNavigationObserver::OnAlternativeLoaderDone, this),
+-            &ChromeOmniboxNavigationObserverBase::OnAlternativeLoaderDone,
+-            this),
 -        GetURLLoaderFactory(loader_factory, profile));
 -  }
  }
  
- ChromeOmniboxNavigationObserver::~ChromeOmniboxNavigationObserver() {
+ ChromeOmniboxNavigationObserverBase::~ChromeOmniboxNavigationObserverBase() {

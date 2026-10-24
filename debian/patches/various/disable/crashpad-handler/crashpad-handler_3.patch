@@ -1,6 +1,6 @@
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -1042,7 +1042,6 @@
+@@ -1051,7 +1051,6 @@
      public_deps = [
        "//chrome/app_shim:app_mode_loader",
        "//chrome/browser/web_applications/os_integration/mac:web_app_shortcut_copier",
@@ -8,7 +8,7 @@
      ]
  
      foreach(helper_params, chrome_mac_helpers) {
-@@ -1525,7 +1524,6 @@
+@@ -1534,7 +1533,6 @@
        deps = [
          ":chrome_app",
          ":chrome_framework",
@@ -16,7 +16,7 @@
          "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan",
          dump_syms,
        ]
-@@ -1579,7 +1577,6 @@
+@@ -1588,7 +1586,6 @@
        deps = [
          ":chrome_app",
          ":chrome_framework",
@@ -26,7 +26,7 @@
        deps += [ "//third_party/vulkan-loader/src:libvulkan" ]
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -1128,7 +1128,6 @@
+@@ -1130,7 +1130,6 @@
      "//components/content_settings/browser/ui",
      "//components/contextual_tasks/public",
      "//components/contextual_tasks/public:feature_list",
@@ -34,7 +34,7 @@
      "//components/credential_management:browser",
      "//components/custom_handlers",
      "//components/data_sharing/public:features",
-@@ -1961,12 +1960,14 @@
+@@ -1990,12 +1989,14 @@
    }
  
    if (is_posix && !is_mac) {
@@ -55,7 +55,7 @@
    }
  
    if (is_mac) {
-@@ -3127,7 +3128,7 @@
+@@ -3157,7 +3158,7 @@
      public_deps += [ "//chrome/browser/downgrade:impl" ]
    }
  
@@ -75,7 +75,7 @@
      public += [ "chrome_metrics_service_crash_reporter.h" ]
    }
  
-@@ -506,7 +506,7 @@
+@@ -507,7 +507,7 @@
      deps += [ "//chrome/browser/updates:update_metrics" ]
    }
  
@@ -86,7 +86,7 @@
  
 --- a/chrome/browser/metrics/chrome_metrics_service_client.cc
 +++ b/chrome/browser/metrics/chrome_metrics_service_client.cc
-@@ -212,7 +212,7 @@
+@@ -211,7 +211,7 @@
  #include "components/metrics/motherboard_metrics_provider.h"
  #endif
  
@@ -95,7 +95,7 @@
  #include "chrome/browser/metrics/chrome_metrics_service_crash_reporter.h"
  #endif
  
-@@ -239,7 +239,7 @@
+@@ -238,7 +238,7 @@
  // Needs to be kept in sync with the writer in
  // third_party/crashpad/crashpad/handler/handler_main.cc.
  const char kCrashpadHistogramAllocatorName[] = "CrashpadMetrics";
@@ -104,7 +104,7 @@
  ChromeMetricsServiceCrashReporter& GetCrashReporter() {
    static base::NoDestructor<ChromeMetricsServiceCrashReporter> crash_reporter;
    return *crash_reporter;
-@@ -683,7 +683,7 @@
+@@ -682,7 +682,7 @@
    // TODO(crbug.com/514425492): The old SystemProfile to crashpad sharing
    // flow is deprecated and will be removed once
    // `kSharedMemorySystemProfileMinidump` is fully launched.
@@ -115,26 +115,11 @@
  }
 --- a/chrome/common/crash_keys.cc
 +++ b/chrome/common/crash_keys.cc
-@@ -18,6 +18,7 @@
- #include "base/strings/stringprintf.h"
+@@ -16,6 +16,7 @@
+ #include "base/strings/string_util.h"
  #include "build/build_config.h"
  #include "chrome/common/chrome_switches.h"
 +#include "components/crash/core/common/crash_buildflags.h"
  #include "components/crash/core/common/crash_key.h"
  #include "components/crash/core/common/crash_keys.h"
- #include "components/webui/flags/flags_ui_switches.h"
-@@ -56,7 +57,13 @@
-   ~CrashKeyWithName() = delete;
- 
-   std::string_view Name() const { return name_; }
--  std::string_view Value() const { return crash_key_.value(); }
-+  std::string_view Value() const {
-+#if BUILDFLAG(USE_CRASH_KEY_STUBS)
-+    return "";
-+#else
-+    return crash_key_.value();
-+#endif
-+  }
-   void Clear() { crash_key_.Clear(); }
-   void Set(std::string_view value) { crash_key_.Set(value); }
- 
+ #include "content/public/common/content_switches.h"

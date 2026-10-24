@@ -104,7 +104,6 @@ various/fixes/template-correction.patch
 various/fixes/test-dependencies.patch
 various/fixes/unbundle-script-dh-clean-interoperabilty.patch
 various/fixes/unshrink-ui-font.patch
-various/fixes/v8-always-use-baked-zoneinfo64-data.patch
 various/fixes/rust/allow-unstable-features.patch
 various/fixes/rust/use-lld.patch
 various/system/dav1d.patch
@@ -185,7 +184,24 @@ optional/system/openh264.patch
 optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
 
 addenda/0001-avcodec-h264_slice-clear-the-ER-picture-when-startin.patch
-addenda/0002-libavcodec-h264-Use-inferred-num_reorder_frames-when.patch
-addenda/0003-avcodec-h264dec-do-not-add-0-to-the-NULL-plane-point.patch
-addenda/0004-avformat-tls_gnutls-tls_openssl-fix-AVERROR_EXIT-in-.patch
-addenda/0005-avcodec-h264_slice-reset-next_output_pic.patch
+addenda/0002-avcodec-h264dec-do-not-add-0-to-the-NULL-plane-point.patch
+addenda/0003-avformat-tls_gnutls-tls_openssl-fix-AVERROR_EXIT-in-.patch
+addenda/0004-avcodec-h264_slice-reset-next_output_pic.patch
+addenda/0005-libavformat-flacdec-error-on-overflow-in-metadata.patch
+addenda/0006-fix-get-context-info-without-enterprise-cloud-content-analysis.patch
+addenda/0007-6442ebe.diff
+addenda/0008-23dd0d1.diff
+addenda/0009-f795cb5.diff
+addenda/0010-b5bf5c2.diff
+addenda/0011-27504b75.diff
+addenda/0012-9d98906.diff
+addenda/0013-439f2a316.diff
+addenda/0014-e2075db3.diff
+addenda/0015-18321f1.diff
+addenda/0016-c9b3cfc.diff
+addenda/0017-8b30ccd.diff
+addenda/0018-93f574f1.diff
+addenda/0019-d473602.diff
+addenda/0020-c212980.diff
+addenda/0021-04fd79a.diff
+addenda/0022-77feabed.diff

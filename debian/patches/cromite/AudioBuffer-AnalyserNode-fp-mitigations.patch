@@ -23,7 +23,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5078,6 +5078,10 @@
+@@ -5244,6 +5244,10 @@
      {"ui-disable-partial-swap", flag_descriptions::kUiPartialSwapName,
       flag_descriptions::kUiPartialSwapDescription, kOsAll,
       SINGLE_DISABLE_VALUE_TYPE(switches::kUIDisablePartialSwap)},
@@ -36,7 +36,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       FEATURE_VALUE_TYPE(features::kWebRtcHWDecoding)},
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -6771,6 +6771,11 @@
+@@ -6759,6 +6759,11 @@
  // FLAG_DESCRIPTIONS_ANDROID_END
  // Non-Android -----------------------------------------------------------------
  
@@ -50,7 +50,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  inline constexpr char kAllowAllSitesToInitiateMirroringDescription[] =
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -143,6 +143,9 @@
+@@ -146,6 +146,9 @@
  BASE_FEATURE(kDisplayWarningDeprecateURNIframesUseFencedFrames,
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -62,7 +62,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  // it will use the kNormal type thread when disabled.
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -153,6 +153,8 @@
+@@ -158,6 +158,8 @@
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE_PARAM(bool,
                                                 kAutoSpeculationRulesHoldback);
  
@@ -115,7 +115,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "third_party/blink/public/platform/modules/webrtc/webrtc_logging.h"
  #include "third_party/blink/public/platform/web_audio_latency_hint.h"
  #include "third_party/blink/renderer/bindings/core/v8/script_promise_resolver.h"
-@@ -1242,7 +1243,9 @@
+@@ -1291,7 +1292,9 @@
    DCHECK_CALLED_ON_VALID_SEQUENCE(main_thread_sequence_checker_);
    DCHECK(destinationNode());
  
@@ -139,7 +139,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "third_party/blink/public/mojom/devtools/console_message.mojom-blink.h"
  #include "third_party/blink/public/mojom/frame/lifecycle.mojom-shared.h"
  #include "third_party/blink/public/platform/platform.h"
-@@ -770,6 +772,17 @@
+@@ -790,6 +792,17 @@
    return To<LocalDOMWindow>(GetExecutionContext());
  }
  
@@ -159,7 +159,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    DeferredTaskHandler::GraphAutoLocker locker(GetDeferredTaskHandler());
 --- a/third_party/blink/renderer/modules/webaudio/base_audio_context.h
 +++ b/third_party/blink/renderer/modules/webaudio/base_audio_context.h
-@@ -326,6 +326,8 @@
+@@ -325,6 +325,8 @@
    // if the execution context does not exist.
    bool CheckExecutionContextAndThrowIfNecessary(ExceptionState&);
  
@@ -170,7 +170,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    }
 --- a/third_party/blink/renderer/modules/webaudio/offline_audio_context.cc
 +++ b/third_party/blink/renderer/modules/webaudio/offline_audio_context.cc
-@@ -436,6 +436,7 @@
+@@ -441,6 +441,7 @@
      if (!rendered_buffer) {
        return;
      }

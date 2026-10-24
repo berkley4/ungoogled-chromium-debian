@@ -1,6 +1,6 @@
 --- a/components/enterprise/BUILD.gn
 +++ b/components/enterprise/BUILD.gn
-@@ -110,6 +110,7 @@
+@@ -112,6 +112,7 @@
      "//components/certificate_matching",
      "//components/device_signals/core/browser",
      "//components/device_signals/core/common:features",

@@ -24,7 +24,7 @@ Signed-off-by: Kacper Michajłow <kasper93@gmail.com>
 
 --- a/third_party/ffmpeg/libavcodec/h264_slice.c
 +++ b/third_party/ffmpeg/libavcodec/h264_slice.c
-@@ -1627,6 +1627,10 @@
+@@ -1638,6 +1638,10 @@
          int field = h->picture_structure == PICT_BOTTOM_FIELD;
          release_unused_pictures(h, 0);
          h->cur_pic_ptr->tf.owner[field] = h->avctx;

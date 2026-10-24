@@ -1,6 +1,6 @@
 --- a/BUILD.gn
 +++ b/BUILD.gn
-@@ -685,7 +685,7 @@
+@@ -691,7 +691,7 @@
        ]
      }
  
@@ -11,7 +11,7 @@
          "//third_party/crashpad/crashpad/tools:crashpad_database_util",
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -322,7 +322,9 @@
+@@ -328,7 +328,9 @@
          "//chrome/common:buildflags",
        ]
  
@@ -22,7 +22,7 @@
  
        ldflags = []
  
-@@ -1853,7 +1855,6 @@
+@@ -1862,7 +1864,6 @@
    if (!(is_debug && use_debug_fission)) {
      group("linux_symbols") {
        deps = [
@@ -30,7 +30,7 @@
          ":chrome_symbols",
        ]
        if (is_linux) {
-@@ -1890,17 +1891,19 @@
+@@ -1899,17 +1900,19 @@
        deps = [ ":chrome" ]
      }
  
@@ -69,7 +69,7 @@
    "$root_out_dir/chrome_management_service",
    "$root_out_dir/chrome_sandbox",
  ]
-@@ -214,11 +213,6 @@
+@@ -212,11 +211,6 @@
    deps = [ "//chrome" ]
  }
  
@@ -81,7 +81,7 @@
  strip_binary("strip_chrome_management_service") {
    binary_input = "$root_out_dir/chrome_management_service"
    deps = [ "//chrome/browser/enterprise/connectors/device_trust/key_management/installer/management_service:chrome_management_service" ]
-@@ -480,7 +474,6 @@
+@@ -478,7 +472,6 @@
      ":deb_packaging_files",
      ":save_build_info",
      ":strip_chrome_binary",
@@ -89,17 +89,17 @@
      ":strip_chrome_management_service",
      ":strip_chrome_sandbox",
      ":theme_files",
-@@ -490,7 +483,6 @@
+@@ -488,7 +481,6 @@
      "//chrome:packed_resources",
      "//chrome/browser/enterprise/connectors/device_trust/key_management/installer/management_service:chrome_management_service",
      "//chrome/browser/resources/media/mei_preload:component",
 -    "//components/crash/core/app:chrome_crashpad_handler",
-     "//components/privacy_sandbox/privacy_sandbox_attestations/preload:component",
      "//sandbox/linux:chrome_sandbox",
    ]
+   if (bundle_widevine_cdm) {
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -391,10 +391,6 @@
+@@ -388,10 +388,6 @@
      ]
    }
  
@@ -112,7 +112,7 @@
        ":test_support_ui_android",
 --- a/components/crash/core/app/BUILD.gn
 +++ b/components/crash/core/app/BUILD.gn
-@@ -90,7 +90,7 @@
+@@ -120,7 +120,7 @@
      "//third_party/crashpad/crashpad/util",
    ]
  
@@ -121,7 +121,7 @@
      sources += [ "crashpad_linux.cc" ]
      data_deps = [ ":chrome_crashpad_handler" ]
    }
-@@ -242,7 +242,7 @@
+@@ -278,7 +278,7 @@
    }
  }
  
