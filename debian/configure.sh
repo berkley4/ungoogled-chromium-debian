@@ -653,6 +653,8 @@ if [ $MARCH_SET -eq 1 ] || [ $MTUNE_SET -eq 1 ]; then
     MARCH=$MTUNE
   fi
 
+  RUST_MARCH=true
+
   # Catch any quirks
   case $MARCH in
     x86-64*)
@@ -661,7 +663,12 @@ if [ $MARCH_SET -eq 1 ] || [ $MTUNE_SET -eq 1 ]; then
 
       case $MARCH in
         x86-64|x86-64-v2)
-          MTUNE=generic ;;
+          MTUNE=generic
+
+          case $MARCH in
+            x86-64-v2)
+              RUST_MARCH=false ;;
+          esac ;;
 
         x86-64-v3|x86-64-v4)
           AVX=0
@@ -723,7 +730,6 @@ fi
 
 if [ $AVX512 -eq 1 ] || [ "$MARCH" = "0" ]; then
   AES=0; ABM=0; AVX=0; BMI=0; PCLMUL=0; SSE4A=0; TBM=0
-  RUST_INST=
   if [ $AVX512 -eq 1 ]; then
     gn_disable="$gn_disable allow_avx512=false"
   fi
@@ -796,7 +802,11 @@ case $RUST_INST in
         R="-e \"s@+pclmulqdq,+aes,+avx@$RUST_INST@\"" ;;
     esac
 
-    [ -z "$arch_patches" ] || R="$R -e \"s@x86-64-v2@$MARCH@\" -e \"s@generic@$MTUNE@\""
+    case $RUST_MARCH in
+      true)
+        R="-e \"s@x86-64-v2@$MARCH@\"" ;;
+    esac
+
     [ -z "$R" ] || eval sed $R -i $OP_DIR/compiler-flags/cpu/rust-instructions.patch ;;
 esac
 
