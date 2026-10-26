@@ -115,11 +115,21 @@
  }
 --- a/chrome/common/crash_keys.cc
 +++ b/chrome/common/crash_keys.cc
-@@ -16,6 +16,7 @@
- #include "base/strings/string_util.h"
- #include "build/build_config.h"
- #include "chrome/common/chrome_switches.h"
-+#include "components/crash/core/common/crash_buildflags.h"
- #include "components/crash/core/common/crash_key.h"
- #include "components/crash/core/common/crash_keys.h"
- #include "content/public/common/content_switches.h"
+@@ -127,6 +127,9 @@
+ }
+ 
+ void AppendStringAnnotationsCommandLineSwitch(base::CommandLine* command_line) {
++#if BUILDFLAG(USE_CRASH_KEY_STUBS)
++  return;
++#else
+   std::string string_annotations;
+   for (const auto& crash_key : GetCommandLineStringAnnotations()) {
+     if (!string_annotations.empty()) {
+@@ -139,6 +142,7 @@
+     return;
+   }
+   command_line->AppendSwitchASCII(kStringAnnotationsSwitch, string_annotations);
++#endif
+ }
+ 
+ void SetCrashKeysFromCommandLine(const base::CommandLine& command_line) {

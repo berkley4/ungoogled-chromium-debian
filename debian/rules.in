@@ -87,6 +87,7 @@ GN_FLAGS +=					\
 	enable_media_remoting=false		\
 	libyuv_disable_rvv=true			\
 	safe_browsing_use_unrar=false		\
+	use_crash_key_stubs=true		\
 	use_kerberos=false			\
 	use_sysroot=false			\
 
@@ -115,7 +116,6 @@ GN_FLAGS +=					\
 	tint_build_null_writer=false		\
 	tint_build_unittests=false		\
 	tint_has_protobuf=false			\
-	use_crash_key_stubs=true		\
 
 # The items below are best configured via debian/configure.sh
 # (this needs to be run anyway when self-compiling).
