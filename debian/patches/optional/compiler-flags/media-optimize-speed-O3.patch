@@ -25,21 +25,6 @@
      "//media:subcomponent_config",
    ]
  
---- a/media/cdm/BUILD.gn
-+++ b/media/cdm/BUILD.gn
-@@ -16,7 +16,11 @@
-       ":*",
-       "//media",
-     ]
--    configs += [ "//media:subcomponent_config" ]
-+    configs -= [ "//build/config/compiler:default_optimization" ]
-+    configs += [
-+      "//build/config/compiler:optimize_speed",
-+      "//media:subcomponent_config",
-+    ]
-   } else {
-     visibility = [ "//media/cdm/library_cdm/clear_key_cdm" ]
-   }
 --- a/media/ffmpeg/BUILD.gn
 +++ b/media/ffmpeg/BUILD.gn
 @@ -14,7 +14,11 @@
@@ -85,48 +70,6 @@
  
    if (proprietary_codecs) {
      deps += [ "//media/video" ]
---- a/media/gpu/BUILD.gn
-+++ b/media/gpu/BUILD.gn
-@@ -82,7 +82,9 @@
-     "gpu_video_encode_accelerator_factory.h",
-   ]
- 
-+  configs -= [ "//build/config/compiler:default_optimization" ]
-   configs += [
-+    "//build/config/compiler:optimize_speed",
-     "//build/config/compiler:wexit_time_destructors",
-     "//build/config/compiler:wglobal_constructors",
-   ]
-@@ -387,7 +389,9 @@
-     ]
-   }
- 
-+  configs -= [ "//build/config/compiler:default_optimization" ]
-   configs += [
-+    "//build/config/compiler:optimize_speed",
-     "//build/config/compiler:wexit_time_destructors",
-     "//build/config/compiler:wglobal_constructors",
-   ]
-@@ -473,7 +477,9 @@
-     "command_buffer_helper.h",
-   ]
- 
-+  configs -= [ "//build/config/compiler:default_optimization" ]
-   configs += [
-+    "//build/config/compiler:optimize_speed",
-     "//build/config/compiler:wexit_time_destructors",
-     "//build/config/compiler:wglobal_constructors",
-   ]
-@@ -514,7 +520,9 @@
-       "video_frame_mapper_factory.h",
-     ]
- 
-+    configs -= [ "//build/config/compiler:default_optimization" ]
-     configs += [
-+      "//build/config/compiler:optimize_speed",
-       "//build/config/compiler:wexit_time_destructors",
-       "//build/config/compiler:wglobal_constructors",
-     ]
 --- a/media/muxers/BUILD.gn
 +++ b/media/muxers/BUILD.gn
 @@ -58,7 +58,11 @@
@@ -157,18 +100,3 @@
  }
  
  source_set("unit_tests") {
---- a/media/video/BUILD.gn
-+++ b/media/video/BUILD.gn
-@@ -49,7 +49,11 @@
-     "//ui/gfx",
-   ]
- 
--  configs += [ "//media:subcomponent_config" ]
-+  configs -= [ "//build/config/compiler:default_optimization" ]
-+  configs += [
-+    "//build/config/compiler:optimize_speed",
-+    "//media:subcomponent_config",
-+  ]
- 
-   if (enable_libaom) {
-     sources += [
