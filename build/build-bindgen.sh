@@ -20,7 +20,7 @@ esac
 
 DL_CACHE=.download_cache
 
-bg_tag=upstream/v0.72.1
+bg_tag=upstream/v0.73.2
 nc_ver=Ws0ru48A4IYoYLVKbV5K5_mDYT4ml9LAQUKdkiczdlMC
 
 bg_repo=https://chromium.googlesource.com/external/github.com/rust-lang/rust-bindgen.git
@@ -38,6 +38,11 @@ real_dir_path() {
   OLDPWD=- CDPATH= cd -P -- $1 && pwd
 }
 
+error_out() {
+    printf '%s\n' "ERROR: $1 not set, please specify a value for it"
+    printf '%s\n' "ERROR: for example: SYS_CLANG=2 SYS_RUST=0 ./build-bindgen.sh"
+    exit 1 ;;
+}
 
 case $1 in
   c|clean)
@@ -53,17 +58,13 @@ esac
 # Set CLANG_PATH values acording to SYS_CLANG from the environment
 case $SYS_CLANG in
   "")
-    printf '%s\n' "ERROR: SYS_CLANG not set, please specify a value for it"
-    printf '%s\n' "ERROR: for example: SYS_CLANG=2 SYS_RUST=1 ./build-bindgen.sh"
-    exit 1 ;;
+    error_out SYS_CLANG ;;
 esac
 
 
 case $SYS_RUST in
   "")
-    printf '%s\n' "ERROR: SYS_RUST is not set, please specify a value for it"
-    printf '%s\n' "ERROR: for example: SYS_CLANG=2 SYS_RUST=1 ./build-bindgen.sh"
-    exit 1 ;;
+    error_out SYS_RUST ;;
 esac
 
 
