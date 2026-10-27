@@ -14,3 +14,17 @@
      # Enable basic block layout based on the extended TSP problem. This aims to
      # improve icache utilization and reduce the binary size.
      if (use_thin_lto) {
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -2600,11 +2600,6 @@
+       "-ffunction-sections",
+       "-fdebug-types-section",
+     ]
+-    if (is_clang) {
+-      # We don't care about unique section names, this makes object files a bit
+-      # smaller.
+-      common_optimize_on_cflags += [ "-fno-unique-section-names" ]
+-    }
+ 
+     if (is_official_build) {
+       common_optimize_on_ldflags += [

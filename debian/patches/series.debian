@@ -67,7 +67,6 @@ various/compiler-flags/optimize-debug-info.patch
 various/compiler-flags/optimize-lto-CGO.patch
 various/compiler-flags/optimize-lto-O2-by-default.patch
 various/compiler-flags/stack-clash-protection.patch
-various/compiler-flags/unique-section-names.patch
 various/disable/absl-tests.patch
 various/disable/angle-perftests.patch
 various/disable/CollectWebGPUSupportMetrics.patch
