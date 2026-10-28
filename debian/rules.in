@@ -217,7 +217,7 @@ GN_FLAGS += v8_enable_wasm_simd256_revec=true
 #GN_FLAGS += enable_cet_shadow_stack=false
 
 # Enable hugepages for v8
-GN_FLAGS += v8_enable_hugepage=true
+#GN_FLAGS += v8_enable_hugepage=true
 
 
 ### X11 Only

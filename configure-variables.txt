@@ -195,9 +195,11 @@ TRANSLATE		1		Google translate support
 					1 - enable (need to edit google-translate flag file and policies.json)
 					2 - enable fully
 
-V8_HUGEPAGE		1		Enable hugepage support for v8 (should work on non-hugepage setups too)
-					Note: systems with hugepage support configured can use
-					the 'transparent_hugepage=madvise' kernel boot parameter to reduce memory usage
+V8_HUGEPAGE		0		Enable hugepage support for v8 (should work on non-hugepage setups too)
+					Note: not enabled by default as it appears that this configuration isn't
+					      routinely tested (it has caused a mksnapshot build error in the past)
+					Note: systems with hugepage support configured can use the 'transparent_hugepage=madvise'
+					      kernel boot parameter to reduce memory usage
 
 VR			0		Virtual reality hardware support
 VULKAN			1		Vulkan

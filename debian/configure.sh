@@ -98,7 +98,7 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$SWITCH_BLOCKING" ] || SWITCH_BLOCKING=1
 [ -n "$SYS_NOTIFICATIONS" ] || SYS_NOTIFICATIONS=1
 [ -n "$TRANSLATE" ] || TRANSLATE=1
-[ -n "$V8_HUGEPAGE" ] || V8_HUGEPAGE=1
+[ -n "$V8_HUGEPAGE" ] || V8_HUGEPAGE=0
 [ -n "$VR" ] || VR=0
 [ -n "$VAAPI" ] || VAAPI=1
 [ -n "$VULKAN" ] || VULKAN=1
@@ -1063,8 +1063,8 @@ else
 fi
 
 
-if [ $V8_HUGEPAGE -eq 0 ]; then
-  gn_disable="$gn_disable v8_enable_hugepage=true"
+if [ $V8_HUGEPAGE -eq 1 ]; then
+  gn_enable="$gn_enable v8_enable_hugepage=true"
 fi
 
 
