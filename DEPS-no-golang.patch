@@ -1,6 +1,6 @@
 --- a/third_party/dawn/DEPS
 +++ b/third_party/dawn/DEPS
-@@ -567,7 +567,7 @@
+@@ -580,7 +580,7 @@
        'version': Var('dawn_go_version'),
      }],
      'dep_type': 'cipd',

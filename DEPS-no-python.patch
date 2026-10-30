@@ -1,6 +1,6 @@
 --- a/DEPS
 +++ b/DEPS
-@@ -2311,7 +2311,7 @@
+@@ -2327,7 +2327,7 @@
            'version': Var('cpython3_version'),
          },
        ],
@@ -9,7 +9,7 @@
        'dep_type': 'cipd',
    },
  
-@@ -2324,7 +2324,7 @@
+@@ -2340,7 +2340,7 @@
            'version': Var('cpython3_version'),
          },
        ],
@@ -18,7 +18,7 @@
        'dep_type': 'cipd',
    },
  
-@@ -4341,6 +4341,7 @@
+@@ -4172,6 +4172,7 @@
    {
      'name': 'vpython3_common',
      'pattern': '.',
