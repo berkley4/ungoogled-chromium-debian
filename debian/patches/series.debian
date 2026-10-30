@@ -62,6 +62,7 @@ various/compiler-flags/do-not-link-with-libatomic.patch
 various/compiler-flags/ffmpeg-optimize-speed-O3.patch
 various/compiler-flags/fortify-level-three.patch
 various/compiler-flags/function-import-limits.patch
+various/compiler-flags/media-optimize-speed-O3.patch
 various/compiler-flags/no-plt.patch
 various/compiler-flags/optimize-debug-info.patch
 various/compiler-flags/optimize-lto-CGO.patch
@@ -118,7 +119,6 @@ various/system/zlib.patch
 #optional/build-timestamp/compute-fixed-build-timestamp.patch
 #optional/build-timestamp/use-non-official-build-timestamp.patch
 optional/compiler-flags/machine-function-splitting.patch
-optional/compiler-flags/media-optimize-speed-O3.patch
 optional/compiler-flags/extra-cflags.patch
 #optional/compiler-flags/thinlto-cache-location.patch
 #optional/compiler-flags/thinlto-jobs.patch

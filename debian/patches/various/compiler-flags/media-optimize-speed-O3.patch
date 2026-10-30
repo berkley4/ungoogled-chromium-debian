@@ -11,20 +11,6 @@
      "//media:subcomponent_config",
    ]
  
---- a/media/base/BUILD.gn
-+++ b/media/base/BUILD.gn
-@@ -439,9 +439,10 @@
-   ]
- 
-   libs = []
-+  configs -= [ "//build/config/compiler:default_optimization" ]
-   configs += [
-     "//build/config:precompiled_headers",
--
-+    "//build/config/compiler:optimize_speed",
-     "//media:subcomponent_config",
-   ]
- 
 --- a/media/ffmpeg/BUILD.gn
 +++ b/media/ffmpeg/BUILD.gn
 @@ -14,7 +14,11 @@
@@ -75,21 +61,6 @@
 @@ -58,7 +58,11 @@
    assert(use_libgav1_parser)
    deps += [ "//third_party/libgav1:libgav1_parser" ]
- 
--  configs += [ "//media:subcomponent_config" ]
-+  configs -= [ "//build/config/compiler:default_optimization" ]
-+  configs += [
-+    "//build/config/compiler:optimize_speed",
-+    "//media:subcomponent_config",
-+  ]
- }
- 
- source_set("unit_tests") {
---- a/media/renderers/BUILD.gn
-+++ b/media/renderers/BUILD.gn
-@@ -71,7 +71,11 @@
-     ]
-   }
  
 -  configs += [ "//media:subcomponent_config" ]
 +  configs -= [ "//build/config/compiler:default_optimization" ]

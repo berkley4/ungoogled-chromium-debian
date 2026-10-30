@@ -238,7 +238,6 @@ XZ_EXTREME		0		Extreme xz (deb) compression strategy
 INTEL_CET		1		Intel Control-flow Enforcement Technology
 					Available on Tiger Lake and newer CPUs, and a no-op on older/unsupported CPUs.
 
-MEDIA_OPT_SPEED		1		Build the core media components with optimize_speed (-O3) config
 MF_SPLIT		1		Machine function splitting
 					Note: increases object file size, link time and linker memory usage (requires PGO=1).
 

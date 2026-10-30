@@ -61,7 +61,6 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$V8_AVX2" ] || V8_AVX2=1
 
 [ -n "$INTEL_CET" ] || INTEL_CET=1
-[ -n "$MEDIA_OPT_SPEED" ] || MEDIA_OPT_SPEED=1
 [ -n "$MF_SPLIT" ] || MF_SPLIT=1
 
 [ -n "$ATK" ] || ATK=0
@@ -632,10 +631,6 @@ fi
 
 if [ $INTEL_CET -eq 0 ]; then
   gn_enable="$gn_enable enable_cet_shadow_stack=false"
-fi
-
-if [ $MEDIA_OPT_SPEED -eq 0 ]; then
-  op_disable="$op_disable compiler-flags/media-optimize-speed-O3.patch"
 fi
 
 if [ $MF_SPLIT -eq 0 ]; then
