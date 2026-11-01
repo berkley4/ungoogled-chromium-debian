@@ -488,7 +488,7 @@ else
   # Start using LLVM_VER instead of CLANG_VER now that the actual version is known
   [ -n "$LLVM_VER" ] || LLVM_VER=$CLANG_VER
 
-  if [ $PGO -eq 1 ] && [ $LLVM_VER -lt $LLVM_PGO_VER ]; then
+  if [ $TEST -eq 0 ] && [ $PGO -eq 1 ] && [ $LLVM_VER -lt $LLVM_PGO_VER ]; then
     printf '%s\n' "ERROR: Clang versions below $LLVM_PGO_VER are incompatible with PGO"
     exit 1
   fi
