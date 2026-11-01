@@ -627,7 +627,7 @@ if [ $PGO -eq 0 ]; then
     MF_SPLIT=0
   fi
 else
-  SMF="$SMF -e \"/^chrome_pgo_phase/d\""
+  SMF="$SMF -e '/^chrome_pgo_phase/d'"
 fi
 
 
@@ -1135,7 +1135,7 @@ fi
 
 if [ $WIDEVINE -eq 0 ]; then
   op_disable="$op_disable fixes/widevine/"
-  SMF="$SMF -e \"/^enable_widevine=/s@true@false@\""
+  SMF="$SMF -e '/^enable_widevine=/s@true@false@'"
 fi
 
 
@@ -1344,10 +1344,12 @@ PRU_PY="$PRU_PY -e \"/third_party\/node\/linux\//d\""
 ## Remove (upstream) submodule build flags ##
 #############################################
 
-SMF="$SMF -e \"/^enable_hangout_services_extension/d\""
-SMF="$SMF -e \"/^enable_service_discovery/d\""
-SMF="$SMF -e \"/^exclude_unwind_tables/d\""
-
+SMF="$SMF -e '/^enable_hangout_services_extension/d'"
+SMF="$SMF -e '/^enable_service_discovery/d'"
+SMF="$SMF -e '/^exclude_unwind_tables/d'"
+SMF="$SMF -e 's@\x22@\x5c\x22@g'"
+SMF="$SMF -e 'H;1h;\$!d;g;s/\n/ /g'"
+SMF="$SMF -e 's@^ @@g'"
 
 
 
@@ -1471,8 +1473,8 @@ printf '%s\n%s\n' \
 eval "
   sed $CON < \$DEBIAN/control.in > \$DEBIAN/control
   sed $RUL < \$DEBIAN/rules.in > \$DEBIAN/rules
+  sed $SMF < \$UC_DIR/flags.gn > \$M_DIR/uc_flags.txt
   sed $DSB -i \$UC_DIR/domain_substitution.list
-  sed $SMF -i \$UC_DIR/flags.gn
   sed $PRU -i \$UC_DIR/pruning.list
 "
 

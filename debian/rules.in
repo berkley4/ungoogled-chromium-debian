@@ -13,9 +13,7 @@ UB_REP_SCRIPT := build/linux/unbundle/replace_gn_files.py
 
 UB_LIST := $(file < $(DEBIAN)/misc_files/bundled.txt)
 HEVC_LIST := $(file < $(DEBIAN)/misc_files/hevc-symlinks.txt)
-
-# Start with the upstream Ungoogled Chromium flags
-GN_FLAGS := $(shell sed -z -e 's@\x22@\x5c\x22@g' -e 's@\n@ @g' $(UC_DIR)/flags.gn)
+GN_FLAGS := $(file < $(DEBIAN)/misc_files/uc_flags.txt)
 
 # Custom toolchain (needed if enabling optional/llvm-polly-* patches)
 # The llvm major version needs to at least match chromium's for PGO to work
