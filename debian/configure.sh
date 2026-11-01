@@ -134,15 +134,8 @@ fi
 [ -n "$POLLY_VEC" ] && POLLY_VEC_SET=1 || POLLY_VEC=0
 
 if [ $SYS_CLANG -gt 0 ]; then
-  case $POLLY_SET in
-    false)
-      POLLY=1 ;;
-  esac
-
-  case $POLLY_VEC_SET in
-    false)
-      POLLY_VEC=1 ;;
-  esac
+  case $POLLY_SET in false) POLLY=1 ;; esac
+  case $POLLY_VEC_SET in false) POLLY_VEC=1 ;; esac
 fi
 
 ## CPU. MARCH and MTUNE defaults
@@ -424,16 +417,12 @@ if [ $CCACHE -eq 1 ]; then
   RUL="$RUL -e \"/^#export PATH/s@^#@@\""
 
   case $CCACHE_BASEDIR in
-    ""|0|1)
-      RUL="$RUL -e \"/CCACHE_BASEDIR=/s@_CCACHE_BASEDIR@\x24\x28RT_DIR\x29@\"" ;;
-
-    /*)
-      RUL="$RUL -e \"/CCACHE_BASEDIR=/s@_CCACHE_BASEDIR@$CCACHE_BASEDIR@\"" ;;
+    ""|0|1) RUL="$RUL -e \"/CCACHE_BASEDIR=/s@_CCACHE_BASEDIR@\x24\x28RT_DIR\x29@\"" ;;
+    /*) RUL="$RUL -e \"/CCACHE_BASEDIR=/s@_CCACHE_BASEDIR@$CCACHE_BASEDIR@\"" ;;
   esac
 
   case $CCACHE_BASEDIR in
-    /*|1)
-      RUL="$RUL -e \"/^#export CCACHE_BASEDIR=/s@^#@@\"" ;;
+    /*|1) RUL="$RUL -e \"/^#export CCACHE_BASEDIR=/s@^#@@\"" ;;
   esac
 
   case $BUILD_TS_SET in
@@ -782,9 +771,7 @@ if [ $AVX -eq 0 ]; then
   op_disable="$op_disable compiler-flags/cpu/avx.patch"
 
   # Default to sse3/pni instruction requirement when AVX=0 (and PCLMUL=0)
-  case $CPU_SET in
-    false) CPU='sse3\x5C\x7Cpni' ;;
-  esac
+  case $CPU_SET in false) CPU='sse3\x5C\x7Cpni' ;; esac
 else
   RUST_INST="$RUST_INST,+avx"
 fi
@@ -795,9 +782,7 @@ if [ $PCLMUL -eq 0 ]; then
 else
   # Default to pclmulqdq instruction requirement when AVX=0 and PCLMUL=1
   if [ $AVX -eq 0 ]; then
-    case $CPU_SET in
-      false) CPU=pclmulqdq ;;
-    esac
+    case $CPU_SET in false) CPU=pclmulqdq ;; esac
   fi
 fi
 
