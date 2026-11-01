@@ -11,7 +11,8 @@ CON=; DSB=; FLAG_GPU=; INS=; POL=; PRU=; PRU_PY=;
 RUL=; RUST_INST=; SER_DB=; SER_U=; SMF=
 
 MARCH_SET=0; MTUNE_SET=0
-BUILD_TS_SET=false; CLANG_VER_SET=false; CPU_SET=false; RELEASE_SET=false
+BUILD_TS_SET=false; CLANG_VER_SET=false
+CPU_SET=false; POLLY_SET=false; POLLY_VEC_SET=false; RELEASE_SET=false
 
 LLVM_CTRL_VER=23
 LLVM_PGO_VER=24
@@ -85,8 +86,6 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$PART_LOCK_PI" ] || PART_LOCK_PI=1
 [ -n "$PDF_JS" ] || PDF_JS=0
 [ -n "$PIPEWIRE" ] || PIPEWIRE=1
-[ -n "$POLLY" ] || POLLY=1
-[ -n "$POLLY_VEC" ] || POLLY_VEC=1
 [ -n "$PRINT_PREVIEW" ] || PRINT_PREVIEW=1
 [ -n "$PULSE" ] || PULSE=1
 [ -n "$QT" ] || QT=0
@@ -129,6 +128,22 @@ fi
 ## OpenH264 support
 [ -n "$OPENH264" ] && [ $OPENH264 -eq 0 ] && SYS_OPENH264=0 || OPENH264=1
 [ -n "$SYS_OPENH264" ] || SYS_OPENH264=1
+
+## POLLY (both variables are default enabled when SYS_CLANG > 1)
+[ -n "$POLLY" ] && POLLY_SET=1 || POLLY=0
+[ -n "$POLLY_VEC" ] && POLLY_VEC_SET=1 || POLLY_VEC=0
+
+if [ $SYS_CLANG -gt 0 ]; then
+  case $POLLY_SET in
+    false)
+      POLLY=1 ;;
+  esac
+
+  case $POLLY_VEC_SET in
+    false)
+      POLLY_VEC=1 ;;
+  esac
+fi
 
 ## CPU. MARCH and MTUNE defaults
 case $CPU in
