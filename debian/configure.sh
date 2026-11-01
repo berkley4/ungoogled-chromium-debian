@@ -631,7 +631,7 @@ fi
 
 
 # Machine function splitting relies on PGO being enabled
-if [ $PGO -eq 0 ]
+if [ $PGO -eq 0 ]; then
   if [ $MF_SPLIT -eq 1 ]; then
     printf '%s\n' "WARN: MF_SPLIT depends on PGO=1"
     printf '%s\n' "WARN: Setting MF_SPLIT=0"
