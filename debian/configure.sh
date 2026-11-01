@@ -1341,7 +1341,6 @@ PRU_PY="$PRU_PY -e \"/third_party\/node\/linux\//d\""
 #############################################
 
 SMF="$SMF -e \"/^enable_hangout_services_extension/d\""
-SMF="$SMF -e \"/^enable_nacl/d\""
 SMF="$SMF -e \"/^enable_service_discovery/d\""
 SMF="$SMF -e \"/^exclude_unwind_tables/d\""
 
