@@ -15,8 +15,7 @@ UB_LIST := $(file < $(DEBIAN)/misc_files/bundled.txt)
 HEVC_LIST := $(file < $(DEBIAN)/misc_files/hevc-symlinks.txt)
 GN_FLAGS := $(file < $(DEBIAN)/misc_files/uc_flags.txt)
 
-# Custom toolchain (needed if enabling optional/llvm-polly-* patches)
-# The llvm major version needs to at least match chromium's for PGO to work
+# Custom toolchain
 #
 #export LLVM_DIR := _LLVM_BASE_DIR/bin
 #
