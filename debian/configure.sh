@@ -631,10 +631,14 @@ fi
 
 
 # Machine function splitting relies on PGO being enabled
-if [ $PGO -eq 0 ] && [ $MF_SPLIT -eq 1 ]; then
-  printf '%s\n' "WARN: MF_SPLIT depends on PGO=1"
-  printf '%s\n' "WARN: Setting MF_SPLIT=0"
-  MF_SPLIT=0
+if [ $PGO -eq 0 ]
+  if [ $MF_SPLIT -eq 1 ]; then
+    printf '%s\n' "WARN: MF_SPLIT depends on PGO=1"
+    printf '%s\n' "WARN: Setting MF_SPLIT=0"
+    MF_SPLIT=0
+  fi
+else
+  SMF="$SMF -e \"/^chrome_pgo_phase/d\""
 fi
 
 
@@ -1358,10 +1362,6 @@ PRU_PY="$PRU_PY -e \"/third_party\/node\/linux\//d\""
 SMF="$SMF -e \"/^enable_hangout_services_extension/d\""
 SMF="$SMF -e \"/^enable_service_discovery/d\""
 SMF="$SMF -e \"/^exclude_unwind_tables/d\""
-
-if [ $PGO -eq 1 ]; then
-  SMF="$SMF -e \"/^chrome_pgo_phase/d\""
-fi
 
 
 
