@@ -152,7 +152,6 @@ optional/enable/middle-click-autoscroll.patch
 optional/enable/mutex-priority-inheritance.patch
 #optional/enable/oauth2.patch
 optional/ffmpeg-hevc/add-hevc-ffmpeg-decoder-parser-for-linux.patch
-optional/ffmpeg-hevc/add-hevc-ffmpeg-decoder-parser-for-linux-asm.patch
 optional/ffmpeg-hevc/enable-hevc-ffmpeg-decoding.patch
 #optional/fixes/opentype-svg-on-bundled-freetype.patch
 #optional/fixes/partition-lock-priority-inheritance.patch
