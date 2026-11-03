@@ -1,0 +1,12 @@
+--- a/build/linux/unbundle/brotli.gn
++++ b/build/linux/unbundle/brotli.gn
+@@ -34,3 +34,9 @@
+   sources = [ "/usr/bin/brotli" ]
+   outputs = [ "$root_out_dir/brotli" ]
+ }
++
++group("headers") {
++  public_deps = [
++    ":brotli_shim",
++  ]
++}
