@@ -3,8 +3,6 @@
 RT_DIR   := $(CURDIR)
 DEBIAN   := $(RT_DIR)/debian
 OUT_DIR  := $(RT_DIR)/out/Release
-BTS_DIR  := $(RT_DIR)/buildtools
-HEVC_DIR := $(RT_DIR)/third_party/ffmpeg/libavcodec/hevc
 UC_DIR   := $(DEBIAN)/submodules/ungoogled-chromium
 UL_DIR   := $(UC_DIR)/utils
 
@@ -12,8 +10,14 @@ DS_CACHE := $(DEBIAN)/domsubcache.tar.gz
 UB_REP_SCRIPT := build/linux/unbundle/replace_gn_files.py
 
 UB_LIST := $(file < $(DEBIAN)/misc_files/bundled.txt)
-HEVC_LIST := $(file < $(DEBIAN)/misc_files/hevc-symlinks.txt)
 GN_FLAGS := $(file < $(DEBIAN)/misc_files/uc_flags.txt)
+
+# Required for various symlink fixes
+BTS_DIR   := $(RT_DIR)/buildtools
+HEVC_DIR  := $(RT_DIR)/third_party/ffmpeg/libavcodec/hevc
+HEVC_LIST := $(file < $(DEBIAN)/misc_files/hevc-symlinks.txt)
+RF_DIR    := $(RT_DIR)/third_party/rust/read_fonts/v0_45
+RFC_DIR   := chromium_crates_io/vendor/read-fonts-v0_45
 
 # Custom toolchain
 #
@@ -310,6 +314,7 @@ override_dh_auto_configure: revert_unbundle
 	test ! -f $(DEBIAN)/en-US.pak || test ! -d $(OUT_DIR)/locales || mv $(DEBIAN)/en-US.pak $(OUT_DIR)/locales/
 	test -h $(OUT_DIR)/icudtl.dat || ln -sf ../../third_party/icu/common/icudtl.dat -t $(OUT_DIR)
 	test -z "$(HEVC_LIST)" || for h in $(HEVC_LIST); do test -h $$h || ln -sf $(HEVC_DIR)/$$h $(HEVC_DIR)/autorename_libavcodec_hevc_$$h; done
+	for i in benches data generated scripts src; do test -d $(RF_DIR)/$i || ln -s ../../$(RFC_DIR)/$i -t $(RF_DIR); done
 	#mkdir -p $(BTS_DIR)/linux64-format
 	#test -h $(BTS_DIR)/linux64-format/clang-format || ln -sf $(LLVM_DIR)/clang-format -t $(BTS_DIR)/linux64-format
 
