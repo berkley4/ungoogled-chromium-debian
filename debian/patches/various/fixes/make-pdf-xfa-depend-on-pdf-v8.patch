@@ -9,10 +9,10 @@
 +}
 +
 +declare_args() {
-   # Build PDFium either:
-   # 1) When set to true, with a bundled FreeType, built from FreeType source
-   #    code in //third_party/freetype and PDFium's FreeType configs in
-@@ -22,11 +27,8 @@
+   # Build PDFium with FreeType support.
+   pdf_enable_freetype = pdf_enable_freetype_override
+ }
+@@ -27,11 +32,8 @@
    # Generate logging messages for click events that reach PDFium
    pdf_enable_click_logging = false
  

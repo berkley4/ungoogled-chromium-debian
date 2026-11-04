@@ -1,0 +1,26 @@
+From 0985c342965fbca080b597b32281229d8f9efe28 Mon Sep 17 00:00:00 2001
+From: V8 Autoroll <v8-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com>
+Date: Tue, 03 Nov 2026 04:33:47 -0800
+Subject: [PATCH] Version 15.7.112.25
+
+Version incremented at https://cr-buildbucket.appspot.com/build/8666153413700906625
+
+Change-Id: Icbbe894ce4a71e196a944dc004796fd6e1d218f3
+Reviewed-on: https://chromium-review.googlesource.com/c/v8/v8/+/8713462
+Bot-Commit: v8-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com <v8-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com>
+Cr-Commit-Position: refs/branch-heads/15.7@{#51}
+Cr-Branched-From: d2463ed6f2dfd0bdbb642624bd3d0e7d3e792555-refs/heads/15.7.112@{#1}
+Cr-Branched-From: e691155d010ebfd5dbc3204c53a14426e724dca7-refs/heads/main@{#110573}
+---
+
+--- a/v8/include/v8-version.h
++++ b/v8/include/v8-version.h
+@@ -11,7 +11,7 @@
+ #define V8_MAJOR_VERSION 15
+ #define V8_MINOR_VERSION 7
+ #define V8_BUILD_NUMBER 112
+-#define V8_PATCH_LEVEL 23
++#define V8_PATCH_LEVEL 25
+ 
+ // Use 1 for candidates and 0 otherwise.
+ // (Boolean macro values are not supported by all preprocessors.)

@@ -13,7 +13,7 @@
  #   PLEASE DO NOT ADD MORE FLAGS TO THIS FILE
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -1615,6 +1615,9 @@
+@@ -1794,6 +1794,9 @@
      deps += [ "//third_party/fontconfig" ]
      if (use_dbus) {
        deps += [ "//dbus" ]
@@ -25,7 +25,7 @@
  
 --- a/chrome/browser/chrome_browser_main_linux.cc
 +++ b/chrome/browser/chrome_browser_main_linux.cc
-@@ -66,8 +66,10 @@
+@@ -82,8 +82,10 @@
  
  #if !BUILDFLAG(IS_CHROMEOS)
  #if BUILDFLAG(USE_DBUS)
@@ -36,18 +36,16 @@
    session_end_listener_ = SessionEndListenerLinux::Create();
  #endif  // BUILDFLAG(USE_DBUS)
  #endif  // !BUILDFLAG(IS_CHROMEOS)
-@@ -114,8 +116,10 @@
- #else
+@@ -131,7 +133,9 @@
  #if BUILDFLAG(USE_DBUS)
    session_end_listener_.reset();
+ #endif
 +#if defined(PLATFORM_BLUETOOTH)
    bluez::BluezDBusManager::Shutdown();
--#endif
-+#endif  // defined(PLATFORM_BLUETOOTH)
-+#endif  // BUILDFLAG(USE_DBUS)
- #endif  // BUILDFLAG(IS_CHROMEOS)
- 
-   ChromeBrowserMainPartsPosix::PostDestroyThreads();
++#endif
+   // TODO(shelley.vohr): Call dbus_thread_linux::Shutdown() here. It cannot run
+   // yet because the in-process device service (battery, wifi, wake lock) is
+   // destroyed after this last BrowserMainParts hook and still dereferences
 --- a/chrome/browser/metrics/bluetooth_metrics_provider.cc
 +++ b/chrome/browser/metrics/bluetooth_metrics_provider.cc
 @@ -15,11 +15,15 @@

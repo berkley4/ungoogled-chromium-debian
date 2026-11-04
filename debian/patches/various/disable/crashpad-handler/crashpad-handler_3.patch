@@ -1,6 +1,6 @@
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -1051,7 +1051,6 @@
+@@ -1052,7 +1052,6 @@
      public_deps = [
        "//chrome/app_shim:app_mode_loader",
        "//chrome/browser/web_applications/os_integration/mac:web_app_shortcut_copier",
@@ -8,7 +8,7 @@
      ]
  
      foreach(helper_params, chrome_mac_helpers) {
-@@ -1534,7 +1533,6 @@
+@@ -1531,7 +1530,6 @@
        deps = [
          ":chrome_app",
          ":chrome_framework",
@@ -16,7 +16,7 @@
          "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan",
          dump_syms,
        ]
-@@ -1588,7 +1586,6 @@
+@@ -1585,7 +1583,6 @@
        deps = [
          ":chrome_app",
          ":chrome_framework",
@@ -26,7 +26,7 @@
        deps += [ "//third_party/vulkan-loader/src:libvulkan" ]
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -1130,7 +1130,6 @@
+@@ -1298,7 +1298,6 @@
      "//components/content_settings/browser/ui",
      "//components/contextual_tasks/public",
      "//components/contextual_tasks/public:feature_list",
@@ -34,7 +34,7 @@
      "//components/credential_management:browser",
      "//components/custom_handlers",
      "//components/data_sharing/public:features",
-@@ -1990,12 +1989,14 @@
+@@ -2169,12 +2168,14 @@
    }
  
    if (is_posix && !is_mac) {
@@ -55,7 +55,7 @@
    }
  
    if (is_mac) {
-@@ -3157,7 +3158,7 @@
+@@ -3465,7 +3466,7 @@
      public_deps += [ "//chrome/browser/downgrade:impl" ]
    }
  
@@ -86,7 +86,7 @@
  
 --- a/chrome/browser/metrics/chrome_metrics_service_client.cc
 +++ b/chrome/browser/metrics/chrome_metrics_service_client.cc
-@@ -211,7 +211,7 @@
+@@ -210,7 +210,7 @@
  #include "components/metrics/motherboard_metrics_provider.h"
  #endif
  
@@ -95,7 +95,7 @@
  #include "chrome/browser/metrics/chrome_metrics_service_crash_reporter.h"
  #endif
  
-@@ -238,7 +238,7 @@
+@@ -237,7 +237,7 @@
  // Needs to be kept in sync with the writer in
  // third_party/crashpad/crashpad/handler/handler_main.cc.
  const char kCrashpadHistogramAllocatorName[] = "CrashpadMetrics";
@@ -104,7 +104,7 @@
  ChromeMetricsServiceCrashReporter& GetCrashReporter() {
    static base::NoDestructor<ChromeMetricsServiceCrashReporter> crash_reporter;
    return *crash_reporter;
-@@ -682,7 +682,7 @@
+@@ -681,7 +681,7 @@
    // TODO(crbug.com/514425492): The old SystemProfile to crashpad sharing
    // flow is deprecated and will be removed once
    // `kSharedMemorySystemProfileMinidump` is fully launched.

@@ -1,6 +1,6 @@
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -45,6 +45,7 @@
+@@ -57,6 +57,7 @@
  import("//testing/libfuzzer/fuzzer_test.gni")
  import("//testing/test.gni")
  import("//third_party/blink/public/public_features.gni")
@@ -8,7 +8,7 @@
  import("//third_party/protobuf/proto_library.gni")
  import("//third_party/webrtc/webrtc.gni")
  import("//third_party/widevine/cdm/widevine.gni")
-@@ -4559,7 +4560,6 @@
+@@ -2497,7 +2498,6 @@
        "//base:base_perftests",
        "//components:components_perftests",
        "//testing:run_perf_test",
@@ -16,7 +16,7 @@
      ]
  
      if (!is_android) {
-@@ -4574,6 +4574,10 @@
+@@ -2512,6 +2512,10 @@
      if (build_dawn_tests) {
        data_deps += [ "//third_party/dawn/src/dawn/tests:dawn_perf_tests" ]
      }

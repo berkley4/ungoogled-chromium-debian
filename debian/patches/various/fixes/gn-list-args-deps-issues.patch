@@ -38,15 +38,15 @@
      "//ui/gfx/animation",
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -8483,7 +8483,6 @@
-       "//testing/gtest",
-       "//third_party/hunspell",
-       "//third_party/icu",
--      "//third_party/libpng",
-       "//ui/base:base_interactive_ui_tests",
-       "//ui/base:ozone_buildflags",
-       "//ui/base:test_support",
-@@ -9435,7 +9434,6 @@
+@@ -4323,7 +4323,6 @@
+         "//testing/gtest",
+         "//third_party/hunspell",
+         "//third_party/icu",
+-        "//third_party/libpng",
+         "//ui/base:test_support",
+         "//ui/events:test_support",
+         "//ui/ozone",
+@@ -4955,7 +4954,6 @@
        "//testing/gtest",
        "//third_party/hunspell",
        "//third_party/icu",

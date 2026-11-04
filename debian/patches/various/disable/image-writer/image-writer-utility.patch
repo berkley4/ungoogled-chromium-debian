@@ -1,6 +1,6 @@
 --- a/chrome/browser/extensions/BUILD.gn
 +++ b/chrome/browser/extensions/BUILD.gn
-@@ -572,6 +572,7 @@
+@@ -579,6 +579,7 @@
      "//chrome/browser/undo",
      "//chrome/browser/update_client",
      "//chrome/common",
@@ -8,7 +8,7 @@
      "//components/bookmarks/browser",
      "//components/bookmarks/managed",
      "//components/content_settings/core/browser",
-@@ -1016,7 +1017,6 @@
+@@ -1030,7 +1031,6 @@
        "//chrome/browser/web_applications/extensions",
        "//chrome/common/extensions/api:extensions_features",
        "//chrome/services/file_util/public/mojom",
@@ -16,7 +16,7 @@
        "//components/affiliations/core/browser:affiliations",
        "//components/app_constants",
        "//components/autofill/content/browser",
-@@ -1137,6 +1137,10 @@
+@@ -1151,6 +1151,10 @@
        "//url",
      ]
  
@@ -27,30 +27,9 @@
      if (!is_chromeos) {
        sources += [
          "api/enterprise_reporting_private/chrome_desktop_report_request_helper.cc",
---- a/chrome/test/BUILD.gn
-+++ b/chrome/test/BUILD.gn
-@@ -2209,7 +2209,6 @@
-       "//chrome/renderer",
-       "//chrome/renderer/actor:browser_tests",
-       "//chrome/renderer/webui_browser:browser_tests",
--      "//chrome/services/removable_storage_writer:lib",
-       "//chrome/test/base:browser_tests",
-       "//chrome/test/base:browser_tests_runner",
-       "//chrome/test/components_tests:browser_tests",
-@@ -2580,6 +2579,10 @@
-       "//ui/webui/resources/cr_components/history_clusters:mojo_bindings",
-     ]
- 
-+    if (enable_extractors) {
-+      deps += [ "//chrome/services/removable_storage_writer:lib" ]
-+    }
-+
-     # TODO(crbug.com/428666921): Remove this dependency when
-     # chrome/browser/ui/tab_ui_helper_browsertest.cc gets modularized.
-     deps += [ "//chrome/browser/ui/performance_controls/test_support" ]
 --- a/chrome/utility/BUILD.gn
 +++ b/chrome/utility/BUILD.gn
-@@ -159,16 +159,24 @@
+@@ -156,16 +156,24 @@
    if (enable_extensions) {
      deps += [
        "//chrome/common/extensions/api",

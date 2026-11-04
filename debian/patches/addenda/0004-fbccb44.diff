@@ -1,0 +1,112 @@
+From fbccb44e581db0eb1a487c9848e2088a5b5cb0cc Mon Sep 17 00:00:00 2001
+From: Toon Verwaest <verwaest@chromium.org>
+Date: Sat, 17 Oct 2026 05:57:49 +0200
+Subject: [PATCH] [M157] [scopes] Restore synthetic eval heritage skip bit from inner scope
+
+Original change's description:
+> [scopes] Restore synthetic eval heritage skip bit from inner scope
+>
+> When Scope::DeserializeScopeChain injects a synthetic EVAL_SCOPE for a
+> context-less eval, DeclarationScope::RecalcPrivateNameContextChain has
+> already propagated private_name_lookup_skips_outer_class down to its
+> first child scope (or to ParseInfo flags if no inner scope allocated a
+> ScopeInfo). Reading the skip bit from the weak top-level eval SFI in
+> script->infos()[kFunctionLiteralIdTopLevel] loses the bit once GC
+> collects the eval's top-level SFI, causing lazy compilation of functions
+> inside a class heritage eval to bind private names to the inner class.
+>
+> Restore private_name_lookup_skips_outer_class on the synthetic
+> EVAL_SCOPE from current_scope (and clear it on current_scope) or from
+> parse_info->flags(), and ensure DoParseFunction marks the function scope
+> with RecordNeedsPrivateNameContextChainRecalc() when the flag is set.
+>
+> TAG=agy
+> CONV=905f9f91-322f-467a-9f81-1f78a365b0d8
+> Bug: 572988453, 573962535
+>
+> R=ishell@chromium.org
+>
+> Change-Id: I3c10ebc38cf1646eb2f203ee64b92118dd3aa715
+> Fixed: 572988453
+> Reviewed-on: https://chromium-review.googlesource.com/c/v8/v8/+/8588555
+> Reviewed-by: Igor Sheludko <ishell@chromium.org>
+> Commit-Queue: Toon Verwaest <verwaest@chromium.org>
+> Cr-Commit-Position: refs/heads/main@{#111023}
+
+(cherry picked from commit 9ac4be9ae1649358b15481c30c3070a33c748373)
+
+Bug: 576949678,572988453,573962535,572988453
+Change-Id: I3c10ebc38cf1646eb2f203ee64b92118dd3aa715
+Reviewed-on: https://chromium-review.googlesource.com/c/v8/v8/+/8708032
+Bot-Commit: rubber-stamper@appspot.gserviceaccount.com <rubber-stamper@appspot.gserviceaccount.com>
+Reviewed-by: Igor Sheludko <ishell@chromium.org>
+Auto-Submit: chrome-cherry-picker@chops-service-accounts.iam.gserviceaccount.com <chrome-cherry-picker@chops-service-accounts.iam.gserviceaccount.com>
+Commit-Queue: rubber-stamper@appspot.gserviceaccount.com <rubber-stamper@appspot.gserviceaccount.com>
+Cr-Commit-Position: refs/branch-heads/15.7@{#50}
+Cr-Branched-From: d2463ed6f2dfd0bdbb642624bd3d0e7d3e792555-refs/heads/15.7.112@{#1}
+Cr-Branched-From: e691155d010ebfd5dbc3204c53a14426e724dca7-refs/heads/main@{#110573}
+---
+
+--- a/v8/src/ast/scopes.cc
++++ b/v8/src/ast/scopes.cc
+@@ -454,17 +454,14 @@
+       eval_scope->set_start_position(position);
+       eval_scope->set_end_position(position);
+       eval_scope->set_eval_position(position);
+-      Tagged<MaybeObject> maybe_sfi =
+-          script->infos()->get(kFunctionLiteralIdTopLevel);
+-      Tagged<HeapObject> sfi;
+-      if (maybe_sfi.GetHeapObjectIfWeak(&sfi)) {
+-        eval_scope->set_private_name_lookup_skips_outer_class(
+-            Cast<SharedFunctionInfo>(sfi)
+-                ->private_name_lookup_skips_outer_class());
+-      }
+-
+       if (current_scope != nullptr) {
++        eval_scope->set_private_name_lookup_skips_outer_class(
++            current_scope->private_name_lookup_skips_outer_class());
++        current_scope->set_private_name_lookup_skips_outer_class(false);
+         eval_scope->AddInnerScope(current_scope);
++      } else if (parse_info != nullptr) {
++        eval_scope->set_private_name_lookup_skips_outer_class(
++            parse_info->flags().private_name_lookup_skips_outer_class());
+       }
+       current_scope = eval_scope;
+       if (innermost_scope == nullptr) innermost_scope = current_scope;
+@@ -1487,7 +1484,12 @@
+   }
+ 
+   // Don't allocate variables of preparsed scopes.
+-  if (!was_lazily_parsed()) AllocateVariablesRecursively();
++  if (!was_lazily_parsed()) {
++    AllocateVariablesRecursively();
++    if (needs_private_name_context_chain_recalc()) {
++      RecalcPrivateNameContextChain();
++    }
++  }
+ 
+   return true;
+ }
+@@ -2965,10 +2967,6 @@
+     }
+   }
+ 
+-  if (scope->needs_private_name_context_chain_recalc()) {
+-    scope->RecalcPrivateNameContextChain();
+-  }
+-
+   Tagged<WeakFixedArray> infos = script->infos();
+   std::unordered_map<int, Handle<ScopeInfo>> scope_infos_to_reuse;
+   if (infos->ulength().value() != 0) {
+--- a/v8/src/parsing/parser.cc
++++ b/v8/src/parsing/parser.cc
+@@ -1266,6 +1266,9 @@
+     }
+ 
+     if (has_error()) return nullptr;
++    if (V8_UNLIKELY(flags().private_name_lookup_skips_outer_class())) {
++      result->scope()->RecordNeedsPrivateNameContextChainRecalc();
++    }
+     result->set_requires_instance_members_initializer(
+         flags().requires_instance_members_initializer());
+     result->set_class_scope_has_private_brand(

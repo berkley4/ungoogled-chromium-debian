@@ -1,0 +1,332 @@
+From d64b6ea4f9cafb809c39838d75c187f6e50dbbc7 Mon Sep 17 00:00:00 2001
+From: Toon Verwaest <verwaest@chromium.org>
+Date: Sat, 10 Oct 2026 09:12:58 +0200
+Subject: [PATCH] [M157] [scopes] Fix private name resolution in catch scopes and heritage eval
+
+Original change's description:
+> [scopes] Fix private name resolution in catch scopes and heritage eval
+>
+> Fix two issues where private name lookup failed to skip an inner class's
+> ClassScope when evaluated inside the class's extends heritage clause:
+>
+> 1. Delegate the CATCH_SCOPE deserialization constructor in Scope to the
+>    standard Scope(zone, CATCH_SCOPE, nullptr, scope_info) constructor so
+>    that private_name_lookup_skips_outer_class(), language_mode(),
+>    must_use_preparsed_scope_data(), and has_context_cells() are restored
+>    from ScopeInfo during lazy compilation. Also mark the enclosing
+>    closure scope with RecordNeedsPrivateNameContextChainRecalc() when a
+>    non-declaration scope is created in a class heritage position or when
+>    RecordEvalCall() is recorded, and clear
+>    private_name_lookup_skips_outer_class on inner scopes reparented into
+>    an arrow function scope.
+>
+> 2. Propagate whether a direct eval call is in a class heritage position
+>    from BytecodeGenerator::VisitCall to Runtime_ResolvePossiblyDirectEval
+>    and Compiler::GetFunctionFromEval. Wrap extends() visitation in
+>    BytecodeGenerator::BuildClassLiteral and eval top-level parsing in
+>    Parser::ParseProgram with ClassScope::HeritageParsingScope, and
+>    restore private_name_lookup_skips_outer_class on synthetic EVAL_SCOPE
+>    instances in Scope::DeserializeScopeChain.
+>
+> TAG=agy
+> CONV=905f9f91-322f-467a-9f81-1f78a365b0d8
+>
+> Change-Id: I36b21762235f874e9230cebb94566f2aba398259
+> Reviewed-on: https://chromium-review.googlesource.com/c/v8/v8/+/8549639
+> Commit-Queue: Igor Sheludko <ishell@chromium.org>
+> Reviewed-by: Igor Sheludko <ishell@chromium.org>
+> Cr-Commit-Position: refs/heads/main@{#110790}
+
+(cherry picked from commit cd24b54657af525b1cd3030d750d0db798b96e1f)
+
+Bug: 576949678
+Change-Id: I36b21762235f874e9230cebb94566f2aba398259
+Reviewed-on: https://chromium-review.googlesource.com/c/v8/v8/+/8706934
+Auto-Submit: chrome-cherry-picker@chops-service-accounts.iam.gserviceaccount.com <chrome-cherry-picker@chops-service-accounts.iam.gserviceaccount.com>
+Reviewed-by: Toon Verwaest <verwaest@chromium.org>
+Commit-Queue: Igor Sheludko <ishell@chromium.org>
+Reviewed-by: Igor Sheludko <ishell@chromium.org>
+Cr-Commit-Position: refs/branch-heads/15.7@{#48}
+Cr-Branched-From: d2463ed6f2dfd0bdbb642624bd3d0e7d3e792555-refs/heads/15.7.112@{#1}
+Cr-Branched-From: e691155d010ebfd5dbc3204c53a14426e724dca7-refs/heads/main@{#110573}
+---
+
+--- a/v8/src/ast/scopes.cc
++++ b/v8/src/ast/scopes.cc
+@@ -118,9 +118,11 @@
+   DCHECK(!is_script_scope());
+   SetDefaults();
+   set_language_mode(outer_scope->language_mode());
+-  set_private_name_lookup_skips_outer_class(
+-      outer_scope->is_class_scope() &&
+-      outer_scope->AsClassScope()->IsParsingHeritage());
++  if (outer_scope->is_class_scope() &&
++      outer_scope->AsClassScope()->IsParsingHeritage()) {
++    set_private_name_lookup_skips_outer_class(true);
++    outer_scope->GetClosureScope()->RecordNeedsPrivateNameContextChainRecalc();
++  }
+   outer_scope_->AddInnerScope(this);
+ }
+ 
+@@ -180,6 +182,9 @@
+       params_(4, zone) {
+   DCHECK(!is_script_scope());
+   SetDefaults();
++  if (V8_UNLIKELY(private_name_lookup_skips_outer_class())) {
++    RecordNeedsPrivateNameContextChainRecalc();
++  }
+ }
+ 
+ ModuleScope::ModuleScope(DeclarationScope* script_scope,
+@@ -305,18 +310,14 @@
+     DCHECK(IsClassConstructor(function_kind()));
+     set_class_scope_has_private_brand(true);
+   }
++  if (V8_UNLIKELY(private_name_lookup_skips_outer_class())) {
++    RecordNeedsPrivateNameContextChainRecalc();
++  }
+ }
+ 
+ Scope::Scope(Zone* zone, const AstRawString* catch_variable_name,
+              MaybeAssignedFlag maybe_assigned, Handle<ScopeInfo> scope_info)
+-    : outer_scope_(nullptr),
+-      variables_(zone),
+-      scope_info_(scope_info),
+-      scope_type_(CATCH_SCOPE) {
+-  SetDefaults();
+-#ifdef DEBUG
+-  already_resolved_ = true;
+-#endif
++    : Scope(zone, CATCH_SCOPE, nullptr, scope_info) {
+   // Cache the catch variable, even though it's also available via the
+   // scope_info, as the parser expects that a catch scope always has the catch
+   // variable as first and only variable.
+@@ -326,7 +327,6 @@
+               kCreatedInitialized, maybe_assigned, &was_added);
+   DCHECK(was_added);
+   AllocateHeapSlot(variable);
+-  set_is_hoisted_in_context(scope_info->is_hoisted_in_context());
+ }
+ 
+ void DeclarationScope::SetDefaults() {
+@@ -454,6 +454,14 @@
+       eval_scope->set_start_position(position);
+       eval_scope->set_end_position(position);
+       eval_scope->set_eval_position(position);
++      Tagged<MaybeObject> maybe_sfi =
++          script->infos()->get(kFunctionLiteralIdTopLevel);
++      Tagged<HeapObject> sfi;
++      if (maybe_sfi.GetHeapObjectIfWeak(&sfi)) {
++        eval_scope->set_private_name_lookup_skips_outer_class(
++            Cast<SharedFunctionInfo>(sfi)
++                ->private_name_lookup_skips_outer_class());
++      }
+ 
+       if (current_scope != nullptr) {
+         eval_scope->AddInnerScope(current_scope);
+@@ -943,6 +951,7 @@
+       scope->outer_scope_ = outer_scope();
+       if (private_name_lookup_skips_outer_class()) {
+         scope->set_private_name_lookup_skips_outer_class(true);
++        scope->GetClosureScope()->RecordNeedsPrivateNameContextChainRecalc();
+       }
+       if (scope->is_function_scope()) {
+         scope->set_is_hoisted_in_context(false);
+@@ -1000,12 +1009,14 @@
+     for (; inner_scope->sibling() != top_inner_scope_;
+          inner_scope = inner_scope->sibling()) {
+       inner_scope->outer_scope_ = new_parent;
++      inner_scope->set_private_name_lookup_skips_outer_class(false);
+       if (inner_scope->inner_scope_calls_eval()) {
+         new_parent->set_inner_scope_calls_eval(true);
+       }
+       DCHECK_NE(inner_scope, new_parent);
+     }
+     inner_scope->outer_scope_ = new_parent;
++    inner_scope->set_private_name_lookup_skips_outer_class(false);
+     if (inner_scope->inner_scope_calls_eval()) {
+       new_parent->set_inner_scope_calls_eval(true);
+     }
+--- a/v8/src/ast/scopes.h
++++ b/v8/src/ast/scopes.h
+@@ -1515,6 +1515,7 @@
+     GetDeclarationScope()->RecordDeclarationScopeEvalCall();
+   }
+   RecordInnerScopeEvalCall();
++  GetClosureScope()->RecordNeedsPrivateNameContextChainRecalc();
+   // The eval contents might access "super" (if it's inside a function that
+   // binds super).
+   DeclarationScope* receiver_scope = GetReceiverScope();
+--- a/v8/src/codegen/compiler.cc
++++ b/v8/src/codegen/compiler.cc
+@@ -3353,7 +3353,8 @@
+     DirectHandle<SharedFunctionInfo> outer_info, DirectHandle<Context> context,
+     LanguageMode language_mode, ParseRestriction restriction,
+     int parameters_end_pos, int eval_position,
+-    ParsingWhileDebugging parsing_while_debugging) {
++    ParsingWhileDebugging parsing_while_debugging,
++    bool private_name_lookup_skips_outer_class) {
+   // The cache lookup key needs to be aware of the separation between the
+   // parameters and the body to prevent this valid invocation:
+   //   Function("", "function anonymous(\n/**/) {\n}");
+@@ -3409,6 +3410,8 @@
+         v8_flags.lazy_eval);
+     flags.set_is_eval(true);
+     flags.set_parsing_while_debugging(parsing_while_debugging);
++    flags.set_private_name_lookup_skips_outer_class(
++        private_name_lookup_skips_outer_class);
+     DCHECK(!flags.is_module());
+     flags.set_parse_restriction(restriction);
+ 
+--- a/v8/src/codegen/compiler.h
++++ b/v8/src/codegen/compiler.h
+@@ -166,7 +166,8 @@
+                       ParseRestriction restriction, int parameters_end_pos,
+                       int eval_position,
+                       ParsingWhileDebugging parsing_while_debugging =
+-                          ParsingWhileDebugging::kNo);
++                          ParsingWhileDebugging::kNo,
++                      bool private_name_lookup_skips_outer_class = false);
+ 
+   // Create a function that results from wrapping |source| in a function,
+   // with |arguments| being a list of parameters for that function.
+--- a/v8/src/interpreter/bytecode-flags-and-tokens.h
++++ b/v8/src/interpreter/bytecode-flags-and-tokens.h
+@@ -97,6 +97,23 @@
+   DISALLOW_IMPLICIT_CONSTRUCTORS(StoreLookupSlotFlags);
+ };
+ 
++class ResolveEvalFlags {
++ public:
++  using LanguageModeBit = base::BitField<LanguageMode, 0, 1>;
++  using PrivateNameLookupSkipsOuterClassBit = LanguageModeBit::Next<bool, 1>;
++  static_assert(LanguageModeSize <= LanguageModeBit::kNumValues);
++
++  static int Encode(LanguageMode language_mode,
++                    bool private_name_lookup_skips_outer_class) {
++    return LanguageModeBit::encode(language_mode) |
++           PrivateNameLookupSkipsOuterClassBit::encode(
++               private_name_lookup_skips_outer_class);
++  }
++
++ private:
++  DISALLOW_IMPLICIT_CONSTRUCTORS(ResolveEvalFlags);
++};
++
+ enum class TryFinallyContinuationToken: int {
+   // Fixed value tokens for paths we know we need.
+   // Fallthrough is set to -1 to make it the fallthrough case of the jump table,
+--- a/v8/src/interpreter/bytecode-generator.cc
++++ b/v8/src/interpreter/bytecode-generator.cc
+@@ -3693,7 +3693,10 @@
+     DCHECK_EQ(ClassBoilerplate::kFirstDynamicArgumentIndex,
+               args.register_count());
+ 
+-    VisitForAccumulatorValueOrTheHole(expr->extends());
++    {
++      ClassScope::HeritageParsingScope heritage(expr->scope());
++      VisitForAccumulatorValueOrTheHole(expr->extends());
++    }
+     builder()->StoreAccumulatorInRegister(super_class);
+ 
+     VisitFunctionLiteral(expr->constructor());
+@@ -7065,16 +7068,24 @@
+       builder()->MoveRegister(args[receiver_arg_count], runtime_call_args[1]);
+     }
+     Scope* scope_with_context = current_scope();
++    bool private_name_lookup_skips_outer_class = false;
+     if (!scope_with_context->NeedsContext()) {
++      private_name_lookup_skips_outer_class =
++          scope_with_context->private_name_lookup_skips_outer_class();
+       scope_with_context = scope_with_context->GetOuterScopeWithContext();
++    } else if (scope_with_context->is_class_scope()) {
++      private_name_lookup_skips_outer_class =
++          scope_with_context->AsClassScope()->IsParsingHeritage();
+     }
+     if (scope_with_context) {
+       eval_calls_.emplace_back(expr, scope_with_context);
+     }
++    int eval_flags = ResolveEvalFlags::Encode(
++        language_mode(), private_name_lookup_skips_outer_class);
+     builder()
+         ->MoveRegister(callee, runtime_call_args[0])
+         .MoveRegister(Register::function_closure(), runtime_call_args[2])
+-        .LoadLiteral(Smi::FromEnum(language_mode()))
++        .LoadLiteral(Smi::FromInt(eval_flags))
+         .StoreAccumulatorInRegister(runtime_call_args[3])
+         .LoadLiteral(Smi::FromInt(expr->eval_scope_info_index()))
+         .StoreAccumulatorInRegister(runtime_call_args[4])
+--- a/v8/src/parsing/parser.cc
++++ b/v8/src/parsing/parser.cc
+@@ -745,12 +745,20 @@
+   }
+ 
+   scanner_.Initialize();
++  std::optional<ClassScope::HeritageParsingScope> heritage;
++  if (V8_UNLIKELY(flags().private_name_lookup_skips_outer_class() &&
++                  original_scope_->is_class_scope())) {
++    heritage.emplace(original_scope_->AsClassScope());
++  }
+   FunctionLiteral* result =
+       DoParseProgram(isolate, info, script->eval_from_position());
+   if (flags().allow_heap_allocation()) {
+     HandleDebugMagicComments(isolate, script);
+   }
+   if (result == nullptr) return;
++  if (V8_UNLIKELY(flags().private_name_lookup_skips_outer_class())) {
++    result->scope()->RecordNeedsPrivateNameContextChainRecalc();
++  }
+   result->scope()->set_is_hoisted_in_context(
+       info->flags().is_hoisted_in_context());
+   if (flags().allow_heap_allocation()) {
+--- a/v8/src/runtime/runtime-compiler.cc
++++ b/v8/src/runtime/runtime-compiler.cc
+@@ -13,6 +13,7 @@
+ #include "src/execution/arguments-inl.h"
+ #include "src/execution/frames-inl.h"
+ #include "src/execution/isolate-inl.h"
++#include "src/interpreter/bytecode-flags-and-tokens.h"
+ #include "src/objects/abstract-code-inl.h"
+ #include "src/objects/js-array-buffer-inl.h"
+ #include "src/objects/objects-inl.h"
+@@ -835,7 +836,8 @@
+ static Tagged<Object> CompileGlobalEval(
+     Isolate* isolate, Handle<i::Object> source_object,
+     DirectHandle<SharedFunctionInfo> outer_info, LanguageMode language_mode,
+-    int eval_scope_info_index, int eval_position) {
++    int eval_scope_info_index, int eval_position,
++    bool private_name_lookup_skips_outer_class) {
+   DirectHandle<NativeContext> native_context = isolate->native_context();
+ 
+   // Check if native context allows code generation from
+@@ -874,7 +876,8 @@
+       isolate, compiled,
+       Compiler::GetFunctionFromEval(
+           isolate, source.ToHandleChecked(), outer_info, context, language_mode,
+-          restriction, kNoSourcePosition, eval_position),
++          restriction, kNoSourcePosition, eval_position,
++          ParsingWhileDebugging::kNo, private_name_lookup_skips_outer_class),
+       ReadOnlyRoots(isolate).exception());
+   return *compiled;
+ }
+@@ -891,13 +894,17 @@
+     return *callee;
+   }
+ 
+-  DCHECK(is_valid_language_mode(args.smi_value_at(3)));
+-  LanguageMode language_mode = static_cast<LanguageMode>(args.smi_value_at(3));
++  int eval_flags = args.smi_value_at(3);
++  LanguageMode language_mode =
++      interpreter::ResolveEvalFlags::LanguageModeBit::decode(eval_flags);
++  bool private_name_lookup_skips_outer_class = interpreter::ResolveEvalFlags::
++      PrivateNameLookupSkipsOuterClassBit::decode(eval_flags);
+   DirectHandle<SharedFunctionInfo> outer_info(args.at<JSFunction>(2)->shared(),
+                                               isolate);
+   return CompileGlobalEval(isolate, args.at<Object>(1), outer_info,
+                            language_mode, args.smi_value_at(4),
+-                           args.smi_value_at(5));
++                           args.smi_value_at(5),
++                           private_name_lookup_skips_outer_class);
+ }
+ 
+ #ifdef V8_ENABLE_SPARKPLUG_PLUS

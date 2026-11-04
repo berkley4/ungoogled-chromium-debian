@@ -1,6 +1,6 @@
 --- a/v8/BUILD.gn
 +++ b/v8/BUILD.gn
-@@ -3028,11 +3028,10 @@
+@@ -3084,11 +3084,10 @@
      sources = []
  
      if (v8_depend_on_icu_data_file) {
@@ -29,7 +29,7 @@
 -  deps = [ "//third_party/icu:copy_icudata($default_toolchain)" ]
  }
  
- proto_library("amount_extraction_heuristic_regexes_proto") {
+ source_set("country_names_impl") {
 --- a/components/url_formatter/spoof_checks/top_domains/BUILD.gn
 +++ b/components/url_formatter/spoof_checks/top_domains/BUILD.gn
 @@ -45,11 +45,10 @@

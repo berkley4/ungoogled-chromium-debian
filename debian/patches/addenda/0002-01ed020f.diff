@@ -1,0 +1,184 @@
+From 01ed020f9735f1103aacecf764c5ab12aaed0e86 Mon Sep 17 00:00:00 2001
+From: Sam Attard <samuel.r.attard@gmail.com>
+Date: Mon, 02 Nov 2026 16:03:29 -0800
+Subject: [PATCH] [M157] [CSS] Run the marking barrier when switching a CSSSelector to RareData
+
+Original change's description:
+> [CSS] Run the marking barrier when switching a CSSSelector to RareData
+>
+> CreateRareData() and SetSelectorList() switch the active DataUnion
+> member by placement-new'ing a Member from the new pointer. Member's
+> initializing constructor skips the marking write barrier, which is only
+> sound for a freshly constructed object, but the parser's :host:has()
+> fix-up performs this switch on a selector that already lives in its
+> (possibly already traced) arena. Construct the Member empty and assign
+> instead, so the barrier runs.
+>
+> Bug: 574409610
+> Change-Id: I4c9a319986a7e149c4f168561fab17fae580c212
+> Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/8600147
+> Reviewed-by: Rune Lillesveen <futhark@chromium.org>
+> Reviewed-by: Daniil Sakhapov <sakhapov@chromium.org>
+> Commit-Queue: Samuel Attard <samuel.r.attard@gmail.com>
+> Cr-Commit-Position: refs/heads/main@{#1722127}
+
+(cherry picked from commit c3af608c93903126b2690260c2a3c9879c47d234)
+
+Bug: 577610454,574409610
+Change-Id: I4c9a319986a7e149c4f168561fab17fae580c212
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/8687744
+Auto-Submit: chrome-cherry-picker@chops-service-accounts.iam.gserviceaccount.com <chrome-cherry-picker@chops-service-accounts.iam.gserviceaccount.com>
+Bot-Commit: rubber-stamper@appspot.gserviceaccount.com <rubber-stamper@appspot.gserviceaccount.com>
+Commit-Queue: Samuel Attard <samuel.r.attard@gmail.com>
+Cr-Commit-Position: refs/branch-heads/8103@{#1041}
+Cr-Branched-From: e7baefea94b4a90087e3043e4a8effec33c2025f-refs/heads/main@{#1717349}
+---
+
+--- a/third_party/blink/renderer/core/css/css_selector.cc
++++ b/third_party/blink/renderer/core/css/css_selector.cc
+@@ -175,6 +175,14 @@
+   // destruction of the old member followed by placement new of |rare_data_|.
+   // A straight-assignment will compile and may kinda work, but will be
+   // undefined behavior.
++  //
++  // The new Member is placement-new'ed empty and then *assigned*, rather
++  // than constructed from the pointer: Member's initializing constructor
++  // deliberately skips the marking write barrier (a freshly constructed
++  // object is always white), but this CSSSelector may already live inside a
++  // HeapVector backing that incremental marking has traced (the parser
++  // mutates selectors in its arena in place), in which case only the
++  // assigning barrier gets the new RareData marked.
+   if (HasInlineSelectorList()) {
+     CSSSelectorList* selector_list = data_.selector_list_.Get();
+     auto* rare_data = MakeGarbageCollected<RareData>(
+@@ -187,13 +195,15 @@
+     // (conservative scanning) meanwhile.
+     bits_.set<HasInlineSelectorListField>(false);
+     data_.selector_list_.~Member<CSSSelectorList>();
+-    new (&data_.rare_data_) Member<RareData>(rare_data);
++    new (&data_.rare_data_) Member<RareData>();
++    data_.rare_data_ = rare_data;
+     bits_.set<HasRareDataField>(true);
+     return;
+   }
+   auto* rare_data = MakeGarbageCollected<RareData>(data_.value_);
+   data_.value_.~AtomicString();
+-  new (&data_.rare_data_) Member<RareData>(rare_data);
++  new (&data_.rare_data_) Member<RareData>();
++  data_.rare_data_ = rare_data;
+   bits_.set<HasRareDataField>(true);
+ }
+ 
+@@ -1699,9 +1709,11 @@
+   if (!HasRareData() && Match() == kPseudoClass &&
+       CanStoreSelectorListInline(GetPseudoType()) &&
+       data_.value_ == NameForInlineSelectorListPseudo(GetPseudoType())) {
+-    // Same care as in CreateRareData(): switch the active union member.
++    // Same care as in CreateRareData(): switch the active union member, and
++    // assign rather than construct so the marking write barrier runs.
+     data_.value_.~AtomicString();
+-    new (&data_.selector_list_) Member<CSSSelectorList>(selector_list);
++    new (&data_.selector_list_) Member<CSSSelectorList>();
++    data_.selector_list_ = selector_list;
+     bits_.set<HasInlineSelectorListField>(true);
+     return;
+   }
+--- a/third_party/blink/renderer/core/css/css_selector.h
++++ b/third_party/blink/renderer/core/css/css_selector.h
+@@ -30,6 +30,7 @@
+ 
+ #include "base/check_op.h"
+ #include "base/compiler_specific.h"
++#include "base/gtest_prod_util.h"
+ #include "third_party/blink/renderer/core/core_export.h"
+ #include "third_party/blink/renderer/core/css/parser/css_nesting_type.h"
+ #include "third_party/blink/renderer/core/css/parser/css_parser_mode.h"
+@@ -784,6 +785,9 @@
+   static String FormatPseudoTypeForDebugging(PseudoType);
+ 
+  private:
++  FRIEND_TEST_ALL_PREFIXES(CSSSelectorGCTest,
++                           InlineSelectorListToRareDataDuringMarking);
++
+   // Trace() branches on the match/pseudo_type flags,
+   // RuleData bucketing sets is_covered_by_bucketing,
+   // and these could happen concurrently. This trips up TSan,
+@@ -868,7 +872,7 @@
+   template <bool expand_pseudo_references>
+   String SelectorTextInternal(uintptr_t scope_id) const;
+ 
+-  struct RareData : public GarbageCollected<RareData> {
++  struct CORE_EXPORT RareData : public GarbageCollected<RareData> {
+     explicit RareData(const AtomicString& value);
+     // Does not deep copy `selector_list_`.
+     RareData(const RareData&);
+--- a/third_party/blink/renderer/core/css/css_selector_test.cc
++++ b/third_party/blink/renderer/core/css/css_selector_test.cc
+@@ -5,6 +5,7 @@
+ #include <iostream>
+ 
+ #include "testing/gtest/include/gtest/gtest.h"
++#include "third_party/blink/renderer/bindings/core/v8/v8_binding_for_testing.h"
+ #include "third_party/blink/renderer/core/css/css_test_helpers.h"
+ #include "third_party/blink/renderer/core/css/parser/css_parser.h"
+ #include "third_party/blink/renderer/core/css/parser/css_parser_context.h"
+@@ -13,6 +14,10 @@
+ #include "third_party/blink/renderer/core/dom/document.h"
+ #include "third_party/blink/renderer/core/html_names.h"
+ #include "third_party/blink/renderer/core/testing/null_execution_context.h"
++#include "third_party/blink/renderer/platform/heap/collection_support/heap_vector.h"
++#include "third_party/blink/renderer/platform/heap/garbage_collected.h"
++#include "third_party/blink/renderer/platform/heap/persistent.h"
++#include "third_party/blink/renderer/platform/heap/thread_state.h"
+ #include "third_party/blink/renderer/platform/testing/runtime_enabled_features_test_helpers.h"
+ #include "third_party/blink/renderer/platform/testing/task_environment.h"
+ 
+@@ -246,6 +251,48 @@
+   EXPECT_TRUE(nth->First()->HasRareData());
+ }
+ 
++// Switching a selector that already lives in a traced HeapVector backing from
++// an inline selector list to RareData (as the parser's :host:has() fix-up does
++// on its arena) must get the new RareData marked.
++TEST(CSSSelectorGCTest, InlineSelectorListToRareDataDuringMarking) {
++  test::TaskEnvironment task_environment;
++  V8TestingScope scope;
++  Persistent<CSSSelectorList> has =
++      css_test_helpers::ParseSelectorList(":has(.x)");
++  ASSERT_TRUE(has->IsValid());
++  ASSERT_TRUE(has->First()->HasInlineSelectorList());
++
++  // Keep the selector in a heap-referenced vector, so that incremental marking
++  // traces the backing (without any stack scanning) before it is mutated.
++  Persistent<GCedHeapVector<CSSSelector>> arena =
++      MakeGarbageCollected<GCedHeapVector<CSSSelector>>();
++  arena->push_back(CSSSelector(*has->First()));
++
++  // Start unified-heap incremental marking and let allocation-driven marking
++  // steps trace everything reachable, the arena backing included.
++  v8::Isolate* isolate = scope.GetIsolate();
++  isolate->MemoryPressureNotification(v8::MemoryPressureLevel::kModerate);
++  ASSERT_TRUE(ThreadState::Current()->IsIncrementalMarking());
++  for (int i = 0; i < 2048; ++i) {
++    MakeGarbageCollected<GCedHeapVector<Member<CSSSelectorList>>>()->reserve(
++        512);
++  }
++  ASSERT_TRUE(ThreadState::Current()->IsIncrementalMarking());
++
++  // Transition the element to RareData in place while its backing is black.
++  arena->front().SetHasArgumentMatchInShadowTree();
++  ASSERT_TRUE(arena->front().HasRareData());
++  WeakPersistent<CSSSelector::RareData> rare_data =
++      arena->front().data_.rare_data_.Get();
++
++  // Finish the cycle without stack scanning. The RareData is only referenced
++  // from the (already traced) backing, so it survives only if storing it ran
++  // the marking write barrier.
++  ThreadState::Current()->CollectAllGarbageForTesting();
++  isolate->MemoryPressureNotification(v8::MemoryPressureLevel::kNone);
++  EXPECT_TRUE(rare_data);
++}
++
+ TEST(CSSSelector, Specificity_Slotted) {
+   test::TaskEnvironment task_environment;
+   EXPECT_EQ(Specificity("::slotted(.a)"), Specificity(".a::first-line"));

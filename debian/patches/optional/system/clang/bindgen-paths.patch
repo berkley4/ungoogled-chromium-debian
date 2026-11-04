@@ -3,7 +3,7 @@ the libclang shared library.
 
 --- a/build/rust/rust_bindgen_generator.gni
 +++ b/build/rust/rust_bindgen_generator.gni
-@@ -36,6 +36,8 @@
+@@ -32,6 +32,8 @@
    _libclang_path += "/lib"
  }
  

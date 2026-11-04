@@ -1,22 +1,21 @@
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -6428,7 +6428,6 @@
-       "//chrome/browser/webauthn/proto",
-       "//chrome/common/read_anything:mojo_bindings",
-       "//chrome/services/readaloud:unit_tests",
+@@ -3447,7 +3447,6 @@
+       "//chrome/browser/ui/webui/top_chrome:unit_tests",
+       "//chrome/browser/ui/window_sizer:unit_tests",
+       "//chrome/browser/ui/zoom:unit_tests",
 -      "//chrome/services/speech:unit_tests",
-       "//components/app_constants",
-       "//components/application_locale_storage",
-       "//components/color",
-@@ -6507,6 +6506,11 @@
-     if (include_js2gtest_tests && is_chromeos) {
-       data += js2gtest_js_libraries
-     }
-+
+       "//components/lens:buildflags",
+       "//components/services/app_service/public/cpp:unit_tests",
+       "//components/signin/public/base:signin_buildflags",
+@@ -3456,6 +3455,10 @@
+       "//ui/webui/tracked_element:unit_tests",
+     ]
+ 
 +    if (enable_speech_service) {
 +      deps += [ "//chrome/services/speech:unit_tests" ]
 +    }
 +
-   }
+     data += [ "//chromeos/ash/experiences/arc/test/data/icons/" ]
  
-   if (enable_webui_ntp) {
+     if (include_js2gtest_tests && is_chromeos) {

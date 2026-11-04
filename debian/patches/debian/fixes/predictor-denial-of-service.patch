@@ -1,6 +1,6 @@
 --- a/chrome/browser/predictors/loading_data_collector.h
 +++ b/chrome/browser/predictors/loading_data_collector.h
-@@ -22,6 +22,9 @@
+@@ -23,6 +23,9 @@
  #include "url/gurl.h"
  #include "url/origin.h"
  
@@ -12,10 +12,10 @@
  }  // namespace content
 --- a/chrome/browser/predictors/loading_data_collector.cc
 +++ b/chrome/browser/predictors/loading_data_collector.cc
-@@ -124,8 +124,18 @@
-           net::SimplifyUrlForRequest(resource_load_info.final_url);
-       if (is_low_priority) {
-         low_priority_subresource_urls.insert(final_url);
+@@ -126,8 +126,18 @@
+         if (low_priority_subresource_urls.size() < kMaxLowPriorityEntries) {
+           low_priority_subresource_urls.insert(final_url);
+         }
 +        // Prevent history bloat on long running pathological Web sites
 +	 if (low_priority_subresource_urls.size() >
 +              MAX_PREDICTOR_SUBRESOURCE_URL_HISTORY) {

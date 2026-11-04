@@ -11,7 +11,7 @@
          "//third_party/crashpad/crashpad/tools:crashpad_database_util",
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -328,7 +328,9 @@
+@@ -329,7 +329,9 @@
          "//chrome/common:buildflags",
        ]
  
@@ -22,7 +22,7 @@
  
        ldflags = []
  
-@@ -1862,7 +1864,6 @@
+@@ -1858,7 +1860,6 @@
    if (!(is_debug && use_debug_fission)) {
      group("linux_symbols") {
        deps = [
@@ -30,7 +30,7 @@
          ":chrome_symbols",
        ]
        if (is_linux) {
-@@ -1899,17 +1900,19 @@
+@@ -1895,17 +1896,19 @@
        deps = [ ":chrome" ]
      }
  
@@ -99,7 +99,7 @@
    if (bundle_widevine_cdm) {
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -388,10 +388,6 @@
+@@ -403,10 +403,6 @@
      ]
    }
  
@@ -112,7 +112,7 @@
        ":test_support_ui_android",
 --- a/components/crash/core/app/BUILD.gn
 +++ b/components/crash/core/app/BUILD.gn
-@@ -120,7 +120,7 @@
+@@ -131,7 +131,7 @@
      "//third_party/crashpad/crashpad/util",
    ]
  
@@ -121,7 +121,7 @@
      sources += [ "crashpad_linux.cc" ]
      data_deps = [ ":chrome_crashpad_handler" ]
    }
-@@ -278,7 +278,7 @@
+@@ -285,7 +285,7 @@
    }
  }
  
@@ -143,7 +143,7 @@
  
 --- a/headless/BUILD.gn
 +++ b/headless/BUILD.gn
-@@ -499,7 +499,7 @@
+@@ -500,7 +500,7 @@
      deps += [ "//components/os_crypt/browser:dpapi_key_provider" ]
    }
  

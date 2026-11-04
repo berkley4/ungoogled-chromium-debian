@@ -18,8 +18,49 @@
        "launch_mode_recorder.cc",
 --- a/chrome/browser/ui/webui/infobar_internals/infobar_internals_handler.cc
 +++ b/chrome/browser/ui/webui/infobar_internals/infobar_internals_handler.cc
-@@ -560,23 +560,7 @@
- #endif
+@@ -479,40 +479,6 @@
+       return true;
+     }
+     case InfoBarType::kAutomation: {
+-      if (action == InfoBarAction::kShowForCurrentTab) {
+-        if (infobars::IsInfoBarMigrated(
+-                infobars::InfoBarDelegate::AUTOMATION_INFOBAR_DELEGATE)) {
+-          if (!browser_infobar_manager || !active_tab) {
+-            return false;
+-          }
+-          infobars::InfoBarShowParams params;
+-          params.scope = infobars::InfoBarScope::kTab;
+-          return browser_infobar_manager->Show(
+-                     active_tab,
+-                     infobars::InfoBarDelegate::AUTOMATION_INFOBAR_DELEGATE,
+-                     std::move(params)) != nullptr;
+-        } else {
+-          auto* infobar_manager =
+-              infobars::ContentInfoBarManager::FromWebContents(web_contents);
+-          if (!infobar_manager) {
+-            return false;
+-          }
+-          AutomationInfoBarDelegate::Create(infobar_manager);
+-          return true;
+-        }
+-      } else if (action == InfoBarAction::kShowGlobally) {
+-        if (infobars::IsInfoBarMigrated(
+-                infobars::InfoBarDelegate::AUTOMATION_INFOBAR_DELEGATE)) {
+-          if (!browser_infobar_manager) {
+-            return false;
+-          }
+-          return browser_infobar_manager->ShowGlobally(
+-              infobars::InfoBarDelegate::AUTOMATION_INFOBAR_DELEGATE);
+-        } else {
+-          AutomationInfoBarDelegate::Create();
+-          return true;
+-        }
+-      }
+       return false;
+     }
+     case InfoBarType::kBadFlags: {
+@@ -668,23 +634,7 @@
+       return true;
      }
      case InfoBarType::kGoogleApiKeys: {
 -      if (infobars::IsInfoBarMigrated(

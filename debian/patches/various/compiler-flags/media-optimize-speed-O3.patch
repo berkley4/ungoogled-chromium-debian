@@ -28,7 +28,7 @@
      "ffmpeg_common.h",
 --- a/media/filters/BUILD.gn
 +++ b/media/filters/BUILD.gn
-@@ -107,7 +107,11 @@
+@@ -113,7 +113,11 @@
      "wsola_internals.h",
    ]
  
@@ -43,7 +43,7 @@
      "//base",
 --- a/media/formats/BUILD.gn
 +++ b/media/formats/BUILD.gn
-@@ -119,7 +119,11 @@
+@@ -117,7 +117,11 @@
      "//third_party/libwebm",
    ]
  
