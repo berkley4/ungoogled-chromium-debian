@@ -7,16 +7,16 @@ UC_DIR   := $(DEBIAN)/submodules/ungoogled-chromium
 UL_DIR   := $(UC_DIR)/utils
 
 DS_CACHE := $(DEBIAN)/domsubcache.tar.gz
-UB_REP_SCRIPT := build/linux/unbundle/replace_gn_files.py
+UB_REPLC := build/linux/unbundle/replace_gn_files.py
 
-UB_LIST := $(file < $(DEBIAN)/misc_files/bundled.txt)
+UB_LIST  := $(file < $(DEBIAN)/misc_files/bundled.txt)
 GN_FLAGS := $(file < $(DEBIAN)/misc_files/uc_flags.txt)
 
 # Required for various symlink fixes
-BTS_DIR   := $(RT_DIR)/buildtools
-HEVC_DIR  := $(RT_DIR)/third_party/ffmpeg/libavcodec/hevc
-RF_DIR    := $(RT_DIR)/third_party/rust/read_fonts/v0_45
-RFC_DIR   := chromium_crates_io/vendor/read-fonts-v0_45
+BTS_DIR  := $(RT_DIR)/buildtools
+HEVC_DIR := $(RT_DIR)/third_party/ffmpeg/libavcodec/hevc
+RF_DIR   := $(RT_DIR)/third_party/rust/read_fonts/v0_45
+RFC_DIR  := chromium_crates_io/vendor/read-fonts-v0_45
 
 # Custom toolchain
 #
@@ -308,7 +308,7 @@ revert_unbundle:
 	for f in $(UB_LIST); do test ! -f $$f || mv $$f $${f%.bundled}; done
 
 override_dh_auto_configure: revert_unbundle
-	test -z "$(SYS_LIBS)" || $(UB_REP_SCRIPT) --system-libraries $(SYS_LIBS)
+	test -z "$(SYS_LIBS)" || $(UB_REPLC) --system-libraries $(SYS_LIBS)
 	gn gen $(OUT_DIR) --args="$(GN_FLAGS)" --fail-on-unused-args
 	test -f $(DS_CACHE) || $(UL_DIR)/domain_substitution.py apply -r $(UC_DIR)/domain_regex.list -f $(UC_DIR)/domain_substitution.list -c $(DS_CACHE) $(RT_DIR)
 	test ! -f $(DEBIAN)/en-US.pak || test ! -d $(OUT_DIR)/locales || mv $(DEBIAN)/en-US.pak $(OUT_DIR)/locales/
