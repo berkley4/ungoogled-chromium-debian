@@ -18,6 +18,15 @@
        'dep_type': 'cipd',
    },
    'src/third_party/data_sharing_sdk/cipd': {
+@@ -1142,7 +1142,7 @@
+         'sha256sum': '1472e8a5cfc4959f94ff18aa5ec864b07991d877995a563eeb4176e344a7fa59',
+         'size_bytes': 22761568,
+         'generation': 1791299091145399,
+-        'condition': 'host_os == "linux" and non_git_source',
++        'condition': 'host_os != "linux" and non_git_source',
+       },
+       {
+         'object_name': 'Mac/rust-libclang-1edd55dcfcd573872c727fa3e086369a71661ee0-1125-llvmorg-24-init-7747-g62397f8b.tar.xz',
 @@ -1269,7 +1269,7 @@
        },
      ],
