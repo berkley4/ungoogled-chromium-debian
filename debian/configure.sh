@@ -74,7 +74,6 @@ UC_P_DIRS="$UC_DIR/patches/core $UC_DIR/patches/extra"
 [ -n "$GOOGLE_UI_URLS" ] || GOOGLE_UI_URLS=1
 [ -n "$GRCACHE_PURGE" ] || GRCACHE_PURGE=0
 [ -n "$GTK" ] || GTK=1
-[ -n "$HYPHENATION" ] || HYPHENATION=1
 [ -n "$LENS" ] || LENS=0
 [ -n "$LENS_TRANSLATE" ] || LENS_TRANSLATE=1
 [ -n "$LOCALES_EXTRA" ] || LOCALES_EXTRA=1
@@ -936,15 +935,6 @@ if [ $GTK -eq 0 ]; then
 fi
 
 
-if [ $HYPHENATION -eq 0 ]; then
-  op_disable="$op_disable enable/hyphen-data.patch"
-else
-  DSB="$DSB -e \"/^third_party\/blink\/renderer\/platform\/text\/hyphenation\/hyphenation_minikin\.cc/d\""
-  DSB="$DSB -e \"/^third_party\/hyphenation-patterns\//d\""
-  PRU="$PRU -e \"/^third_party\/hyphenation-patterns\//d\""
-fi
-
-
 if [ $LENS -gt 0 ]; then
   fl_unblock="$fl_unblock disable-lens-standalone enable-lens-standalone"
   ins_enable="$ins_enable google-lens"
@@ -1271,6 +1261,8 @@ fi
 DSB="$DSB -e \"/^chrome\/browser\/flag_descriptions\.cc/d\""
 DSB="$DSB -e \"/^chrome\/installer\/linux\/common\/appdata\.xml\.template/d\""
 DSB="$DSB -e \"/^content\/browser\/resources\/gpu\/info_view\.ts/d\""
+DSB="$DSB -e \"/^third_party\/blink\/renderer\/platform\/text\/hyphenation\/hyphenation_minikin\.cc/d\""
+DSB="$DSB -e \"/^third_party\/hyphenation-patterns\//d\""
 DSB="$DSB -e \"/^third_party\/pyelftools\//d\""
 DSB="$DSB -e \"/^tools\/clang\//d\""
 

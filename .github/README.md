@@ -432,10 +432,6 @@ export DEPOT_TOOLS_UPDATE=0
 # Download various build components
 gclient runhooks --jobs=$JOBS
 
-# Generate the hyphenation data files (run build/hyphen-data-get-sh from build)
-cd ..
-./hyphen-data-get-sh
-
 # Copy over the debian directory into your source tree
 cp -a ../debian src/
 
