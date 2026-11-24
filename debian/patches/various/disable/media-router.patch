@@ -1,6 +1,6 @@
 --- a/chrome/browser/media/router/media_router_feature.cc
 +++ b/chrome/browser/media/router/media_router_feature.cc
-@@ -132,7 +132,7 @@
+@@ -137,7 +137,7 @@
      pref_values.insert(std::make_pair(context, allowed));
      return allowed;
    }
@@ -11,7 +11,7 @@
  #if !BUILDFLAG(IS_ANDROID) || BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
 --- a/chrome/browser/profiles/profile_impl.cc
 +++ b/chrome/browser/profiles/profile_impl.cc
-@@ -453,7 +453,7 @@
+@@ -459,7 +459,7 @@
  #endif
  
    registry->RegisterBooleanPref(prefs::kForceEphemeralProfiles, false);

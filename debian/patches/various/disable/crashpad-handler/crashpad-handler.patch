@@ -22,7 +22,7 @@
  
        ldflags = []
  
-@@ -1858,7 +1860,6 @@
+@@ -1873,7 +1875,6 @@
    if (!(is_debug && use_debug_fission)) {
      group("linux_symbols") {
        deps = [
@@ -30,7 +30,7 @@
          ":chrome_symbols",
        ]
        if (is_linux) {
-@@ -1895,17 +1896,19 @@
+@@ -1910,17 +1911,19 @@
        deps = [ ":chrome" ]
      }
  
@@ -99,7 +99,7 @@
    if (bundle_widevine_cdm) {
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -403,10 +403,6 @@
+@@ -347,10 +347,6 @@
      ]
    }
  
@@ -132,7 +132,7 @@
    executable("chrome_crashpad_handler") {
 --- a/content/shell/BUILD.gn
 +++ b/content/shell/BUILD.gn
-@@ -803,7 +803,7 @@
+@@ -804,7 +804,7 @@
      if (is_win) {
        data_deps +=
            [ "//third_party/crashpad/crashpad/handler:crashpad_handler" ]
@@ -143,7 +143,7 @@
  
 --- a/headless/BUILD.gn
 +++ b/headless/BUILD.gn
-@@ -500,7 +500,7 @@
+@@ -498,7 +498,7 @@
      deps += [ "//components/os_crypt/browser:dpapi_key_provider" ]
    }
  

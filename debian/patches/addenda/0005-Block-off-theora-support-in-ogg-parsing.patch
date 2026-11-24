@@ -1,0 +1,75 @@
+From 1be87e1449dd8c8e253bc0a7310f789ea359c8af Mon Sep 17 00:00:00 2001
+From: Dale Curtis <dalecurtis@chromium.org>
+Date: Wed, 11 Nov 2026 21:16:01 +0000
+Subject: [PATCH] Block off theora support in ogg parsing
+
+We haven't supported this for sometime now and there are issues
+which are still reachable with it enabled.
+
+Bug: 582416731
+Change-Id: Ib7c14214b7b689f8e50cd1f8b1a29c81535458de
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/third_party/ffmpeg/+/8792676
+Reviewed-by: Thomas Guilbert <tguilbert@chromium.org>
+---
+ CREDITS.chromium     | 26 --------------------------
+ ffmpeg_generated.gni |  1 -
+ libavformat/oggdec.c |  2 ++
+ 3 files changed, 2 insertions(+), 27 deletions(-)
+
+--- a/third_party/ffmpeg/CREDITS.chromium
++++ b/third_party/ffmpeg/CREDITS.chromium
+@@ -365,32 +365,6 @@
+ 
+ ********************************************************************************
+ 
+-libavformat/oggparsetheora.c
+-
+-Copyright (C) 2005  Matthieu CASTET, Alex Beregszaszi
+-
+-Permission is hereby granted, free of charge, to any person
+-obtaining a copy of this software and associated documentation
+-files (the "Software"), to deal in the Software without
+-restriction, including without limitation the rights to use, copy,
+-modify, merge, publish, distribute, sublicense, and/or sell copies
+-of the Software, and to permit persons to whom the Software is
+-furnished to do so, subject to the following conditions:
+-
+-The above copyright notice and this permission notice shall be
+-included in all copies or substantial portions of the Software.
+-
+-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+-DEALINGS IN THE SOFTWARE.
+-
+-********************************************************************************
+-
+ libavutil/x86/x86inc.asm
+ 
+ x86inc.asm: x86 abstraction layer
+--- a/third_party/ffmpeg/ffmpeg_generated.gni
++++ b/third_party/ffmpeg/ffmpeg_generated.gni
+@@ -209,7 +209,6 @@
+     "libavformat/oggparseogm.c",
+     "libavformat/oggparseopus.c",
+     "libavformat/oggparseskeleton.c",
+-    "libavformat/oggparsetheora.c",
+     "libavformat/oggparsevorbis.c",
+     "libavformat/oggparsevp8.c",
+     "libavformat/os_support.c",
+--- a/third_party/ffmpeg/libavformat/oggdec.c
++++ b/third_party/ffmpeg/libavformat/oggdec.c
+@@ -48,7 +48,9 @@
+     &ff_speex_codec,
+ #endif
+     &ff_vorbis_codec,
++#if 0  // These codecs are not supported by Chromium.
+     &ff_theora_codec,
++#endif
+     &ff_flac_codec,
+     &ff_opus_codec,
+     &ff_vp8_codec,

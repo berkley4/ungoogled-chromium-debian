@@ -13,7 +13,7 @@
  #   PLEASE DO NOT ADD MORE FLAGS TO THIS FILE
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -1794,6 +1794,9 @@
+@@ -1896,6 +1896,9 @@
      deps += [ "//third_party/fontconfig" ]
      if (use_dbus) {
        deps += [ "//dbus" ]
@@ -25,7 +25,7 @@
  
 --- a/chrome/browser/chrome_browser_main_linux.cc
 +++ b/chrome/browser/chrome_browser_main_linux.cc
-@@ -82,8 +82,10 @@
+@@ -88,8 +88,10 @@
  
  #if !BUILDFLAG(IS_CHROMEOS)
  #if BUILDFLAG(USE_DBUS)
@@ -36,7 +36,7 @@
    session_end_listener_ = SessionEndListenerLinux::Create();
  #endif  // BUILDFLAG(USE_DBUS)
  #endif  // !BUILDFLAG(IS_CHROMEOS)
-@@ -131,7 +133,9 @@
+@@ -151,7 +153,9 @@
  #if BUILDFLAG(USE_DBUS)
    session_end_listener_.reset();
  #endif

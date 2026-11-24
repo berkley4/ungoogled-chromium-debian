@@ -1,0 +1,49 @@
+From 944ab60ecf53b6b2f5b13c6cf1fa38476f9c1e2d Mon Sep 17 00:00:00 2001
+From: Alex Kallam <aakallam@chromium.org>
+Date: Wed, 19 Aug 2026 22:34:22 -0400
+Subject: [PATCH] [ffmpeg] Explicitly use the small code model for x64 builds
+
+ffmpeg contains handwritten assembly that will not work with non-small
+code models. By setting the code model with a config, chromium's code
+model can be changed without affecting how ffmpeg is built.
+
+All chromium fuzzer builders currently have to use component builds
+because some fuzzers are so large. With this change, we can test the
+performance/instrumentation differences for some of our fuzzing engines
+on static builds.
+
+Bug: 40266376
+Change-Id: I9c9313d37555269204b6666b24bf5cf255602977
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/third_party/ffmpeg/+/8463702
+Reviewed-by: Syed AbuTalib <lowkey@google.com>
+Reviewed-by: Frank Liberato <liberato@chromium.org>
+---
+ BUILD.gn | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+--- a/third_party/ffmpeg/BUILD.gn
++++ b/third_party/ffmpeg/BUILD.gn
+@@ -200,6 +200,15 @@
+   }
+ }
+ 
++# Always set the small code model to avoid global flags setting a different
++# model that isn't compatible with the ffmpeg's handwritten assembly code.
++# Use a config to set this so that it isn't overwritten by a global model flag.
++config("ffmpeg_small_cmodel") {
++  if (current_cpu == "x64" && (!is_win || is_clang)) {
++    cflags = [ "-mcmodel=small" ]
++  }
++}
++
+ buildflag_header("ffmpeg_features") {
+   header = "ffmpeg_features.h"
+   flags = [ "USE_SYSTEM_FFMPEG=false" ]
+@@ -283,6 +292,7 @@
+     # correctly.
+     "//build/config/compiler:no_incompatible_pointer_warnings",
+     ":ffmpeg_warnings",
++    ":ffmpeg_small_cmodel",
+   ]
+ 
+   # Since we are not often debugging FFmpeg, and performance is

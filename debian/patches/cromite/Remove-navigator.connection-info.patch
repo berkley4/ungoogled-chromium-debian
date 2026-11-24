@@ -58,7 +58,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      connection_observer_handle_ = nullptr;
 --- a/third_party/blink/renderer/platform/network/network_state_notifier.cc
 +++ b/third_party/blink/renderer/platform/network/network_state_notifier.cc
-@@ -106,6 +106,21 @@
+@@ -105,6 +105,21 @@
    }
  }
  
@@ -82,7 +82,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
      NetworkStateNotifier::ObserverType type,
 --- a/third_party/blink/renderer/platform/network/network_state_notifier.h
 +++ b/third_party/blink/renderer/platform/network/network_state_notifier.h
-@@ -125,7 +125,7 @@
+@@ -124,7 +124,7 @@
      const ObserverListUniqueId id_;
    };
  

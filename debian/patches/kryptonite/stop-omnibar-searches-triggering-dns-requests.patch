@@ -1,6 +1,6 @@
 --- a/chrome/browser/omnibox/chrome_omnibox_navigation_observer_base.cc
 +++ b/chrome/browser/omnibox/chrome_omnibox_navigation_observer_base.cc
-@@ -264,14 +264,6 @@
+@@ -269,14 +269,6 @@
        navigation_id_(navigation.GetNavigationId()),
        profile_(profile) {
    NavigationUserData::CreateForNavigationHandle(navigation, this);

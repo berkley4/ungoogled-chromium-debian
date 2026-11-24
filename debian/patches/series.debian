@@ -32,7 +32,6 @@ kryptonite/CORS-preflight-max-age-600s.patch
 kryptonite/disable-async-dns.patch
 kryptonite/disable-component-updates.patch
 kryptonite/disable-extension-autoupdate.patch
-kryptonite/disable-miscellaneous-autofill-settings.patch
 kryptonite/disable-segmentation-platform.patch
 kryptonite/do-not-build-API-keys-infobar.patch
 kryptonite/enable-network-service-sandbox.patch
@@ -180,10 +179,12 @@ optional/system/openh264.patch
 #optional/system/rust/no-alloc-shim.patch
 optional/system/vaapi/enable-hardware-accelerated-mjpeg.patch
 
-addenda/0001-libavformat-flacdec-error-on-overflow-in-metadata.patch
-addenda/0002-01ed020f.diff
-addenda/0003-d64b6ea.diff
-addenda/0004-fbccb44.diff
-addenda/0005-0985c34.diff
-addenda/0006-157a9b34.diff
-addenda/0007-8bc8a8f.diff
+addenda/0001-lavf-oggparsevorbis-restore-page-start-timestamp-cal.patch
+addenda/0002-libavformat-flacdec-error-on-overflow-in-metadata.patch
+addenda/0003-lavf-oggparsevorbis-set-stream-start_time-before-app.patch
+addenda/0004-avformat-demux-pick-the-replacement-probe-decoder-li.patch
+addenda/0005-Block-off-theora-support-in-ogg-parsing.patch
+addenda/0006-avformat-mov-ignore-sample-description-atoms-outside.patch
+addenda/0007-ffmpeg-Explicitly-use-the-small-code-model-for-x64-b.patch
+addenda/0008-avformat-mov-ignore-iacb-outside-a-trak.patch
+addenda/0009-avformat-mov-do-not-copy-an-empty-index-to-the-IAMF-.patch

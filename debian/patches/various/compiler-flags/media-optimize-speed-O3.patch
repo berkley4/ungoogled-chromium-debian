@@ -58,7 +58,7 @@
      deps += [ "//media/video" ]
 --- a/media/muxers/BUILD.gn
 +++ b/media/muxers/BUILD.gn
-@@ -58,7 +58,11 @@
+@@ -56,7 +56,11 @@
    assert(use_libgav1_parser)
    deps += [ "//third_party/libgav1:libgav1_parser" ]
  

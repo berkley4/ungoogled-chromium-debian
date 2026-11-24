@@ -1,0 +1,52 @@
+From 302162743bae7b2343d6ef0e454110d805ac20d9 Mon Sep 17 00:00:00 2001
+From: Dale Curtis <dalecurtis@chromium.org>
+Date: Tue, 27 Oct 2026 22:01:12 +0000
+Subject: [PATCH] lavf/oggparsevorbis: set stream start_time before applying
+ ts_offset
+
+Commit 63b7e4cefa91 stopped setting st->start_time on the BOS page while
+shifting the priming packet's timestamp by -ts_offset. Because the
+priming packet produces no PCM output, actual audio begins at the
+unshifted timestamp (0). Leaving start_time unset caused
+ogg_get_length() to subtract the negative pts from st->duration
+(inflating duration by ts_offset) and update_initial_timestamps() to set
+a negative start_time.
+
+Set st->start_time to os->lastpts on the BOS page before subtracting
+priv->ts_offset.
+
+Bug: 566451349
+Change-Id: I5ffc62ebcc5af6c79ee54788307d9ddbef23bf3c
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/third_party/ffmpeg/+/8670106
+Reviewed-by: Thomas Guilbert <tguilbert@chromium.org>
+---
+ libavformat/oggparsevorbis.c                  |  8 ++-
+ tests/ref/fate/limited_input_seek             |  2 +-
+ tests/ref/fate/mov-mp4-chapters               | 39 +++++++-------
+ tests/ref/fate/ogg-vorbis-bear                |  2 +-
+ .../fate/ogg-vorbis-initial-padding-chained   |  6 +--
+ tests/ref/fate/ogg-vorbis-libvorbis-1s        |  4 +-
+ tests/ref/fate/ogg-vorbis-libvorbis-30s       |  4 +-
+ tests/ref/fate/ogg-vorbis-ts-seek             |  6 +--
+ tests/ref/fate/ogg-vorbis-ts-seek-1.5s        |  6 +--
+ tests/ref/fate/webm-dash-chapters             | 54 +++++++++----------
+ 10 files changed, 69 insertions(+), 62 deletions(-)
+
+--- a/third_party/ffmpeg/libavformat/oggparsevorbis.c
++++ b/third_party/ffmpeg/libavformat/oggparsevorbis.c
+@@ -500,8 +500,14 @@
+     /* Initial position shift to account for encoder delay, or page scan
+      * to recover the page start timestamp after a seek. */
+     if (bos) {
+-        if (os->lastpts != AV_NOPTS_VALUE)
++        if (os->lastpts != AV_NOPTS_VALUE) {
++            if (s->streams[idx]->start_time == AV_NOPTS_VALUE) {
++                s->streams[idx]->start_time = os->lastpts;
++                if (s->streams[idx]->duration != AV_NOPTS_VALUE)
++                    s->streams[idx]->duration -= s->streams[idx]->start_time;
++            }
+             os->lastpts -= priv->ts_offset;
++        }
+         if (os->lastdts != AV_NOPTS_VALUE)
+             os->lastdts -= priv->ts_offset;
+     } else if (os->page_start && os->lastpts == AV_NOPTS_VALUE &&

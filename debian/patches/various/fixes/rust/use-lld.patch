@@ -1,6 +1,6 @@
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -512,6 +512,10 @@
+@@ -518,6 +518,10 @@
        cflags += [ "-funwind-tables" ]
        rustflags += [ "-Cforce-unwind-tables=yes" ]
      }

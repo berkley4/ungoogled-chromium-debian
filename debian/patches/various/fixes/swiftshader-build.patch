@@ -9,7 +9,7 @@
        deps += [
          "//third_party/swiftshader/src/Vulkan:icd_file",
          "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan",
-@@ -1064,7 +1064,7 @@
+@@ -1076,7 +1076,7 @@
            data_deps += [ "//media/gpu/chromeos:vulkan_overlay_adaptor_test" ]
          }
        }
@@ -28,7 +28,7 @@
  import("//media/media_options.gni")
  import("//services/on_device_model/on_device_model.gni")
  import("//services/shape_detection/features.gni")
-@@ -1530,10 +1531,12 @@
+@@ -1545,10 +1546,12 @@
        deps = [
          ":chrome_app",
          ":chrome_framework",
@@ -42,7 +42,7 @@
        if (build_with_internal_optimization_guide) {
          deps += [ "//components/optimization_guide/internal:optimization_guide_internal" ]
        }
-@@ -1583,9 +1586,11 @@
+@@ -1598,9 +1601,11 @@
        deps = [
          ":chrome_app",
          ":chrome_framework",
@@ -55,7 +55,7 @@
        if (build_with_internal_optimization_guide) {
          deps += [ "//components/optimization_guide/internal:optimization_guide_internal" ]
        }
-@@ -1859,7 +1864,7 @@
+@@ -1874,7 +1879,7 @@
        deps = [
          ":chrome_symbols",
        ]
@@ -64,7 +64,7 @@
          deps += [ ":swiftshader_vk_symbols" ]
        }
        if (!is_chromeos && angle_shared_libvulkan) {
-@@ -1908,17 +1913,19 @@
+@@ -1923,17 +1928,19 @@
        }
      }
  

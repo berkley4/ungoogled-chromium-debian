@@ -23,7 +23,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -5206,6 +5206,10 @@
+@@ -5435,6 +5435,10 @@
      {"ui-disable-partial-swap", flag_descriptions::kUiPartialSwapName,
       flag_descriptions::kUiPartialSwapDescription, kOsAll,
       SINGLE_DISABLE_VALUE_TYPE(switches::kUIDisablePartialSwap)},
@@ -36,7 +36,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
       FEATURE_VALUE_TYPE(features::kWebRtcHWDecoding)},
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -6794,6 +6794,11 @@
+@@ -6850,6 +6850,11 @@
  // FLAG_DESCRIPTIONS_ANDROID_END
  // Non-Android -----------------------------------------------------------------
  
@@ -50,7 +50,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  inline constexpr char kAllowAllSitesToInitiateMirroringDescription[] =
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -146,6 +146,9 @@
+@@ -151,6 +151,9 @@
  BASE_FEATURE(kDisplayWarningDeprecateURNIframesUseFencedFrames,
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -62,7 +62,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  // it will use the kNormal type thread when disabled.
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -158,6 +158,8 @@
+@@ -163,6 +163,8 @@
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE_PARAM(bool,
                                                 kAutoSpeculationRulesHoldback);
  
@@ -73,7 +73,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  
 --- a/third_party/blink/renderer/modules/webaudio/audio_buffer.cc
 +++ b/third_party/blink/renderer/modules/webaudio/audio_buffer.cc
-@@ -202,6 +202,20 @@
+@@ -201,6 +201,20 @@
    }
  }
  
@@ -139,7 +139,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  #include "third_party/blink/public/mojom/devtools/console_message.mojom-blink.h"
  #include "third_party/blink/public/mojom/frame/lifecycle.mojom-shared.h"
  #include "third_party/blink/public/platform/platform.h"
-@@ -790,6 +792,17 @@
+@@ -789,6 +791,17 @@
    return To<LocalDOMWindow>(GetExecutionContext());
  }
  
@@ -170,7 +170,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
    }
 --- a/third_party/blink/renderer/modules/webaudio/offline_audio_context.cc
 +++ b/third_party/blink/renderer/modules/webaudio/offline_audio_context.cc
-@@ -638,6 +638,7 @@
+@@ -651,6 +651,7 @@
      if (!rendered_buffer) {
        return;
      }

@@ -12,7 +12,7 @@ not worth it.
 
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -4315,7 +4315,7 @@
+@@ -3861,7 +3861,7 @@
          "//testing/gtest",
          "//third_party/hunspell",
          "//third_party/icu",
@@ -21,7 +21,7 @@ not worth it.
          "//ui/base:test_support",
          "//ui/events:test_support",
          "//ui/ozone",
-@@ -4947,7 +4947,7 @@
+@@ -4465,7 +4465,7 @@
        "//testing/gtest",
        "//third_party/hunspell",
        "//third_party/icu",
@@ -32,7 +32,7 @@ not worth it.
        "//ui/views",
 --- a/tools/imagediff/BUILD.gn
 +++ b/tools/imagediff/BUILD.gn
-@@ -48,7 +48,7 @@
+@@ -46,7 +46,7 @@
      deps = [
        "//base",
        "//build/win:default_exe_manifest",
@@ -43,7 +43,7 @@ not worth it.
    }
 --- a/ui/gfx/BUILD.gn
 +++ b/ui/gfx/BUILD.gn
-@@ -899,7 +899,7 @@
+@@ -889,7 +889,7 @@
      "//skia:skcms",
      "//testing/gtest",
      "//third_party/icu:icuuc",

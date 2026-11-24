@@ -1,14 +1,14 @@
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
-@@ -3447,7 +3447,6 @@
-       "//chrome/browser/ui/webui/top_chrome:unit_tests",
+@@ -3291,7 +3291,6 @@
+       "//chrome/browser/ui/window_feature_controller:unit_tests",
        "//chrome/browser/ui/window_sizer:unit_tests",
        "//chrome/browser/ui/zoom:unit_tests",
 -      "//chrome/services/speech:unit_tests",
        "//components/lens:buildflags",
        "//components/services/app_service/public/cpp:unit_tests",
        "//components/signin/public/base:signin_buildflags",
-@@ -3456,6 +3455,10 @@
+@@ -3300,6 +3299,10 @@
        "//ui/webui/tracked_element:unit_tests",
      ]
  

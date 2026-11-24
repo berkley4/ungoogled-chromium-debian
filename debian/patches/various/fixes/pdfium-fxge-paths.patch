@@ -1,6 +1,6 @@
 --- a/third_party/pdfium/core/fxge/BUILD.gn
 +++ b/third_party/pdfium/core/fxge/BUILD.gn
-@@ -252,8 +252,8 @@
+@@ -258,8 +258,8 @@
      features = [ "agl" ]
      deps = [
        "//build/rust:cxx_cppdeps",

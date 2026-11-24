@@ -11,7 +11,7 @@
  
  #if BUILDFLAG(ENABLE_EXTENSIONS_CORE)
  #include "extensions/common/constants.h"
-@@ -1569,7 +1571,7 @@
+@@ -1579,7 +1581,7 @@
    }
  #endif
  
@@ -20,7 +20,7 @@
    ChromeCrashReporterClient::Create();
  #endif
  
-@@ -1718,9 +1720,11 @@
+@@ -1744,9 +1746,11 @@
        base::android::InitJavaExceptionReporterForChildProcess();
      }
  #else
@@ -32,7 +32,7 @@
  #endif  // BUILDFLAG(IS_ANDROID)
    }
  #endif  // BUILDFLAG(IS_POSIX) && !BUILDFLAG(IS_MAC)
-@@ -1872,9 +1876,11 @@
+@@ -1898,9 +1902,11 @@
        base::CommandLine::ForCurrentProcess();
    std::string process_type =
        command_line->GetSwitchValueASCII(switches::kProcessType);
@@ -46,7 +46,7 @@
    crash_keys::SetCrashKeysFromCommandLine(*command_line);
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -648,7 +648,7 @@
+@@ -644,7 +644,7 @@
  #include "third_party/cros_system_api/switches/chrome_switches.h"
  #endif  // BUILDFLAG(IS_CHROMEOS)
  
@@ -55,7 +55,7 @@
  #include "components/crash/core/app/crash_switches.h"
  #include "components/crash/core/app/crashpad.h"
  #endif
-@@ -1139,7 +1139,7 @@
+@@ -1149,7 +1149,7 @@
  int GetCrashSignalFD(const base::CommandLine& command_line) {
    return crashpad::CrashHandlerHost::Get()->GetDeathSignalSocket();
  }
@@ -64,7 +64,7 @@
  int GetCrashSignalFD(const base::CommandLine& command_line) {
    int fd;
    return crash_reporter::GetHandlerSocket(&fd, nullptr) ? fd : -1;
-@@ -3108,7 +3108,7 @@
+@@ -3110,7 +3110,7 @@
                                      client_info->client_id);
    }
  #elif BUILDFLAG(IS_POSIX)
@@ -73,7 +73,7 @@
    pid_t pid;
    if (crash_reporter::GetHandlerSocket(nullptr, &pid)) {
      command_line->AppendSwitchASCII(
-@@ -5362,7 +5362,7 @@
+@@ -5403,7 +5403,7 @@
    DCHECK(!app_data_path.empty());
  #endif  // BUILDFLAG(IS_ANDROID)
  
@@ -84,7 +84,7 @@
      mappings->Share(kCrashDumpSignal, crash_signal_fd);
 --- a/headless/lib/browser/headless_content_browser_client.h
 +++ b/headless/lib/browser/headless_content_browser_client.h
-@@ -48,7 +48,7 @@
+@@ -49,7 +49,7 @@
    CreateDevToolsManagerDelegate() override;
    content::GeneratedCodeCacheSettings GetGeneratedCodeCacheSettings(
        content::BrowserContext* context) override;

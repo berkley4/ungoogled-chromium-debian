@@ -30,28 +30,23 @@
      auto instance = std::make_unique<dawn::native::Instance>();
 --- a/gpu/BUILD.gn
 +++ b/gpu/BUILD.gn
-@@ -110,7 +110,6 @@
+@@ -112,8 +112,12 @@
      "//gpu/command_buffer/service",
      "//gpu/ipc:gpu_thread_holder",
      "//third_party/dawn/include/dawn:cpp_headers",
 -    "//third_party/dawn/src/dawn:proc",
    ]
-   deps = [
-     "//base/test:test_support",
-@@ -136,6 +135,10 @@
-   }
-   deps += [ "//third_party/angle:translator" ]
- 
++
 +  if (use_dawn) {
 +    public_deps += [ "//third_party/dawn/src/dawn:proc" ]
 +  }
 +
-   # TODO(crbug.com/40031409): Fix code that adds exit-time destructors and
-   # enable the diagnostic by removing this line.
-   configs += [ "//build/config/compiler:no_exit_time_destructors" ]
+   deps = [
+     "//base/test:test_support",
+     "//gpu/command_buffer/client:raster",
 --- a/gpu/command_buffer/service/BUILD.gn
 +++ b/gpu/command_buffer/service/BUILD.gn
-@@ -329,7 +329,10 @@
+@@ -326,7 +326,10 @@
    ]
  
    if (use_dawn) {
@@ -63,7 +58,7 @@
      sources += [
        "dawn_caching_interface.cc",
        "dawn_caching_interface.h",
-@@ -400,7 +403,6 @@
+@@ -397,7 +400,6 @@
      "//third_party/angle:angle_version_info",
      "//third_party/angle:translator",
      "//third_party/dawn/include/dawn:cpp_headers",
@@ -81,7 +76,7 @@
  
  component("backend_interfaces") {
    sources = [
-@@ -72,7 +73,7 @@
+@@ -73,7 +74,7 @@
      if (is_android) {
        deps += [ "//services/on_device_model/android" ]
      }

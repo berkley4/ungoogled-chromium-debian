@@ -1,0 +1,88 @@
+From acb2af786003b8bfe699391110d1b2f8c80dae79 Mon Sep 17 00:00:00 2001
+From: Dale Curtis <dalecurtis@chromium.org>
+Date: Mon, 19 Oct 2026 20:40:06 +0000
+Subject: [PATCH] lavf/oggparsevorbis: restore page-start timestamp calculation
+ after seek
+
+Commit 63b7e4cefa91 removed the page duration scan in vorbis_packet()
+that ran when os->lastpts was unset. While that scan previously ran on
+every packet of a page and reset parser blocksize state during normal
+playback, removing it entirely left os->lastpts unset at the start of
+non-BOS pages after ogg_reset().
+
+As a result, ogg_read_timestamp() could not determine a page's start
+timestamp until advancing to the following page, and packets read from
+the start of a page after a seek were stamped with the seek target's
+cur_dts rather than the page start's timestamp.
+
+When os->lastpts is AV_NOPTS_VALUE at os->page_start on a non-BOS,
+non-EOS page, scan the remaining packets on the page to set os->lastpts
+to os->granule minus the page duration, and restore the parser blocksize
+state to the first packet afterwards.
+
+Fixes #24768.
+
+Fixed: 566451349
+Change-Id: I1133b5bf683778288f4472f7777639b2c4be432c
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/third_party/ffmpeg/+/8613528
+Reviewed-by: Thomas Guilbert <tguilbert@chromium.org>
+---
+ libavformat/oggparsevorbis.c           | 29 +++++++++--
+ tests/fate/ogg-vorbis.mak              |  3 ++
+ tests/ref/fate/ogg-vorbis-ts-seek      | 30 +++++------
+ tests/ref/fate/ogg-vorbis-ts-seek-1.5s | 72 ++++++++++++++++++++++++++
+ 4 files changed, 116 insertions(+), 18 deletions(-)
+ create mode 100644 tests/ref/fate/ogg-vorbis-ts-seek-1.5s
+
+--- a/third_party/ffmpeg/libavformat/oggparsevorbis.c
++++ b/third_party/ffmpeg/libavformat/oggparsevorbis.c
+@@ -478,10 +478,10 @@
+ 
+     bos = os->page_start && os->page_pos == priv->bos_page_pos;
+ 
+-    if (bos) {
++    if (bos || (os->page_start && os->lastpts == AV_NOPTS_VALUE))
+         av_vorbis_parse_reset(priv->vp);
++    if (bos)
+         priv->last_page_granule = 0;
+-    }
+ 
+     duration = av_vorbis_parse_frame_flags(priv->vp, os->buf + os->pstart, 1, &flags);
+     if (duration < 0) {
+@@ -497,12 +497,35 @@
+     if (!priv->ts_offset)
+         priv->ts_offset = os->pduration;
+ 
+-    /* Initial position shift to account for encoder delay. */
++    /* Initial position shift to account for encoder delay, or page scan
++     * to recover the page start timestamp after a seek. */
+     if (bos) {
+         if (os->lastpts != AV_NOPTS_VALUE)
+             os->lastpts -= priv->ts_offset;
+         if (os->lastdts != AV_NOPTS_VALUE)
+             os->lastdts -= priv->ts_offset;
++    } else if (os->page_start && os->lastpts == AV_NOPTS_VALUE &&
++               !(os->flags & OGG_FLAG_EOS) && (int64_t)os->granule >= 0) {
++        int seg, page_duration = os->pduration;
++        uint8_t *last_pkt = os->buf + os->pstart + os->psize;
++        uint8_t *next_pkt = last_pkt;
++
++        for (seg = os->segp; seg < os->nsegs; seg++) {
++            next_pkt += os->segments[seg];
++            if (os->segments[seg] < 255 && next_pkt != last_pkt) {
++                int pkt_flags = 0;
++                int d = av_vorbis_parse_frame_flags(priv->vp, last_pkt, 1, &pkt_flags);
++                if (d < 0) {
++                    page_duration = os->granule;
++                    break;
++                }
++                page_duration += d;
++                last_pkt = next_pkt;
++            }
++        }
++        av_vorbis_parse_frame_flags(priv->vp, os->buf + os->pstart, 1, &flags);
++        os->lastpts =
++        os->lastdts = os->granule - page_duration;
+     }
+ 
+     /* Broken files may have granule=0 on pages that contain audio data.

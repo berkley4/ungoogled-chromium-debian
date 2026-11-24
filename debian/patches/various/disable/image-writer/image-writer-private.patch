@@ -8,7 +8,7 @@
  import("//components/enterprise/buildflags/buildflags.gni")
  import("//components/guest_view/buildflags/buildflags.gni")
  import("//components/safe_browsing/buildflags.gni")
-@@ -797,32 +798,6 @@
+@@ -803,34 +804,6 @@
        "api/file_system/chrome_file_system_delegate.h",
        "api/file_system/file_entry_picker.cc",
        "api/file_system/file_entry_picker.h",
@@ -38,10 +38,12 @@
 -      "api/image_writer_private/xz_extractor.h",
 -      "api/image_writer_private/zip_extractor.cc",
 -      "api/image_writer_private/zip_extractor.h",
+-      "api/image_writer_private/zstd_extractor.cc",
+-      "api/image_writer_private/zstd_extractor.h",
        "api/language_settings_private/language_settings_private_api.cc",
        "api/language_settings_private/language_settings_private_api.h",
        "api/language_settings_private/language_settings_private_delegate.cc",
-@@ -879,6 +854,37 @@
+@@ -887,6 +860,37 @@
        "webstore_install_with_prompt.h",
      ]
  
@@ -79,7 +81,7 @@
      if (safe_browsing_mode != 0) {
        sources += [
          "api/safe_browsing_private/safe_browsing_private_event_router.cc",
-@@ -1149,7 +1155,6 @@
+@@ -1157,7 +1161,6 @@
        sources += [
          "api/enterprise_reporting_private/chrome_desktop_report_request_helper.cc",
          "api/enterprise_reporting_private/chrome_desktop_report_request_helper.h",
@@ -87,7 +89,7 @@
        ]
        deps += [
          "//components/enterprise/common/proto:connectors_proto",
-@@ -1158,6 +1163,9 @@
+@@ -1166,6 +1169,9 @@
        if (use_gio) {
          configs += [ "//build/linux:gio_config" ]
        }
@@ -97,7 +99,7 @@
      }
  
      if (is_mac) {
-@@ -1170,7 +1178,7 @@
+@@ -1178,7 +1184,7 @@
        ]
      }
  
@@ -180,17 +182,17 @@
      "indigo_private.webidl",
      "language_settings_private.webidl",
      "passwords_private.webidl",
-@@ -140,6 +140,10 @@
-         "printing_metrics.idl",
-       ]
-     }
-+
-+    if (enable_extractor) {
-+      schema_sources_ += [ "image_writer_private.idl" ]
-+    }
-   }
+@@ -99,6 +99,10 @@
+     "webrtc_desktop_capture_private.idl",
+   ]
  
-   if (is_linux || is_win || is_chromeos) {
++  if (enable_extractors) {
++    schema_sources_ += [ "image_writer_private.idl" ]
++  }
++
+   if (is_win || is_mac || is_linux) {
+     schema_sources_ += [ "web_authentication_proxy.webidl" ]
+   }
 --- a/chrome/test/BUILD.gn
 +++ b/chrome/test/BUILD.gn
 @@ -28,6 +28,7 @@
@@ -201,7 +203,7 @@
  import("//chrome/services/speech/buildflags/buildflags.gni")
  import("//chrome/test/include_js_tests.gni")
  import("//components/allocation_recorder/testing/testing.gni")
-@@ -3628,9 +3629,12 @@
+@@ -3465,9 +3466,12 @@
        "//chrome/browser/web_applications:web_app_test",
        "//chrome/browser/web_applications:web_applications_unit_tests",
        "//chrome/browser/web_applications/extensions:unit_tests",

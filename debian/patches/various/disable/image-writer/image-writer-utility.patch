@@ -1,6 +1,6 @@
 --- a/chrome/browser/extensions/BUILD.gn
 +++ b/chrome/browser/extensions/BUILD.gn
-@@ -579,6 +579,7 @@
+@@ -578,6 +578,7 @@
      "//chrome/browser/undo",
      "//chrome/browser/update_client",
      "//chrome/common",
@@ -8,7 +8,7 @@
      "//components/bookmarks/browser",
      "//components/bookmarks/managed",
      "//components/content_settings/core/browser",
-@@ -1030,7 +1031,6 @@
+@@ -1036,7 +1037,6 @@
        "//chrome/browser/web_applications/extensions",
        "//chrome/common/extensions/api:extensions_features",
        "//chrome/services/file_util/public/mojom",
@@ -16,7 +16,7 @@
        "//components/affiliations/core/browser:affiliations",
        "//components/app_constants",
        "//components/autofill/content/browser",
-@@ -1151,6 +1151,10 @@
+@@ -1157,6 +1157,10 @@
        "//url",
      ]
  
@@ -59,7 +59,7 @@
        ldflags = [ "/DELAYLOAD:wininet.dll" ]
 --- a/chrome/utility/services.cc
 +++ b/chrome/utility/services.cc
-@@ -87,7 +87,7 @@
+@@ -88,7 +88,7 @@
  #include "chrome/services/file_util/file_util_service.h"  // nogncheck
  #endif
  
@@ -68,7 +68,7 @@
  #include "chrome/services/removable_storage_writer/public/mojom/removable_storage_writer.mojom.h"
  #include "chrome/services/removable_storage_writer/removable_storage_writer.h"
  #endif
-@@ -310,7 +310,7 @@
+@@ -317,7 +317,7 @@
  }
  #endif
  
@@ -77,7 +77,7 @@
  auto RunRemovableStorageWriter(
      mojo::PendingReceiver<chrome::mojom::RemovableStorageWriter> receiver) {
    return std::make_unique<RemovableStorageWriter>(std::move(receiver));
-@@ -537,7 +537,7 @@
+@@ -545,7 +545,7 @@
    services.Add(RunFileUtil);
  #endif
  

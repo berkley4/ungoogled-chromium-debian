@@ -1,0 +1,45 @@
+From 14908894b7697f64b717de7aaf1df4057cdd8eeb Mon Sep 17 00:00:00 2001
+From: Dale Curtis <dalecurtis@chromium.org>
+Date: Mon, 16 Nov 2026 21:30:13 +0000
+Subject: [PATCH] avformat/mov: ignore iacb outside a trak
+
+Fixes: codec id change by an iacb outside a trak
+Fixes: sj3x4TsLBhUY
+
+Found during the review of https://code.ffmpeg.org/FFmpeg/FFmpeg/pulls/25671
+
+Bug: 567936264
+Change-Id: Ib5f9e432ad53bbbfad89ab2c0c961e7a9316ea0c
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/third_party/ffmpeg/+/8820976
+Reviewed-by: Thomas Guilbert <tguilbert@chromium.org>
+---
+ libavformat/mov.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+--- a/third_party/ffmpeg/libavformat/mov.c
++++ b/third_party/ffmpeg/libavformat/mov.c
+@@ -927,12 +927,13 @@
+     int nb_frames, disposition;
+     int version, ret;
+ 
++    st = get_curr_st(c);
++    if (!st)
++        return 0;
++
+     if (atom.size < 5)
+         return AVERROR_INVALIDDATA;
+ 
+-    if (c->fc->nb_streams < 1)
+-        return 0;
+-
+     version = avio_r8(pb);
+     if (version != 1) {
+         av_log(c->fc, AV_LOG_ERROR, "%s configurationVersion %d",
+@@ -944,7 +945,6 @@
+     if (!descriptors_size || descriptors_size > INT_MAX)
+         return AVERROR_INVALIDDATA;
+ 
+-    st = c->fc->streams[c->fc->nb_streams - 1];
+     sc = st->priv_data;
+ 
+     if (st->codecpar->extradata) {

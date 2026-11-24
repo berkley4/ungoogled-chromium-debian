@@ -1,0 +1,77 @@
+From 50888952b9399d6f95316f19916d1a8ba31765d5 Mon Sep 17 00:00:00 2001
+From: Dale Curtis <dalecurtis@chromium.org>
+Date: Thu, 5 Nov 2026 20:29:22 +0000
+Subject: [PATCH] avformat/demux: pick the replacement probe decoder like
+ try_decode_frame()
+
+codec_close() allocates the new context for the decoder returned by
+avcodec_find_decoder(), while try_decode_frame() reopens it with
+find_probe_decoder(), which honours the decoder forced through
+AVFormatContext.audio_codec and friends as well as the h264 special
+case. When the two differ, avcodec_open2() rejects the context as
+allocated for another decoder and the stream is not probed further.
+
+Bug: 567936264
+Change-Id: I2e0abae77606b867a968748e2c8923027f8d6faf
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/third_party/ffmpeg/+/8747761
+Reviewed-by: Thomas Guilbert <tguilbert@chromium.org>
+---
+ libavformat/demux.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+--- a/third_party/ffmpeg/libavformat/demux.c
++++ b/third_party/ffmpeg/libavformat/demux.c
+@@ -186,7 +186,7 @@
+                                   s, 0, s->format_probesize);
+ }
+ 
+-static int codec_close(FFStream *sti);
++static int codec_close(AVFormatContext *s, FFStream *sti);
+ 
+ static int update_stream_avctx(AVFormatContext *s)
+ {
+@@ -200,7 +200,7 @@
+ 
+         if (avcodec_is_open(sti->avctx)) {
+             av_log(s, AV_LOG_DEBUG, "Demuxer context update while decoder is open, closing and trying to re-open\n");
+-            ret = codec_close(sti);
++            ret = codec_close(s, sti);
+             sti->info->found_decoder = 0;
+             if (ret < 0)
+                 return ret;
+@@ -1336,7 +1336,7 @@
+     return av_rescale(ts, st->time_base.num * st->codecpar->sample_rate, st->time_base.den);
+ }
+ 
+-static int codec_close(FFStream *sti)
++static int codec_close(AVFormatContext *s, FFStream *sti)
+ {
+     AVCodecContext *avctx_new = NULL;
+     AVCodecParameters *par_tmp = NULL;
+@@ -1345,7 +1345,7 @@
+ 
+     new_codec =
+       (sti->avctx->codec_id != sti->pub.codecpar->codec_id) ?
+-      avcodec_find_decoder(sti->pub.codecpar->codec_id) :
++      find_probe_decoder(s, &sti->pub, sti->pub.codecpar->codec_id) :
+       sti->avctx->codec;
+ 
+     avctx_new = avcodec_alloc_context3(new_codec);
+@@ -1431,7 +1431,7 @@
+         if (sti->need_context_update) {
+             if (avcodec_is_open(sti->avctx)) {
+                 av_log(s, AV_LOG_DEBUG, "Demuxer context update while decoder is open, closing and trying to re-open\n");
+-                ret = codec_close(sti);
++                ret = codec_close(s, sti);
+                 sti->info->found_decoder = 0;
+                 if (ret < 0)
+                     return ret;
+@@ -3215,7 +3215,7 @@
+         }
+ 
+         if (avcodec_is_open(sti->avctx)) {
+-            err = codec_close(sti);
++            err = codec_close(ic, sti);
+             if (err < 0 && ret >= 0)
+                 ret = err;
+         }
