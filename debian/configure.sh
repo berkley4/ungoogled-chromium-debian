@@ -1307,6 +1307,7 @@ case $DEPS_PATCH in
     DSB="$DSB -e \"/^third_party\/domato\//d\""
     DSB="$DSB -e \"/^third_party\/freetype-testing\//d\""
     DSB="$DSB -e \"/^third_party\/fuzztest\//d\""
+    DSB="$DSB -e \"/^third_party\/google_benchmark\//d\""
     DSB="$DSB -e \"/^third_party\/libFuzzer\//d\""
     DSB="$DSB -e \"/^third_party\/liblouis\//d\""
     DSB="$DSB -e \"/^third_party\/libva-fake-driver\//d\""
