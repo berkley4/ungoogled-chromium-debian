@@ -255,7 +255,7 @@ GN_FLAGS += v8_enable_wasm_simd256_revec=true
 #
 
 # Globally enabled system libraries
-SYS_LIBS := dav1d double-conversion flac libdrm libsecret libusb
+SYS_LIBS := dav1d double-conversion flac libdrm libusb
 SYS_LIBS += libwebp libxml libXNVCtrl libxslt opus zlib zstd
 
 # The below is best configured via debian/configure.sh, which is better
