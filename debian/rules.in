@@ -16,7 +16,7 @@ GN_FLAGS := $(file < $(DEBIAN)/misc_files/uc_flags.txt)
 BTS_DIR  := $(RT_DIR)/buildtools
 HEVC_DIR := $(RT_DIR)/third_party/ffmpeg/libavcodec/hevc
 RF_DIR   := $(RT_DIR)/third_party/rust/read_fonts/v0_45
-RFC_DIR  := chromium_crates_io/vendor/read-fonts-v0_45
+RFC_DIR  := chromium_crates_io/vendor/read-fonts-$(notdir $(RF_DIR))
 
 # Custom toolchain
 #
