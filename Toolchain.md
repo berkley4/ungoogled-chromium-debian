@@ -32,27 +32,22 @@ more than a couple of hours on a cpu from the last decade or so, probably half
 that or less on anything relatively new.
 
 
-___Clone___
-
-git clone --depth 1 -b main https://github.com/llvm/llvm-project
-
-
-___Updating___
-
-git fetch --depth 1 --jobs=`<number of threads>` origin
-git checkout origin/main
-
-
-___Clean the build___
-
-git reset --hard HEAD
-
-
-___Configure___
+___Clone (if you have NOT built before___
 
 ```sh
-export LLVM_DIR=/usr/lib/llvm-16/bin
+git clone --depth 1 -b main https://github.com/llvm/llvm-project
 ```
+
+___Update (if you have built before___
+
+```sh
+git clean -dfx
+git reset --hard HEAD
+git fetch --depth 1 --jobs=`<number of threads>` origin
+git checkout origin/main
+```
+
+___Configuration___
 
 See what /usr/bin/x86_64-linux-gnu-ld points to :-
 
@@ -127,12 +122,6 @@ cmake -B build -G Ninja -S llvm -C clang/cmake/caches/BOLT-PGO.cmake \
 
 
 For clarity I'll use -j4 below instead of -j`<number of threads>`.
-
-If you have built before then run :-
-
-```sh
-ninja -j4 -C build -t cleandead
-```
 
 
 ___Compile___
