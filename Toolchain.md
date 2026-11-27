@@ -130,7 +130,6 @@ For clarity I'll use -j4 below instead of -j`<number of threads>`.
 
 ___Compile___
 ```sh
-cd build
 cmake --build build -j4 --target stage2-clang-bolt
 ```
 
