@@ -1,0 +1,53 @@
+--- a/content/browser/loader/url_loader_factory_utils.cc
++++ b/content/browser/loader/url_loader_factory_utils.cc
+@@ -351,5 +351,19 @@
+       std::move(devtools_params), std::move(receiver_to_connect));
+ }
+ 
++template scoped_refptr<network::SharedURLLoaderFactory>
++CreateInternal<scoped_refptr<network::SharedURLLoaderFactory>>(
++    ContentBrowserClient::URLLoaderFactoryType,
++    TerminalParams,
++    std::optional<ContentClientParams>,
++    std::optional<devtools_instrumentation::WillCreateURLLoaderFactoryParams>);
++
++template mojo::PendingRemote<network::mojom::URLLoaderFactory>
++CreateInternal<mojo::PendingRemote<network::mojom::URLLoaderFactory>>(
++    ContentBrowserClient::URLLoaderFactoryType,
++    TerminalParams,
++    std::optional<ContentClientParams>,
++    std::optional<devtools_instrumentation::WillCreateURLLoaderFactoryParams>);
++
+ }  // namespace url_loader_factory
+ }  // namespace content
+--- a/third_party/blink/renderer/core/editing/visible_units.cc
++++ b/third_party/blink/renderer/core/editing/visible_units.cc
+@@ -1361,6 +1361,13 @@
+   return result;
+ }
+ 
++template CORE_EXPORT Vector<gfx::QuadF>
++ComputeTextBounds<EditingAlgorithm<NodeTraversal>>(
++    const EphemeralRangeTemplate<EditingAlgorithm<NodeTraversal>>&);
++template CORE_EXPORT Vector<gfx::QuadF>
++ComputeTextBounds<EditingAlgorithm<FlatTreeTraversal>>(
++    const EphemeralRangeTemplate<EditingAlgorithm<FlatTreeTraversal>>&);
++
+ template <typename Strategy>
+ static gfx::RectF ComputeTextRectTemplate(
+     const EphemeralRangeTemplate<Strategy>& range) {
+--- a/v8/src/codegen/code-stub-assembler.cc
++++ b/v8/src/codegen/code-stub-assembler.cc
+@@ -15656,6 +15656,12 @@
+     TNode<RawPtrT> start_index, TNode<RawPtrT> end_index,
+     const FastLoopBody<RawPtrT>& body, int increment,
+     LoopUnrollingMode unrolling_mode, IndexAdvanceMode advance_mode);
++template V8_EXPORT_PRIVATE void CodeStubAssembler::BuildFastLoop<IntPtrT>(
++    const VariableList& vars, TVariable<IntPtrT>& var_index,
++    TNode<IntPtrT> start_index, TNode<IntPtrT> end_index,
++    const FastLoopBody<IntPtrT>& body, TNode<IntPtrT> increment,
++    LoopUnrollingMode unrolling_mode, IndexAdvanceMode advance_mode,
++    IndexAdvanceDirection advance_direction);
+ 
+ template <typename TIndex>
+ void CodeStubAssembler::BuildFastArrayForEach(

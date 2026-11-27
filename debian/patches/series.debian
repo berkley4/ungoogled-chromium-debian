@@ -92,6 +92,7 @@ various/fixes/icudata-file-path.patch
 various/fixes/InkDropHost-crash.patch
 various/fixes/make-pdf-xfa-depend-on-pdf-v8.patch
 various/fixes/make-use_clang_modules-depend-on-sysroot.patch
+various/fixes/missing-instantiations.patch
 various/fixes/pdfium-fxge.patch
 various/fixes/pdfium-fxge-paths.patch
 various/fixes/pdfium-fxge-skrifa.patch
