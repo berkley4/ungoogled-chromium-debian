@@ -32,19 +32,25 @@ more than a couple of hours on a cpu from the last decade or so, probably half
 that or less on anything relatively new.
 
 
-___Clone (if you have NOT built before___
+___Clone (if you have NOT built before)___
 
 ```sh
 git clone --depth 1 -b main https://github.com/llvm/llvm-project
 ```
 
-___Update (if you have built before___
+___Update (if you have built before)___
 
 ```sh
 git clean -dfx
 git reset --hard HEAD
-git fetch --depth 1 --jobs=`<number of threads>` origin
-git checkout origin/main
+```
+
+Note that I'm using --jobs=4 to use 4 threads and '<HASH>' is the clang
+git hash listed in the 'Build toolchain' section of [Releases](https://github.com/berkley4/ungoogled-chromium-debian/releases).
+
+```sh
+git fetch --depth 1 --jobs=4 origin <HASH>
+git checkout FETCH_HEAD
 ```
 
 ___Configuration___
