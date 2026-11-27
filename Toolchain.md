@@ -45,8 +45,8 @@ git clean -dfx
 git reset --hard HEAD
 ```
 
-Note that I'm using --jobs=4 to use 4 threads and '<HASH>' is the clang
-git hash listed in the 'Build toolchain' section of [Releases](https://github.com/berkley4/ungoogled-chromium-debian/releases).
+Note that I'm using --jobs=4 to use 4 threads and HASH is the clang
+git hash listed in the 'Build toolchain' section of [Releases](https://github.com/berkley4/ungoogled-chromium-debian/releases)
 
 ```sh
 git fetch --depth 1 --jobs=4 origin <HASH>
